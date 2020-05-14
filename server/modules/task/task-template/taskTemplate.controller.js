@@ -3,8 +3,22 @@ const { LogInfo, LogError } = require('../../../logs');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý mẫu công việc
 // Lấy tất cả mẫu công việc
-exports.getAllTaskTemplates = (req, res) => {
-    return TaskTemplateService.getAllTaskTemplates(req, res);
+exports.getAllTaskTemplates = async (req, res) => {
+    try {
+        var data = await TaskTemplateService.getAllTaskTemplates(req, res);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_templates_success'],
+            content: data
+        });
+    } catch (error) {
+        LogError(req.user.email, `Get task templates by role ${req.params.id}`, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_templates_faile'],
+            content: error
+        });
+    }
 }
 
 // Lấy mẫu công việc theo id
@@ -19,7 +33,7 @@ exports.getTaskTemplate = async (req, res) => {
         });
     } catch (error) {
         await LogError(req.user.email, `Get task templates ${req.body.name}`, req.user.company);
-        res.status(400).json({
+        res.status(200).json({
             success: false,
             messages: ['get_task_template_faile'],
             content: error
@@ -32,10 +46,18 @@ exports.getTaskTemplatesOfUserRole = (req, res) => {
     try {
         var tasks = TaskTemplateService.getTaskTemplatesOfUserRole(req.params.id);
         LogInfo(req.user.email, `Get task templates by role ${req.params.id}`, req.user.company);
-        res.status(200).json(tasks);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_template_by_role_success'],
+            content: tasks
+        });
     } catch (error) {
         LogError(req.user.email, `Get task templates by role ${req.params.id}`, req.user.company);
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_template_by_role_faile'],
+            content: error
+        });
     }
 }
 
@@ -68,7 +90,7 @@ exports.createTaskTemplate = async (req, res) => {
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['create_task_template_sucess'],
+            messages: ['create_task_template_success'],
             content: data
         });
     } catch (error) {
@@ -86,10 +108,18 @@ exports.deleteTaskTemplate = async (req, res) => {
     try {
         var data = await TaskTemplateService.deleteTaskTemplate(req.params.id);
         await LogInfo(req.user.email, `Delete task templates ${req.params.id}`, req.user.company);
-        res.status(200).json(data);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_task_template_success'],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, `Delete task templates ${req.params.id}`, req.user.company);
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_task_template_faile'],
+            content: error
+        });
     }
 }
 

@@ -19,7 +19,7 @@ function getAll() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasktemplates`,
         method: 'GET',
-    }, false, true, 'task.task_management');
+    }, false, true, 'task.task_template');
 }
 
 // get a task template by id 
@@ -27,7 +27,7 @@ function getById(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
         method: 'GET',
-    }, false, true, 'task.task_management');
+    }, false, true, 'task.task_template');
 }
 
 // get all task template by Role
@@ -35,7 +35,7 @@ function getAllTaskTemplateByRole(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasktemplates/role/${id}`,
         method: 'GET',
-    }, false, true, 'task.task_management');
+    }, false, true, 'task.task_template');
 }
 
 // get all task template by User
@@ -54,7 +54,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
         url: `${LOCAL_SERVER_API}/tasktemplates/user`,
         method: 'POST',
         data: data
-    }, false, true, 'task.task_management');
+    }, false, true, 'task.task_template');
 }
 
 // add new task template
@@ -66,7 +66,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
         url: `${LOCAL_SERVER_API}/tasktemplates/create`,
         method: 'POST',
         data: newTaskTemplate
-    }, true, true, 'task.task_management');
+    }, true, true, 'task.task_template');
  }
 
 
@@ -75,7 +75,7 @@ function editTaskTemplate(id, newTaskTemplate) {
         url: `${LOCAL_SERVER_API}/tasktemplates/edit/${id}`,
         method: 'PATCH',
         data: newTaskTemplate
-    }, true, true, 'task.task_management');
+    }, true, true, 'task.task_template');
 }
 
 
@@ -84,5 +84,5 @@ function deleteTaskTemplateById(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
         method: 'DELETE',
-    }, true, true, 'task.task_management');
+    }, true, true, 'task.task_template');
 }

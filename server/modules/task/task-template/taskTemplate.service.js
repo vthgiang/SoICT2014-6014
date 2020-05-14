@@ -3,9 +3,8 @@ const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').s
 
 //Lấy tất cả các mẫu công việc
 exports.getAllTaskTemplates = (req, res) => {
-    TaskTemplate.find()
-        .then(templates => res.status(200).json(templates))
-        .catch(err => res.status(400).json({ message: err }));
+    var taskTemplates = TaskTemplate.find()
+    return taskTemplates;
 }
 
 //Lấy mẫu công việc theo Id
@@ -106,17 +105,16 @@ exports.createTaskTemplate = async (body) => {
             }
         })
     });
-    // var reader = body.read; //role có quyền đọc
-    // var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
+
+    // TODO: Xử lý quyển với action
     var privilege = await Privilege.create({
         roleId: body.readByEmployees[0], //id của người cấp quyền xem
         resourceId: tasktemplate._id,
         resourceType: "TaskTemplate",
         action: body.readByEmployees //quyền READ
     });
-    var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
-
-    return newTask;
+    tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
+    return tasktemplate;
 }
 
 //Xóa mẫu công việc
@@ -127,7 +125,7 @@ exports.deleteTaskTemplate = async (id) => {
         resourceType: "TaskTemplate"
     });
     
-    return ("Delete success");
+    return {id: id};
 }
 
 /**

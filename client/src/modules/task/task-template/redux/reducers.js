@@ -5,7 +5,6 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.GETALL_TEMPLATE_REQUEST:
             return {
                 ...state,
-                loading: true,
                 isLoading: true
             };
         case taskTemplateConstants.GETALL_TEMPLATE_SUCCESS:
@@ -24,7 +23,6 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.GETTEMPLATE_BYROLE_REQUEST:
             return {
                 ...state,
-                loadingByRole: true,
                 isLoading: true
             };
         case taskTemplateConstants.GETTEMPLATE_BYROLE_SUCCESS:
@@ -43,7 +41,6 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.GETTEMPLATE_BYUSER_REQUEST:
             return {
                 ...state,
-                loadingByUser: true,
                 isLoading: true
             };
         case taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS:
@@ -64,7 +61,6 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 taskTemplate: null,
-                loadingById: true,
                 isLoading: true
             };
         case taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS:
@@ -114,14 +110,9 @@ export function tasktemplates(state = {}, action) {
 
         case taskTemplateConstants.EDIT_TEMPLATE_REQUEST:
             return {
-                    ...state,
-                    items: state.items.map(template =>
-                        template._id === action.id
-                             ? { ...template, editing: true }
-                             : template
-                        ),
-                    isLoading: false
-                };
+                ...state,
+                isLoading: false
+            };
         case taskTemplateConstants.EDIT_TEMPLATE_SUCCESS:
             return {
                 ...state,
@@ -144,11 +135,6 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.DELETE_TEMPLATE_REQUEST:
             return {
                 ...state,
-                items: state.items.map(template =>
-                    template._id === action.id
-                        ? { ...template, deleting: true }
-                        : template
-                ),
                 isLoading: false
             };
         case taskTemplateConstants.DELETE_TEMPLATE_SUCCESS:
