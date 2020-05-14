@@ -1,8 +1,6 @@
 import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
-import { TOKEN_SECRET } from '../../../../env';
 import { getStorage } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 export const UserServices = {
     get,
@@ -58,7 +56,7 @@ function destroy(id) {
 }
 
 function getRoles() {
-    const id = localStorage.getItem('id');
+    const id = getStorage('userId');
     return sendRequest({
         url: `${LOCAL_SERVER_API}/roles/${id}`,
         method: 'GET',
@@ -66,7 +64,7 @@ function getRoles() {
 }
 
 function getLinkOfRole() {
-    const currentRole = localStorage.getItem('currentRole');
+    const currentRole = getStorage('currentRole');
     return sendRequest({
         url: `${LOCAL_SERVER_API}/links/role/${currentRole}`,
         method: 'GET',
@@ -105,9 +103,7 @@ function getAllUserSameDepartment(id) {
 }
 
 async function getDepartmentOfUser() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+    const id = getStorage('userId');
     
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}/organizational-units`,

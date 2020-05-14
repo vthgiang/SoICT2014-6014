@@ -22,7 +22,9 @@ class Notification extends Component {
                 <li className="dropdown notifications-menu">
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
                         <i className="fa fa-bell-o" />
-                        <span className="label label-warning">{notifications.receivered.list.filter(notification => !notification.readed).length}</span>
+                        {
+                            notifications.receivered.list.filter(notification => !notification.readed).length > 0 && <sup><i className="fa fa-circle text-yellow" style={{fontSize: '8px'}}></i></sup>
+                        }
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
                         <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>

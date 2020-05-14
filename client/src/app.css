@@ -178,3 +178,33 @@ legend.scheduler-border {
 .active-notification-button {
     border-left: 3px solid #3C8DBC;
 }
+
+
+
+
+/** Description box **/
+.box.box-solid.description{
+    -webkit-box-shadow: 0 0 0;
+    -moz-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+}
+.box.box-solid.description > .box-header {
+    font-size: 1.2em;
+    background-color: #545199;
+    color: #fff;
+    font-weight: 900;
+    padding: 10px;
+}
+.box.box-solid.description > .box-body{
+    padding: 0;
+}
+.box.box-solid.description > .box-body dt{
+    padding: 5px 5px 5px 10px;
+}
+.box.box-solid.description > .box-body dd{
+    padding: 2px 5px 5px 10px;
+    margin-bottom: 5px;
+    -webkit-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+    -moz-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+    box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+}

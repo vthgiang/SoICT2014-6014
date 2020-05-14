@@ -5,7 +5,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
-
+import { withTranslate } from 'react-redux-multilingual';
 import {InformationTemplate} from '../component/informationsTemplate';
 import {ActionTemplate} from '../component/actionsTemplate';
 
@@ -278,7 +278,7 @@ class ModalEditTaskTemplate extends Component {
               template = tasktemplates.info;
     
   
-        const { department, user } = this.props;
+        const { department, user,translate } = this.props;
         if (editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
         if (editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
         
@@ -489,7 +489,28 @@ class ModalEditTaskTemplate extends Component {
                                             <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
                                             <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                             <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
-                                        </div>                       
+                                        </div>
+                                        <div className="col-sm-6" style={{ marginTop: "15px" }} >
+                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "5px" }}>
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            <div className='form-group' style={{ marginTop: "5px" }}>
+                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.information_list')} </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="control-group" style={{ marginLeft: "-5px" }}>
+
+                                        <ol>{
+                                            (typeof template === 'undefined' || editingTemplate.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                template.taskInformations.map((item, index) =>
+                                                    <li style={{ textAlign: 'left' }}>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}<p>Mô tả: {item.description}</p></li>
+                                                )
+                                        }
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>                       
                                     
                                     </div>
                                 </div>
@@ -526,5 +547,5 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
 };
-const connectedModalEditTaskTemplate = connect(mapState, actionCreators)(ModalEditTaskTemplate);
+const connectedModalEditTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalEditTaskTemplate));
 export { connectedModalEditTaskTemplate as ModalEditTaskTemplate };
