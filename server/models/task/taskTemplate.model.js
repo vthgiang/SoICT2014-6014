@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const User = require('../auth/user.model');
+const Role = require('../auth/role.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 
 // Model quản lý dữ liệu của một mẫu công việc
@@ -61,12 +62,13 @@ const TaskTemplateSchema = new Schema({
         },
         type: {
             type: String,
-            required: true
+            required: true,
+            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
         }
     }],
     readByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: Role,
         required: true
     }],
     responsibleEmployees: [{

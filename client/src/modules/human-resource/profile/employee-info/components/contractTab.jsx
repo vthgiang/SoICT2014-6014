@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../../env';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -50,7 +51,7 @@ class ContractTab extends Component {
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
-                                                <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
+                                                <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                             </td>
                                         </tr>
                                     ))

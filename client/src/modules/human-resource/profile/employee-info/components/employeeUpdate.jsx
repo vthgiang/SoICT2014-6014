@@ -133,7 +133,6 @@ class UpdateEmployee extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { employeesInfo, translate } = this.props;
         var employees;
         if (employeesInfo.employees !== "") employees = employeesInfo.employees;
@@ -369,7 +368,6 @@ function mapState(state) {
 const actionCreator = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
     updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
-    //uploadAvatar: EmployeeManagerActions.uploadAvatar,
 };
 const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));
 export { updateEmployee as UpdateEmployee };

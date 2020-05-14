@@ -31,7 +31,7 @@ export const EmployeeService = {
 // Lấy danh sách nhân viên
 function getAll(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employee/paginate`,
+        url: `${ LOCAL_SERVER_API }/employees/paginate`,
         method: 'POST',
         data: data,
     }, false, true, 'human_resource.profile.employee_management');
@@ -44,7 +44,7 @@ function checkMSNV(employeeNumber) {
         headers: AuthenticateHeader(),
     }
 
-    return fetch(`${ LOCAL_SERVER_API }/employee/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
 }
 
 // Kiểm tra sự tồn tại của email
@@ -54,13 +54,13 @@ function checkEmail(email) {
         headers: AuthenticateHeader(),
     }
 
-    return fetch(`${ LOCAL_SERVER_API }/employee/checkEmail/${email}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/checkEmail/${email}`, requestOptions).then(handleResponse);
 }
 
 // Thêm mới thông tin nhân viên
 function addNewEmployee(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employee`,
+        url: `${ LOCAL_SERVER_API }/employees`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
@@ -73,7 +73,7 @@ function updateInformationEmployee(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/update/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/update/${id}`, requestOptions).then(handleResponse);
 }
 
 /**
@@ -82,7 +82,7 @@ function updateInformationEmployee(id, data) {
  */
 function deleteEmployee(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employee/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.profile.employee_management');
 }
@@ -92,7 +92,7 @@ function deleteEmployee(id) {
 // upload ảnh đại diện của nhân viên
 function uploadAvatar(employeeNumber, fileUpload) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/employee/avatar/${employeeNumber}`,
+        url: `${ LOCAL_SERVER_API }/employees/avatar/${employeeNumber}`,
         method: 'PATCH',
         data: fileUpload,
         headers: AuthenticateHeaderPATCH()
@@ -115,7 +115,7 @@ function updateContract(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/contract/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/contract/${employeeNumber}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật (thêm) thông tin bằng cấp
@@ -125,7 +125,7 @@ function updateCertificate(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/certificate/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/certificate/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -136,7 +136,7 @@ function updateCertificateShort(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/certificateShort/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/certificateShort/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -147,7 +147,7 @@ function updateFile(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/file/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/file/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -161,5 +161,5 @@ function checkArrayMSNV(arrayMSNV) {
         body: JSON.stringify(arrayMSNV)
     }
 
-    return fetch(`${ LOCAL_SERVER_API }/employee/checkArrayMSNV`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employees/checkArrayMSNV`, requestOptions).then(handleResponse);
 }

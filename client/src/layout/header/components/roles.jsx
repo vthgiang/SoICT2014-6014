@@ -8,14 +8,14 @@ class Roles extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            currentRole: getStorage('currentRole') ? getStorage('currentRole') : null 
+            currentRole: getStorage("currentRole") ? getStorage("currentRole") : null 
         }
         this.selectRole = this.selectRole.bind(this);
     }
 
     selectRole = async (e) => {
         this.setState({ currentRole: e.target.value });
-        setStorage('currentRole', e.target.value);
+        setStorage("currentRole", e.target.value);
         await this.props.getLinksOfRole(e.target.value);
         var {links} = this.props.auth;
         var path = window.location.pathname;
@@ -27,7 +27,7 @@ class Roles extends Component {
                 break;
             }
         }
-        var currentRole = getStorage('currentRole');
+        var currentRole = getStorage("currentRole");
         await this.props.getComponentsOfUserInLink(currentRole, linkId);
     }
     
@@ -42,7 +42,7 @@ class Roles extends Component {
                         className="form-control"
                         style={{ marginTop: '9px' }}
                         onChange={this.selectRole}
-                        name='currentRole'
+                        name="currentRole"
                         defaultValue={currentRole}>
                         {
                             auth.user.roles.map(role => {

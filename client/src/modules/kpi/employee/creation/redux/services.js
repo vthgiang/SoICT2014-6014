@@ -1,12 +1,8 @@
 import {handleResponse} from '../../../../../helpers/handleResponse';
-
-import {
-    TOKEN_SECRET, LOCAL_SERVER_API
-} from '../../../../../env';
+import { LOCAL_SERVER_API } from '../../../../../env';
 import {
     getStorage,AuthenticateHeader
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const createKpiSetService = {
@@ -23,10 +19,8 @@ export const createKpiSetService = {
 };
 
 /** Lấy tập KPI cá nhân hiện tại */ 
-async function getEmployeeKpiSet() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function getEmployeeKpiSet() {
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
@@ -35,10 +29,8 @@ async function getEmployeeKpiSet() {
 }
 
 /** Khởi tạo KPI cá nhân */  
-async function createEmployeeKpiSet(newKPI) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function createEmployeeKpiSet(newKPI) {
+    var id = getStorage("userId");
     newKPI = {...newKPI, creator: id};
 
     return sendRequest({
@@ -58,11 +50,9 @@ function createEmployeeKpi(newTarget) {
 }
 
 /** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
-async function editEmployeeKpiSet(id, newTarget) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var creater = verified._id;
-    newTarget = {...newTarget, creater: creater};
+function editEmployeeKpiSet(id, newTarget) {
+    var id = getStorage("userId");
+    newTarget = {...newTarget, creater: id};
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,

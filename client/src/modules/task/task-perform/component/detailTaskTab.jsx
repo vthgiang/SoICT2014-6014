@@ -10,22 +10,15 @@ import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 
 
-import Swal from 'sweetalert2';
-import {
-    TOKEN_SECRET
-} from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 class DetailTaskTab extends Component {
 
     constructor(props) {
 
-        const token = getStorage();
-        const verified = jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+        var idUser = getStorage("userId");
 
         super(props);
         this.state = {

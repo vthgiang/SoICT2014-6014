@@ -1,11 +1,9 @@
-import {handleResponse} from '../../../../../helpers/handleResponse';
 import {
-    TOKEN_SECRET, LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../../env';
 import {
-    getStorage, AuthenticateHeader
+    getStorage
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
 import { sendRequest} from '../../../../../helpers/requestHelper'
 export const managerServices = {
     getAllKPIUnit,
@@ -23,10 +21,8 @@ function getAllKPIUnit(id) {
 }
 
 // Lấy tất cả KPI đơn vị
-async function getChildTargetOfCurrentTarget(id) {
-    const token= getStorage();
-    const verified= await jwt.verify(token, TOKEN_SECRET);
-    var id= verified._id;
+function getChildTargetOfCurrentTarget(id) {
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
