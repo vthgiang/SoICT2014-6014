@@ -1,11 +1,8 @@
-import {handleResponse} from '../../../../helpers/handleResponse';
-// sua duong dan sau khi sang prj moi
-import { AuthenticateHeader } from '../../../../config';
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 
 export const taskTemplateService = {
@@ -19,32 +16,26 @@ export const taskTemplateService = {
 };
 // get all task template
 function getAll() {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch('${LOCAL_SERVER_API}/tasktemplates', requestOptions).then(handleResponse);
+    }, false, true, 'task.task_management');
 }
 
 // get a task template by id 
 function getById(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/${id}`, requestOptions).then(handleResponse);
+    }, false, true, 'task.task_management');
 }
 
 // get all task template by Role
 function getAllTaskTemplateByRole(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/role/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/role/${id}`, requestOptions).then(handleResponse);
+    }, false, true, 'task.task_management');
 }
 
 // get all task template by User
@@ -56,57 +47,42 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
         pageNumber: pageNumber,
         noResultsPerPage: noResultsPerPage,
         arrayUnit: arrayUnit,
-        name: name};
-    const requestOptions = {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: AuthenticateHeader(),
+        name: name
     };
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/user`, requestOptions).then(handleResponse);
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/user`,
+        method: 'POST',
+        data: data
+    }, false, true, 'task.task_management');
 }
 
 // add new task template
  function addNewTaskTemplate(newTaskTemplate) {
     var id = getStorage("userId");
     newTaskTemplate = {...newTaskTemplate, creator: id};
-    const requestOptions = {
-        method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTaskTemplate)
-    };
 
-     return fetch(`${LOCAL_SERVER_API}/tasktemplates/create`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/create`,
+        method: 'POST',
+        data: newTaskTemplate
+    }, true, true, 'task.task_management');
  }
 
-// function addNewTaskTemplate(newTaskTemplate) {
-//     const requestOptions = {
-//         url: `${ LOCAL_SERVER_API }/tasktemplates/create`,
-//         method: 'POST',
-//         body: JSON.stringify(newTaskTemplate),
-//         headers: { 'Content-Type': 'application/json' },
-//     };
 
-//     return axios(requestOptions).then(handleResponse);;
-// }
-
-// edit a task template
 function editTaskTemplate(id, newTaskTemplate) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/edit/${id}`,
         method: 'PATCH',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTaskTemplate)
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/edit/${id}`, requestOptions).then(handleResponse);
+        data: newTaskTemplate
+    }, true, true, 'task.task_management');
 }
 
 
 // delete a task template
 function deleteTaskTemplateById(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/${id}`, requestOptions).then(handleResponse);
+    }, true, true, 'task.task_management');
 }

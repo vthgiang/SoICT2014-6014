@@ -72,7 +72,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             resourceType: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        return ({"message" : tasktemplates,"pages": totalPages});
+        return {taskTemplates : tasktemplates, pageTotal: totalPages};
 }
 
 //Tạo mẫu công việc
@@ -116,10 +116,7 @@ exports.createTaskTemplate = async (body) => {
     });
     var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
 
-    return ({
-        message: "Create Task Template Successfully!",
-        data: newTask
-    });
+    return newTask;
 }
 
 //Xóa mẫu công việc

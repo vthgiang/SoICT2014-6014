@@ -14,52 +14,39 @@ export const taskTemplateActions = {
 // Get all tasktemplate
 function getAll() {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_REQUEST } );
 
         taskTemplateService.getAll()
             .then(
-                tasktemplates => dispatch(success(tasktemplates)),
-                error => dispatch(failure(error.toString()))
+                res => dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_SUCCESS, payload: res.data }),
+                error => dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_FAILURE})
             );
     };
-
-    function request() { return { type: taskTemplateConstants.GETALL_TEMPLATE_REQUEST } }
-    function success(tasktemplates) { return { type: taskTemplateConstants.GETALL_TEMPLATE_SUCCESS, tasktemplates } }
-    function failure(error) { return { type: taskTemplateConstants.GETALL_TEMPLATE_FAILURE, error } }
 }
 
 // Get all task template by role
 function getAllTaskTemplateByRole(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYROLE_REQUEST, id });
 
         taskTemplateService.getAllTaskTemplateByRole(id)
             .then(
-                tasktemplates => dispatch(success(tasktemplates)),
-                error => dispatch(failure(error.toString()))
+                res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYROLE_SUCCESS, payload: res.data }),
+                error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYROLE_FAILURE})
             );
     };
-
-    function request(id) { return { type: taskTemplateConstants.GETTEMPLATE_BYROLE_REQUEST, id } }
-    function success(tasktemplates) { return { type: taskTemplateConstants.GETTEMPLATE_BYROLE_SUCCESS, tasktemplates } }
-    function failure(error) { return { type: taskTemplateConstants.GETTEMPLATE_BYROLE_FAILURE, error } }
 }
 
 // Get all task template by user
 function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_REQUEST});
 
-        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
-            .then(
-                tasktemplates => dispatch(success(tasktemplates)),
-                error => dispatch(failure(error.toString()))
-            );
+        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name).then(
+            res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS, payload: res.data}),
+            error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_FAILURE})
+        );
     };
-
-    function request() { return { type: taskTemplateConstants.GETTEMPLATE_BYUSER_REQUEST} }
-    function success(tasktemplates) { return { type: taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS, tasktemplates } }
-    function failure(error) { return { type: taskTemplateConstants.GETTEMPLATE_BYUSER_FAILURE, error } }
 }
 
 // Get task template by id
@@ -68,7 +55,7 @@ function getTaskTemplateById(id) {
         dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_REQUEST});
 
         taskTemplateService.getById(id).then(
-            res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS, payload: res }),
+            res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS, payload: res.data }),
             error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_FAILURE})
         );
     };
@@ -77,22 +64,13 @@ function getTaskTemplateById(id) {
 // Add a new target of unit
 function addTaskTemplate(taskTemplate) {
     return dispatch => {
-        dispatch(request(taskTemplate));
+        dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_REQUEST } );
 
-        taskTemplateService.addNewTaskTemplate(taskTemplate)
-            .then(
-                taskTemplate => { 
-                    dispatch(success(taskTemplate));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
+        taskTemplateService.addNewTaskTemplate(taskTemplate).then(
+            res => dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_SUCCESS, payload: res.data }),
+            error =>  dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE})
+        );
     };
-
-    function request(taskTemplate) { return { type: taskTemplateConstants.ADDNEW_TEMPLATE_REQUEST, taskTemplate } }
-    function success(taskTemplate) { return { type: taskTemplateConstants.ADDNEW_TEMPLATE_SUCCESS, taskTemplate } }
-    function failure(error) { return { type: taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE, error } }
 }
 
 // Edit a task template
@@ -101,12 +79,8 @@ function editTaskTemplate(id, taskTemplate) {
         dispatch({type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST});
 
         taskTemplateService.editTaskTemplate(id, taskTemplate).then(
-            res => { 
-                dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, payload: res });
-            },
-            error => {
-                dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE });
-            }
+            res => dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, payload: res.data}),
+            error => dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE })
         );
     };
 }
@@ -114,16 +88,11 @@ function editTaskTemplate(id, taskTemplate) {
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_REQUEST});
 
-        taskTemplateService.deleteTaskTemplateById(id)
-            .then(
-                taskTemplate => dispatch(success(id)),
-                error => dispatch(failure(id, error.toString()))
-            );
+        taskTemplateService.deleteTaskTemplateById(id).then(
+            res => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: id }),
+            error => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_FAILURE})
+        );
     };
-
-    function request(id) { return { type: taskTemplateConstants.DELETE_TEMPLATE_REQUEST, id } }
-    function success(id) { return { type: taskTemplateConstants.DELETE_TEMPLATE_SUCCESS, id } }
-    function failure(id, error) { return { type: taskTemplateConstants.DELETE_TEMPLATE_FAILURE, id, error } }
 }

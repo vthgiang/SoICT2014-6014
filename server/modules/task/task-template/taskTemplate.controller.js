@@ -46,14 +46,20 @@ exports.searchTaskTemplates = async (req, res) => {
         var noResultsPerPage = Number(req.body.noResultsPerPage);
         var data = await TaskTemplateService.searchTaskTemplates(req.body.id, pageNumber, noResultsPerPage, req.body.arrayUnit, req.body.name);
         LogInfo(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
-        res.status(200).json(data);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_template_by_user_success'],
+            content: data
+        });
+        console.log(data)
     } catch (error) {
         LogError(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['get_task_template_by_user_faile'],
+            content: error
         });
     }
-
 }
 
 // Tạo một mẫu công việc
@@ -61,10 +67,18 @@ exports.createTaskTemplate = async (req, res) => {
     try {
         var data = await TaskTemplateService.createTaskTemplate(req.body);
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
-        res.status(200).json(data);
+        res.status(200).json({
+            success: true,
+            messages: ['create_task_template_sucess'],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: ['create_task_template_faile'],
+            content: error
+        });
     }
 }
 
