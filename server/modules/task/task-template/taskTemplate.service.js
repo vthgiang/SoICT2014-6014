@@ -72,7 +72,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             resourceType: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        return {taskTemplates : tasktemplates, pageTotal: totalPages};
+        return {taskTemplates : tasktemplates.map(item => item.resourceId), pageTotal: totalPages};
 }
 
 //Tạo mẫu công việc

@@ -51,7 +51,6 @@ exports.searchTaskTemplates = async (req, res) => {
             messages: ['get_task_template_by_user_success'],
             content: data
         });
-        console.log(data)
     } catch (error) {
         LogError(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
         res.status(400).json({

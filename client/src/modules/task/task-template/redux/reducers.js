@@ -126,7 +126,7 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 items: state.items.map(template =>
-                    template.resourceId._id === action.payload.content._id
+                    template._id === action.payload.content._id
                         ? action.payload.content
                         : template
                 ),
@@ -145,7 +145,7 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 items: state.items.map(template =>
-                    template.resourceId._id === action.id
+                    template._id === action.id
                         ? { ...template, deleting: true }
                         : template
                 ),
@@ -154,7 +154,7 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.DELETE_TEMPLATE_SUCCESS:
             return {
                 ...state,
-                items: state.items.filter(template => template.resourceId._id !== action.payload.id),
+                items: state.items.filter(template => template._id !== action.payload.id),
                 isLoading: false
             };
         case taskTemplateConstants.DELETE_TEMPLATE_FAILURE:
