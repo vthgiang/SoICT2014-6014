@@ -51,16 +51,44 @@ class ModalViewTaskTemplate extends Component {
                             <div className="col-sm-6" >
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
-                                        Thông tin
+                                        Thông tin chung
+                                    </div>
+                                    <div className="box-body">
+
+                                        <dt>{translate('task_template.unit')}</dt>
+                                        <dd>{taskTemplate && taskTemplate.info.organizationalUnit.name}</dd>
+
+                                        <dt>{translate('task_template.description')}</dt>
+                                        <dd>{taskTemplate && taskTemplate.info.description}</dd>
+
+                                        <dt>{translate('task_template.formula')}</dt>
+                                        <dd>{taskTemplate && taskTemplate.info.formula}</dd>
+                                        
+                                        <dt>Tham số</dt>
+                                        <dd>
+                                            <span>D: Tổng số ngày thực hiện công việc (trừ CN)</span><br />
+                                            <span>D0: Số ngày quá hạn</span><br />
+                                            <span>A: Tổng số hoạt động</span><br />
+                                            <span>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</span><br />
+                                        </dd>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-sm-6" >
+                                <div className="box box-solid description">
+                                    <div className="box-header with-border">
+                                        Các vai trò
                                     </div>
                                     <div className="box-body">
                                         <dl>
-                                            <dt>{translate('task_template.unit')}</dt>
-                                            <dd>{taskTemplate && taskTemplate.info.organizationalUnit.name}</dd>
-
                                             <dt>{translate('task_template.permission_view')}</dt>
                                             <dd>
-                                                {taskTemplate && <span>{taskTemplate.info.readByEmployees[1]}</span>}
+                                                 <ul>
+                                                    {taskTemplate && taskTemplate.info.readByEmployees.map((item, index) => {
+                                                        return <li key={index}>{item.name}</li>
+                                                    })}
+                                                </ul>
                                             </dd>
 
                                             {taskTemplate && taskTemplate.info.responsibleEmployees.length > 0 &&
@@ -115,29 +143,6 @@ class ModalViewTaskTemplate extends Component {
                                                 </React.Fragment>
                                             }
                                         </dl>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-sm-6" >
-                                <div className="box box-solid description">
-                                    <div className="box-header with-border">
-                                        Công thức đánh giá
-                                    </div>
-                                    <div className="box-body">
-                                        <dt>{translate('task_template.description')}</dt>
-                                        <dd>{taskTemplate && taskTemplate.info.description}</dd>
-
-                                        <dt>{translate('task_template.formula')}</dt>
-                                        <dd>{taskTemplate && taskTemplate.info.formula}</dd>
-                                        
-                                        <dt>Tham số</dt>
-                                        <dd>
-                                            <span>D: Tổng số ngày thực hiện công việc (trừ CN)</span><br />
-                                            <span>D0: Số ngày quá hạn</span><br />
-                                            <span>A: Tổng số hoạt động</span><br />
-                                            <span>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</span><br />
-                                        </dd>
                                     </div>
                                 </div>
                             </div>
