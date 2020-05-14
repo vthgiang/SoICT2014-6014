@@ -148,8 +148,9 @@ exports.auth = this.authFunc();
 
 /**
  * Middleware check và lấy dữ liệu về file mà client người đến
- * name - tên của thuộc tính lưu dữ liệu file trong data mà client gửi lên
- * path đường dẫn đến thư mục muốn lưu file
+ * @arrData : mảng các đối tượng chứa name - tên của thuộc tính lưu dữ liệu file
+ * trong data mà client gửi lên, path - đường dẫn đến thư mục muốn lưu file
+ * @type: kiểu upload file (single, array, fields)
  */
 exports.uploadFile = (arrData, type) => {
     var name, arrFile;
