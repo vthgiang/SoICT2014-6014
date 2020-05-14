@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
+import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import Sortable from 'sortablejs';
 
 import {InformationTemplate} from '../component/informationsTemplate';
 import {ActionTemplate} from '../component/actionsTemplate';
 
-import {SelectBox, ErrorLabel} from '../../../../common-components';
+import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 
 class ModalAddTaskTemplate extends Component {
@@ -263,7 +263,7 @@ class ModalAddTaskTemplate extends Component {
     render() {
         var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
         const { newTemplate, submitted, action, information } = this.state;
-        const { department, user } = this.props;
+        const { department, user, translate } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
         
@@ -284,206 +284,195 @@ class ModalAddTaskTemplate extends Component {
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
+
         return (
-            <div className="modal modal-full fade" id="addTaskTemplate" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                        {/* Modal Header */}
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal">
-                                <span aria-hidden="true">×</span>
-                                <span className="sr-only">Close</span>
-                            </button>
-                            <h3 className="modal-title" id="myModalLabel">Thêm mẫu công việc</h3>
-                        </div>
-                        {/* Modal Body */}
-                        <div className="modal-body" >
-                            <form className="form-horizontal">
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className={'form-group has-feedback' + (submitted && newTemplate.organizationalUnit==="" ? ' has-error' : '')}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
-                                            <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
-                                                    <SelectBox
-                                                        id={`unit-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={
-                                                            departmentsThatUserIsDean.map(x => {
-                                                                return {value: x._id, text: x.name};
-                                                            })
-                                                        }
-                                                        onChange={this.handleTaskTemplateUnit}
-                                                        multiple={false}
-                                                        value={currentUnit._id}
-                                                    />
+            <React.Fragment>
+                <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/>
+                <DialogModal
+                    modalID="modal-add-task-template" isLoading={user.isLoading}
+                    formID="form-add-task-template"
+                    title={"Thêm mẫu công việc"}
+                    func={this.handleSubmit}
+                    disableSubmit={!this.isTaskTemplateFormValidated()}
+                    size={100}
+                >
+                    <form className="form-horizontal">
+                        <div className="row">
+                            <div className="col-sm-6">
+                                <div className={'form-group has-feedback' + (submitted && newTemplate.organizationalUnit==="" ? ' has-error' : '')}>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
+                                    <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                        {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
+                                            <SelectBox
+                                                id={`unit-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={
+                                                    departmentsThatUserIsDean.map(x => {
+                                                        return {value: x._id, text: x.name};
+                                                    })
                                                 }
-                                                <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
-                                            </div>
-                                            {submitted && newTemplate.organizationalUnit === "" &&
-                                                <div className="col-sm-4 help-block">Hãy chọn đơn vị quản lý mẫu</div>
-                                            }
-                                        </div>
-                                        <div className={'form-group has-feedback' + (submitted && !newTemplate.name ? ' has-error' : '')}>
-                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
-                                            <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
-                                                <ErrorLabel content={this.state.newTemplate.errorOnName}/>
-                                            </div>
-                                        </div>
-                                        <div className={'form-group has-feedback' + (submitted && newTemplate.readByEmployees === [] ? ' has-error' : '')}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
-                                            <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                {listRole &&
-                                                    <SelectBox
-                                                        id={`read-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={[
-                                                            {value: listRole.dean._id, text: listRole.dean.name},
-                                                            {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                                            {value: listRole.employee._id, text: listRole.employee.name},
-                                                        ]}
-                                                        onChange={this.handleTaskTemplateRead}
-                                                        multiple={true}
-                                                        options={{placeholder: "Chọn người được phép xem mẫu"}}
-                                                    />
-                                                }
-                                                <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
-                                            </div>
-                                            {submitted && newTemplate.readByEmployees === "" &&
-                                                <div className="col-sm-4 help-block">Hãy phân quyền những người được xem mẫu này</div>
-                                            }
-                                        </div>
-                                        <div className='form-group has-feedback'>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {userdepartments &&
-                                                    <SelectBox
-                                                        id={`responsible-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={[
-                                                            {
-                                                                text: userdepartments[1].roleId.name,
-                                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                            },
-                                                            {
-                                                                text: userdepartments[2].roleId.name,
-                                                                value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                                            },
-                                                        ]}
-                                                        onChange={this.handleTaskTemplateResponsible}
-                                                        multiple={true}
-                                                        options={{placeholder: "Chọn người thực hiện"}}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className='form-group has-feedback'>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {userdepartments &&
-                                                    <SelectBox
-                                                        id={`accounatable-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={[
-                                                            {
-                                                                text: userdepartments[0].roleId.name,
-                                                                value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                                            },
-                                                            {
-                                                                text: userdepartments[1].roleId.name,
-                                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                            },
-                                                        ]}
-                                                        onChange={this.handleTaskTemplateAccountable}
-                                                        multiple={true}
-                                                        options={{placeholder: "Chọn người phê duyệt"}}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className='form-group has-feedback'>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {usercompanys &&
-                                                    <SelectBox
-                                                        id={`consulted-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={
-                                                            usercompanys.map(x => {
-                                                                return {value: x._id, text: x.name};
-                                                            })
-                                                        }
-                                                        onChange={this.handleTaskTemplateConsult}
-                                                        multiple={true}
-                                                        options={{placeholder: "Chọn người hỗ trợ"}}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className='form-group has-feedback'>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {usercompanys &&
-                                                    <SelectBox
-                                                        id={`informed-select-box`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items={
-                                                            usercompanys.map(x => {
-                                                                return {value: x._id, text: x.name};
-                                                            })
-                                                        }
-                                                        onChange={this.handleTaskTemplateInform}
-                                                        multiple={true}
-                                                        options={{placeholder: "Chọn người quan sát"}}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                        <ActionTemplate  taskAction ={taskActions} handleAction={this.handleAction} />
+                                                onChange={this.handleTaskTemplateUnit}
+                                                multiple={false}
+                                                value={currentUnit._id}
+                                            />
+                                        }
+                                        <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
                                     </div>
-                                    <div className="col-sm-6">
-                                        <div className={'form-group has-feedback' + (submitted && !newTemplate.description ? ' has-error' : '')}>
-                                            <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
-                                            <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                                                <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
-                                            </div>
-                                        </div>
-                                        <div className={'form-group has-feedback' + (submitted && !newTemplate.formula ? ' has-error' : '')}>
-                                            <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
-                                            <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                                <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
-                                            </div>
-                                            
-                                            <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
-                                        </div>
-                                    <InformationTemplate informationsTemplate ={taskInformations} handleInformation={this.handleInformation}/>
-
-
-                                        
+                                    {submitted && newTemplate.organizationalUnit === "" &&
+                                        <div className="col-sm-4 help-block">Hãy chọn đơn vị quản lý mẫu</div>
+                                    }
+                                </div>
+                                <div className={'form-group has-feedback' + (submitted && !newTemplate.name ? ' has-error' : '')}>
+                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
+                                    <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                        <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
+                                        <ErrorLabel content={this.state.newTemplate.errorOnName}/>
                                     </div>
                                 </div>
-                            </form>
+                                <div className={'form-group has-feedback' + (submitted && newTemplate.readByEmployees === [] ? ' has-error' : '')}>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
+                                    <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                        {listRole &&
+                                            <SelectBox
+                                                id={`read-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={[
+                                                    {value: listRole.dean._id, text: listRole.dean.name},
+                                                    {value: listRole.viceDean._id, text: listRole.viceDean.name},
+                                                    {value: listRole.employee._id, text: listRole.employee.name},
+                                                ]}
+                                                onChange={this.handleTaskTemplateRead}
+                                                multiple={true}
+                                                options={{placeholder: "Chọn người được phép xem mẫu"}}
+                                            />
+                                        }
+                                        <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
+                                    </div>
+                                    {submitted && newTemplate.readByEmployees === "" &&
+                                        <div className="col-sm-4 help-block">Hãy phân quyền những người được xem mẫu này</div>
+                                    }
+                                </div>
+                                <div className='form-group has-feedback'>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
+                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                        {userdepartments &&
+                                            <SelectBox
+                                                id={`responsible-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={[
+                                                    {
+                                                        text: userdepartments[1].roleId.name,
+                                                        value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                                    },
+                                                    {
+                                                        text: userdepartments[2].roleId.name,
+                                                        value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
+                                                    },
+                                                ]}
+                                                onChange={this.handleTaskTemplateResponsible}
+                                                multiple={true}
+                                                options={{placeholder: "Chọn người thực hiện"}}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                                <div className='form-group has-feedback'>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
+                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                        {userdepartments &&
+                                            <SelectBox
+                                                id={`accounatable-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={[
+                                                    {
+                                                        text: userdepartments[0].roleId.name,
+                                                        value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
+                                                    },
+                                                    {
+                                                        text: userdepartments[1].roleId.name,
+                                                        value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                                    },
+                                                ]}
+                                                onChange={this.handleTaskTemplateAccountable}
+                                                multiple={true}
+                                                options={{placeholder: "Chọn người phê duyệt"}}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                                <div className='form-group has-feedback'>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
+                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                        {usercompanys &&
+                                            <SelectBox
+                                                id={`consulted-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={
+                                                    usercompanys.map(x => {
+                                                        return {value: x._id, text: x.name};
+                                                    })
+                                                }
+                                                onChange={this.handleTaskTemplateConsult}
+                                                multiple={true}
+                                                options={{placeholder: "Chọn người hỗ trợ"}}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                                <div className='form-group has-feedback'>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
+                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                        {usercompanys &&
+                                            <SelectBox
+                                                id={`informed-select-box`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items={
+                                                    usercompanys.map(x => {
+                                                        return {value: x._id, text: x.name};
+                                                    })
+                                                }
+                                                onChange={this.handleTaskTemplateInform}
+                                                multiple={true}
+                                                options={{placeholder: "Chọn người quan sát"}}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                                <ActionTemplate  taskAction ={taskActions} handleAction={this.handleAction} />
+                            </div>
+                            <div className="col-sm-6">
+                                <div className={'form-group has-feedback' + (submitted && !newTemplate.description ? ' has-error' : '')}>
+                                    <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
+                                    <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                        <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                        <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
+                                    </div>
+                                </div>
+                                <div className={'form-group has-feedback' + (submitted && !newTemplate.formula ? ' has-error' : '')}>
+                                    <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
+                                    <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                        <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                        <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
+                                    </div>
+                                    
+                                    <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
+                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
+                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
+                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
+                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
+                                </div>
+                            <InformationTemplate informationsTemplate ={taskInformations} handleInformation={this.handleInformation}/>
+                            </div>
                         </div>
-                        <div className="modal-footer">
-                            <button className="btn btn-success" disabled={!this.isTaskTemplateFormValidated()} onClick={this.handleSubmit}>Lưu</button>
-                        </div>
-                        {/* Modal Footer */}
-                    </div>
-                </div>
-            </div >
+                    </form>
+                </DialogModal>
+            </React.Fragment>
         );
     }
 }
@@ -503,5 +492,5 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
 };
-const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(ModalAddTaskTemplate);
+const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalAddTaskTemplate));
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };
