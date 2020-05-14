@@ -12,6 +12,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
+import { DialogModal, DatePicker } from '../../../../common-components';
 
 
 class ModalAddTask extends Component {
@@ -69,7 +70,7 @@ class ModalAddTask extends Component {
         let selectInformed = this.refs.informedEmployees;
         let informedEmployees = [].filter.call(selectInformed.options, o => o.selected).map(o => o.value);
         let selectKPI = this.refs.kpi;
-        let kpi = [].filter.call(selectKPI.options, o => o.selected).map(o => o.value);
+        // let kpi = [].filter.call(selectKPI.options, o => o.selected).map(o => o.value);
         const token = getStorage();
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var idUser = verified._id;
@@ -92,14 +93,14 @@ class ModalAddTask extends Component {
                     creator: idUser,
                     name: this.name.value,
                     description: this.description.value,
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value,
+                    startDate: this.startDate,
+                    endDate: this.endDate,
                     priority: this.priority.value,
                     unit: this.unit.value,
                     taskTemplate: (ckTemplate && this.taskTemplate.value !== "") ? this.taskTemplate.value : null,
                     role: localStorage.getItem("currentRole"),
                     parent: this.parent.value !== "" ? this.parent.value : null,
-                    kpi: kpi,
+                    // kpi: kpi,
                     responsibleEmployees: responsibleEmployees,
                     accountableEmployees: accountableEmployees,
                     consultedEmployees: consultedEmployees,
@@ -112,15 +113,16 @@ class ModalAddTask extends Component {
 
     // submit new task in data
     handleOnSubmit = async (event) => {
-        event.preventDefault();
+        console.log("event: "+event);
         await this.updateState();
         const { newTask } = this.state;
-        var startTime = this.startDate.value.split("-");
+        var startTime = this.startDate.split("-");
         var startDate = new Date(startTime[2], startTime[1] - 1, startTime[0]);
-        var endTime = this.endDate.value.split("-");
+        var endTime = this.endDate.split("-");
         var endDate = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-
-        if (newTask.name && newTask.description && newTask.startDate && newTask.endDate && newTask.priority) {
+        console.log("Chay den day");
+        var check = false;
+        if (newTask.name && newTask.description && newTask.startDate && newTask.endDate && newTask.priority && newTask.responsibleEmployees.length > 0 && newTask.accountableEmployees.length > 0) {
             if (Date.parse(startDate) < Date.now()) {
                 await this.setState(state => {
                     return {
@@ -190,9 +192,15 @@ class ModalAddTask extends Component {
             this.props.getAllKPIPersonalByUserID(responsibleEmployees);
         }
     }
+    handleOnChangeEndDate = (value) => {
+        this.endDate = value;
+    }
+    handleOnChangeStartDate = (value) => {
+        this.startDate = value;
+    }
     render() {
         var units, currentUnit, userdepartments, listTaskTemplate, currentTemplate, listKPIPersonal;
-        const { newTask, submitted } = this.state;
+        const { newTask, submitted , endD, startD } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
             listTaskTemplate = tasktemplates.items; // listTaskTemplate = tasktemplates.items;
@@ -209,17 +217,27 @@ class ModalAddTask extends Component {
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
         return (
-            <div className="modal modal-full fade" id={`addNewTask${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                        <div className="modal-header">
+            <React.Fragment>
+                <DialogModal
+                    size='100' modalID={`addNewTask${this.props.id}`} isLoading={false}
+                    formID="add-new-task"
+                    resetOnSave= {false}
+                    resetOnClose = {false}
+                    reset={false}
+                    func={this.handleOnSubmit.bind(this)}
+                    title="Thêm công việc mới"
+                >
+            {/* <div className="modal modal-full fade" id={`addNewTask${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> */}
+                {/* <div className="modal-dialog-full"> */}
+                    {/* <div className="modal-content"> */}
+                        {/* <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal">
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
                             <h3 className="modal-title" id="myModalLabel"><b>Thêm công việc mới</b></h3>
-                        </div>
-                        <div className="modal-body" >
+                        </div> */}
+                        {/* <div className="modal-body" > */}
                             <form className="form-horizontal">
                                 <div className="col-sm-12">
                                     <fieldset className="scheduler-border">
@@ -245,12 +263,18 @@ class ModalAddTask extends Component {
                                         <div className={'form-group has-feedback' + (submitted && (!newTask.startDate || !newTask.endDate || this.state.checkEndDate !== "" || this.state.checkStartDate !== "") ? ' has-error' : '')}>
                                             <div className="col-sm-6">
                                                 <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày bắt đầu*:</label>
-                                                <div className={'input-group date has-feedback col-sm-10'} style={{ width: '100%' }}>
+                                                {/* <div className={'input-group date has-feedback col-sm-10'} style={{ width: '100%' }}>
                                                     <div className="input-group-addon">
                                                         <i className="fa fa-calendar" />
                                                     </div>
                                                     <input type="text" className="form-control" autoComplete="off" ref={input => this.startDate = input} name="time" id="datepicker1" data-date-format="dd-mm-yyyy" />
-                                                </div>
+                                                </div> */}
+                                                <DatePicker 
+                                                    id="datepicker1"
+                                                    dateFormat="day-month-year"
+                                                    value={startD}
+                                                    onChange={this.handleOnChangeStartDate}
+                                                />
                                                 {submitted && !newTask.startDate &&
                                                     <div className="col-sm-4 help-block">Hãy chọn thời gian bắt đầu</div>
                                                 }
@@ -260,12 +284,18 @@ class ModalAddTask extends Component {
                                             </div>
                                             <div className="col-sm-6">
                                                 <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày kết thúc*:</label>
-                                                <div className={'input-group date has-feedback col-sm-10'} style={{ width: '100%' }}>
+                                                {/* <div className={'input-group date has-feedback col-sm-10'} style={{ width: '100%' }}>
                                                     <div className="input-group-addon">
                                                         <i className="fa fa-calendar" />
                                                     </div>
                                                     <input type="text" className="form-control" autoComplete="off" ref={input => this.endDate = input} name="time" id="datepicker3" data-date-format="dd-mm-yyyy" />
-                                                </div>
+                                                </div> */}
+                                                <DatePicker 
+                                                    id="datepicker3"
+                                                    dateFormat="day-month-year"
+                                                    value={endD}
+                                                    onChange={this.handleOnChangeEndDate}
+                                                />
                                                 {submitted && !newTask.endDate &&
                                                     <div className="col-sm-4 help-block">Hãy chọn thời gian kết thúc</div>
                                                 }
@@ -457,7 +487,7 @@ class ModalAddTask extends Component {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div className={'form-group has-feedback' + (submitted && newTask.kpi.length === 0 ? ' has-error' : '')}>
+                                        {/* <div className={'form-group has-feedback' + (submitted && newTask.kpi.length === 0 ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '20%', textAlign: 'left', marginTop: "-7px" }}>KPI mục tiêu*</label>
                                             <a style={{ color: "navy" }} href="#abc" onClick={() => this.handleGetTarget()} title="Lấy tất cả mục tiêu KPI cá nhân của người thực hiện" ><i style={{ fontSize: "19px" }} className="material-icons">refresh</i></a>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
@@ -476,19 +506,21 @@ class ModalAddTask extends Component {
                                             {submitted && newTask.kpi.length === 0 &&
                                                 <div className="col-sm-4 help-block">Hãy chọn kpi mục tiêu</div>
                                             }
-                                        </div>
+                                        </div> */}
                                     </fieldset>
                                 </div>
 
                             </form>
-                        </div>
-                        <div className="modal-footer">
+                        {/* </div> */}
+                        {/* <div className="modal-footer">
                             <button onClick={this.handleOnSubmit} className="btn btn-success">Lưu</button>
                             <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={this.handleCancel}>Xóa trắng</button>
-                        </div>
-                    </div>
-                </div>
-            </div >
+                        </div> */}
+                    {/* </div> */}
+                {/* </div> */}
+            
+            </DialogModal>
+        </React.Fragment>
         );
     }
 }
