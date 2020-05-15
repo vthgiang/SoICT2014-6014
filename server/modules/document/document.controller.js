@@ -1,42 +1,54 @@
 const DocumentServices = require('./document.service');
-const { Logger } = require('../../logs');
+const { LogInfo, LogError } = require('../../logs');
 
-exports.get = async (req, res) => {
+exports.getDocumentTypes = async (req, res) => {
     try {
-        const documents = await DocumentServices.get(req.user.company._id);
-
-        //isLog && Logger.info("[GET_DOCUMENTS"+req.user.email);
-        res.status(200).json(documents);
+        const types = await DocumentServices.getDocumentTypes(req.user.company._id);
         
+        await LogInfo(req.user.email, 'GET_DOCUMENT_TYPES', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_document_types_success'],
+            content: types
+        });
     } catch (error) {
-
-        //isLog && Logger.error("[GET_DOCUMENTS]"+req.user.email);
-        res.status(400).json(error);
+        
+        await LogError(req.user.email, 'GET_DOCUMENT_TYPES', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_document_types_faile'],
+            content: error
+        });
     }
-
 };
 
-exports.create = async (req, res) => {
+exports.createDocumentType = async (req, res) => {
     try {
-        const document = await DocumentServices.create(req.user.company._id, req.body);
-
-        //isLog && Logger.info("[CREAT_DOCUMENT]"+req.user.email);
-        res.status(200).json(document);
+        const type = await DocumentServices.createDocumentType(req.user.company._id, req.body);
+        
+        await LogInfo(req.user.email, 'CREATE_DOCUMENT_TYPE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['create_document_type_success'],
+            content: type
+        });
     } catch (error) {
-
-        //isLog && Logger.error("[CREATE_DOCUMENT]"+req.user.email);
-        res.status(400).json(error);
+        
+        await LogError(req.user.email, 'CREATE_DOCUMENT_TYPE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_document_type_faile'],
+            content: error
+        });
     }
 };
 
-exports.show = (req, res) => {
-    //code here
+exports.showDocumentType = (req, res) => {
+
 };
 
-exports.edit = (req, res) => {
-    //code here
+exports.editDocumentType = (req, res) => {
 };
 
-exports.delete = (req, res) => {
-    //code here
+exports.deleteDocumentType = (req, res) => {
 };

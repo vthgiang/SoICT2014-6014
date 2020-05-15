@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import ManageDocument from './manageDocument';
-import ManageDocumentType from './manageDocumentType';
-import ManageReport from './manageReport';
-import SearchDocument from './searchDocument';
-import HistoryStatistics from './historyStatistics';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import DocumentTypes from './administration/types';
+import DocumentCategories from './administration/categories';
 
-class ManageFormDocument extends Component {
+class Document extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
@@ -14,27 +13,19 @@ class ManageFormDocument extends Component {
         return ( 
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#tab_1" data-toggle="tab">Quản lý văn bản</a></li>
-                    <li className=""><a href="#tab_2" data-toggle="tab">Quản lý loại văn bản</a></li>
-                    <li className=""><a href="#tab_3" data-toggle="tab">Quản lý thống kê báo cáo</a></li>
-                    <li className=""><a href="#tab_4" data-toggle="tab">Tìm văn bản tài liệu</a></li>
-                    <li className=""><a href="#tab_5" data-toggle="tab">Lịch sử và thống kê</a></li>
+                    <li className="active"><a href="#administration-document-types" data-toggle="tab">Loại văn bản</a></li>
+                    <li><a href="#administration-document-categories" data-toggle="tab">Danh mục văn bản</a></li>
+                    <li><a href="#administration-documents" data-toggle="tab">Bảng dữ liệu</a></li>
+                    <li><a href="#administration-statistics-report" data-toggle="tab">Thống kê báo cáo</a></li>
+                    <li><a href="#user-documents" data-toggle="tab">Bảng dữ liệu (của user)</a></li>
+                    <li><a href="#user-history-statistics" data-toggle="tab">Lịch sử và thống kê</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="tab_1">
-                        <ManageDocument/>
+                    <div className="tab-pane active" id="administration-document-types">
+                        <DocumentTypes/>
                     </div>
-                    <div className="tab-pane" id="tab_2">
-                        <ManageDocumentType/>
-                    </div>
-                    <div className="tab-pane" id="tab_3">
-                        <ManageReport/>
-                    </div>
-                    <div className="tab-pane" id="tab_4">
-                        <SearchDocument/>
-                    </div>
-                    <div className="tab-pane" id="tab_5">
-                        <HistoryStatistics/>
+                    <div className="tab-pane" id="administration-document-categories">
+                        <DocumentCategories/>
                     </div>
                 </div>
             </div>
@@ -42,4 +33,7 @@ class ManageFormDocument extends Component {
     }
 }
  
-export default ManageFormDocument;
+ 
+const mapStateToProps = state => state;
+
+export default connect( mapStateToProps, null )( withTranslate(Document) );

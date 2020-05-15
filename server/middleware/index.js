@@ -148,19 +148,19 @@ exports.auth = this.authFunc();
 
 /**
  * Middleware check và lấy dữ liệu về file mà client người đến
- * name - tên của thuộc tính lưu dữ liệu file trong data mà client gửi lên
- * path đường dẫn đến thư mục muốn lưu file
+ * Với multiple = false thì data sẽ là một object theo dạng {name, path, any=true?false}
+ * Với multiple = true thì data sẽ là một mảng các object với mỗi object có định dạng là {name, path}
  */
-exports.uploadFile = (name, path, multiple=false) => {
-    var dir = `./upload${path}`;
-    
+exports.uploadFile = (data, multiple=false) => {
+    var dir = `./upload${data.path}`;
+
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
 
     const getFile = multer({ storage: multer.diskStorage({
             destination: function (req, file, cb) {
-                cb(null, `./upload`+path);
+                cb(null, `./upload`+data.path);
             },
             filename: function (req, file, cb) {
                 var fileName = `${Date.now()}${req.user._id}`;
@@ -170,6 +170,5 @@ exports.uploadFile = (name, path, multiple=false) => {
         }) 
     });
 
-    return !multiple ? getFile.single(name) : getFile.array(name, 10);
-
+    return !multiple ? getFile.single(data.name) : getFile.array(data.name, 10);
 }

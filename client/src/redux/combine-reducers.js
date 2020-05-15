@@ -19,7 +19,7 @@ import {discipline} from '../modules/human-resource/commendation-discipline/redu
 import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
 import {holiday} from '../modules/human-resource/holiday/redux/reducers';
 import {notifications} from '../modules/notification/redux/reducers';
-
+import {documents} from '../modules/document/redux/reducers';
 
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
@@ -54,6 +54,7 @@ const appReducer = combineReducers(Object.assign({
     department,
 
     //---------------------------
+    documents,
     notifications,
     auth,
     employeesInfo,

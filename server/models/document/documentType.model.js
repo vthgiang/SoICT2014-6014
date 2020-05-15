@@ -11,6 +11,10 @@ const DocumentTypeSchema = new Schema({
         type: String,
         required: true
     },
+    description: { //tên 
+        type: String,
+        required: true
+    },
     documents: [{ //chứa những document nào
         type: Schema.Types.ObjectId,
         ref: Document

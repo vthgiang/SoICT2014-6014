@@ -1,30 +1,15 @@
-const Document = require('../../models/document/document.model');
-const DocumentType = require('../../models/document/documentType.model');
+const {DocumentType} = require('../../models').schema;
 
-exports.get = async (company) => {
-    return await Document.find({ company });
-}
-
-exports.getById = async (company, _id) => {
-    return await Document.findOne({ _id, company })
-}
-
-exports.create = async(company, data) => {
-    return await Document.create({
-        company,
-        name: data.name,
-        description: data.description,
-        type: data.type,
-        category: data.category,
-        dataApply: data.dateApply,
-        version: data.version,
-        relationship: data.relationship,
-        storageLocation: data.storageLocation
-    });
+exports.getDocumentTypes = async (company) => {
+    return await DocumentType.find({ company });
 }
 
 exports.createDocumentType = async (company, data) => {
-
+    return await DocumentType.create({
+        company,
+        name: data.name,
+        description: data.description
+    });
 }
 
 exports.edit = async(id, data) => {
