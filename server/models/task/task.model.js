@@ -263,6 +263,10 @@ const TaskSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
+            rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+                type: Number,
+                default: -1
+            }
         }],
         comments: [{ // Comments của action
             creator: {
