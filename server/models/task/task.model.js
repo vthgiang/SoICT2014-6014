@@ -36,8 +36,8 @@ const TaskSchema = new Schema({
         type: Date,
         required: true
     },
-    priority: {
-        type: String,
+    priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
+        type: Number,
         required: true
     },
     isArchived: { // Lưu kho hay không. Task lưu kho sẽ mặc định ẩn đi cho gọn giao diện, vì số task có thể rất lớn. Khi cần xem lại, phải chọn filter phù hợp và search
@@ -45,7 +45,7 @@ const TaskSchema = new Schema({
         default: false,
         required: true
     },
-    status: {// có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+    status: { // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
         type: String,
         default: "Inprocess",
         required: true,
