@@ -227,12 +227,19 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findById(taskTemplateId);
             var taskActions = taskTemplate.taskActions;
-            taskActions.toObject();
-            taskActions.forEach(item => {
-                item.creator=creatorId
-                delete item._id
-            });
+            var cloneActions = [];
 
+            for (let i in taskActions) {
+                cloneActions[i] = {
+                    mandatory: taskActions[i].mandatory,
+                    name:  taskActions[i].name,
+                    description:  taskActions[i].description,
+                    creator: creatorId,
+                    // createdAt:  taskActions[i].createdAt,
+                    // updatedAt:  taskActions[i].updatedAt
+                }
+            }
+            console.log('clone', cloneActions);
         }
         console.log(taskActions)
         var evaluations = [{
@@ -252,7 +259,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             priority: priorityId,
             taskTemplate: taskTemplate ? taskTemplate : null,
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-            taskActions: taskTemplate?taskActions:[],
+            taskActions: taskTemplate?cloneActions:[],
             role: roleId,
             parent: parentId,
             level: level,
@@ -271,7 +278,6 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         
         task = await task.populate({path: "organizationalUnit creator parent"},
         )
-        console.log("HAHHAHA")
         return task;
 }
 

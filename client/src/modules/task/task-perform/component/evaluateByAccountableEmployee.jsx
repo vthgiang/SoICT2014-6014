@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components/index';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
@@ -129,8 +129,8 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks } = this.props;
-        const { date, progress, accountablePoint, myPoint, accountableContribution } = this.state;
-        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint } = this.state;
+        const { date, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
+        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint } = this.state;
         var task = (tasks && tasks.task)&& tasks.task.info;
 
         return (
@@ -172,7 +172,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 
                             </div>
                             
-                            {
+                            {/* {
                                 (task && task.taskInformations.length !== 0) &&
                                 task.taskInformations.map((info, index)=> 
                                     <div className={`form-group `}> 
@@ -185,9 +185,97 @@ class EvaluateByAccountableEmployee extends Component {
                                             // onChange={this.handleChangeProgress}
                                             // value={index}
                                         />
-                                        {/* <ErrorLabel content={errorOnProgress}/> */}
+                                        // <ErrorLabel content={errorOnProgress}/> 
                                     </div>
                                 )
+                            } */}
+                            {/* type: {
+                                type: String,
+                                required: true,
+                                enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+                            }, */}
+                            {
+                                (task && task.taskInformations.length !== 0) &&
+                                task.taskInformations.map((info, index)=> 
+                                {
+                                   
+                                
+                                    if (info.type === 'Text'){
+                                        return <div className={`form-group `}>
+                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
+                                            <input 
+                                                className="form-control"
+                                                type="text" 
+                                                name={info.code}
+                                                placeholder={85}
+                                                // onChange={this.handleChangeProgress}
+                                                // value={index}
+                                            />
+                                            {/* <ErrorLabel content={errorOnProgress}/> */}
+                                        </div>
+                                    } 
+                                     
+                                    {
+                                    if (info.type === 'Number') { 
+                                        return <div className={`form-group `}>
+                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
+                                            <input 
+                                                className="form-control"
+                                                type="number" 
+                                                name={info.code}
+                                                placeholder={85}
+                                                // onChange={this.handleChangeProgress}
+                                                // value={index}
+                                            />
+                                            {/* <ErrorLabel content={errorOnProgress}/> */}
+                                        </div>
+                                    }}
+                                    
+                                    {if (info.type === 'Date') {
+                                     return <div className={`form-group `}>
+                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
+                                            <DatePicker
+                                                id={`info_date_${index}`}
+                                                value={infoDate}
+                                                onChange={this.handleInfoDateChange}
+                                            />
+                                            <ErrorLabel content={errorOnInfoDate} />
+                                        </div>
+                                    }}
+                                    
+                                    {if(info.type === 'Boolean'){
+                                    return <div className={`form-group `}>
+                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
+                                            {
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id={`select-boolean-${index}`}
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {[{ value: true, text: 'Đúng' }, { value: false, text: 'Sai' } ]}
+                                                    onChange={this.handleInfoBooleanChange}
+                                                    // multiple={true}
+                                                    value={infoBoolean}
+                                                />
+                                            }
+                                        </div>
+                                    }}
+                                    
+                                    {if(info.type === 'SetOfValues') {
+                                    return <div className={`form-group `}>
+                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`select-set-of-value-${index}`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
+                                                onChange={this.handleSetOfValueChange}
+                                                multiple={true}
+                                                value={setOfValue}
+                                            />
+                                        </div>
+                                    }}
+                                    
+                                })
                             }
                         </fieldset>
                     </div>
@@ -231,7 +319,7 @@ class EvaluateByAccountableEmployee extends Component {
                             </fieldset>
                         }
                         
-                        <strong>Điểm tự động: &nbsp;<span id='autoPoint'></span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>
                         <br/>
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>

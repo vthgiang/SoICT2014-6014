@@ -16,11 +16,11 @@ class informationsTemplate extends Component{
     constructor(props){
         super(props);
         let INFO_TYPE = {
-            TEXT: "Văn bản",
-            NUMBER: "Số",
-            DATE: "Ngày tháng",
+            TEXT: "Text",
+            NUMBER: "Number",
+            DATE: "Date",
             BOOLEAN: "Boolean",
-            SET: "Tập giá trị",
+            SET: "SetOfValues",
         };
         let EMPTY_INFORMATION = {
             name: '',
@@ -288,11 +288,11 @@ render(){
                                                     <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
                                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                                                            <option value="Văn bản">Văn bản</option>
-                                                            <option value="Số">Số</option>
-                                                            <option value="Ngày tháng">Ngày tháng</option>
+                                                            <option value="Text">Văn bản</option>
+                                                            <option value="Number">Số</option>
+                                                            <option value="Date">Ngày tháng</option>
                                                             <option value="Boolean">Boolean</option>
-                                                            <option value="Tập giá trị">Tập giá trị</option>
+                                                            <option value="SetOfValues">Tập giá trị</option>
                                                         </select>
                                                     </div>
                                                 </div>
