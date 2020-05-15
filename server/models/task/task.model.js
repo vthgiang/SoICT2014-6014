@@ -267,6 +267,9 @@ const TaskSchema = new Schema({
                 type: Number,
                 enum:[0,1,2],
                 default: 0
+            rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+                type: Number,
+                default: -1
             }
         }],
         comments: [{ // Comments của action

@@ -2,53 +2,6 @@ const EmployeeService = require('./profile.service');
 const UserService = require('../../super-admin/user/user.service');
 const { LogInfo, LogError } = require('../../../logs');
 
-const multer = require('multer');
-
-/*********************************************
- *  upload file tài liệu đính kèm 
- ******************************************** */
-const multerStorageFile = multer.diskStorage({
-    destination: (req, file, cb) => {
-        switch (file.fieldname) {
-            case 'fileDegree':
-                cb(null, './upload/human-resource/degrees');
-                break;
-            case 'fileCertificate':
-                cb(null, './upload/human-resource/certificates');
-                break;
-            case 'fileContract':
-                cb(null, './upload/human-resource/contracts');
-                break;
-            case 'file':
-                cb(null, './upload/human-resource/files');
-                break;
-            case 'fileAvatar':
-                cb(null, './upload/human-resource/avatars');
-                break;
-            default:
-                break;
-        }
-    },
-    filename: (req, file, cb) => {
-        const fileName = file.originalname.toLowerCase().split(' ').join('-');
-        cb(null, Date.now() + '-' + fileName)
-    }
-});
-const uploadFile = multer({
-    storage: multerStorageFile,
-    fileFilter: (req, file, cb) => {
-        cb(null, true);
-    }
-});
-exports.uploadMultipleFile = uploadFile.fields([
-    { name: 'fileDegree', maxCount: 20 },
-    { name: 'fileCertificate', maxCount: 20 },
-    { name: 'fileContract', maxCount: 20 },
-    { name: 'file', maxCount: 20 },
-    { name: 'fileAvatar', maxCount: 1 },
-]);
-
-
 /**
  * Lấy thông tin cá nhân theo emailCompany
  */
@@ -113,8 +66,9 @@ exports.searchEmployeeProfiles = async (req, res) => {
 exports.createEmployee = async (req, res) => {
     try {
         let avatar = "";
+        console.log(req.files);
         if (req.files.fileAvatar !== undefined) {
-            avatar = `/${req.files.fileAvatar.path}`;
+            avatar = `/${req.files.fileAvatar[0].path}`;
         }
         let fileDegree = req.files.fileDegree,
             fileCertificate = req.files.fileCertificate,

@@ -3,22 +3,14 @@ const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').s
 
 //Lấy tất cả các mẫu công việc
 exports.getAllTaskTemplates = (req, res) => {
-    TaskTemplate.find()
-        .then(templates => res.status(200).json(templates))
-        .catch(err => res.status(400).json({ message: err }));
+    var taskTemplates = TaskTemplate.find()
+    return taskTemplates;
 }
 
 //Lấy mẫu công việc theo Id
-exports.getTaskTemplate = async (req, res) => {
-    try {
-        var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-        var nameRead = await Role.findById(tasktemplate.readByEmployees);
-        res.status(200).json({
-            "info": tasktemplate,
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+exports.getTaskTemplate = async (id) => {
+    var taskTemplate = TaskTemplate.findById(id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
+    return taskTemplate;
 }
 
 //Lấy mẫu công việc theo chức danh
@@ -79,7 +71,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             resourceType: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        return ({"message" : tasktemplates,"pages": totalPages});
+        return {taskTemplates : tasktemplates.map(item => item.resourceId), pageTotal: totalPages};
 }
 
 //Tạo mẫu công việc
@@ -113,20 +105,16 @@ exports.createTaskTemplate = async (body) => {
             }
         })
     });
-    // var reader = body.read; //role có quyền đọc
-    // var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
+
+    // TODO: Xử lý quyển với action
     var privilege = await Privilege.create({
         roleId: body.readByEmployees[0], //id của người cấp quyền xem
         resourceId: tasktemplate._id,
         resourceType: "TaskTemplate",
         action: body.readByEmployees //quyền READ
     });
-    var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
-
-    return ({
-        message: "Create Task Template Successfully!",
-        data: newTask
-    });
+    tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
+    return tasktemplate;
 }
 
 //Xóa mẫu công việc
@@ -137,38 +125,28 @@ exports.deleteTaskTemplate = async (id) => {
         resourceType: "TaskTemplate"
     });
     
-    return ("Delete success");
+    return {id: id};
 }
 
-/*
-// sửa mẫu công việc sửa 12.05
-*/
-exports.editTaskTemplate =async(data,id)=>{ 
-    var tasktemplate =await TaskTemplate.findByIdAndUpdate(id,
-     {
-         "$set" : 
-         { 
-             name : data.name,
-             description:data.description,
-             formula:data.formula,
-             accountableEmployees:data.accountableEmployees,
-             readByEmployees:data.readByEmployees,
-             informedEmployees:data.informedEmployees,
-             responsibleEmployees:data.responsibleEmployees,
-             consultedEmployees:data.consultedEmployees,
-             organizationalUnit:data.organizationalUnit._id,
-             taskActions:data.taskActions
-         }           
-     },
-     { "new": true, "upsert": true },
-     function (err, managerparent) {
-         if (err) throw err;
-         
-     }
-     );
+/**
+ * Sửa mẫu công việc
+ */
+exports.editTaskTemplate =async(data, id)=>{
+    var taskTemplate = await TaskTemplate.findByIdAndUpdate(id,
+        {$set: { 
+            name: data.name,
+            description: data.description,
+            formula: data.formula,
+            accountableEmployees: data.accountableEmployees,
+            readByEmployees: data.readByEmployees,
+            informedEmployees: data.informedEmployees,
+            responsibleEmployees: data.responsibleEmployees,
+            consultedEmployees: data.consultedEmployees,
+            organizationalUnit: data.organizationalUnit._id,
+            taskActions: data.taskActions
+        }},
+        { new: true},
+    ).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
   
- return ({
-     message: "Edit Task Template Successfully!",
-     data : tasktemplate
- });       
+    return taskTemplate;     
 }

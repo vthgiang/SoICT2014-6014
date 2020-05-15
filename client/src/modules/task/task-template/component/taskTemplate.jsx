@@ -254,22 +254,22 @@ class TaskTemplate extends Component {
                             {
                                 (typeof list !== 'undefined' && list.length !== 0) ?
                                     list.map(item =>
-                                        item.resourceId && <tr key={item.resourceId._id}>
-                                            <td title={item.resourceId.name}>{item.resourceId.name}</td>
-                                            <td title={item.resourceId.description}>{item.resourceId.description}</td>
-                                            <td title={item.resourceId.numberOfUse}>{item.resourceId.numberOfUse}</td>
-                                            <td title={item.resourceId.creator.name}>{item.resourceId.creator.name}</td>
-                                            <td title={item.resourceId.organizationalUnit.name}>{item.resourceId.organizationalUnit.name}</td>
+                                        <tr key={item._id}>
+                                            <td title={item.name}>{item.name}</td>
+                                            <td title={item.description}>{item.description}</td>
+                                            <td title={item.numberOfUse}>{item.numberOfUse}</td>
+                                            <td title={item.creator.name}>{item.creator.name}</td>
+                                            <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
                                             <td>
-                                                <a href="#abc" onClick={()=>this.handleView(item.resourceId._id)} title="Xem chi tiết mẫu công việc này">
+                                                <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
                                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                     <React.Fragment>
-                                                        <a onClick={()=>this.handleEdit(item.resourceId._id)} className="edit" title="Sửa mẫu công việc này">
+                                                        <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.numberOfUse)} className="delete" title="Xóa mẫu công việc này">
+                                                        <a onClick={()=>this.handleDelete(item._id, item.numberOfUse)} className="delete" title="Xóa mẫu công việc này">
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>
