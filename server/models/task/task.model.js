@@ -263,6 +263,11 @@ const TaskSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
+            status: {// 0 là đang chờ,1 là đã đạt, 2 là chưa đạt
+                type: Number,
+                enum:[0,1,2],
+                default: 0
+            }
         }],
         comments: [{ // Comments của action
             creator: {
