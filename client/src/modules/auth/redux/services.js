@@ -1,7 +1,6 @@
-import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { LOCAL_SERVER_API } from '../../../env';
 import { getStorage } from '../../../config';
-import jwt from 'jsonwebtoken';
-import { sendRequest, sendRequestPublic } from '../../../helpers/requestHelper';
+import { sendRequest } from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -18,7 +17,7 @@ export const AuthService = {
 };
 
 async function login(user) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user
@@ -40,9 +39,7 @@ function logoutAllAccount() {
 }
 
 function editProfile(data) {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
@@ -52,9 +49,7 @@ function editProfile(data) {
 }
 
 function changeInformation(data) {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
@@ -64,9 +59,7 @@ function changeInformation(data) {
 }
 
 function changePassword(data) {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
@@ -75,17 +68,15 @@ function changePassword(data) {
     }, true, true, 'auth');
 }
 
-async function getLinksOfRole(idRole) {
+function getLinksOfRole(idRole) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-links-that-role-can-access/${idRole}`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
-async function refresh() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function refresh() {
+    var id = getStorage("userId");
     
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-profile/${id}`,
@@ -94,7 +85,7 @@ async function refresh() {
 }
 
 function forgotPassword(email) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/forget-password`,
         method: 'POST',
         data: {
@@ -104,7 +95,7 @@ function forgotPassword(email) {
 }
 
 function resetPassword(otp, email, password) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
         data: {

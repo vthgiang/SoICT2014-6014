@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { DialogModal } from '../../../../../common-components';
+
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../../salary/redux/actions';
@@ -327,7 +330,7 @@ class EmployeeEditFrom extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: nextProps.employees[0].avatar,
+                img: LOCAL_SERVER_API + nextProps.employees[0].avatar,
                 avatar: "",
                 employee: nextProps.employees[0],
                 commendations: nextProps.commendations,

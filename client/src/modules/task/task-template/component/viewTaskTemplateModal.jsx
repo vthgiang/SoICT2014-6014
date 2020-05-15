@@ -8,236 +8,183 @@ class ModalViewTaskTemplate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tasktemplate: ""
         };
     }
-    componentDidMount() {
-        this.props.getTaskTemplate(this.props.id);
-        this.handleResizeColumn();
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.taskTemplateId !== prevState.taskTemplateId) {
+            return {
+                ...prevState,
+                taskTemplateId: nextProps.taskTemplateId,
+            } 
+        } else {
+            return null;
+        }
     }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
 
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
+            this.props.getTaskTemplate(nextProps.taskTemplateId);
+            return false;
+        }
+        return true;
     }
+
     render() {
-        var template;
-        const { tasktemplates } = this.props;
-        const { translate } = this.props;
-        if (tasktemplates.template) template = tasktemplates.template;
+        var taskTemplate = {};
+
+        const { tasktemplates, translate } = this.props;
+        if (tasktemplates.taskTemplate) taskTemplate = tasktemplates.taskTemplate;
+
         return (
             <React.Fragment>
                 <DialogModal
                     size='75' modalID="modal-view-tasktemplate" isLoading={false}
-                    formID={`viewTaskTemplate${this.props.id}`}
-                    title={template && template.info.name}
+                    formID="form-view-tasktemplate"
+                    title={taskTemplate && taskTemplate.name}
                     hasSaveButton={false}
                 >
 
                     {/* Modal Body */}
                     <form className="form-horizontal">
-                        <div className="row"  >
+                        <div className="row" >
                             <div className="col-sm-6" >
-                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "5px" }}>
-                                    <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-0px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.unit')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8" >
-                                            <div className='form-group' style={{ marginTop: "-0px" }}>
-                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.organizationalUnit.name}</p>
-                                            </div>
-                                        </div>
+                                <div className="box box-solid description">
+                                    <div className="box-header with-border">
+                                        Thông tin chung
                                     </div>
-                                    <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.permission_view')} </label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                {template &&
-                                                    <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                                                        {template.info.readByEmployees[1]}
-                                                    </p>}
-                                            </div>
-                                        </div>
+                                    <div className="box-body">
+
+                                        <dt>{translate('task_template.unit')}</dt>
+                                        <dd>{taskTemplate.organizationalUnit && taskTemplate.organizationalUnit.name}</dd>
+
+                                        <dt>{translate('task_template.description')}</dt>
+                                        <dd>{taskTemplate.description}</dd>
+
+                                        <dt>{translate('task_template.formula')}</dt>
+                                        <dd>{taskTemplate.formula}</dd>
+                                        
+                                        <dt>Tham số</dt>
+                                        <dd>
+                                            <span>D: Tổng số ngày thực hiện công việc (trừ CN)</span><br />
+                                            <span>D0: Số ngày quá hạn</span><br />
+                                            <span>A: Tổng số hoạt động</span><br />
+                                            <span>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</span><br />
+                                        </dd>
                                     </div>
-                                    {template && template.info.responsibleEmployees.length > 0 && <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.performer')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                {template &&
-                                                    <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                                                        {template.info.responsibleEmployees.map((item, index) => {
-                                                            return <p key={index}>{item.name}</p>
-                                                        })}
-                                                    </p>}
-                                            </div>
-                                        </div>
-
-                                    </div>}
-                                    {template && template.info.accountableEmployees.length > 0 && <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.approver')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                {template &&
-                                                    <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                                                        {template.info.accountableEmployees.map((item, index) => {
-                                                            return <p key={index}>{item.name}</p>
-                                                        })}
-                                                    </p>}
-                                            </div>
-                                        </div>
-
-                                    </div>}
-                                    {template && template.info.consultedEmployees.length > 0 && <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.observer')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                {template &&
-                                                    <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                                                        {template.info.consultedEmployees.map((item, index) => {
-                                                            return <p key={index}>{item.name}</p>
-                                                        })}
-                                                    </p>}
-                                            </div>
-                                        </div>
-
-                                    </div>}
-                                    {template && template.info.informedEmployees > 0 && <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.supporter')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                {template &&
-                                                    <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                                                        {template.info.informedEmployees.map((item, index) => {
-                                                            return <p key={index}>{item.name}</p>
-                                                        })}
-                                                    </p>}
-                                            </div>
-                                        </div>
-
-                                    </div>}
                                 </div>
                             </div>
+
                             <div className="col-sm-6" >
-                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "30px" }}>
-                                    <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group'>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8" >
-                                            <div className='form-group'>
-                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.description}</p>
-                                            </div>
-                                        </div>
+                                <div className="box box-solid description">
+                                    <div className="box-header with-border">
+                                        Các vai trò
                                     </div>
-                                    <div className="row">
-                                        <div className="col-xs-4">
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.formula')}</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-8" >
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.formula}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ marginTop: "-15px", textAlign: "left"}} >
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label><br />
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label><br />
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label><br />
-                                            <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label><br />
-                                        </div>
+                                    <div className="box-body">
+                                        <dl>
+                                            <dt>{translate('task_template.permission_view')}</dt>
+                                            <dd>
+                                                 <ul>
+                                                    {taskTemplate.readByEmployees && taskTemplate.readByEmployees.map((item, index) => {
+                                                        return <li key={index}>{item.name}</li>
+                                                    })}
+                                                </ul>
+                                            </dd>
+
+                                            {taskTemplate.responsibleEmployees && taskTemplate.responsibleEmployees.length > 0 &&
+                                                <React.Fragment>
+                                                    <dt>{translate('task_template.performer')}</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {taskTemplate.responsibleEmployees.map((item, index) => {
+                                                                return <li key={index}>{item.name}</li>
+                                                            })}
+                                                        </ul>
+                                                    </dd>
+                                                </React.Fragment>
+                                            }
+
+                                            {taskTemplate.accountableEmployees && taskTemplate.accountableEmployees.length > 0 &&
+                                                <React.Fragment>
+                                                    <dt>{translate('task_template.approver')}</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {taskTemplate.accountableEmployees.map((item, index) => {
+                                                                return <li key={index}>{item.name}</li>
+                                                            })}
+                                                        </ul>
+                                                    </dd>
+                                                </React.Fragment>
+                                            }
+
+                                            {taskTemplate.consultedEmployees && taskTemplate.consultedEmployees.length > 0 &&
+                                                <React.Fragment>
+                                                    <dt>{translate('task_template.observer')}</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {taskTemplate.consultedEmployees.map((item, index) => {
+                                                                return <li key={index}>{item.name}</li>
+                                                            })}
+                                                        </ul>
+                                                    </dd>
+                                                </React.Fragment>
+                                            }
+
+                                            {taskTemplate.informedEmployees && taskTemplate.informedEmployees.length > 0 &&
+                                                <React.Fragment>
+                                                    <dt>{translate('task_template.supporter')}</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {taskTemplate.informedEmployees.map((item, index) => {
+                                                                return <li key={index}>{item.name}</li>
+                                                            })}
+                                                        </ul>
+                                                    </dd>
+                                                </React.Fragment>
+                                            }
+                                        </dl>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                         <div className="row">
-                            <div className="col-sm-6" style={{ marginTop: "15px" }}>
-                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "5px" }}>
-                                    <div className="row">
-                                        <div className="col-xs-12">
-                                            <div className='form-group' style={{ marginTop: "5px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.activity_list')} </label>
-                                            </div>
-                                        </div>
+                            <div className="col-sm-6" >
+                                <div className="box box-solid description">
+                                    <div className="box-header with-border">
+                                        {translate('task_template.activity_list')}
                                     </div>
-                                    <div className="control-group" style={{ marginLeft: "-5px" }}>
-                                        <ol>{
-                                            (typeof template === 'undefined' || template.info.taskActions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
-                                                template.info.taskActions.map((item, index) =>
-                                                    <li style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc <p>Mô tả: {item.description}</p></li>
+                                    <div className="box-body">
+                                        {
+                                            (!taskTemplate.taskActions || taskTemplate.taskActions.length === 0)?
+                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                taskTemplate.taskActions.map((item, index) =>
+                                                    <React.Fragment>
+                                                        <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
+                                                        <dd>{item.description}</dd>
+                                                    </React.Fragment>
                                                 )
-                                        }</ol>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-6" style={{ marginTop: "15px" }} >
-                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "5px" }}>
-                                    <div className="row">
-                                        <div className="col-xs-12">
-                                            <div className='form-group' style={{ marginTop: "5px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.information_list')} </label>
-                                            </div>
-                                        </div>
+                            <div className="col-sm-6" >
+                                <div className="box box-solid description">
+                                    <div className="box-header with-border">
+                                        {translate('task_template.information_list')}
                                     </div>
-                                    <div className="control-group" style={{ marginLeft: "-5px" }}>
-
-                                        <ol>{
-                                            (typeof template === 'undefined' || template.info.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
-                                                template.info.taskInformations.map((item, index) =>
-                                                    <li style={{ textAlign: 'left' }}>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}<p>Mô tả: {item.description}</p></li>
+                                    <div className="box-body">
+                                        {
+                                            (!taskTemplate.taskInformations || taskTemplate.taskInformations.length === 0)? 
+                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                taskTemplate.taskInformations.map((item, index) =>
+                                                    <React.Fragment>
+                                                        <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}</dt>
+                                                        <dd>{item.description}</dd>
+                                                    </React.Fragment>
                                                 )
                                         }
-                                        </ol>
                                     </div>
                                 </div>
                             </div>

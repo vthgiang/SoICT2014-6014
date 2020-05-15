@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { managerServices } from '../../../organizational-unit/management/redux/services';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
-
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 class ModalDetailKPIPersonal extends Component {
     // componentDidMount() {
     //     this.props.getAllTarget(this.state.unit);
@@ -85,10 +85,11 @@ class ModalDetailKPIPersonal extends Component {
         var list;
         var myTask = [];
         const { kpimembers, kpipersonal } = this.props;
-        console.log("============", kpimembers.tasks)
+        // console.log("============", kpimembers.tasks)
         if (typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         if (kpipersonal.kpis) list = kpipersonal.kpis;
         return (
+           
             <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
                     <div className="modal-content">
@@ -120,60 +121,56 @@ class ModalDetailKPIPersonal extends Component {
                                 {
                                     list && list.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
+                                            <div className="qlcv">
                                             <div className="header-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Thông tin mục tiêu</h4>
                                                 </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Tiêu chí đính giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.name}</label>
+                                                <div className="form-inline">
+                                                    <label>Tiêu chí đính giá:</label>
+                                                    <label  style={{ marginLeft :"20px" }}>{item.name}</label>
                                                 </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Điểm tối đa:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.weight}</label>
+                                                <div className="form-inline">
+                                                    <label>Điểm tối đa:</label>
+                                                    <label  style={{ marginLeft :"20px" }}>{item.weight}</label>
                                                 </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Hệ thống đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint == null ? "Chưa đánh giá" : item.systempoint}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Quản lý đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Cá nhân tự đánh giá:</label>
-                                                    {
-                                                        kpipersonal.status !== 3 ?
-                                                            <React.Fragment>
-                                                                <input type="number" min="0" max={item.weight} className="col-sm-4" defaultValue="0" name="value" />
-                                                                <button className="col-sm-2 col-sm-offset-4 btn btn-success">Lưu</button>
-                                                            </React.Fragment>
-                                                            : <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.mypoint}</label>
-                                                    }
-                                                </div>
+                                                <button className="col-xs-2 pull-right btn btn-success">Tính điểm KPI</button>
+                                            </div>
                                             </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                <table id="example1" className="table table-bordered table-striped">
+                                                <DataTableSetting class="pull-right" tableId="detailKpiModel" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                columnArr={[ 
+                                                    'STT' ,
+                                                    'Tên công việc' , 
+                                                    'Đơn vị' , 
+                                                    'Thời gian thực hiện' ,
+                                                    'Người tạo' ,
+                                                    'Người phê duyệt',
+                                                    'Người hỗ trợ',
+                                                    'Trạng thái',
+                                                    'Điểm quan trọng']} 
+                                                limit={this.state.perPage} 
+                                                setLimit={this.setLimit} 
+                                                hideColumnOption={true} />
+                                                <table id="detailKpiModel" className="table table-bordered table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th style={{ width: "20px" }}>Stt</th>
-                                                            <th>Tên công việc</th>
-                                                            <th>Đơn vị</th>
-                                                            <th>Mô tả công việc</th>
-                                                            <th>Độ ưu tiên</th>
-                                                            <th>Thời gian thực hiện</th>
-                                                            <th>Người tạo</th>
-                                                            <th>Người phê duyệt</th>
-                                                            <th>Người hỗ trợ</th>
-                                                            <th>Trạng thái</th>
-                                                            <th>Điểm quan trọng</th>
+                                                            <th style={{ width: "20px" }} title="STT">Stt</th>
+                                                            <th title ="Tên công việc">Tên công việc</th>
+                                                            <th title ="Đơn vị">Đơn vị</th>
+                                                            <th title ="Thời gian thực hiện">Thời gian thực hiện</th>
+                                                            <th title ="Người tạo">Người tạo</th>
+                                                            <th title ="Người phê duyệt">Người phê duyệt</th>
+                                                            <th title ="Người hỗ trợ">Người hỗ trợ</th>
+                                                            <th title ="Trạng thái">Trạng thái</th>
+                                                            <th title ="Điểm quan trọng">Điểm quan trọng</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {
+                                                        {/* {
 
                                                             (typeof kpimembers.tasks !== "undefined" && kpimembers.tasks) ?
                                                                 (kpimembers.tasks.map((itemTask, index) =>
@@ -191,7 +188,40 @@ class ModalDetailKPIPersonal extends Component {
                                                                         <td>{itemTask.status}</td>
                                                                         <td></td>
                                                                     </tr>)) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
-                                                        }
+                                                        } */}
+                                                        <tr >
+                                                            <td>1</td>
+                                                            <td>Thực hiện giao dịch với công ty đối tác</td>
+                                                            <td>Ban quản lý</td>
+                                                            <td>5-5-2020 -> 30-5-2020</td>
+                                                            <td>Vũ Thị Cúc</td>
+                                                            <td>Vũ Thị Cúc</td>
+                                                            <td>Nguyễn Văn An</td>
+                                                            <td>Đang thực hiện</td>
+                                                            <td>8</td>
+                                                        </tr>
+                                                        <tr >
+                                                            <td>2</td>
+                                                            <td>Thống kê số liệu kinh doanh tháng 4</td>
+                                                            <td>Ban quản lý</td>
+                                                            <td>1-5-2020 -> 5-5-2020</td>
+                                                            <td>Vũ Thị Cúc</td>
+                                                            <td>Nguyễn Văn Danh</td>
+                                                            <td>Nguyễn Văn An</td>
+                                                            <td>Hoàn thành</td>
+                                                            <td>8</td>
+                                                        </tr>
+                                                        <tr >
+                                                            <td>3</td>
+                                                            <td>Đi thực tập bên Nhật Bản</td>
+                                                            <td>Ban hành chính</td>
+                                                            <td>10-5-2020 -> 30-7-2020</td>
+                                                            <td>Vũ Thị Cúc</td>
+                                                            <td>Nguyễn Đình Văn</td>
+                                                            <td>Trần Văn Bình</td>
+                                                            <td>Đang thực hiện</td>
+                                                            <td>5</td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -199,7 +229,7 @@ class ModalDetailKPIPersonal extends Component {
                                                 </div>
                                             </div>
                                         </React.Fragment>;
-                                        return true;
+                                        
                                     })
                                 }
                             </div>

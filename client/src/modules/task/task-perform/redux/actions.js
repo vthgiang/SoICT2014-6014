@@ -26,7 +26,8 @@ export const performTaskAction = {
     deleteTaskComment,
     createCommentOfTaskComment,
     editCommentOfTaskComment,
-    deleteCommentOfTaskComment
+    deleteCommentOfTaskComment,
+    evaluationAction
 };
 
 // Create result task
@@ -392,7 +393,6 @@ function editCommentOfTaskComment(id,newComment) {
     function failure( error) { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
 }
 function deleteCommentOfTaskComment(task,id) {
-    
     return dispatch => {
         dispatch(request());
         performTaskService.deleteCommentOfTaskComment(task,id)
@@ -405,4 +405,18 @@ function deleteCommentOfTaskComment(task,id) {
     function request() { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_REQUEST } }
     function success(comment) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS, comment } }
     function failure( error) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
+}
+function evaluationAction(id,evaluations) {
+    return dispatch => {
+        dispatch(request());
+        performTaskService.evaluationAction(id,evaluations)
+        .then(
+            evaluations => dispatch(success(evaluations)),
+            error => dispatch(failure(error.toString()))
+        );
+    }
+
+    function request() { return { type: performTaskConstants.EVALUATION_ACTION_REQUEST } }
+    function success(evaluations) { return { type: performTaskConstants.EVALUATION_ACTION_SUCCESS, evaluations } }
+    function failure( error) { return { type: performTaskConstants.EVALUATION_ACTION_FAILURE, error } }
 }

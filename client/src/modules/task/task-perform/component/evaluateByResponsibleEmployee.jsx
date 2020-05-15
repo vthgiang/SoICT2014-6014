@@ -8,18 +8,12 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
 
 import {
-    TOKEN_SECRET
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
-        const token = getStorage();
-        const verified = jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+        var idUser = getStorage("userId");
         super(props);
         this.state={
             idUser: idUser 

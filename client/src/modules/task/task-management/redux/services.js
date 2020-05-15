@@ -1,13 +1,9 @@
-import { handleResponse } from '../../../../helpers/handleResponse';
-import axios from 'axios';
-import { AuthenticateHeader } from '../../../../config';//authHeader-cũ
 import {
-    TOKEN_SECRET, LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const taskManagementService = {
@@ -24,6 +20,7 @@ export const taskManagementService = {
     deleteTaskById,
     editStatusOfTask
 };
+
 // get all task
 function getAll() {
     return sendRequest({
@@ -47,52 +44,47 @@ function getAllTaskByRole(id, role) {
         method: 'GET',
     }, false, true, 'task.task_management');
 }
+
 // get all task by Role
-async function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name) {//param -- user,
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name) {//param -- user,
+    var user = getStorage("userId");
 
     return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
+
 // get all task by Role
-async function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name) {
+    var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
+
 // get all task by Role
-async function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name) {
+    var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
+
 // get all task by Role
-async function getInformedTaskByUser(unit, number, perPage, status, priority, special, name) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name) {
+    var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
+
 // get all task by Role
-async function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name) {
+    var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',

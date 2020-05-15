@@ -41,47 +41,33 @@ class CourseDetailForm extends Component {
                 <DialogModal
                     modalID="modal-view-course" isLoading={course.isLoading}
                     formID="form-view-course"
-                    title="Thông tin khoá đào tạo"
+                    title={`Khoá đào tạo: ${name} - ${courseId}`}
                     hasSaveButton={false}
                     size={75}
                     maxWidth={850}
                 >
                     <form className="form-group" id="form-view-course" >
-                        <div>
-                            <h4 style={{ display: "inline-block", fontWeight: "600" }}>
-                                {name} - {courseId}
-                            </h4>
-                            <div className="form-group">
-                                <span> Học tại</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{coursePlace}</span>
-                                <span>,&nbsp;từ</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{startDate}&nbsp;</span>
-                                <span>đến</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{endDate}&nbsp;</span>
-                                {
-                                    lecturer && <span>với giảng viên {lecturer}</span>
-                                }
-                            </div>
-                            <div className="form-group">
-                                <span>Đào tạo bởi</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{offeredBy}&nbsp;</span>
-                                <span>- Thuộc chương trình đào tạo</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{educationProgram.name}&nbsp;</span>
-
-
-                            </div>
-                            <div className="form-group">
-                                <span>Thuộc loại</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{type}&nbsp;</span>
-                                <span>với chi phí</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{cost}{unit}&nbsp;</span>
-                                <span>và thời gian cam kết làm việc</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{employeeCommitmentTime} tháng&nbsp;</span>
-                            </div>
-                            <div className="form-group">
-                                <span>60 nhân viên tham gia</span>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- 56 hoàn thành - 4 chưa hoàn thành&nbsp;</span>
-                            </div>
+                        <div className="form-group">
+                            <span> Học tại</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{coursePlace}</span>
+                            <span>,&nbsp;từ</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{startDate}&nbsp;</span>
+                            <span>đến</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{endDate}&nbsp;</span>
+                            {
+                                lecturer && <span>với giảng viên {lecturer}</span>
+                            }
+                        </div>
+                        <div className="form-group">
+                            <span>Đào tạo bởi {offeredBy} - Thuộc chương trình đào tạo "{educationProgram.name}"</span>
+                        </div>
+                        <div className="form-group">
+                            <span>Thuộc loại "{type}" với chi phí {cost}{unit} và thời gian cam kết làm việc {employeeCommitmentTime} tháng</span>
+                        </div>
+                        <div className="form-group">
+                            <span>60 nhân viên tham gia</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;- 56 hoàn thành&nbsp;</span>
+                            <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- 4 chưa hoàn thành&nbsp;</span>
                         </div>
                         <div className="form-group">
                             <label className="pull-left">Nhân viên tham gia</label>
@@ -92,16 +78,32 @@ class CourseDetailForm extends Component {
                                     <th>Mã nhân viên</th>
                                     <th>Tên nhân viên</th>
                                     <th>Kết quả</th>
-                                    <th style={{ width: "120px" }}>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>MS12365</td>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>Hoàn thành</td>
+                                </tr>
+                                <tr>
+                                    <td>MS12367</td>
+                                    <td>Nguyễn Văn B</td>
+                                    <td>Hoàn thành</td>
+                                </tr>
+                                <tr>
+                                    <td>MS12369</td>
+                                    <td>Nguyễn Văn C</td>
+                                    <td>Chưa hoàn thành</td>
+                                </tr>
                             </tbody>
                         </table>
-                        {course.isLoading ?
+                        {/* {course.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                             (typeof listEmployees === 'undefined' || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
+                        } */}
+
+
 
 
                         {/* <div className="col-md-12">

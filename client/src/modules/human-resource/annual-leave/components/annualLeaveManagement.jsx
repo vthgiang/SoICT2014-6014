@@ -159,9 +159,6 @@ class AnnualLeaveManagement extends Component {
             <div className="box" >
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
-                    <div className="form-group">
-                        <h4 className="box-title">{translate('human_resource.annual_leave.list_annual_leave')}: </h4>
-                    </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>

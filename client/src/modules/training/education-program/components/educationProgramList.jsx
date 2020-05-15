@@ -125,11 +125,6 @@ class ListEducation extends Component {
                     <EducationProgramCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách chương trình đào tạo bắt buộc:</h4>
-                        </div>
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}

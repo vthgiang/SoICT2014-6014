@@ -171,7 +171,7 @@ class EmployeeCreatePage extends Component {
                 annualLeaves
             }
         })
-        let formData = convertJsonObjectToFormData(this.state.employee);
+        let formData = convertJsonObjectToFormData({...this.state.employee});
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })

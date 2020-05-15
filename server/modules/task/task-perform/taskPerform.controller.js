@@ -264,16 +264,20 @@ exports.createTaskAction = async (req,res) => {
 }
 
 exports.editTaskAction = async (req,res) =>{
+    if(req.query.evaluation !== undefined){
+        evaluationAction(req,res);
+    }else
     try {
-        var taskAction = await PerformTaskService.editTaskAction(req.params,req.body);
-        await LogInfo(req.user.email, ` edit task action  `,req.user.company)
+        console.log("ahahahhahahahahahahaha")
+        var taskAction = await PerformTaskService.editTaskAction(req.query.edit,req.body);
+        //await LogInfo(req.user.email, ` edit task action  `,req.user.company)
         res.status(200).json({
             success: true,
             messages : ['edit_task_action_success'],
             content : taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task action  `,req.user.company)
+        //await LogError(req.user.email, ` edit task action  `,req.user.company)
         res.status(400).json({
             success: false,
             messages: ['edit_task_action_fail'],
@@ -499,7 +503,6 @@ exports.editCommentOfTaskComment = async(req,res) => {
  */
 exports.deleteCommentOfTaskComment = async(req,res) => {
     try {
-
         var comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
         res.status(200).json({
             success: true,
@@ -510,6 +513,25 @@ exports.deleteCommentOfTaskComment = async(req,res) => {
         res.status(400).json({
             success: false,
             messages: ['Xoa that bai'],
+            content: error
+        })
+    }
+}
+/**
+ * Đánh giá hoạt động
+ */
+evaluationAction= async (req,res) => {
+    try {
+        var taskAction = await PerformTaskService.evaluationAction(req.query.evaluation,req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['Danh gia thanh cong'],
+            content: taskAction
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Danh gia that bai'],
             content: error
         })
     }

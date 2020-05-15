@@ -9,24 +9,21 @@ class DateTimeConverter extends Component {
         this.state = {  }
     }
 
-    convertDateTime = (time, type) => {
-        switch(type){
-            case 1:
-                return moment(time).fromNow(); // bao lâu tính đến thời điểm hiện tại
-
-            case 2: 
-                return moment(time).calendar(); // ngày, giờ phút
-            
-            default:
-                return moment(time).format('LLLL'); // thứ ngày tháng năm giờ phút giấy
-        }
+    convertDateTime = (time) => {
+        var dateNow = new Date();
+        var date = new Date(time);
+        var diff = (dateNow - date)/3600000; // đơn vị là giờ
+        if(diff < 24) // cách biệt không quá 24 giờ
+            return moment(time).fromNow();
+        else    
+            return moment(time).format('LLLL');
     }
 
 
     render() { 
-        const {dateTime, type=0} = this.props;
+        const {dateTime} = this.props;
 
-        return <span>{this.convertDateTime(dateTime, type)}</span>;
+        return <span>{this.convertDateTime(dateTime)}</span>;
     }
 }
  

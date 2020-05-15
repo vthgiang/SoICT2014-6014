@@ -6,13 +6,24 @@ function buildFormData(formData, data, parentKey) {
             buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
         });
     } else {
-        const value = data == null ? '' : data;
+        const value = (data == null || data instanceof File) ? '' : data;
         formData.append(parentKey, value);
     }
 }
 
 export function convertJsonObjectToFormData(json) {
+    let obj = {};
     const formData = new FormData();
-    buildFormData(formData, json);
+    if (typeof json === 'string') {
+        try {
+            obj = JSON.parse(json);
+        } catch (err) {
+            console.err(err);
+        }
+    } else if (typeof json === 'object') {
+        obj = json;
+    }
+
+    buildFormData(formData, obj);
     return formData;
 }

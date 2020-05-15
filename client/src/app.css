@@ -46,6 +46,8 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
 
 
 
+
+
 /*
 CSS cho bảng dữ liệu
 */
@@ -62,9 +64,12 @@ td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không
     word-wrap: break-word;
     white-space: normal;
 }
-table tbody tr th { /* Hiện thông báo không có dữ liệu */
-    font-weight: normal;
+.table>thead>tr>th { /* Hiện thông báo không có dữ liệu */
+    vertical-align: top;
 }
+
+
+
 
 
 /* Kích thước icon mặc định */
@@ -73,64 +78,57 @@ table tbody tr th { /* Hiện thông báo không có dữ liệu */
 }
 
 
+
+
+
+
 /*
 CSS cho cột cuối trong bảng (có các hành động edit, delete, save, ...) và các icon trong đó
 */
 table.table td:last-child, table.table th:last-child { /* Căn giữa cho cột cuối */
     text-align: center;
 }
-
 table.table td a {
     cursor: pointer;
     margin-right: 5px;
 }
-
 table.table td a.add {
     color: #27C46B;
 }
 table.table td a.copy {
     color: #27C46B;
 }
-
 table.table td a.edit {
     color: #FFC107;
 }
-
 table.table td a.star {
     color: #FFC107;
 }
-
 table.table td a.timer {
     color: black;
 }
-
 table.table td a.default {
     color: black;
 }
-
 table.table td a.all_inbox {
     color: darkred;
 }
-
 table.table td a.add_circle {
     color: green;
 }
-
 table.table td a.save_result {
     color: green;
 }
-
 table.table td a.timer:hover {
     color: #FFC107;
 }
-
 table.table td a.delete {
     color: #E34724;
 }
-
 table.table td a.approve {
     color: deepskyblue;
 }
+
 
 
 
@@ -143,6 +141,7 @@ div.table-info-panel {
     background-color: #f9f9f9;
     padding: 10px;
 }
+
 
 
 
@@ -168,6 +167,8 @@ legend.scheduler-border {
 
 
 
+
+
 /* Text bị ẩn khi quá độ dài cho phép */
 .threedots {
     overflow: hidden;
@@ -177,4 +178,39 @@ legend.scheduler-border {
 
 .active-notification-button {
     border-left: 3px solid #3C8DBC;
+}
+
+
+
+
+
+
+/** Description box **/
+.box.box-solid.description{
+    -webkit-box-shadow: 0 0 0;
+    -moz-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+}
+.box.box-solid.description > .box-header {
+    font-size: 1.2em;
+    background-color: #545199;
+    color: #fff;
+    font-weight: 900;
+    padding: 10px;
+}
+.box.box-solid.description > .box-body{
+    padding: 0;
+}
+.box.box-solid.description > .box-body dt{
+    padding: 5px 5px 5px 10px;
+}
+.box.box-solid.description > .box-body dd{
+    padding: 2px 5px 5px 10px;
+    margin-bottom: 5px;
+    -webkit-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+    -moz-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+    box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
+}
+.box.box-solid.description > .box-body dd > ul{
+    margin: 0px;
 }

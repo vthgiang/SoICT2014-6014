@@ -1,13 +1,11 @@
 import {handleResponse} from '../../../../helpers/handleResponse';
 import { AuthenticateHeader } from '../../../../config';
 import {
-    TOKEN_SECRET,LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const performTaskService = {
@@ -32,7 +30,8 @@ export const performTaskService = {
     deleteTaskComment,
     createCommentOfTaskComment,
     editCommentOfTaskComment,
-    deleteCommentOfTaskComment
+    deleteCommentOfTaskComment,
+    evaluationAction
 };
 /**
  * // example for axios
@@ -76,11 +75,9 @@ function getLogTimerTask(task) {
 };
 
 // get current status task
-async function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
-    return  sendRequest =({
+function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
+    var user = getStorage("userId");
+    return  sendRequest ({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
         method: 'GET',
     }, false, true, 'task.task_perform');
@@ -153,9 +150,10 @@ function editActionComment(id, newComment) {
 }
 function editTaskAction(id,newAction) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action`,
         method:'PUT',
-        data : newAction
+        data : newAction,
+        params: {edit:id}
     }, true, true, 'task.task_perform')
 }
 
@@ -217,10 +215,16 @@ function editCommentOfTaskComment(id,newComment){
     },true,'task.task_perform')
 }
 function deleteCommentOfTaskComment(id,task){
-    console.log(task)
-    console.log(id)
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}/${task}`,
         method : 'DELETE',
     },true,'task.task_perform')
+}
+function evaluationAction(id,evaluation){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action`,
+        method : 'PUT',
+        data: evaluation,
+        params: {evaluation:id}
+    })
 }

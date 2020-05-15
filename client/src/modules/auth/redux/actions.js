@@ -22,6 +22,7 @@ function login(user){
         AuthService.login(user)
             .then(res => {
                 setStorage('jwt', res.data.content.token);
+                setStorage('userId', res.data.content.user._id);
                 if(res.data.content.user.roles.length > 0) 
                     setStorage('currentRole', res.data.content.user.roles[0].roleId._id);
                 dispatch({
