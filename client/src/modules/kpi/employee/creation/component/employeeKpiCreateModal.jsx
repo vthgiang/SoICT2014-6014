@@ -30,14 +30,6 @@ class ModalCreateEmployeeKpiSet extends Component {
             adding: false
         };
     }
-    // getCreater = async () => {
-    //     const token = getStorage();
-    //     const verified = await jwt.verify(token, TOKEN_SECRET);
-    //     var id = verified._id;
-    //     return id;
-    // }
-
-    // function: notification the result of an action
 
     formatDate = async (value) => {
         await this.setState(state => {

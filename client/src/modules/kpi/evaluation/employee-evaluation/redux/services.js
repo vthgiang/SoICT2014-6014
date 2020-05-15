@@ -1,12 +1,10 @@
-import jwt from 'jsonwebtoken';
-
 import axios from 'axios';
 
 import {
     getStorage,AuthenticateHeader
 } from '../../../../../config';
 import {
-    TOKEN_SECRET, LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../../env';
 import {handleResponse} from '../../../../../helpers/handleResponse';
 import { sendRequest } from '../../../../../helpers/requestHelper';
@@ -30,12 +28,10 @@ function getAllKPIMemberOfUnit(infosearch) {
     }, false, true, 'kpi.evaluation');
 }
 // Lấy tất cả kpi cá nhân
-async function getAllKPIMemberByMember() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var member = verified._id;
+function getAllKPIMemberByMember() {
+    var id = getStorage("userId");
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/user/${member}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/user/${id}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }

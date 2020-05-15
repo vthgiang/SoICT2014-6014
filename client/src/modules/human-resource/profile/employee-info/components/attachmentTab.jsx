@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../../env';
 
 class AttachmentTab extends Component {
     constructor(props) {
@@ -53,7 +54,7 @@ class AttachmentTab extends Component {
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                         </tr>
                                     ))}
                             </tbody>

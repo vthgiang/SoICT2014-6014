@@ -114,7 +114,7 @@ app.use("/sabbatical", annualLeave);
 app.use("/praise", commendation);
 app.use("/discipline", discipline);
 app.use("/holiday",holiday);
-app.use("/employee", profile);
+app.use("/employees", profile);
 app.use("/salary", salary);
 
 app.use("/kpipersonals", employeeKpiCreation);

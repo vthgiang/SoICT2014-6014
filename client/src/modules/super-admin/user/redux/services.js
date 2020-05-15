@@ -56,7 +56,7 @@ function destroy(id) {
 }
 
 function getRoles() {
-    const id = getStorage('userId');
+    const id = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/roles/${id}`,
         method: 'GET',
@@ -64,7 +64,7 @@ function getRoles() {
 }
 
 function getLinkOfRole() {
-    const currentRole = getStorage('currentRole');
+    const currentRole = getStorage("currentRole");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/links/role/${currentRole}`,
         method: 'GET',
@@ -102,8 +102,8 @@ function getAllUserSameDepartment(id) {
     }, false, true, 'super_admin.user');
 }
 
-async function getDepartmentOfUser() {
-    const id = getStorage('userId');
+function getDepartmentOfUser() {
+    const id = getStorage("userId");
     
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}/organizational-units`,

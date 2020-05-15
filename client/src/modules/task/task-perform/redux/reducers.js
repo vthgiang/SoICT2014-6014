@@ -316,7 +316,22 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 error: action.error
-            }                                                                       
+            }
+        case performTaskConstants.EVALUATION_ACTION_REQUEST:
+            return {
+                ...state,
+                evaluating: true
+            }
+        case performTaskConstants.EVALUATION_ACTION_SUCCESS:
+            return {
+                ...state,
+                taskactions: action.evaluations.data.content
+            } 
+        case performTaskConstants.EVALUATION_ACTION_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            }                                                                                  
         default:
             return state
     }

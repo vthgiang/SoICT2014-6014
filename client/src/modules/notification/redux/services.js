@@ -1,4 +1,4 @@
-import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const NotificationServices = {
