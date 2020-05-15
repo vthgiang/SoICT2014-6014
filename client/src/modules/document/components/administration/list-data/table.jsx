@@ -12,33 +12,41 @@ class Table extends Component {
     }
 
     componentDidMount(){
-        this.props.getDocumentTypes();
     }
 
     render() { 
         const {translate} = this.props;
-        const {list} = this.props.documents.administration.types;
+        const {list} = this.props.documents.administration.listData;
         const {isLoading} = this.props.documents;
-
+        if(this.props.documents.value)
+            console.log("this.propfsdfsdfsdfsfsd.")
         return ( 
             <React.Fragment>
                 <CreateForm/>
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-types">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>
-                            <th>{translate('document.administration.types.name')}</th>
-                            <th>{translate('document.administration.types.description')}</th>
+                            <th>{translate('document.name')}</th>
+                            <th>{translate('document.description')}</th>
+                            <th>{translate('document.createdAt')}</th>
+                            <th>{translate('document.applyAt')}</th>
+                            <th>{translate('document.views')}</th>
+                            <th>{translate('document.downloads')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('general.action')}
                                 <DataTableSetting
                                     columnArr={[
-                                        translate('document.administration.types.name'), 
-                                        translate('document.administration.types.description')
+                                        translate('document.name'), 
+                                        translate('document.description'), 
+                                        translate('document.createdAt'), 
+                                        translate('document.applyAt'), 
+                                        translate('document.views'), 
+                                        translate('document.downloads')
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
                                     hideColumnOption = {true}
-                                    tableId="table-manage-document-types"
+                                    tableId="table-manage-document"
                                 />
                             </th>
                         </tr>
@@ -51,12 +59,12 @@ class Table extends Component {
                                 <td>{docType.name}</td>
                                 <td>{docType.description}</td>
                                 <td>
-                                    <a className="text-yellow" title={translate('document.administration.types.edit')}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.administration.types.delete')}><i className="material-icons">delete</i></a>
+                                    <a className="text-yellow" title={translate('document.edit')}><i className="material-icons">edit</i></a>
+                                    <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>):
                             isLoading ? 
-                            <tr><td colSpan={3}>{translate('general.loading')}</td></tr>:<tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
+                            <tr><td colSpan={7}>{translate('general.loading')}</td></tr>:<tr><td colSpan={7}>{translate('general.no_data')}</td></tr>
                         }
                         
                     </tbody>
@@ -69,7 +77,6 @@ class Table extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getDocumentTypes: DocumentActions.getDocumentTypes
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

@@ -26,7 +26,7 @@ class CreateForm extends Component {
 
     save = () => {
         const {documentTypeName, documentTypeDescription} = this.state;
-        this.props.createDocumentType({
+        this.props.createDocumentCategory({
             name: documentTypeName,
             description: documentTypeDescription
         });
@@ -41,16 +41,16 @@ class CreateForm extends Component {
                 <DialogModal
                     modalID="modal-create-document-type"
                     formID="form-create-document-type"
-                    title={translate('document.administration.types.add')}
+                    title={translate('document.administration.categories.add')}
                     func={this.save}
                 >
                     <form id="form-create-document-type">
                         <div className="form-group">
-                            <label>{ translate('document.administration.types.name') }<span className="text-red">*</span></label>
+                            <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName}/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.types.description') }<span className="text-red">*</span></label>
+                            <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
                             <textarea type="text" className="form-control" onChange={this.handleDescription}/>
                         </div>
                     </form>
@@ -63,7 +63,7 @@ class CreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createDocumentType: DocumentActions.createDocumentType
+    createDocumentCategory: DocumentActions.createDocumentCategory
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CreateForm) );

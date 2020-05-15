@@ -103,6 +103,10 @@ class CropImage extends Component {
             <div className="modal fade" id="modal-crop-user-image">
                 <div className="modal-dialog crop-image-modal">
                     <div className="modal-content crop-content">
+                        <div className="modal-header">
+                            <input className="pull-left" type="file" accept="image/*" onChange={this.onSelectFile} />
+                            <button className="btn btn-primary pull-right" onClick={this.saveCropImage}>{translate('general.accept')}</button>
+                        </div>
                         {src && 
                             <div className="box-body">
                                 <div className="row">
@@ -122,10 +126,6 @@ class CropImage extends Component {
                                 </div>
                             </div>
                         }
-                        <div className="modal-footer">
-                            <input className="pull-left" type="file" accept="image/*" onChange={this.onSelectFile} />
-                            <button className="btn btn-primary pull-right" onClick={this.saveCropImage}>{translate('general.accept')}</button>
-                        </div>
                     </div>
                 </div>
             </div>

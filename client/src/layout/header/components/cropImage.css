@@ -5,6 +5,7 @@
 .crop-content {
     border-radius: 5px;
     border: 3px solid gray;
+    min-height: 300px;
 }
 
 @media only screen and (max-width: 1024px) {

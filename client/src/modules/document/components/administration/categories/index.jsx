@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
+import Table from './table';
 
-class DocumentCategories extends Component {
+class AdministrationDocumentCategories extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
     render() { 
         return ( 
-            "danh mục văn bản"
+            <Table/>
          );
     }
 }
  
-export default DocumentCategories;
+export default AdministrationDocumentCategories;

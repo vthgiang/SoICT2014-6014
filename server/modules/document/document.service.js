@@ -1,11 +1,11 @@
-const {DocumentType} = require('../../models').schema;
+const {DocumentCategory} = require('../../models').schema;
 
-exports.getDocumentTypes = async (company) => {
-    return await DocumentType.find({ company });
+exports.getDocumentCategories = async (company) => {
+    return await DocumentCategory.find({ company });
 }
 
-exports.createDocumentType = async (company, data) => {
-    return await DocumentType.create({
+exports.createDocumentCategory = async (company, data) => {
+    return await DocumentCategory.create({
         company,
         name: data.name,
         description: data.description

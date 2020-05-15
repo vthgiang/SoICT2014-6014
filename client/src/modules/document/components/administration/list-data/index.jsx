@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Table from './table';
 
-class DocumentTypes extends Component {
+class AdministrationListData extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
@@ -13,4 +13,4 @@ class DocumentTypes extends Component {
     }
 }
  
-export default DocumentTypes;
+export default AdministrationListData;

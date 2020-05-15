@@ -3,10 +3,10 @@ const router = express.Router();
 const DocumentController = require('./document.controller');
 const { auth } = require('../../middleware');
 
-router.get("/types", auth, DocumentController.getDocumentTypes);
-router.get("/types/:id", auth, DocumentController.showDocumentType);
-router.post("/types", auth, DocumentController.createDocumentType);
-router.patch("/types/:id", auth, DocumentController.editDocumentType);
-router.delete("/types/:id", auth, DocumentController.deleteDocumentType);
+router.get("/categories", auth, DocumentController.getDocumentCategories);
+router.get("/categories/:id", auth, DocumentController.showDocumentCategory);
+router.post("/categories", auth, DocumentController.createDocumentCategory);
+router.patch("/categories/:id", auth, DocumentController.editDocumentCategory);
+router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory);
 
 module.exports = router;

@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 
-class HistoryStatistics extends Component {
+class AdministrationDocumentDomains extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
     render() { 
         return ( 
-            <React.Fragment>
-                HistoryStatistics
-            </React.Fragment>
+            "danh mục văn bản"
          );
     }
 }
  
-export default HistoryStatistics;
+export default AdministrationDocumentDomains;
