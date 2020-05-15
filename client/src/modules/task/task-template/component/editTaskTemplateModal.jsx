@@ -185,13 +185,13 @@ class ModalEditTaskTemplate extends Component {
                     ...state,
                     editingTemplate: { // update lại unit, và reset các selection phía sau
                         ...this.state.editingTemplate,
-                        unit: value,
+                        organizationalUnit: value,
                         errorOnUnit: msg,
-                        read: [],
-                        responsible: [],
-                        accounatable: [],
-                        consulted: [],
-                        informed: [],
+                        readByEmployees: [],
+                        responsibleEmployees: [],
+                        accountableEmployees: [],
+                        consultedEmployees: [],
+                        informedEmployees: [],
                     }
                 };
             });
@@ -279,7 +279,7 @@ class ModalEditTaskTemplate extends Component {
 
     render() {
         var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
-        var { editingTemplate, submitted} = this.state;
+        var { editingTemplate } = this.state;
   
         const { department, user,translate } = this.props;
         if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
@@ -308,7 +308,7 @@ class ModalEditTaskTemplate extends Component {
                 <form className="form-horizontal">
                     <div className="row">
                         <div className="col-sm-6">
-                            <div className={'form-group has-feedback' + (submitted && editingTemplate.organizationalUnit==="" ? ' has-error' : '')}>
+                            <div className={'form-group has-feedback'}>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                 <div className={`col-sm-10 form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
@@ -329,18 +329,15 @@ class ModalEditTaskTemplate extends Component {
                                     }
                                     <ErrorLabel content={this.state.editingTemplate.errorOnUnit}/>
                                 </div>
-                                {submitted && editingTemplate.organizationalUnit === "" &&
-                                    <div className="col-sm-4 help-block">Hãy chọn đơn vị quản lý mẫu</div>
-                                }
                             </div>
-                            <div className={'form-group has-feedback' + (submitted && !editingTemplate.name ? ' has-error' : '')}>
+                            <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     <input type="Name" className="form-control" placeholder="Tên mẫu công việc" defaultValue ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
                                 </div>
                             </div>
-                            <div className={'form-group has-feedback' + (submitted && editingTemplate.readByEmployees === [] ? ' has-error' : '')}>
+                            <div className={'form-group has-feedback'}>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     {listRole && editingTemplate.readByEmployees &&
@@ -364,9 +361,6 @@ class ModalEditTaskTemplate extends Component {
                                     }
                                     <ErrorLabel content={this.state.editingTemplate.errorOnRead}/>
                                 </div>
-                                {submitted && editingTemplate.readByEmployees === "" &&
-                                    <div className="col-sm-4 help-block">Hãy phân quyền những người được xem mẫu này</div>
-                                }
                             </div>
                             <div className='form-group has-feedback'>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
@@ -478,14 +472,14 @@ class ModalEditTaskTemplate extends Component {
                         </div>
 
                         <div className="col-sm-6">
-                            <div className={'form-group has-feedback' + (submitted && !editingTemplate.description ? ' has-error' : '')}>
+                            <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" defaultValue={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
                                 </div>
                             </div>
-                            <div className={'form-group has-feedback' + (submitted && !editingTemplate.formula ? ' has-error' : '')}>
+                            <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
