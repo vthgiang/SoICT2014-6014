@@ -518,12 +518,13 @@ class DetailTaskTab extends Component {
                                         {/* Task information*/}
                                         <strong>Thông tin công việc</strong>
                                         <div style={{ marginLeft: "10px" }}>
-                                            <p>Mức độ hoàn thành: {task && task.progress}%</p>
+                                            <p>-&nbsp;Mức độ hoàn thành: {task && task.progress}%</p>
                                             {
                                                 (task && task.taskInformations.length !== 0) &&
                                                 task.taskInformations.map(info => {
                                                     return <div>
-                                                        <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
+                                                        <p>-&nbsp;{info.name}</p>
+                                                        {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
                                             }
@@ -549,7 +550,7 @@ class DetailTaskTab extends Component {
                                         {
                                             (task && task.evaluations.length !== 0) ?
 
-                                            (task.evaluations.map(eva => {
+                                            ( task.evaluations.map(eva => {
                                                 if (eva.results.length !== 0) {
                                                     return <div>
                                                         <strong>Đánh giá ngày: <span>( {this.formatDate(eva.date)} )</span></strong>
@@ -634,7 +635,10 @@ class DetailTaskTab extends Component {
                                                         }
                                                     </div>
                                                 }
-                                            })): <p>Chưa đánh giá công viêc</p>
+                                            })) 
+                                            : <div>
+                                                <p>Chưa đánh giá công viêc</p>
+                                            </div> 
                                         }
                                     </div>
                                 </fieldset>

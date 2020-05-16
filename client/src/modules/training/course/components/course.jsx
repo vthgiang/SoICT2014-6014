@@ -93,11 +93,6 @@ class TrainingPlan extends Component {
                     <CourseCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách các khoá đào tạo:</h4>
-                        </div>
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group">
                             <label style={{ width: 110 }} className="form-control-static">Mã khoá đào tạo</label>
                             <input type="text" className="form-control" name="courseId" onChange={this.handleChange} autoComplete="off" />
                         </div>

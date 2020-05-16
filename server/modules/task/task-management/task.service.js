@@ -210,69 +210,69 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (perpageId,numberId,uni
  */
 
 
-exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
+exports.createTask = async (task) => {
     // Lấy thông tin công việc cha
-        var level = 1;
-        if (mongoose.Types.ObjectId.isValid(parentId)) {
-            var parent = await Task.findById(parentId);
-            if (parent) level = parent.level + 1;
-        }
-        
-        // convert thời gian từ string sang date
-        var startTime = startDateId.split("-");
-        var startDate = new Date(startTime[2], startTime[1]-1, startTime[0]);
-        var endTime = endDateId.split("-");
-        var endDate = new Date(endTime[2], endTime[1]-1, endTime[0]);
-        
-        if(taskTemplateId !== null){
-            var taskTemplate = await TaskTemplate.findById(taskTemplateId);
-            var taskActions = taskTemplate.taskActions;
-            taskActions.toObject();
-            taskActions.forEach(item => {
-                item.creator=creatorId
-                delete item._id
-            });
+    var level = 1;
+    if (mongoose.Types.ObjectId.isValid(task.parent)) {
+        var parent = await Task.findById(task.parent);
+        if (parent) level = parent.level + 1;
+    }
+    
+    // convert thời gian từ string sang date
+    var splitter = task.startDate.split("-");
+    var startDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+    splitter = task.endDate.split("-");
+    var endDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+    
+    if(task.taskTemplate !== null){
+        var taskTemplate = await TaskTemplate.findById(task.taskTemplate);
+        var taskActions = taskTemplate.taskActions;
+        var cloneActions = [];
 
+        for (let i in taskActions) {
+            cloneActions[i] = {
+                mandatory: taskActions[i].mandatory,
+                name:  taskActions[i].name,
+                description:  taskActions[i].description,
+                creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
+                // createdAt:  taskActions[i].createdAt,
+                // updatedAt:  taskActions[i].updatedAt
+            }
         }
-        console.log(taskActions)
-        var evaluations = [{
-            // date: startDate,
-            kpis : kpiId,
-            results : [],
-            taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-        }]
+    }
+    var evaluations = [{
+        results : [],
+        taskInformations: taskTemplate?taskTemplate.taskInformations:[],
+    }]
 
-        var task = await Task.create({ //Tạo dữ liệu mẫu công việc
-            organizationalUnit: unitId,
-            creator: creatorId, //id của người tạo
-            name: nameId,
-            description: descriptionId,
-            startDate: startDate,
-            endDate: endDate,
-            priority: priorityId,
-            taskTemplate: taskTemplate ? taskTemplate : null,
-            taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-            taskActions: taskTemplate?taskActions:[],
-            role: roleId,
-            parent: parentId,
-            level: level,
-            evaluations: evaluations,
-            responsibleEmployees: responsibleId,
-            accountableEmployees: accountableId,
-            consultedEmployees: consultedId,
-            informedEmployees: informedId,
-        });
+    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
+        organizationalUnit: task.organizationalUnit,
+        creator: task.creator, //id của người tạo
+        name: task.name,
+        description: task.description,
+        startDate: startDate,
+        endDate: endDate,
+        priority: task.priority,
+        taskTemplate: taskTemplate ? taskTemplate : null,
+        taskInformations: taskTemplate? taskTemplate.taskInformations: [],
+        taskActions: taskTemplate? cloneActions: [],
+        parent: task.parent,
+        level: level,
+        evaluations: evaluations,
+        responsibleEmployees: task.responsibleEmployees,
+        accountableEmployees: task.accountableEmployees,
+        consultedEmployees: task.consultedEmployees,
+        informedEmployees: task.informedEmployees,
+    });
 
-        if(taskTemplateId !== null){
-            var taskTemplate = await TaskTemplate.findByIdAndUpdate(
-                taskTemplateId, { $inc: { 'numberOfUse': 1} }, { new: true }
-            );
-        }
-        
-        task = await task.populate({path: "organizationalUnit creator parent"},
-        )
-        console.log("HAHHAHA")
-        return task;
+    if(task.taskTemplate !== null){
+        var taskTemplate = await TaskTemplate.findByIdAndUpdate(
+            task.taskTemplate, { $inc: { 'numberOfUse': 1} }, { new: true }
+        );
+    }
+
+    task = await task.populate({path: "organizationalUnit creator parent"},)
+    return task;
 }
 
 /**
