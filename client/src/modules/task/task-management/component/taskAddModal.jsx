@@ -300,44 +300,40 @@ class ModalAddTask extends Component {
                         <div className="col-sm-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin công việc</legend>
-                                <div className={`form-group ${newTask.errorOnName===undefined?"":"has-error"}`}>
+                                <div className={`${newTask.errorOnName===undefined?"":"has-error"}`}>
                                     <label>Tên công việc*</label>
                                     <input type="Name" className="form-control" placeholder="Tên công việc" value={newTask.name} onChange={this.handleChangeTaskName} />
                                     <ErrorLabel content={newTask.errorOnName}/>
                                 </div>
-                                <div className={'form-group has-feedback'}>
+                                <div className={'form-group'}>
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc</label>
-                                    <div className={`col-sm-10 form-group ${newTask.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%' }}>
+                                    <div className={`col-sm-10 ${newTask.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%' }}>
                                         <textarea type="Description" className="form-control" name="Mô tả công việc" placeholder="Mô tả công việc" value={newTask.description} onChange={this.handleChangeTaskDescription}/>
                                         <ErrorLabel content={newTask.errorOnDescription}/>
                                     </div>
                                 </div>
-                                <div className={'form-group has-feedback'}>
-                                    <div className="col-sm-6">
+                                <div className="row form-group">
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
                                         <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày bắt đầu*:</label>
-                                        <div className={`col-sm-10 form-group ${newTask.errorOnStartDate===undefined?"":"has-error"}`} style={{ width: '100%' }}>
-                                            <DatePicker 
-                                                id="datepicker1"
-                                                dateFormat="day-month-year"
-                                                value={newTask.startDate}
-                                                onChange={this.handleChangeTaskStartDate}
-                                            />
-                                            <ErrorLabel content={newTask.errorOnStartDate}/>
-                                        </div>
+                                        <DatePicker 
+                                            id="datepicker1"
+                                            dateFormat="day-month-year"
+                                            value={newTask.startDate}
+                                            onChange={this.handleChangeTaskStartDate}
+                                        />
+                                        <ErrorLabel content={newTask.errorOnStartDate}/>
                                     </div>
-                                    <div className="col-sm-6">
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
                                         <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày kết thúc*:</label>
-                                        <div className={`col-sm-10 form-group ${newTask.errorOnEndDate===undefined?"":"has-error"}`} style={{ width: '100%' }}>
-                                            <DatePicker 
-                                                id="datepicker2"
-                                                value={newTask.endDate}
-                                                onChange={this.handleChangeTaskEndDate}
-                                            />
-                                            <ErrorLabel content={newTask.errorOnEndDate}/>
-                                        </div>
+                                        <DatePicker 
+                                            id="datepicker2"
+                                            value={newTask.endDate}
+                                            onChange={this.handleChangeTaskEndDate}
+                                        />
+                                        <ErrorLabel content={newTask.errorOnEndDate}/>
                                     </div>
                                 </div>
-                                <div className="form-group has-feedback">
+                                <div className="form-group">
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mức độ ưu tiên</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         <select className="form-control" style={{ width: '100%' }} value={newTask.priority} onChange={this.handleChangeTaskPriority}>
@@ -352,9 +348,9 @@ class ModalAddTask extends Component {
                         <div className="col-sm-6">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Phân định trách nhiệm (RACI)</legend>
-                                <div className={'form-group has-feedback'}>
+                                <div className={'form-group'}>
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện*</label>
-                                    <div className={`col-sm-10 form-group ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
+                                    <div className={`col-sm-10 ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
                                         {userdepartments &&
                                         <SelectBox
                                             id={`responsible-select-box`}
@@ -378,9 +374,9 @@ class ModalAddTask extends Component {
                                         <ErrorLabel content={newTask.errorOnResponsibleEmployees}/>
                                     </div>
                                 </div>
-                                <div className={'form-group has-feedback'}>
+                                <div className={'form-group'}>
                                     <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt*</label>
-                                    <div className={`col-sm-10 form-group ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
+                                    <div className={`col-sm-10 ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
                                         {userdepartments &&
                                             <SelectBox
                                                 id={`accounatable-select-box`}
@@ -404,7 +400,7 @@ class ModalAddTask extends Component {
                                         <ErrorLabel content={newTask.errorOnAccountableEmployees}/>
                                     </div>
                                 </div>
-                                <div className='form-group has-feedback'>
+                                <div className='form-group'>
                                     <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
@@ -424,7 +420,7 @@ class ModalAddTask extends Component {
                                         }
                                     </div>
                                 </div>
-                                <div className='form-group has-feedback'>
+                                <div className='form-group'>
                                     <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
@@ -450,7 +446,7 @@ class ModalAddTask extends Component {
                         <div className="col-sm-6">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Liên kết công việc</legend>
-                                <div className={'form-group has-feedback'}>
+                                <div className={'form-group'}>
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {units &&
@@ -462,7 +458,7 @@ class ModalAddTask extends Component {
                                     </div>
                                 </div>
                                 
-                                <div className="form-group  has-feedback">
+                                <div className="form-group ">
                                     {
                                         (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
                                             <div>
@@ -483,7 +479,7 @@ class ModalAddTask extends Component {
                                             </div> : null
                                     }
                                 </div>
-                                <div className="form-group  has-feedback">
+                                <div className="form-group">
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         <select className="form-control" style={{ width: '100%' }} value={newTask.parent} onChange={this.handleChangeTaskParent}>
