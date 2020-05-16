@@ -36,8 +36,8 @@ class ModalAddTask extends Component {
                 informedEmployees: [],
                 creator: getStorage("userId"),
                 organizationalUnit: "",
-                taskTemplate: null,
-                parent: null,
+                taskTemplate: "",
+                parent: "",
             },
 
             currentRole: getStorage('currentRole'),
@@ -261,9 +261,34 @@ class ModalAddTask extends Component {
         });
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { user } = this.props;
+        const { newTask } = this.state;
+
+        // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
+        if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+            // Tìm unit mà currentRole của user đang thuộc về
+            let defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            
+            this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
+                return{
+                    ...state,
+                    newTask: {
+                        ...this.state.newTask,
+                        organizationalUnit: defaultUnit._id
+                    }
+                };
+            });
+            return false; // Sẽ cập nhật lại state nên không cần render
+        }
+        return true;
+    }
 
     render() {
-        var units, currentUnit, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
+        var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
@@ -271,14 +296,6 @@ class ModalAddTask extends Component {
         }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
-            currentUnit = units.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-
-            if (newTask.organizationalUnit === ""){
-                newTask.organizationalUnit = currentUnit._id; // Khởi tạo state lưu giá trị Unit Select Box
-            }
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -286,7 +303,6 @@ class ModalAddTask extends Component {
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
-        console.log(this.state.newTask)
         return (
             <React.Fragment>
                 <DialogModal
@@ -450,7 +466,7 @@ class ModalAddTask extends Component {
                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {units &&
-                                            <select value={currentUnit._id} className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskOrganizationalUnit}>
+                                            <select value={newTask.organizationalUnit} className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskOrganizationalUnit}>
                                                 {units.map(x => {
                                                     return <option key={x._id} value={x._id}>{x.name}</option>
                                                 })}
