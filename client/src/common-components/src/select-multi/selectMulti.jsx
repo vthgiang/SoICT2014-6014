@@ -77,7 +77,7 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items, display } = this.props;
+        const { id, items, display="" } = this.props;
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
