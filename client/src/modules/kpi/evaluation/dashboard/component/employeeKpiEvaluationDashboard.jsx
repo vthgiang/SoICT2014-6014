@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+
+import { SelectBox, SelectMulti } from '../../../../../common-components';
+
 import Swal from 'sweetalert2';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { LOCAL_SERVER_API } from '../../../../../env';
@@ -10,6 +14,10 @@ import { LOCAL_SERVER_API } from '../../../../../env';
 class DashBoardKPIMember extends Component {
     constructor(props) {
         super(props);
+
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        
         this.state = {
             commenting: false,
             infosearch: {
@@ -20,7 +28,10 @@ class DashBoardKPIMember extends Component {
                 endDate: this.formatDate(Date.now())
             },
             showApproveModal: "",
-            showEvaluateModal: ""
+            showEvaluateModal: "",
+            monthOfExcellentEmployees: currentMonth - 1,
+            numberOfExcellentEmployees: 1,
+            role: [localStorage.getItem("currentRole")]
         };
     }
     componentDidMount() {
@@ -48,8 +59,9 @@ class DashBoardKPIMember extends Component {
         this.handleResizeColumn();
 
 
-        this.props.getAllEmployeeKpiSetOfUnit(localStorage.getItem("currentRole"));
-        this.props.getAllEmployeeOfUnit(localStorage.getItem("currentRole"));
+        this.props.getAllEmployeeKpiSetOfUnit([localStorage.getItem("currentRole")]);
+        this.props.getAllEmployeeOfUnit([localStorage.getItem("currentRole")]);
+        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -160,22 +172,67 @@ class DashBoardKPIMember extends Component {
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+
+    handleMonthChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                monthOfExcellentEmployees: value[0]   
+            }
+        });        
+    }
+
+    handleNumberOfEmployeesChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                numberOfExcellentEmployees: value[0]   
+            }
+        });    
+    }
+
+    handleSelectOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                role: value
+            }
+        });   
+    }
+
+    handleUpdateData = () => {
+        this.props.getAllEmployeeKpiSetOfUnit(this.state.role);
+        this.props.getAllEmployeeOfUnit(this.state.role);
+    }
+
     render() {
         var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
+        var { monthOfExcellentEmployees, numberOfExcellentEmployees } = this.state;
+
         var currentDate = new Date();
         var currentMonth = currentDate.getMonth();
 
         if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets !== undefined){
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
 
-            //Lấy các kpi set của tháng trước
-            lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => new Date(item.date).getMonth() == currentMonth - 1);
+            //Lấy các kpi set của tháng cần xem
+            lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => new Date(item.date).getMonth() == monthOfExcellentEmployees);
 
             // Sắp xếp theo chiều giảm dần điểm được phê duyệt
             lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
 
-            // Lấy 8 kpi set có điểm được phê duyệt cao nhất
-            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, 8);
+            // Lấy các kpi set có điểm được phê duyệt cao nhất
+            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
+        }
+
+        var items = [];
+        for(var i = 1; i <= currentMonth; i++){
+            items[i - 1] = {value: currentMonth - i, text: currentMonth - i + 1}
+        }
+        
+        var employeeItems = [];
+        for(var i = 1; i <= 20; i++){
+            employeeItems[i - 1] = {value: i, text: i}
         }
 
         if(employeeKpiSets !== undefined){
@@ -188,9 +245,31 @@ class DashBoardKPIMember extends Component {
             awaitingApprovalKpi = awaitingApprovalKpi.length;
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
-
+        }
+        
+        if(this.props.dashboardEvaluationEmployeeKpiSet.employees !== undefined){
             numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.employees.length;
-        }        
+        }
+
+        var queue = [];
+        var childrenOrganizationalUnit = [];
+        if(this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit !== undefined){
+           var currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            
+           childrenOrganizationalUnit.push(currentOrganizationalUnit);
+           queue.push(currentOrganizationalUnit);
+           while(queue.length > 0){
+               var v = queue.shift();
+               if(v.children !== undefined){
+                for(var i = 0; i < v.children.length; i++){
+                    var u = v.children[i];
+                    queue.push(u);
+                    childrenOrganizationalUnit.push(u);
+                }
+            }
+           }
+        }
+        
 
 
 
@@ -251,6 +330,22 @@ class DashBoardKPIMember extends Component {
         return (
             <div className="table-wrapper">
                 <section className="content">
+
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className = "form-control-static">Đơn vị </label>
+                            {childrenOrganizationalUnit &&
+                                <SelectMulti id="multiSelectOrganizationalUnit"
+                                    defaultValue = {childrenOrganizationalUnit.map(item => {return item.dean})}
+                                    items = {childrenOrganizationalUnit.map(item => {return {value: item.dean, text: item.name}})} 
+                                    options = {{nonSelectedText: "Chọn tất cả đơn vị", allSelectedText: "Tất cả các đơn vị"}}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                >
+                                </SelectMulti>
+                            }
+                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>Search</button>
+                        </div>
+                    </div>
                     
                     <div className="row">
                         <div className="col-md-3 col-sm-6 form-inline">
@@ -299,7 +394,24 @@ class DashBoardKPIMember extends Component {
                                 <div className="box-header with-border">
                                     <h3 className="box-title">Nhân viên ưu tú</h3>
                                     <div className="box-tools pull-right">
-                                        <span className="label label-danger">8 nhân viên xuất sắc nhất</span>
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id={`month`}
+                                            className="form-control select2"
+                                            style={{width: "30%"}}
+                                            items = {items}
+                                            onChange={this.handleMonthChange}
+                                            multiple={false}
+                                        /> 
+
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id={`number-of-employees`}
+                                            className="form-control select2"
+                                            style={{width: "30%"}}
+                                            items = {employeeItems}
+                                            onChange={this.handleNumberOfEmployeesChange}
+                                            multiple={false}
+                                        />
+                                        <span className="label label-danger">{`${numberOfExcellentEmployees} nhân viên xuất sắc nhất`}</span>
                                         <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
                                         {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" />
                                         </button> */}
@@ -613,8 +725,8 @@ class DashBoardKPIMember extends Component {
 }
  
 function mapState(state) {
-    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = state;
-    return { user, kpimembers, dashboardEvaluationEmployeeKpiSet };
+    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet, department } = state;
+    return { user, kpimembers, dashboardEvaluationEmployeeKpiSet, department };
 }
  
 const actionCreators = {
@@ -622,7 +734,8 @@ const actionCreators = {
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
     getAllEmployeeKpiSetOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnit,
-    getAllEmployeeOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnit
+    getAllEmployeeOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnit,
+    getChildrenOfOrganizationalUnitsAsTree : DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(DashBoardKPIMember);
 export { connectedKPIMember as DashBoardKPIMember };

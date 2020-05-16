@@ -278,4 +278,6 @@ exports.data = [
     // Module DashboardEvaluationEmployeeKpiSet
     { path: '/kpi/evaluation/dashboard/get-all-employee-kpi/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/kpi/evaluation/dashboard/users/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/organizational-unit/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    
 ];
