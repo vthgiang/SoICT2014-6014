@@ -75,7 +75,9 @@ class ModalEditTaskTemplate extends Component {
         }
 
         let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
-        newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate !== this.props.tasktemplates.taskTemplate);
+        if (this.props.tasktemplates.taskTemplate){
+            newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
+        }
         if (newDataArrived){ // Dữ liệu đã về vầ được bind vào prop
             this.setState(state =>{
                 return {
