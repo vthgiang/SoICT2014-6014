@@ -1,7 +1,6 @@
 
-import { TOKEN_SECRET, LOCAL_SERVER_API } from '../../../../../env';
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { getStorage } from '../../../../../config';
-import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const EmployeeService = {
@@ -13,11 +12,9 @@ export const EmployeeService = {
  * Lấy thông tin cá nhân
  */ 
 async function getEmployeeProfile() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var email = verified.email;
+    var id = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employee/${email}`,
+        url: `${ LOCAL_SERVER_API }/employees/personals/${id}`,
         method: 'GET',
     }, false, true, 'human_resource.profile.employee_info');
 }
@@ -27,12 +24,10 @@ async function getEmployeeProfile() {
  * @data : dữ liệu cập nhật thông tin cá nhân
  */
 async function updatePersonalInformation(data) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var email = verified.email;
+    var id = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employee/${email}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/employees/personals/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.profile.employee_info');
 }

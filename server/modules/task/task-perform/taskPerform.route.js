@@ -38,7 +38,7 @@ router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
 //task action
 router.post('/task-action/create', PerformTaskController.createTaskAction)
 router.get('/task-action/:task', PerformTaskController.getTaskActions);
-router.put('/task-action/:id',auth, PerformTaskController.editTaskAction);
+router.put('/task-action', PerformTaskController.editTaskAction);
 router.delete('/task-action/:task/:id', PerformTaskController.deleteTaskAction);
 //comment of task action
 router.post('/action-comment/create',auth,  PerformTaskController.createCommentOfTaskAction);//,upload.single('file')

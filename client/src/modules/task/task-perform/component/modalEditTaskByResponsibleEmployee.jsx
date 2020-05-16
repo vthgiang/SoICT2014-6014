@@ -4,8 +4,6 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
-import jwt from "jsonwebtoken";
-import { TOKEN_SECRET } from "../../../../env";
 
 
 class ModalEditTaskByResponsibleEmployee extends Component {
@@ -13,9 +11,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     constructor(props) {
         super(props);
 
-        const token = getStorage();
-        const verified = jwt.verify(token, TOKEN_SECRET);
-        let userId = verified._id;
+        var userId = getStorage("userId");
 
 
         let { tasks } = this.props;

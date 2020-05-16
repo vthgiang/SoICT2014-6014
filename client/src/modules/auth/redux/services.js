@@ -39,7 +39,7 @@ function logoutAllAccount() {
 }
 
 function editProfile(data) {
-    var id = getStorage('userId');
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
@@ -49,7 +49,7 @@ function editProfile(data) {
 }
 
 function changeInformation(data) {
-    var id = getStorage('userId');
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
@@ -59,7 +59,7 @@ function changeInformation(data) {
 }
 
 function changePassword(data) {
-    var id = getStorage('userId');
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
@@ -68,15 +68,15 @@ function changePassword(data) {
     }, true, true, 'auth');
 }
 
-async function getLinksOfRole(idRole) {
+function getLinksOfRole(idRole) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-links-that-role-can-access/${idRole}`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
-async function refresh() {
-    var id = getStorage('userId');
+function refresh() {
+    var id = getStorage("userId");
     
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-profile/${id}`,

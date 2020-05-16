@@ -35,9 +35,6 @@ class DepartmentManage extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        <h4 className="box-title">{translate('manage_unit.list_unit')}:</h4>
-                    </div>
                     <TreeTable
                         behaviour="show-children"
                         column={column}

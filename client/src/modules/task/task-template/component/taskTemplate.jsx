@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-// sửa đường dẫn sau khi vào project mới
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
@@ -24,8 +23,6 @@ class TaskTemplate extends Component {
             perPage: 5,
             unit: [],
             currentRole: localStorage.getItem("currentRole"),
-            showView: "",
-            showEdit: "",
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
     }
@@ -43,12 +40,6 @@ class TaskTemplate extends Component {
             this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", this.name.value);
         }
     }
-    // handleAction = (id) => {
-    //     // Đóng cửa sổ cài đặt
-    //     var element = document.getElementById(`action${id}`);
-    //     element.classList.remove("in");
-    //     element.setAttribute("aria-expanded", "false");
-    // }
 
     myFunction = () => {
         var input, filter, table, tr, td, i, txtValue;
@@ -92,29 +83,6 @@ class TaskTemplate extends Component {
                         currentPage: 1
                     }
                 })
-    }
-    handleShowView = async (id) => {
-        await this.setState(state=>{
-            return{
-                ...state,
-                showView: id
-            }
-        })
-        window.$('#modal-view-tasktemplate').modal('show');
-    }
-    handleShowEdit = async (template) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showEdit: template._id,
-                currentRow : template,
-            }
-        })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`editTaskTemplate${template._id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
     }
 
 
@@ -171,6 +139,7 @@ class TaskTemplate extends Component {
         });
         return result;
     }
+
     setPage = async (pageTotal) => {
         var test = window.$("#multiSelectUnit").val();
         var oldCurrentPage = this.state.currentPage;
@@ -183,6 +152,29 @@ class TaskTemplate extends Component {
         var newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
     }
+
+
+
+    handleView = async (taskTemplateId) => {
+        await this.setState(state=>{
+            return{
+                ...state,
+                currentViewRow: taskTemplateId
+            }
+        })
+        window.$('#modal-view-tasktemplate').modal('show');
+    }
+    handleEdit = async (taskTemplateId) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentEditRow : taskTemplateId,
+            }
+        })
+        window.$('#modal-edit-task-template').modal('show');
+    }
+
+
     render() {
         const { translate } = this.props;
         var list, pageTotal, units = [], currentUnit;
@@ -203,13 +195,13 @@ class TaskTemplate extends Component {
         
         return ( 
             <div className="box">
-                {/* /.box-header */}
+
                 <div className="box-body qlcv" id="table-task-template">
+                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
+                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
 
                     <div className = "form-group">
-                        {this.checkHasComponent('create-task-template-button') &&
-                        <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một mẫu công việc" data-target="#addTaskTemplate" data-backdrop="static" data-keyboard="false">{translate('task_template.add')}</button>}
-                        <ModalAddTaskTemplate />
+                        {this.checkHasComponent('create-task-template-button') && <ModalAddTaskTemplate />}
                     </div>
                     
                     <div className="form-inline">
@@ -261,28 +253,31 @@ class TaskTemplate extends Component {
                         <tbody className="task-table">
                             {
                                 (typeof list !== 'undefined' && list.length !== 0) ?
-                                    list.map(item =>
-                                        item.resourceId && <tr key={item.resourceId._id}>
-                                            <td title={item.resourceId.name}>{item.resourceId.name}</td>
-                                            <td title={item.resourceId.description}>{item.resourceId.description}</td>
-                                            <td title={item.resourceId.numberOfUse}>{item.resourceId.numberOfUse}</td>
-                                            <td title={item.resourceId.creator.name}>{item.resourceId.creator.name}</td>
-                                            <td title={item.resourceId.organizationalUnit.name}>{item.resourceId.organizationalUnit.name}</td>
+                                    list.map(item => item &&
+                                        <tr key={item._id}>
+                                            <td title={item.name}>{item.name}</td>
+                                            <td title={item.description}>{item.description}</td>
+                                            <td title={item.numberOfUse}>{item.numberOfUse}</td>
+                                            <td title={item.creator.name}>{item.creator.name}</td>
+                                            <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
                                             <td>
-                                                <a href="#abc" onClick={()=>this.handleShowView(item.resourceId._id)} data-toggle="modal" title="Xem chi tiết mẫu công việc này">
+                                                <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
-                                                {this.state.showView===item.resourceId._id&&<ModalViewTaskTemplate id={item.resourceId._id} />}
                                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                     <React.Fragment>
-                                                        <a onClick={()=>this.handleShowEdit(item.resourceId)} data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
-                                                        <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.numberOfUse)} className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
-                                                    </React.Fragment>}
-                                                    {this.state.showEdit===item.resourceId._id&&this.state.currentRow&&<ModalEditTaskTemplate id={item.resourceId._id} 
-                                                                                                                                taskTemplate = {this.state.currentRow}/>}
+                                                        <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
+                                                            <i className="material-icons">edit</i>
+                                                        </a>
+                                                        <a onClick={()=>this.handleDelete(item._id, item.numberOfUse)} className="delete" title="Xóa mẫu công việc này">
+                                                            <i className="material-icons"></i>
+                                                        </a>
+                                                    </React.Fragment>
+                                                }
                                             </td>
                                         </tr>
-                                    ) : <tr><td colSpan={6}><center>Không có dữ liệu</center></td></tr>
+                                    ):
+                                <tr><td colSpan={6}><center>Không có dữ liệu</center></td></tr>
                             }
                         </tbody>
                     </table>

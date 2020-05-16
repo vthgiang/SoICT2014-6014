@@ -4,12 +4,8 @@ import { managerActions } from '../redux/actions';
 // import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
 import Swal from 'sweetalert2';
 import {
-    TOKEN_SECRET
-} from '../../../../../env';
-import {
     getStorage
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
 
 class ModalCopyKPIUnit extends Component {
     constructor(props) {
@@ -44,9 +40,7 @@ class ModalCopyKPIUnit extends Component {
     }
     handleSubmit = async (event, oldkpiunit) => {
         event.preventDefault();
-        const token = getStorage();
-        const verified = await jwt.verify(token, TOKEN_SECRET);
-        var id = verified._id;
+        var id = getStorage("userId");
         // kpiunit.creator = id;
         await this.setState(state => {
             return {
