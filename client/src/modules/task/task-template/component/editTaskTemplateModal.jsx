@@ -75,6 +75,9 @@ class ModalEditTaskTemplate extends Component {
         }
 
         let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
+        if (!newDataArrived){
+            return false; // Đang lấy dữ liệu, không cần render
+        }
         if (this.props.tasktemplates.taskTemplate){
             newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
         }
@@ -85,7 +88,7 @@ class ModalEditTaskTemplate extends Component {
                     editingTemplate: nextProps.tasktemplates.taskTemplate,
                 };
             });
-            return false;
+            return false; // Cần cập nhật lại state, không cần render
         }
 
         return true;
