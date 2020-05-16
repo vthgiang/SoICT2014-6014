@@ -84,22 +84,14 @@ export function tasktemplates(state = {}, action) {
                 isLoading: false
             };
         case taskTemplateConstants.ADDNEW_TEMPLATE_SUCCESS:
-            if(state.items.length < 5){ 
-                return {
-                    ...state,
-                    items: [
-                        ...state.items,
-                        action.payload.content
-                    ],
-                    isLoading: false
-                };    
-            }
-            else{
-                return {
-                    ...state,
-                    isLoading: false
-                };
-            }
+            return {
+                ...state,
+                items: [
+                    ...state.items,
+                    action.payload.content
+                ],
+                isLoading: false
+            };
         case taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE:
             return {
                 error: action.error,
@@ -140,7 +132,7 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.DELETE_TEMPLATE_SUCCESS:
             return {
                 ...state,
-                items: state.items.filter(template => template._id !== action.payload.id),
+                items: state.items.filter(template => template !== null && template._id !== action.payload.id),
                 isLoading: false
             };
         case taskTemplateConstants.DELETE_TEMPLATE_FAILURE:
