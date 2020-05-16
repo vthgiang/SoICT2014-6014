@@ -333,7 +333,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" defaultValue ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
                                 </div>
                             </div>
@@ -475,14 +475,14 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" defaultValue={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                    <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
                                 </div>
                             </div>
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
                                 </div>
                                 
@@ -498,7 +498,7 @@ class ModalEditTaskTemplate extends Component {
                                     (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
                                         <span>{translate('task_template.no_data')}</span>:
                                         editingTemplate.taskInformations.map((item, index) => 
-                                            <div style={{paddingBottom: "20px"}}>
+                                            <div style={{paddingBottom: "20px"}} key={index}>
                                                 <div>
                                                     <label>{item.name} - Kiểu {item.type}</label>
                                                     {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}
