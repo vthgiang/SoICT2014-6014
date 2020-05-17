@@ -26,6 +26,9 @@ const initState = {
             prevPage: 0,
             nextPage: 0,
         },
+
+        domains: [], // cây danh mục các văn bản
+
         listData: {
             list: [], paginate: [],
             totalDocs: 0,
@@ -49,14 +52,18 @@ export function documents(state = initState, action) {
     var indexPaginate = -1;
     switch (action.type) {
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST:
-        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
+        case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
+        case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             }
 
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_FAILE:
-        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE:        
+        case DocumentConstants.GET_DOCUMENT_DOMAINS_FAILE:
+        case DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -89,6 +96,17 @@ export function documents(state = initState, action) {
                             ...state.administration.categories.list
                         ]
                     }
+                }
+            };
+
+        case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
+        case DocumentConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    domains: action.payload
                 }
             };
 

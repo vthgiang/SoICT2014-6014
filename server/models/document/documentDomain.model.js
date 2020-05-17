@@ -16,7 +16,11 @@ const DocumentDomainSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'companies',
         required: true
-    }
+    },
+    parent: [{
+        type: Schema.Types.ObjectId,
+        replies: this
+    }]
 },{
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }

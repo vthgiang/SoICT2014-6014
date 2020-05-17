@@ -7,8 +7,15 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            value: ['0-0-0'],
+        }
     }
+
+    handleSelect = (value) => {
+        console.log('onChange ', value);
+        this.setState({ value });
+    };
 
     handleName = (e) => {
         const value = e.target.value;
@@ -34,9 +41,9 @@ class CreateForm extends Component {
 
     render() {
         const {translate}=this.props;
-
         return ( 
             <React.Fragment>
+                
                 <ButtonModal modalID="modal-create-document-type" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
                 <DialogModal
                     modalID="modal-create-document-type"

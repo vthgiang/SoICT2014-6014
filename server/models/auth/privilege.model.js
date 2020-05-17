@@ -20,9 +20,9 @@ const PrivilegeSchema = new Schema({
         ref: Role,
         required: true
     },
-    actions: [{ //luu id cua hanh dong tuong ung
-        type: Schema.Types.ObjectId,
-        ref: Action
+    actions: [{
+        type: String,
+        enum: ['See', 'Open', 'Edit', 'Delete'],
     }]
 });
 

@@ -13,10 +13,10 @@ const DocumentSchema = new Schema({
         ref: 'companies',
         required: true
     },
-    domain: {
+    domains: [{
         type: Schema.Types.ObjectId,
         ref: 'document_domains'
-    },
+    }],
     category: {
         type: Schema.Types.ObjectId,
         ref: 'document_categories'

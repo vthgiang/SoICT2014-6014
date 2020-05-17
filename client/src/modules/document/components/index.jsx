@@ -11,25 +11,26 @@ class Document extends Component {
         this.state = {  }
     }
     render() { 
+        const {translate} = this.props;
         return ( 
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li><a href="#administration-document-categories" data-toggle="tab">Loại văn bản</a></li>
-                    <li><a href="#administration-document-domains" data-toggle="tab">Danh mục văn bản</a></li>
-                    <li className="active"><a href="#administration-document-list-data" data-toggle="tab">Bảng dữ liệu</a></li>
-                    <li><a href="#administration-statistics-report" data-toggle="tab">Thống kê báo cáo</a></li>
-                    <li><a href="#user-documents" data-toggle="tab">Bảng dữ liệu (của user)</a></li>
-                    <li><a href="#user-history-statistics" data-toggle="tab">Lịch sử và thống kê</a></li>
+                    <li className="active"><a href="#administration-document-list-data" data-toggle="tab">{translate('document.data')}</a></li>
+                    <li><a href="#administration-document-categories" data-toggle="tab">{translate('document.category')}</a></li>
+                    <li><a href="#administration-document-domains" data-toggle="tab">{translate('document.domain')}</a></li>
+                    <li><a href="#administration-statistics-report" data-toggle="tab">{translate('document.statistics_report')}</a></li>
+                    <li><a href="#user-documents" data-toggle="tab">{translate('document.data')}</a></li>
+                    <li><a href="#user-history-statistics" data-toggle="tab">{translate('document.history_report')}</a></li>
                 </ul>
                 <div className="tab-content">
+                    <div className="tab-pane active" id="administration-document-list-data">
+                        <AdministrationDocumentListData/>
+                    </div>
                     <div className="tab-pane" id="administration-document-categories">
                         <AdministrationDocumentCategories/>
                     </div>
                     <div className="tab-pane" id="administration-document-domains">
                         <AdministrationDocumentDomains/>
-                    </div>
-                    <div className="tab-pane active" id="administration-document-list-data">
-                        <AdministrationDocumentListData/>
                     </div>
                 </div>
             </div>

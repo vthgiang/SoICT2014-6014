@@ -8,6 +8,12 @@
     min-height: 300px;
 }
 
+.crop-content-image {
+    background-color: rgba(0, 0, 0, 0.199);
+    width: 100%; 
+    min-height: 300px;
+}
+
 @media only screen and (max-width: 1024px) {
     .crop-image-modal{
         width: 90% !important;
@@ -23,12 +29,12 @@
 
 .profile-pic:hover .edit-option {
     display: block;
+    background-color: rgba(0, 0, 0, 0.459);
     font-size: 24px;
 }
 
-.edit-option {
-    padding: 2px 8px 2px 8px;
-    margin: 5px 5px 0px 0px;
+.edit-option { 
+    height: 100%; width: 100%;
     background-color: gray;
     border: 2px solid lightgray;
     border-radius: 10px;
