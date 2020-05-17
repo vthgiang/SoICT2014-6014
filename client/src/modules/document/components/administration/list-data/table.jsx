@@ -28,8 +28,8 @@ class Table extends Component {
                         <tr>
                             <th>{translate('document.name')}</th>
                             <th>{translate('document.description')}</th>
-                            <th>{translate('document.createdAt')}</th>
-                            <th>{translate('document.applyAt')}</th>
+                            <th>{translate('document.created_at')}</th>
+                            <th>{translate('document.apply_at')}</th>
                             <th>{translate('document.views')}</th>
                             <th>{translate('document.downloads')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
@@ -38,8 +38,8 @@ class Table extends Component {
                                     columnArr={[
                                         translate('document.name'), 
                                         translate('document.description'), 
-                                        translate('document.createdAt'), 
-                                        translate('document.applyAt'), 
+                                        translate('document.created_at'), 
+                                        translate('document.apply_at'), 
                                         translate('document.views'), 
                                         translate('document.downloads')
                                     ]}

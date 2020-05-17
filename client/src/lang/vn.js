@@ -386,10 +386,11 @@ export default {
         },
 
         document: {
-            title: 'Quản lý tài liệu biểu mẫu',
-            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục',
-            createdAt: 'Ngày tạo', applyAt: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản',
+            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', users: 'Những vị trí có quyền xem mẫu này',
+            created_at: 'Ngày tạo', apply_at: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
             add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản',
+            upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
 
             category: 'Loại văn bản',
             domain: 'Danh mục văn bản',
