@@ -9,7 +9,7 @@ import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
 // import { withTranslate } from 'react-redux-multilingual';
@@ -104,6 +104,26 @@ class KPIMember extends Component {
             return "Đã kết thúc"
         }
     }
+    handleStartDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    startDate: value,
+                }
+            });
+        
+    }
+    handleEndDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    endDate: value,
+                }
+            });
+        
+    }
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -112,8 +132,8 @@ class KPIMember extends Component {
                     ...state.infosearch,
                     user: this.user.value,
                     status: this.status.value,
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value
+                    startDate: this.state.startDate,
+                    endDate: this.state.endDate
                 }
             }
         })
@@ -162,6 +182,7 @@ class KPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
+        const {startDate, endDate} = this.state;
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -250,16 +271,22 @@ class KPIMember extends Component {
                         <div className="form-inline">
                         <div className="form-group">
                             <label>Từ tháng:</label>
-
-                            <input type="text" className="form-control" ref={input=> this.startDate = input}
-                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
-
+                            <DatePicker
+                            id='start_date'
+                            defaultValue={this.formatDate(Date.now())}
+                            value = {startDate}
+                            onChange={this.handleStartDateChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label>Đến tháng:</label>
 
-                            <input type="text" className="form-control" ref={input=> this.endDate = input}
-                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
+                            <DatePicker
+                            id='end_date'
+                            defaultValue={this.formatDate(Date.now())}
+                            value = {endDate}
+                            onChange={this.handleEndDateChange}
+                            />
                             <div className="form-group">
                             <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
                                 kiếm</button>
@@ -282,7 +309,7 @@ class KPIMember extends Component {
                             limit={this.state.perPage} 
                             setLimit={this.setLimit} 
                             hideColumnOption={true} />
-
+                        
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
