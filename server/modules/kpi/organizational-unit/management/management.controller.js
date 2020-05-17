@@ -23,6 +23,23 @@ exports.get =async (req, res) => {
 
 };
 
+exports.getKPIUnits = async (req, res) => {
+    try {
+        const kpiunits = await managerService.getKPIUnits(req.params);
+        await LogInfo(req.user.email, `Get kpi units`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['search_kpi_units_success'],
+            content: kpiunits
+        });
+    } catch (error) {
+        await LogError(req.user.email, `Get kpi units`, req.user.company);
+        res.status(400).json({
+            messages: ['search_kpi_units_fail'],
+            content: error
+        });
+    }
+};
 
 // Lấy tất cả các mục tiêu con của mục tiêu hiện tại
 exports.getChildTargetByParentId =async (req, res) => {

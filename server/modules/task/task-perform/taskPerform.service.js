@@ -544,7 +544,7 @@ exports.evaluationAction = async (id,body) => {
                 "taskActions.$.evaluations":
                 {
                     creator: body.creator,
-                    status: body.status,
+                    rating: body.rating,
                 }
             }
         }
@@ -556,3 +556,11 @@ exports.evaluationAction = async (id,body) => {
 
     return task.taskActions ;
 }
+
+
+/**
+ * 2 th hien rating
+ *  th1: nguoi chua thuc hien danh gia => elem.creator khong co trong mang
+ * th2: mang evaluation rong
+ * 
+ */

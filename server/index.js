@@ -11,7 +11,7 @@ require('dotenv').config();
 // Application Modules
 const auth = require('./modules/auth/auth.route');
 
-const document = require('./modules/document/document.route');
+const documents = require('./modules/document/document.route');
 
 const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
 const commendation = require('./modules/human-resource/commendation/commendation.route');
@@ -102,7 +102,7 @@ Logger.findOne({
 
 app.use("/auth", auth);
 
-app.use("/document", document);
+app.use("/documents", documents);
 
 app.use("/sabbatical", annualLeave);
 app.use("/praise", commendation);

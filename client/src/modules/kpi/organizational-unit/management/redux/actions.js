@@ -3,6 +3,7 @@ import { managerServices } from "./services";
 
 export const managerActions = {
     getAllKPIUnit,
+    getKPIUnits,
     getChildTargetOfCurrentTarget,
     evaluateKPIUnit,
 }
@@ -26,6 +27,25 @@ function getAllKPIUnit(id) {
                 })
             })
            
+    };
+}
+function getKPIUnits(infosearch) {
+    return dispatch => {
+        dispatch({type: managerConstants.GET_KPIUNITS_REQUEST});
+ 
+        managerServices.getKPIUnits(infosearch)
+            .then(res=>{
+                dispatch({
+                    type: managerConstants.GET_KPIUNITS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.GET_KPIUNITS_FAILURE,
+                    payload: error
+                })
+            })
     };
 }
 

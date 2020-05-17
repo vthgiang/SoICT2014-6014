@@ -46,9 +46,8 @@ class ModalViewTaskTemplate extends Component {
                 >
 
                     {/* Modal Body */}
-                    <form className="form-horizontal">
-                        <div className="row" >
-                            <div className="col-sm-6" >
+                        <div className="row row-equal-height" >
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
                                         Thông tin chung
@@ -66,16 +65,16 @@ class ModalViewTaskTemplate extends Component {
                                         
                                         <dt>Tham số</dt>
                                         <dd>
-                                            <span>D: Tổng số ngày thực hiện công việc (trừ CN)</span><br />
-                                            <span>D0: Số ngày quá hạn</span><br />
-                                            <span>A: Tổng số hoạt động</span><br />
-                                            <span>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</span><br />
+                                            <dd>D: Tổng số ngày thực hiện công việc (trừ CN)</dd>
+                                            <dd>D0: Số ngày quá hạn</dd>
+                                            <dd>A: Tổng số hoạt động</dd>
+                                            <dd>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</dd>
                                         </dd>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="col-sm-6" >
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}} >
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
                                         Các vai trò
@@ -148,9 +147,8 @@ class ModalViewTaskTemplate extends Component {
                             </div>
                         </div>
 
-
-                        <div className="row">
-                            <div className="col-sm-6" >
+                        <div className="row row-equal-height">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}} >
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
                                         {translate('task_template.activity_list')}
@@ -158,7 +156,7 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="box-body">
                                         {
                                             (!taskTemplate.taskActions || taskTemplate.taskActions.length === 0)?
-                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                <dt>{translate('task_template.no_data')}</dt> :
                                                 taskTemplate.taskActions.map((item, index) =>
                                                     <React.Fragment key={index}>
                                                         <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
@@ -169,7 +167,7 @@ class ModalViewTaskTemplate extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-6" >
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
                                         {translate('task_template.information_list')}
@@ -177,7 +175,7 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="box-body">
                                         {
                                             (!taskTemplate.taskInformations || taskTemplate.taskInformations.length === 0)? 
-                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                <dt>{translate('task_template.no_data')}</dt> :
                                                 taskTemplate.taskInformations.map((item, index) =>
                                                     <React.Fragment key={index}>
                                                         <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}</dt>
@@ -189,7 +187,6 @@ class ModalViewTaskTemplate extends Component {
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </DialogModal>
             </React.Fragment>
         );
