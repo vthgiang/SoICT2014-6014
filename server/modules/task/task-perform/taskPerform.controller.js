@@ -46,14 +46,14 @@ exports.getActiveTimesheetLog = async (req, res) => {
 exports.startTimesheetLog = async (req, res) => {
     try {
         var timerStatus = await PerformTaskService.startTimesheetLog(req.body);
-        await LogInfo(req.user.email, ` start timer `,req.user.company)
+        //await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
             messages:['start_timer_success'],
             content : timerStatus
         })
     } catch (error) {
-        await LogError(req.user.email, ` start timer `,req.user.company)
+        //await LogError(req.user.email, ` start timer `,req.user.company)
         res.status(400).json({
             success: false,
             messages :['start_timer_fail'],

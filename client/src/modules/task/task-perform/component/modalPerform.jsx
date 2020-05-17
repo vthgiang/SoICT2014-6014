@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, ButtonModal } from '../../../../common-components';
 import { DetailTaskTab } from './detailTaskTab';
-
+import Draggable from 'react-draggable';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { ActionTab } from './actionTab';
 
@@ -28,6 +28,7 @@ class ModalPerform extends Component {
         }
         return (
             <React.Fragment>
+
                 <DialogModal
                     size="100"
                     modalID={`modelPerformTask${this.props.id}`}
@@ -38,7 +39,21 @@ class ModalPerform extends Component {
                     // msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
                     // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     // func={this.save}
-                >
+                >  
+                    <div>
+                    <Draggable
+                        handle=".handle"
+                        defaultPosition={{x: 0, y: 0}}
+                        position={null}
+                        grid={[25, 25]}
+                        scale={1}
+                        onStart={this.handleStart}
+                        onDrag={this.handleDrag}
+                        onStop={this.handleStop}>
+                            <div className="handle" style={{width:"50px",height:"50px",backgroundColor:"yellow",border:"1px solid"}}>
+                                   <a href="https://www.npmjs.com/package/react-draggable?fbclid=IwAR0Wt4GfjLMS8pRk0tAwGq4GyCO6JEIGzivWKhSjEy6havDySwtIWpfypMA#draggable">abcxyz</a> 
+                            </div>
+                    </Draggable></div>
                     <div className="row" style={{height: "100%"}}>
                         <div className="col-sm-6" style={{ paddingTop: "10px" }}>
                             <DetailTaskTab

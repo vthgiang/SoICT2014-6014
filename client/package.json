@@ -18,6 +18,7 @@
     "moment": "^2.25.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.2",
     "react-image-crop": "^8.6.2",
     "react-moment": "^0.9.7",
     "react-redux": "^7.2.0",
