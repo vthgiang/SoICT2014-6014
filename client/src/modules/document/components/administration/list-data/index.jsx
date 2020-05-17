@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
+import Table from './table';
 
-class HistoryStatistics extends Component {
+class AdministrationListData extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
     render() { 
         return ( 
-            <React.Fragment>
-                HistoryStatistics
-            </React.Fragment>
+            <Table/>
          );
     }
 }
  
-export default HistoryStatistics;
+export default AdministrationListData;

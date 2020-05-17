@@ -142,7 +142,7 @@ class ModalMemberEvaluate extends Component {
                                         {list && list.map((item, index) =>
                                             <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId,this.props.date)} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
-                                                <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small>
+                                                {/* <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small> */}
                                                 {/* <span className="badge">{15 + index}</span> */}
                                             </a>)}
                                     </div>
@@ -158,23 +158,11 @@ class ModalMemberEvaluate extends Component {
                                                         <label style={{width: "150px"}}>Tiêu chí đính giá:</label>
                                                         <label >{item.criteria}</label>
                                                     </div>
-                                                
-                                                    {/* <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Hệ thống đánh giá:</label>
-                                                        <label >{item.systempoint === null ? 0 : item.systempoint}{item.weight}</label>
-                                                    </div>
-                                                    <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Tự đánh giá:</label>
-                                                        <label >{item.mypoint === null ? 0 : item.mypoint}{item.weight}</label>
-                                                    </div> */}
                                                     <div className="col-sm-12">
                                                         <label style={{width: "150px"}}>Trọng số:</label>
                                                         <label style={{display: "inline" }}>{item.weight}</label>
                                                     </div>
-                                                    {/* <div className="form-inline">
-                                                        <label style={{width: "150px"}}>Quản lý đánh giá:</label>
-                                                        <input type="number" min="0" max={item.weight} className="form-control" ref={input => this.approvepoint = input} defaultValue="0" name="value" style={{width:"50px"}} />
-                                                    </div> */}
+                                                   
                                                     <div className="form-inline">
                                                         <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
                                                     </div>
@@ -197,7 +185,6 @@ class ModalMemberEvaluate extends Component {
                                                 setLimit={this.setLimit} 
                                                 hideColumnOption={true} />
 
-                                                {/* <table id="kpiEvaluate" className="table table-hover table-bordered"></table> */}
                                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
@@ -224,14 +211,8 @@ class ModalMemberEvaluate extends Component {
                                                                     <td>{itemTask.contribution}</td>
                                                                     <td>{itemTask.automaticPoint + '-' +itemTask.employeePoint+ '-'+itemTask.approvedPoint }</td>
                                                                     <td>
-                                                                        {/* <div class="d-flex justify-content-center my-4"> */}
-                                                                    {/* <form class="range-field w-10"> */}
                                                                         <input id="slider11" class="border-0" type="range" min="0" max="10" value={itemTask.taskImportanceLevel} />
-                                                                    {/* </form> */}
-                                                                    {/* <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan"></span> */}
-                                                                    {/* </div> */}
                                                                     </td>
-                                                                    {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
                                                             </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>
                                                         }
  

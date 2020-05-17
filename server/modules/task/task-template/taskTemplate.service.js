@@ -142,7 +142,7 @@ exports.editTaskTemplate =async(data, id)=>{
             informedEmployees: data.informedEmployees,
             responsibleEmployees: data.responsibleEmployees,
             consultedEmployees: data.consultedEmployees,
-            organizationalUnit: data.organizationalUnit._id,
+            organizationalUnit: data.organizationalUnit,
             taskActions: data.taskActions
         }},
         { new: true},

@@ -19,6 +19,23 @@ export function managerKpiUnit (state = {}, action){
             error: action.payload,
             isLoading: false
           };
+          case  managerConstants.GET_KPIUNITS_REQUEST:
+            return {
+              loading: true,
+              isLoading: true
+            };
+          case managerConstants.GET_KPIUNITS_SUCCESS:
+            return {
+              ...state,
+              loading: false,
+              kpis: action.payload,
+              isLoading: false
+            };
+          case managerConstants.GET_KPIUNITS_FAILURE:
+            return { 
+              error: action.payload,
+              isLoading: false
+            };
         case managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST:
           return {
             ...state,

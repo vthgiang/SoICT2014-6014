@@ -94,7 +94,8 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
-            table: 'Bảng',
+            table: 'Bảng', upload: 'Tải lên', pick_image: 'Chọn ảnh', crop: "Cắt ảnh",
+            action: 'Hành động',
             name: 'Tên',
             description: 'Mô tả',
             search: 'Tìm kiếm',
@@ -382,6 +383,34 @@ export default {
             delete_notification_faile: 'Xóa thông báo thất bại',
             delete_manual_notification_success: 'Xóa thông báo thành công',
             delete_manual_notification_faile: 'Xóa thông báo thất bại',
+        },
+
+        document: {
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản',
+            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', users: 'Những vị trí có quyền xem mẫu này',
+            created_at: 'Ngày tạo', apply_at: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
+            add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản',
+            upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+
+            category: 'Loại văn bản',
+            domain: 'Danh mục văn bản',
+            data: 'Danh sách tài liệu văn bản',
+            statistics_report: 'Thống kê báo cáo',
+            history_report: 'Lịch sử thống kê',
+
+            administration: {
+                categories: {
+                    add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
+                    name: 'Tên', description: 'Mô tả',
+                },
+                domains: {
+                    add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
+                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha'
+                }
+            },
+            user: {
+
+            },
         },
 
         not_found: {
@@ -1269,9 +1298,9 @@ export default {
                 stored: 'Lưu trong kho',
                 current_month: 'Tháng hiện tại',
 
-                name: "Tên công việc",
+                name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
-                search: "Tìm kiếm",
+                search: 'Tìm kiếm',
 
                 col_name: 'Tên công việc',
                 col_organization: 'Đơn vị',
@@ -1349,7 +1378,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
-                    err_empty: "Giá trị không được để trống"
+                    err_empty: 'Giá trị không được để trống'
                 }
 
             },

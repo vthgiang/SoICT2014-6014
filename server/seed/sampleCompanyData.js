@@ -14,6 +14,7 @@ const {
     Commendation,
     EducationProgram,
     Course,
+<<<<<<< HEAD
 
     //asset
     Asset,
@@ -22,6 +23,9 @@ const {
     RepairUpgrade,
     DistributeTransfer
 
+=======
+    DocumentDomain
+>>>>>>> b8b60adc294401d0f32375c2b5b8f0ec9f5dafaa
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1443,6 +1447,7 @@ const sampleCompanyData = async () => {
     }])
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
+<<<<<<< HEAD
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -1635,6 +1640,22 @@ const sampleCompanyData = async () => {
         reason: "Cấp phát abcd",
     }])
     console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
+=======
+    const domanins = await DocumentDomain.insertMany([
+        { name: "Sản xuất", company: vnist, description: 'Sản xuất'},
+        { name: "Sản xuất 2", company: vnist, description: 'Sản xuất 2'},
+        { name: "Sản xuất 3", company: vnist, description: 'Sản xuất 3'},
+    ]); 
+
+    const domanins2 = await DocumentDomain.insertMany([
+        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins[0]._id},
+        { name: "Nhà Kho 2", company: vnist, description: 'Nhà Kho 2', parent: domanins[0]._id},
+        { name: "Nhà Kho 3", company: vnist, description: 'Nhà Kho 3', parent: domanins[1]._id},
+        { name: "Nhà Kho 4", company: vnist, description: 'Nhà Kho 4', parent: domanins[1]._id},
+        { name: "Nhà Kho 5", company: vnist, description: 'Nhà Kho 5', parent: domanins[0]._id},
+        { name: "Nhà Kho 6", company: vnist, description: 'Nhà Kho 6', parent: domanins[2]._id},
+    ]); 
+>>>>>>> b8b60adc294401d0f32375c2b5b8f0ec9f5dafaa
 }
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//

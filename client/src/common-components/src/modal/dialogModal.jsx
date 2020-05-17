@@ -40,14 +40,6 @@ class DialogModal extends Component {
         }
     }
 
-    componentDidUpdate(){
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
     render() { 
         const {translate} = this.props;
         const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true, bodyStyle={}} = this.props;

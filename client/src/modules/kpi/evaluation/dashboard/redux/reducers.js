@@ -22,6 +22,46 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
 
+    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_REQUEST:
+      return {
+        loading: true,
+        isLoading: true
+      };
+
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_SUCCESS:      
+      return {
+        ...state,
+        loading: false,
+        employees: action.payload,
+        isLoading: false
+      };
+
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_FAILURE:
+      return { 
+        error: action.payload,
+        isLoading: false
+      };
+
+    case  dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
+      return {
+        loading: true,
+        isLoading: true
+      };
+
+    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:      
+      return {
+        ...state,
+        loading: false,
+        childrenOrganizationalUnit: action.payload,
+        isLoading: false
+      };
+
+    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE:
+      return { 
+        error: action.payload,
+        isLoading: false
+      };
+
     default:
       return state
   }
