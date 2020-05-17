@@ -60,13 +60,19 @@ class DatePicker extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                value: nextProps.value, // Lưu value ban đầu vào state
-                id: nextProps.id
-            }
-        } else {
-            return null;
+        // if (nextProps.id !== prevState.id) {
+        //     return {
+        //         value: nextProps.value, // Lưu value ban đầu vào state
+        //         id: nextProps.id
+        //     }
+        // } else {
+        //     return null;
+        // }
+
+        return {
+            ...prevState,
+            value: nextProps.value, // Lưu value ban đầu vào state
+            id: nextProps.id
         }
     }
 

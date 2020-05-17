@@ -11,7 +11,8 @@ class DialogModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reload: 0
+            reload: 0,
+            isClose: false
         }
     }
 
@@ -56,7 +57,13 @@ class DialogModal extends Component {
                     <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth===undefined?{}:{maxWidth: maxWidth}}>
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" onClick={()=>this.closeModal(resetOnClose)}>&times;</button>
+                                <button type="button" className="close" onClick={()=> {
+                                    this.closeModal(resetOnClose);
+                                    this.setState({isClose: !this.state.isClose},()=>{
+                                        if(this.props.receiveEventClose) this.props.receiveEventClose(this.state.isClose);
+                                    }
+                                    );
+                                }}>&times;</button>
                                 <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left" style={bodyStyle}>
