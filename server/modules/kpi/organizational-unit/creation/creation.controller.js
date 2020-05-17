@@ -38,7 +38,7 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
-        LogError(req.user.email, ' Edit kpi unit ',req.user.company);
+        LogError(req.user.email, ' Edit kpi unit ',req.user.company);        
         res.status(400).json({
             success: false,
             messages: ['edit_kpi_failure'],

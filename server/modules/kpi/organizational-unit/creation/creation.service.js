@@ -29,10 +29,11 @@ exports.getOrganizationalUnitKpiSet = async (id) => {
 exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
     //req.body.time,req.params.id
     var time = dateString.split("-");
-        var date = new Date(time[1], time[0], 0)
-        var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-        organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
-        return organizationalUnitKpiSet;
+    var date = new Date(time[1], time[0], 0)
+    var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
+    organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    
+    return organizationalUnitKpiSet;
 }
 
 /**

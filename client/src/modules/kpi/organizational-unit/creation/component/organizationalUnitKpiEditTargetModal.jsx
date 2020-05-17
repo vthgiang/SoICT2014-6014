@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 // import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/KPIUnitActions';
 import { createUnitKpiActions } from '../redux/actions';
 
-//
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';

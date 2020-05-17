@@ -328,12 +328,11 @@ class DashBoardKPIMember extends Component {
             }]
         }
         return (
-            <div className="table-wrapper">
-                <section className="content">
-
+            <div className="box">
+                <div className="box-header with-border">
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className = "form-control-static">Đơn vị </label>
+                            <label className = "form-control-static" style={{ marginRight: '10px' }}>Đơn vị</label>
                             {childrenOrganizationalUnit &&
                                 <SelectMulti id="multiSelectOrganizationalUnit"
                                     defaultValue = {childrenOrganizationalUnit.map(item => {return item.dean})}
@@ -343,10 +342,12 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>Search</button>
+                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>Tìm kiếm</button>
                         </div>
                     </div>
-                    
+                </div>
+
+                <div className="box-body">
                     <div className="row">
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
@@ -394,29 +395,45 @@ class DashBoardKPIMember extends Component {
                                 <div className="box-header with-border">
                                     <h3 className="box-title">Nhân viên ưu tú</h3>
                                     <div className="box-tools pull-right">
-                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                            id={`month`}
-                                            className="form-control select2"
-                                            style={{width: "30%"}}
-                                            items = {items}
-                                            onChange={this.handleMonthChange}
-                                            multiple={false}
-                                        /> 
-
-                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                            id={`number-of-employees`}
-                                            className="form-control select2"
-                                            style={{width: "30%"}}
-                                            items = {employeeItems}
-                                            onChange={this.handleNumberOfEmployeesChange}
-                                            multiple={false}
-                                        />
                                         <span className="label label-danger">{`${numberOfExcellentEmployees} nhân viên xuất sắc nhất`}</span>
                                         <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
                                         {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" />
                                         </button> */}
                                     </div>
                                 </div>
+
+                                <div className="box-body">
+                                    <div className="row"></div>
+                                    <div className="col-3">
+                                        <div className = "form-group">
+                                            <label className = "form-control-static">Tháng</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`month`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items = {items}
+                                                onChange={this.handleMonthChange}
+                                                multiple={false}
+                                            /> 
+                                        </div>
+                                    </div>
+
+                                    <div className="col-3">
+                                        <div className = "form-group">
+                                            <label className = "form-control-static">Số nhân viên</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`number-of-employees`}
+                                                className="form-control select2"
+                                                style={{width: "100%"}}
+                                                items = {employeeItems}
+                                                onChange={this.handleNumberOfEmployeesChange}
+                                                multiple={false}
+                                            /> 
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
                                 <div className="box-body no-padding">
                                     <ul className="users-list clearfix">
                                         {
@@ -716,9 +733,8 @@ class DashBoardKPIMember extends Component {
                                 </div>
                             </div>
                         </div>
-                    
-                </section>
-                
+                     </div>               
+
             </div>
         );
     }
