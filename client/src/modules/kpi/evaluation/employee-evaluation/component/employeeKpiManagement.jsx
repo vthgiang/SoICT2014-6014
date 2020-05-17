@@ -9,6 +9,7 @@ import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
@@ -104,6 +105,23 @@ class KPIMember extends Component {
             return "Đã kết thúc"
         }
     }
+    handleEmployeeChange =(value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                employee: value
+            }
+        });
+    }
+    handleStatusChange =(value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                status: value
+            }
+        });
+    }
+    
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -164,109 +182,132 @@ class KPIMember extends Component {
     render() {
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
-        if (user.userdepartments) userdepartments = user.userdepartments;
+        const {status,employee} = this.state;
+        // if (user.userdepartments) 
+        if (user.userdepartments) {userdepartments = user.userdepartments;
+        console.log("------------------"+ userdepartments);
+        }
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
-        var listkpi;
-        var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
-        if (kpimembers.kpimembers) {
-            listkpi = kpimembers.kpimembers;
-            kpiApproved = listkpi.filter(item => item.status === 3);
-            automaticPoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.date), y: item.automaticPoint }
-            }).reverse();
-            employeePoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.date), y: item.employeePoint }
-            }).reverse();
-            approvedPoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.date), y: item.approvedPoint }
-            }).reverse();
-        }
-        const options1 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            // title: {
-            //     text: "Kết quả KPI cá nhân năm 2019",
-            //     fontFamily: "tahoma",
-            //     fontWeight: "normal",
-            //     fontSize: 25,
-            // },
-            axisY: {
-                title: "Kết quả",
-                includeZero: false
-            },
-            toolTip: {
-                shared: true
-            },
-            data: [{
-                type: "spline",
-                name: "Hệ thống đánh giá",
-                showInLegend: true,
-                dataPoints: automaticPoint
-            },
-            {
-                type: "spline",
-                name: "Cá nhân tự đánh giá",
-                showInLegend: true,
-                dataPoints: employeePoint
-            }, {
-                type: "spline",
-                name: "Quản lý đánh giá",
-                showInLegend: true,
-                dataPoints: approvedPoint
-            }]
-        }
+        // var listkpi;
+        // var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
+        // if (kpimembers.kpimembers) {
+        //     listkpi = kpimembers.kpimembers;
+        //     kpiApproved = listkpi.filter(item => item.status === 3);
+        //     automaticPoint = kpiApproved.map(item => {
+        //         return { label: this.formatDate(item.date), y: item.automaticPoint }
+        //     }).reverse();
+        //     employeePoint = kpiApproved.map(item => {
+        //         return { label: this.formatDate(item.date), y: item.employeePoint }
+        //     }).reverse();
+        //     approvedPoint = kpiApproved.map(item => {
+        //         return { label: this.formatDate(item.date), y: item.approvedPoint }
+        //     }).reverse();
+        // }
+        // const options1 = {
+        //     animationEnabled: true,
+        //     exportEnabled: true,
+        //     // title: {
+        //     //     text: "Kết quả KPI cá nhân năm 2019",
+        //     //     fontFamily: "tahoma",
+        //     //     fontWeight: "normal",
+        //     //     fontSize: 25,
+        //     // },
+        //     axisY: {
+        //         title: "Kết quả",
+        //         includeZero: false
+        //     },
+        //     toolTip: {
+        //         shared: true
+        //     },
+        //     data: [{
+        //         type: "spline",
+        //         name: "Hệ thống đánh giá",
+        //         showInLegend: true,
+        //         dataPoints: automaticPoint
+        //     },
+        //     {
+        //         type: "spline",
+        //         name: "Cá nhân tự đánh giá",
+        //         showInLegend: true,
+        //         dataPoints: employeePoint
+        //     }, {
+        //         type: "spline",
+        //         name: "Quản lý đánh giá",
+        //         showInLegend: true,
+        //         dataPoints: approvedPoint
+        //     }]
+        // }
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
                         <div className="form-inline">
-                        <div className="form-group">
+                            <div className="form-group">
                             <label>Nhân viên:</label>
-                            {userdepartments && <select defaultValue="all" className="form-control" ref={input=> this.user = input}>
-                            <option value="all">Tất cả nhân viên</option>
-                            <optgroup label={userdepartments[1].roleId.name}>
-                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>
-                                {userdepartments[1].userId.name}</option>
-                            </optgroup>
-                            <optgroup label={userdepartments[2].roleId.name}>
-                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>
-                                {userdepartments[2].userId.name}</option>
-                            </optgroup>
-                            </select>}
-                        </div>
-                        <div className="form-group">
-                            <label>Trạng thái:</label>
-                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
-                            <option value={0}>Đang thiết lập</option>
-                            <option value={1}>Chờ phê duyệt</option>
-                            <option value={2}>Đã kích hoạt</option>
-                            <option value={3}>Đã kết thúc</option>
-                            <option value={4}>Đang hoạt động</option>
-                            <option value={5}>Tất cả các trạng thái</option>
-                            </select>
-                        </div>
+                            <div>
+                                {userdepartments &&
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id={`employee-kpi-manage`}
+                                    className="form-control"
+                                    // style={{width: "100%"}}
+                                    items={[
+                                        {
+                                            text: userdepartments[1].roleId.name,
+                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                        },
+                                        {
+                                            text: userdepartments[2].roleId.name,
+                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
+                                        }
+                                    ]}
+                                    onChange={this.handleEmployeeChange}
+                                    multiple={true}
+                                    value={employee}
+                                />}
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Trạng thái:</label>
+                                <div>
+                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                        id={`status-kpi`}
+                                        // className="form-control"
+                                        style={{width: "100%"}}
+                                        items = {[
+                                            {value:0, text : "Đang thiết lập"},
+                                            {value:1, text : "Chờ phê duyệt"},
+                                            {value:2, text : "Đã kích hoạt"},
+                                            {value:3, text : "Đã kết thúc"},
+                                            {value:4, text : "Đang hoạt động"},
+                                            {value:5, text : "Tất cả các trạng thái"},]}
+                                        // items = {items}
+                                        onChange={this.handleStatusChange}
+                                        multiple={true}
+                                        value={status}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="form-inline">
-                        <div className="form-group">
-                            <label>Từ tháng:</label>
-
-                            <input type="text" className="form-control" ref={input=> this.startDate = input}
-                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
-
-                        </div>
-                        <div className="form-group">
-                            <label>Đến tháng:</label>
-
-                            <input type="text" className="form-control" ref={input=> this.endDate = input}
-                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
                             <div className="form-group">
-                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
-                                kiếm</button>
+                                <label>Từ tháng:</label>
+
+                                <input type="text" className="form-control" ref={input=> this.startDate = input}
+                                defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
+
                             </div>
+                            <div className="form-group">
+                                <label>Đến tháng:</label>
 
-                        </div>
-
+                                <input type="text" className="form-control" ref={input=> this.endDate = input}
+                                defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
+                                <div className="form-group">
+                                <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                    kiếm</button>
+                                </div>
+                            </div>
                         </div>
 
                         <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
