@@ -18,17 +18,11 @@ class ModalAddTask extends Component {
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // load js for form
-        this.handleLoadjs();
+        // this.handleLoadjs();
     }
 
     // Load js for form
-    handleLoadjs = () => {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
+    
     constructor(props) {
         super(props);
         this.state = {

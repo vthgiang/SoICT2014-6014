@@ -6,6 +6,7 @@ import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
+import { TaskInformationForm } from './taskInformationForm';
 
 import {
     getStorage
@@ -63,6 +64,38 @@ class EvaluateByResponsibleEmployee extends Component {
         })
         document.getElementById("autoPoint").innerHTML = value;
     } 
+    
+    handleChangeNumberInfo = async (e) => {
+        var value = parseInt(e.target.value);
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: value,
+                errorOnNumberInfo: this.validateNumberInfo(value)
+            }
+        })
+    } 
+
+    handleChangeTextInfo = async (e) => {
+        var value = e.target.value;
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: value,
+                errorOnTextInfo: this.validateTextInfo(value)
+            }
+        })
+    }
+    
+    validateTextInfo = (value) =>{
+        let msg = undefined;
+        if(value === ""){
+            msg = "Giá trị không được để trống"
+        }
+        return msg;
+    }
 
     validatePoint = (value) => {
         var { translate } = this.props;
@@ -70,6 +103,16 @@ class EvaluateByResponsibleEmployee extends Component {
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
         }
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        return msg;
+    }
+
+    validateNumberInfo = (value) => {
+        var { translate } = this.props;
+        let msg = undefined;
+        
         if (isNaN(value)) {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
@@ -87,11 +130,12 @@ class EvaluateByResponsibleEmployee extends Component {
             });
         
     }
+
     handleInfoDateChange = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
+                // errorOnInfoDate: this.validateDate(value),
                 infoDate: value,
             }
         });
@@ -115,14 +159,35 @@ class EvaluateByResponsibleEmployee extends Component {
         });
     }
 
-    handleInfoBooleanChange  =(value) => {
+    handleInfoBooleanChange  = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                infoBoolean: value
+                infoBoolean: value,
+                errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
     }
+
+    validateInfoBoolean = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.indexOf("") !== -1) {
+            msg = "Giá trị bắt buộc phải chọn";
+        }
+        
+        return msg;
+    }
+
+    // handleInfoBooleanChange  = async (value) => {
+    //     await this.setState(state => {
+    //         return {
+    //             ...state,
+    //             infoBoolean: value,
+    //             errorOnInfoBoolean: this.validateInfoBoolean(value)
+    //         }
+    //     });
+    //     await this.props.handleInfoBooleanChange(value)
+    // }
     
     handleSetOfValueChange =(value) => {
         this.setState(state => {
@@ -135,9 +200,9 @@ class EvaluateByResponsibleEmployee extends Component {
 
     isFormValidated = () => {
         const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
-        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate } = this.state;
-        return ( errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined && errorOnInfoDate === undefined
-            && point === undefined && progress === undefined) ? true : false;
+        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnTextInfo, errorOnNumberInfo } = this.state;
+        return ( errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
+                && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
     
     save = () => {
@@ -145,6 +210,7 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
+        console.log('PARENT nextProps, prevState',nextProps, prevState);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -167,12 +233,12 @@ class EvaluateByResponsibleEmployee extends Component {
     render() {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
         const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
-        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate } = this.state;
+        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
 
         var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
-        console.log('task ', task);
+        // console.log('task ', task);
         return (
             <React.Fragment>
             <DialogModal
@@ -181,8 +247,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 title={this.props.title}
                 func={this.save}
                 disableSubmit={!this.isFormValidated()}
-                size={50}
-                // maxWidth={500}
+                size={75}
+                maxWidth={750}
             >
                 <form id={`form-evaluate-task-by-${this.props.role}`}>
                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
@@ -210,112 +276,23 @@ class EvaluateByResponsibleEmployee extends Component {
                         }
                     </div>
                     <div>
-                        {/* <TaskInformationForm task= {task && task} /> */}
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
-                            {/* information task */}
-                            <div className={`form-group ${errorOnProgress===undefined?"":"has-error"}`}>
-                                <label>Mức độ hoàn thành (<span style={{color:"red"}}>*</span>)</label>
-                                <input 
-                                    className="form-control"
-                                    type="number" 
-                                    name="progress"
-                                    placeholder={85}
-                                    onChange={this.handleChangeProgress}
-                                    value={progress}
-                                />
-                                <ErrorLabel content={errorOnProgress}/>
-                                
-                            </div>
-                            {/* type: {
-                                type: String,
-                                required: true,
-                                enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
-                            }, */}
-                            {
-                                (task && task.taskInformations.length !== 0) &&
-                                task.taskInformations.map((info, index)=> 
-                                {
-                                   
-                                
-                                    if (info.type === 'Text'){
-                                        return <div className={`form-group `}>
-                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="text" 
-                                                name={info.code}
-                                                placeholder={85}
-                                                // onChange={this.handleChangeProgress}
-                                                // value={index}
-                                            />
-                                            {/* <ErrorLabel content={errorOnProgress}/> */}
-                                        </div>
-                                    } 
-                                     
-                                    {
-                                    if (info.type === 'Number') { 
-                                        return <div className={`form-group `}>
-                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="number" 
-                                                name={info.code}
-                                                placeholder={85}
-                                                // onChange={this.handleChangeProgress}
-                                                // value={index}
-                                            />
-                                            {/* <ErrorLabel content={errorOnProgress}/> */}
-                                        </div>
-                                    }}
-                                    
-                                    {if (info.type === 'Date') {
-                                     return <div className={`form-group `}>
-                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            <DatePicker
-                                                id={`info_date_${index}`}
-                                                value={infoDate}
-                                                onChange={this.handleInfoDateChange}
-                                            />
-                                            <ErrorLabel content={errorOnInfoDate} />
-                                        </div>
-                                    }}
-                                    
-                                    {if(info.type === 'Boolean'){
-                                    return <div className={`form-group `}>
-                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            {
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`select-boolean-${index}`}
-                                                    className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {[{ value: true, text: 'Đúng' }, { value: false, text: 'Sai' } ]}
-                                                    onChange={this.handleInfoBooleanChange}
-                                                    // multiple={true}
-                                                    value={infoBoolean}
-                                                />
-                                            }
-                                        </div>
-                                    }}
-                                    
-                                    {if(info.type === 'SetOfValues') {
-                                    return <div className={`form-group `}>
-                                            <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                id={`select-set-of-value-${index}`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
-                                                onChange={this.handleSetOfValueChange}
-                                                multiple={true}
-                                                value={setOfValue}
-                                            />
-                                        </div>
-                                    }}
-                                    
-                                })
-                            }
-                        </fieldset>
+                        <TaskInformationForm 
+                            task= {task && task} 
+
+                            handleChangeProgress={this.handleChangeProgress}
+                            handleInfoBooleanChange={this.handleInfoBooleanChange}
+                            handleInfoDateChange={this.handleInfoDateChange}
+                            handleSetOfValueChange={this.handleSetOfValueChange}
+                            handleChangeNumberInfo={this.handleChangeNumberInfo}
+                            handleChangeTextInfo={this.handleChangeTextInfo}
+
+                            errorOnInfoBoolean={errorOnInfoBoolean}
+                            errorOnProgress={errorOnProgress}
+                            errorOnInfoDate={errorOnInfoDate}
+                            errorOnTextInfo={errorOnTextInfo}
+                            errorOnNumberInfo={errorOnNumberInfo}
+                        />
+                        
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>

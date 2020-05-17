@@ -34,6 +34,7 @@ class ModalPerform extends Component {
                     formID="form-perform-task"
                     title={task && task.name}
                     bodyStyle={{paddingTop: "0px", paddingBottom: "0px"}}
+                    hasSaveButton={false}
                     // msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
                     // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     // func={this.save}
