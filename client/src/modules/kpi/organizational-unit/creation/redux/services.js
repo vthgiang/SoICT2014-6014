@@ -61,8 +61,8 @@ function addTargetKPIUnit(newTarget) {
 
 // Chỉnh sửa KPI đơn vị
 function editKPIUnit(id, newKPI) {
-    var id = getStorage("userId");
-    newKPI = {...newKPI, creator: id};
+    var userId = getStorage("userId");
+    newKPI = {...newKPI, creator: userId};
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/${id}`,

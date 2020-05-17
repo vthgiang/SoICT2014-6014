@@ -2,12 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-
-const Company = require('../system-admin/company.model');
-const DocumentType = require('./documentType.model');
-const DocumentCategory = require('./documentCategory.model');
-
-
 // Create Schema
 const DocumentSchema = new Schema({
     name: { //tên 
@@ -16,21 +10,21 @@ const DocumentSchema = new Schema({
     },
     company: { //thuộc công ty nào
         type: Schema.Types.ObjectId,
-        ref: Company,
+        ref: 'companies',
         required: true
     },
-    type: {
+    domains: [{
         type: Schema.Types.ObjectId,
-        ref: DocumentType
-    },
+        ref: 'document_domains'
+    }],
     category: {
         type: Schema.Types.ObjectId,
-        ref: DocumentCategory
+        ref: 'document_categories'
     },
     description: { //mô tả
         type: String
     },
-    dateOfApplication: { //ngày áp dụng
+    applyAt: { //ngày áp dụng
         type: Date
     },
     version: { //Phiên bản
@@ -54,7 +48,8 @@ const DocumentSchema = new Schema({
             type: String
         }, 
         documents: [{ //các tài liệu được liên kết
-            type: Schema.Types.ObjectId
+            type: Schema.Types.ObjectId,
+            refs: 'documents'
         }]
     },
     archivedRecordPlace: { //nơi lưu trữ hồ sơ bản cứng
@@ -70,12 +65,6 @@ const DocumentSchema = new Schema({
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }
 });
-
-// DocumentSchema.virtual('roles', {
-//     ref: 'UserRole',
-//     localField: '_id',
-//     foreignField: 'userId'
-// });
 
 DocumentSchema.plugin(mongoosePaginate);
 

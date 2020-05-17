@@ -13,7 +13,8 @@ var {
     Discipline,
     Commendation,
     EducationProgram,
-    Course
+    Course,
+    DocumentDomain
 } = require('../models').schema;
 
 var Terms = require('./terms');
@@ -1279,6 +1280,21 @@ var sampleCompanyData = async () => {
         employeeCommitmentTime : "6",
     }])
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
+
+    const domanins = await DocumentDomain.insertMany([
+        { name: "Sản xuất", company: vnist, description: 'Sản xuất'},
+        { name: "Sản xuất 2", company: vnist, description: 'Sản xuất 2'},
+        { name: "Sản xuất 3", company: vnist, description: 'Sản xuất 3'},
+    ]); 
+
+    const domanins2 = await DocumentDomain.insertMany([
+        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins[0]._id},
+        { name: "Nhà Kho 2", company: vnist, description: 'Nhà Kho 2', parent: domanins[0]._id},
+        { name: "Nhà Kho 3", company: vnist, description: 'Nhà Kho 3', parent: domanins[1]._id},
+        { name: "Nhà Kho 4", company: vnist, description: 'Nhà Kho 4', parent: domanins[1]._id},
+        { name: "Nhà Kho 5", company: vnist, description: 'Nhà Kho 5', parent: domanins[0]._id},
+        { name: "Nhà Kho 6", company: vnist, description: 'Nhà Kho 6', parent: domanins[2]._id},
+    ]); 
 }
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//

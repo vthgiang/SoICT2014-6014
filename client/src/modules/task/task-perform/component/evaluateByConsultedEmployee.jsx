@@ -79,8 +79,8 @@ class EvaluateByConsultedEmployee extends Component {
                 title={this.props.title}
                 func={this.save}
                 disableSubmit={!this.isFormValidated()}
-                size={50}
-                // maxWidth={500}
+                size={75}
+                maxWidth={750}
             >
                 <form id="form-evaluate-task-by-consulted">
                     <form className="form-group">
@@ -120,7 +120,7 @@ class EvaluateByConsultedEmployee extends Component {
                                             {
                                                 task.evaluations[task.evaluations.length-1].taskInformations.map(info => {
                                                     return <div>
-                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span></p>
+                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value}</p>
                                                         {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })

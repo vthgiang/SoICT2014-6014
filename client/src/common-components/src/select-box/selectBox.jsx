@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
-import { select2 } from './select2.full.min.js';
-import './select2.css';
 import './selectBox.css';
 
 class SelectBox extends Component {
     constructor(props) {
         super(props);
         this.state = { }
-
-        if (document.getElementById("script-select-box") === null){
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-select-box";
-            script.innerHTML = select2
-            document.body.appendChild(script);
-        }
     }
     
 

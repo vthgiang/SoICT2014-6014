@@ -451,7 +451,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh thu thu được từ hoạt động bán hàng so với kế hoạch đã xây dựng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -508,7 +508,7 @@ var organizationalUnitKpiData = async () => {
             description: "KHBH tháng. Cần có vào 25 tháng trước. Yêu cầu kịp thời và sát nhu cầu thị trường",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -565,7 +565,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth, 25, 12),
-            priority: "Trung bình", // Mức độ ưu tiên
+            priority: 2, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -668,7 +668,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo các bản hợp đồng ký kết thành công",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -725,7 +725,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo các cuộc khảo sát được tiến hành",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -789,7 +789,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo các cuộc khảo sát được tiến hành",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Thấp", // Mức độ ưu tiên
+            priority: 1, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -846,7 +846,7 @@ var organizationalUnitKpiData = async () => {
             description: "KHBH tháng. Cần có vào 25 tháng trước. Yêu cầu kịp thời và sát nhu cầu thị trường",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -903,7 +903,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh số bán hàng trong nước",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth, 28, 12),
-            priority: "Trung bình", // Mức độ ưu tiên
+            priority: 2, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1006,7 +1006,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo các cuộc khảo sát thực hiện được",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Trung bình", // Mức độ ưu tiên
+            priority: 2, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1063,7 +1063,7 @@ var organizationalUnitKpiData = async () => {
             description: "Thông qua thống kê khảo sát. Đánh giá theo số lần chậm do lỗi chủ quan. Không chậm: 100%. Chậm 3 lần: 95%. Chậm 5 lần : 90%. Chậm 7 lần: 85%. Chậm >7 lần: 80%",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1424,7 +1424,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh thu thu được từ hoạt động bán hàng so với kế hoạch đã xây dựng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Trung bình", // Mức độ ưu tiên
+            priority: 2, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1481,7 +1481,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo lợi nhuận bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1538,7 +1538,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
             endDate: new Date(currentYear, currentMonth, 25, 12),
-            priority: "Thấp", // Mức độ ưu tiên
+            priority: 1, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1641,7 +1641,7 @@ var organizationalUnitKpiData = async () => {
             description: "Đánh giá theo các cuộc nghiên cứu thị trường",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Trung bình", // Mức độ ưu tiên
+            priority: 2, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
@@ -1698,7 +1698,7 @@ var organizationalUnitKpiData = async () => {
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth, 1, 12),
             endDate: new Date(currentYear, currentMonth, 30, 12),
-            priority: "Cao", // Mức độ ưu tiên
+            priority: 3, // Mức độ ưu tiên
             isArchived: false,
             status: "Finished",
             taskTemplate: null,
