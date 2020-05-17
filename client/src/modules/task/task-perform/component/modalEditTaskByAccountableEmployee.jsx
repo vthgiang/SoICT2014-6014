@@ -135,7 +135,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         var departmentUsers = [];
         if (user.userdepartments) departmentUsers = user.userdepartments;
 
-        let priorityOptions = [{value: 1, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 3, text:"Thấp"}];
+        let priorityOptions = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
         let statusOptions = [{value: 1, text: "Inprocess"}, {value: 2, text:"WaitForApproval"}, {value: 3, text:"Finished"}, {value: 4, text:"Delayed"}, {value: 5, text:"Canceled"}];
 
         return (
@@ -206,7 +206,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{width: "100%"}}
                                                 items = {priorityOptions}
                                                 multiple={false}
-                                                value={priorityOptions.filter(p => p.text === task.priority)[0].value}
+                                                value={priorityOptions.find(p => p.value === task.priority)}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }

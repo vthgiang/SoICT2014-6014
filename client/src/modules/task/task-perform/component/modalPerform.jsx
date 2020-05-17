@@ -49,7 +49,7 @@ class ModalPerform extends Component {
 
                         {/* end div mô tả... */}
 
-                        <div className="col-sm-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4", height: "100%"}}>
+                        <div className="col-sm-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4", height: "calc(100vh)"}}>
                             <ActionTab 
                                 id = {this.props.id}
                                 role={this.props.role}

@@ -253,7 +253,7 @@ class TaskTemplate extends Component {
                         <tbody className="task-table">
                             {
                                 (typeof list !== 'undefined' && list.length !== 0) ?
-                                    list.map(item =>
+                                    list.map(item => item &&
                                         <tr key={item._id}>
                                             <td title={item.name}>{item.name}</td>
                                             <td title={item.description}>{item.description}</td>
