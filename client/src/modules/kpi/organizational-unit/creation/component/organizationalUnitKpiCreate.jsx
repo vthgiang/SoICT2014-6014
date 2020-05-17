@@ -7,6 +7,7 @@ import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateM
 import Swal from 'sweetalert2';
 import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 import { withTranslate } from 'react-redux-multilingual';
+import { DatePicker } from '../../../../../common-components';
 
 // hàm để chuyển sang song ngữ
 var translate = '';
@@ -20,11 +21,6 @@ class OrganizationalUnitKpiCreate extends Component {
         this.props.getKPIParent(localStorage.getItem('currentRole'));
     }
     componentDidUpdate() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
             this.setState(state => {
@@ -67,12 +63,13 @@ class OrganizationalUnitKpiCreate extends Component {
                 organizationalUnitKpiSet: {
                     ...state.organizationalUnitKpiSet,
                     organizationalUnit: organizationalUnit,
-                    date: this.date.value,
                 }
             }
         })
         var { organizationalUnitKpiSet } = this.state;
+        
         if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date ) {//&& kpiunit.creater
+            
             this.props.editKPIUnit(id, organizationalUnitKpiSet);
         }
     }
@@ -192,6 +189,19 @@ class OrganizationalUnitKpiCreate extends Component {
 
         return [month, year].join('-');
     }
+
+    handleChangeDate = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                organizationalUnitKpiSet: {
+                    ...state.organizationalUnitKpiSet,
+                    date: value,
+                }
+            }
+        })
+    }
+
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
         
@@ -297,10 +307,13 @@ class OrganizationalUnitKpiCreate extends Component {
                                 </h4>
                                 {editing &&
                                     <div className='input-group form-group'>
-                                        <div className="input-group-addon">
-                                            <i className="fa fa-calendar" />
-                                        </div>
-                                        <input type="text" className="form-control pull-right" ref={input => this.date = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
+                                        <DatePicker
+                                            id="month"      
+                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                            value={this.formatDate(Date.now())} // giá trị mặc định cho datePicker    
+                                            onChange={this.handleChangeDate}
+                                            disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                        />
                                     </div>
                                 }
                                 <div className="form-group">

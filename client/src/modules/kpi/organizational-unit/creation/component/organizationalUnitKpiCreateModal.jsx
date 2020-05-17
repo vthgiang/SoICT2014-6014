@@ -21,11 +21,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
 
     }
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        
     }
 
     formatDate = async (value) => {
@@ -39,6 +35,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
             }
         })
     }
+    
     handleSubmit = async () => {
         const { translate } = this.props;
 

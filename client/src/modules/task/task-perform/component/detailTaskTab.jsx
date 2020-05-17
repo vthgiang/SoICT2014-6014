@@ -41,13 +41,7 @@ class DetailTaskTab extends Component {
     }
 
     // componentDidUpdate() {
-    //     // console.log('did update');
-    //     if (this.props.id !== undefined) {
-    //         let script3 = document.createElement('script');
-    //         script3.src = '../lib/main/js/CoCauToChuc.js';
-    //         script3.async = true;
-    //         script3.defer = true;
-    //         document.body.appendChild(script3);
+
     //         const { performtasks } = this.props;
     //         var currentTimer;
     //         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
@@ -83,14 +77,7 @@ class DetailTaskTab extends Component {
 
     // }
 
-    componentDidMount() {
-        // console.log('did mount');
-        let script2 = document.createElement('script');
-        script2.src = '../lib/main/js/uploadfile/custom.js';
-        script2.async = true;
-        script2.defer = true;
-        document.body.appendChild(script2);
-    }
+    
 
     static getDerivedStateFromProps(nextProps, prevState) {
         // console.log('derived state from prop');
@@ -106,7 +93,7 @@ class DetailTaskTab extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         // console.log('should update');
         if (nextProps.id !== this.state.id) {
-            // console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
+            // console.log('nextProps.id ,this.state.id, nextState.id', nextProps.id ,this.state.id, nextState.id);
             this.props.getLogTimer(nextProps.id);
             this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
