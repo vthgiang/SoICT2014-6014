@@ -400,10 +400,8 @@ class DashBoardKPIMember extends Component {
                                         {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" />
                                         </button> */}
                                     </div>
-                                </div>
+                                
 
-                                <div className="box-body">
-                                    <div className="row"></div>
                                     <div className="col-3">
                                         <div className = "form-group">
                                             <label className = "form-control-static">Tháng</label>
@@ -431,9 +429,7 @@ class DashBoardKPIMember extends Component {
                                             /> 
                                         </div>
                                     </div>
-                                    
-                                </div>
-                                
+                                    </div>                                 
                                 <div className="box-body no-padding">
                                     <ul className="users-list clearfix">
                                         {
