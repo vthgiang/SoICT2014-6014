@@ -4,9 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { Loading } from '../../../common-components';
 
-import { NonPassiveEventListenerWarningFix } from '../../../common-components';
-
-
 class Content extends Component {
     constructor(props) {
         super(props);
@@ -127,7 +124,6 @@ class Content extends Component {
         const { translate, pageName, arrPage, isLoading } = this.props;
         return (
             <React.Fragment>
-                <NonPassiveEventListenerWarningFix/>
                 <div className="content-wrapper">
                     <section className="content-header">
                         <h1> {pageName} &nbsp; { isLoading && <Loading/> } </h1>

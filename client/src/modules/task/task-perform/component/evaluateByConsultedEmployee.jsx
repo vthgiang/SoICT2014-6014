@@ -56,7 +56,8 @@ class EvaluateByConsultedEmployee extends Component {
 
 
     isFormValidated = () => {
-
+        var { point, errorOnPoint } = this.state;
+        return ( point !== undefined && errorOnPoint === undefined)?true:false;
     }
     
     save = () => {
@@ -77,9 +78,9 @@ class EvaluateByConsultedEmployee extends Component {
                 formID="form-evaluate-task-by-consulted"
                 title={this.props.title}
                 func={this.save}
-                // disableSubmit={!this.isFormValidated()}
-                size={50}
-                // maxWidth={500}
+                disableSubmit={!this.isFormValidated()}
+                size={75}
+                maxWidth={750}
             >
                 <form id="form-evaluate-task-by-consulted">
                     <form className="form-group">
@@ -105,7 +106,7 @@ class EvaluateByConsultedEmployee extends Component {
                                 (task.evaluations.length !== 0 ) ?
                                 <div >
                                     {
-                                         (task.evaluations[task.evaluations.length-1].taskInformations.length !== 0) ?
+                                         (task.evaluations[task.evaluations.length-1].taskInformations.length !== 0) &&
                                          <div>
                                             <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p>
                                             {/* {
@@ -120,12 +121,17 @@ class EvaluateByConsultedEmployee extends Component {
                                                 task.evaluations[task.evaluations.length-1].taskInformations.map(info => {
                                                     return <div>
                                                         <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value}</p>
+                                                        {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
                                             }
-                                        </div> : <div><i style={{ /*color: "red", fontWeight: "bold" */}}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
-                                        
-                                    }
+                                        </div> 
+                                        }
+                                        {
+                                            (task.evaluations[task.evaluations.length-1].taskInformations.length === 0) &&
+                                            <div><i style={{ /*color: "red", fontWeight: "bold" */}}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
+                                        }
+                                    
                                     <br/>
                                     {
                                         (task.evaluations[task.evaluations.length-1].results.length !== 0) ?
@@ -140,7 +146,7 @@ class EvaluateByConsultedEmployee extends Component {
                                                     }
                                                 })
                                             }
-                                        </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
+                                        </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá </p></div>
                                     }
                                     
                                 </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>

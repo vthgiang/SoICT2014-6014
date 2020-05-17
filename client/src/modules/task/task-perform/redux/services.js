@@ -30,7 +30,8 @@ export const performTaskService = {
     deleteTaskComment,
     createCommentOfTaskComment,
     editCommentOfTaskComment,
-    deleteCommentOfTaskComment
+    deleteCommentOfTaskComment,
+    evaluationAction
 };
 /**
  * // example for axios
@@ -149,9 +150,10 @@ function editActionComment(id, newComment) {
 }
 function editTaskAction(id,newAction) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action`,
         method:'PUT',
-        data : newAction
+        data : newAction,
+        params: {edit:id}
     }, true, true, 'task.task_perform')
 }
 
@@ -213,10 +215,16 @@ function editCommentOfTaskComment(id,newComment){
     },true,'task.task_perform')
 }
 function deleteCommentOfTaskComment(id,task){
-    console.log(task)
-    console.log(id)
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}/${task}`,
         method : 'DELETE',
     },true,'task.task_perform')
+}
+function evaluationAction(id,evaluation){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action`,
+        method : 'PUT',
+        data: evaluation,
+        params: {evaluation:id}
+    },true,true,'task.task_perform')
 }

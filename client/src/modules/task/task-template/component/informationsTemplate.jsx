@@ -1,3 +1,4 @@
+ 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import  {taskTemplateActions} from '../redux/actions';
@@ -7,7 +8,7 @@ import Sortable from 'sortablejs';
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 
-class informationsTemplate extends Component{
+class InformationForm extends Component{
     componentDidMount(){
         // Load library for sort action table
         this.handleSortable();
@@ -32,7 +33,7 @@ class informationsTemplate extends Component{
        
         this.state={
             information: Object.assign({}, this.EMPTY_INFORMATION),
-            taskInformations: this.props.informationsTemplate,
+            taskInformations: this.props.initialData,
             editInfo: false,
         }
     }
@@ -108,7 +109,7 @@ class informationsTemplate extends Component{
                 information: Object.assign({}, this.EMPTY_INFORMATION),
             }
         })
-        this.props.handleInformation(this.state.taskInformations);
+        this.props.onDataChange(this.state.taskInformations);
     }
 
     handleCancelEditInformation = (event) => {
@@ -150,7 +151,7 @@ class informationsTemplate extends Component{
                 
             }
         })
-        this.props.handleInformation(this.state.taskInformations);
+        this.props.onDataChange(this.state.taskInformations);
     }
 
     // add new information in information table
@@ -166,7 +167,7 @@ class informationsTemplate extends Component{
                 information: Object.assign({}, this.EMPTY_INFORMATION),
             }
         })
-        this.props.handleInformation(this.state.taskInformations);
+        this.props.onDataChange(this.state.taskInformations);
     }
 
     /**
@@ -357,4 +358,4 @@ class informationsTemplate extends Component{
         )
     }
 }
-export { informationsTemplate as InformationTemplate };
+export { InformationForm as InformationForm };

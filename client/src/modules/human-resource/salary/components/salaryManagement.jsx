@@ -147,9 +147,6 @@ class SalaryManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        <div className="form-group">
-                            <h4 className="box-title">{translate('human_resource.salary.list_salary')}:</h4>
-                        </div>
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>

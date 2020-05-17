@@ -36,8 +36,8 @@ const TaskSchema = new Schema({
         type: Date,
         required: true
     },
-    priority: {
-        type: String,
+    priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
+        type: Number,
         required: true
     },
     isArchived: { // Lưu kho hay không. Task lưu kho sẽ mặc định ẩn đi cho gọn giao diện, vì số task có thể rất lớn. Khi cần xem lại, phải chọn filter phù hợp và search
@@ -45,7 +45,7 @@ const TaskSchema = new Schema({
         default: false,
         required: true
     },
-    status: {// có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+    status: { // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
         type: String,
         default: "Inprocess",
         required: true,
@@ -240,6 +240,10 @@ const TaskSchema = new Schema({
             type: Date,
             default: Date.now
         },
+        rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+            type: Number,
+            default: -1
+        },
         // files: [{ // Các files đi kèm actions
         //     name: {
         //         type: String,
@@ -263,6 +267,15 @@ const TaskSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
+            status: {// 0 là đang chờ,1 là đã đạt, 2 là chưa đạt
+                type: Number,
+                enum:[0,1,2],
+                default: 0
+            },
+            rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+                type: Number,
+                default: -1
+            }
         }],
         comments: [{ // Comments của action
             creator: {

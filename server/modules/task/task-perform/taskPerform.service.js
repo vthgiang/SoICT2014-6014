@@ -6,7 +6,8 @@ const TaskTemplateInformation = require('../../../models/task/taskResultInformat
 //const TaskFile = require('../../../models/taskFile.model');
 const TaskResultInformation = require('../../../models/task/taskResultInformation.model');
 const TaskResult = require('../../../models/task/taskResult.model');
-const User = require('../../../models/auth/user.model')
+const User = require('../../../models/auth/user.model');
+const { evaluationAction } = require("./taskPerform.controller");
 
 /**
  * Bấm giờ công việc
@@ -232,23 +233,21 @@ exports.createTaskAction = async (body) => {
 /**
  * Sửa hoạt động của cộng việc
  */
-exports.editTaskAction = async (params,body) => {
+exports.editTaskAction = async (id,body) => {
     var action = await Task.updateOne(
-        { "taskActions._id": params.id },
+        { "taskActions._id": id },
         {
             $set: {
                 "taskActions.$.description": body.content
             }
         }
     )
-    
-    var task = await Task.findOne({ "taskActions._id": params.id }).populate([
+    var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
-
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}]) 
     return task.taskActions ;
-    
 }
+
 
 /**
  * Xóa hoạt động của công việc
@@ -522,7 +521,6 @@ exports.editCommentOfTaskComment = async (params,body) => {
  * Xóa bình luận của bình luận coogn việc
  */
 exports.deleteCommentOfTaskComment = async (params) => {
-            console.log(params)
     var comment = await Task.update(
         { "taskComments.comments._id": params.id },
         { $pull: { "taskComments.$.comments" : {_id : params.id} } },
@@ -535,4 +533,34 @@ exports.deleteCommentOfTaskComment = async (params) => {
 
     return taskComment.taskComments;
 }
+/**
+ * Đánh giá hoạt động
+ */
+exports.evaluationAction = async (id,body) => {
+    var evaluationAction = await Task.update(
+        {"taskActions._id":id},
+        {
+            "$push": {
+                "taskActions.$.evaluations":
+                {
+                    creator: body.creator,
+                    rating: body.rating,
+                }
+            }
+        }
+    )
 
+    var task = await Task.findOne({ "taskActions._id": id }).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
+
+    return task.taskActions ;
+}
+
+
+/**
+ * 2 th hien rating
+ *  th1: nguoi chua thuc hien danh gia => elem.creator khong co trong mang
+ * th2: mang evaluation rong
+ * 
+ */

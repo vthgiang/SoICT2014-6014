@@ -5,7 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import {
     getStorage
 } from '../../../../config';
-
+import { Rating } from '@material-ui/lab';
+import Box from '@material-ui/core/Box';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -14,7 +15,6 @@ import moment from 'moment'
 
 class ActionTab extends Component {
     constructor(props) {
-
         var idUser = getStorage("userId");
         super(props);
         this.state = {
@@ -30,6 +30,7 @@ class ActionTab extends Component {
             comment: false,
             action: false,
             editComment: "",
+            valueRating:2.5,
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
@@ -67,6 +68,10 @@ class ActionTab extends Component {
                 stopTimer: null,
                 user: idUser,
                 time: 0,
+            },
+            evaluations: {
+                creator: idUser,
+                status: 0
             },
             resultTask: 0,
             showModal: ""
@@ -182,6 +187,24 @@ class ActionTab extends Component {
             document.removeEventListener('click', this.closeEdit);
           });  
           
+        }
+    }
+    setValueRating = async (id,newValue) => {
+        
+        await this.setState(state => {
+            return {
+                ...state,
+                valueRating: newValue,
+                evaluations: {
+                    ...state.evaluations,
+                    rating: newValue*2
+                }
+            }
+        })
+        var {evaluations} = this.state;
+        if(evaluations.rating){
+            console.log("Clicked!!!")
+            this.props.evaluationAction(id,evaluations);
         }
     }
     handleChangeContent = async (content) => {
@@ -450,11 +473,40 @@ class ActionTab extends Component {
             this.props.editCommentOfTaskComment(index, newCommentOfTaskComment);
         }
     }
+    handleEvaluationAction = async (e,id,status) => {
+        e.preventDefault();
+        await this.setState(state => {
+            return {
+                ...state,
+                evaluations: {
+                    ...state.evaluations,
+                    status: status
+                }
+            }
+        })
+        var {evaluations} = this.state;
+        if(evaluations.status){
+            this.props.evaluationAction(id,evaluations);
+        }
+    }   
 
     render() {
+        const labels = {
+            0.5: '1 điểm',
+            1: '2 điểm',
+            1.5: '3 điểm',
+            2: '4 điểm+',
+            2.5: '5 điểm',
+            3: '6 điểm+',
+            3.5: '7 điểm',
+            4: '8 điểm+',
+            4.5: '9 điểm',
+            5: '10 điểm+',
+          };
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
+        
         const { tasks, performtasks, user, KPIPersonalManager } = this.props; 
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
@@ -463,11 +515,9 @@ class ActionTab extends Component {
             informations = tasks.task.informations;
         }
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
-        var statusTask;
-        const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
-        const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment } = this.state;
+        const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser } = this.state;
         const { time } = this.state.timer;
-  
+        const checkUserId = obj => obj.creator === currentUser;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
@@ -479,7 +529,7 @@ class ActionTab extends Component {
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
         if (user.userdepartments) userdepartments = user.userdepartments;
-
+        
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
@@ -507,24 +557,71 @@ class ActionTab extends Component {
                                                         <a href="#abc">{item.creator.name}</a>
                                                     </span>
                                                     <p style={{ marginBottom: "2px", marginTop: "2px", fontFamily: 'inherit Helvetica, Arial, sans-serif', fontSize: "13px" }}>&nbsp;{item.description}</p>
-                                                    <div className="row" style={{ width: "250%", marginLeft: "0px", marginBottom: "0px" }} >
-                                                        <span className="description col-sm-5" style={{ marginLeft: "-11px" }}>{moment(item.createdAt).fromNow()}</span>
-                                                        <div className="comment-content">
-                                                            <React.Fragment>
-                                                                {/* Hiển thị nội dung hoạt động cho công việc*/}
-                                                                <div className="attach-file" style={{ marginTop: "-10px" }}>
-                                                                    {/* <a href={item.file.url} download>{item.file.name}</a> */}
-                                                                </div>
-                                                                <ul className="list-inline" style={{ marginTop: '10px' }}>
-                                                                    <li className="">
-                                                                        <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
-                                                                            {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
-                                                                        </a>
-                                                                    </li>
-                                                                </ul>
-                                                            </React.Fragment>
+                                                    <div className="row" style={{ width: "250%", marginLeft: "0px", marginBottom: "0px",paddingBottom:"2%" }} >
+                                                        <span className="description col-sm-3" style={{ marginLeft: "-11px" }}>{moment(item.createdAt).fromNow()}</span>
+                                                        <div className="comment-content col-sm-3" style={{marginTop:'2%'}}>
+                                                            {/* Hiển thị nội dung hoạt động cho công việc*/}
+                                                            <div className="attach-file" style={{ marginTop: "-10px" }}>
+                                                                {/* <a href={item.file.url} download>{item.file.name}</a> */}
+                                                            </div>
+                                                            <a href="#abc" style={{marginTop: '10px'}} title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
+                                                                <i className="margin-r-5" /> Bình luận({item.comments.length}) &nbsp;    
+                                                            </a>
                                                         </div>
+                                                        {console.log(getStorage("userId"))}
+                                                        {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                                        <React.Fragment>
+                                                            {(item.evaluations !== 'undefined' && item.evaluations.length !== 0) ?
+                                                                <React.Fragment>
+                                                                    {item.evaluations.some(checkUserId)?
+                                                                        <React.Fragment>
+                                                                            <div>Bạn đã đánh giá hoạt động này 5 điểm</div>
+                                                                        </React.Fragment>:
+                                                                        <React.Fragment>
+                                                                            <Rating
+                                                                        name="half-rating size-large"
+                                                                        defaultValue = {2.5}
+                                                                        precision={0.5}
+                                                                        size="large"
+                                                                        onChange={(event, newValue) => {
+                                                                        this.setValueRating(item._id,newValue);
+                                                                        }}
+                                                                        // onChangeActive={(event, newHover) => {
+                                                                        //     setHover(newHover);
+                                                                        //   }}
+                                                                    />
+                                                                        </React.Fragment>
+                                                                    }
+                                                                </React.Fragment>:
+                                                                <React.Fragment>
+                                                                    <Rating
+                                                                        name="half-rating size-large"
+                                                                        defaultValue = {2.5}
+                                                                        precision={0.5}
+                                                                        size="large"
+                                                                        onChange={(event, newValue) => {
+                                                                        this.setValueRating(item._id,newValue);
+                                                                        }}
+                                                                        // onChangeActive={(event, newHover) => {
+                                                                        //     setHover(newHover);
+                                                                        //   }}
+                                                                    />
+                                                                </React.Fragment>
+                                                            }
+                                                        </React.Fragment>}
+                                                        
+                                                        {/* <Rating
+                                                            name="half-rating size-large"
+                                                            defaultValue = {2.5}
+                                                            precision={0.5}
+                                                            size="large"
+                                                            onChange={(event, newValue) => {
+                                                            this.setValueRating(item._id,newValue);
+                                                            }}
+                                                            // onChangeActive={(event, newHover) => {
+                                                            //     setHover(newHover);
+                                                            //   }}
+                                                            /> */}
                                                     </div>
                                                 </div>
                                             </div>
@@ -891,7 +988,8 @@ const actionCreators = {
     createTaskComment: performTaskAction.createTaskComment,
     createCommentOfTaskComment: performTaskAction.createCommentOfTaskComment,
     editCommentOfTaskComment: performTaskAction.editCommentOfTaskComment,
-    deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment
+    deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
+    evaluationAction: performTaskAction.evaluationAction
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

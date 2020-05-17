@@ -148,27 +148,54 @@ exports.auth = this.authFunc();
 
 /**
  * Middleware check và lấy dữ liệu về file mà client người đến
- * Với multiple = false thì data sẽ là một object theo dạng {name, path, any=true?false}
- * Với multiple = true thì data sẽ là một mảng các object với mỗi object có định dạng là {name, path}
+ * @arrData : mảng các đối tượng chứa name - tên của thuộc tính lưu dữ liệu file
+ * trong data mà client gửi lên, path - đường dẫn đến thư mục muốn lưu file
+ * @type: kiểu upload file (single, array, fields)
  */
-exports.uploadFile = (data, multiple=false) => {
-    var dir = `./upload${data.path}`;
-
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
+exports.uploadFile = (arrData, type) => {
+    var name, arrFile;
+    // Tạo folder chứa file khi chưa có folder
+    arrData.forEach(x => {
+        let dir = `./upload${x.path}`;
+        if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir);
+            }
+    })
 
     const getFile = multer({ storage: multer.diskStorage({
-            destination: function (req, file, cb) {
-                cb(null, `./upload`+data.path);
+            destination: (req, file, cb) => {
+                if(type === 'single' || type === 'array'){
+                    cb(null, `./upload${arrData[0].path}`);
+                } else if(type === 'fields'){
+                    for(let n in arrData){
+                        if(file.fieldname === arrData[n].name){
+                            cb(null, `./upload${arrData[n].path}`);
+                            break;
+                        }
+                    }
+                }
             },
             filename: function (req, file, cb) {
                 var fileName = `${Date.now()}${req.user._id}`;
                 var hash = CryptoJS.MD5(fileName).toString() + fileName;
                 cb(null, `${hash}.png`);
             }
-        }) 
+        }),
     });
 
-    return !multiple ? getFile.single(data.name) : getFile.array(data.name, 10);
+    switch (type) {
+        case 'single':
+            name = arrData[0].name;
+            return getFile.single(name);
+        case 'array':
+            name = arrData[0].name;
+            return getFile.array(name, 20);
+        case 'fields':
+            arrFile = arrData.map(x=>{
+                return {name: x.name, maxCount:20}
+            })
+            return getFile.fields(arrFile);
+        default:
+            break;
+    }
 }

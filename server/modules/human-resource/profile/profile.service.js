@@ -73,15 +73,16 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationa
  * Lấy thông tin cá nhân của nhân viên
  * @email: email công ty của nhân viên
  */ 
-exports.getEmployeeProfile = async (email) => {
-    
+exports.getEmployeeProfile = async (id) => {
+    let user = await User.findById(id);
     let employees = await Employee.find({
-        emailInCompany: email
+        emailInCompany: user.email
     });
     if(employees.length === 0){
         return { employees: employees}
     } else {
-        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(email);
+        console.log(employees);
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(user.email);
         let salarys = await Salary.find({
             employee: employees[0]._id
         })
@@ -103,11 +104,12 @@ exports.getEmployeeProfile = async (email) => {
  * @eamil: email công ty của nhân viên 
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
-exports.updatePersonalInformation = async (email, data, avatar) => {
+exports.updatePersonalInformation = async (id, data, avatar) => {
     if(avatar===""){
         avatar=data.avatar;
     }
-    var employeeInfo = await Employee.findOne({emailInCompany: email}, { _id: 1});
+    let user = await User.findById(id);
+    var employeeInfo = await Employee.findOne({emailInCompany: user.email}, { _id: 1});
     // Thông tin cần cập nhật 
     var employeeUpdate = {
         avatar: avatar,

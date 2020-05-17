@@ -184,7 +184,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
-        var task = await TaskManagementService.createTask(req.body.parent,req.body.startDate,req.body.endDate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.taskTemplate,req.body.role,req.body.kpi,req.body.responsibleEmployees,req.body.accountableEmployees,req.body.consultedEmployees,req.body.informedEmployees); 
+        var task = await TaskManagementService.createTask(req.body); 
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
             success:true,
