@@ -506,6 +506,7 @@ class ActionTab extends Component {
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
+        
         const { tasks, performtasks, user, KPIPersonalManager } = this.props; 
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
@@ -516,7 +517,7 @@ class ActionTab extends Component {
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser } = this.state;
         const { time } = this.state.timer;
-  
+        const checkUserId = obj => obj.creator === currentUser;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
@@ -572,11 +573,25 @@ class ActionTab extends Component {
                                                         <React.Fragment>
                                                             {(item.evaluations !== 'undefined' && item.evaluations.length !== 0) ?
                                                                 <React.Fragment>
-                                                                    {item.evaluations.forEach(elem=>{
-                                                                        if(elem.creator === currentUser){
-                                                                            return <div>Bạn đã đánh giá hoạt động này {elem.rating} điểm</div>
-                                                                        }  
-                                                                    })}
+                                                                    {item.evaluations.some(checkUserId)?
+                                                                        <React.Fragment>
+                                                                            <div>Bạn đã đánh giá hoạt động này 5 điểm</div>
+                                                                        </React.Fragment>:
+                                                                        <React.Fragment>
+                                                                            <Rating
+                                                                        name="half-rating size-large"
+                                                                        defaultValue = {2.5}
+                                                                        precision={0.5}
+                                                                        size="large"
+                                                                        onChange={(event, newValue) => {
+                                                                        this.setValueRating(item._id,newValue);
+                                                                        }}
+                                                                        // onChangeActive={(event, newHover) => {
+                                                                        //     setHover(newHover);
+                                                                        //   }}
+                                                                    />
+                                                                        </React.Fragment>
+                                                                    }
                                                                 </React.Fragment>:
                                                                 <React.Fragment>
                                                                     <Rating

@@ -160,7 +160,7 @@ class ModalViewTaskTemplate extends Component {
                                             (!taskTemplate.taskActions || taskTemplate.taskActions.length === 0)?
                                                 <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
                                                 taskTemplate.taskActions.map((item, index) =>
-                                                    <React.Fragment>
+                                                    <React.Fragment key={index}>
                                                         <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
@@ -179,7 +179,7 @@ class ModalViewTaskTemplate extends Component {
                                             (!taskTemplate.taskInformations || taskTemplate.taskInformations.length === 0)? 
                                                 <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
                                                 taskTemplate.taskInformations.map((item, index) =>
-                                                    <React.Fragment>
+                                                    <React.Fragment key={index}>
                                                         <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>

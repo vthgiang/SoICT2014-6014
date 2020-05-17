@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { IntlActions } from 'react-redux-multilingual';
-import moment from "moment"
+import moment from "moment";
+
+import enIcon from './en.png';
+import vnIcon from './vn.png';
+
 class Language extends Component {
     constructor(props) {
         super(props);
@@ -26,13 +30,13 @@ class Language extends Component {
                     <div style={{ marginTop: '-40px' }}>
                         <button onClick={this.props.setLanguageEnglish} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
                             <i>
-                                <img src="/lib/en.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                <img src={enIcon} className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">EN</span>
                             </i>
                         </button>
                         <button onClick={this.props.setLanguageVietNam} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
                             <i>
-                                <img src="/lib/vn.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                <img src={vnIcon} className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">VN</span>
                             </i>
                         </button>

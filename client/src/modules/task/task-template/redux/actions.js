@@ -91,7 +91,7 @@ function _delete(id) {
         dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_REQUEST});
 
         taskTemplateService.deleteTaskTemplateById(id).then(
-            res => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: id }),
+            res => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: res.data }),
             error => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_FAILURE})
         );
     };
