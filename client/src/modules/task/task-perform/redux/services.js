@@ -226,5 +226,5 @@ function evaluationAction(id,evaluation){
         method : 'PUT',
         data: evaluation,
         params: {evaluation:id}
-    })
+    },true,true,'task.task_perform')
 }

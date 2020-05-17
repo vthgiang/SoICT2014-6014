@@ -26,7 +26,6 @@ class ModalEditTaskTemplate extends Component {
                 consultedEmployees: [],
                 informedEmployees: [],
                 description: '',
-                creator: '',
                 formula: '',
                 taskActions: [],
                 taskInformations: []
@@ -75,15 +74,30 @@ class ModalEditTaskTemplate extends Component {
         }
 
         let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
-        newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate !== this.props.tasktemplates.taskTemplate);
+        if (!newDataArrived){
+            return false; // Đang lấy dữ liệu, không cần render
+        }
+        if (this.props.tasktemplates.taskTemplate){
+            newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
+        }
         if (newDataArrived){ // Dữ liệu đã về vầ được bind vào prop
+            let taskTemplate = nextProps.tasktemplates.taskTemplate;
+            let editingTemplate = { // Những trường đã populate sẽ bỏ đi, chỉ lấy lại id
+                ...taskTemplate,
+                organizationalUnit: taskTemplate.organizationalUnit._id,
+                accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
+                consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
+                informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
+                readByEmployees: taskTemplate.readByEmployees.map(item => item._id),
+                responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
+            };
             this.setState(state =>{
                 return {
                     ...state,
-                    editingTemplate: nextProps.tasktemplates.taskTemplate,
+                    editingTemplate: editingTemplate,
                 };
             });
-            return false;
+            return false; // Cần cập nhật lại state, không cần render
         }
 
         return true;
@@ -102,7 +116,7 @@ class ModalEditTaskTemplate extends Component {
             this.validateTaskTemplateName(this.state.editingTemplate.name, false) &&
             this.validateTaskTemplateDesc(this.state.editingTemplate.description, false) &&
             this.validateTaskTemplateFormula(this.state.editingTemplate.formula, false) &&
-            this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit._id, false) ;
+            this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false) ;
         return result;
     }
     handleTaskTemplateName = (event) => {
@@ -278,7 +292,7 @@ class ModalEditTaskTemplate extends Component {
 
 
     render() {
-        var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
         var { editingTemplate } = this.state;
   
         const { department, user,translate } = this.props;
@@ -287,7 +301,6 @@ class ModalEditTaskTemplate extends Component {
         
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
-            currentUnit = editingTemplate.organizationalUnit
         }
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
@@ -311,7 +324,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                 <div className={`col-sm-10 form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
+                                    {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
                                         <SelectBox
                                             id={`edit-unit-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -322,7 +335,7 @@ class ModalEditTaskTemplate extends Component {
                                                 })
                                             }
                                             onChange={this.handleTaskTemplateUnit}
-                                            value = {currentUnit._id}
+                                            value = {editingTemplate.organizationalUnit}
                                             multiple={false}
 
                                         />
@@ -333,7 +346,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" defaultValue ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
                                 </div>
                             </div>
@@ -351,10 +364,7 @@ class ModalEditTaskTemplate extends Component {
                                                 {value: listRole.employee._id, text: listRole.employee.name},
                                             ]}
                                             onChange={this.handleTaskTemplateRead}
-                                            value={editingTemplate.readByEmployees.map(item => {
-                                                    return item._id;
-                                                })
-                                            }
+                                            value={editingTemplate.readByEmployees}
                                             multiple={true}
                                             options={{placeholder: "Chọn người được phép xem mẫu"}}
                                         />
@@ -381,10 +391,7 @@ class ModalEditTaskTemplate extends Component {
                                                 },
                                             ]}
                                             onChange={this.handleTaskTemplateResponsible}
-                                            value={editingTemplate.responsibleEmployees.map(item => {
-                                                    return item._id;
-                                                })
-                                            }
+                                            value={editingTemplate.responsibleEmployees}
                                             multiple={true}
                                             options={{placeholder: "Chọn người thực hiện"}}
                                         />
@@ -410,10 +417,7 @@ class ModalEditTaskTemplate extends Component {
                                                 },
                                             ]}
                                             onChange={this.handleTaskTemplateAccountable}
-                                            value ={editingTemplate.accountableEmployees.map(item => {
-                                                    return item._id;
-                                                })
-                                            }
+                                            value ={editingTemplate.accountableEmployees}
                                             multiple={true}
                                             options={{placeholder: "Chọn người phê duyệt"}}
                                         />
@@ -434,10 +438,7 @@ class ModalEditTaskTemplate extends Component {
                                                 })
                                             }
                                             onChange={this.handleTaskTemplateConsult}
-                                            value ={editingTemplate.consultedEmployees.map(item => {
-                                                    return item._id;
-                                                })
-                                            }
+                                            value ={editingTemplate.consultedEmployees}
                                             multiple={true}
                                             options={{placeholder: "Chọn người hỗ trợ"}}
                                         />
@@ -459,10 +460,7 @@ class ModalEditTaskTemplate extends Component {
                                             }
                                             onChange={this.handleTaskTemplateInform}
                                             multiple={true}
-                                            value = {editingTemplate.informedEmployees.map(item => {
-                                                    return item._id;
-                                                })
-                                            }
+                                            value = {editingTemplate.informedEmployees}
                                             options={{placeholder: "Chọn người quan sát"}}
                                         />
                                     }
@@ -475,14 +473,14 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" defaultValue={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                    <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
                                 </div>
                             </div>
                             <div className={'form-group has-feedback'}>
                                 <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
                                 </div>
                                 
@@ -498,7 +496,7 @@ class ModalEditTaskTemplate extends Component {
                                     (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
                                         <span>{translate('task_template.no_data')}</span>:
                                         editingTemplate.taskInformations.map((item, index) => 
-                                            <div style={{paddingBottom: "20px"}}>
+                                            <div style={{paddingBottom: "20px"}} key={index}>
                                                 <div>
                                                     <label>{item.name} - Kiểu {item.type}</label>
                                                     {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}

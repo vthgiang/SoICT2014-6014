@@ -13,28 +13,10 @@ import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../commo
 import './tasktemplate.css';
 
 class ModalAddTaskTemplate extends Component {
-    componentDidMount() {
-        // get department of current user 
-        this.props.getDepartment();
-        // lấy tất cả nhân viên của công ty
-        this.props.getAllUserOfCompany();
-        // Lấy tất cả nhân viên của phòng ban
-        // this.props.getAllUserOfDepartment();
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        // Lấy tất cả vai trò cùng phòng ban
-        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        // Lấy tất cả các role là dean 
-        this.props.getDepartmentsThatUserIsDean();
-
-        
-    }
-
     constructor(props) {
         super(props);
 
-
         this.state = {
-            
             newTemplate: {
                 organizationalUnit: '',
                 name: '',
@@ -49,7 +31,6 @@ class ModalAddTaskTemplate extends Component {
                 taskActions: [],
                 taskInformations: []
             },
-
             currentRole: localStorage.getItem('currentRole'),
         };
 
@@ -58,6 +39,19 @@ class ModalAddTaskTemplate extends Component {
 
     
 
+    componentDidMount() {
+        // get department of current user 
+        this.props.getDepartment();
+        // lấy tất cả nhân viên của công ty
+        this.props.getAllUserOfCompany();
+        // Lấy tất cả nhân viên của phòng ban
+        // this.props.getAllUserOfDepartment();
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        // Lấy tất cả vai trò cùng phòng ban
+        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        // Lấy tất cả các role là dean 
+        this.props.getDepartmentsThatUserIsDean();
+    }
     
     
     
@@ -251,8 +245,35 @@ class ModalAddTaskTemplate extends Component {
         })
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { department } = this.props;
+        const { newTemplate } = this.state;
+
+        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
+        if (newTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
+            // Tìm unit mà currentRole của user đang thuộc về
+            let defaultUnit = department.departmentsThatUserIsDean.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            
+            this.setState(state =>{
+                return{
+                    ...state,
+                    newTemplate: {
+                        ...this.state.newTemplate,
+                        organizationalUnit: defaultUnit._id
+                    }
+                };
+            });
+            return false; // Sẽ cập nhật lại state nên không cần render
+        }
+
+        return true;
+    }
+    
     render() {
-        var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
         const { newTemplate } = this.state;
         const { department, user, translate } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
@@ -260,14 +281,6 @@ class ModalAddTaskTemplate extends Component {
         
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
-            currentUnit = units.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-
-            if (newTemplate.organizationalUnit === ""){
-                newTemplate.organizationalUnit = currentUnit._id; // Khởi tạo state lưu giá trị Unit Select Box
-            }
         }
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
@@ -293,7 +306,7 @@ class ModalAddTaskTemplate extends Component {
                                 <div className={'form-group has-feedback'}>
                                     <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                        {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
+                                        {departmentsThatUserIsDean !== undefined && newTemplate.organizationalUnit !== "" &&
                                             <SelectBox
                                                 id={`unit-select-box`}
                                                 className="form-control select2"
@@ -305,7 +318,7 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                                 onChange={this.handleTaskTemplateUnit}
                                                 multiple={false}
-                                                value={currentUnit._id}
+                                                value={newTemplate.organizationalUnit}
                                             />
                                         }
                                         <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>

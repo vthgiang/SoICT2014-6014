@@ -87,11 +87,7 @@ class ModalPerformTask extends Component {
     }
     componentDidUpdate() {
         if (this.props.id !== undefined) {
-            let script3 = document.createElement('script');
-            script3.src = '../lib/main/js/CoCauToChuc.js';
-            script3.async = true;
-            script3.defer = true;
-            document.body.appendChild(script3);
+            
             const { performtasks } = this.props;
             var currentTimer;
             if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
