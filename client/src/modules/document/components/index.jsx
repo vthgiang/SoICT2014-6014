@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import AdministrationDocumentCategories from './administration/categories';
 import AdministrationDocumentDomains from './administration/domains';
 import AdministrationDocumentListData from './administration/list-data';
+import AdministrationStatisticsReport from './administration/statistics-report';
 
 class Document extends Component {
     constructor(props) {
@@ -31,6 +32,9 @@ class Document extends Component {
                     </div>
                     <div className="tab-pane" id="administration-document-domains">
                         <AdministrationDocumentDomains/>
+                    </div>
+                    <div className="tab-pane" id="administration-statistics-report">
+                        <AdministrationStatisticsReport/>
                     </div>
                 </div>
             </div>
