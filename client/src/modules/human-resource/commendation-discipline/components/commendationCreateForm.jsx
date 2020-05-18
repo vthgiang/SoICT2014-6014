@@ -192,11 +192,11 @@ class PraiseCreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-praise">
-                        <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
+                        {/* <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
                             <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
-                        </div>
+                        </div> */}
                         <div className="row">
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnDecisionNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>

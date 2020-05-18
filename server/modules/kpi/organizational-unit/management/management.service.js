@@ -6,7 +6,7 @@ const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
 // get all kpi unit của một đơn vị
 exports.get = async (id) => {
     //req.params.id
-    console.log(id);
+    // console.log(id);
     
     var department = await Department.findOne({
         $or: [
@@ -15,11 +15,71 @@ exports.get = async (id) => {
             { 'employee': id }
         ]
     });
-    console.log(department);
+   // console.log(department);
     var kpiunits = await KPIUnit.find({organizationalUnit : department._id }).sort({ 'date': 'desc' }).skip(0).limit(12)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;   
+}
+
+exports.getKPIUnits = async (data) => {
+    var department = await Department.findOne({
+        $or: [
+            { 'dean': data.role },
+            { 'viceDean': data.role },
+            { 'employee': data.role }
+        ]
+    });
+    var kpiunits;
+    var startDate = data.startDate.split("-");
+    var startdate = new Date(startDate[2]+"-"+ startDate[1]+ "-" + startDate[0]);
+    var endDate = data.endDate.split("-");
+    var enddate = new Date(endDate[2]+"-"+ endDate[1]+ "-"+ endDate[0]);
+    var status = parseInt(data.status);
+
+    if (data.user === "all") {
+        if (status === 3) {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        } else if (status === 1) {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                status: { $ne: 2 },
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        } else {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                status: status,
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        }
+    } else {
+        if (status === 3) {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                creator: data.user,
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        } else if (status === 1) {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                creator: data.user,
+                status: { $ne: 2 },
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        } else {
+            kpiunits = await KPIUnit.find({
+                organizationalUnit: department._id,
+                creator: data.user,
+                status: status,
+                date: { "$gte": startdate, "$lt": enddate }
+            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        }
+    }
+    return kpiunits;
 }
 
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
