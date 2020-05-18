@@ -212,7 +212,8 @@ class RecommendProcureCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ người đề nghị</label>
-                                    <input defaultValue={Object.keys(this.props.auth.user) && this.props.auth.user.roles[0].roleId.name} type="text" className="form-control" name="position"/>
+                                    {/* <input defaultValue={Object.keys(this.props.auth.user) && this.props.auth.user.roles[0].roleId.name} type="text" className="form-control" name="position"/> */}
+                                    <input type="text" className="form-control" name="position"/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
