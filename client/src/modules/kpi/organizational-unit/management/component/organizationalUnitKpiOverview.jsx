@@ -182,61 +182,15 @@ class KPIUnitManager extends Component {
         return (
             <React.Fragment>
             <div className="box">
-                
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        <div className="form-group">
-                            <label>Người tạo:</label>
-                            {userdepartments && 
-                            <SelectBox
-                                id={`responsible-select-box`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items={[
-                                    {
-                                        text: userdepartments[0].roleId.name,
-                                        value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                    },
-                                ]}
-                                onChange={this.handleUser}
-                                value={userkpi}
-                                options={{placeholder: "Chọn người tạo"}}
-                            />
-                        }   
-                        </div>
-                        <div className="form-group">
-                            
-                            <label>Trạng thái:</label>
-                            {
-                                <SelectBox
-                                    id={`select-status-kpi`}
-                                    className="form-control select2"
-                                    items = {[{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' }, {value: 3, text: 'Tất cả trạng thái'} ]}
-                                    onChange={this.handleStatus}
-                                    value={status}
-                                    // multiple={true}
-                                />
-                            }
-                        </div>
-                    </div>
-
-                        <div className="form-inline">
-                        {/* <div className="form-group"> */}
-                            {/* <label>Từ tháng:</label>
-
-                            <DatePicker
-                            id="create_date"
-                            value={date}
-                            onChange={this.handleDateChange}
-                            />
-
-                        </div> */}
                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
                             <label>Từ tháng:</label>
                             <DatePicker
                                 id="start_date"
                                 value={startDate}
                                 onChange={this.handleStartDateChange}
+                                dateFormat="month-year"
                             />
                             <ErrorLabel content={errorOnDate} />
                         </div>
@@ -246,26 +200,42 @@ class KPIUnitManager extends Component {
                                 id="end_date"
                                 value={endDate}
                                 onChange={this.handleEndDateChange}
+                                dateFormat="month-year"
                             />
                             <ErrorLabel content={errorOnDate} />
-                            <div className="form-group">
-                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
-                                kiếm</button>
-                            </div>
-
                         </div>
-
                     </div>
-               
 
-                <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
-                    columnArr={[ 'STT', 'Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
-                    limit={this.state.perPage}
-                    setLimit={this.setLimit} hideColumnOption={true} />
+                    <div className="form-inline">
+                        <div className="form-group">
+                            
+                            <label>Trạng thái:</label>
+                            {
+                                <SelectBox
+                                    id={`select-status-kpi`}
+                                    className="form-control select2"
+                                    items = {[{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' }, {value: 3, text: 'Tất cả trạng thái'} ]}
+                                    onChange={this.handleStatus}
+                                    style={{width: "100%"}}
+                                    value={status}
+                                    // multiple={true}
+                                />
+                            }
+                        </div>
+                        <div className="form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm kiếm</button>
+                        </div>
+                    </div>
+
+                    <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+                        columnArr={['Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
+                        limit={this.state.perPage}
+                        setLimit={this.setLimit} hideColumnOption={true} />
+                    
                     <table id="kpiTable" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th title="STT">STT</th>
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
@@ -283,7 +253,6 @@ class KPIUnitManager extends Component {
                             (typeof listkpi !== "undefined" && listkpi.length !== 0) ?
                             listkpi.map((item, index) =>
                             <tr key={index+1}>
-                                <td title={index+1}>{index + 1}</td>
                                 <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
@@ -315,9 +284,7 @@ class KPIUnitManager extends Component {
                             }
                         </tbody>
                     </table>
-        
                 </div>
-        
             </div>
         </React.Fragment>
         );
