@@ -1,17 +1,28 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { DistributeTransferFromValidator } from './DistributeTransferFromValidator';
-import { DistributeTransferActions } from '../redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
+import {DistributeTransferFromValidator} from './DistributeTransferFromValidator';
+import {DistributeTransferActions} from '../redux/actions';
+import {AssetManagerActions} from '../../asset-manager/redux/actions';
+import {string2literal} from '../utils/format_data';
+
 class DistributeTransferEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.managerInput = React.createRef();
+        this.nowLocationInput = React.createRef();
+        this.handoverManInput = React.createRef();
+        this.state = {
+            assetIndex: "",
+            userReceiveIndex: "",
+            userHandoverManIndex: ""
+        };
     }
 
     //Bắt sự kiện thay đổi mã phiếu
     handleDistributeNumberChange = (e) => {
+        console.log(e.target.value);
         let value = e.target.value;
         this.validateDistributeNumber(value, true);
     }
@@ -78,15 +89,15 @@ class DistributeTransferEditForm extends Component {
     //Bắt sự kiện thay đổi "Người quản lý"
     handleManagerChange = (e) => {
         let value = e.target.value;
-        this.validateHandoverMan(value, true);
+        this.validateManager(value, true);
     }
-    validateHandoverMan = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateHandoverMan(value, this.props.translate)
+    validateManager = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateManager(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnHandoverMan: msg,
+                    errorOnManager: msg,
                     manager: value,
                 }
             });
@@ -96,6 +107,8 @@ class DistributeTransferEditForm extends Component {
 
     //Bắt sự kiện thay đổi "Người bàn giao"
     handleHandoverManChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userHandoverManIndex: e.target.options[selectedIndex].getAttribute('data-key1')});
         let value = e.target.value;
         this.validateHandoverMan(value, true);
     }
@@ -115,6 +128,8 @@ class DistributeTransferEditForm extends Component {
 
     //Bắt sự kiện thay đổi "Người tiếp nhận"
     handleReceiverChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userReceiveIndex: e.target.options[selectedIndex].getAttribute('data-key1')});
         let value = e.target.value;
         this.validateReceiver(value, true);
     }
@@ -134,15 +149,15 @@ class DistributeTransferEditForm extends Component {
 
     //Bắt sự kiện thay đổi "Thời gian sử dụng từ ngày"
     handleDateStartUseChange = (value) => {
-        this.validateDateCreate(value, true);
+        this.validateDateStartUse(value, true);
     }
-    validateDateCreate = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateDateCreate(value, this.props.translate)
+    validateDateStartUse = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateDateStartUse(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateCreate: msg,
+                    errorOnDateStartUse: msg,
                     dateStartUse: value,
                 }
             });
@@ -152,15 +167,15 @@ class DistributeTransferEditForm extends Component {
 
     // Bắt sự kiện thay đổi "Thời gian sử dụng đến ngày"
     handleDateEndUseChange = (value) => {
-        this.validateDateCreate(value, true);
+        this.validateDateEndUse(value, true);
     }
-    validateDateCreate = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateDateCreate(value, this.props.translate)
+    validateDateEndUse = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateDateEndUse(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateCreate: msg,
+                    errorOnDateEndUse: msg,
                     dateEndUse: value,
                 }
             });
@@ -170,6 +185,8 @@ class DistributeTransferEditForm extends Component {
 
     //Bắt sự kiện thay đổi "Mã tài sản"
     handleAssetNumberChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userHandoverManIndex: "", assetIndex: e.target.options[selectedIndex].getAttribute('data-key')});
         let value = e.target.value;
         this.validateAssetNumber(value, true);
     }
@@ -180,7 +197,7 @@ class DistributeTransferEditForm extends Component {
                 return {
                     ...state,
                     errorOnAssetNumber: msg,
-                    assetNumber: value,
+                    asset: value,
                 }
             });
         }
@@ -238,12 +255,41 @@ class DistributeTransferEditForm extends Component {
     }
 
     save = () => {
+        let newDataToSubmit = {
+            ...this.state,
+            nowLocation: this.nowLocationInput.current.value,
+            manager: this.managerInput.current.value,
+            handoverMan: string2literal(this.handoverManInput.current.value)
+        };
+        let newDataToUpdateAsset = {
+            person: this.state.receiver,
+            dateStartUse: this.state.dateStartUse,
+            dateEndUse: this.state.dateEndUse,
+            location: this.state.nextLocation
+        };
+        console.log('newDataToSubmit', newDataToSubmit);
         if (this.isFormValidated()) {
-            return this.props.updateDistributeTransfer(this.state._id, this.state);
+            return this.props.updateDistributeTransfer(this.state._id, newDataToSubmit).then(({response}) => {
+                if (response.data.success) {
+                    this.props.updateAsset(this.state.assetId, newDataToUpdateAsset);
+                }
+            });
         }
-    }
+    };
+
+    returnPositionHandoverMan = () => {
+        const {assetsManager, user} = this.props;
+        let value = "";
+        if (this.state.assetIndex !== '' && this.state.userHandoverManIndex === '' && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person).length && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person.position).length) {
+            value = assetsManager.allAsset[this.state.assetIndex].asset.person.position.name;
+        } else if (this.state.userHandoverManIndex !== '' && user.list[this.state.userHandoverManIndex].roles.length) {
+            value = user.list[this.state.userHandoverManIndex].roles[0].roleId.name;
+        }
+        return value;
+    };
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps.assetId !== prevState.assetId) {
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -252,6 +298,8 @@ class DistributeTransferEditForm extends Component {
                 type: nextProps.type,
                 place: nextProps.place,
                 assetNumber: nextProps.assetNumber,
+                asset: nextProps.assetId,
+                assetId: nextProps.assetId,
                 assetName: nextProps.assetName,
                 nowLocation: nextProps.nowLocation,
                 manager: nextProps.manager,
@@ -275,13 +323,31 @@ class DistributeTransferEditForm extends Component {
         } else {
             return null;
         }
+
+    }
+
+    returnValueHandoverManPosition = () => {
+        const {assetsManager, user} = this.props;
+        let value = "";
+        if (this.state.assetIndex !== '' && this.state.userHandoverManIndex === '' && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person).length && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person.position).length) {
+            value = assetsManager.allAsset[this.state.assetIndex].asset.person.position.name;
+        } else if (this.state.userHandoverManIndex !== '' && user.list[this.state.userHandoverManIndex].roles.length) {
+            value = user.list[this.state.userHandoverManIndex].roles[0].roleId.name;
+        } else if (this.state.assetId !== '' && this.state.assetIndex === '' && Object.keys(assetsManager.allAsset.filter(item => item.asset._id === this.state.assetId).pop().asset.person).length) {
+            value = this.props.assetsManager.allAsset.filter(item => item.asset._id === this.state.assetId).pop().asset.person.position.name;
+        }
+        return value;
     }
 
     render() {
-        const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, assetNumber, assetName, nowLocation, manager, positionManager,
-            handoverMan, positionHandoverMan, receiver, positionReceiver, dateStartUse, dateEndUse, nextLocation, reason,
-            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnAssetNumber, errorOnNextLocation, errorOnReason } = this.state;
+        const {translate, distributeTransfer, assetsManager, user} = this.props;
+        console.log('assetsManager',assetsManager);
+        const {
+            distributeNumber, dateCreate, type, place, assetNumber, assetName, manager, positionManager,
+            handoverMan, positionHandoverMan, receiver, positionReceiver, dateStartUse, dateEndUse, reason, nowLocation, nextLocation,
+            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber,
+            errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason, assetId,
+        } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -298,18 +364,18 @@ class DistributeTransferEditForm extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnDistributeNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="distributeNumber" value={distributeNumber} onChange={this.handleDistributeNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnDistributeNumber} />
+                                    <input type="text" className="form-control" name="distributeNumber" value={distributeNumber} onChange={this.handleDistributeNumberChange} autoComplete="off"
+                                           placeholder="Mã phiếu"/>
+                                    <ErrorLabel content={errorOnDistributeNumber}/>
                                 </div>
-
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="create_start_date"
+                                        id="edit_start_date"
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
                                     />
-                                    <ErrorLabel content={errorOnDateCreate} />
+                                    <ErrorLabel content={errorOnDateCreate}/>
                                 </div>
 
                                 <div className="form-group">
@@ -323,61 +389,106 @@ class DistributeTransferEditForm extends Component {
 
                                 <div className={`form-group ${errorOnPlace === undefined ? "" : "has-error"}`}>
                                     <label>Địa điểm bàn giao<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="place" value={place} onChange={this.handlePlaceChange} autoComplete="off" placeholder="Địa điểm bàn giao" />
-                                    <ErrorLabel content={errorOnPlace} />
+                                    <input type="text" className="form-control" name="place" value={place} onChange={this.handlePlaceChange} autoComplete="off" placeholder="Địa điểm bàn giao"/>
+                                    <ErrorLabel content={errorOnPlace}/>
                                 </div>
 
                                 <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
+                                    <select id="drops1" className="form-control" name="asset" defaultValue={assetId}
+                                            placeholder="Please Select"
+                                            onChange={this.handleAssetNumberChange}>
+                                        <option value="" disabled>Please Select</option>
+                                        {assetsManager.allAsset ? assetsManager.allAsset.map((item, index) => {
+                                            return (
+                                                <option data-key={index} key={index} value={item.asset._id}>{item.asset.assetNumber}</option>
+                                            )
+                                        }) : null}
+                                    </select>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" />
+                                    <input type="text" className="form-control" name="assetName"
+                                           disabled
+                                           value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.assetName : assetName ? assetName : ''}
+                                           autoComplete="off" placeholder="Tên tài sản"/>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>
-                                    <input type="text" className="form-control" name="nowLocation" value={nowLocation} autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
+                                    <input disabled type="text" className="form-control" name="nowLocation"
+                                           ref={this.nowLocationInput}
+                                           value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.location : nowLocation ? nowLocation : ''} autoComplete="off"
+                                           placeholder="Vị trí ban đầu của tài sản"/>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Người quản lý tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="manager" value={manager} onChange={this.handleManagerChange} autoComplete="off" placeholder="Người quản lý tài sản" />
+                                    <select id="drops1" className="form-control" name="manager" disabled
+                                            value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.manager._id : assetId !== '' ? assetsManager.allAsset.filter(item => item.asset._id === assetId).pop().asset.manager._id : ''}
+                                            ref={this.managerInput}>
+                                        <option
+                                            value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.manager._id : assetId !== '' ? assetsManager.allAsset.filter(item => item.asset._id === assetId).pop().asset.manager._id : ''}>{this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.manager.name : assetId !== '' ? assetsManager.allAsset.filter(item => item.asset._id === assetId).pop().asset.manager.name : ''}</option>
+                                    </select>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Chức vụ người quản lý</label>
-                                    <input type="text" className="form-control" name="positionManager" value={positionManager} />
+                                    <input disabled type="text" className="form-control" name="positionManager"
+                                           value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.manager.position.name : assetId !== '' ? assetsManager.allAsset.filter(item => item.asset._id === assetId).pop().asset.manager.position.name : ''}/>
                                 </div>
                             </div>
 
                             <div className="col-sm-6">
                                 <div className="form-group">
                                     <label>Người bàn giao<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="handoverMan" value={handoverMan} onChange={this.handleHandoverManChange} autoComplete="off" placeholder="Người bàn giao" />
+                                    <select id="drops1" className="form-control" name="handoverMan"
+                                            value={this.state.assetIndex !== '' && this.state.userHandoverManIndex === '' && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person).length ? assetsManager.allAsset[this.state.assetIndex].asset.person._id : this.state.handoverMan}
+                                            ref={this.handoverManInput}
+                                            onChange={this.handleHandoverManChange}>
+                                        <option value="" disabled>Please Select</option>
+                                        {user.list.length ? user.list.map((item, index) => {
+                                            return (
+                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                            )
+                                        }) : null}
+                                        {/*<option*/}
+                                        {/*    value={this.state.assetIndex !== '' && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person).length ? assetsManager.allAsset[this.state.assetIndex].asset.person._id : 'null'}>{this.state.assetIndex !== '' && Object.keys(assetsManager.allAsset[this.state.assetIndex].asset.person).length ? assetsManager.allAsset[this.state.assetIndex].asset.person.name : ''}</option>*/}
+                                    </select>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Chức vụ người bàn giao</label>
-                                    <input type="text" className="form-control" name="positionHandoverMan" value={positionHandoverMan} />
+                                    <input type="text" disabled className="form-control" name="positionHandoverMan" value={this.returnValueHandoverManPosition()}/>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Người tiếp nhận<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="receiver" value={receiver} onChange={this.handleReceiverChange} autoComplete="off" placeholder="Người tiếp nhận" />
+                                    <select id="drops1" className="form-control" name="receiver"
+                                            value={receiver}
+                                            placeholder="Please Select"
+                                            onChange={this.handleReceiverChange}>
+                                        <option value="" disabled>Please Select</option>
+                                        {user.list.length ? user.list.map((item, index) => {
+                                            return (
+                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                            )
+                                        }) : null}
+                                    </select>
+
                                 </div>
 
                                 <div className="form-group">
                                     <label>Chức vụ người tiếp nhận</label>
-                                    <input type="text" className="form-control" name="positionReceiver" value={positionReceiver} />
+                                    <input disabled type="text" className="form-control" name="positionReceiver"
+                                           value={this.state.userReceiveIndex !== '' && user.list[this.state.userReceiveIndex].roles.length ? user.list[this.state.userReceiveIndex].roles[0].roleId.name : (receiver !== '' && this.state.userReceiveIndex === '' && user.list.filter(user => user._id === receiver).pop().roles.length) ? user.list.filter(user => user._id === receiver).pop().roles[0].roleId.name : ''}/>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Thời gian sử dụng từ ngày</label>
                                     <DatePicker
-                                        id="create_start_use"
+                                        id="edit_start_use"
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
@@ -386,7 +497,7 @@ class DistributeTransferEditForm extends Component {
                                 <div className="form-group">
                                     <label>Thời gian sử dụng đến ngày</label>
                                     <DatePicker
-                                        id="create_end_use"
+                                        id="edit_end_use"
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />
@@ -394,14 +505,16 @@ class DistributeTransferEditForm extends Component {
 
                                 <div className={`form-group ${errorOnNextLocation === undefined ? "" : "has-error"}`}>
                                     <label>Vị trí tiếp theo của tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="nextLocation" value={nextLocation} onChange={this.handleNextLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
-                                    <ErrorLabel content={errorOnNextLocation} />
+                                    <input type="text" className="form-control" name="nextLocation" value={nextLocation} onChange={this.handleNextLocationChange} autoComplete="off"
+                                           placeholder="Vị trí tiếp theo của tài sản"/>
+                                    <ErrorLabel content={errorOnNextLocation}/>
                                 </div>
 
                                 <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
-                                    <ErrorLabel content={errorOnReason} />
+                                    <textarea className="form-control" rows="3" style={{height: 34}} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off"
+                                              placeholder="Nội dung"></textarea>
+                                    <ErrorLabel content={errorOnReason}/>
                                 </div>
                             </div>
 
@@ -414,13 +527,14 @@ class DistributeTransferEditForm extends Component {
 };
 
 function mapState(state) {
-    const { distributeTransfer } = state;
-    return { distributeTransfer };
+    const {distributeTransfer, assetsManager, user} = state;
+    return {distributeTransfer, assetsManager, user};
 };
 
 const actionCreators = {
     updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
+    updateAsset: AssetManagerActions.updateInformationAsset,
 };
 
 const editDistributeTransfer = connect(mapState, actionCreators)(withTranslate(DistributeTransferEditForm));
-export { editDistributeTransfer as DistributeTransferEditForm };
+export {editDistributeTransfer as DistributeTransferEditForm};

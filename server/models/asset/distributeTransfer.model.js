@@ -54,7 +54,7 @@ const DistributeTransferSchema = new Schema({
 
     /**
      * Vị trí tiếp theo của tài sản
-     * Giải thích: khi cập nhật vị trí tiếp theo của tài sản, 
+     * Giải thích: khi cập nhật vị trí tiếp theo của tài sản,
      * vừa cập nhật dữ liệu vào field nextLocation trong db distributeTransfer
      * vừa cập nhật dữ liệu vào field location trong db asset
      */
@@ -70,7 +70,7 @@ const DistributeTransferSchema = new Schema({
      */
     dateStartUse: {
         type: String,
-        required: true
+        // required: true
     },
 
     /**
@@ -80,19 +80,19 @@ const DistributeTransferSchema = new Schema({
      */
     dateEndUse: {
         type: String,
-        required: true
+        // required: true
     },
     reason: {// nội dung, lý do
         type: String
     },
-    createDate: {
-        type: Date,
-        default: Date.now
-    },
-    updateDate: {
-        type: Date,
-        default: Date.now
-    }
+    // createDate: { // 2
+    //     type: Date,
+    //     default: Date.now
+    // },
+    // updateDate: {
+    //     type: Date,
+    //     default: Date.now
+    // }
 })
 
 module.exports = DistributeTransfer = mongoose.model("distribute_transfer", DistributeTransferSchema);

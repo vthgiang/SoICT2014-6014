@@ -9,10 +9,10 @@ exports.searchRepairUpgrades = async (req, res) => {
     try {
         var listRepairUpgrades = await RepairUpgradeService.searchRepairUpgrades(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_REPAIRUPGRADE', req.user.company);
-        res.status(200).json({success: true, message: ["get_repair_upgrade_success"], content: listRepairUpgrades});
+        res.status(200).json({success: true, messages: ["get_repair_upgrade_success"], content: listRepairUpgrades});
     } catch (error) {
         await LogError(req.user.email, 'GET_REPAIRUPGRADE', req.user.company);
-        res.status(400).json({success: false, message: ["get_repair_upgrade_faile"], content: {error: error}});
+        res.status(400).json({success: false, messages: ["get_repair_upgrade_faile"], content: {error: error}});
     }
 }
 
@@ -21,12 +21,12 @@ exports.checkRepairNumber = async (req, res) => {
     try {
         var checkRepairNumber = await RepairUpgradeService.checkRepairUpgradeExisted(req.params.repairNumber, req.user.company._id);
         res.status(200).json({
-            message: "success",
+            messages: "success",
             content: checkRepairNumber
         });
     } catch (error) {
         res.status(400).json({
-            message: error,
+            messages: error,
         });
     }
 }
@@ -38,22 +38,22 @@ exports.createRepairUpgrade = async (req, res) => {
     try {
         if (req.body.repairNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_REPAIRUPGRADE', req.user.company);
-            res.status(400).json({success: false, message: ["type_number_required"], content: {inputData: req.body}});
+            res.status(400).json({success: false, messages: ["type_number_required"], content: {inputData: req.body}});
             // } else if(req.body.typeName.trim()===""){
             //     await LogError(req.user.email, 'CREATE_REPAIRUPGRADE', req.user.company);
-            //     res.status(400).json({ success: false, message: ["type_name_required"], content:{ inputData: req.body } });
+            //     res.status(400).json({ success: false, messages: ["type_name_required"], content:{ inputData: req.body } });
         } else {
             var newRepairUpgrade = await RepairUpgradeService.createRepairUpgrade(req.body, req.user.company._id);
             await LogInfo(req.user.email, 'CREATE_REPAIRUPGRADE', req.user.company);
             res.status(200).json({
                 success: true,
-                message: ["create_repair_upgrade_success"],
+                messages: ["create_repair_upgrade_success"],
                 content: newRepairUpgrade
             });
         }
     } catch (error) {
         await LogError(req.user.email, 'CREATE_REPAIRUPGRADE', req.user.company);
-        res.status(400).json({success: false, message: "create_repair_upgrade_faile", content: {inputData: req.body}});
+        res.status(400).json({success: false, messages: "create_repair_upgrade_faile", content: {inputData: req.body}});
     }
 }
 
@@ -66,12 +66,12 @@ exports.deleteRepairUpgrade = async (req, res) => {
         await LogInfo(req.user.email, 'DELETE_REPAIRUPGRADE', req.user.company);
         res.status(200).json({
             success: true,
-            message: ["delete_repair_upgrade_success"],
+            messages: ["delete_repair_upgrade_success"],
             content: repairupgradeDelete
         });
     } catch (error) {
         await LogError(req.user.email, 'DELETE_REPAIRUPGRADE', req.user.company);
-        res.status(400).json({success: false, message: ["delete_repair_upgrade_success"], content: {error: error}});
+        res.status(400).json({success: false, messages: ["delete_repair_upgrade_success"], content: {error: error}});
     }
 }
 
@@ -82,21 +82,21 @@ exports.updateRepairUpgrade = async (req, res) => {
     try {
         if (req.body.repairNumber.trim() === "") {
             await LogError(req.user.email, 'EDIT_REPAIRUPGRADE', req.user.company);
-            res.status(400).json({success: false, message: ["type_number_required"], content: {inputData: req.body}});
+            res.status(400).json({success: false, messages: ["type_number_required"], content: {inputData: req.body}});
             // } else if(req.body.typeName.trim()===""){
             //     await LogError(req.user.email, 'EDIT_REPAIRUPGRADE', req.user.company);
-            //     res.status(400).json({ success: false, message: ["type_name_required"], content: { inputData: req.body } });
+            //     res.status(400).json({ success: false, messages: ["type_name_required"], content: { inputData: req.body } });
         } else {
             var repairupgradeUpdate = await RepairUpgradeService.updateRepairUpgrade(req.params.id, req.body);
             await LogInfo(req.user.email, 'EDIT_REPAIRUPGRADE', req.user.company);
             res.status(200).json({
                 success: true,
-                message: ["edit_repair_upgrade_success"],
+                messages: ["edit_repair_upgrade_success"], // thì biết r mà chỗ gọi aler translate đâu
                 content: repairupgradeUpdate
             });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_REPAIRUPGRADE', req.user.company);
-        res.status(400).json({success: false, message: ['edit_repair_upgrade_faile'], content: {error: error}});
+        res.status(400).json({success: false, messages: ['edit_repair_upgrade_faile'], content: {error: error}});
     }
 }

@@ -25,6 +25,11 @@ exports.searchAssetProfiles = async (data, company) => {
     }
     ;
 
+    //Bắt sựu kiện tháng tìm kiếm khác ""
+    if (data.month !== "" && data.month !==null) {
+        keySearch = {...keySearch,datePurchase: {$regex: data.month,$options: "i"}}
+    };
+
     // Thêm key tìm kiếm tài sản theo trạng thái vào keySearch
     if (data.status && data.status !== null) {
         keySearch = {...keySearch, status: {$in: data.status}};
@@ -45,13 +50,14 @@ exports.searchAssetProfiles = async (data, company) => {
 
             positionManager = await UserRole.find({userId: asset[0].manager._id}).populate('roleId');
             if(asset[0].person !== null) positionPerson = await UserRole.find({userId: asset[0].person._id}).populate('roleId');
+            console.log('positionPerson',positionPerson);
             if (Object.keys(positionManager) && Object.keys(positionPerson)) {
                 newAssetManager = asset[0].manager.toObject();
 
                 newAssetManager.position = positionManager.pop().roleId;
                 if(asset[0].person !== null) {
                     newAssetPerson = asset[0].person.toObject();
-                    newAssetPerson.position = positionPerson.pop().roleId;
+                    newAssetPerson.position = positionPerson.length ? positionPerson.pop().roleId : {};
                 }
 
             }

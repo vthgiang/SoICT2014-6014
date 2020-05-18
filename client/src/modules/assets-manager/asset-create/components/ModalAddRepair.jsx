@@ -206,9 +206,9 @@ class ModalAddRepair extends Component {
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="repair">Sửa chữa</option>
-                                        <option value="substitute">Thay thế</option>
-                                        <option value="upgrade">Nâng cấp</option>
+                                        <option value="Sửa chữa">Sửa chữa</option>
+                                        <option value="Thay thế">Thay thế</option>
+                                        <option value="Nâng cấp">Nâng cấp</option>
                                     </select>
                                 </div>
                                  <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
@@ -218,7 +218,7 @@ class ModalAddRepair extends Component {
                                 </div>
                             </div>
                             <div className="col-sm-6">
-                               
+
                                 <div className={`form-group ${errorOnRepairDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
@@ -237,17 +237,17 @@ class ModalAddRepair extends Component {
                                     />
                                 </div>
                                 <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>
-                                    <label>Chi phí<span className="text-red">*</span></label>
-                                    <input style={{ display: "inline", width: "88%" }} type="number" className="form-control" name="cost" value={ cost } onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí" />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label>
+                                    <label>Chi phí (VNĐ)<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name="cost" value={ cost } onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí" />
+                                    {/* <label style={{ height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label> */}
                                     <ErrorLabel content={errorOnCost} />
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="complete">Đã thực hiện</option>
-                                        <option value="processing">Đang thực hiện</option>
-                                        <option value="plan">Chưa thực hiện</option>
+                                        <option value="Đã thực hiện">Đã thực hiện</option>
+                                        <option value="Đang thực hiện">Đang thực hiện</option>
+                                        <option value="Chưa thực hiện">Chưa thực hiện</option>
                                     </select>
                                 </div>
                             </div>

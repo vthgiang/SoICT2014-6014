@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RecommendProcureCreateForm } from './RecommendProcureCreateForm';
+import { RecommendProcureDetailForm } from './RecommendProcureDetailForm';
 import { RecommendProcureEditForm } from './RecommendProcureEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { RecommendProcureActions } from '../redux/actions';
@@ -20,6 +21,16 @@ class RecommendProcure extends Component {
     }
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-recommendprocure').modal('show');
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -197,7 +208,8 @@ class RecommendProcure extends Component {
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin Phiếu đề nghị mua sắm"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đề nghị mua sắm"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xóa thông tin phiếu"
                                                 data={{
@@ -218,6 +230,23 @@ class RecommendProcure extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 
+                {
+                    this.state.currentRowView !== undefined &&
+                    <RecommendProcureDetailForm
+                        _id={this.state.currentRowView._id}
+                        recommendNumber={this.state.currentRowView.recommendNumber}
+                        dateCreate={this.state.currentRowView.dateCreate}
+                        proponent={this.state.currentRowView.proponent}
+                        equipment={this.state.currentRowView.equipment}
+                        supplier={this.state.currentRowView.supplier}
+                        total={this.state.currentRowView.total} 
+                        unit={this.state.currentRowView.unit} 
+                        estimatePrice={this.state.currentRowView.estimatePrice} 
+                        approver={this.state.currentRowView.approver} 
+                        note={this.state.currentRowView.note} 
+                        status={this.state.currentRowView.status}
+                    />
+                }
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendProcureEditForm

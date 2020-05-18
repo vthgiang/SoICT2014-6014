@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { RepairUpgradeFromValidator } from '../../repair-upgrade/components/RepairUpgradeFromValidator';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
+import {RepairUpgradeFromValidator} from '../../repair-upgrade/components/RepairUpgradeFromValidator';
+
 class ModalEditRepair extends Component {
     constructor(props) {
         super(props);
@@ -46,14 +47,14 @@ class ModalEditRepair extends Component {
         return msg === undefined;
     }
 
-        // Bắt sự kiện thay đổi loại phiếu
-        handleTypeChange = (e) => {
-            let value = e.target.value;
-            this.setState({
-                ...this.state,
-                type: value
-            })
-        }
+    // Bắt sự kiện thay đổi loại phiếu
+    handleTypeChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
 
     // Bắt sự kiện thay đổi "Nội dung"
     handleReasonChange = (e) => {
@@ -150,9 +151,10 @@ class ModalEditRepair extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
+                _id: nextProps._id,
                 id: nextProps.id,
                 index: nextProps.index,
-                repairNumber: nextProps.number,
+                repairNumber: nextProps.repairNumber,
                 dateCreate: nextProps.dateCreate,
                 type: nextProps.type,
                 reason: nextProps.reason,
@@ -172,9 +174,11 @@ class ModalEditRepair extends Component {
     }
 
     render() {
-        const { translate, id } = this.props;
-        const { repairNumber, dateCreate, type, reason, repairDate, completeDate, cost, status,
-                errorOnRepairNumber, errorOnDateCreate, errorOnReason, errorOnRepairDate, errorOnCost } = this.state;
+        const {translate, id} = this.props;
+        const {
+            repairNumber, dateCreate, type, reason, repairDate, completeDate, cost, status,
+            errorOnRepairNumber, errorOnDateCreate, errorOnReason, errorOnRepairDate, errorOnCost
+        } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -191,8 +195,9 @@ class ModalEditRepair extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnRepairNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="repairNumber" value={repairNumber} onChange={this.handleRepairNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnRepairNumber} />
+                                    <input type="text" className="form-control" name="repairNumber" value={repairNumber} onChange={this.handleRepairNumberChange} autoComplete="off"
+                                           placeholder="Mã phiếu"/>
+                                    <ErrorLabel content={errorOnRepairNumber}/>
                                 </div>
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
@@ -201,24 +206,25 @@ class ModalEditRepair extends Component {
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
                                     />
-                                    <ErrorLabel content={errorOnDateCreate} />
+                                    <ErrorLabel content={errorOnDateCreate}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="repair">Sửa chữa</option>
-                                        <option value="substitute">Thay thế</option>
-                                        <option value="upgrade">Nâng cấp</option>
+                                        <option value="Sửa chữa">Sửa chữa</option>
+                                        <option value="Thay thế">Thay thế</option>
+                                        <option value="Nâng cấp">Nâng cấp</option>
                                     </select>
                                 </div>
-                                 <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
-                                    <ErrorLabel content={errorOnReason} />
+                                    <textarea className="form-control" rows="3" style={{height: 34}} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off"
+                                              placeholder="Nội dung"></textarea>
+                                    <ErrorLabel content={errorOnReason}/>
                                 </div>
                             </div>
                             <div className="col-sm-6">
-                               
+
                                 <div className={`form-group ${errorOnRepairDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
@@ -226,7 +232,7 @@ class ModalEditRepair extends Component {
                                         value={repairDate}
                                         onChange={this.handleRepairDateChange}
                                     />
-                                    <ErrorLabel content={errorOnRepairDate} />
+                                    <ErrorLabel content={errorOnRepairDate}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
@@ -237,17 +243,17 @@ class ModalEditRepair extends Component {
                                     />
                                 </div>
                                 <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>
-                                    <label>Chi phí<span className="text-red">*</span></label>
-                                    <input style={{ display: "inline", width: "88%" }} type="number" className="form-control" name="cost" value={ cost } onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí" />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label>
-                                    <ErrorLabel content={errorOnCost} />
+                                    <label>Chi phí (VNĐ)<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí"/>
+                                    {/* <label style={{ height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label> */}
+                                    <ErrorLabel content={errorOnCost}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="complete">Đã thực hiện</option>
-                                        <option value="processing">Đang thực hiện</option>
-                                        <option value="plan">Chưa thực hiện</option>
+                                        <option value="Đã thực hiện">Đã thực hiện</option>
+                                        <option value="Đang thực hiện">Đang thực hiện</option>
+                                        <option value="Chưa thực hiện">Chưa thực hiện</option>
                                     </select>
                                 </div>
                             </div>
@@ -261,4 +267,4 @@ class ModalEditRepair extends Component {
 
 
 const editRepair = connect(null, null)(withTranslate(ModalEditRepair));
-export { editRepair as ModalEditRepair };
+export {editRepair as ModalEditRepair};

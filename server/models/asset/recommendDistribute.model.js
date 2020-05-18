@@ -29,21 +29,32 @@ const RecommendDistributeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Asset
     },
+    dateStartUse: { //thời gian đăng ký sử dụng từ ngày
+        type: String,
+        defaut: Date.now,
+    },
+    dateEndUse: { //thời gian đăng ký sử dụng đến ngày
+        type: String,
+        defaut: Date.now,
+    },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,
         ref: User
     },
+    note: { //ghi chú
+        type: String
+    },
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
-    createDate: {
-        type: Date,
-        default: Date.now
-    },
-    updateDate: {
-        type: Date,
-        default: Date.now
-    }
+    // createDate: {
+    //     type: Date,
+    //     default: Date.now
+    // },
+    // updateDate: {
+    //     type: Date,
+    //     default: Date.now
+    // }
     
 });
 

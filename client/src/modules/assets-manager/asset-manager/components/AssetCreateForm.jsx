@@ -31,7 +31,7 @@ class AssetCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.searchAssetTypes();
+        // this.props.searchAssetTypes();
         this.props.getAllUsers();
     }
 

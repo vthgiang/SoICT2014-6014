@@ -63,7 +63,8 @@ class TabDepreciationContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                // assetCost: nextProps.asset.assetCost,
+                initialPrice: nextProps.asset.initialPrice,
+                // assetCost: nextProps.asset.assetCost,.
                 startDepreciation: nextProps.asset.startDepreciation,
                 timeDepreciation: nextProps.asset.timeDepreciation,
                 // endDepreciation: nextProps.asset.endDepreciation,
@@ -81,7 +82,7 @@ class TabDepreciationContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { assetCost, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
+        const { initialPrice, assetCost, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
                 monthlyDepreciationValue, errorOnStartDepreciation, errorOnTimeDepreciation
         } = this.state;
         return (
@@ -90,9 +91,14 @@ class TabDepreciationContent extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
                         <div className="form-group">
-                            <label htmlFor="initialPrice">Nguyên giá<span className="text-red">*</span></label><br/>
-                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="initialPrice" value={assetCost} placeholder="Nguyên giá = Giá trị ban đầu + Chi phí nâng cấp (không tính chi phí sửa chữa, thay thế)" autoComplete="off" disabled />
-                            <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; VNĐ</label>
+                            <label htmlFor="initialPrice">Giá trị ban đầu (VNĐ)<span className="text-red">*</span></label><br/>
+                            <input type="number" className="form-control" name="initialPrice" value={initialPrice} placeholder="Giá trị ban đầu" autoComplete="off" disabled />
+                            {/* <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; VNĐ</label> */}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="assetCost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br/>
+                            <input type="number" className="form-control" name="assetCost" value={assetCost} placeholder="Nguyên giá = Giá trị ban đầu + Chi phí nâng cấp (không tính chi phí sửa chữa, thay thế)" autoComplete="off" disabled />
+                            {/* <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; VNĐ</label> */}
                         </div>
                         <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
                             <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span> (Ghi chú: giá trị default = ngày nhập tài sản)</label>
@@ -104,9 +110,9 @@ class TabDepreciationContent extends Component {
                             <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
                         <div className={`form-group ${errorOnTimeDepreciation === undefined ? "" : "has-error"} `}>
-                            <label htmlFor="timeDepreciation">Thời gian trích khấu hao<span className="text-red">*</span> (Ghi chú: Giá trị default = thời gian trích khấu hao của loại tài sản ứng với tài sản đó)</label><br/>
-                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="timeDepreciation" value={timeDepreciation}  onChange={this.handleTimeDepreciationChange} placeholder="Thời gian trích khấu hao" autoComplete="off" />
-                            <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; Năm</label>
+                            <label htmlFor="timeDepreciation">Thời gian trích khấu hao (Tháng)<span className="text-red">*</span> (Ghi chú: Giá trị default = thời gian trích khấu hao của loại tài sản ứng với tài sản đó)</label><br/>
+                            <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation}  onChange={this.handleTimeDepreciationChange} placeholder="Thời gian trích khấu hao" autoComplete="off" />
+                            {/* <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; Tháng</label> */}
                             <ErrorLabel content={errorOnTimeDepreciation} />
                         </div>
                         <div className="form-group">
@@ -118,14 +124,14 @@ class TabDepreciationContent extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm</label><br/>
-                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="initialPrice" value={annualDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng năm = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
-                            <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Năm</label>
+                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm (VNĐ/Năm)</label><br/>
+                            <input type="number" className="form-control" name="initialPrice" value={annualDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng năm = ( 12 x Nguyên giá ) / Thời gian trích khấu hao" autoComplete="off" disabled />
+                            {/* <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Năm</label> */}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng</label><br/>
-                            <input style={{ display: "inline", width: "92%" }} type="number" className="form-control" name="initialPrice" value={monthlyDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng tháng = Mức độ khấu hao trung bình hằng năm / 12" autoComplete="off" disabled />
-                            <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Tháng</label>
+                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br/>
+                            <input type="number" className="form-control" name="initialPrice" value={monthlyDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
+                            {/* <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Tháng</label> */}
                         </div>
                     </fieldset>
                 </div>

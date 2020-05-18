@@ -20,8 +20,8 @@ export function distributeTransfer(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfers: action.payload,
-                //totalList: action.payload.totalList,
+                listDistributeTransfers: action.payload.listDistributeTransfers,
+                totalList: action.payload.totalList,
             };
         case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_SUCCESS:
             return {

@@ -10,6 +10,25 @@ class RecommendProcureEditForm extends Component {
         this.state = {};
         this.save = this.save.bind(this);
     }
+    // Bắt sự kiện thay đổi mã phiếu
+    handleRecommendNumberChange = (e) => {
+        let value = e.target.value;
+        this.validateRecommendNumber(value, true);
+    }
+    validateRecommendNumber = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateRecommendNumber(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnRecommendNumber: msg,
+                    recommendNumber: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
         this.setState({
@@ -169,12 +188,12 @@ class RecommendProcureEditForm extends Component {
                                     <label>Người đề nghị<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="proponent" value={proponent} disabled />
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>Đơn vị</label>
                                     <input type="text" className="form-control" name="department" value={department} disabled  />
-                                </div>
+                                </div> */}
                                 <div className="form-group">
-                                    <label>Chức vụ</label>
+                                    <label>Chức vụ người đề nghị</label>
                                     <input type="text" className="form-control" name="position"  value={position} disabled/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
@@ -182,12 +201,16 @@ class RecommendProcureEditForm extends Component {
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>Nhà cung cấp<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
-                                </div>
+                                </div> */}
                             </div>
                             <div className="col-sm-6">
+                            <div className="form-group">
+                                    <label>Nhà cung cấp</label>
+                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
+                                </div>
                                 <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                         <label>Số lượng<span className="text-red">*</span></label>
                                         <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
@@ -199,11 +222,15 @@ class RecommendProcureEditForm extends Component {
                                     <ErrorLabel content={errorOnUnit} />
                                 </div>
                                 <div className="form-group">
-                                    <label>Giá trị dự tính:</label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
+                                    <label>Giá trị dự tính (VNĐ)</label>
+                                    <input type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} />
+                                    {/* <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label> */}
                                 </div>
                                 <div className="form-group">
+                                    <label>Trạng thái</label>
+                                    <input type="text" className="form-control" name="status" value={status} disabled />
+                                </div>
+                                {/* <div className="form-group">
                                     <label>Người phê duyệt</label>
                                     <input type="text" className="form-control" name="approver" value={approver} disabled/>
                                 </div>
@@ -218,7 +245,7 @@ class RecommendProcureEditForm extends Component {
                                 <div className="form-group">
                                     <label>Ghi chú</label>
                                     <input type="text" className="form-control" name="note" value={note} disabled/>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </form>

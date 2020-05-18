@@ -55,6 +55,7 @@ class SideBar extends Component {
             path9: "/manage-room-asset", //Quản lý phòng & trang thiết bị
             path10: "/manage-recommend-procure", //Quản lý đề nghị mua sắm
             path11: "/manage-recommend-distribute-asset", //Quản lý đề nghị cấp phát
+            path15: "/manage-crash-asset", //Quản lý sự cố tài sản
             
             path12: "/recommend-equipment-procurement", //Đăng ký mua sắm thiết bị
             path13: "/recommmend-distribute-asset", //Đăng ký cấp phát thiết bị
@@ -201,7 +202,7 @@ class SideBar extends Component {
                                     this.checkURL(url1.path4, links) === true || this.checkURL(url1.path5, links) === true || this.checkURL(url1.path6, links) === true ||
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true || this.checkURL(url1.path9, links) === true || 
                                     this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true || this.checkURL(url1.path12, links) === true ||
-                                    this.checkURL(url1.path13, links) === true || this.checkURL(url1.path14, links) === true )   &&
+                                    this.checkURL(url1.path13, links) === true || this.checkURL(url1.path14, links) === true  || this.checkURL(url1.path15, links) === true )  &&
                                 <li className="treeview" >
                                     <a href="">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>
@@ -305,6 +306,15 @@ class SideBar extends Component {
                                         {this.checkURL(url1.path11, links) === true &&
                                             <li className={window.location.pathname === url1.path11 ? "active" : ""}>
                                                 <Link to={url1.path11}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_recommend_distribute_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {/** quản lý sự cố thiết bị */}
+                                        {this.checkURL(url1.path15, links) === true &&
+                                            <li className={window.location.pathname === url1.path15 ? "active" : ""}>
+                                                <Link to={url1.path15}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.manage_recommend_distribute_asset`)}
                                                 </Link>

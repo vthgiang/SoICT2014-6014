@@ -4,6 +4,7 @@ import {
 
 export const RecommendProcureFromValidator = {
     validateRecommendNumber,
+    validateDateCreate,
     validateEquipment,
     validateTotal,
     validateUnit,
@@ -20,6 +21,16 @@ function validateRecommendNumber(value, translate) {
     }
     return msg;
 }
+
+// Kiểm tra "Ngày lập" nhập vào
+function validateDateCreate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày lập không được để trống";
+    }
+    return msg;
+}
+
 // Kiểm tra "Thiết bị đề nghị mua" nhập vào
 function validateEquipment(value, translate) {
     let msg = undefined;

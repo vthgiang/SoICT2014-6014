@@ -142,7 +142,7 @@ class RepairUpgradeManager extends Component {
     render() {
         const {translate, repairUpgrade} = this.props;
         var listRepairUpgrades = "";
-
+        var formater = new Intl.NumberFormat();
         if (this.props.repairUpgrade.isLoading === false) {
             listRepairUpgrades = this.props.repairUpgrade.listRepairUpgrades;
         }
@@ -254,7 +254,7 @@ class RepairUpgradeManager extends Component {
                                 <td>{x.type}</td>
                                 <td>{x.repairDate}</td>
                                 {/* <td>{x.completeDate}</td> */}
-                                <td>{x.cost}</td>
+                                <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                 <td>{x.status}</td>
                                 <td style={{textAlign: "center"}}>
                                     <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin phiếu"><i
@@ -263,7 +263,7 @@ class RepairUpgradeManager extends Component {
                                         content="Xóa thông tin phiếu"
                                         data={{
                                             id: x._id,
-                                            info: x.repairNumber + " - " + x.assetNumber
+                                            info: x.repairNumber //+ " - " + x.asset.assetNumber
                                         }}
                                         func={this.props.deleteRepairUpgrade}
                                     />

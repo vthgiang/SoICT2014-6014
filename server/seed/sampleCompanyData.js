@@ -14,18 +14,15 @@ const {
     Commendation,
     EducationProgram,
     Course,
-<<<<<<< HEAD
 
     //asset
     Asset,
     AssetType,
     RecommendProcure,
     RepairUpgrade,
-    DistributeTransfer
+    DistributeTransfer,
 
-=======
     DocumentDomain
->>>>>>> b8b60adc294401d0f32375c2b5b8f0ec9f5dafaa
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1447,7 +1444,22 @@ const sampleCompanyData = async () => {
     }])
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
-<<<<<<< HEAD
+
+    const domanins = await DocumentDomain.insertMany([
+        { name: "Sản xuất", company: vnist, description: 'Sản xuất'},
+        { name: "Sản xuất 2", company: vnist, description: 'Sản xuất 2'},
+        { name: "Sản xuất 3", company: vnist, description: 'Sản xuất 3'},
+    ]); 
+
+    const domanins2 = await DocumentDomain.insertMany([
+        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins[0]._id},
+        { name: "Nhà Kho 2", company: vnist, description: 'Nhà Kho 2', parent: domanins[0]._id},
+        { name: "Nhà Kho 3", company: vnist, description: 'Nhà Kho 3', parent: domanins[1]._id},
+        { name: "Nhà Kho 4", company: vnist, description: 'Nhà Kho 4', parent: domanins[1]._id},
+        { name: "Nhà Kho 5", company: vnist, description: 'Nhà Kho 5', parent: domanins[0]._id},
+        { name: "Nhà Kho 6", company: vnist, description: 'Nhà Kho 6', parent: domanins[2]._id},
+    ]); 
+
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -1458,26 +1470,132 @@ const sampleCompanyData = async () => {
     var listAssetType = await AssetType.insertMany([
         {
             company: vnist._id,
-            typeNumber: "LTS0001",
-            typeName: "Tài sản cố định hữu hình",
-            timeDepreciation: 5,
+            typeNumber: "10",
+            typeName: "Tài sản hữu hình",
+            timeDepreciation: null,
             parent: null,
-            description: "abcd"
+            description: "Tài sản hữu hình"
         },{
             company: vnist._id,
-            typeNumber: "LTS0002",
-            typeName: "Laptop",
-            timeDepreciation: 5,
+            typeNumber: "101",
+            typeName: "Nhà cửa, vật kiến trúc",
+            timeDepreciation: null,
             parent: null,
-            description: "abcd"
+            description: "Nhà cửa, vật kiến trúc"
         },{
             company: vnist._id,
-            typeNumber: "LTS0003",
-            typeName: "Phương tiện di chuyển",
-            timeDepreciation: 10,
+            typeNumber: "10101",
+            typeName: "Tòa nhà làm việc",
+            timeDepreciation: null,
             parent: null,
-            description: "abcd"
-        }])
+            description: "Tòa nhà làm việc"
+        },{
+            company: vnist._id,
+            typeNumber: "10102",
+            typeName: "Nhà xưởng",
+            timeDepreciation: null,
+            parent: null,
+            description: "Nhà xưởng"
+        },{
+            company: vnist._id,
+            typeNumber: "10103",
+            typeName: "Nhà kho",
+            timeDepreciation: null,
+            parent: null,
+            description: "Nhà kho"
+        },{
+            company: vnist._id,
+            typeNumber: "102",
+            typeName: "Máy móc, thiết bị",
+            timeDepreciation: null,
+            parent: null,
+            description: "Máy móc, thiết bị"
+        },{
+            company: vnist._id,
+            typeNumber: "10201",
+            typeName: "Thiết bị phát điện, máy biến áp và nguồn điện khác",
+            timeDepreciation: null,
+            parent: null,
+            description: "Thiết bị phát điện, máy biến áp và nguồn điện khác "
+        },{
+            company: vnist._id,
+            typeNumber: "10202",
+            typeName: "Thiết bị an ninh",
+            timeDepreciation: null,
+            parent: null,
+            description: "Thiết bị an ninh"
+        },{
+            company: vnist._id,
+            typeNumber: "103",
+            typeName: "Phương tiện vận tải, truyền dẫn",
+            timeDepreciation: null,
+            parent: null,
+            description: "Phương tiện vận tải, truyền dẫn"
+        },{
+            company: vnist._id,
+            typeNumber: "10301",
+            typeName: "Ô tô",
+            timeDepreciation: null,
+            parent: null,
+            description: "Ô tô"
+        },{
+            company: vnist._id,
+            typeNumber: "10302",
+            typeName: "Xe máy",
+            timeDepreciation: null,
+            parent: null,
+            description: "Xe máy"
+        },{
+            company: vnist._id,
+            typeNumber: "10303",
+            typeName: "Thang máy",
+            timeDepreciation: null,
+            parent: null,
+            description: "Thang máy"
+        },{
+            company: vnist._id,
+            typeNumber: "10304",
+            typeName: "Tổng đài điện thoại",
+            timeDepreciation: null,
+            parent: null,
+            description: "Tổng đài điện thoại"
+        },{
+            company: vnist._id,
+            typeNumber: "104",
+            typeName: "Thiết bị, dụng cụ quản lý",
+            timeDepreciation: null,
+            parent: null,
+            description: "Thiết bị, dụng cụ quản lý"
+        },{
+            company: vnist._id,
+            typeNumber: "10401",
+            typeName: "Máy chủ",
+            timeDepreciation: null,
+            parent: null,
+            description: "Máy chủ"
+        },{
+            company: vnist._id,
+            typeNumber: "10402",
+            typeName: "Máy tính để bàn",
+            timeDepreciation: null,
+            parent: null,
+            description: "Máy tính để bàn"
+        },{
+            company: vnist._id,
+            typeNumber: "10403",
+            typeName: "Máy tính xách tay",
+            timeDepreciation: null,
+            parent: null,
+            description: "Máy tính xách tay"
+        },{
+            company: vnist._id,
+            typeNumber: "10404",
+            typeName: "Máy in",
+            timeDepreciation: null,
+            parent: null,
+            description: "Máy in"
+        },
+    ])
         console.log(`Xong! Thông tin loại tài sản đã được tạo`);
 
 
@@ -1490,31 +1608,58 @@ const sampleCompanyData = async () => {
     var listRecommendProcure = await RecommendProcure.insertMany([
         {
             company: vnist._id,
-            recommendNumber: "MP0001",
+            recommendNumber: "MS0001",
             dateCreate: "20-02-2020",
             proponent: users[7]._id,
-            equipment: "đề nghị mua laptop abcd",
+            equipment: "đề nghị mua Laptop DELL 5559",
             supplier: "HanoiComputer",
-            total: "2",
+            total: "1",
             unit: "cái",
             estimatePrice: "60000000",
-            note: "qwerty",
-            approver: users[2]._id,
-            status: "pass" // Đã chấp nhận
-        },{ 
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        },{
             company: vnist._id,
-            recommendNumber: "MP0002",
-            dateCreate: "20-02-2020",
-            proponent: users[7]._id, //người đề nghị
-            equipment: "đề nghị mua TV abcd", //thiết bị đề nghị
-            supplier: "HanoiComputer", //nhà cung cấp
-            total: "1", //số lượng
-            unit: "cái", //đơn vị tính
-            estimatePrice: "30000000", // giá trị dự tính
-            note: "qwerty",
-            approver: users[2]._id, // người phê duyệt
-            status: "faile" //không chấp nhận
-        }])
+            recommendNumber: "MS0002",
+            dateCreate: "20-03-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua Laptop DELL XPS",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "70000000",
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        },{
+            company: vnist._id,
+            recommendNumber: "MS0003",
+            dateCreate: "20-04-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua máy photocopy",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "50000000",
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        },{
+            company: vnist._id,
+            recommendNumber: "MS0004",
+            dateCreate: "20-05-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua PC",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "40000000",
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        }
+    ])
         console.log(`Xong! Thông tin phiếu đề nghị mua sắm thiết bị đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
@@ -1524,17 +1669,20 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");    
     var listAsset = await Asset.insertMany([{
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        avatar: "/upload/asset/avatars/avatar5.png",
         assetName: "Laptop Dell 5559",
         assetNumber: "LT0001",
         company:vnist._id,
-        assetType: listAssetType[1]._id,
+        assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
         manager: users[2]._id,
+        person: users[4]._id,
+        dateStartUse: "20-02-2020",
+        dateEndUse: "",
         location: "P104",
         initialPrice: 50000000,
-        status: "available", //sẵn sàng sử dụng
-        description: "Laptop ver 2016",
+        status: "Đang sử dụng",
+        description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "500GB",
@@ -1544,24 +1692,73 @@ const sampleCompanyData = async () => {
         numberFile: "T3 - 123698",
         file: [],
     }, {
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
-        assetName: "Ô tô Camry",
+        avatar: "/upload/asset/avatars/avatar5.png",
+        assetName: "Laptop Dell XPS",
         assetNumber: "LT0002",
         company:vnist._id,
-        assetType: listAssetType[2]._id,
+        assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
         manager: users[2]._id,
-        location: "Nhà xe 1",
-        initialPrice: 500000000,
-        status: "available", // sẵn sàng sử dụng
-        description: "Xe ô tô camry",
+        person: users[4]._id,
+        dateStartUse: "20-02-2020",
+        dateEndUse: "",
+        location: "P105",
+        initialPrice: 60000000,
+        status: "Đang sử dụng",
+        description: "Laptop",
         detailInfo: [{
-            nameField: "",
-            value: "",
+            nameField: "Bộ nhớ ổ cứng",
+            value: "256GB",
         }],
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
         timeDeprecition: "5", // thời gian trích khấu hao
-        numberFile: "T4 - 123698",
+        numberFile: "T3 - 123698",
+        file: [],
+    },{
+        avatar: "/upload/asset/avatars/avatar5.png",
+        assetName: "Laptop Lenovo",
+        assetNumber: "LT0003",
+        company:vnist._id,
+        assetType: listAssetType[16]._id,
+        datePurchase: "20-02-2020",
+        manager: users[2]._id,
+        person: users[4]._id,
+        dateStartUse: "20-02-2020",
+        dateEndUse: "",
+        location: "P104",
+        initialPrice: 50000000,
+        status: "Đang sử dụng",
+        description: "Laptop",
+        detailInfo: [{
+            nameField: "Bộ nhớ ổ cứng",
+            value: "240GB",
+        }],
+        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+        timeDeprecition: "5", // thời gian trích khấu hao
+        numberFile: "T3 - 123698",
+        file: [],
+    },{
+        avatar: "/upload/asset/avatars/avatar5.png",
+        assetName: "Laptop HP",
+        assetNumber: "LT0004",
+        company:vnist._id,
+        assetType: listAssetType[16]._id,
+        datePurchase: "20-02-2020",
+        manager: users[2]._id,
+        person: users[4]._id,
+        dateStartUse: "20-02-2020",
+        dateEndUse: "",
+        location: "P104",
+        initialPrice: 50000000,
+        status: "Đang sử dụng",
+        description: "Laptop",
+        detailInfo: [{
+            nameField: "Bộ nhớ ổ cứng",
+            value: "120GB",
+        }],
+        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+        timeDeprecition: "5", // thời gian trích khấu hao
+        numberFile: "T3 - 123698",
         file: [],
     }])
     console.log("Khởi tạo dữ liệu tài sản!");
@@ -1640,23 +1837,51 @@ const sampleCompanyData = async () => {
         reason: "Cấp phát abcd",
     }])
     console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
-=======
-    const domanins = await DocumentDomain.insertMany([
-        { name: "Sản xuất", company: vnist, description: 'Sản xuất'},
-        { name: "Sản xuất 2", company: vnist, description: 'Sản xuất 2'},
-        { name: "Sản xuất 3", company: vnist, description: 'Sản xuất 3'},
-    ]); 
 
-    const domanins2 = await DocumentDomain.insertMany([
-        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins[0]._id},
-        { name: "Nhà Kho 2", company: vnist, description: 'Nhà Kho 2', parent: domanins[0]._id},
-        { name: "Nhà Kho 3", company: vnist, description: 'Nhà Kho 3', parent: domanins[1]._id},
-        { name: "Nhà Kho 4", company: vnist, description: 'Nhà Kho 4', parent: domanins[1]._id},
-        { name: "Nhà Kho 5", company: vnist, description: 'Nhà Kho 5', parent: domanins[0]._id},
-        { name: "Nhà Kho 6", company: vnist, description: 'Nhà Kho 6', parent: domanins[2]._id},
-    ]); 
->>>>>>> b8b60adc294401d0f32375c2b5b8f0ec9f5dafaa
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU SỰ CỐ TÀI SẢN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
+    var distributetransfer = await DistributeTransfer.insertMany([{
+        asset: asset._id,
+        company:vnist._id,
+        distributeNumber: "CP0001",
+        type: "distribute", // cấp phát
+        dateCreate: "20-02-2020",
+        place: "Phòng 104",
+        handoverMan : users[2]._id,
+        receiver : users[7]._id,
+        nowLocation : "P104",
+        nextLocation : "P105",
+        reason: "Cấp phát abcd",
+    }])
+    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU ĐỀ NGHỊ CẤP PHÁT
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
+    var distributetransfer = await DistributeTransfer.insertMany([{
+        asset: asset._id,
+        company:vnist._id,
+        distributeNumber: "CP0001",
+        type: "distribute", // cấp phát
+        dateCreate: "20-02-2020",
+        place: "Phòng 104",
+        handoverMan : users[2]._id,
+        receiver : users[7]._id,
+        nowLocation : "P104",
+        nextLocation : "P105",
+        reason: "Cấp phát abcd",
+    }])
+    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
 }
+
+
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
 sampleCompanyData()

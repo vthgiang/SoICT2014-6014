@@ -1,7 +1,7 @@
 import {AssetTypeConstants} from "./constants";
 import {AssetTypeService} from "./services";
-import axios from "axios";
-import { LOCAL_SERVER_API } from '../../../../env';
+// import axios from "axios";
+// import { LOCAL_SERVER_API } from '../../../../env';
 export const AssetTypeActions = {
     searchAssetTypes,
     createAssetType,

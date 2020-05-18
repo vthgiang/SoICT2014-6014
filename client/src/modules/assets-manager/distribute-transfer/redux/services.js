@@ -1,6 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+// import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const DistributeTransferService = {
     searchDistributeTransfers,
     createNewDistributeTransfer,
@@ -10,43 +11,58 @@ export const DistributeTransferService = {
 
 // Lấy danh sách cấp phát - điều chuyển - thu hồi
 function searchDistributeTransfers(data) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/distributetransfer/paginate`,
+    //     method: 'POST',
+    //     data: data,
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/paginate`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, false, true, 'asset.distribute_transfer');
 }
 
 // tạo mới thông tin cấp phát - điều chuyển - thu hồi
 function createNewDistributeTransfer(data) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/distributetransfer/create`,
+    //     method: 'POST',
+    //     data: data,
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/create`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.distribute_transfer');
 }
 
 // Xoá thông tin cấp phát - điều chuyển - thu hồi
 function deleteDistributeTransfer(id) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/distributetransfer/${id}`,
+    //     method: 'DELETE',
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, true, 'asset.distribute_transfer');
 }
 
 // Cập nhật thông tin cấp phát - điều chuyển - thu hồi
 function updateDistributeTransfer(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/${id}`,
         method: 'PUT',
-        data:data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.distribute_transfer');
 }

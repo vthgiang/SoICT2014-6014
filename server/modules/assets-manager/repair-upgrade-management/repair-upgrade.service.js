@@ -6,10 +6,20 @@ const RepairUpgrade = require('../../../models/asset/repairUpgrade.model');
 exports.searchRepairUpgrades = async (data, company) => {
     var keySearch = {company: company};
 
-    // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
+    // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (data.repairNumber !== "") {
         keySearch = {...keySearch, repairNumber: {$regex: data.repairNumber, $options: "i"}}
     }
+
+    // Thêm key tìm kiếm phiếu theo loại phiếu vào keySearch
+    if (data.repairNumber !== "") {
+        keySearch = {...keySearch, repairNumber: {$regex: data.repairNumber, $options: "i"}}
+    }
+
+    // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
+    if (data.status && data.status !== null) {
+        keySearch = {...keySearch, status: {$in: data.status}};
+    };
 
     var totalList = await RepairUpgrade.count(keySearch);
     var listRepairUpgrades = await RepairUpgrade.find({

@@ -4,6 +4,7 @@ import {withTranslate} from 'react-redux-multilingual';
 import {ToastContainer} from 'react-toastify';
 import {AssetCreateForm} from './AssetCreateForm';
 import {AssetEditForm} from './AssetEditForm';
+import {AssetDetailForm} from './AssetDetailForm';
 import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
 import {AssetManagerActions} from '../redux/actions';
 import {AssetTypeActions} from "../../asset-type/redux/actions";
@@ -15,7 +16,7 @@ class AssetManager extends Component {
             assetNumber: "",
             assetName: "",
             assetType: null,
-            month: "",
+            month: null,
             status: null,
             page: 0,
             limit: 5,
@@ -119,12 +120,13 @@ class AssetManager extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSunmitSearch = async () => {
-        if (this.state.month === "") {
-        await this.setState({
-            ...this.state,
-        })
-        }
-
+        // if (this.state.month === null) {
+            await this.setState({
+                ...this.state,
+                // ,
+                // month: this.formatDate(Date.now())
+            })
+        // }
         this.props.getAllAsset(this.state);
     }
 
@@ -154,7 +156,7 @@ class AssetManager extends Component {
             lists = this.props.assetsManager.allAsset;
         }
 
-        console.log('lists',lists);
+        console.log('lists', lists);
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(assetsManager.totalList / this.state.limit) :
             parseInt((assetsManager.totalList / this.state.limit) + 1);
@@ -163,9 +165,9 @@ class AssetManager extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <AssetCreateForm/>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <h4 className="box-title">Danh sách tài sản: </h4>
-                    </div>
+                    </div> */}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
@@ -274,7 +276,7 @@ class AssetManager extends Component {
                                         content="Xóa thông tin tài sản"
                                         data={{
                                             id: x._id,
-                                            info: x.assetNumber + " - " + x.assetName
+                                            info: x.asset.assetNumber + " - " + x.asset.assetName
                                         }}
                                         func={this.props.deleteAsset}
                                     />
@@ -290,16 +292,16 @@ class AssetManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
                 </div>
                 <ToastContainer/>
-                {/* {
+                {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView.asset[0]._id}
+                        _id={this.state.currentRowView.asset._id}
                         asset={this.state.currentRowView.asset}
                         repairUpgrade={this.state.currentRowView.repairUpgrade}
                         distributeTransfer={this.state.currentRowView.distributeTransfer}
 
                     />
-                } */}
+                }
 
                 {
                     this.state.currentRow !== undefined &&
@@ -308,7 +310,6 @@ class AssetManager extends Component {
                         asset={this.state.currentRow.asset}
                         repairUpgrade={this.state.currentRow.repairUpgrade}
                         distributeTransfer={this.state.currentRow.distributeTransfer}
-
                     />
                 }
             </div>

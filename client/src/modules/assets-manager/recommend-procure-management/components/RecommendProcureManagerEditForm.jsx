@@ -133,15 +133,14 @@ class RecommendProcureManagerEditForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                department: nextProps.department,
-                position: nextProps.position,
+                positionProponent: nextProps.positionProponent,
                 equipment: nextProps.equipment,
                 supplier: nextProps.supplier,
                 total: nextProps.total,
                 unit: nextProps.unit,
                 estimatePrice: nextProps.estimatePrice,
                 approver: nextProps.approver,
-                position1: nextProps.position1,
+                positionApprover: nextProps.positionApprover,
                 status: nextProps.status,
                 note: nextProps.note,
                 errorOnEquipment: undefined,
@@ -155,7 +154,7 @@ class RecommendProcureManagerEditForm extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, dateCreate, proponent, department, position, equipment, supplier, total, unit, estimatePrice, approver, position1, status, note,
+        const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier, total, unit, estimatePrice, approver, positionApprover, status, note,
                 errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
@@ -189,12 +188,8 @@ class RecommendProcureManagerEditForm extends Component {
                                     <input type="text" className="form-control" name="proponent" value={proponent} disabled />
                                 </div>
                                 <div className="form-group">
-                                    <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" value={department} disabled  />
-                                </div>
-                                <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position"  value={position} disabled/>
+                                    <input type="text" className="form-control" name="positionProponent"  value={positionProponent} disabled/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
@@ -202,16 +197,17 @@ class RecommendProcureManagerEditForm extends Component {
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
                                 <div className="form-group">
-                                    <label>Nhà cung cấp<span className="text-red">*</span></label>
+                                    <label>Nhà cung cấp</label>
                                     <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
                                 </div>
-                            </div>
-                            <div className="col-sm-6">
                                 <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                         <label>Số lượng<span className="text-red">*</span></label>
                                         <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
                                         <ErrorLabel content={errorOnTotal} />
                                 </div>
+                            </div>
+                            <div className="col-sm-6">
+                                
                                 <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                     <label>Đơn vị tính<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
@@ -228,7 +224,7 @@ class RecommendProcureManagerEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" value={position1} disabled/>
+                                    <input type="text" className="form-control" name="positionApprover" value={positionApprover} disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
@@ -240,7 +236,8 @@ class RecommendProcureManagerEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Ghi chú</label>
-                                    <input type="text" className="form-control" name="note" value={note} onChange={this.handleNoteChange} placeholder="Ghi chú"/>
+                                    {/* <input type="text" className="form-control" name="note" value={note} onChange={this.handleNoteChange} placeholder="Ghi chú"/> */}
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="note" value={note} onChange={this.handleNoteChange}></textarea>
                                 </div>
                             </div>
                         </div>

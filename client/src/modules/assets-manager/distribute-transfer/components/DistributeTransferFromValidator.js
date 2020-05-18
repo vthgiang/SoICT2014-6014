@@ -6,11 +6,14 @@ export const DistributeTransferFromValidator = {
     validateDistributeNumber,
     validateDateCreate,
     validatePlace,
+    validateManager,
     validateHandoverMan,
     validateReceiver,
     validateAssetNumber,
     validateNextLocation,
-    validateReason
+    validateReason,
+    validateDateStartUse,
+    validateDateEndUse
 }
 
 //1. Kiểm tra "Mã phiếu" nhập vào
@@ -38,6 +41,33 @@ function validatePlace(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Địa điểm bàn giao không được để trống";
+    }
+    return msg;
+}
+
+// thời gian sử dụng từ ngày
+function validateDateStartUse(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày bắt đầu sử dụng không được để trống";
+    }
+    return msg;
+}
+
+// thời gian sử dụng đến ngày
+function validateDateEndUse(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày kết thúc sử dụng không được để trống";
+    }
+    return msg;
+}
+
+//4. Kiểm tra "Người bàn giao" nhập vào
+function validateManager(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Người quản lý không được để trống";
     }
     return msg;
 }

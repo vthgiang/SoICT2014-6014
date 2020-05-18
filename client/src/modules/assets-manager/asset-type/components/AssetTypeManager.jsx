@@ -108,9 +108,9 @@ class AssetTypeManager extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <AssetTypeCreateForm/>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <h4 className="box-title">Danh sách loại tài sản: </h4>
-                    </div>
+                    </div> */}
                     <div className="form-inline" style={{marginBottom: 10}}>
                         <div className="form-group">
                             <label className="form-control-static">Mã loại tài sản</label>

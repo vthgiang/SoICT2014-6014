@@ -61,10 +61,20 @@ class RecommendProcureCreateForm extends Component {
     }
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
-        this.setState({
-            ...this.state,
-            dateCreate: value
-        })
+        this.validateDateCreate(value, true);
+    }
+    validateDateCreate = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateDateCreate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDateCreate: msg,
+                    dateCreate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
@@ -201,7 +211,7 @@ class RecommendProcureCreateForm extends Component {
                                     <input defaultValue={this.props.auth.user.name} type="text" className="form-control" name="proponent"/>
                                 </div>
                                 <div className="form-group">
-                                    <label>Chức vụ</label>
+                                    <label>Chức vụ người đề nghị</label>
                                     <input defaultValue={Object.keys(this.props.auth.user) && this.props.auth.user.roles[0].roleId.name} type="text" className="form-control" name="position"/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
@@ -210,12 +220,16 @@ class RecommendProcureCreateForm extends Component {
                                               placeholder="Thiết bị đề nghị mua"></textarea>
                                     <ErrorLabel content={errorOnEquipment}/>
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
+                                    <label>Nhà cung cấp</label>
+                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp"/>
+                                </div> */}
+                            </div>
+                            <div className="col-sm-6">
+                            <div className="form-group">
                                     <label>Nhà cung cấp</label>
                                     <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp"/>
                                 </div>
-                            </div>
-                            <div className="col-sm-6">
                                 <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                     <label>Số lượng<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} autoComplete="off" placeholder="Số lượng"/>
@@ -227,12 +241,16 @@ class RecommendProcureCreateForm extends Component {
                                     <ErrorLabel content={errorOnUnit}/>
                                 </div>
                                 <div className="form-group">
-                                    <label>Giá trị dự tính:</label>
-                                    <input style={{display: "inline", width: "93%"}} type="number" className="form-control" name="estimatePrice" value={estimatePrice}
+                                    <label>Giá trị dự tính (VNĐ)</label>
+                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice}
                                            onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính"/>
-                                    <label style={{height: 34, display: "inline", width: "5%"}}> VNĐ</label>
+                                    {/* <label style={{height: 34, display: "inline", width: "5%"}}> VNĐ</label> */}
                                 </div>
                                 <div className="form-group">
+                                    <label>Trạng thái</label>
+                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled/>
+                                </div>
+                                {/* <div className="form-group">
                                     <label>Người phê duyệt</label>
                                     <input type="text" className="form-control" name="approver" disabled/>
                                 </div>
@@ -247,7 +265,7 @@ class RecommendProcureCreateForm extends Component {
                                 <div className="form-group">
                                     <label>Ghi chú</label>
                                     <input type="text" className="form-control" name="note" disabled/>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </form>

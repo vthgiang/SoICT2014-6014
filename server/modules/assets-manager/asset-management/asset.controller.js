@@ -62,12 +62,12 @@ exports.checkAssetNumber = async (req, res) => {
     try {
         var checkAssetNumber = await EmployeeService.checkAssetExisted(req.params.assetNumber, req.user.company._id);
         res.status(200).json({
-            message: "success",
+            messages: "success",
             content: checkAssetNumber
         });
     } catch (error) {
         res.status(400).json({
-            message: error,
+            messages: error,
         });
     }
 }
@@ -79,13 +79,13 @@ exports.create = async (req, res) => {
     try {
         await AssetService.create(req.body).save((err, data) => {
             res.status(200).json({
-                message: "success",
+                messages: "success",
                 content: data
             });
         });
     } catch (error) {
         res.status(400).json({
-            message: error
+            messages: error
         });
     }
 }
@@ -93,14 +93,15 @@ exports.create = async (req, res) => {
 // Cập nhật thông tin tài sản
 exports.updateInfoAsset = async (req, res) => {
     try {
+        console.log('body',req.body);
         var data = await AssetService.updateInfoAsset(req.params.id, req.body);
         res.status(200).json({
-            message: "success",
+            messages: "success",
             content: data
         });
     } catch (error) {
         res.status(400).json({
-            message: error
+            messages: error
         });
     }
 }
@@ -110,10 +111,10 @@ exports.updateAvatar = async (req, res) => {
     try {
         var updateAvatar = await AssetService.updateAvatar(req.params.assetNumber, req.file.filename, req.user.company._id);
         await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
-        res.status(200).json({ success: true, message: ["update_avatar_success"], content: updateAvatar });
+        res.status(200).json({ success: true, messages: ["update_avatar_success"], content: updateAvatar });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({ success: false, message: ["update_avatar_faile"], content: {error: error} });
+        res.status(400).json({ success: false, messages: ["update_avatar_faile"], content: {error: error} });
     }
 }
 
@@ -122,12 +123,12 @@ exports.updateFile = async (req, res) => {
     try {
         var updateFile = await AssetService.updateFile(req.params.assetNumber, req.body, req.file.filename, req.user.company._id);
         res.status(200).json({
-            message: "success",
+            messages: "success",
             content: updateFile
         });
     } catch (error) {
         res.status(400).json({
-            message: error
+            messages: error
         });
     }
 }
@@ -137,12 +138,12 @@ exports.delete = async (req, res) => {
     try {
         var infoAssetDelete = await AssetService.delete(req.params.id);
         res.status(200).json({
-            message: "success",
+            messages: "success",
             content: infoAssetDelete
         });
     } catch (error) {
         res.status(400).json({
-            message: error
+            messages: error
         });
     }
 }

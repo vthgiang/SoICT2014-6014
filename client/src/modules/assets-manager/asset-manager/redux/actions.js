@@ -126,11 +126,19 @@ function updateInformationAsset(id, informationAsset) {
         AssetService.updateInformationAsset(id, informationAsset)
             .then(
                 informationAsset => {
-                    dispatch(getAllAsset());
+                    dispatch(getAllAsset({
+                        assetNumber: "",
+                        assetName: "",
+                        assetType: null,
+                        month: "",
+                        status: null,
+                        page: 0,
+                        limit: 5,
+                    }));
                     dispatch(success(informationAsset));
                 },
                 error => {
-                    dispatch(failure(error).toString());
+                    dispatch(failure(error));
                 }
             );
     };

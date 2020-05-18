@@ -124,9 +124,9 @@ class AssetTypeEditForm extends Component {
                             <ErrorLabel content={errorOnTypeName} />
                         </div>
                         <div className="form-group">
-                            <label>Thời gian khấu hao</label>
-                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="timeDepreciation" value={ timeDepreciation } onChange={this.handleTimeDepreciationChange} />
-                            <label style={{ height: 34, display: "inline", width: "5%"}}> &nbsp; Năm</label>
+                            <label>Thời gian khấu hao (Tháng)</label>
+                            <input type="number" className="form-control" name="timeDepreciation" value={ timeDepreciation } onChange={this.handleTimeDepreciationChange} />
+                            {/* <label style={{ height: 34, display: "inline", width: "3%"}}> &nbsp; Tháng</label> */}
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>

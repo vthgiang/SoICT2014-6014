@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { AssetActions } from '../redux/actions';
+import { AssetManagerActions } from '../../asset-manager/redux/actions';
 
 class AssetAssignedManager extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class AssetAssignedManager extends Component {
             assetName: "",
             assetType: null,
             month: "",
-            // status: null,
+            status: null,
             page: 0,
             limit: 5,
         }
@@ -21,16 +21,28 @@ class AssetAssignedManager extends Component {
     componentDidMount() {
         // this.props.getListAsset(this.state);
     }
-    // // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    // handleEdit = async (value) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             currentRow: value
-    //         }
-    //     });
-    //     window.$('#modal-edit-asset').modal('show');
-    // }
+
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleReport = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: value
+            }
+        });
+        window.$('#modal-failure-report').modal('show');
+    }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
@@ -65,13 +77,13 @@ class AssetAssignedManager extends Component {
 
     }
 
-    // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
-        this.setState({
-            ...this.state,
-            month: value
-        });
-    }
+    // // Function lưu giá trị tháng vào state khi thay đổi
+    // handleMonthChange = (value) => {
+    //     this.setState({
+    //         ...this.state,
+    //         month: value
+    //     });
+    // }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
     handleAssetTypeChange = (value) => {
@@ -84,51 +96,48 @@ class AssetAssignedManager extends Component {
         })
     }
 
-    // // Function lưu giá trị status vào state khi thay đổi
-    // handleStatusChange = (value) => {
-    //     if (value.length === 0) {
-    //         value = null
-    //     };
-    //     this.setState({
-    //         ...this.state,
-    //         status: value
-    //     })
-    // }
+    // Function lưu giá trị status vào state khi thay đổi
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+        ;
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
 
-    // // Function bắt sự kiện tìm kiếm 
-    // handleSunmitSearch = async () => {
-    //     if (this.state.month === "") {
-    //         await this.setState({
-    //             month: this.formatDate(Date.now())
-    //         })
-    //     }
-    //     // this.props.getListAsset(this.state);
-    // }
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = async () => {
+       
+        // this.props.getListAsset(this.state);
+    }
 
-    // // Bắt sự kiện setting số dòng hiện thị trên một trang
-    // setLimit = async (number) => {
-    //     await this.setState({
-    //         limit: parseInt(number),
-    //     });
-    //     // this.props.getListAsset(this.state);
-    // }
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+        });
+        // this.props.getListAsset(this.state);
+    }
 
-    // Bắt sự kiện chuyển trang
-    // setPage = async (pageNumber) => {
-    //     var page = (pageNumber - 1) * this.state.limit;
-    //     await this.setState({
-    //         page: parseInt(page),
+    //Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
 
-    //     });
-    //     this.props.getListAsset(this.state);
-    // }
+        });
+        this.props.getListAsset(this.state);
+    }
 
     render() {
         const { translate, asset } = this.props;
-        var listDepreciation = "";
+        var listAsset = "";
 
         if (this.props.assetsManager.isLoading === false) {
-            listDepreciation = this.props.assetsManager.listDepreciaton;
+            listAsset = this.props.assetsManager.listDepreciaton;
         }
         var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(this.props.assetsManager.totalList / this.state.limit) :
@@ -162,7 +171,7 @@ class AssetAssignedManager extends Component {
                             >
                             </SelectMulti>
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="form-control-static">Tháng</label>
                             <DatePicker
                                 id="month1"
@@ -170,6 +179,20 @@ class AssetAssignedManager extends Component {
                                 value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
+                        </div> */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                                         options={{nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái"}}
+                                         onChange={this.handleStatusChange}
+                                         items={[
+                                            //  {value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng"},
+                                             {value: "Đang sử dụng", text: "Đang sử dụng"},
+                                             {value: "Hỏng hóc", text: "Hỏng hóc"},
+                                             {value: "Mất", text: "Mất"}
+                                         ]}
+                            >
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             {/* <label></label> */}
@@ -182,13 +205,11 @@ class AssetAssignedManager extends Component {
                                 <th style={{ width: "8%" }}>Mã tài sản</th>
                                 <th style={{ width: "10%" }}>Tên tài sản</th>
                                 <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Giá trị</th>
-                                <th style={{ width: "10%" }}>Vị trí tài sản</th>
-                                <th style={{ width: "10%" }}>Tình trạng</th>
-                                {/* <th style={{ width: "10%" }}>Mức độ KH  trung bình tháng</th>
-                                <th style={{ width: "10%" }}>Khấu hao lũy kế</th>
-                                <th style={{ width: "10%" }}>Giá trị còn lại</th>
-                                <th style={{ width: "10%" }}>Thời gian kết thúc trích khấu hao</th> */}
+                                <th style={{ width: "10%" }}>Giá trị tài sản</th>
+                                <th style={{ width: "20%" }}>Thời gian sử dụng từ ngày</th>
+                                <th style={{ width: "20%" }}>Thời gian sử dụng đến ngày</th>
+                                {/* <th style={{ width: "10%" }}>Vị trí tài sản</th> */}
+                                <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                     <DataTableSetting
                                         tableId="assetassigned-table"
@@ -196,13 +217,11 @@ class AssetAssignedManager extends Component {
                                             "Mã tài sản",
                                             "Tên tài sản",
                                             "Loại tài sản",
-                                            "Giá trị",
-                                            "Vị trí tài sản",
-                                            "Tình trạng"
-                                            // "Mức độ KH trung bình tháng",
-                                            // "Khấu hao lũy kế",
-                                            // "Giá trị còn lại",
-                                            // "Thời gian kết thúc trích khấu hao",
+                                            "Giá trị tài sản",
+                                            "Thời gian sử dụng từ ngày",
+                                            "Thời gian sử dụng đến ngày",
+                                            // "Vị trí tài sản",
+                                            "Trạng thái"
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -212,40 +231,40 @@ class AssetAssignedManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDepreciation !== 'undefined' && listDepreciation.length !== 0) &&
-                                listDepreciation.map((x, index) => (
+                            {(typeof listAsset !== 'undefined' && listAsset.length !== 0) &&
+                                listAsset.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.assetNumber}</td>
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType}</td>
                                         <td>{x.initialPrice}</td>
-                                        <td>{x.location}</td>
+                                        <td>{x.dateStartUse}</td>
+                                        <td>{x.dateEndUse}</td>
+                                        {/* <td>{x.location}</td> */}
                                         <td>{x.status}</td>
-                                        {/* <td>{x.thang}</td>
-                                        <td>{x.luyke}</td>
-                                        <td>{x.conlai}</td>
-                                        <td>{x.hetKH}</td> */}
                                         <td style={{ textAlign: "center" }}>
-                                            {/* <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content="Xóa thông tin tài sản"
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.assetNumber + " - " + x.assetName
-                                                }}
-                                                func={this.props.deleteAsset}
-                                            /> */}
+                                            <a onClick={() => this.handleView(x)} style={{width: '5px'}} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleReport(x)} className="edit text-yellow" style={{ width: '5px' }} title="Báo cáo sự cố thiết bị"><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>))
                             }
                         </tbody>
                     </table>
-                    {/* {asset.isLoading ?
+                    {/* {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listAsset === 'undefined' || listAsset.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} /> */}
+                    } */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
+                {/* {
+                    this.state.currentRowView !== undefined &&
+                    <AssetDetailForm
+                        _id={this.state.currentRowView.asset[0]._id}
+                        asset={this.state.currentRowView.asset}
+                        repairUpgrade={this.state.currentRowView.repairUpgrade}
+                        distributeTransfer={this.state.currentRowView.distributeTransfer}
+                    />
+                } */}
                 
                 {/* {
                     this.state.currentRow !== undefined &&

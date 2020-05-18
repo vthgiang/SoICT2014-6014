@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
+const multer = require('multer');
+multer({dest: 'upload/avatars'});
 require('dotenv').config();
 
 

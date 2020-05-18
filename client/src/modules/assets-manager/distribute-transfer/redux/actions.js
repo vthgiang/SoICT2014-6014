@@ -1,5 +1,7 @@
-import { DistributeTransferConstants } from "./constants";
-import { DistributeTransferService } from "./services";
+import {DistributeTransferConstants} from "./constants";
+import {DistributeTransferService} from "./services";
+import {AssetManagerActions} from "../../asset-manager/redux/actions";
+
 export const DistributeTransferActions = {
     searchDistributeTransfers,
     createNewDistributeTransfer,
@@ -9,45 +11,82 @@ export const DistributeTransferActions = {
 
 // Lấy danh sách nghỉ phép
 function searchDistributeTransfers(data) {
-    return dispatch => {
-        dispatch({
-            type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_REQUEST
-        });
-        DistributeTransferService.searchDistributeTransfers(data)
-            .then(res => {
-                dispatch({
-                    type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS,
-                    payload: res.data.content
-                })
+
+    return async (dispatch) => {
+        try {
+            const result = await DistributeTransferService.searchDistributeTransfers(data);
+
+            dispatch({
+                type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS,
+                payload: result.data.content
             })
-            .catch(err => {
-                dispatch({
-                    type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE,
-                    error: err.response.data
-                });
-            })
-    }
+
+        } catch (error) {
+            dispatch({
+                type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE,
+                error: error.response.data
+            });
+        }
+    };
+    // return  dispatch => {
+    //     dispatch({
+    //         type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_REQUEST
+    //     });
+    //     DistributeTransferService.searchDistributeTransfers(data)
+    //         .then(res => {
+    //             dispatch({
+    //                 type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS,
+    //                 payload: res.data.content
+    //             })
+    //         })
+    //         .catch(err => {
+    //             dispatch({
+    //                 type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE,
+    //                 error: err.response.data
+    //             });
+    //         })
+    // }
 }
 
 // Tạo mới thông tin nghỉ phép
 function createNewDistributeTransfer(data) {
-    return dispatch => {
-        dispatch({
-            type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_REQUEST
-        });
-        DistributeTransferService.createNewDistributeTransfer(data)
-            .then(res => {
-                dispatch({
-                    type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_FAILURE,
-                    error: err.response.data
-                });
-            })
+    return async dispatch => {
+        try {
+            dispatch({
+                type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_REQUEST
+            });
+            const response = await DistributeTransferService.createNewDistributeTransfer(data).then(res => res);
+            dispatch(AssetManagerActions.getAllAsset({
+                assetNumber: "",
+                assetName: "",
+                assetType: null,
+                month: "",
+                status: null,
+                page: 0,
+                limit: 5,
+            }));
+            dispatch(searchDistributeTransfers({
+                distributeNumber: "",
+                assetNumber: "",
+                month: "",
+                type: null,
+                page: 0,
+                limit: 5
+            }));
+            dispatch({
+                type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_FAILURE,
+                error: err.response.data
+            });
+        }
+
     }
 }
 
@@ -75,22 +114,41 @@ function deleteDistributeTransfer(id) {
 
 // cập nhật thông tin nghỉ phép của nhân viên
 function updateDistributeTransfer(id, infoDistributeTransfer) {
-    return dispatch => {
-        dispatch({
-            type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_REQUEST
-        });
-        DistributeTransferService.updateDistributeTransfer(id, infoDistributeTransfer)
-            .then(res => {
-                dispatch({
-                    type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_FAILURE,
-                    error: err.response.data
-                });
-            })
+    return async dispatch => {
+        try {
+            dispatch({
+                type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_REQUEST
+            });
+            const response = await DistributeTransferService.updateDistributeTransfer(id, infoDistributeTransfer)
+            dispatch(searchDistributeTransfers({
+                distributeNumber: "",
+                assetNumber: "",
+                month: "",
+                type: null,
+                page: 0,
+                limit: 5
+            }));
+            dispatch(AssetManagerActions.getAllAsset({
+                assetNumber: "",
+                assetName: "",
+                assetType: null,
+                month: "",
+                status: null,
+                page: 0,
+                limit: 5
+            }));
+            dispatch({
+                type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_FAILURE,
+                error: err.response.data
+            });
+        }
     }
 }

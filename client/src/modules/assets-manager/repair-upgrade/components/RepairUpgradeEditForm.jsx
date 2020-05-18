@@ -9,7 +9,7 @@ class RepairUpgradeEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assetIndex: ''
+            assetIndex: ""
         };
     }
 
@@ -138,7 +138,7 @@ class RepairUpgradeEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateDateCreate(this.state.dateCreate, false) &&
-            // this.validateAssetNumber(this.state.assetNumber, false) &&
+            this.validateAssetNumber(this.state.assetNumber, false) &&
             this.validateReason(this.state.reason, false) &&
             this.validateRepairDate(this.state.repairDate, false) &&
             this.validateCost(this.state.cost, false)
@@ -161,6 +161,7 @@ class RepairUpgradeEditForm extends Component {
                 dateCreate: nextProps.dateCreate,
                 type: nextProps.type,
                 assetNumber: nextProps.assetNumber,
+                asset: nextProps.assetId,
                 assetId: nextProps.assetId,
                 assetName: nextProps.assetName,
                 reason: nextProps.reason,
@@ -222,10 +223,10 @@ class RepairUpgradeEditForm extends Component {
                                     </select>
                                 </div>
 
-                                {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
-                                <div className="form-group">
+                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
+                                {/* <div className="form-group"> */}
                                     <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <select id="drops1" className="form-control" name="asset" defaultValue={assetId ? assetId : ''}
+                                    <select id="drops1" className="form-control" name="asset" defaultValue={assetId}
                                             placeholder="Please Select"
                                             onChange={this.handleAssetNumberChange}>
                                         <option value="" disabled>Please Select</option>

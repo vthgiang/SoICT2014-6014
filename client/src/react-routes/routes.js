@@ -65,7 +65,9 @@ import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate
 
 //asset
 import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
+import RecommendDistribute from "../modules/assets-manager/recommend-distribute/components";
 import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure-management/components";
+import ManagerRecommendDistribute from "../modules/assets-manager/recommend-distribute-management/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
@@ -690,6 +692,22 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
+                        isLoading={ this.props.recommendDistribute.isLoading }
+                        key={ 'recommend-distribute-asset' } //recommend_distribute_asset
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/recommmend-distribute-asset', name: 'recommend_distribute_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/recommmend-distribute-asset' }
+                        path={ '/recommmend-distribute-asset' }
+                        pageName={ 'recommend_distribute_asset' }
+                        layout={ Layout }
+                        component={ RecommendDistribute }
+                    />
+
+                    <PrivateRoute 
                         isLoading={ this.props.assetsManager.isLoading }
                         key={ 'manage-assigned-asset' }
                         arrPage={[
@@ -816,6 +834,22 @@ class Routes extends Component {
                         pageName={ 'manage_recommend_procure' }
                         layout={ Layout }
                         component={ ManagerRecommendProcure }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendDistribute.isLoading }
+                        key={ 'manage-recommend-distribute' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-recommend-distribute-asset', name: 'manage-recommend-distribute-asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-recommend-distribute-asset' }
+                        path={ '/manage-recommend-distribute-asset' }
+                        pageName={ 'manage_recommend_distribute_asset' }
+                        layout={ Layout }
+                        component={ ManagerRecommendDistribute }
                     />
 
 

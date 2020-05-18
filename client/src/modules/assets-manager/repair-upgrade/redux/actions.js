@@ -1,6 +1,6 @@
 import {RepairUpgradeConstants} from "./constants";
 import {RepairUpgradeService} from "./services";
-
+import {AssetManagerActions} from "../../asset-manager/redux/actions";
 export const RepairUpgradeActions = {
     searchRepairUpgrades,
     createNewRepairUpgrade,
@@ -11,54 +11,63 @@ export const RepairUpgradeActions = {
 // lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
 function searchRepairUpgrades(data) {
 
-    return dispatch => {
-        dispatch({
-            type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_REQUEST
-        });
-        RepairUpgradeService.searchRepairUpgrades(data)
-            .then(res => {
-                dispatch({
-                    type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_FAILURE,
-                    error: err.response.data
-                });
-            })
+    return async dispatch => {
+        try {
+            const result = await RepairUpgradeService.searchRepairUpgrades(data);
+        
+            dispatch({
+            type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_SUCCESS,
+            payload: result.data.content
+        })
+
+    } catch (error) {
+            dispatch({
+                type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_FAILURE,
+                error: error.response.data
+            });
+        }
     }
 }
 
 // Tạo mới thông tin phiếu sửa chữa - thay thế - nâng cấp
 function createNewRepairUpgrade(data) {
     return dispatch => {
-        dispatch({
-            type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_REQUEST
-        });
-        RepairUpgradeService.createNewRepairUpgrade(data)
+        
+            dispatch({
+                type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_REQUEST
+            });
+            RepairUpgradeService.createNewRepairUpgrade(data)
             .then(res => {
-                dispatch(searchRepairUpgrades({
-                    repairNumber: "",
-                    // assetNumber: "",
-                    month: "",
-                    type: null,
-                    status: null,
-                    page: 0,
-                    limit: 5,
-                }))
-                dispatch({
-                    type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS,
-                    payload: res.data.content
-                })
+                dispatch(AssetManagerActions.getAllAsset({
+                assetNumber: "",
+                assetName: "",
+                assetType: null,
+                month: "",
+                status: null,
+                page: 0,
+                limit: 5,}));
+            dispatch(searchRepairUpgrades({
+                repairNumber: "",
+                assetNumber: "",
+                month: "",
+                type: null,
+                status: null,
+                page: 0,
+                limit: 5,
+            }));
+            dispatch({
+                type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS,
+                payload: res.data.content
             })
-            .catch(err => {
-                dispatch({
-                    type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_FAILURE,
-                    error: err.response.data
-                });
-            })
+        })
+        .catch(err => {
+            dispatch({
+                type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_FAILURE,
+                error: err.response.data
+            });
+            
+        })
+
     }
 }
 
@@ -68,6 +77,7 @@ function deleteRepairUpgrade(id) {
         dispatch({
             type: RepairUpgradeConstants.DELETE_REPAIR_UPGRADE_REQUEST,
         });
+
         RepairUpgradeService.deleteRepairUpgrade(id)
             .then(res => {
                 dispatch({
@@ -92,9 +102,16 @@ function updateRepairUpgrade(id, infoRepairUpgrade) {
         });
         RepairUpgradeService.updateRepairUpgrade(id, infoRepairUpgrade)
             .then(res => {
+                dispatch(AssetManagerActions.getAllAsset({assetNumber: "",
+                    assetName: "",
+                    assetType: null,
+                    month: "",
+                    status: null,
+                    page: 0,
+                    limit: 5}));
                 dispatch(searchRepairUpgrades({
                     repairNumber: "",
-                    // assetNumber: "",
+                    assetNumber: "",
                     month: "",
                     type: null,
                     status: null,

@@ -1,11 +1,13 @@
-import { RepairUpgradeConstants } from './constants';
+import {RepairUpgradeConstants} from './constants';
+
 const initState = {
     isLoading: false,
     listRepairUpgrades: [],
     totalList: "",
-    error:"",
+    error: "",
 }
-export function repairUpgrade(state =initState, action) {
+
+export function repairUpgrade(state = initState, action) {
     switch (action.type) {
         case RepairUpgradeConstants.GET_REPAIR_UPGRADE_REQUEST:
         case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_REQUEST:
@@ -40,7 +42,7 @@ export function repairUpgrade(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrades: state.listRepairUpgrades.map(repairUpgrade =>repairUpgrade._id === action.payload._id ?action.payload : repairUpgrade),
+                listRepairUpgrades: state.listRepairUpgrades.map(repairUpgrade => repairUpgrade._id === action.payload._id ? action.payload : repairUpgrade),
             };
         case RepairUpgradeConstants.GET_REPAIR_UPGRADE_FAILURE:
         case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_FAILURE:

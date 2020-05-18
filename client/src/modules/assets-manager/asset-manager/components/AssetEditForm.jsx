@@ -8,14 +8,14 @@ import {RepairUpgradeActions} from '../../repair-upgrade/redux/actions';
 import {DistributeTransferActions} from '../../distribute-transfer/redux/actions';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-    TabGeneralContent, TabRepairContent, TabDistributeContent, TabDepreciationContent, TabAttachmentsContent
-} from '../../asset-create/components/CombineContent';
+import {TabAttachmentsContent, TabDepreciationContent, TabDistributeContent, TabGeneralContent, TabRepairContent} from '../../asset-create/components/CombineContent';
 
 class AssetEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            isClose: false
+        };
     }
 
 
@@ -42,21 +42,23 @@ class AssetEditForm extends Component {
         });
     }
 
-    // Function thêm thông tin sửa chữa - thay thế - nâng cấp
-    handleChangeRepairUpgrade = (data) => {
+    // Function thêm, chỉnh sửa thông tin sửa chữa - thay thế - nâng cấp
+    handleChangeRepairUpgrade = (data, isEdit) => {
         this.setState({
-            repairUpgradeNew: data
+            repairUpgradeNew: data,
+            isEditRepair: isEdit
         })
     }
 
-// Function thêm thông tin cấp phát - điều chuyển - thu hồi
-    handleChangeDistributeTransfer = (data) => {
+// Function thêm, chỉnh sửa thông tin cấp phát - điều chuyển - thu hồi
+    handleChangeDistributeTransfer = (data, isEdit) => {
         this.setState({
-            distributeTransferNew: data
+            distributeTransferNew: data,
+            isEditDistribute: isEdit
         })
     }
 
-// Function thêm thông tin tài liệu đính kèm
+// Function thêm, chỉnh sửa thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
         this.setState({
             file: data
@@ -64,16 +66,50 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let dataUpdate = {}
-        if(this.state.assetNew !== undefined){
-            dataUpdate = {...this.state.asset,...this.state.assetNew};
-            this.props.updateInformationAsset(this.state.asset._id,dataUpdate);
-        }
+        let {distributeTransferNew, repairUpgradeNew, assetNew} = this.state;
+        let dataUpdate = {};
+        let newDataToUpdateAsset = {
+            person: distributeTransferNew.receiver,
+            dateStartUse: distributeTransferNew.dateStartUse,
+            dateEndUse: distributeTransferNew.dateEndUse,
+            location: distributeTransferNew.nextLocation
+        };
+        switch (true) {
+            case assetNew !== undefined:
+                dataUpdate = {...this.state.asset, ...assetNew};
+                if (!Object.keys(dataUpdate.person).length) dataUpdate.person = null;
+                this.props.updateInformationAsset(this.state.asset._id, dataUpdate);
+                break;
+            case repairUpgradeNew !== undefined && this.state.isEditRepair === 'edit':
+                this.props.updateRepairUpgrade(repairUpgradeNew._id, {...repairUpgradeNew, asset: this.state.asset._id});
+                break;
+            case repairUpgradeNew !== undefined && !this.state.isEditRepair:
+                this.props.createNewRepairUpgrade({...repairUpgradeNew, asset: this.state.asset._id});
+                break;
+            case distributeTransferNew !== undefined && this.state.isEditDistribute === 'edit':
+                this.props.updateDistributeTransfer(distributeTransferNew._id, {...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
+                    if (response.data.success) {
+                        this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
+                    }
+                });
+                break;
+            case distributeTransferNew !== undefined && this.state.isEditDistribute === undefined:
+                this.props.createNewDistributeTransfer({...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
+                    if (response.status === 200) {
+                        this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
+                    }
+                });
+                ;
+                break;
+            default:
+                break;
 
-    }
+        }
+    };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+
+        if (nextProps._id !== prevState._id || nextProps.repairUpgrade !== prevState.repairUpgrade || nextProps.distributeTransfer !== prevState.distributeTransfer) {
             return {
                 ...prevState,
                 asset: nextProps.asset,
@@ -89,7 +125,7 @@ class AssetEditForm extends Component {
     }
 
     render() {
-        const { translate, assetsManager } = this.props;
+        const {translate, assetsManager} = this.props;
         const {_id} = this.state;
         console.log('this.state', this.state);
         return (
@@ -99,6 +135,7 @@ class AssetEditForm extends Component {
                     formID="form-edit-asset"
                     title="Chỉnh sửa thông tin tài sản"
                     func={this.save}
+                    receiveEventClose={event => this.setState({isClose: event})}
                     disableSubmit={false}
                 >
                     {/* <form className="form-group" id="form-edit-employee"> */}
@@ -116,11 +153,13 @@ class AssetEditForm extends Component {
                                 id={`edit_thongtinchung${_id}`}
                                 img={this.props.asset.img}
                                 asset={this.state.asset}
+
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                             />
                             <TabRepairContent
                                 id={`edit_suachua${_id}`}
+                                isCloseModal={this.state.isClose}
                                 repairUpgrade={this.state.repairUpgrade}
                                 handleAddRepairUpgrade={this.handleChangeRepairUpgrade}
                                 handleEditRepairUpgrade={this.handleChangeRepairUpgrade}
@@ -128,6 +167,8 @@ class AssetEditForm extends Component {
                             />
                             <TabDistributeContent
                                 id={`edit_capphat${_id}`}
+                                isCloseModal={this.state.isClose}
+                                asset={this.state.asset}
                                 distributeTransfer={this.state.distributeTransfer}
                                 handleAddDistributeTransfer={this.handleChangeDistributeTransfer}
                                 handleEditDistributeTransfer={this.handleChangeDistributeTransfer}
@@ -170,13 +211,13 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     uploadAvatar: AssetManagerActions.uploadAvatar,
     checkAssetNumber: AssetManagerActions.checkAssetNumber,
-    updateFile: AssetManagerActions.updateFile,
 
     createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
     createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
 
     updateRepairUpgrade: RepairUpgradeActions.updateRepairUpgrade,
     updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
+    updateFile: AssetManagerActions.updateFile,
 
     deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
     deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,

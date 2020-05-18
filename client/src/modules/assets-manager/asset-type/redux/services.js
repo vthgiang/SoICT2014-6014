@@ -1,6 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+// import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const AssetTypeService = {
     searchAssetTypes,
     createAssetType,
@@ -8,45 +9,68 @@ export const AssetTypeService = {
     updateAssetType,
 }
 
-// Lấy danh sách nghỉ phép
+// Lấy danh sách loại tài sản
 function searchAssetTypes(data) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/assettype/paginate`,
+    //     method: 'POST',
+    //     data: data,
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/paginate`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, false, true, 'asset.asset_type');
 }
 
 // tạo mới thông tin nghỉ phép
 function createAssetType(data) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/assettype/create`,
+    //     method: 'POST',
+    //     data: data,
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/create`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.asset_type');
 }
 
 // Xoá thông tin nghỉ phép
 function deleteAssetType(id) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/assettype/${id}`,
+    //     method: 'DELETE',
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, true, 'asset.asset_type');
 }
 
 // Cập nhật thông tin nghỉ phép
 function updateAssetType(id, data) {
-    const requestOptions = {
+    // const requestOptions = {
+    //     url: `${ LOCAL_SERVER_API }/assettype/${id}`,
+    //     method: 'PUT',
+    //     data:data,
+    //     headers: AuthenticateHeader()
+    // };
+    // return axios(requestOptions);
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/${id}`,
         method: 'PUT',
-        data:data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.asset_type');
 }

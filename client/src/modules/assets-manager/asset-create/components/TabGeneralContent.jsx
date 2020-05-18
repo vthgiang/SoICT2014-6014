@@ -374,35 +374,38 @@ class TabGeneralContent extends Component {
     // }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-
-
-        return {
-            ...prevState,
-            id: nextProps.id,
-            img: nextProps.img,
-            assetNumber: nextProps.asset.assetNumber,
-            assetName: nextProps.asset.assetName,
-            assetType: nextProps.asset.assetType,
-            location: nextProps.asset.location,
-            datePurchase: nextProps.asset.datePurchase,
-            manager: nextProps.asset.manager,
-            person: nextProps.asset.person,
-            dateStartUse: nextProps.asset.dateStartUse,
-            dateEndUse: nextProps.asset.dateEndUse,
-            initialPrice: nextProps.asset.initialPrice,
-            description: nextProps.asset.description,
-            status: nextProps.asset.status,
-            detailInfo: nextProps.asset.detailInfo,
-            errorOnAssetNumber: undefined,
-            errorOnAssetName: undefined,
-            errorOnAssetType: undefined,
-            errorOnLocation: undefined,
-            errorOnDatePurchase: undefined,
-            errorOnManager: undefined,
-            errorOnInitialPrice: undefined,
-            errorOnNameField: undefined,
-            errorOnValue: undefined,
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+                img: nextProps.img,
+                assetNumber: nextProps.asset.assetNumber,
+                assetName: nextProps.asset.assetName,
+                assetType: nextProps.asset.assetType,
+                location: nextProps.asset.location,
+                datePurchase: nextProps.asset.datePurchase,
+                manager: nextProps.asset.manager,
+                person: nextProps.asset.person,
+                dateStartUse: nextProps.asset.dateStartUse,
+                dateEndUse: nextProps.asset.dateEndUse,
+                initialPrice: nextProps.asset.initialPrice,
+                description: nextProps.asset.description,
+                status: nextProps.asset.status,
+                detailInfo: nextProps.asset.detailInfo,
+                errorOnAssetNumber: undefined,
+                errorOnAssetName: undefined,
+                errorOnAssetType: undefined,
+                errorOnLocation: undefined,
+                errorOnDatePurchase: undefined,
+                errorOnManager: undefined,
+                errorOnInitialPrice: undefined,
+                errorOnNameField: undefined,
+                errorOnValue: undefined,
+            }
+        } else {
+            return null;
         }
+
     }
 
     string2literal = (value) => {
@@ -518,7 +521,8 @@ class TabGeneralContent extends Component {
                                     <div className={`form-group`}>
 
                                         <label htmlFor="person">Người được giao sử dụng tài sản<span className="text-red">*</span></label>
-                                        <select id="drops1" className="form-control" name="person" value={(this.props.asset.person !== undefined && Object.keys(this.props.asset.person).length) ? this.props.asset.person._id : 'init'}
+                                        <select id="drops1" className="form-control" name="person"
+                                                value={(this.props.asset.person !== undefined && Object.keys(this.props.asset.person).length) ? this.props.asset.person._id : 'init'}
                                                 placeholder="Please Select"
                                                 onChange={this.handlePersonChange}>
                                             <option value="init" disabled>Please Select</option>
@@ -561,10 +565,9 @@ class TabGeneralContent extends Component {
                                         {/* <ErrorLabel content={errorOnDateEndUse} /> */}
                                     </div>
                                     <div className={`form-group ${errorOnInitialPrice === undefined ? "" : "has-error"} `}>
-                                        <label htmlFor="initialPrice">Giá trị ban đầu<span className="text-red">*</span></label>
-                                        <input style={{display: "inline", width: "88%"}} type="number" className="form-control" name="initialPrice" value={initialPrice}
-                                               onChange={this.handleInitialPriceChange} placeholder="Giá trị ban đầu" autoComplete="off"/>
-                                        <label style={{height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label>
+                                        <label htmlFor="initialPrice">Giá trị ban đầu (VNĐ)<span className="text-red">*</span></label>
+                                        <input type="number" className="form-control" name="initialPrice" value={initialPrice} onChange={this.handleInitialPriceChange} placeholder="Giá trị ban đầu" autoComplete="off"/>
+                                        {/* <label style={{height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label> */}
                                         <ErrorLabel content={errorOnInitialPrice}/>
                                     </div>
                                     <div className="form-group">
