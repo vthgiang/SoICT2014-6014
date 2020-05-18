@@ -19,7 +19,7 @@ import {discipline} from '../modules/human-resource/commendation-discipline/redu
 import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
 import {holiday} from '../modules/human-resource/holiday/redux/reducers';
 import {notifications} from '../modules/notification/redux/reducers';
-
+import {documents} from '../modules/document/redux/reducers';
 
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
@@ -39,6 +39,14 @@ import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
 import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
 
+//asset
+import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
+import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
+import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
+import { assetsManager } from "../modules/assets-manager/asset-manager/redux/reducers";
+import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
+import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     //system
     log,
@@ -54,6 +62,7 @@ const appReducer = combineReducers(Object.assign({
     department,
 
     //---------------------------
+    documents,
     notifications,
     auth,
     employeesInfo,
@@ -83,6 +92,15 @@ const appReducer = combineReducers(Object.assign({
     performtasks,
     // kpi members
     kpimembers,
+
+    // asset
+    recommendProcure,
+    recommendDistribute,
+    assetType,
+    assetsManager,
+    repairUpgrade,
+    distributeTransfer,
+
     dashboardEvaluationEmployeeKpiSet
 }, { Intl }));
 

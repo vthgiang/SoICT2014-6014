@@ -94,7 +94,8 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
-            table: 'Bảng',
+            table: 'Bảng', upload: 'Tải lên', pick_image: 'Chọn ảnh', crop: "Cắt ảnh",
+            action: 'Hành động',
             name: 'Tên',
             description: 'Mô tả',
             search: 'Tìm kiếm',
@@ -384,6 +385,53 @@ export default {
             delete_manual_notification_faile: 'Xóa thông báo thất bại',
         },
 
+        document: {
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản',
+            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', users: 'Những vị trí có quyền xem mẫu này',
+            created_at: 'Ngày tạo', apply_at: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
+            add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản',
+            upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+            doc_version: {
+                title: 'Phiên bản',
+                name: 'Tên phiên bản', description: 'Mô tả',
+                apply_at: 'Ngày áp dụng',
+                upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+            },
+            relationship: {
+                title: 'Liên kết văn bản',
+                description: 'Mô tả',
+                list: 'Các tài liệu liên kết'
+            },
+            store: {
+                title: 'Hồ sơ lưu trữ bản cứng',
+                information: 'Thông tin lưu trữ',
+                organizational_unit_manage: 'Đơn vị quản lý',
+                select_organizational: 'Chọn đơn vị quản lý',
+                user_manage: 'Người quản lý',
+                select_user: 'Chọn người quản lý',
+            },
+
+            category: 'Loại văn bản',
+            domain: 'Danh mục văn bản',
+            data: 'Danh sách tài liệu văn bản',
+            statistics_report: 'Thống kê báo cáo',
+            history_report: 'Lịch sử thống kê',
+
+            administration: {
+                categories: {
+                    add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
+                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản',
+                },
+                domains: {
+                    add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
+                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục',
+                }
+            },
+            user: {
+
+            },
+        },
+
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',
@@ -541,6 +589,29 @@ export default {
             tasks: 'Quản lý công việc',
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
+
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+            manage_asset: 'Quản lý tài sản',
+            manage_type_asset: 'Quản lý loại tài sản',
+            add_asset: 'Thêm tài sản',
+            manage_info_asset: 'Quản lý thông tin tài sản',
+            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_repair_asset: 'Quản lý sửa chữa, thay thế',
+            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_room_asset: 'Quản lý phòng & trang thiết bị',
+            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
+            manage_recommend_distribute_asset:'Quản lý đề nghị cấp phát',
+            manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            // NHÂN VIÊN
+            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
+            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            //******END */
         },
 
         manage_system: {
@@ -1169,6 +1240,133 @@ export default {
             }
         },
 
+        // Modules Quản lý tài sản
+        asset: {
+            //Quản lý loại tài sản
+            asset_type: {
+
+                //Thông điệp trả về từ server
+                get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
+                get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
+                create_asset_type_success: 'Thêm loại tài sản thành công',
+                create_asset_type_faile: 'Thêm loại tài sản thất bại',
+                delete_asset_type_success: 'Xoá loại tài sản thành công',
+                delete_asset_type_faile: 'Xoá loại tài sản thất bại',
+                edit_asset_type_success: 'Chỉnh sửa thông tin loại tài sản thành công',
+                edit_asset_type_faile: 'Chỉnh sửa thông tin loại tài sản thất bại',
+            },
+
+            // Quản lý thông tin tài sản
+            asset_info: {
+
+                //Thông điệp trả về từ server
+                get_asset_success: 'Lấy thông tin tài sản thành công',
+                get_asset_faile: 'Lấy thông tin tài sản thất bại',
+                create_asset_success: 'Thêm tài sản thành công',
+                create_asset_faile: 'Thêm tài sản thất bại',
+                delete_asset_success: 'Xoá tài sản thành công',
+                delete_asset_faile: 'Xoá tài sản thất bại',
+                edit_asset_success: 'Chỉnh sửa thông tin tài sản thành công',
+                edit_asset_faile: 'Chỉnh sửa thông tin tài sản thất bại',
+
+            },
+
+            // Quản lý sửa chữa, thay thế, nâng cấp
+            repair_upgrade: {
+
+                //Thông điệp trả về từ server
+                get_repair_upgrade_success: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thành công',
+                get_repair_upgrade_faile: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thất bại',
+                create_repair_upgrade_success: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thành công',
+                create_repair_upgrade_faile: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thất bại',
+                delete_repair_upgrade_success: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thành công',
+                delete_repair_upgrade_faile: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thất bại',
+                edit_repair_upgrade_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý cấp phát, điều chuyển, thu hồi
+            distribute_transfer: {
+
+                //Thông điệp trả về từ server
+                get_distribute_transfer_success: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thành công',
+                get_distribute_transfer_faile: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thất bại',
+                create_distribute_transfer_success: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thành công',
+                create_distribute_transfer_faile: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thất bại',
+                delete_distribute_transfer_success: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thành công',
+                delete_distribute_transfer_faile: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thất bại',
+                edit_distribute_transfer_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_distribute_transfer_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý đề nghị mua sắm thiết bị
+            manage_recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý đề nghị cấp phát
+            manage_recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+
+            },
+
+            // Đăng ký mua sắm thiết bị
+            recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Đăng ký cấp phát thiết bị
+            recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý thiết bị được bàn giao
+            manage_assigned: {
+
+                //Thông điệp trả về từ server
+                
+            }
+
+
+
+        },
+
 
         // Task template
         task_template: {
@@ -1247,9 +1445,9 @@ export default {
                 stored: 'Lưu trong kho',
                 current_month: 'Tháng hiện tại',
 
-                name: "Tên công việc",
+                name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
-                search: "Tìm kiếm",
+                search: 'Tìm kiếm',
 
                 col_name: 'Tên công việc',
                 col_organization: 'Đơn vị',
@@ -1327,7 +1525,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
-                    err_empty: "Giá trị không được để trống"
+                    err_empty: 'Giá trị không được để trống'
                 }
 
             },
@@ -1666,6 +1864,15 @@ export default {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
-        }
+        },
+
+        manage_asset: {
+            menu_general_infor: 'Thông tin chung',
+            menu_repair_upgrade: 'Sửa chữa - Thay thế - Nâng cấp',
+            menu_allocate_revoke: 'Cấp phát - Điều chuyển - Thu hồi',
+            menu_maintain: 'Bảo hành - Bào trì',
+            menu_depreciation_infor: 'Thông tin khấu hao',
+            menu_attachments: 'Tài liệu đính kèm',
+        },
     }
 }
