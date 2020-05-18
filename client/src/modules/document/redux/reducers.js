@@ -40,6 +40,10 @@ const initState = {
             hasNextPage: false,
             prevPage: 0,
             nextPage: 0,
+
+            create: {
+                user_manage: []
+            }
         },
     },
     user: {

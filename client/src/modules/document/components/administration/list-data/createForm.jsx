@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DataTableSetting } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import { TreeSelect } from 'antd';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -24,6 +25,13 @@ class CreateForm extends Component {
         })
     }
 
+    handleDomain = value => {
+        this.setState({ documentDomain: value });
+    }
+
+    handleApplyAt = value => {
+        this.setState({documentApplyAt: value})
+    }
     save = () => {
         const {documentTypeName, documentTypeDescription} = this.state;
         this.props.createDocumentCategory({
@@ -33,8 +41,12 @@ class CreateForm extends Component {
     }
 
     render() {
-        const {translate}=this.props;
-
+        const {translate, role, documents, department}=this.props;
+        const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
+        const domains = documents.administration.domains;
+        const documentRoles = role.list.map( role => {return {value: role._id, text: role.name}});
+        const relationshipDocs = documents.administration.listData.list.map(doc=>{return {value: doc._id, text: doc.name}})
+        const userManage = documents.administration.listData.create.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}})
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
@@ -54,49 +66,67 @@ class CreateForm extends Component {
                                         <input type="text" className="form-control" onChange={this.handleName}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.users') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName}/>
+                                        <label>{ translate('document.category') }<span className="text-red">*</span></label>
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id="select-documents-relationship"
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {categories}
+                                            onChange={this.handleRolesChange}
+                                            multiple={false}
+                                            options={{placeholder: translate('document.administration.categories.select')}}
+                                        />
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <textarea type="text" className="form-control" onChange={this.handleName}/>
+                                        <label>{ translate('document.domain') }<span className="text-red">*</span></label>
+                                        <TreeSelect
+                                            style={{ width: '100%' }}
+                                            value={this.state.documentDomain}
+                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                            treeData={domains}
+                                            placeholder={translate('document.administration.domains.select')}
+                                            treeDefaultExpandAll
+                                            onChange={this.handleDomain}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>{ translate('document.category') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.domain') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName}/>
+                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
+                                        <textarea style={{height: '184px'}} type="text" className="form-control" onChange={this.handleName}/>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Phiên bản</legend>
+                            <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>{ translate('document.version') }<span className="text-red">*</span></label>
+                                        <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" onChange={this.handleName}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName}/>
+                                     <label>{ translate('document.doc_version.apply_at') }<span className="text-red">*</span></label>
+                                        <DatePicker
+                                            id="document-version-apply-at"
+                                            value={this.state.documentApplyAt}
+                                            onChange={this.handleApplyAt}
+                                        />
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.apply_at') }<span className="text-red">*</span></label>
-                                        <input type="date" className="form-control"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.upload_file') }<span className="text-red">*</span></label>
+                                        <label>{ translate('document.doc_version.upload_file') }<span className="text-red">*</span></label>
                                         <input type="file"/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.upload_file_scan') }<span className="text-red">*</span></label>
+                                        <label>{ translate('document.doc_version.upload_file_scan') }<span className="text-red">*</span></label>
                                         <input type="file"/>
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.description') }<span className="text-red">*</span></label>
+                                        <textarea style={{height: '110px'}} type="text" className="form-control" onChange={this.handleName}/>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -113,10 +143,8 @@ class CreateForm extends Component {
                                                         columnArr={[
                                                             translate('document.name'), 
                                                             translate('document.description'), 
-                                                            translate('document.createdAt'), 
-                                                            translate('document.applyAt'), 
-                                                            translate('document.views'), 
-                                                            translate('document.downloads')
+                                                            translate('document.created_at'), 
+                                                            translate('document.apply_at')
                                                         ]}
                                                         limit={this.state.limit}
                                                         setLimit={this.setLimit}
@@ -163,17 +191,80 @@ class CreateForm extends Component {
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Liên kết văn bản</legend>
-                            
+                            <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
+                            <div className="form-group">
+                                <label>{ translate('document.relationship.description') }<span className="text-red">*</span></label>
+                                <textarea type="text" className="form-control" onChange={this.handleName}/>
+                            </div>
+                            <div className="form-group">
+                                <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id="select-documents-relationship-to-document"
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {relationshipDocs}
+                                    multiple={true}
+                                />
+                            </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Hồ sơ lưu trữ bản cứng</legend>
+                            <legend className="scheduler-border">{ translate('document.users') }</legend>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id="select-document-users-see-permission"
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {documentRoles}
+                                onChange={this.handleRolesChange}
+                                multiple={true}
+                            />
+                        </fieldset>
+
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{ translate('document.store.title') }</legend>
+                            <div className="form-group">
+                                <label>{ translate('document.store.information') }<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" onChange={this.handleName}/>
+                            </div>
+                            <div className="form-group">
+                                <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id="select-documents-organizational-unit-manage"
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
+                                    onChange={this.handleRolesChange}
+                                    multiple={true}
+                                />
+                            </div>
+                            {
+                                this.state.documentOrganizationalUnitManage !== undefined &&
+                                <div className="form-group">
+                                    <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
+                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                        id="select-documents-organizational-unit-manage"
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items = {userManage}
+                                        onChange={this.handleRolesChange}
+                                        multiple={true}
+                                    />
+                                </div>
+                            }
                             
                         </fieldset>
                     </form>
                 </DialogModal>
             </React.Fragment>
          );
+    }
+
+    handleRolesChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                documentRoles: value
+            }
+        });
     }
 }
  
