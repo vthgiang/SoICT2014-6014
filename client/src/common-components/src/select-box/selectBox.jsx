@@ -75,7 +75,7 @@ class SelectBox extends Component {
         const { id, items, className, style, multiple=false, options={} } = this.props;
         return ( 
             <React.Fragment>
-                <div>
+                <div className="select2">
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
                         {options.placeholder !== undefined  && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {
