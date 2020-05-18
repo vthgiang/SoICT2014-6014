@@ -40,12 +40,13 @@ function checkAssetNumber(assetNumber) {
 // Thêm mới thông tin tài sản
 function addNewAsset(newAsset) {
     const requestOptions = {
+        url:`${ LOCAL_SERVER_API }/asset`,
         method: 'POST',
         headers: AuthenticateHeader(),
-        body: JSON.stringify(newAsset)
+        body: newAsset
     };
 
-    return fetch(`${ LOCAL_SERVER_API }/asset`, requestOptions).then(handleResponse)
+    return axios(requestOptions)
 
 }
 

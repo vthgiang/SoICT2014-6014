@@ -4,6 +4,9 @@ import {
 import {
     AssetService
 } from "./services";
+import {LOCAL_SERVER_API} from "../../../../env";
+import {AuthenticateHeader} from "../../../../config";
+import axios from 'axios'
 export const AssetManagerActions = {
     getAllAsset,
     addNewAsset,
@@ -83,17 +86,41 @@ function checkAssetNumber(assetNumber) {
 function addNewAsset(assetNew) {
     return dispatch => {
         dispatch(request(assetNew));
-
-        AssetService.addNewAsset(assetNew)
-            .then(
-                asset => {
-                    dispatch(getAllAsset());
-                    dispatch(success(asset));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
+        axios.post(`${ LOCAL_SERVER_API }/asset`,assetNew,{headers: AuthenticateHeader()}).then(
+            asset => {
+                dispatch(getAllAsset({
+                    assetNumber: "",
+                    assetName: "",
+                    assetType: null,
+                    month: "",
+                    status: null,
+                    page: 0,
+                    limit: 5,
+                }));
+                dispatch(success(asset));
+            },
+            error => {
+                dispatch(failure(error.toString()));
+            }
+        );
+        // AssetService.addNewAsset(assetNew)
+        //     .then(
+        //         asset => {
+        //             dispatch(getAllAsset({
+        //                 assetNumber: "",
+        //                 assetName: "",
+        //                 assetType: null,
+        //                 month: "",
+        //                 status: null,
+        //                 page: 0,
+        //                 limit: 5,
+        //             }));
+        //             dispatch(success(asset));
+        //         },
+        //         error => {
+        //             dispatch(failure(error.toString()));
+        //         }
+        //     );
     };
 
     function request(asset) {

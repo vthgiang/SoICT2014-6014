@@ -40,8 +40,6 @@ const uploadAvatar = multer({
     fileFilter: (req, file, cb) => {cb(null, true);}
 });
 exports.uploadAvatar = uploadAvatar.single("fileUpload");
-
-
 /**
  * Lấy danh sách tài sản
  */
@@ -75,8 +73,14 @@ exports.checkAssetNumber = async (req, res) => {
 
 // Tạo tài sản mới
 exports.create = async (req, res) => {
-    console.log(req.body);
+
     try {
+        const file = req.file;
+        if(file){
+            req.body.avatar = file.path.split('fileupload')[1]
+        }
+        console.log('req.body.avatar',req.body.avatar);
+        console.log('req.body',req.body);
         await AssetService.create(req.body).save((err, data) => {
             res.status(200).json({
                 messages: "success",
@@ -109,9 +113,9 @@ exports.updateInfoAsset = async (req, res) => {
 // Cập nhật ảnh tài sản
 exports.updateAvatar = async (req, res) => {
     try {
-        var updateAvatar = await AssetService.updateAvatar(req.params.assetNumber, req.file.filename, req.user.company._id);
+        const file = req.file;
         await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
-        res.status(200).json({ success: true, messages: ["update_avatar_success"], content: updateAvatar });
+        res.status(200).json({ success: true, messages: ["update_avatar_success"],content:{...file,path:file.path.split('fileupload')[1]} });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(400).json({ success: false, messages: ["update_avatar_faile"], content: {error: error} });

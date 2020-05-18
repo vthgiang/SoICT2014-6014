@@ -50,7 +50,6 @@ exports.searchAssetProfiles = async (data, company) => {
 
             positionManager = await UserRole.find({userId: asset[0].manager._id}).populate('roleId');
             if(asset[0].person !== null) positionPerson = await UserRole.find({userId: asset[0].person._id}).populate('roleId');
-            console.log('positionPerson',positionPerson);
             if (Object.keys(positionManager) && Object.keys(positionPerson)) {
                 newAssetManager = asset[0].manager.toObject();
 

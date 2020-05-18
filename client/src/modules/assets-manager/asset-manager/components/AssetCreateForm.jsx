@@ -19,7 +19,6 @@ class AssetCreateForm extends Component {
             img: 'lib/adminLTE/dist/img/avatar5.png',
             avatar: "",
             assetNew: {
-                avatar: 'lib/adminLTE/dist/img/avatar5.png',
                 datePurchase: this.formatDate(Date.now()),
                 detailInfo: [],
             },
@@ -58,6 +57,7 @@ class AssetCreateForm extends Component {
 
     // Function upload avatar
     handleUpload = (img, avatar) => {
+        console.log(typeof img);
         this.setState({
             img: img,
             avatar: avatar
@@ -104,7 +104,7 @@ class AssetCreateForm extends Component {
     // function thêm mới thông tin tài sản
     save = async () => {
         let assetNew = this.state.assetNew;
-        assetNew = {...assetNew,company: this.props.auth.user.company._id};
+        assetNew = {...assetNew, company: this.props.auth.user.company._id, file: this.state.file};
         let {file} = this.state;
 
         // cập nhật lại state trước khi add asset
@@ -135,48 +135,42 @@ class AssetCreateForm extends Component {
         } else if (!assetNew.timeDepreciation) {
             this.notifyerror("Bạn chưa nhập thời gian trích khấu hao");
         } else {
-            console.log('assetNew', assetNew);
-            await this.props.addNewAsset(assetNew);
-
-            // lưu avatar
             if (this.state.avatar !== "") {
-                let formData = new FormData();
-                formData.append('fileUpload', this.state.avatar);
-                this.props.uploadAvatar(this.state.assetNew.assetNumber, formData);
+                let data = new FormData();
+                Object.keys(assetNew).forEach((key) => {
+                    console.log(key);
+                    data.append(key, assetNew[key]);
+                });
+                data.append('fileUpload', this.state.avatar);
+                await this.props.addNewAsset(data);
+            }else{
+                await this.props.addNewAsset(assetNew);
             }
 
-            // lưu lịch sử sửa chữa - thay thế - nâng cấp
-            if (this.state.repairUpgradeNew.length !== 0) {
-                let assetNumber = this.state.assetNew.assetNumber;
-                this.state.repairUpgradeNew.map(x => {
-                    this.props.createNewRepairUpgrade({...x, assetNumber})
-                })
-            }
 
-            // lưu thông tin cấp phát - điều chuyển - thay thế
-            if (this.state.distributeTransferNew.length !== 0) {
-                let assetNumber = this.state.assetNew.assetNumber;
-                this.state.distributeTransferNew.map(x => {
-                    this.props.createNewDistributeTransfer({...x, assetNumber})
-                })
-            }
+            // // lưu avatar
+            // if (this.state.avatar !== "") {
+            //     let formData = new FormData();
+            //     formData.append('fileUpload', this.state.avatar);
+            //     this.props.uploadAvatar(this.state.assetNew.assetNumber, formData);
+            // }
 
-            // lưu thông tin tài liệu đính kèm
-            if (this.state.file.length !== 0) {
-                let listFile = this.state.file;
-                listFile = listFile.filter(file => (file.fileUpload !== " "))
-                listFile.map(x => {
-                    let formData = new FormData();
-                    formData.append('fileUpload', x.fileUpload);
-                    formData.append('nameFile', x.nameFile);
-                    formData.append('discFile', x.discFile);
-                    formData.append('file', x.file);
-                    formData.append('number', x.number);
-                    this.props.updateFile(this.state.assetNew.assetNumber, formData)
-                })
-            }
+            // // lưu thông tin tài liệu đính kèm
+            // if (this.state.file.length !== 0) {
+            //     let listFile = this.state.file;
+            //     listFile = listFile.filter(file => (file.fileUpload !== " "))
+            //     listFile.forEach(x => {
+            //         let formData = new FormData();
+            //         formData.append('fileUpload', x.fileUpload);
+            //         formData.append('nameFile', x.nameFile);
+            //         formData.append('discFile', x.discFile);
+            //         formData.append('file', x.file);
+            //         formData.append('number', x.number);
+            //         this.props.updateFile(this.state.assetNew.assetNumber, formData)
+            //     })
+            // }
 
-            this.notifysuccess("Thêm tài sản thành công");
+            // this.notifysuccess("Thêm tài sản thành công");
         }
     }
 

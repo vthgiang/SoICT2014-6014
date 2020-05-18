@@ -184,7 +184,7 @@ class AssetEditForm extends Component {
 
                             <TabAttachmentsContent
                                 id={`edit_tailieu${_id}`}
-                                file={this.state.file}
+                                file={this.state.asset.file}
                                 asset={this.state.asset}
                                 handleChange={this.handleChange}
                                 handleAddFile={this.handleChangeFile}

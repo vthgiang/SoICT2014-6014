@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require('../../../middleware');
+const {auth} = require('../../../middleware');
 const AssetController = require("./asset.controller");
 
 /**
  * Lấy danh sách tài sản
- */ 
+ */
 router.post('/paginate', auth, AssetController.searchAssetProfiles);
 
 // Kiểm tra sự tồn tại của mã tài sản
 router.get('/checkAssetNumber/:assetNumber', auth, AssetController.checkAssetNumber);
 
 // Thêm mới một tài sản
-router.post('/', auth, AssetController.create);
+router.post('/', auth, AssetController.uploadAvatar, AssetController.create);
 
 // Cập nhật thông tin tài sản theo id
 router.put('/update/:id', auth, AssetController.updateInfoAsset);
