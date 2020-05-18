@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import { TreeSelect } from 'antd';import 'antd/dist/antd.css';
+import { TreeSelect } from 'antd';
 
 class CreateForm extends Component {
     constructor(props) {

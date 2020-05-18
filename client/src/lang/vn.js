@@ -391,6 +391,25 @@ export default {
             created_at: 'Ngày tạo', apply_at: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
             add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản',
             upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+            doc_version: {
+                title: 'Phiên bản',
+                name: 'Tên phiên bản', description: 'Mô tả',
+                apply_at: 'Ngày áp dụng',
+                upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+            },
+            relationship: {
+                title: 'Liên kết văn bản',
+                description: 'Mô tả',
+                list: 'Các tài liệu liên kết'
+            },
+            store: {
+                title: 'Hồ sơ lưu trữ bản cứng',
+                information: 'Thông tin lưu trữ',
+                organizational_unit_manage: 'Đơn vị quản lý',
+                select_organizational: 'Chọn đơn vị quản lý',
+                user_manage: 'Người quản lý',
+                select_user: 'Chọn người quản lý',
+            },
 
             category: 'Loại văn bản',
             domain: 'Danh mục văn bản',
@@ -401,11 +420,11 @@ export default {
             administration: {
                 categories: {
                     add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
-                    name: 'Tên', description: 'Mô tả',
+                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản',
                 },
                 domains: {
                     add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
-                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha'
+                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục',
                 }
             },
             user: {
