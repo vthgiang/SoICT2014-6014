@@ -12,15 +12,14 @@ class RecommendProcureCreateForm extends Component {
             recommendNumber: "",
             dateCreate: this.formatDate(Date.now()),
             proponent: "",
-            department: "",
-            position: "",
+            positionProponent: "",
             equipment: "",
             supplier: "",
             total: "",
             unit: "",
             estimatePrice: "",
             approver: "",
-            position1: "",
+            positionApprover: "",
             status: "",
             note: "",
         };
@@ -213,7 +212,7 @@ class RecommendProcureCreateForm extends Component {
                                 <div className="form-group">
                                     <label>Chức vụ người đề nghị</label>
                                     {/* <input defaultValue={Object.keys(this.props.auth.user) && this.props.auth.user.roles[0].roleId.name} type="text" className="form-control" name="position"/> */}
-                                    <input type="text" className="form-control" name="position"/>
+                                    <input type="text" className="form-control" name="positionProponent"/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
@@ -221,10 +220,6 @@ class RecommendProcureCreateForm extends Component {
                                               placeholder="Thiết bị đề nghị mua"></textarea>
                                     <ErrorLabel content={errorOnEquipment}/>
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Nhà cung cấp</label>
-                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp"/>
-                                </div> */}
                             </div>
                             <div className="col-sm-6">
                             <div className="form-group">
@@ -257,7 +252,7 @@ class RecommendProcureCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" disabled/>
+                                    <input type="text" className="form-control" name="positionApprover" disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>

@@ -11,14 +11,6 @@ export const DistributeTransferService = {
 
 // Lấy danh sách cấp phát - điều chuyển - thu hồi
 function searchDistributeTransfers(data) {
-    // const requestOptions = {
-    //     url: `${ LOCAL_SERVER_API }/distributetransfer/paginate`,
-    //     method: 'POST',
-    //     data: data,
-    //     headers: AuthenticateHeader()
-    // };
-    // return axios(requestOptions);
-
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/paginate`,
         method: 'POST',
@@ -28,14 +20,6 @@ function searchDistributeTransfers(data) {
 
 // tạo mới thông tin cấp phát - điều chuyển - thu hồi
 function createNewDistributeTransfer(data) {
-    // const requestOptions = {
-    //     url: `${ LOCAL_SERVER_API }/distributetransfer/create`,
-    //     method: 'POST',
-    //     data: data,
-    //     headers: AuthenticateHeader()
-    // };
-    // return axios(requestOptions);
-
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/create`,
         method: 'POST',
@@ -45,13 +29,6 @@ function createNewDistributeTransfer(data) {
 
 // Xoá thông tin cấp phát - điều chuyển - thu hồi
 function deleteDistributeTransfer(id) {
-    // const requestOptions = {
-    //     url: `${ LOCAL_SERVER_API }/distributetransfer/${id}`,
-    //     method: 'DELETE',
-    //     headers: AuthenticateHeader()
-    // };
-    // return axios(requestOptions);
-
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/distributetransfer/${id}`,
         method: 'DELETE',

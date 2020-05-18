@@ -16,7 +16,7 @@ class RecommendProcureDetailForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                positionProponent: nextProps.position,
+                positionProponent: nextProps.positionProponent,
                 equipment: nextProps.equipment,
                 supplier: nextProps.supplier,
                 total: nextProps.total,
