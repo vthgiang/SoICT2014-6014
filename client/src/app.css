@@ -48,12 +48,12 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
 
 /* CSS body, cơ sở chung cho tất cả */
 body {
-    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     font-weight: 400;
     font-size: 14px;
     overflow-x: hidden;
     overflow-y: auto;
-    color: #333;
+    color: #333 !important;
 }
 
 
