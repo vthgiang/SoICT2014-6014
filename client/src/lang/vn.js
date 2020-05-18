@@ -406,7 +406,9 @@ export default {
                 title: 'Hồ sơ lưu trữ bản cứng',
                 information: 'Thông tin lưu trữ',
                 organizational_unit_manage: 'Đơn vị quản lý',
+                select_organizational: 'Chọn đơn vị quản lý',
                 user_manage: 'Người quản lý',
+                select_user: 'Chọn người quản lý',
             },
 
             category: 'Loại văn bản',

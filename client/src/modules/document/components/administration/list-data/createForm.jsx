@@ -232,25 +232,23 @@ class CreateForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
-                                    onChange={this.handleRolesChange}
-                                    multiple={true}
+                                    onChange={this.handleOrganizationalUnit}
+                                    options={{placeholder: translate('document.store.select_organizational')}}
+                                    multiple={false}
                                 />
                             </div>
-                            {
-                                this.state.documentOrganizationalUnitManage !== undefined &&
-                                <div className="form-group">
-                                    <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
-                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                        id="select-documents-organizational-unit-manage"
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {userManage}
-                                        onChange={this.handleRolesChange}
-                                        multiple={true}
-                                    />
-                                </div>
-                            }
-                            
+                            <div className="form-group">
+                                <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id="select-documents-user-manage"
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {userManage}
+                                    onChange={this.handleRolesChange}
+                                    options={{placeholder: translate('document.store.select_user')}}
+                                    multiple={false}
+                                />
+                            </div>
                         </fieldset>
                     </form>
                 </DialogModal>
@@ -265,6 +263,12 @@ class CreateForm extends Component {
                 documentRoles: value
             }
         });
+    }
+
+    handleOrganizationalUnit = value => {
+        this.setState({
+            documentOrganizationalUnit: value[0]
+        })
     }
 }
  
