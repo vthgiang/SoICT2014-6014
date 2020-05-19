@@ -40,38 +40,46 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         })
         var tasktemplates;
         if ((organizationalUnit === "[]")||(JSON.stringify(organizationalUnit)==JSON.stringify([]))){
-            tasktemplates = await Privilege.find({
+            var tasks = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
-            }).sort({'createdAt': 'desc'})
+            })
+            var taskId=tasks.map(x=>x.resourceId);
+            tasktemplates = await TaskTemplate.find({
+                _id : { $in: taskId},
+                name : { "$regex": name, "$options": "i" }
+            })
+            .sort({'createdAt': 'asc'})
             .skip(noResultsPerPage*(pageNumber-1))
             .limit(noResultsPerPage)
-            .populate({ 
-                path: 'resourceId', 
-                model: TaskTemplate, 
-                match: {name : { "$regex": name, "$options": "i" }},
-                populate: { path: 'creator organizationalUnit' } 
+            .populate( { path: 'creator organizationalUnit' } )
+            var totalCount = await TaskTemplate.count({
+                _id : { $in: taskId},
+                name : { "$regex": name, "$options": "i" }
             });
+            var totalPages = Math.ceil(totalCount / noResultsPerPage);
+            return {taskTemplates : tasktemplates, pageTotal: totalPages};
         } else {
-            tasktemplates = await Privilege.find({
+            var tasks = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
-            }).sort({'createdAt': 'desc'})
+            })
+            var taskId=tasks.map(x=>x.resourceId);
+            tasktemplates = await TaskTemplate.find({
+                _id : { $in: taskId},
+                $and : [{name : { "$regex": name, "$options": "i" }},{organizationalUnit : {$in : organizationalUnit}}]
+            })
+            .sort({'createdAt': 'asc'})
             .skip(noResultsPerPage*(pageNumber-1))
             .limit(noResultsPerPage)
-            .populate({ 
-                path: 'resourceId', 
-                model: TaskTemplate, 
-                match: { $and : [{name: { "$regex": name, "$options": "i" }},{organizationalUnit : { $in: organizationalUnit}}]} ,
-                populate: { path: 'creator organizationalUnit' } 
-            }); 
+            .populate( { path: 'creator organizationalUnit' } )
+            var totalCount = await TaskTemplate.count({
+                _id : { $in: taskId},
+                $and : [{name : { "$regex": name, "$options": "i" }},{organizationalUnit : {$in : organizationalUnit}}]
+            });
+            var totalPages = Math.ceil(totalCount / noResultsPerPage);
+            return {taskTemplates : tasktemplates, pageTotal: totalPages};
         }
-        var totalCount = await Privilege.count({
-            roleId: { $in: allRole },
-            resourceType: 'TaskTemplate'
-        });
-        var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        return {taskTemplates : tasktemplates.map(item => item.resourceId), pageTotal: totalPages};
 }
 
 //Tạo mẫu công việc
