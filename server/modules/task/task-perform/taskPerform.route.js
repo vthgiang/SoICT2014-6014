@@ -25,7 +25,7 @@ var upload = multer({
 
 router.get('/log-timer/:task',auth,  PerformTaskController.getTaskTimesheetLogs);
 router.get('/log-timer/currentTimer/:task/:user', auth, PerformTaskController.getActiveTimesheetLog);
-router.post('/log-timer/start-timer',auth,  PerformTaskController.startTimesheetLog);
+router.post('/log-timer/start-timer',  PerformTaskController.startTimesheetLog);
 router.put('/log-timer/pause-timer/:id',auth,  PerformTaskController.pauseTimesheetLog);
 router.put('/log-timer/continue-timer/:id',auth,  PerformTaskController.continueTimesheetLog);
 router.put('/log-timer/stop-timer/:id',auth,  PerformTaskController.stopTimesheetLog);

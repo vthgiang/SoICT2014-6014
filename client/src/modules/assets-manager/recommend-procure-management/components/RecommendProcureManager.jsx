@@ -144,9 +144,9 @@ class RecommendProcureManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "pass", text: "Đã chấp nhận" },
-                                    { value: "process", text: "Chờ phê duyệt" },
-                                    { value: "faile", text: "Không chấp nhận" }
+                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
+                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
                                 ]}
                             >
                             </SelectMulti>

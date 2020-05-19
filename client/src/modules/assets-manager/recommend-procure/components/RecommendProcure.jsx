@@ -13,7 +13,7 @@ class RecommendProcure extends Component {
         this.state = {
             recommendNumber: "",
             month: "",
-            status: "process",
+            status: "Chờ phê duyệt",
             page: 0,
             limit: 5,
         }

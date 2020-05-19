@@ -215,8 +215,8 @@ class RecommendProcureManagerEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Giá trị dự tính:</label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
+                                    <input type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} />
+                                    {/* <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Người phê duyệt</label>

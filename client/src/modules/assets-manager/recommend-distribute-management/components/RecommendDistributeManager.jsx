@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 // import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
-// import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
+import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { RecommendDistributeActions } from '../../recommend-distribute/redux/actions';
+// import { RecommendDistributeActions } from '../../recommend-procure/redux/actions';
 
 class RecommendDistributeManager extends Component {
     constructor(props) {
@@ -166,7 +166,7 @@ class RecommendDistributeManager extends Component {
                                 <th style={{ width: "15%" }}>Tên tài sản</th>
                                 {/* <th style={{ width: "17%" }}>Loại tài sản</th> */}
                                 <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng từ ngày</th>
-                                {/* <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th> */}
+                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th>
                                 <th style={{ width: "17%" }}>Người phê duyệt</th>
                                 {/* <th style={{ width: "17%" }}>Ghi chú</th> */}
                                 <th style={{ width: "11%" }}>Trạng thái</th>
@@ -180,7 +180,7 @@ class RecommendDistributeManager extends Component {
                                             "Mã tài sản",
                                             "Tên tài sản",
                                             "Thời gian đăng ký sử dụng từ ngày",
-                                            // "Thời gian đăng ký sử dụng đến ngày",
+                                            "Thời gian đăng ký sử dụng đến ngày",
                                             // "Loại tài sản",
                                             "Người phê duyệt",
                                             // "Ghi chú",
@@ -200,20 +200,16 @@ class RecommendDistributeManager extends Component {
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.proponent}</td>
-                                        <td>{x.equipment}</td>
+                                        <td>{x.assetNumber}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.dateStartUse}</td>
+                                        <td>{x.dateEndUse}</td>
                                         <td>{x.approver}</td>
-                                        <td>{x.note}</td>
+                                        {/* <td>{x.note}</td> */}
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
-                                                content="Xóa thông tin phiếu"
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
-                                                }}
-                                                func={this.props.deleteRecommendProcure}
-                                            /> */}
+
                                         </td>
                                     </tr>))
                             }
@@ -226,24 +222,25 @@ class RecommendDistributeManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 
-                {/* {
+                {
                     this.state.currentRow !== undefined &&
                     <RecommendDistributeManagerEditForm
                     _id={this.state.currentRow._id}
                     recommendNumber={this.state.currentRow.recommendNumber}
                     dateCreate={this.state.currentRow.dateCreate}
                     proponent={this.state.currentRow.proponent}
-                    equipment={this.state.currentRow.equipment}
-                    supplier={this.state.currentRow.supplier}
-                    total={this.state.currentRow.total} 
-                    unit={this.state.currentRow.unit} 
-                    estimatePrice={this.state.currentRow.estimatePrice} 
+                    positionProponent={this.state.currentRow.positionProponent}
+                    reqContent={this.state.currentRow.reqContent}
+                    assetNumber={this.state.currentRow.assetNumber}
+                    assetName={this.state.currentRow.assetName}
+                    dateStartUse={this.state.currentRow.dateStartUse}
+                    dateEndUse={this.state.currentRow.dateEndUse}
                     approver={this.state.currentRow.approver} 
-
-
+                    positionApprover={this.state.currentRow.positionApprover} 
                     status={this.state.currentRow.status}
+                    note={this.state.currentRow.note}
                     />
-                } */}
+                }
             </div >
         );
     }

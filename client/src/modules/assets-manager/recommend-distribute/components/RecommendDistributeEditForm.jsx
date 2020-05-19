@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import {RecommendDistributeFromValidator} from './RecommendDistributeFromValidator';
-// import {RecommendDistributeActions} from '../redux/actions';
+import {RecommendDistributeActions} from '../redux/actions';
 
 class RecommendDistributeEditForm extends Component {
     constructor(props) {
@@ -345,7 +345,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
+    updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
 };
 
 const editRecommendDistribute = connect(mapState, actionCreators)(withTranslate(RecommendDistributeEditForm));

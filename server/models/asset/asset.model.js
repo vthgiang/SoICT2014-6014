@@ -13,7 +13,6 @@
  * 11. Mô tả: description
  * 12. Thông tin chi tiết (để lưu các trường dữ liệu cần thêm đối với mỗi tài sản): detailInfo [ 1. Tên trường dữ liệu :nameField (String); 2. Giá trị trường dữ liệu: value (String); 3. đơn vị tính: unit (String)]
  * 13. Thông tin khấu hao: [
- *     //phần này bạn xem xét giúp mình có cần phải lưu trữ các giá trị: Nguyên giá, thời gian kết thúc trích khấu hao, mức độ KH tb năm/tháng hay ko ? Vì Nguyên giá nó thay đổi khi mà tài sản có sự phát sinh nâng cấp, thời gian kết thúc khấu hao thay đổi khi thời gian bắt đầu và thời gian trích khấu hay thay đổi, Giá trị KH tb tháng/năm thì cũng thay đổi theo nguyên giá
  *                           1. Nguyên giá: assetCosts = initialPrice(giá trị ban đầu)+ upgradeCosts (chi phí nâng cấp bên model repairUpgrade.model.js)
  *                           2. Thời gian bắt đầu trích khấu hao: startDepreciation = defaultValue(ngày nhập/ngày mua) (vẫn có thể tự nhập giá trị khác)
  *                           3. Thời gian trích khấu hao: timeDeprecition = defaultValue là thời gian trích khấu hao (timeDepreciation) của loại tài sản (bên assetType.model.js) (vẫn có thể tự nhập giá trị khác)

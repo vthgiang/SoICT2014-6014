@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {ButtonModal, DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
 import {RecommendDistributeFromValidator} from './RecommendDistributeFromValidator';
-// import {RecommendDistributeActions} from '../redux/actions';
+import {RecommendDistributeActions} from '../redux/actions';
 
 class RecommendDistributeCreateForm extends Component {
     constructor(props) {
@@ -16,7 +16,6 @@ class RecommendDistributeCreateForm extends Component {
             reqContent: "",
             assetNumber: "",
             assetName: "",
-            // assetType: "",
             dateStartUse: this.formatDate(Date.now()),
             dateEndUse: this.formatDate(Date.now()),
             approver: "",
@@ -225,6 +224,7 @@ class RecommendDistributeCreateForm extends Component {
             this.validateRecommendNumber(this.state.recommendNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
+            this.validateAssetNumber(this.state.reqContent, false) &&
             this.validateDateStartUse(this.state.dateCreate, false) &&
             this.validateDateEndUse(this.state.dateCreate, false)
         return result;
@@ -241,7 +241,7 @@ class RecommendDistributeCreateForm extends Component {
         const {translate, recommendDistribute} = this.props;
         const {
             recommendNumber, dateCreate, proponent, positionProponent, assetNumber, assetName, reqContent, dateStartUse, dateEndUse, approver, positionApprover, status, note,
-            errorOnRecommendNumber,errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
+            errorOnRecommendNumber,errorOnDateCreate, errorOnReqContent, errorOnAssetNumber, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
         return (
             <React.Fragment>
@@ -295,10 +295,6 @@ class RecommendDistributeCreateForm extends Component {
                                     <label>Tên tài sản</label>
                                     <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" disabled/>
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Loại tài sản</label>
-                                    <input type="text" className="form-control" name="assetType" value={assetType} autoComplete="off" placeholder="Loại tài sản" disabled/>
-                                </div> */}
                                 <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
                                     <DatePicker
@@ -349,7 +345,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // createRecommendDistribute: RecommendDistributeActions.createRecommendDistribute,
+    createRecommendDistribute: RecommendDistributeActions.createRecommendDistribute,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(RecommendDistributeCreateForm));

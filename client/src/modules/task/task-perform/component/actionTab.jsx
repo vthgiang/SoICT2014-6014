@@ -20,17 +20,11 @@ class ActionTab extends Component {
         this.state = {
             currentUser: idUser,
             selected: "taskAction",
-            extendDescription: false,
-            editDescription: false,
-            extendInformation: true,
-            extendRACI: false,
-            extendKPI: false,
-            extendApproveRessult: false,
-            extendInfoByTemplate: true,
             comment: false,
             action: false,
             editComment: "",
             valueRating:2.5,
+            hover:-1,
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
@@ -92,11 +86,6 @@ class ActionTab extends Component {
     }
     componentDidUpdate() {
         if (this.props.id !== undefined) {
-            let script3 = document.createElement('script');
-            script3.src = '../lib/main/js/CoCauToChuc.js';
-            script3.async = true;
-            script3.defer = true;
-            document.body.appendChild(script3);
             const { performtasks } = this.props;
             var currentTimer;
             if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
@@ -206,6 +195,14 @@ class ActionTab extends Component {
             console.log("Clicked!!!")
             this.props.evaluationAction(id,evaluations);
         }
+    }
+    setHover = async (newHover) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                hover: newHover
+            }
+        })
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -507,7 +504,7 @@ class ActionTab extends Component {
         var task, actions, informations;
         var statusTask;
         
-        const { tasks, performtasks, user, KPIPersonalManager } = this.props; 
+        const { tasks, performtasks, user } = this.props; 
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
@@ -515,7 +512,7 @@ class ActionTab extends Component {
             informations = tasks.task.informations;
         }
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
-        const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser } = this.state;
+        const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const { time } = this.state.timer;
         const checkUserId = obj => obj.creator === currentUser;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
@@ -528,7 +525,6 @@ class ActionTab extends Component {
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
-        if (user.userdepartments) userdepartments = user.userdepartments;
         
         return (
             <div>
@@ -557,9 +553,9 @@ class ActionTab extends Component {
                                                         <a href="#abc">{item.creator.name}</a>
                                                     </span>
                                                     <p style={{ marginBottom: "2px", marginTop: "2px", fontFamily: 'inherit Helvetica, Arial, sans-serif', fontSize: "13px" }}>&nbsp;{item.description}</p>
-                                                    <div className="row" style={{ width: "250%", marginLeft: "0px", marginBottom: "0px",paddingBottom:"2%" }} >
-                                                        <span className="description col-sm-3" style={{ marginLeft: "-11px" }}>{moment(item.createdAt).fromNow()}</span>
-                                                        <div className="comment-content col-sm-3" style={{marginTop:'2%'}}>
+                                                    <div className="row" style={{ width: "auto", marginLeft: "0px", marginBottom: "0px",paddingBottom:"2%" }} >
+                                                        <span className="description col-sm-4" style={{ marginLeft: "-11px" }}>{moment(item.createdAt).fromNow()}</span>
+                                                        <div className="comment-content col-sm-4" style={{marginTop:'2%'}}>
                                                             {/* Hiển thị nội dung hoạt động cho công việc*/}
                                                             <div className="attach-file" style={{ marginTop: "-10px" }}>
                                                                 {/* <a href={item.file.url} download>{item.file.name}</a> */}
@@ -568,28 +564,35 @@ class ActionTab extends Component {
                                                                 <i className="margin-r-5" /> Bình luận({item.comments.length}) &nbsp;    
                                                             </a>
                                                         </div>
-                                                        {console.log(getStorage("userId"))}
                                                         {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                                        <div className="col-sm-4">
                                                         <React.Fragment>
                                                             {(item.evaluations !== 'undefined' && item.evaluations.length !== 0) ?
                                                                 <React.Fragment>
                                                                     {item.evaluations.some(checkUserId)?
                                                                         <React.Fragment>
-                                                                            <div>Bạn đã đánh giá hoạt động này 5 điểm</div>
+                                                                            {item.evaluations.map(element => {
+                                                                                if(element.creator === currentUser){ 
+                                                                                    return  <div>Bạn đánh giá hoạt động này {element.rating} điểm</div>
+                                                                                }else {
+                                                                                return <div>{element.creator.name} đã đánh giá hoạt động này {element.rating} điểm</div>
+                                                                                }
+                                                                            })}
                                                                         </React.Fragment>:
                                                                         <React.Fragment>
                                                                             <Rating
-                                                                        name="half-rating size-large"
-                                                                        defaultValue = {2.5}
-                                                                        precision={0.5}
-                                                                        size="large"
-                                                                        onChange={(event, newValue) => {
-                                                                        this.setValueRating(item._id,newValue);
-                                                                        }}
-                                                                        // onChangeActive={(event, newHover) => {
-                                                                        //     setHover(newHover);
-                                                                        //   }}
-                                                                    />
+                                                                                name="half-rating size-large"
+                                                                                defaultValue = {2.5}
+                                                                                precision={0.5}
+                                                                                size="large"
+                                                                                onChange={(event, newValue) => {
+                                                                                this.setValueRating(item._id,newValue);
+                                                                                }}
+                                                                                // onChangeActive={(event, newHover) => {
+                                                                                //     setHover(newHover);
+                                                                                //   }}
+                                                                            />
+                                                                            
                                                                         </React.Fragment>
                                                                     }
                                                                 </React.Fragment>:
@@ -602,13 +605,15 @@ class ActionTab extends Component {
                                                                         onChange={(event, newValue) => {
                                                                         this.setValueRating(item._id,newValue);
                                                                         }}
-                                                                        // onChangeActive={(event, newHover) => {
-                                                                        //     setHover(newHover);
+                                                                        // onChangeActive={(newHover) => {
+                                                                        //     this.setHover(newHover);
                                                                         //   }}
                                                                     />
+                                                                    
                                                                 </React.Fragment>
                                                             }
-                                                        </React.Fragment>}
+                                                        </React.Fragment>
+                                                        </div>}
                                                         
                                                         {/* <Rating
                                                             name="half-rating size-large"
