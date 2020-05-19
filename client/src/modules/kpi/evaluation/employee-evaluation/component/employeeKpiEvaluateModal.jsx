@@ -1,7 +1,9 @@
+import { Slider, Tooltip } from '@material-ui/core';
+
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import { Slider, Tooltip } from '@material-ui/core';
+
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
@@ -167,7 +169,7 @@ class ModalMemberEvaluate extends Component {
                                         {list && list.map((item, index) =>
                                             <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId, new Date())} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
-                                                <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small>
+                                                {/* <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small> */}
                                                 {/* <span className="badge">{15 + index}</span> */}
                                             </a>)}
                                     </div>
@@ -179,30 +181,18 @@ class ModalMemberEvaluate extends Component {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="qlcv">
                                                 <h4>Thông tin mục tiêu</h4>
-                                                <div className="col-sm-12">
-                                                    <label style={{ width: "150px" }}>Tiêu chí đính giá:</label>
-                                                    <label >{item.criteria}</label>
-                                                </div>
-
-                                                {/* <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Hệ thống đánh giá:</label>
-                                                        <label >{item.systempoint === null ? 0 : item.systempoint}{item.weight}</label>
+                                                    <div className="col-sm-12">
+                                                        <label style={{width: "150px"}}>Tiêu chí đính giá:</label>
+                                                        <label >{item.criteria}</label>
                                                     </div>
                                                     <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Tự đánh giá:</label>
-                                                        <label >{item.mypoint === null ? 0 : item.mypoint}{item.weight}</label>
-                                                    </div> */}
-                                                <div className="col-sm-12">
-                                                    <label style={{ width: "150px" }}>Trọng số:</label>
-                                                    <label style={{ display: "inline" }}>{item.weight}</label>
-                                                </div>
-                                                {/* <div className="form-inline">
-                                                        <label style={{width: "150px"}}>Quản lý đánh giá:</label>
-                                                        <input type="number" min="0" max={item.weight} className="form-control" ref={input => this.approvepoint = input} defaultValue="0" name="value" style={{width:"50px"}} />
-                                                    </div> */}
-                                                <div className="form-inline">
-                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI(this.props.id, item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
-                                                </div>
+                                                        <label style={{width: "150px"}}>Trọng số:</label>
+                                                        <label style={{display: "inline" }}>{item.weight}</label>
+                                                    </div>
+                                                
+                                                    <div className="form-inline">
+                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
+                                                    </div>
                                             </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
@@ -222,7 +212,6 @@ class ModalMemberEvaluate extends Component {
                                                     setLimit={this.setLimit}
                                                     hideColumnOption={true} />
 
-                                                {/* <table id="kpiEvaluate" className="table table-hover table-bordered"></table> */}
                                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>

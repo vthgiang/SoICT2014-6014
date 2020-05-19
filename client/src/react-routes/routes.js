@@ -63,6 +63,18 @@ import { TaskManagement } from "../modules/task/task-management/component/taskMa
 import { TaskDashboard } from "../modules/task/task-management/component/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
+//asset
+import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
+import RecommendDistribute from "../modules/assets-manager/recommend-distribute/components";
+import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure-management/components";
+import ManagerRecommendDistribute from "../modules/assets-manager/recommend-distribute-management/components";
+import ManagerAssetType from "../modules/assets-manager/asset-type/components";
+import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
+import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
+import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
+import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
+import ManagerAsset from "../modules/assets-manager/asset-manager/components";
+import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
 
 class Routes extends Component {
 
@@ -660,6 +672,188 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ TaskDashboard }
                     />
+
+                    {/** Quản lý tài sản */}
+                    {/** Nhân viên */}
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendProcure.isLoading }
+                        key={ 'recommend-equipment-procurement' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/recommend-equipment-procurement', name: 'recommend_equipment_procurement', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/recommend-equipment-procurement' }
+                        path={ '/recommend-equipment-procurement' }
+                        pageName={ 'recommend_equipment_procurement' }
+                        layout={ Layout }
+                        component={ RecommendProcure }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendDistribute.isLoading }
+                        key={ 'recommend-distribute-asset' } //recommend_distribute_asset
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/recommmend-distribute-asset', name: 'recommend_distribute_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/recommmend-distribute-asset' }
+                        path={ '/recommmend-distribute-asset' }
+                        pageName={ 'recommend_distribute_asset' }
+                        layout={ Layout }
+                        component={ RecommendDistribute }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.assetsManager.isLoading }
+                        key={ 'manage-assigned-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-assigned-asset', name: 'manage_assigned_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-assigned-asset' }
+                        path={ '/manage-assigned-asset' }
+                        pageName={ 'manage_assigned_asset' }
+                        layout={ Layout }
+                        component={ ManagerAssetAssigned }
+                    />
+
+                    {/** Quản lý */}
+                    <PrivateRoute 
+                        isLoading={ this.props.assetType.isLoading }
+                        key={ 'manage-type-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-type-asset', name: 'manage_type_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-type-asset' }
+                        path={ '/manage-type-asset' }
+                        pageName={ 'manage_type_asset' }
+                        layout={ Layout }
+                        component={ ManagerAssetType }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.assetsManager.isLoading }
+                        key={ 'add-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/add-asset', name: 'add_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/add-asset' }
+                        path={ '/add-asset' }
+                        pageName={ 'add_asset' }
+                        layout={ Layout }
+                        component={ AssetCreatePage }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.assetsManager.isLoading }
+                        key={ 'manage-info-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-info-asset', name: 'manage_info_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-info-asset' }
+                        path={ '/manage-info-asset' }
+                        pageName={ 'manage_info_asset' }
+                        layout={ Layout }
+                        component={ ManagerAsset }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.repairUpgrade.isLoading }
+                        key={ 'manage-repair-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-repair-asset', name: 'manage_repair_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-repair-asset' }
+                        path={ '/manage-repair-asset' }
+                        pageName={ 'manage_repair_asset' }
+                        layout={ Layout }
+                        component={ ManagerRepairUpgrade }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.distributeTransfer.isLoading }
+                        key={ 'manage-distribute-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-distribute-asset', name: 'manage_distribute_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-distribute-asset' } 
+                        path={ '/manage-distribute-asset' }
+                        pageName={ 'manage_distribute_asset' }
+                        layout={ Layout }
+                        component={ ManagerDistributeTransfer }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'manage-depreciation-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-depreciation-asset', name: 'manage_depreciation_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-depreciation-asset' } 
+                        path={ '/manage-depreciation-asset' }
+                        pageName={ 'manage_depreciation_asset' }
+                        layout={ Layout }
+                        component={ ManagerDepreciation }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendProcure.isLoading }
+                        key={ 'manage-recommend-procure' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-recommend-procure', name: 'manage_recommend_procure', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-recommend-procure' }
+                        path={ '/manage-recommend-procure' }
+                        pageName={ 'manage_recommend_procure' }
+                        layout={ Layout }
+                        component={ ManagerRecommendProcure }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendDistribute.isLoading }
+                        key={ 'manage-recommend-distribute' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-recommend-distribute-asset', name: 'manage-recommend-distribute-asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-recommend-distribute-asset' }
+                        path={ '/manage-recommend-distribute-asset' }
+                        pageName={ 'manage_recommend_distribute_asset' }
+                        layout={ Layout }
+                        component={ ManagerRecommendDistribute }
+                    />
+
+
+
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>
                 </Switch>

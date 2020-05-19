@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, ButtonModal } from '../../../../common-components';
 import { DetailTaskTab } from './detailTaskTab';
-
+import Draggable from 'react-draggable';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { ActionTab } from './actionTab';
 
@@ -28,6 +28,7 @@ class ModalPerform extends Component {
         }
         return (
             <React.Fragment>
+
                 <DialogModal
                     size="100"
                     modalID={`modelPerformTask${this.props.id}`}
@@ -39,7 +40,7 @@ class ModalPerform extends Component {
                     // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     // func={this.save}
                 >
-                    <div className="row row-equal-height">
+                    <div className="row row-equal-height" style={{height: "100%"}}>
                         <div className="col-sm-6" style={{ paddingTop: "10px" }}>
                             <DetailTaskTab
                                 id={this.props.id}
