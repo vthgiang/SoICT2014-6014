@@ -17,18 +17,22 @@ class ModalDetailKPI extends Component {
         };
     }
     handleChangeContent = async (id) => {
+        console.log("id---", id);
         await this.setState(state => {
+            this.props.getChildTarget(id);
             return {
                 ...state,
                 content: id
             }
         })
-        this.props.getChildTarget(id);
     }
     render() {
-        var currentKPI;
-        const { createKpiUnit, kpiunit } = this.props;
+        var currentKPI, listchildtarget;
+        const { createKpiUnit, kpiunit, managerKpiUnit } = this.props;
         if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
+        if( managerKpiUnit.childtarget)listchildtarget= managerKpiUnit.childtarget;
+        // if(currentKPI.childtarget)
+        console.log("----------------", listchildtarget);
         return (
             <div className="modal modal-full fade" id={"dataResultTask" + this.props.kpiunit._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -85,7 +89,7 @@ class ModalDetailKPI extends Component {
                                                 <table id="example1" className="table table-bordered table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th style={{ width: "20px" }}>Stt</th>
+                                                            <th style={{ width: "20px" }}>STT</th>
                                                             <th>Tên mục tiêu</th>
                                                             <th style={{ width: "108px" }}>Người tạo</th>
                                                             <th>Đơn vị</th>
@@ -94,118 +98,19 @@ class ModalDetailKPI extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>5</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>7</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>8</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>9</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>10</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>11</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>12</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>13</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>14</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>15</td>
-                                                            <td>Hoàn thành quy trình kiểm thử</td>
-                                                            <td>Nguyễn Văn Hải</td>
-                                                            <td>Phòng đảm bảo chất lượng</td>
-                                                            <td>Các công việc theo mục tiêu đều đạt yêu cầu đầu ra</td>
-                                                            <td>0</td>
-                                                        </tr>
+                                                    {    (typeof managerKpiUnit.childtarget !== "undefined" &&  managerKpiUnit.childtarget )? 
+                                                        (listchildtarget.map((item, index) => 
+                                                        <tr key={index}>
+                                                            <td>{index+1}</td>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.creator.name}</td>
+                                                            <td>{item.organizationalUnit.name}</td>
+                                                            <td>{item.criteria}</td>
+                                                            <td>{item.approvedPoint}</td>
+                                                        </tr>)): <tr><td colSpan={6}>Không có dữ liệu</td></tr>
+                                                        
+                                                    }
+                                                
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -226,8 +131,8 @@ class ModalDetailKPI extends Component {
 }
 
 function mapState(state) {
-    const { createKpiUnit } = state;
-    return { createKpiUnit };
+    const { createKpiUnit, managerKpiUnit } = state;
+    return { createKpiUnit, managerKpiUnit };
 }
 
 const actionCreators = {

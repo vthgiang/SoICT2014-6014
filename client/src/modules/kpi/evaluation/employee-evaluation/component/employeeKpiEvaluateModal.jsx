@@ -83,7 +83,6 @@ class ModalMemberEvaluate extends Component {
         console.log('====', id, employeeId,date);
         await this.setState(state => {
             this.props.getTaskById(id, employeeId,date);
-            console.log("--Lay dc ko nhi--",this.props.getTaskById(id, employeeId,date));
             return {
                 ...state,
                 content: id
