@@ -38,8 +38,6 @@ class CropImage extends Component {
     };
 
     onCropChange = (crop, percentCrop) => {
-        // You could also use percentCrop:
-        // this.setState({ crop: percentCrop });
         this.setState({ crop });
     };
 
@@ -103,7 +101,15 @@ class CropImage extends Component {
             <div className="modal fade" id="modal-crop-user-image">
                 <div className="modal-dialog crop-image-modal">
                     <div className="modal-content crop-content">
-                        {src && 
+                        <div className="box-header">
+                            <div className="upload btn btn-success pull-left">
+                                <i className="fa fa-image"></i>
+                                {" "+translate('general.pick_image')}
+                                <input className="upload" type="file" name="file" onChange={this.onSelectFile} />
+                            </div>
+                            {src && <button className="btn btn-default pull-right" onClick={this.saveCropImage}><i className="fa fa-crop"></i> {translate('general.crop')}</button>}
+                        </div>
+                        {src &&
                             <div className="box-body">
                                 <div className="row">
                                     <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3" style={{padding: '10px'}}>
@@ -122,10 +128,6 @@ class CropImage extends Component {
                                 </div>
                             </div>
                         }
-                        <div className="modal-footer">
-                            <input className="pull-left" type="file" accept="image/*" onChange={this.onSelectFile} />
-                            <button className="btn btn-primary pull-right" onClick={this.saveCropImage}>{translate('general.accept')}</button>
-                        </div>
                     </div>
                 </div>
             </div>

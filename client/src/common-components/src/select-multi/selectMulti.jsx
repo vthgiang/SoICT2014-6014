@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import './selectMulti.css';
-import './bootstrap-multiselect.css';
-import { selelectMultiScript } from './bootstrap-multiselect.js'
 
 class SelectMulti extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-
-        if (document.getElementById("script-select-multi") === null) {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-select-multi";
-            script.innerHTML = selelectMultiScript
-            document.body.appendChild(script);
-        }
     }
 
     static isEqual = (items1, items2) => {

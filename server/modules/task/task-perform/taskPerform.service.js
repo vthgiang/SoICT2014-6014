@@ -32,16 +32,17 @@ exports.getTimerStatus = async (params) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimer = async (body) => {
-    var timer = await TimesheetLog.create({
-        task: body.task,
-        user: body.user,
-        start: body.startTimer,
-        startTimer: body.startTimer,
-        stopTimer: null,
-        time: 0
-    });
+exports.startTimesheetLog = async (body) => {
 
+    console.log(body)
+    var timerUpdate = {
+        user: body.user,
+        startedAt: body.startedAt,
+        description: body.description
+    }
+    var timer = await Task.findByIdAndUpdate(body.task,
+        { $push: { timesheetLogs: timerUpdate } }, { new: true })
+        console.log("Chạy đến service")
     return timer;
 }
 
@@ -537,22 +538,47 @@ exports.deleteCommentOfTaskComment = async (params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (id,body) => {
+    var task1 = await Task.findOne({ "taskActions._id": id })
+    if(body.creator === task1.accountableEmployees){
     var evaluationAction = await Task.update(
         {"taskActions._id":id},
         {
-            "$push": {
+            "$push": [{
                 "taskActions.$.evaluations":
                 {
                     creator: body.creator,
-                    status: body.status,
+                    rating: body.rating,
                 }
-            }
-        }
-    )
-
+            },
+            {
+                "rating" : body.rating
+            }]
+        })
+    }else {
+        var evaluationAction = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
+                    {
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                }
+            })
+    }
     var task = await Task.findOne({ "taskActions._id": id }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
+        { path: "taskActions.creator", model: User,select: 'name email -id' },
+        ,
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email -_id'}])
 
     return task.taskActions ;
 }
+
+
+/**
+ * 2 th hien rating
+ *  th1: nguoi chua thuc hien danh gia => elem.creator khong co trong mang
+ * th2: mang evaluation rong
+ * 
+ */

@@ -19,7 +19,8 @@ Ví dụ:
 div.qlcv div.selectmulti,
 div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
 div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
-div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
+div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
     margin: 5px 0 5px 0;
 }
 
@@ -29,12 +30,14 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label,
-    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group,
+    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
         margin: 5px;
     }
     div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
-    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group,
+    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
@@ -44,6 +47,17 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
 }
 
 
+
+
+/* CSS body, cơ sở chung cho tất cả */
+body {
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-weight: 400;
+    font-size: 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: #333 !important;
+}
 
 
 
@@ -190,27 +204,44 @@ legend.scheduler-border {
     -webkit-box-shadow: 0 0 0;
     -moz-box-shadow: 0 0 0;
     box-shadow: 0 0 0;
+    height: 100%;
+    margin: 0;
+    background-color: #eae9f5;
+
+    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
 }
 .box.box-solid.description > .box-header {
     font-size: 1.2em;
-    background-color: #545199;
-    color: #fff;
     font-weight: 900;
-    padding: 10px;
+    padding: 10px 10px 10px 15px;
+    border-bottom: 1px solid #fff;
+    background-color: #7b73d8;
+    color: #fff;
 }
 .box.box-solid.description > .box-body{
     padding: 0;
 }
 .box.box-solid.description > .box-body dt{
-    padding: 5px 5px 5px 10px;
+    padding: 10px 5px 10px 15px;
 }
 .box.box-solid.description > .box-body dd{
-    padding: 2px 5px 5px 10px;
+    padding: 0px 5px 5px 15px;
     margin-bottom: 5px;
-    -webkit-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
-    -moz-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
-    box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
 }
 .box.box-solid.description > .box-body dd > ul{
     margin: 0px;
+}
+.box.box-solid.description > .box-body dd > ul > li{
+    padding: 0px 5px 5px 5px;
+}
+
+
+
+
+/* Bootstrap 3 khi cần cho các phần tử trong row có height bằng nhau. Bootstrap 4 đã có luôn*/
+.row-equal-height {
+    display: flex;
+    flex-wrap: wrap;
 }

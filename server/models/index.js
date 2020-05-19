@@ -5,7 +5,7 @@ const UserRole = require('./auth/userRole.model');
 
 const Document = require('./document/document.model');
 const DocumentCategory = require('./document/documentCategory.model');
-const DocumentType = require('./document/documentType.model');
+const DocumentDomain = require('./document/documentDomain.model');
 
 const AnnualLeave = require('./human-resource/annualLeave.model');
 const Commendation = require('./human-resource/commendation.model');
@@ -49,6 +49,13 @@ const Course = require('./training/course.model');
 const EducationProgram = require('./training/educationProgram.model');
 const EmployeeCourse = require('./training/employeeCourse.model');
 
+//asset
+const Asset = require('./asset/asset.model'); //tài sản
+const AssetType = require('./asset/assetType.model'); //loại tài sản
+const RecommendProcure = require('./asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
+const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
+const RepairUpgrade = require('./asset/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
+const DistributeTransfer = require('./asset/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
 
 exports.schema = {
     Privilege,
@@ -58,7 +65,7 @@ exports.schema = {
 
     Document,
     DocumentCategory,
-    DocumentType,
+    DocumentDomain,
 
     AnnualLeave,
     Commendation,
@@ -101,4 +108,11 @@ exports.schema = {
     Course,
     EducationProgram,
     EmployeeCourse,
+
+    Asset,
+    AssetType,
+    RecommendProcure,
+    RepairUpgrade,
+    DistributeTransfer,
+    RecommendDistribute
 } 

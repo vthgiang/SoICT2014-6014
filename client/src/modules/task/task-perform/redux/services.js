@@ -88,7 +88,7 @@ function startTimerTask(newTimer) {
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
         method : 'POST',
         data : newTimer,
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 // stop timer task
@@ -226,5 +226,5 @@ function evaluationAction(id,evaluation){
         method : 'PUT',
         data: evaluation,
         params: {evaluation:id}
-    })
+    },true,true,'task.task_perform')
 }

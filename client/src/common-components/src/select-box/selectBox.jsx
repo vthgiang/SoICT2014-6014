@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
-import { select2 } from './select2.full.min.js';
-import './select2.css';
 import './selectBox.css';
 
 class SelectBox extends Component {
     constructor(props) {
         super(props);
         this.state = { }
-
-        if (document.getElementById("script-select-box") === null){
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-select-box";
-            script.innerHTML = select2
-            document.body.appendChild(script);
-        }
     }
     
 
@@ -85,7 +75,7 @@ class SelectBox extends Component {
         const { id, items, className, style, multiple=false, options={} } = this.props;
         return ( 
             <React.Fragment>
-                <div>
+                <div className="select2">
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
                         {options.placeholder !== undefined  && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {

@@ -240,6 +240,10 @@ const TaskSchema = new Schema({
             type: Date,
             default: Date.now
         },
+        rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+            type: Number,
+            default: -1
+        },
         // files: [{ // Các files đi kèm actions
         //     name: {
         //         type: String,
@@ -262,11 +266,6 @@ const TaskSchema = new Schema({
             updatedAt:{
                 type: Date,
                 default: Date.now
-            },
-            status: {// 0 là đang chờ,1 là đã đạt, 2 là chưa đạt
-                type: Number,
-                enum:[0,1,2],
-                default: 0
             },
             rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
                 type: Number,

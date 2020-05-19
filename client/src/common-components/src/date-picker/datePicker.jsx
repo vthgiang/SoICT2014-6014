@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
-import './bootstrap-datepicker.min.css';
-import { scriptDatePicker } from './bootstrap-datepicker.min';
 
+/**
+ * Cần dùng jquery plugin https://github.com/uxsolutions/bootstrap-datepicker
+ */
 class DatePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-
-        if (document.getElementById("script-date-picker") === null) {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-date-picker";
-            script.innerHTML = scriptDatePicker;
-            document.body.appendChild(script);
-        }
     }
     componentDidMount() {
         const { id, dateFormat, onChange } = this.props;
@@ -60,13 +53,19 @@ class DatePicker extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                value: nextProps.value, // Lưu value ban đầu vào state
-                id: nextProps.id
-            }
-        } else {
-            return null;
+        // if (nextProps.id !== prevState.id) {
+        //     return {
+        //         value: nextProps.value, // Lưu value ban đầu vào state
+        //         id: nextProps.id
+        //     }
+        // } else {
+        //     return null;
+        // }
+
+        return {
+            ...prevState,
+            value: nextProps.value, // Lưu value ban đầu vào state
+            id: nextProps.id
         }
     }
 
