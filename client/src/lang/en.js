@@ -1408,6 +1408,20 @@ export default {
                 set_point_kpi_success: 'Get point KPI successfully',
                 set_point_kpi_fail: 'Get point KPI fail',
 
+                dashboard: {
+                    organizational_unit: 'Unit',
+                    select_all_units: 'Select all organizational unit',
+                    all_unit: 'All organizational unit',
+                    search: 'Search',
+                    setting_up: 'Setting up',
+                    awaiting_approval: 'Awaiting approval',
+                    activated: 'Activated',
+                    number_of_employee: 'Number of employees',
+                    excellent_employee: 'Excellent Employees',
+                    best_employee: 'Best employee',
+                    month: 'Month'
+                }
+
             },
             organizational_unit: {
                 // Module chính

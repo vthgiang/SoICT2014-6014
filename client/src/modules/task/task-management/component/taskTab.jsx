@@ -300,6 +300,12 @@ class TabTaskContent extends Component {
         })
     }
 
+    formatPriority =(data) => {
+        if(data === 1) return "Thấp";
+        if(data === 2) return "Trung bình";
+        if(data === 3) return "Cao";
+    }
+
     render() {
         var currentTasks, units = [];
         var pageTotals;
@@ -331,7 +337,8 @@ class TabTaskContent extends Component {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
                     organization: dataTemp[n].organizationalUnit.name,
-                    priority: dataTemp[n].priority,
+                    priority: this.formatPriority(dataTemp[n].priority),
+                    // priority: dataTemp[n].priority,
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: dataTemp[n].status,
@@ -406,9 +413,9 @@ class TabTaskContent extends Component {
                                 translate('task.task_management.low')
                             ]}
                                 items={[
-                                    { value: "Cao", text: translate('task.task_management.high') },
-                                    { value: "Trung bình", text: translate('task.task_management.normal') },
-                                    { value: "Thấp", text: translate('task.task_management.low') }
+                                    { value: "3", text: translate('task.task_management.high') },
+                                    { value: "2", text: translate('task.task_management.normal') },
+                                    { value: "1", text: translate('task.task_management.low') }
                                 ]}
                                 options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
                             </SelectMulti>
