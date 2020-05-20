@@ -1486,6 +1486,15 @@ export default {
                 create_result_info_task_success: 'Tạo result info task thành công',
                 create_result_infomation_task_success: 'Tạo result infomation task thành công',
                 edit_result_infomation_task_success: 'Sửa result infomation task thành công',
+                create_task_comment_success:'Tạo thành công bình luận công việc',
+                get_task_comments_success:'Lấy tất cả bình luận của công việc thành công',
+                edit_task_comment_success:'Sửa bình luận thành công',
+                delete_task_comment_success:'Xóa bình luận thành công',
+                create_comment_of_task_comment_success:'Tạo bình luận thành công',
+                edit_comment_of_task_comment_success:'Sửa bình luận thành công',
+                delete_comment_of_task_comment_success:'Xóa bình luận thành công',
+                evaluation_action_success:'Đánh giá hoạt động thành công',
+                confirm_action_success:'Xác nhận hoạt động thành công',
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1506,7 +1515,15 @@ export default {
                 create_result_info_task_fail: 'Tạo result info task thất bại',
                 create_result_infomation_task_fail: 'Tạo result infomation task thất bại',
                 edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
-
+                create_task_comment_fail:'Tạo bình luận công việc thất bại',
+                get_task_comments_fail:'Lấy tất cả bình luận công việc thất bại',
+                edit_task_comment_fail:'Sửa bình luận thất bại',
+                delete_task_comment_success:'Xóa bình luận thất bại',
+                create_comment_of_task_comment_fail:'Tạo bình luận thất bại',
+                edit_comment_of_task_comment_fail:'Sửa bình luận thất bại',
+                delete_comment_of_task_comment_fail:'Xóa bình luận thất bại',
+                evaluation_action_fail:'Đánh giá công việc thất bại',
+                confirm_action_fail:'Xác nhận hoạt động thất bại',
                 // modal approve task
                 modal_approve_task: {
                     title: 'Yêu cầu kết thúc công việc',

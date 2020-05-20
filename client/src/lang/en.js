@@ -1168,6 +1168,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task successfully',
                 create_result_infomation_task_success: 'Create result infomation task successfully',
                 edit_result_infomation_task_success: 'Edit result infomation task successfully',
+                create_task_comment_success:'Create task comment success',
+                get_task_comments_success:' Get all task comments success',
+                edit_task_comment_success:' Edit task comment success',
+                delete_task_comment_success:'Delete task comment success',
+                create_comment_of_task_comment_success:'Create comment of task comment success',
+                edit_comment_of_task_comment_success:'Edit comment of task comment success',
+                delete_comment_of_task_comment_success:' Delete comment of task comment success',
+                evaluation_action_success:'Evaluation action success',
+                confirm_action_success:'Confirm action success',
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -1188,6 +1197,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task fail',
                 create_result_infomation_task_success: 'Create result infomation task fail',
                 edit_result_infomation_task_success: 'Edit result infomation task fail',
+                create_task_comment_fail:'Create task comment fail',
+                get_task_comments_fail: 'Get all task comments fail',
+                edit_task_comment_fail:'Edit task comment fail',
+                delete_task_comment_fail:'Delete task comment fail',
+                create_comment_of_task_comment_fail:'Create comment of task comment fail',
+                edit_comment_of_task_comment_fail:'Edit comment of task comment fail',
+                delete_comment_of_task_comment_fail: 'Delete comment of task comment fail',
+                evaluation_action_fail:'Evaluation action fail',
+                confirm_action_fail:'Confirm action fail',
 
                 // modal approve task
                 modal_approve_task: {
