@@ -337,7 +337,7 @@ class KPIMember extends Component {
                             <td title="">{this.checkStatusKPI(item.status)}</td>
                             <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                             <td>
-                                <a href="#abc" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                <a href="#memberKPIApprove1" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
                                 {this.state.showApproveModal === item._id ?
                                 <ModalMemberApprove id={item._id} /> : null}
