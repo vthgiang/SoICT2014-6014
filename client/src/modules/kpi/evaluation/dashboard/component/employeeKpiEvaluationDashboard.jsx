@@ -31,9 +31,11 @@ class DashBoardKPIMember extends Component {
             },
             showApproveModal: "",
             showEvaluateModal: "",
+
             dateOfExcellentEmployees: this.formatDate(new Date(currentYear, currentMonth - 1, 1)),
             numberOfExcellentEmployees: 1,
-            role: [localStorage.getItem("currentRole")]
+            role: [localStorage.getItem("currentRole")],
+            editing: false,
         };
     }
     componentDidMount() {
@@ -175,9 +177,7 @@ class DashBoardKPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
 
-    handleChangeDate = async (value) => {
-        console.log("####", value);
-        
+    handleChangeDate = async (value) => {        
         await this.setState(state => {
             return {
                 ...state,
@@ -209,9 +209,18 @@ class DashBoardKPIMember extends Component {
         this.props.getAllEmployeeOfUnit(this.state.role);
     }
 
+    handleShowEditing = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                editing: !state.editing
+            }
+        });
+    }
+
     render() {
         var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
-        var { dateOfExcellentEmployees, numberOfExcellentEmployees } = this.state;
+        var { dateOfExcellentEmployees, numberOfExcellentEmployees, editing } = this.state;
 
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
@@ -234,6 +243,7 @@ class DashBoardKPIMember extends Component {
         for(var i = 1; i <= 20; i++){
             employeeItems[i - 1] = {value: i, text: i}
         }
+        
 
         if(employeeKpiSets !== undefined){
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
@@ -400,38 +410,9 @@ class DashBoardKPIMember extends Component {
                                     <h3 className="box-title">{translate('kpi.evaluation.dashboard.excellent_employee')}</h3>
                                     <div className="box-tools pull-right">
                                         <span className="label label-danger">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</span>
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                <span className="caret" />
-                                            </button>
-                                            <ul className="dropdown-menu">
-                                                <li>
-                                                    <div className = "form-group">
-                                                        <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
-                                                        <DatePicker
-                                                            id="kpi_month"      
-                                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                            value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
-                                                            onChange={this.handleChangeDate}
-                                                            disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
-                                                        /> 
-                                                    </div>    
-                                                </li>
-                                                <li>
-                                                    <div className = "form-group">
-                                                        <label className = "form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                            id={`number-of-employees`}
-                                                            className="form-control select2"
-                                                            style={{width: "100%"}}
-                                                            items = {employeeItems}
-                                                            onChange={this.handleNumberOfEmployeesChange}
-                                                            multiple={false}
-                                                        /> 
-                                                    </div>    
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" onClick={() => this.handleShowEditing()}>
+                                            <span className="caret" />
+                                        </button>
 
                                         <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i></button>
                                         <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
@@ -441,7 +422,7 @@ class DashBoardKPIMember extends Component {
                                 <div className="box-body no-parding">
                             
                                     <div className="row">
-                                        <div className="col-sm-9 col-md-8">
+                                        <div className="col-sm-8">
                                             <ul className="users-list clearfix">
                                                 {
                                                     (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
@@ -457,30 +438,32 @@ class DashBoardKPIMember extends Component {
                                             </ul>
                                         </div>
 
-                                        {/* <div className="col-sm-3 col-md-4">
-                                            <div className = "form-group">
-                                                <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
-                                                <DatePicker
-                                                    id="kpi_month"      
-                                                    dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                    value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
-                                                    onChange={this.handleChangeDate}
-                                                    disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
-                                                /> 
+                                        {   editing &&
+                                            <div className="col-sm-4">
+                                                <div className = "form-group">
+                                                    <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                                    <DatePicker
+                                                        id="kpi_month"      
+                                                        dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                        value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
+                                                        onChange={this.handleChangeDate}
+                                                        disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                                    /> 
+                                                </div>    
+                                                <div className = "form-group">
+                                                    <label className = "form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
+                                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                        id={`number-of-employees`}
+                                                        className="form-control select2"
+                                                        style={{width: "100%"}}
+                                                        items = {employeeItems}
+                                                        onChange={this.handleNumberOfEmployeesChange}
+                                                        multiple={false}
+                                                    /> 
+                                                </div>    
                                             </div>
+                                        }
 
-                                            <div className = "form-group">
-                                                <label className = "form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`number-of-employees`}
-                                                    className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {employeeItems}
-                                                    onChange={this.handleNumberOfEmployeesChange}
-                                                    multiple={false}
-                                                /> 
-                                            </div>
-                                        </div> */}
                                     </div>
 
                                 </div>
