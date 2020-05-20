@@ -6,7 +6,6 @@ import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../comm
 
 import { CourseActions } from '../redux/actions';
 
-
 class CourseEditForm extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +22,6 @@ class CourseEditForm extends Component {
         this.setState({
             educationProgram: value,
         })
-
     }
 
     handleStartDateChange = (value) => {
@@ -52,7 +50,9 @@ class CourseEditForm extends Component {
         })
     }
 
-    save = async () => {
+    save = () => {
+        console.log(this.state);
+        this.props.updateCourse(this.state._id, this.state);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -69,7 +69,7 @@ class CourseEditForm extends Component {
                 endDate: nextProps.endDate,
                 cost: nextProps.cost,
                 lecturer: nextProps.lecturer,
-                educationProgram: nextProps.educationProgram,
+                educationProgram: nextProps.educationProgram._id,
                 employeeCommitmentTime: nextProps.employeeCommitmentTime,
                 type: nextProps.type,
                 listEmployees: nextProps.listEmployees,
@@ -81,6 +81,7 @@ class CourseEditForm extends Component {
     }
 
     render() {
+        console.log(this.state);
         const { education, translate, user } = this.props;
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
@@ -148,8 +149,8 @@ class CourseEditForm extends Component {
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>Loại đào tạo<span className="text-red">*</span></label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleChange}>
-                                    <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
-                                    <option value="Đào tạo ngoài">Đào tạo ngoài</option>
+                                    <option value="internal">Đào tạo nội bộ</option>
+                                    <option value="external">Đào tạo ngoài</option>
                                 </select>
                             </div>
                         </div>
@@ -160,8 +161,8 @@ class CourseEditForm extends Component {
                                     id={`edit-educationProgram`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={educationProgram._id}
-                                    items={listEducations.map(x => { return { value: x._id, text: x.name } })}
+                                    value={educationProgram}
+                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: "", text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
                                 />
                             </div>
@@ -227,8 +228,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    createNewCourse: CourseActions.createNewCourse,
-
+    updateCourse: CourseActions.updateCourse,
 };
 
 const editForm = connect(mapState, actionCreators)(withTranslate(CourseEditForm));

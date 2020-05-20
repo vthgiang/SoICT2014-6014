@@ -88,7 +88,15 @@ class ModalEditExperience extends Component {
         return result;
     }
     // Bắt sự kiện submit form
-    save = () => {
+    save = async () => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[1], partStart[0]].join('-');
+        var partEnd = this.state.endDate.split('-');
+        var endDate = [partEnd[1], partEnd[0]].join('-');
+        await this.setState({
+            startDate: startDate,
+            endDate: endDate
+        })
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }

@@ -141,7 +141,6 @@ exports.createEmployee = async (req, res) => {
                             name: req.body.fullName
                         }
                         let user = await UserService.createUser(userInfo, req.user.company._id);
-                        console.log(user)
                     }
                     await LogInfo(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
                     res.status(200).json({success: true, messages: ["create_employee_success"], content: data });
@@ -150,7 +149,7 @@ exports.createEmployee = async (req, res) => {
         }
     } catch (error) {
         await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: req.body}});
+        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: error}});
     }
 }
 
@@ -180,132 +179,5 @@ exports.deleteEmployee = async (req, res) => {
         res.status(200).json({success: true, messages: ["delete_employee_success"], content: data });
     } catch (error) {
         res.status(400).json({success: false, messages: ["delete_employee_false"], content: { error: error}});
-    }
-}
-
-
-
-// Kiểm tra sự tồn tại của MSNV
-exports.checkEmployeeExisted = async (req, res) => {
-    try {
-        var checkMSNV = await EmployeeService.checkEmployeeExisted(req.params.employeeNumber, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: checkMSNV
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error,
-        });
-    }
-}
-// Kiểm tra sự tồn tại của email công ty
-exports.checkEmployeeCompanyEmailExisted = async (req, res) => {
-    try {
-        var checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.params.email);
-        res.status(200).json({
-            message: "success",
-            content: checkEmail
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật avater nhân viên
-exports.updateEmployeeAvatar = async (req, res) => {
-    try {
-        var updateAvatar = await EmployeeService.updateEmployeeAvatar(req.params.employeeNumber, req.file.filename, req.user.company._id);
-        await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
-        res.status(200).json({
-            success: true,
-            message: ["update_avatar_success"],
-            content: updateAvatar
-        });
-    } catch (error) {
-        await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({
-            success: false,
-            message: ["update_avatar_faile"],
-            content: {
-                error: error
-            }
-        });
-    }
-}
-// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateEmployeeContract = async (req, res) => {
-    try {
-        var updateContract = await EmployeeService.updateEmployeeContract(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateContract
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-// Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateCertificate = async (req, res) => {
-    try {
-        var updateCertificate = await EmployeeService.updateEmployeeDegrees(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateCertificate
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateEmployeeCertificates = async (req, res) => {
-    try {
-        var updateCertificateShort = await EmployeeService.updateEmployeeCertificates(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateCertificateShort
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-exports.updateFile = async (req, res) => {
-    try {
-        var updateFile = await EmployeeService.updateFile(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateFile
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-
-// Kiểm tra sự tồn tại của MSNV trong array
-exports.checkEmployeesExisted = async (req, res) => {
-    try {
-        var checkArrayMSNV = await EmployeeService.checkEmployeesExisted(req.body, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: checkArrayMSNV
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error,
-        });
     }
 }

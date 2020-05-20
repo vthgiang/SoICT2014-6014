@@ -55,12 +55,16 @@ exports.createAnnualLeave = async (data, company) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
     var employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company }, { _id: 1, emailInCompany: 1 });
     if(employeeInfo!==null){
+        var partStart = data.startDate.split('-');
+        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        var partEnd = data.endDate.split('-');
+        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         // Tạo mới thông tin nghỉ phép vào database
         var createAnnualLeave = await AnnualLeave.create({
             employee: employeeInfo._id,
             company: company,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: startDate,
+            endDate: endDate,
             status: data.status,
             reason: data.reason,
         });
@@ -92,10 +96,14 @@ exports.updateAnnualLeave = async (id, data) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
     var employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber }, { _id: 1, emailInCompany: 1 });
     if(employeeInfo!==null){
+        var partStart = data.startDate.split('-');
+        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        var partEnd = data.endDate.split('-');
+        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         var AnnualLeaveChange = {
             employee: employeeInfo._id,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: startDate,
+            endDate: endDate,
             status: data.status,
             reason: data.reason,
         };

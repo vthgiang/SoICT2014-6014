@@ -802,6 +802,7 @@ export default {
             check_end_Date: 'End day required',
             check_description: 'Description required'
         },
+
         // Module Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1008,7 +1009,7 @@ export default {
                     get_infor_personal_false: 'Get information personal false',
                     edit_infor_personal_success: 'Update information personal success',
                     edit_infor_personal_false: 'Update infor personal false',
-                    
+
                 },
 
                 employee_management: {
@@ -1042,6 +1043,54 @@ export default {
             }
         },
 
+        // Modules quản lý đào tạo
+        training: {
+            course: {
+
+                // Thông điệp trả về từ server
+                name_required: 'Name of the training course required',
+                course_id_required: 'Course id required',
+                offered_by_required: 'Offered by required',
+                course_place_required: 'Course place required',
+                start_date_required: 'Start date required',
+                end_date_required: 'End date required',
+                type_required: 'Type of training required',
+                education_program_required: 'Under the training program required',
+                employee_commitment_time_required: 'Time commitment required',
+                cost_required: 'Cost required',
+                course_id_have_exist: 'Course id already exists',
+
+                get_list_course_success: 'Get list course success',
+                get_list_course_success: 'Get list course success',
+                create_course_success: 'Create course success',
+                create_course_faile: 'Create course faile',
+                delete_course_success: 'Delete course success',
+                delete_course_faile: 'Delete course faile',
+                edit_course_success: 'Edit course success',
+                edit_course_faile: 'Edit course faile',
+            },
+
+            // Quản lý chương trình đào tạo
+            education_program: {
+
+                // Thông điệp trả về từ server
+                apply_for_organizational_units_required: 'Apply for organizational units required',
+                apply_for_positions_required: 'Apply for positions required',
+                program_id_required: 'Program id required',
+                name_required: 'Program name required',
+                program_id_have_exist: 'Program id already exist',
+
+                get_education_program_success: 'Get education program success',
+                get_education_program_faile: 'Get education program faile',
+                create_education_program_success: 'Create education program success',
+                create_education_program_faile: 'Create education program faile',
+                delete_education_program_success: 'Delete education program success',
+                delete_education_program_faile: 'Delete education program faile',
+                edit_education_program_success: 'Edit ducation program success',
+                edit_education_program_faile: 'Edit education program faile',
+            }
+        },
+
         // Task template
         task_template: {
             search: 'Search',
@@ -1070,7 +1119,9 @@ export default {
             count: 'Number of uses',
             creator: 'Creator',
             unit: 'Unit',
-            action: 'Action'
+            action: 'Action',
+
+           
         },
 
         notification: {
@@ -1168,6 +1219,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task successfully',
                 create_result_infomation_task_success: 'Create result infomation task successfully',
                 edit_result_infomation_task_success: 'Edit result infomation task successfully',
+                create_task_comment_success:'Create task comment success',
+                get_task_comments_success:' Get all task comments success',
+                edit_task_comment_success:' Edit task comment success',
+                delete_task_comment_success:'Delete task comment success',
+                create_comment_of_task_comment_success:'Create comment of task comment success',
+                edit_comment_of_task_comment_success:'Edit comment of task comment success',
+                delete_comment_of_task_comment_success:' Delete comment of task comment success',
+                evaluation_action_success:'Evaluation action success',
+                confirm_action_success:'Confirm action success',
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -1188,6 +1248,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task fail',
                 create_result_infomation_task_success: 'Create result infomation task fail',
                 edit_result_infomation_task_success: 'Edit result infomation task fail',
+                create_task_comment_fail:'Create task comment fail',
+                get_task_comments_fail: 'Get all task comments fail',
+                edit_task_comment_fail:'Edit task comment fail',
+                delete_task_comment_fail:'Delete task comment fail',
+                create_comment_of_task_comment_fail:'Create comment of task comment fail',
+                edit_comment_of_task_comment_fail:'Edit comment of task comment fail',
+                delete_comment_of_task_comment_fail: 'Delete comment of task comment fail',
+                evaluation_action_fail:'Evaluation action fail',
+                confirm_action_fail:'Confirm action fail',
 
                 // modal approve task
                 modal_approve_task: {
@@ -1197,7 +1266,7 @@ export default {
 
                     task_info: 'Information of task',
                     percent: 'Progress of task',
-                    
+
                     auto_point: 'Automatic point',
                     employee_point: 'Employee point',
                     approved_point: 'Accountable point',
@@ -1210,8 +1279,14 @@ export default {
                     err_empty: "Value must be filled"
                 }
             },
-            task_template: {
-                // TODO: code_mesage_task_template
+            task_template: {                
+                create_task_template_success:'Create task template success !',
+                create_task_template_fail:'Create task template fail !',
+                edit_task_template_success:'Edit task template success !',
+                edit_task_template_fail:'Edit task template fail !',
+                delete_task_template_success:'Delete task template success !',
+                delete_task_template_fail:'Delete task template fail !',
+
             }
         },
 

@@ -15,7 +15,7 @@ function getAll() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/educationProgram/`,
         method: 'GET',
-    }, false, true, 'human_resource.salary');
+    }, false, true, 'training.education_program');
 }
 
 /**
@@ -27,7 +27,7 @@ function getListEducation(data) {
         url: `${ LOCAL_SERVER_API }/educationProgram/paginate`,
         method: 'POST',
         data: data,
-    }, false, true, 'human_resource.salary');
+    }, false, true, 'training.education_program');
 }
 
 /**
@@ -39,7 +39,7 @@ function createNewEducation(data) {
         url: `${ LOCAL_SERVER_API }/educationProgram/`,
         method: 'POST',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.education_program');
 }
 
 /**
@@ -50,7 +50,7 @@ function deleteEducation(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/educationProgram/${id}`,
         method: 'DELETE',
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.education_program');
 }
 
 /**
@@ -63,5 +63,5 @@ function updateEducation(id, data) {
         url: `${ LOCAL_SERVER_API }/educationProgram/${id}`,
         method: 'PUT',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.education_program');
 }

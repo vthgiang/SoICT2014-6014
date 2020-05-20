@@ -334,7 +334,7 @@ class EmployeeEditFrom extends Component {
                 avatar: "",
                 employee: nextProps.employees[0],
                 commendations: nextProps.commendations,
-                salarys: nextProps.salarys,
+                salaries: nextProps.salaries,
                 annualLeaves: nextProps.annualLeaves,
                 disciplines: nextProps.disciplines,
                 files: nextProps.employees[0].files,
@@ -448,7 +448,7 @@ class EmployeeEditFrom extends Component {
                             />
                             <SalaryTab
                                 id={`edit_salary${_id}`}
-                                salarys={this.state.salarys}
+                                salaries={this.state.salaries}
                                 annualLeaves={this.state.annualLeaves}
                                 handleAddSalary={this.handleChangeSalary}
                                 handleEditSalary={this.handleChangeSalary}

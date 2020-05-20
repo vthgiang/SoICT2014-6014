@@ -35,7 +35,7 @@ const EmployeeSchema = new Schema({
         enum: ['male', 'female']
     },
     birthdate: {
-        type: String,
+        type: Date,
         required: true
     },
     birthplace: {
@@ -46,7 +46,7 @@ const EmployeeSchema = new Schema({
         required: true
     },
     identityCardDate: { // ngày cấp
-        type: String,
+        type: Date,
         required: true
     },
     identityCardAddress: {
@@ -167,17 +167,17 @@ const EmployeeSchema = new Schema({
         type: String
     },
     healthInsuranceStartDate: {
-        type: String
+        type: Date
     },
     healthInsuranceEndDate: {
-        type: String
+        type: Date
     },
     socialInsuranceNumber: { // Bảo hiểm XH
         type: String,
     },
     socialInsuranceDetails: [{
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         position: String,
         company: String
     }],
@@ -188,7 +188,7 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     taxDateOfIssue: { // ngày cấp mã số thuế
-        type: String,
+        type: Date,
     },
     taxAuthority: { // Cơ quan quản lý thuế (theo mã số thuế đã cấp)
         type: String,
@@ -197,36 +197,40 @@ const EmployeeSchema = new Schema({
         name: String,
         issuedBy: String,
         year: String,
-        degreeType: String,
+        degreeType: {
+            type: String,
+            enum: ['excellent','very_good','good','average_good','ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
+        },
         file: String,
         urlFile: String
     }],
     certificates: [{ // Chứng chỉ ngắn hạn
         name: String,
         issuedBy: String,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         file: String,
         urlFile: String
     }],
     experiences: [{ // Kinh nghiệm làm việc
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         company: String,
         position: String
     }],
     contracts: [{
         name: String,
         contractType: String,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         file: String,
         urlFile: String
     }],
+    // TODO: Làm sau
     courses: [{
         name: String,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         courseType: String,
         offeredBy: String, // tổ chức bởi đơn vị nào
         status: String // hoàn thành/chưa hoàn thành/đang tham gia/không đạt khoa học {code, value}
@@ -238,7 +242,10 @@ const EmployeeSchema = new Schema({
         name: String,
         description: String,
         number: String,
-        status: String,
+        status: {
+            type: String,
+            enum: ['submitted', 'no_submitted', 'returned'] //submitted-Đã nộp, no_submitted-Chưa nộp, returned-Đã trả
+        },
         file: String,
         urlFile: String
     }],

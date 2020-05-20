@@ -52,7 +52,8 @@ exports.searchSalaries = async (data, company) => {
 exports.createSalary = async (data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
-    
+    var partMonth = data.month.split('-');
+    var month = new Date(partMonth[1], partMonth[0] - 1);
     if(employeeInfo!==null){
         var isSalary = await Salary.findOne({employee: employeeInfo._id, company: company, month: data.month}, {field1: 1});
         if (isSalary !== null) {
@@ -62,7 +63,7 @@ exports.createSalary = async (data, company) => {
             let createSalary = await Salary.create({
                 employee: employeeInfo._id,
                 company: company,
-                month: data.month,
+                month: month,
                 mainSalary: data.mainSalary,
                 unit: data.unit,
                 bonus: data.bonus
@@ -95,9 +96,11 @@ exports.updateSalary = async (id, data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company:company }, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
+        var partMonth = data.month.split('-');
+        var month = new Date(partMonth[1], partMonth[0] - 1);
         let salaryChange = {
             employee: employeeInfo._id,
-            month: data.month,
+            month: month,
             mainSalary: data.mainSalary,
             unit:data.unit,
             bonus: data.bonus,

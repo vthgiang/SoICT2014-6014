@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { SalaryFormValidator } from './salaryFormValidator';
+import { SalaryFormValidator } from './combinedContent';
 import { SalaryActions } from '../redux/actions';
 class SalaryCreateForm extends Component {
     constructor(props) {

@@ -10,6 +10,7 @@ import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
+import { months } from 'moment';
 class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
@@ -22,9 +23,9 @@ class EmployeeCreatePage extends Component {
                 maritalStatus: "single",
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
-                identityCardDate: this.formatDate(Date.now()),
-                birthdate: this.formatDate(Date.now()),
-                taxDateOfIssue: this.formatDate(Date.now()),
+                identityCardDate: this.formatDate2(Date.now()),
+                birthdate: this.formatDate2(Date.now()),
+                taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
                 courses: []
@@ -40,8 +41,8 @@ class EmployeeCreatePage extends Component {
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -52,9 +53,10 @@ class EmployeeCreatePage extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('-');
+        if (monthYear === true) {
+            return [year, month].join('-');
+        } else return [year, month, day].join('-');
     }
-
     // Function upload avatar 
     handleUpload = (img, avatar) => {
         this.setState({
@@ -171,7 +173,7 @@ class EmployeeCreatePage extends Component {
                 annualLeaves
             }
         })
-        let formData = convertJsonObjectToFormData({...this.state.employee});
+        let formData = convertJsonObjectToFormData({ ...this.state.employee });
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -189,6 +191,7 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
+        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">
@@ -298,8 +301,8 @@ class EmployeeCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager} = state;
-    return { employeesManager};
+    const { employeesManager } = state;
+    return { employeesManager };
 };
 
 const actionCreators = {
