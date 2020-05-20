@@ -12,7 +12,6 @@ exports.searchCourses = async (data, company) => {
     var keySearch = {
         company: company
     }
-    console.log(data);
     // Bắt sựu kiện mã khoá đào tạo khác ""
     if (data.courseId !== "") {
         keySearch = {
@@ -37,7 +36,6 @@ exports.searchCourses = async (data, company) => {
             path: 'educationProgram',
             model: EducationProgram
         });
-    console.log(listCourses);
     return {
         totalList,
         listCourses
