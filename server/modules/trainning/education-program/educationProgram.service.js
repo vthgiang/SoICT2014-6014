@@ -66,7 +66,8 @@ exports.searchEducationPrograms = async (data, company) => {
  * @company : Id công ty
  */
 exports.createEducationProgram = async (data, company) => {
-    var isEducationProgram = await EducationProgram.find({programId: data.programId, company:company}, {_id:1});
+    var isEducationProgram = await EducationProgram.findOne({programId: data.programId, company:company}, { _id: 1});
+    console.log(isEducationProgram);
     if(isEducationProgram !== null){
         return 'have_exist'
     } else{
