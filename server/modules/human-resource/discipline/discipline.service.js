@@ -56,13 +56,17 @@ exports.createDiscipline = async (data, company) => {
             return "have_exist"
         } else {
             // Thêm kỷ luật vào database
+            var partStart = data.startDate.split('-');
+            var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+            var partEnd = data.endDate.split('-');
+            var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
             var createDiscipline = await Discipline.create({
                 employee: employeeInfo._id,
                 company: company,
                 decisionNumber: data.decisionNumber,
                 organizationalUnit: data.organizationalUnit,
-                startDate: data.startDate,
-                endDate: data.endDate,
+                startDate: startDate,
+                endDate: endDate,
                 type: data.type,
                 reason: data.reason,
             });
@@ -96,12 +100,16 @@ exports.updateDiscipline = async (id, data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
+        var partStart = data.startDate.split('-');
+        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        var partEnd = data.endDate.split('-');
+        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         let DisciplineChange = {
             employee: employeeInfo._id,
             decisionNumber: data.decisionNumber,
             organizationalUnit: data.organizationalUnit,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: startDate,
+            endDate: endDate,
             type: data.type,
             reason: data.reason,
         };

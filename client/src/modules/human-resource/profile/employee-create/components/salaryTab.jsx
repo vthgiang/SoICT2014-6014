@@ -8,6 +8,22 @@ class SalaryTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     // Bắt sự kiện click edit khen thưởng
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -140,7 +156,7 @@ class SalaryTab extends Component {
                                             }
                                             return (
                                                 <tr key={index}>
-                                                    <td>{x.month}</td>
+                                                    <td>{this.formatDate(x.month, true)}</td>
                                                     <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                     <td>
                                                         {
@@ -180,8 +196,8 @@ class SalaryTab extends Component {
                                     {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
                                         annualLeaves.map((x, index) => (
                                             <tr key={index}>
-                                                <td>{x.startDate}</td>
-                                                <td>{x.endDate}</td>
+                                                <td>{this.formatDate(x.startDate)}</td>
+                                                <td>{this.formatDate(x.endDate)}</td>
                                                 <td>{x.reason}</td>
                                                 <td>{translate(`sabbatical.${x.status}`)}</td>
                                                 <td >
@@ -204,7 +220,7 @@ class SalaryTab extends Component {
                         id={`editSalary${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         unit={this.state.currentRow.unit}
-                        month={this.state.currentRow.month}
+                        month={this.formatDate(this.state.currentRow.month, true)}
                         mainSalary={this.state.currentRow.mainSalary}
                         bonus={this.state.currentRow.bonus}
                         handleChange={this.handleEditSalary}
@@ -215,8 +231,8 @@ class SalaryTab extends Component {
                     <AnnualLeaveEditModal
                         id={`editSabbatical${this.state.currentRowSabbatical.index}`}
                         index={this.state.currentRowSabbatical.index}
-                        startDate={this.state.currentRowSabbatical.startDate}
-                        endDate={this.state.currentRowSabbatical.endDate}
+                        startDate={this.formatDate(this.state.currentRowSabbatical.startDate)}
+                        endDate={this.formatDate(this.state.currentRowSabbatical.endDate)}
                         reason={this.state.currentRowSabbatical.reason}
                         status={this.state.currentRowSabbatical.status}
                         handleChange={this.handleEditAnnualLeave}

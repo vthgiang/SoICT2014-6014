@@ -15,10 +15,10 @@ class EmployeeDetail extends Component {
         this.props.getEmployeeProfile();
     }
     render() {
-        var employees, salarys, annualLeaves, commendations, disciplines;
+        var employees, salaries, annualLeaves, commendations, disciplines;
         const { employeesInfo, translate } = this.props;
         if (employeesInfo.employees) employees = employeesInfo.employees;
-        if (employeesInfo.salarys) salarys = employeesInfo.salarys;
+        if (employeesInfo.salarys) salaries = employeesInfo.salarys;
         if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
         if (employeesInfo.commendations) commendations = employeesInfo.commendations;
         if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
@@ -85,7 +85,7 @@ class EmployeeDetail extends Component {
                                         <SalaryTab
                                             id="view_salary"
                                             annualLeaves={annualLeaves}
-                                            salarys={salarys}
+                                            salaries={salaries}
                                         />
                                         <AttachmentTab
                                             id="view_attachments"

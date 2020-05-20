@@ -22,9 +22,9 @@ class EmployeeCreateForm extends Component {
                 maritalStatus: "single",
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
-                identityCardDate: this.formatDate(Date.now()),
-                birthdate: this.formatDate(Date.now()),
-                taxDateOfIssue: this.formatDate(Date.now()),
+                identityCardDate: this.formatDate2(Date.now()),
+                birthdate: this.formatDate2(Date.now()),
+                taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
                 courses: []
@@ -40,8 +40,8 @@ class EmployeeCreateForm extends Component {
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -52,7 +52,9 @@ class EmployeeCreateForm extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('-');
+        if (monthYear === true) {
+            return [year, month].join('-');
+        } else return [year, month, day].join('-');
     }
 
     // Function upload avatar 

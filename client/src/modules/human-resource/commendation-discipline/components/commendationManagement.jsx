@@ -20,6 +20,22 @@ class PraiseManager extends Component {
     componentDidMount() {
         this.props.getListPraise(this.state);
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
 
     // Bắt sự kiện click chỉnh sửa thông tin khen thưởng
     handleEdit = async (value) => {
@@ -174,7 +190,7 @@ class PraiseManager extends Component {
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
                                         <td>{x.employee.fullName}</td>
-                                        <td>{x.startDate}</td>
+                                        <td>{this.formatDate(x.startDate)}</td>
                                         <td>{x.decisionNumber}</td>
                                         <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
@@ -214,7 +230,7 @@ class PraiseManager extends Component {
                             employeeNumber={this.state.currentRow.employee.employeeNumber}
                             decisionNumber={this.state.currentRow.decisionNumber}
                             organizationalUnit={this.state.currentRow.organizationalUnit}
-                            startDate={this.state.currentRow.startDate}
+                            startDate={this.formatDate(this.state.currentRow.startDate)}
                             type={this.state.currentRow.type}
                             reason={this.state.currentRow.reason}
                         />

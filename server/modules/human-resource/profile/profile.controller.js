@@ -141,7 +141,6 @@ exports.createEmployee = async (req, res) => {
                             name: req.body.fullName
                         }
                         let user = await UserService.createUser(userInfo, req.user.company._id);
-                        console.log(user)
                     }
                     await LogInfo(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
                     res.status(200).json({success: true, messages: ["create_employee_success"], content: data });
@@ -150,7 +149,7 @@ exports.createEmployee = async (req, res) => {
         }
     } catch (error) {
         await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: req.body}});
+        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: error}});
     }
 }
 

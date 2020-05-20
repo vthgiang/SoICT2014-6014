@@ -4,7 +4,7 @@ import {
 const initState = {
     isLoading: false,
     totalList: '',
-    listEmployee: '',
+    listEmployee: [],
     error: '',
     checkArrayMSNV: []
 }
