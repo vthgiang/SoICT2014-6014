@@ -33,24 +33,28 @@ export function course(state = initState, action) {
                     isLoading: false,
             };
         case CourseConstants.CREATE_COURSE_SUCCESS:
+            console.log(action.payload._id);
+            console.log(state.listCourse);
             return {
                 ...state,
-                listCourse: [
-                        ...state.listCourse,
+                listCourses: [
+                        ...state.listCourses,
                         action.payload
                     ],
                     isLoading: false,
             };
         case CourseConstants.DELETE_COURSE_SUCCESS:
+            console.log(action.payload._id);
+            console.log(state.listCourses);
             return {
                 ...state,
-                listCourse: state.listCourse.filter(course => course._id !== action.payload._id),
+                listCourses: state.listCourses.filter(course => course._id !== action.payload._id),
                     isLoading: false,
             };
         case CourseConstants.UPDATE_COURSE_SUCCESS:
             return {
                 ...state,
-                listCourse: state.listCourse.map(course =>
+                listCourses: state.listCourses.map(course =>
                         course._id === action.payload._id ?
                         action.payload : course
                     ),
@@ -64,7 +68,6 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                    error: action.error.message
             };
         default:
             return state

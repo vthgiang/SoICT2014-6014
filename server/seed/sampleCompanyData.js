@@ -1416,11 +1416,14 @@ const sampleCompanyData = async () => {
         courseId: "LD1233",
         offeredBy: "Vnists",
         coursePlace: "P9.01",
-        startDate: "03-03-2020",
-        endDate: "21-03-2020",
-        cost: "1200000",
+        startDate: "2020-02-16",
+        endDate: "2020-03-21",
+        cost:{
+            number:"1200000",
+            unit:'VND'
+        },
         lecturer: "Nguyễn B",
-        type: "Đào tạo ngoài",
+        type: "external",
         educationProgram: educationProgram[0]._id,
         employeeCommitmentTime: "6",
     }, {
@@ -1429,11 +1432,14 @@ const sampleCompanyData = async () => {
         courseId: "LD123",
         offeredBy: "Vnists",
         coursePlace: "P9.01",
-        startDate: "03-03-2020",
-        endDate: "21-03-2020",
-        cost: "1200000",
+        startDate: "2020-02-16",
+        endDate: "2020-03-21",
+        cost:{
+            number:"1200000",
+            unit:'VND'
+        },
         lecturer: "Nguyễn Văn B",
-        type: "Đào tạo nội bộ",
+        type: "internal",
         educationProgram: educationProgram[1]._id,
         employeeCommitmentTime: "6",
     }])

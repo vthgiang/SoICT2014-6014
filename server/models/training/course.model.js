@@ -17,7 +17,7 @@ const CourseSchema = new Schema({
     type: { // loại khóa học
         type: String,
         required: true,
-        // enum:['external','internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
+        enum:['external','internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -39,9 +39,13 @@ const CourseSchema = new Schema({
         type: Date,
         required: true
     },
-    cost: { // chi phí
-        type: String,
-        required: true
+    cost: { 
+        number: String,
+        unit: {
+            type: String,
+            enum: ['VND', 'USD']
+        }
+
     },
     lecturer: {
         type: String

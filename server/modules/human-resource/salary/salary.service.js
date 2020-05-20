@@ -52,15 +52,14 @@ exports.searchSalaries = async (data, company) => {
 exports.createSalary = async (data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
-    
+    var partMonth = data.month.split('-');
+    var month = new Date(partMonth[1], partMonth[0] - 1);
     if(employeeInfo!==null){
         var isSalary = await Salary.findOne({employee: employeeInfo._id, company: company, month: data.month}, {field1: 1});
         if (isSalary !== null) {
             return "have_exist"
         } else {
             // Thêm bảng lương vào database
-            var partMonth = data.month.split('-');
-            var month = new Date(partMonth[2], partMonth[1] - 1);
             let createSalary = await Salary.create({
                 employee: employeeInfo._id,
                 company: company,
@@ -98,7 +97,7 @@ exports.updateSalary = async (id, data, company) => {
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company:company }, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
         var partMonth = data.month.split('-');
-        var month = new Date(partMonth[2], partMonth[1] - 1);
+        var month = new Date(partMonth[1], partMonth[0] - 1);
         let salaryChange = {
             employee: employeeInfo._id,
             month: month,

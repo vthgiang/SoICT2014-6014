@@ -88,14 +88,6 @@ class EducationProgramEditForm extends Component {
                 // disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-edit-education" >
-                        <div className="form-group" >
-                            <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="programId" value={programId} disabled />
-                        </div>
-                        <div className="form-group">
-                            <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} />
-                        </div>
                         <div className="form-group">
                             <label>Áp dụng cho đơn vị</label>
                             <SelectMulti id={`edit-multiSelectUnit`} multiple="multiple" display='inline-block'
@@ -112,6 +104,15 @@ class EducationProgramEditForm extends Component {
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
+                        <div className="form-group" >
+                            <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="programId" value={programId} disabled />
+                        </div>
+                        <div className="form-group">
+                            <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} />
+                        </div>
+
                     </form>
                 </DialogModal>
             </React.Fragment>

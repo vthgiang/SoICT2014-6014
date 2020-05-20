@@ -20,10 +20,28 @@ class TrainingPlan extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
     }
+
     componentDidMount() {
         this.props.getListCourse(this.state);
         this.props.getAllEducation();
         this.props.getUser();
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function bắt sự kiện chỉnh sửa chương trình đào tạo
@@ -104,8 +122,8 @@ class TrainingPlan extends Component {
                                 options={{ nonSelectedText: "Chọn loại đào tạo", allSelectedText: "Chọn tất cả loại đào tạo" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "Đào tạo nội bộ", text: "Đào tạo nội bộ" },
-                                    { value: "Đào tạo ngoài", text: "Đào tạo ngoài" },
+                                    { value: "internal", text: "Đào tạo nội bộ" },
+                                    { value: "external", text: "Đào tạo ngoài" },
                                 ]}
                             >
                             </SelectMulti>
@@ -121,6 +139,7 @@ class TrainingPlan extends Component {
                                 <th>Kết thúc</th>
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
+                                <th>Loại đào tạo</th>
                                 <th style={{ width: '120px' }}>Hành động
                                     <DataTableSetting
                                         tableId="course-table"
@@ -130,7 +149,8 @@ class TrainingPlan extends Component {
                                             "Bắt đầu",
                                             "Kết thúc",
                                             "Địa điểm đào tạo",
-                                            "Đơn vị đào tạo"
+                                            "Đơn vị đào tạo",
+                                            "Loại đào tạo"
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -146,10 +166,11 @@ class TrainingPlan extends Component {
                                     <tr key={index}>
                                         <td>{x.courseId}</td>
                                         <td>{x.name}</td>
-                                        <td>{x.startDate}</td>
-                                        <td>{x.endDate}</td>
+                                        <td>{this.formatDate(x.startDate)}</td>
+                                        <td>{this.formatDate(x.endDate)}</td>
                                         <td>{x.coursePlace}</td>
                                         <td>{x.offeredBy}</td>
+                                        <td>{x.type}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="Thông tin khoá đào tạo"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa khoá đào tạo"><i className="material-icons">edit</i></a>
@@ -181,14 +202,14 @@ class TrainingPlan extends Component {
                         courseId={this.state.currentEditRow.courseId}
                         offeredBy={this.state.currentEditRow.offeredBy}
                         coursePlace={this.state.currentEditRow.coursePlace}
-                        startDate={this.state.currentEditRow.startDate}
-                        endDate={this.state.currentEditRow.endDate}
-                        cost={this.state.currentEditRow.cost}
+                        startDate={this.formatDate(this.state.currentEditRow.startDate)}
+                        endDate={this.formatDate(this.state.currentEditRow.endDate)}
+                        cost={this.state.currentEditRow.cost.number}
                         lecturer={this.state.currentEditRow.lecturer}
                         educationProgram={this.state.currentEditRow.educationProgram}
                         employeeCommitmentTime={this.state.currentEditRow.employeeCommitmentTime}
                         type={this.state.currentEditRow.type}
-                        unit={this.state.currentEditRow.unit}
+                        unit={this.state.currentEditRow.cost.unit}
                     />
                 }
                 {
@@ -199,15 +220,15 @@ class TrainingPlan extends Component {
                         courseId={this.state.currentViewRow.courseId}
                         offeredBy={this.state.currentViewRow.offeredBy}
                         coursePlace={this.state.currentViewRow.coursePlace}
-                        startDate={this.state.currentViewRow.startDate}
-                        endDate={this.state.currentViewRow.endDate}
-                        cost={this.state.currentViewRow.cost}
+                        startDate={this.formatDate(this.state.currentViewRow.startDate)}
+                        endDate={this.formatDate(this.state.currentViewRow.endDate)}
+                        cost={this.state.currentViewRow.cost.number}
                         lecturer={this.state.currentViewRow.lecturer}
                         educationProgram={this.state.currentViewRow.educationProgram}
                         employeeCommitmentTime={this.state.currentViewRow.employeeCommitmentTime}
                         type={this.state.currentViewRow.type}
                         // listEmployees=""
-                        unit="VND"
+                        unit={this.state.currentViewRow.cost.unit}
                     />
                 }
 

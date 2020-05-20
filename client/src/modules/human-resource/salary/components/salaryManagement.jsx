@@ -278,7 +278,7 @@ class SalaryManagement extends Component {
                         _id={this.state.currentRow._id}
                         unit={this.state.currentRow.unit}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        month={this.formatDate(this.state.currentRow.month)}
+                        month={this.formatDate(this.state.currentRow.month, true)}
                         mainSalary={this.state.currentRow.mainSalary}
                         bonus={this.state.currentRow.bonus}
                     />
