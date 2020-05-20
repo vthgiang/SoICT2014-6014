@@ -9,6 +9,22 @@ class ContractTab extends Component {
         this.state = {
         };
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -48,8 +64,8 @@ class ContractTab extends Component {
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.contractType}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                 <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                             </td>

@@ -1240,6 +1240,57 @@ export default {
             }
         },
 
+        // Modules quản lý đào tạo
+        training:{
+
+            // Quản khoá đào tạo
+            course:{
+                
+                // Thông điệp trả về từ server
+                name_required:'Tên khoá đào tạo không được để trống',
+                course_id_required:'Mã khoá đào tạo không được để trống',
+                offered_by_required:'Đơn vị đào tạo không được để trống',
+                course_place_required:'Địa điểm đào tạo không được để trống',
+                start_date_required:'Thời gian bắt đầu không được để trống',
+                end_date_required:'Thời gian kết thúc không được để trống',
+                type_required:'Loại đào tạo không được để trống',
+                education_program_required:'Thuộc chương trình đào tạo không được để trống',
+                employee_commitment_time_required:'Thời gian cam kết không được để trống',
+                cost_required:'Chi phí đào tạo không được để trống',
+                course_id_have_exist:'Mã khoá đào tạo đã tồn tại',
+
+                get_list_course_success:'Lấy danh sách khoá đào tạo thành công',
+                get_list_course_faile:'Lấy danh sách khoá đào tạo thất bại',
+                create_course_success:'Thêm mới khoá đào tạo thành công',
+                create_course_faile:'Thêm mới khoá đào tạo thất bại',
+                delete_course_success:'Xoá khoá đào tạo thành công',
+                delete_course_faile: 'Xoá khoá đào tạo thất bại',
+                edit_course_success:'Chỉnh sửa khoá đào tạo thành công',
+                edit_course_faile:'Chỉnh sửa khoá đào tạo thất bại',
+            },
+
+            // Quản lý chương trình đào tạo
+            education_program :{
+
+                // Thông điệp trả về từ server
+                apply_for_organizational_units_required:'Áp dụng cho đơn vị không được để trống',
+                apply_for_positions_required:'Áp dụng cho chức vụ không được để trống',
+                program_id_required:'Mã chương trình đào tạo không được để trống',
+                name_required:'Tên chương trình đào tạo không được để trống',
+                program_id_have_exist:'Mã chương trình đào tạo đã tồn tại',
+
+                get_education_program_success:'Lấy danh sách chương trình đào tạo thành công',
+                get_education_program_faile:'Lấy danh sách chương trình đào tạo thất bại',
+                create_education_program_success:'Thêm mới chương trình đào tạo thành công',
+                create_education_program_faile:'Thêm mới chương trình đào tạo thất bại',
+                delete_education_program_success:'Xoá chương trình đào tạo thành công',
+                delete_education_program_faile:'Xoá chương trình đào tạo thất bại',
+                edit_education_program_success:'Chỉnh sửa chương trình đào tạo thành công',
+                edit_education_program_faile:'Chỉnh sửa chương trình đào tạo thất bại',
+            }
+
+        },
+
         // Modules Quản lý tài sản
         asset: {
             //Quản lý loại tài sản
@@ -1486,6 +1537,15 @@ export default {
                 create_result_info_task_success: 'Tạo result info task thành công',
                 create_result_infomation_task_success: 'Tạo result infomation task thành công',
                 edit_result_infomation_task_success: 'Sửa result infomation task thành công',
+                create_task_comment_success:'Tạo thành công bình luận công việc',
+                get_task_comments_success:'Lấy tất cả bình luận của công việc thành công',
+                edit_task_comment_success:'Sửa bình luận thành công',
+                delete_task_comment_success:'Xóa bình luận thành công',
+                create_comment_of_task_comment_success:'Tạo bình luận thành công',
+                edit_comment_of_task_comment_success:'Sửa bình luận thành công',
+                delete_comment_of_task_comment_success:'Xóa bình luận thành công',
+                evaluation_action_success:'Đánh giá hoạt động thành công',
+                confirm_action_success:'Xác nhận hoạt động thành công',
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1506,7 +1566,15 @@ export default {
                 create_result_info_task_fail: 'Tạo result info task thất bại',
                 create_result_infomation_task_fail: 'Tạo result infomation task thất bại',
                 edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
-
+                create_task_comment_fail:'Tạo bình luận công việc thất bại',
+                get_task_comments_fail:'Lấy tất cả bình luận công việc thất bại',
+                edit_task_comment_fail:'Sửa bình luận thất bại',
+                delete_task_comment_success:'Xóa bình luận thất bại',
+                create_comment_of_task_comment_fail:'Tạo bình luận thất bại',
+                edit_comment_of_task_comment_fail:'Sửa bình luận thất bại',
+                delete_comment_of_task_comment_fail:'Xóa bình luận thất bại',
+                evaluation_action_fail:'Đánh giá công việc thất bại',
+                confirm_action_fail:'Xác nhận hoạt động thất bại',
                 // modal approve task
                 modal_approve_task: {
                     title: 'Yêu cầu kết thúc công việc',
@@ -1530,7 +1598,13 @@ export default {
 
             },
             task_template: {
-                // TODO: code_mesage_task_template
+               
+                create_task_template_success:'Tạo mẫu công việc thành công !',
+                create_task_template_fail:'Tạo mẫu công việc thất bại !',
+                edit_task_template_success:'Sửa mẫu công việc thành công !',
+                edit_task_template_fail:'Sửa mẫu công việc thất bại !',
+                delete_task_template_success:'Xóa mẫu công việc thành công !',
+                delete_task_template_fail:'Xóa mẫu công việc thất bại !',
             }
         },
 
@@ -1728,6 +1802,20 @@ export default {
                 get_system_point_fail: 'Lấy điểm hệ thống cho KPI lỗi',
                 set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
                 set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
+
+                dashboard: {
+                    organizational_unit: 'Đơn vị',
+                    select_all_units: 'Chọn tất cả đơn vị',
+                    all_unit: 'Tất cả đơn vị',
+                    search: 'Tìm kiếm',
+                    setting_up: 'Đang thiết lập',
+                    awaiting_approval: 'Chờ phê duyệt',
+                    activated: 'Đã kích hoạt',
+                    number_of_employee: 'Số nhân viên',
+                    excellent_employee: 'Nhân viên ưu tú',
+                    best_employee: 'Nhân viên xuất sắc nhất',
+                    month: 'Tháng'
+                }
 
             },
             organizational_unit: {

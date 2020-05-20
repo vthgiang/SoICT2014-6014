@@ -7,7 +7,6 @@ import {
 
 export const CourseService = {
     getListCourse,
-    getCourseByEducation,
     createNewCourse,
     deleteCourse,
     updateCourse,
@@ -21,19 +20,7 @@ function getListCourse(data) {
         url: `${ LOCAL_SERVER_API }/course/paginate`,
         method: 'POST',
         data: data,
-    }, false, true, 'human_resource.salary');
-}
-
-/**
- * Lấy danh sách các khoá đào tạo theo chương trình đào tạo
- * @data :  
- */
-function getCourseByEducation(data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/list`,
-        method: 'POST',
-        data: data,
-    }, false, true, 'human_resource.salary');
+    }, false, true, 'training.course');
 }
 
 /**
@@ -45,7 +32,7 @@ function createNewCourse(data) {
         url: `${ LOCAL_SERVER_API }/course/`,
         method: 'POST',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.course');
 }
 
 /**
@@ -57,7 +44,7 @@ function deleteCourse(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/course/${id}`,
         method: 'DELETE',
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.course');
 }
 
 /**
@@ -70,5 +57,5 @@ function updateCourse(id, data) {
         url: `${ LOCAL_SERVER_API }/course/${id}`,
         method: 'PUT',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'training.course');
 }

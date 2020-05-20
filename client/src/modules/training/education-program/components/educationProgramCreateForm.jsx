@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { EducationProgramFormValidator } from './combinedContent';
 
 import { DialogModal, ButtonModal, ErrorLabel, SelectMulti } from '../../../../common-components';
 import { EducationActions } from '../redux/actions';
@@ -21,10 +22,20 @@ class EducationProgramCreateForm extends Component {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
-            organizationalUnit: value
-        })
+        this.validateOrganizationalUnit(value, true);
+    }
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = EducationProgramFormValidator.validateOrganizationalUnit(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     // Function lưu giá trị chức vụ vào state khi thay đổi
@@ -32,24 +43,76 @@ class EducationProgramCreateForm extends Component {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
-            position: value
-        })
+        this.validatePosition(value, true);
+    }
+    validatePosition = (value, willUpdateState = true) => {
+        let msg = EducationProgramFormValidator.validatePosition(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnPosition: msg,
+                    position: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
-    handleChange = (e) => {
-        const { name, value } = e.target;
-        this.setState({
-            [name]: value
-        });
+    // Bắt sự kiện thay đổi mã chương trình đào tạo
+    handleProgramIdChange = (e) => {
+        const { value } = e.target;
+        this.validateProgramId(value, true);
+    }
+    validateProgramId = (value, willUpdateState = true) => {
+        let msg = EducationProgramFormValidator.validateProgramId(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnProgramId: msg,
+                    programId: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi tên chương trình đào tạo
+    handleProgramNameChange = (e) => {
+        const { value } = e.target;
+        this.validateProgramName(value, true);
+    }
+    validateProgramName = (value, willUpdateState = true) => {
+        let msg = EducationProgramFormValidator.validateProgramName(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnProgramName: msg,
+                    name: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        let result =
+            this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validatePosition(this.state.position, false) &&
+            this.validateProgramId(this.state.programId, false) && this.validateProgramName(this.state.name, false);
+        return result;
     }
     save = (e) => {
-        this.props.addNewEducation(this.state);
+        if (this.isFormValidated()) {
+            this.props.addNewEducation(this.state);
+        }
     }
     render() {
         const { translate, education } = this.props;
-        const { name, programId, organizationalUnit, position } = this.state;
+        const { name, programId, organizationalUnit, position, errorOnProgramName, errorOnProgramId,
+            errorOnOrganizationalUnit, errorOnPosition } = this.state;
         const { list } = this.props.department;
         var listPosition = [];
         if (this.state.organizationalUnit !== null) {
@@ -75,34 +138,38 @@ class EducationProgramCreateForm extends Component {
                     formID="form-create-education"
                     title="Thêm chương trình đào tạo"
                     func={this.save}
-                    disableSubmit={false}
                     size={50}
                     maxWidth={500}
-                // disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-education" >
-                        <div className="form-group" >
-                            <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="programId" value={programId} onChange={this.handleChange} />
-                        </div>
-                        <div className="form-group">
-                            <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} />
-                        </div>
-                        <div className="form-group">
-                            <label>Áp dụng cho đơn vị</label>
+                        <div className={`form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
+                            <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
                             <SelectMulti id={`create-multiSelectUnit`} multiple="multiple" display='inline-block'
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
+                            <ErrorLabel content={errorOnOrganizationalUnit} />
                         </div>
-                        <div className="form-group">
-                            <label>Áp dụng cho chức vụ</label>
+                        <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
+                            <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
                             <SelectMulti id={`create-multiSelectPosition`} multiple="multiple" display='inline-block'
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
+                            <ErrorLabel content={errorOnPosition} />
                         </div>
+                        <div className={`form-group ${errorOnProgramId === undefined ? "" : "has-error"}`} >
+                            <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="programId" value={programId} onChange={this.handleProgramIdChange} />
+                            <ErrorLabel content={errorOnProgramId} />
+                        </div>
+                        <div className={`form-group ${errorOnProgramName === undefined ? "" : "has-error"}`}>
+                            <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleProgramNameChange} />
+                            <ErrorLabel content={errorOnProgramName} />
+                        </div>
+
                     </form>
                 </DialogModal>
             </React.Fragment>

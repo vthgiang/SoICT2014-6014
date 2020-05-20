@@ -60,7 +60,8 @@ class ModalEditTaskTemplate extends Component {
                 errorOnDescription:undefined,
                 errorOnRead:undefined,
                 errorOnFormula:undefined,
-                errorOnUnit:undefined
+                errorOnUnit:undefined,
+                showActionForm:undefined              
             } 
         } else {
             return null;
@@ -95,9 +96,10 @@ class ModalEditTaskTemplate extends Component {
                 return {
                     ...state,
                     editingTemplate: editingTemplate,
+                    showActionForm: true,
                 };
             });
-            return false; // Cần cập nhật lại state, không cần render
+            return true; // Cần cập nhật lại state, không cần render
         }
 
         return true;
@@ -466,7 +468,9 @@ class ModalEditTaskTemplate extends Component {
                                     }
                                 </div>
                             </div>
-                            <ActionForm  initialData ={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
+                            {   this.state.showActionForm &&                        
+                            <ActionForm  initialData ={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} /> 
+                            }                           
                         </div>
 
                         <div className="col-sm-6">

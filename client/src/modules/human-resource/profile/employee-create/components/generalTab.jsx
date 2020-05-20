@@ -10,6 +10,22 @@ class GeneralTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     // Function upload avatar 
     handleUpload = (e) => {
         var file = e.target.files[0];
@@ -287,7 +303,7 @@ class GeneralTab extends Component {
                                 <label htmlFor="brithday">{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
-                                    value={birthdate}
+                                    value={this.formatDate(birthdate)}
                                     onChange={this.handleBrithdayChange}
                                 />
                                 <ErrorLabel content={errorOnBrithdate} />
@@ -329,7 +345,7 @@ class GeneralTab extends Component {
                                 <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
-                                    value={identityCardDate}
+                                    value={this.formatDate(identityCardDate)}
                                     onChange={this.handleDateCMNDChange}
                                 />
                                 <ErrorLabel content={errorOnDateCMND} />

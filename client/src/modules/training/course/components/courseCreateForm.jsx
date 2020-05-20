@@ -23,9 +23,9 @@ class CourseCreateForm extends Component {
             lecturer: "",
             educationProgram: "",
             employeeCommitmentTime: "",
-            type: "Đào tạo nội bộ",
+            type: "internal",
             listEmployees: [],
-            
+
         };
     }
 
@@ -68,7 +68,9 @@ class CourseCreateForm extends Component {
         })
     }
 
-    save = async () => {
+    save = () => {
+        console.log(this.state);
+        this.props.createNewCourse(this.state);
     }
 
     render() {
@@ -76,9 +78,14 @@ class CourseCreateForm extends Component {
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
         var listEducations = this.props.education.listAll;
-        var userlist = user.list;
+        var userlist = user.list, infoEmployee = [];
         for (let n in listEmployees) {
-            userlist = userlist.filter(x => x._id !== listEmployees[n])
+            userlist = userlist.filter(x => x._id !== listEmployees[n]);
+            infoEmployee = user.list.filter(x => x._id === listEmployees[n]).concat(infoEmployee)
+        }
+        // Lấy thông tin name và email của nhân viên đơn vị
+        for (let n in listEmployees) {
+
         }
         return (
             <React.Fragment>
@@ -140,8 +147,8 @@ class CourseCreateForm extends Component {
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>Loại đào tạo<span className="text-red">*</span></label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleChange}>
-                                    <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
-                                    <option value="Đào tạo ngoài">Đào tạo ngoài</option>
+                                    <option value="internal">Đào tạo nội bộ</option>
+                                    <option value="external">Đào tạo ngoài</option>
                                 </select>
                             </div>
                         </div>
@@ -153,7 +160,7 @@ class CourseCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={educationProgram}
-                                    items={listEducations.map(x => { return { value: x._id, text: x.name } })}
+                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: "", text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
                                 />
                             </div>

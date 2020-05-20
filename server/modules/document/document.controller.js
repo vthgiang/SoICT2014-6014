@@ -65,7 +65,7 @@ exports.getDocumentDomains = async (req, res) => {
             content: domains
         });
     } catch (error) {
-        
+        console.log("error: ", error)
         await LogError(req.user.email, 'GET_DOCUMENT_DOMAINS', req.user.company);
         res.status(400).json({
             success: false,

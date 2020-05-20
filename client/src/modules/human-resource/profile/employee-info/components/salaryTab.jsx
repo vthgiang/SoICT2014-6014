@@ -7,12 +7,28 @@ class SalaryTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
-                salarys: nextProps.salarys,
+                salaries: nextProps.salaries,
                 annualLeaves: nextProps.annualLeaves,
             }
         } else {
@@ -22,7 +38,7 @@ class SalaryTab extends Component {
     render() {
         var formater = new Intl.NumberFormat();
         const { id, translate } = this.props;
-        const { annualLeaves, salarys } = this.state;
+        const { annualLeaves, salaries } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -37,8 +53,8 @@ class SalaryTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof salarys !== 'undefined' && salarys.length !== 0) &&
-                                    salarys.map((x, index) => {
+                                {(typeof salaries !== 'undefined' && salaries.length !== 0) &&
+                                    salaries.map((x, index) => {
                                         if (x.bonus.length !== 0) {
                                             var total = 0;
                                             for (let count in x.bonus) {
@@ -47,7 +63,7 @@ class SalaryTab extends Component {
                                         }
                                         return (
                                             <tr key={index}>
-                                                <td>{x.month}</td>
+                                                <td>{this.formatDate(x.month, true)}</td>
                                                 <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                 <td>
                                                     {
@@ -63,7 +79,7 @@ class SalaryTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof salarys === 'undefined' || salarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof salaries === 'undefined' || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -81,8 +97,8 @@ class SalaryTab extends Component {
                                 {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
                                     annualLeaves.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.reason}</td>
                                             <td>{translate(`sabbatical.${x.status}`)}</td>
                                         </tr>

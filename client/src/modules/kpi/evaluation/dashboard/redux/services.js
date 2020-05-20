@@ -12,7 +12,7 @@ export const dashboardEmployeeKpiService = {
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllEmployeeKpiSetOfUnit(role) {    
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/get-all-employee-kpi/${role}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
@@ -28,7 +28,7 @@ function getAllEmployeeOfUnit(role) {
 // Lấy các đơn vị con của một đơn vị và đơn vị đó
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/organizational-unit/${role}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/organizational-units/${role}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
