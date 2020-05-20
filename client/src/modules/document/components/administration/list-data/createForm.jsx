@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import { TreeSelect } from 'antd';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -43,7 +42,7 @@ class CreateForm extends Component {
     render() {
         const {translate, role, documents, department}=this.props;
         const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
-        const domains = documents.administration.domains;
+        const domains = documents.administration.domains.list.map(domain=>{ return {value: domain._id, text: domain.name}});
         const documentRoles = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.listData.list.map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.listData.create.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}})
@@ -79,14 +78,14 @@ class CreateForm extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.domain') }<span className="text-red">*</span></label>
-                                        <TreeSelect
-                                            style={{ width: '100%' }}
-                                            value={this.state.documentDomain}
-                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                            treeData={domains}
-                                            placeholder={translate('document.administration.domains.select')}
-                                            treeDefaultExpandAll
-                                            onChange={this.handleDomain}
+                                        <SelectBox
+                                            id="select-box-document-domains"
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {domains}
+                                            onChange={this.handleDomainsChange}
+                                            multiple={false}
+                                            options={{placeholder: translate('document.administration.categories.select')}}
                                         />
                                     </div>
                                 </div>
