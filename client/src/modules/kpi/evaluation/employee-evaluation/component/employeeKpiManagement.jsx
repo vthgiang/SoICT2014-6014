@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
 import { kpiMemberActions } from '../redux/actions';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
@@ -105,6 +105,26 @@ class KPIMember extends Component {
             return "Đã kết thúc"
         }
     }
+    handleStartDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    startDate: value,
+                }
+            });
+        
+    }
+    handleEndDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    endDate: value,
+                }
+            });
+        
+    }
     handleEmployeeChange =(value) => {
         this.setState(state => {
             return {
@@ -130,8 +150,8 @@ class KPIMember extends Component {
                     ...state.infosearch,
                     user: this.user.value,
                     status: this.status.value,
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value
+                    startDate: this.state.startDate,
+                    endDate: this.state.endDate
                 }
             }
         })
@@ -180,6 +200,7 @@ class KPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
+        const {startDate, endDate} = this.state;
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
         const {status,employee} = this.state;
@@ -291,12 +312,27 @@ class KPIMember extends Component {
                         </div>
 
                         <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+                            <DatePicker
+                            id='start_date'
+                            defaultValue={this.formatDate(Date.now())}
+                            value = {startDate}
+                            onChange={this.handleStartDateChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+
+                            <DatePicker
+                            id='end_date'
+                            defaultValue={this.formatDate(Date.now())}
+                            value = {endDate}
+                            onChange={this.handleEndDateChange}
+                            />
                             <div className="form-group">
-                                <label>Từ tháng:</label>
-
-                                <input type="text" className="form-control" ref={input=> this.startDate = input}
-                                defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
-
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                kiếm</button>
                             </div>
                             <div className="form-group">
                                 <label>Đến tháng:</label>
@@ -323,7 +359,7 @@ class KPIMember extends Component {
                             limit={this.state.perPage} 
                             setLimit={this.setLimit} 
                             hideColumnOption={true} />
-
+                        
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
@@ -369,7 +405,7 @@ class KPIMember extends Component {
                         </table>
                     </div>
                 </div>
-
+            </div>
         </React.Fragment>
         );
     }

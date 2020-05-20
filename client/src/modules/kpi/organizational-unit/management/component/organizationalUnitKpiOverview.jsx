@@ -13,10 +13,10 @@ class KPIUnitManager extends Component {
         this.state = {
             showModalCopy: "",
             currentRole: localStorage.getItem("currentRole"),
+            status: 3,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: "",
-                status: 2,
+                status: 3,
                 startDate: this.formatDate(Date.now()),
                 endDate: this.formatDate(Date.now())
             },
@@ -68,12 +68,11 @@ class KPIUnitManager extends Component {
             }
         })
     }
-    handleStatus= (value) => {
-        // console.log("status",value);
-        this.setState(state =>{
+    handleStatus= async (value) => {
+        await this.setState(state =>{
             return {
                 ...state,
-                status: value,
+                status: value
             }
         })
     }
@@ -96,19 +95,19 @@ class KPIUnitManager extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: this.state.userkpi,
-                    status: this.state.status,
+                    status: this.state.status[0],
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
                 }
             }
         })
         const { infosearch } = this.state;
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
+        console.log("inforsearch", infosearch);
+        if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
-            var startDate =new Date(startDate[2], startDate[1], startDate[0]);
+            var startDate =new Date(startDate[1], startDate[0]);
             var endDate = infosearch.endDate.split("-");
-            var endDate = new Date(endDate[2], endDate[1], endDate[0]);
+            var endDate = new Date(endDate[1], endDate[0]);
             if (Date.parse(startDate) > Date.parse(endDate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
@@ -139,8 +138,7 @@ class KPIUnitManager extends Component {
         return (currentRole === deanCurrentUnit);
     }
     render() {
-        const{startDate, endDate, status, errorOnDate, userkpi}= this.state;
-        
+        const{startDate, endDate, status, errorOnDate, infosearch}= this.state;
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit, userdepartments;
         const { user, managerKpiUnit } = this.props;
@@ -212,9 +210,10 @@ class KPIUnitManager extends Component {
                             <label>Trạng thái:</label>
                             {
                                 <SelectBox
+                                
                                     id={`select-status-kpi`}
                                     className="form-control select2"
-                                    items = {[{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' }, {value: 3, text: 'Tất cả trạng thái'} ]}
+                                    items = {[{value: 3, text: 'Tất cả trạng thái'} ,{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' } ]}
                                     onChange={this.handleStatus}
                                     style={{width: "100%"}}
                                     value={status}

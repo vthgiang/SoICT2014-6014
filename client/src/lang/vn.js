@@ -1729,6 +1729,20 @@ export default {
                 set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
                 set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
 
+                dashboard: {
+                    organizational_unit: 'Đơn vị',
+                    select_all_units: 'Chọn tất cả đơn vị',
+                    all_unit: 'Tất cả đơn vị',
+                    search: 'Tìm kiếm',
+                    setting_up: 'Đang thiết lập',
+                    awaiting_approval: 'Chờ phê duyệt',
+                    activated: 'Đã kích hoạt',
+                    number_of_employee: 'Số nhân viên',
+                    excellent_employee: 'Nhân viên ưu tú',
+                    best_employee: 'Nhân viên xuất sắc nhất',
+                    month: 'Tháng'
+                }
+
             },
             organizational_unit: {
                 // Module chính
