@@ -82,14 +82,14 @@ class EducationProgramCreateForm extends Component {
                 >
                     <form className="form-group" id="form-create-education" >
                         <div className="form-group">
-                            <label>Áp dụng cho đơn vị</label>
+                            <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
                             <SelectMulti id={`create-multiSelectUnit`} multiple="multiple" display='inline-block'
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label>Áp dụng cho chức vụ</label>
+                            <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
                             <SelectMulti id={`create-multiSelectPosition`} multiple="multiple" display='inline-block'
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>

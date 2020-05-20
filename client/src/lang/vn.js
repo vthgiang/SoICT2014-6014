@@ -1242,6 +1242,8 @@ export default {
 
         // Modules quản lý đào tạo
         training:{
+
+            // Quản khoá đào tạo
             course:{
                 
                 // Thông điệp trả về từ server
@@ -1265,7 +1267,28 @@ export default {
                 delete_course_faile: 'Xoá khoá đào tạo thất bại',
                 edit_course_success:'Chỉnh sửa khoá đào tạo thành công',
                 edit_course_faile:'Chỉnh sửa khoá đào tạo thất bại',
+            },
+
+            // Quản lý chương trình đào tạo
+            education_program :{
+
+                // Thông điệp trả về từ server
+                apply_for_organizational_units_required:'Áp dụng cho đơn vị không được để trống',
+                apply_for_positions_required:'Áp dụng cho chức vụ không được để trống',
+                program_id_required:'Mã chương trình đào tạo không được để trống',
+                name_required:'Tên chương trình đào tạo không được để trống',
+                program_id_have_exist:'Mã chương trình đào tạo đã tồn tại',
+
+                get_education_program_success:'Lấy danh sách chương trình đào tạo thành công',
+                get_education_program_faile:'Lấy danh sách chương trình đào tạo thất bại',
+                create_education_program_success:'Thêm mới chương trình đào tạo thành công',
+                create_education_program_faile:'Thêm mới chương trình đào tạo thất bại',
+                delete_education_program_success:'Xoá chương trình đào tạo thành công',
+                delete_education_program_faile:'Xoá chương trình đào tạo thất bại',
+                edit_education_program_success:'Chỉnh sửa chương trình đào tạo thành công',
+                edit_education_program_faile:'Chỉnh sửa chương trình đào tạo thất bại',
             }
+
         },
 
         // Modules Quản lý tài sản

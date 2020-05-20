@@ -1009,7 +1009,7 @@ export default {
                     get_infor_personal_false: 'Get information personal false',
                     edit_infor_personal_success: 'Update information personal success',
                     edit_infor_personal_false: 'Update infor personal false',
-                    
+
                 },
 
                 employee_management: {
@@ -1044,30 +1044,50 @@ export default {
         },
 
         // Modules quản lý đào tạo
-        training:{
-            course:{
-                
-                // Thông điệp trả về từ server
-                name_required:'',
-                course_id_required:'',
-                offered_by_required:'',
-                course_place_required:'',
-                start_date_required:'',
-                end_date_required:'',
-                type_required:'',
-                education_program_required:'',
-                employee_commitment_time_required:'',
-                cost_required:'',
-                course_id_have_exist:'',
+        training: {
+            course: {
 
-                get_list_course_success:'',
-                get_list_course_faile:'',
-                create_course_success:'',
-                create_course_faile:'',
-                delete_course_success:'',
-                delete_course_faile:'',
-                edit_course_success:'',
-                edit_course_faile:'',
+                // Thông điệp trả về từ server
+                name_required: 'Name of the training course required',
+                course_id_required: 'Course id required',
+                offered_by_required: 'Offered by required',
+                course_place_required: 'Course place required',
+                start_date_required: 'Start date required',
+                end_date_required: 'End date required',
+                type_required: 'Type of training required',
+                education_program_required: 'Under the training program required',
+                employee_commitment_time_required: 'Time commitment required',
+                cost_required: 'Cost required',
+                course_id_have_exist: 'Course id already exists',
+
+                get_list_course_success: 'Get list course success',
+                get_list_course_success: 'Get list course success',
+                create_course_success: 'Create course success',
+                create_course_faile: 'Create course faile',
+                delete_course_success: 'Delete course success',
+                delete_course_faile: 'Delete course faile',
+                edit_course_success: 'Edit course success',
+                edit_course_faile: 'Edit course faile',
+            },
+
+            // Quản lý chương trình đào tạo
+            education_program: {
+
+                // Thông điệp trả về từ server
+                apply_for_organizational_units_required: 'Apply for organizational units required',
+                apply_for_positions_required: 'Apply for positions required',
+                program_id_required: 'Program id required',
+                name_required: 'Program name required',
+                program_id_have_exist: 'Program id already exist',
+
+                get_education_program_success: 'Get education program success',
+                get_education_program_faile: 'Get education program faile',
+                create_education_program_success: 'Create education program success',
+                create_education_program_faile: 'Create education program faile',
+                delete_education_program_success: 'Delete education program success',
+                delete_education_program_faile: 'Delete education program faile',
+                edit_education_program_success: 'Edit ducation program success',
+                edit_education_program_faile: 'Edit education program faile',
             }
         },
 
@@ -1226,7 +1246,7 @@ export default {
 
                     task_info: 'Information of task',
                     percent: 'Progress of task',
-                    
+
                     auto_point: 'Automatic point',
                     employee_point: 'Employee point',
                     approved_point: 'Accountable point',

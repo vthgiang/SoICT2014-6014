@@ -89,7 +89,7 @@ class EducationProgramEditForm extends Component {
                 >
                     <form className="form-group" id="form-edit-education" >
                         <div className="form-group">
-                            <label>Áp dụng cho đơn vị</label>
+                            <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectUnit`} multiple="multiple" display='inline-block'
                                 value={organizationalUnit}
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
@@ -97,7 +97,7 @@ class EducationProgramEditForm extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label>Áp dụng cho chức vụ</label>
+                            <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectPosition`} multiple="multiple" display='inline-block'
                                 value={position}
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
