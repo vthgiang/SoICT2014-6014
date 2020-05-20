@@ -17,10 +17,10 @@ const DocumentDomainSchema = new Schema({
         ref: 'companies',
         required: true
     },
-    parent: [{
+    parent: {
         type: Schema.Types.ObjectId,
         replies: this
-    }]
+    }
 },{
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }

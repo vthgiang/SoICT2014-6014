@@ -93,6 +93,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
+// ==========================BEGIN HANDLE INFORMATION TASK=========================================
 
     handleChangeNumberInfo = async (e) => {
         var value = parseInt(e.target.value);
@@ -100,7 +101,10 @@ class EvaluateByAccountableEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
-                [name]: value,
+                [name]: {
+                    value: value,
+                    code: name
+                },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -112,12 +116,66 @@ class EvaluateByAccountableEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
-                [name]: value,
+                [name]: {
+                    value: value,
+                    code: name
+                },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
-    
+
+    handleDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDate: this.validateDate(value),
+                    date: value,
+                }
+            });
+        
+    }
+
+    handleInfoDateChange = (value, code) => {
+        console.log('value', value);
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+                errorOnInfoDate: this.validateDate(value),
+                // infoDate: value,
+            }
+        });
+    }
+
+
+    handleInfoBooleanChange  = (event) => {
+        var {name, value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                }
+                // errorOnInfoBoolean: this.validateInfoBoolean(value)
+            }
+        });
+    }
+
+    validateDate = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.trim() === "") {
+            msg = "Ngày đánh giá bắt buộc phải chọn";
+        }
+        
+        return msg;
+    }
+
     validateTextInfo = (value) =>{
         let msg = undefined;
         if(value === ""){
@@ -148,55 +206,6 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
-    handleDateChange = (value) => {
-        // var value = e.target.value;
-        this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDate: this.validateDate(value),
-                    date: value,
-                }
-            });
-        
-    }
-
-    handleInfoDateChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                // errorOnInfoDate: this.validateDate(value),
-                infoDate: value,
-            }
-        });
-    }
-
-    validateDate = (value, willUpdateState = true) => {
-        let msg = undefined;
-        if (value.trim() === "") {
-            msg = "Ngày đánh giá bắt buộc phải chọn";
-        }
-        
-        return msg;
-    }
-
-    handleKpiChange =(value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                kpi: value
-            }
-        });
-    }
-
-    handleInfoBooleanChange  = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                infoBoolean: value,
-                errorOnInfoBoolean: this.validateInfoBoolean(value)
-            }
-        });
-    }
 
     validateInfoBoolean = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -207,25 +216,23 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
-    // handleInfoBooleanChange  = async (value) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             infoBoolean: value,
-    //             errorOnInfoBoolean: this.validateInfoBoolean(value)
-    //         }
-    //     });
-    //     await this.props.handleInfoBooleanChange(value)
-    // }
-    
-    handleSetOfValueChange =(value) => {
+
+
+    handleSetOfValueChange = async (value, code) => {
+        console.log('value', value);
+
         this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
             return {
                 ...state,
-                setOfValue: value
             }
         });
     }
+
+// ==========================END HANDLE INFORMATION TASK=========================================
 
     // validatePoint = (value) => {
     //     var { translate } = this.props;
@@ -273,6 +280,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
+        console.log('nextProps, prevState',nextProps, prevState);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -326,11 +334,13 @@ class EvaluateByAccountableEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
-                            errorOnInfoBoolean={errorOnInfoBoolean}
-                            errorOnProgress={errorOnProgress}
-                            errorOnInfoDate={errorOnInfoDate}
-                            errorOnTextInfo={errorOnTextInfo}
-                            errorOnNumberInfo={errorOnNumberInfo}
+                            // errorOnInfoBoolean={errorOnInfoBoolean}
+                            // errorOnProgress={errorOnProgress}
+                            // errorOnInfoDate={errorOnInfoDate}
+                            // errorOnTextInfo={errorOnTextInfo}
+                            // errorOnNumberInfo={errorOnNumberInfo}
+                            
+                            value={this.state}
                         />
                         
                     </div>

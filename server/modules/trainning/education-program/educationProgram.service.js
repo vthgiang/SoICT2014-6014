@@ -66,21 +66,27 @@ exports.searchEducationPrograms = async (data, company) => {
  * @company : Id công ty
  */
 exports.createEducationProgram = async (data, company) => {
-    var createEducation = await EducationProgram.create({
-        company: company,
-        name: data.name,
-        programId: data.programId,
-        applyForOrganizationalUnits: data.organizationalUnit,
-        applyForPositions: data.position,
-    });
-    var education = await EducationProgram.findById(createEducation._id).populate([{
-        path: 'applyForOrganizationalUnits',
-        model: OrganizationalUnit
-    }, {
-        path: 'applyForPositions',
-        model: Role
-    }])
-    return education;
+    var isEducationProgram = await EducationProgram.findOne({programId: data.programId, company:company}, { _id: 1});
+    console.log(isEducationProgram);
+    if(isEducationProgram !== null){
+        return 'have_exist'
+    } else{
+        var createEducation = await EducationProgram.create({
+            company: company,
+            name: data.name,
+            programId: data.programId,
+            applyForOrganizationalUnits: data.organizationalUnit,
+            applyForPositions: data.position,
+        });
+        return await EducationProgram.findById(createEducation._id).populate([{
+            path: 'applyForOrganizationalUnits',
+            model: OrganizationalUnit
+        }, {
+            path: 'applyForPositions',
+            model: Role
+        }])
+    }
+    
 }
 
 /**

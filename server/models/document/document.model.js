@@ -8,6 +8,24 @@ const DocumentSchema = new Schema({
         type: String,
         required: true
     },
+    issuingBody: { // Cơ quan ban hành
+        type: String
+    },
+    officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
+        type: String
+    },
+    issuingDate: { // Ngày ban hành
+        type: Date
+    },
+    effectiveDate: { // ngày áp dụng
+        type: Date
+    },
+    expiredDate: { // Ngày hết hạn
+        type: Date
+    },
+    signer: {  // Người ký
+        type: String
+    },
     company: { //thuộc công ty nào
         type: Schema.Types.ObjectId,
         ref: 'companies',
@@ -23,9 +41,6 @@ const DocumentSchema = new Schema({
     },
     description: { //mô tả
         type: String
-    },
-    applyAt: { //ngày áp dụng
-        type: Date
     },
     version: { //Phiên bản
         name: {
@@ -55,11 +70,11 @@ const DocumentSchema = new Schema({
     archivedRecordPlace: { //nơi lưu trữ hồ sơ bản cứng
         type: String
     },
-    uploadedFile: {
-        type: String //vị trí file upload (file doc) được tải lên
+    file: {
+        type: String // vị trí lưu file upload (file doc) được tải lên
     },
-    scannedFile: {
-        type: String //vị trí file scan (file có chữ ký) được tải lên
+    scannedFileOfSignedDocument: {
+        type: String // vị trí file scan (file có chữ ký) được tải lên
     }
 },{
     timestamps: true, //ngày tạo và ngày sửa gần nhất

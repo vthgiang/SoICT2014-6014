@@ -1,83 +1,69 @@
 import React, { Component } from 'react';
-import { Tree, Popover, Button  } from 'antd';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
 import CreateForm from './createForm';
-
+import './domains.css'
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            expandedKeys: [],
-            autoExpandParent: true
-        }
+        this.state = { }
     }
-    
-    onExpand = expandedKeys => {
-        this.setState({
-        expandedKeys,
-        autoExpandParent: false,
-        });
-    };
 
     componentDidMount(){
         this.props.getDocumentDomains();
     }
 
-    createDomain = async (value) => {
-        await this.setState({
-            documentParent: value
-        })
-        window.$('#modal-create-document-domain').modal('show');
+    // createDomain = async (value) => {
+    //     await this.setState({
+    //         documentParent: value
+    //     })
+    //     window.$('#modal-create-document-domain').modal('show');
+    // }
+
+    // editDomain = () => {
+    //     window.$('#modal-create-document-domain').modal('show');
+    // }
+
+    // deleteDomain = () => {
+    //     window.$('#modal-create-document-domain').modal('show');
+    // }
+
+    slideTreeElement = (id) => {
+        window.$(`#tree-element-${id}`).slideToggle();
     }
 
-    editDomain = () => {
-        window.$('#modal-create-document-domain').modal('show');
+    drawDomainTree = (dataTree) => {
+        if(dataTree.length > 0){
+            return dataTree.map(node => {
+                        if(node.children === undefined)
+                            return <li className="domain-tree" key={node.id}><i className="fa fa-file-text-o"></i><b> {node.title} </b></li>
+                        return <li className="domain-tree" key={node.id}>
+                            <i className="fa fa-file-text-o" onClick={()=>this.slideTreeElement(node.id)}></i>
+                            <b> {node.title} </b>
+                            <ul className="domain-tree" id={`tree-element-${node.id}`} style={{display: 'none'}}>
+                                {this.drawDomainTree(node.children)}
+                            </ul>
+                        </li>
+                    })
+        }
+        return null;
     }
 
-    deleteDomain = () => {
-        window.$('#modal-create-document-domain').modal('show');
+    displayDomainTree = (dataTree) => {
+        return <ul className="domain-tree">
+            {
+                this.drawDomainTree(dataTree)
+            }
+        </ul>
     }
 
     render() { 
-        const { autoExpandParent } = this.state;
-        
         const {translate, documents} = this.props;
-        const loop = data =>
-            data.map(item => {
-                const title = <Popover content={()=>{
-                        return <React.Fragment>
-                            <a class="text-green" onClick={() => this.createDomain(item.key)}><i className="material-icons">add</i></a>
-                            <a class="text-yellow" onClick={this.editDomain}><i className="material-icons">edit</i></a>
-                            <a class="text-red" onClick={this.deleteDomain}><i className="material-icons">delete</i></a>
-                        </React.Fragment>
-                    }} trigger="click">
-                        {item.title}
-                    </Popover>;
-                if (item.children) {
-                return { title, key: item.key, children: loop(item.children) };
-                }
-
-                return {
-                title,
-                key: item.key,
-            };
-        });
-
         return ( 
             <React.Fragment>
                 <CreateForm documentParent={this.state.documentParent}/>
-                {
-                    documents.administration.domains.length > 0 &&
-                    <Tree
-                        onExpand={this.onExpand}
-                        defaultExpandAll 
-                        autoExpandParent={autoExpandParent}
-                        treeData={loop(documents.administration.domains)}
-                    />
-                }
-                
+                {this.displayDomainTree(documents.administration.domains.tree)}
             </React.Fragment>
         );
     }

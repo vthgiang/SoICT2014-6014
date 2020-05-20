@@ -5,8 +5,8 @@ const {auth} = require('../../../../middleware/index');
 
 // get all kpi unit
 router.get('/unit/:id',auth, managerController.get);
-
-router.get('/all-unit/:role/:user/:status/:startDate/:endDate', auth, managerController.getKPIUnits);
+// Tìm kiếm kpi đơn vị
+router.get('/all-unit/:role/:status/:startDate/:endDate', auth, managerController.getKPIUnits);
 
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
 router.get('/child-target/:id',auth, managerController.getChildTargetByParentId);

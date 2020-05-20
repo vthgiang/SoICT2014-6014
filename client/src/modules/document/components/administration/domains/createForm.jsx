@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import { TreeSelect } from 'antd';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -52,6 +51,7 @@ class CreateForm extends Component {
 
     render() {
         const {translate, documents}=this.props;
+        const domains = documents.administration.domains.list.map(domain=>{ return{value: domain._id, text: domain.name}})
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
@@ -72,14 +72,14 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                            <TreeSelect
-                                style={{ width: '100%' }}
-                                value={this.state.documentParent}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                treeData={documents.administration.domains}
-                                placeholder={translate('document.administration.domains.select_parent')}
-                                treeDefaultExpandAll
-                                onChange={this.handleParent}
+                            <SelectBox
+                                id="select-box-document-domain-parent"
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {domains}
+                                onChange={this.handleDomainParent}
+                                multiple={false}
+                                options={{placeholder: translate('document.administration.categories.select')}}
                             />
                         </div>
                     </form>

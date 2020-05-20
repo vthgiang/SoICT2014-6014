@@ -56,14 +56,15 @@ exports.createCommendation = async (data, company) => {
         if (isCommendation !== null) {
             return "have_exist"
         } else {
-
             // Thêm khen thưởng vào database
+            var partStart = data.startDate.split('-');
+            var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
             var createCommendation = await Commendation.create({
                 employee: employeeInfo._id,
                 company: company,
                 decisionNumber: data.decisionNumber,
                 organizationalUnit: data.organizationalUnit,
-                startDate: data.startDate,
+                startDate: startDate,
                 type: data.type,
                 reason: data.reason,
             });
@@ -97,11 +98,13 @@ exports.updateCommendation = async (id, data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
+        var partStart = data.startDate.split('-');
+        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         var commendationChange = {
             employee: employeeInfo._id,
             decisionNumber: data.decisionNumber,
             organizationalUnit: data.organizationalUnit,
-            startDate: data.startDate,
+            startDate: startDate,
             type: data.type,
             reason: data.reason,
         };

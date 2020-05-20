@@ -3,7 +3,8 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 
 export const dashboardOrganizationalUnitKpiActions = {
     getAllChildTargetOfOrganizationalUnitKpis,
-    getAllTaskOfOrganizationalUnit
+    getAllTaskOfOrganizationalUnit,
+    getAllOrganizationalUnitKpiSetEachYear
 }
 
 // Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
@@ -42,6 +43,27 @@ function getAllTaskOfOrganizationalUnit(id) {
             .catch(error => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+// Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị 
+function getAllOrganizationalUnitKpiSetEachYear(id, year) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_REQUEST });
+
+        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYear(id, year)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE,
                     payload: error
                 })
             })

@@ -6,7 +6,6 @@ import {
 } from "./services";
 export const CourseActions = {
     getListCourse,
-    getCourseByEducation,
     createNewCourse,
     deleteCourse,
     updateCourse,
@@ -16,58 +15,32 @@ export const CourseActions = {
 function getListCourse(data) {
     return dispatch => {
         dispatch({
-            type: CourseConstants.GET_LISTCOURSE_REQUEST
+            type: CourseConstants.GET_LIST_COURSE_REQUEST
         });
 
         CourseService.getListCourse(data)
             .then(res => {
                 dispatch({
-                    type: CourseConstants.GET_LISTCOURSE_SUCCESS,
+                    type: CourseConstants.GET_LIST_COURSE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: CourseConstants.GET_LISTCOURSE_FAILURE,
-                    error: err.response.data
+                    type: CourseConstants.GET_LIST_COURSE_FAILURE,
                 });
             })
     }
 }
 
-// lấy danh sách các khoá đào tạo theo chương trinh đào tạo
-function getCourseByEducation(data) {
-    return dispatch => {
-        dispatch({
-            type: CourseConstants.GET_COURSE_BY_EDUCATION_REQUEST,
-        });
-
-        CourseService.getCourseByEducation(data)
-            .then(res => {
-                dispatch({
-                    type: CourseConstants.GET_COURSE_BY_EDUCATION_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: CourseConstants.GET_COURSE_BY_EDUCATION_FAILURE,
-                    error: err.response.data
-                });
-            })
-    }
-}
-
-
-
-// tạo mới khoá đào tạo
-function createNewCourse(newCourse) {
+// Tạo mới khoá đào tạo
+function createNewCourse(data) {
     return dispatch => {
         dispatch({
             type: CourseConstants.CREATE_COURSE_REQUEST,
         });
 
-        CourseService.createNewCourse(newCourse)
+        CourseService.createNewCourse(data)
             .then(res => {
                 dispatch({
                     type: CourseConstants.CREATE_COURSE_SUCCESS,
@@ -77,7 +50,6 @@ function createNewCourse(newCourse) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.CREATE_COURSE_FAILURE,
-                    error: err.response.data
                 });
             })
     }
@@ -89,7 +61,6 @@ function deleteCourse(id) {
         dispatch({
             type: CourseConstants.DELETE_COURSE_REQUEST,
         });
-
         CourseService.deleteCourse(id)
             .then(res => {
                 dispatch({
@@ -100,7 +71,6 @@ function deleteCourse(id) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.DELETE_COURSE_FAILURE,
-                    error: err.response.data
                 });
             })
     }
@@ -123,7 +93,6 @@ function updateCourse(id, infoCourse) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.UPDATE_COURSE_FAILURE,
-                    error: err.response.data
                 });
             })
     }

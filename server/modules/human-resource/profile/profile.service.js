@@ -1,4 +1,4 @@
-const { 
+const {
     Employee,
     Discipline,
     Commendation,
@@ -14,25 +14,49 @@ const {
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
  * @emailInCompany: email công ty của nhân viên
  */
-exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)=>{
-    let roles = [], organizationalUnits = [];
-    let user = await User.findOne({email: emailInCompany},{ _id:1 })
+exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany) => {
+    let roles = [],
+        organizationalUnits = [];
+    let user = await User.findOne({
+        email: emailInCompany
+    }, {
+        _id: 1
+    })
     if (user !== null) {
-        roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'viceDean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ] 
+            $or: [{
+                    'dean': {
+                        $in: newRoles
+                    }
+                },
+                {
+                    'viceDean': {
+                        $in: newRoles
+                    }
+                },
+                {
+                    'employee': {
+                        $in: newRoles
+                    }
+                }
+            ]
         });
     }
     if (roles !== []) {
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
-    
-    return { roles, organizationalUnits }
+
+    return {
+        roles,
+        organizationalUnits
+    }
     // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 
@@ -41,45 +65,58 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
  * @organizationalUnits: mảng id phòng ban
  * @position: mảng id chức vụ(role)
  */
-exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationalUnits, position)=>{
-    let units = [], roles = [];
-    for(let n in organizationalUnits){
+exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organizationalUnits, position) => {
+    let units = [],
+        roles = [];
+    for (let n in organizationalUnits) {
         // Lấy thông tin đơn vị
-        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);  
+        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);
         units = [...units, unitInfo]
     }
     if (position === null) {
         units.forEach(u => {
-            let role = [u.dean, u.viceDean, u.employee]; 
-            roles = roles.concat(role); 
+            let role = [u.dean, u.viceDean, u.employee];
+            roles = roles.concat(role);
         })
     } else {
         roles = position
     }
 
     // Lấy danh sách người dùng theo phòng ban và chức danh
-    let userRoles = await UserRole.find({roleId: {$in: roles}});
+    let userRoles = await UserRole.find({
+        roleId: {
+            $in: roles
+        }
+    });
 
     // Lấy userID vào 1 arr
-    let userId = userRoles.map(userRole => userRole.userId); 
+    let userId = userRoles.map(userRole => userRole.userId);
 
     // Lấy email của người dùng theo phòng ban và chức danh
-    var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
-    
+    var emailUsers = await User.find({
+        _id: {
+            $in: userId
+        }
+    }, {
+        email: 1
+    });
+
     return emailUsers.map(user => user.email)
 }
 
 /**
- * Lấy thông tin cá nhân của nhân viên
- * @email: email công ty của nhân viên
- */ 
+ * Lấy thông tin cá nhân của nhân viên theo id user
+ * @id: id người dùng
+ */
 exports.getEmployeeProfile = async (id) => {
     let user = await User.findById(id);
     let employees = await Employee.find({
         emailInCompany: user.email
     });
-    if(employees.length === 0){
-        return { employees: employees}
+    if (employees.length === 0) {
+        return {
+            employees: employees
+        }
     } else {
         console.log(employees);
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(user.email);
@@ -95,9 +132,16 @@ exports.getEmployeeProfile = async (id) => {
         let disciplines = await Discipline.find({
             employee: employees[0]._id
         })
-        return { employees: employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        return {
+            employees: employees,
+            salarys,
+            annualLeaves,
+            commendations,
+            disciplines,
+            ...value
+        }
     }
-    
+
 }
 /**
  * Cập nhật thông tin cá nhân của nhân viên
@@ -105,11 +149,15 @@ exports.getEmployeeProfile = async (id) => {
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
 exports.updatePersonalInformation = async (id, data, avatar) => {
-    if(avatar===""){
-        avatar=data.avatar;
+    if (avatar === "") {
+        avatar = data.avatar;
     }
     let user = await User.findById(id);
-    var employeeInfo = await Employee.findOne({emailInCompany: user.email}, { _id: 1});
+    var employeeInfo = await Employee.findOne({
+        emailInCompany: user.email
+    }, {
+        _id: 1
+    });
     // Thông tin cần cập nhật 
     var employeeUpdate = {
         avatar: avatar,
@@ -141,56 +189,110 @@ exports.updatePersonalInformation = async (id, data, avatar) => {
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
     // Cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
-    
-    return await Employee.find({_id: employeeInfo._id});
+    await Employee.findOneAndUpdate({
+        _id: employeeInfo._id
+    }, {
+        $set: employeeUpdate
+    });
+
+    return await Employee.find({
+        _id: employeeInfo._id
+    });
 }
 
 /**
  * Lấy danh sách nhân viên
  * @data: dữ liệu key tìm kiếm
  * @company: Id công ty người tìm kiếm
- */ 
+ */
 exports.searchEmployeeProfiles = async (data, company) => {
-    var keySearch = {company: company};
+    var keySearch = {
+        company: company
+    };
 
     // Bắt sựu kiện đơn vị tìm kiếm khác null
     if (data.organizationalUnit !== null) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
-        keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+        keySearch = {
+            ...keySearch,
+            emailInCompany: {
+                $in: emailInCompany
+            }
+        }
     }
 
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.employeeNumber !== "") {
-        keySearch = {...keySearch, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
+        keySearch = {
+            ...keySearch,
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        }
     };
 
     // Bắt sựu kiện MSNV tìm kiếm khác "Null"
     if (data.gender !== null) {
-        keySearch = {...keySearch, gender: {$in: data.gender}};
+        keySearch = {
+            ...keySearch,
+            gender: {
+                $in: data.gender
+            }
+        };
     };
 
     // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
     if (data.status !== null) {
-        keySearch = {...keySearch, status: {$in: data.status}};
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: data.status
+            }
+        };
     };
-    
+
     // Lấy danh sách nhân viên
     var totalList = await Employee.count(keySearch);
-    var listEmployees = await Employee.find(keySearch, {field1: 1, emailInCompany: 1})
-    .sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
+    var listEmployees = await Employee.find(keySearch, {
+            field1: 1,
+            emailInCompany: 1
+        })
+        .sort({
+            'createdAt': 'desc'
+        }).skip(data.page).limit(data.limit);
     var data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
-        var employees = await Employee.find({_id: listEmployees[n]._id});
-        var salarys = await Salary.find({employee: listEmployees[n]._id})
-        var annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
-        var commendations = await Commendation.find({employee: listEmployees[n]._id})
-        var disciplines = await Discipline.find({employee: listEmployees[n]._id})
-        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        var employees = await Employee.find({
+            _id: listEmployees[n]._id
+        });
+        var salarys = await Salary.find({
+            employee: listEmployees[n]._id
+        })
+        var annualLeaves = await AnnualLeave.find({
+            employee: listEmployees[n]._id
+        })
+        var commendations = await Commendation.find({
+            employee: listEmployees[n]._id
+        })
+        var disciplines = await Discipline.find({
+            employee: listEmployees[n]._id
+        })
+        data[n] = {
+            employees,
+            salarys,
+            annualLeaves,
+            commendations,
+            disciplines,
+            ...value
+        }
     }
 
-    return { data, totalList}
+    return {
+        data,
+        totalList
+    }
 }
 
 
@@ -202,47 +304,93 @@ exports.searchEmployeeProfiles = async (data, company) => {
  */
 // 
 exports.createEmployee = async (data, company, fileInfo) => {
-    let avatar = fileInfo.avatar==="" ? data.avatar : fileInfo.avatar,
-        fileDegree = fileInfo.fileDegree, fileCertificate = fileInfo.fileCertificate,
-        fileContract = fileInfo.fileContract, file = fileInfo.file;
-        degrees = data.degrees, certificates = data.certificates, contracts = data.contracts,
+    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        fileDegree = fileInfo.fileDegree,
+        fileCertificate = fileInfo.fileCertificate,
+        fileContract = fileInfo.fileContract,
+        file = fileInfo.file;
+    degrees = data.degrees, certificates = data.certificates, contracts = data.contracts,
         files = data.files;
-        if(fileDegree !== undefined){
-            degrees.forEach(x=>{
-                fileDegree.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
+    if (fileDegree !== undefined) {
+        degrees.forEach(x => {
+            fileDegree.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
+                }
             })
-        }
-        if(fileCertificate !== undefined){
-            certificates.forEach(x=>{
-                fileCertificate.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
+        })
+    }
+    if (fileCertificate !== undefined) {
+        certificates.forEach(x => {
+            fileCertificate.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
+                }
             })
-        }
-        if(fileContract !== undefined){
-            contracts.forEach(x=>{
-                fileContract.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
+        })
+    }
+    if (fileContract !== undefined) {
+        contracts.forEach(x => {
+            fileContract.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
+                }
             })
-        }
-        if(fileContract !== undefined){
-            files.forEach(x=>{
-                file.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
+        })
+    }
+    if (fileContract !== undefined) {
+        files.forEach(x => {
+            file.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
+                }
             })
-        }
+        })
+    }
+    data.socialInsuranceDetails !== undefined && data.socialInsuranceDetails.forEach(x => {
+        let partStart = x.startDate.split('-');
+        let startDate = new Date(partStart[0], partStart[1] - 1);
+        let partEnd = x.endDate.split('-');
+        let endDate = new Date(partEnd[0], partEnd[1] - 1);
+        x.startDate = startDate;
+        x.endDate = endDate;
+    })
+
+    certificates !== undefined && certificates.forEach(x => {
+        let partStart = x.startDate.split('-');
+        let startDate = new Date(partStart[0], partStart[1] - 1, partStart[2]);
+        let partEnd = x.endDate.split('-');
+        let endDate = new Date(partEnd[0], partEnd[1] - 1, partEnd[2]);
+        x.startDate = startDate;
+        x.endDate = endDate;
+    })
+    data.experiences !== undefined && data.experiences.forEach(x => {
+        let partStart = x.startDate.split('-');
+        let startDate = new Date(partStart[0], partStart[1] - 1, );
+        let partEnd = x.endDate.split('-');
+        let endDate = new Date(partEnd[0], partEnd[1] - 1, );
+        x.startDate = startDate;
+        x.endDate = endDate;
+    })
+    contracts !== undefined && contracts.forEach(x => {
+        let partStart = x.startDate.split('-');
+        let startDate = new Date(partStart[0], partStart[1] - 1, partStart[1]);
+        let partEnd = x.endDate.split('-');
+        let endDate = new Date(partEnd[0], partEnd[1] - 1, partEnd[1]);
+        x.startDate = startDate;
+        x.endDate = endDate;
+    })
+    var partTaxDateOfIssue = data.taxDateOfIssue.split('-');
+    var taxDateOfIssue = new Date(partTaxDateOfIssue[2], partTaxDateOfIssue[1] - 1, partTaxDateOfIssue[0]);
+    var partBirthdate = data.birthdate.split('-');
+    var birthdate = new Date(partBirthdate[2], partBirthdate[1] - 1, partBirthdate[0]);
+    var partIdentityCardDate = data.identityCardDate.split('-');
+    var identityCardDate = new Date(partIdentityCardDate[2], partIdentityCardDate[1] - 1, partIdentityCardDate[0]);
+    var partHealthInsuranceStartDate = data.healthInsuranceStartDate !== undefined ? data.healthInsuranceStartDate.split('-') : '';
+    var healthInsuranceStartDate = partHealthInsuranceStartDate !== '' ? new Date(partHealthInsuranceStartDate[2], partHealthInsuranceStartDate[1] - 1, partHealthInsuranceStartDate[0]) : undefined;
+    var partHealthInsuranceEndDate = data.healthInsuranceEndDate !== undefined ? data.healthInsuranceEndDate.split('-') : '';
+    var healthInsuranceEndDate = partHealthInsuranceEndDate !== '' ? new Date(partHealthInsuranceEndDate[2], partHealthInsuranceEndDate[1] - 1, partHealthInsuranceEndDate[0]) : undefined;
+    console.log(partHealthInsuranceStartDate)
     var createEmployee = await Employee.create({
         avatar: avatar,
         fullName: data.fullName,
@@ -250,22 +398,22 @@ exports.createEmployee = async (data, company, fileInfo) => {
         employeeTimesheetId: data.employeeTimesheetId,
         company: company,
         gender: data.gender,
-        birthdate: data.birthdate,
+        birthdate: birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
-        identityCardDate: data.identityCardDate,
+        identityCardDate: identityCardDate,
         identityCardAddress: data.identityCardAddress,
         emailInCompany: data.emailInCompany,
         taxNumber: data.taxNumber,
         taxRepresentative: data.taxRepresentative,
-        taxDateOfIssue: data.taxDateOfIssue,
+        taxDateOfIssue: taxDateOfIssue,
         taxAuthority: data.taxAuthority,
         atmNumber: data.atmNumber,
         bankName: data.bankName,
         bankAddress: data.bankAddress,
         healthInsuranceNumber: data.healthInsuranceNumber,
-        healthInsuranceStartDate: data.healthInsuranceStartDate,
-        healthInsuranceEndDate: data.healthInsuranceEndDate,
+        healthInsuranceStartDate: healthInsuranceStartDate,
+        healthInsuranceEndDate: healthInsuranceEndDate,
         socialInsuranceNumber: data.socialInsuranceNumber,
         socialInsuranceDetails: data.socialInsuranceDetails,
         nationality: data.nationality,
@@ -305,56 +453,68 @@ exports.createEmployee = async (data, company, fileInfo) => {
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
     });
-    if(data.disciplines !== undefined){
+    if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;
-        for(let x in disciplines){
+        for (let x in disciplines) {
+            let partStart = disciplines[x].startDate.split('-');
+            let startDate = new Date(partStart[0], partStart[1] - 1, partStart[2]);
+            let partEnd = disciplines[x].endDate.split('-');
+            let endDate = new Date(partEnd[0], partEnd[1] - 1, partEnd[2]);
             await Discipline.create({
                 employee: createEmployee._id,
                 company: company,
                 decisionNumber: disciplines[x].decisionNumber,
                 organizationalUnit: disciplines[x].organizationalUnit,
-                startDate: disciplines[x].startDate,
-                endDate: disciplines[x].endDate,
+                startDate: startDate,
+                endDate: endDate,
                 type: disciplines[x].type,
                 reason: disciplines[x].reason,
             });
         }
     }
-    if(data.commendations !== undefined){
+    if (data.commendations !== undefined) {
         let commendations = data.commendations;
-        for(let x in commendations){
+        for (let x in commendations) {
+            let partStart = commendations[x].startDate.split('-');
+            let startDate = new Date(partStart[0], partStart[1] - 1, partStart[2]);
             await Commendation.create({
                 employee: createEmployee._id,
                 company: company,
                 decisionNumber: commendations[x].decisionNumber,
                 organizationalUnit: commendations[x].organizationalUnit,
-                startDate: commendations[x].startDate,
+                startDate: startDate,
                 type: commendations[x].type,
                 reason: commendations[x].reason,
             });
         }
     }
-    if(data.salaries !== undefined){
+    if (data.salaries !== undefined) {
         let salaries = data.salaries;
-        for(let x in salaries){
+        for (let x in salaries) {
+            let partMonth = salaries[x].month.split('-');
+            let month = new Date(partMonth[0], partMonth[1] - 1);
             await Salary.create({
                 employee: createEmployee._id,
                 company: company,
-                month: salaries[x].month,
+                month: month,
                 mainSalary: salaries[x].mainSalary,
                 unit: salaries[x].unit,
                 bonus: salaries[x].bonus
             });
         }
     }
-    if(data.annualLeaves !== undefined){
+    if (data.annualLeaves !== undefined) {
         let annualLeaves = data.annualLeaves;
-        for(let x in annualLeaves){
+        for (let x in annualLeaves) {
+            let partStart = annualLeaves[x].startDate.split('-');
+            let startDate = new Date(partStart[0], partStart[1] - 1, partStart[2]);
+            let partEnd = annualLeaves[x].endDate.split('-');
+            let endDate = new Date(partEnd[0], partEnd[1] - 1, partEnd[2]);
             await AnnualLeave.create({
                 employee: createEmployee._id,
                 company: company,
-                startDate: annualLeaves[x].startDate,
-                endDate: annualLeaves[x].endDate,
+                startDate: startDate,
+                endDate: endDate,
                 status: annualLeaves[x].status,
                 reason: annualLeaves[x].reason,
             });
@@ -362,13 +522,30 @@ exports.createEmployee = async (data, company, fileInfo) => {
     }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
-    var employees = await Employee.find({_id: createEmployee._id});
-    var salarys = await Salary.find({employee: createEmployee._id})
-    var annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
-    var commendations = await Commendation.find({employee: createEmployee._id})
-    var disciplines = await Discipline.find({employee: createEmployee._id})
+    var employees = await Employee.find({
+        _id: createEmployee._id
+    });
+    var salarys = await Salary.find({
+        employee: createEmployee._id
+    })
+    var annualLeaves = await AnnualLeave.find({
+        employee: createEmployee._id
+    })
+    var commendations = await Commendation.find({
+        employee: createEmployee._id
+    })
+    var disciplines = await Discipline.find({
+        employee: createEmployee._id
+    })
 
-    return {employees, salarys, annualLeaves, commendations, disciplines, ...value};
+    return {
+        employees,
+        salarys,
+        annualLeaves,
+        commendations,
+        disciplines,
+        ...value
+    };
 }
 
 
@@ -477,7 +654,7 @@ exports.updateEmployeeInformation = async (id, data) => {
 /**
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
- */ 
+ */
 exports.deleteEmployee = async (id) => {
     var employee = await Employee.findOneAndDelete({
         _id: id
@@ -532,182 +709,3 @@ exports.checkEmployeeCompanyEmailExisted = async (email) => {
     }
     return checkEmail;
 }
-
-
-// Cập nhật(thêm mới) Avatar nhân viên
-exports.updateEmployeeAvatar = async (employeeNumber, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // avatarUpdate = {
-    //     avatar: "fileupload/employee-manage/avatar/" + url
-    // }
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: avatarUpdate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     avatar: "fileupload/employee-manage/avatar/" + url
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateEmployeeContract = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var contractUpdate = {
-    //     contract: [...employeeinfo.contract, {
-    //         nameContract: data.nameContract,
-    //         typeContract: data.typeContract,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/contract/" + url
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: contractUpdate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     contract: [...employeeinfo.contract, {
-    //         nameContract: data.nameContract,
-    //         typeContract: data.typeContract,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/contract/" + url
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateEmployeeDegrees = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateCertificate = {
-    //     certificate: [...employeeinfo.certificate, {
-    //         nameCertificate: data.nameCertificate,
-    //         addressCertificate: data.addressCertificate,
-    //         yearCertificate: data.yearCertificate,
-    //         typeCertificate: data.typeCertificate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificate/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateCertificate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     certificate: [...employeeinfo.certificate, {
-    //         nameCertificate: data.nameCertificate,
-    //         addressCertificate: data.addressCertificate,
-    //         yearCertificate: data.yearCertificate,
-    //         typeCertificate: data.typeCertificate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificate/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateEmployeeCertificates = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateCertificateShort = {
-    //     certificateShort: [...employeeinfo.certificateShort, {
-    //         nameCertificateShort: data.nameCertificateShort,
-    //         unit: data.unit,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificateshort/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateCertificateShort
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     certificateShort: [...employeeinfo.certificateShort, {
-    //         nameCertificateShort: data.nameCertificateShort,
-    //         unit: data.unit,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificateshort/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-exports.updateFile = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateFile = {
-    //     file: [...employeeinfo.file, {
-    //         nameFile: data.nameFile,
-    //         discFile: data.discFile,
-    //         number: data.number,
-    //         status: data.status,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/file/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateFile
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     file: [...employeeinfo.file, {
-    //         nameFile: data.nameFile,
-    //         discFile: data.discFile,
-    //         number: data.number,
-    //         status: data.status,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/file/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-
-// Kiểm tra sự tồn tại của MSNV trong array 
-exports.checkEmployeesExisted = async (data, company) => {
-    // var list=[];
-    // for(let i=0;i<data.arrayMSNV.length;i++){
-    //     let employee=await Employee.findOne({
-    //         employeeNumber: data.arrayMSNV[i],
-    //         company: company
-    //     }, {
-    //         field1: 1
-    //     })
-    //     if(employee===null){
-    //         list.push(i);
-    //     }
-    // }
-    // return list;
-}
-
