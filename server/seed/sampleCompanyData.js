@@ -1460,6 +1460,15 @@ const sampleCompanyData = async () => {
         { name: "Nhà Kho 6", company: vnist, description: 'Nhà Kho 6', parent: domanins[2]._id},
     ]); 
 
+    const domanins3 = await DocumentDomain.insertMany([
+        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins2[0]._id},
+        { name: "Nhà Kho 12", company: vnist, description: 'Nhà Kho 2', parent: domanins2[0]._id},
+        { name: "Nhà Kho 13", company: vnist, description: 'Nhà Kho 3', parent: domanins2[1]._id},
+        { name: "Nhà Kho 14", company: vnist, description: 'Nhà Kho 4', parent: domanins2[1]._id},
+        { name: "Nhà Kho 15", company: vnist, description: 'Nhà Kho 5', parent: domanins2[0]._id},
+        { name: "Nhà Kho 16", company: vnist, description: 'Nhà Kho 6', parent: domanins2[2]._id},
+    ]); 
+
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------

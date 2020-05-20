@@ -71,11 +71,6 @@ class RoleCreateForm extends Component {
 
     componentDidMount(){
         this.props.get();
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 
     // Xy ly va validate role name
