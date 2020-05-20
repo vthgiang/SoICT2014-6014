@@ -802,6 +802,7 @@ export default {
             check_end_Date: 'End day required',
             check_description: 'Description required'
         },
+
         // Module Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1039,6 +1040,34 @@ export default {
 
 
                 }
+            }
+        },
+
+        // Modules quản lý đào tạo
+        training:{
+            course:{
+                
+                // Thông điệp trả về từ server
+                name_required:'',
+                course_id_required:'',
+                offered_by_required:'',
+                course_place_required:'',
+                start_date_required:'',
+                end_date_required:'',
+                type_required:'',
+                education_program_required:'',
+                employee_commitment_time_required:'',
+                cost_required:'',
+                course_id_have_exist:'',
+
+                get_list_course_success:'',
+                get_list_course_faile:'',
+                create_course_success:'',
+                create_course_faile:'',
+                delete_course_success:'',
+                delete_course_faile:'',
+                edit_course_success:'',
+                edit_course_faile:'',
             }
         },
 

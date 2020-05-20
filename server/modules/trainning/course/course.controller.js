@@ -23,9 +23,46 @@ exports.searchCourses = async (req, res) => {
  */
 exports.createCourse = async (req, res) => {
     try {
-        var data = await CourseService.createCourse(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'CREATE_COURSE', req.user.company);
-        res.status(200).json({ success: true, messages:["create_course_success"], content: data});
+        if(req.body.courseId.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["course_id_required"], content:{ inputData: req.body } });
+        } else if (req.body.name.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["name_required"], content:{ inputData: req.body } });
+        } else if(req.body.startDate.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["start_date_required"], content:{ inputData: req.body } });
+        } else if(req.body.endDate.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["end_date_required"], content:{ inputData: req.body } });
+        } else if(req.body.coursePlace.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["course_place_required"], content:{ inputData: req.body } });
+        } else if(req.body.offeredBy.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["offered_by_required"], content:{ inputData: req.body } });
+        } else if(req.body.type.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["type_required"], content:{ inputData: req.body } });
+        } else if(req.body.educationProgram.length===0){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["education_program_required"], content:{ inputData: req.body } });
+        } else if(req.body.cost.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["cost_required"], content:{ inputData: req.body } });
+        } else if(req.body.employeeCommitmentTime.trim()===""){
+            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["employee_commitment_time_required"], content:{ inputData: req.body } });
+        } else {
+            var data = await CourseService.createCourse(req.body, req.user.company._id);
+            if(data==='have_exist'){
+                await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+                res.status(400).json({ success: false, messages: ["course_id_have_exist"], content:{ inputData: req.body } });
+            }
+            await LogInfo(req.user.email, 'CREATE_COURSE', req.user.company);
+            res.status(200).json({ success: true, messages:["create_course_success"], content: data});
+        }
+        
     } catch (error) {
         await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
         res.status(400).json({success: false, messages:["create_course_faile"], content: {error: error}});
@@ -51,10 +88,38 @@ exports.deleteCourse = async (req, res) => {
  */
 exports.updateCourse = async (req, res) => {
     try {
-        var data = await CourseService.updateCourse(req.params.id, req.body);
-        await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
-        res.status(200).json({ success: true, messages:["edit_course_success"], content: data});
-
+        if (req.body.name.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["name_required"], content:{ inputData: req.body } });
+        } else if(req.body.startDate.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["start_date_required"], content:{ inputData: req.body } });
+        } else if(req.body.endDate.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["end_date_required"], content:{ inputData: req.body } });
+        } else if(req.body.coursePlace.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["course_place_required"], content:{ inputData: req.body } });
+        } else if(req.body.offeredBy.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["offered_by_required"], content:{ inputData: req.body } });
+        } else if(req.body.type.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["type_required"], content:{ inputData: req.body } });
+        } else if(req.body.educationProgram.length===0){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["education_program_required"], content:{ inputData: req.body } });
+        } else if(req.body.cost.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["cost_required"], content:{ inputData: req.body } });
+        } else if(req.body.employeeCommitmentTime.trim()===""){
+            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(400).json({ success: false, messages: ["employee_commitment_time_required"], content:{ inputData: req.body } });
+        } else {
+            var data = await CourseService.updateCourse(req.params.id, req.body);
+            await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
+            res.status(200).json({ success: true, messages:["edit_course_success"], content: data});
+        }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
         res.status(400).json({success: false, messages:["edit_course_faile"], content: {error: req.body}});

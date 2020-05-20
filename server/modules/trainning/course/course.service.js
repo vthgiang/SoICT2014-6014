@@ -54,31 +54,36 @@ exports.searchCourses = async (data, company) => {
  * @company : id công ty 
  */
 exports.createCourse = async (data, company) => {
-    var partStart = data.startDate.split('-');
-    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-    var partEnd = data.endDate.split('-');
-    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-    var course = await Course.create({
-        company: company,
-        name: data.name,
-        courseId: data.courseId,
-        offeredBy: data.offeredBy,
-        coursePlace: data.coursePlace,
-        startDate: startDate,
-        endDate: endDate,
-        cost: {
-            number: data.cost,
-            unit: data.unit
-        },
-        lecturer: data.lecturer,
-        type: data.type,
-        educationProgram: data.educationProgram,
-        employeeCommitmentTime: data.employeeCommitmentTime
-    });
-    return await Course.findById(course._id).populate({
-        path: 'educationProgram',
-        model: EducationProgram
-    });
+    var isCourse = await Course.find({courseId: data.courseId, company: company}, {_id: 1});
+    if (isCourse !== null) {
+        return "have_exist"
+    } else {
+        var partStart = data.startDate.split('-');
+        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        var partEnd = data.endDate.split('-');
+        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
+        var course = await Course.create({
+            company: company,
+            name: data.name,
+            courseId: data.courseId,
+            offeredBy: data.offeredBy,
+            coursePlace: data.coursePlace,
+            startDate: startDate,
+            endDate: endDate,
+            cost: {
+                number: data.cost,
+                unit: data.unit
+            },
+            lecturer: data.lecturer,
+            type: data.type,
+            educationProgram: data.educationProgram,
+            employeeCommitmentTime: data.employeeCommitmentTime
+        });
+        return await Course.findById(course._id).populate({
+            path: 'educationProgram',
+            model: EducationProgram
+        });
+    }
 }
 
 /**

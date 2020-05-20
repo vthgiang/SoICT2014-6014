@@ -1240,6 +1240,34 @@ export default {
             }
         },
 
+        // Modules quản lý đào tạo
+        training:{
+            course:{
+                
+                // Thông điệp trả về từ server
+                name_required:'Tên khoá đào tạo không được để trống',
+                course_id_required:'Mã khoá đào tạo không được để trống',
+                offered_by_required:'Đơn vị đào tạo không được để trống',
+                course_place_required:'Địa điểm đào tạo không được để trống',
+                start_date_required:'Thời gian bắt đầu không được để trống',
+                end_date_required:'Thời gian kết thúc không được để trống',
+                type_required:'Loại đào tạo không được để trống',
+                education_program_required:'Thuộc chương trình đào tạo không được để trống',
+                employee_commitment_time_required:'Thời gian cam kết không được để trống',
+                cost_required:'Chi phí đào tạo không được để trống',
+                course_id_have_exist:'Mã khoá đào tạo đã tồn tại',
+
+                get_list_course_success:'Lấy danh sách khoá đào tạo thành công',
+                get_list_course_faile:'Lấy danh sách khoá đào tạo thất bại',
+                create_course_success:'Thêm mới khoá đào tạo thành công',
+                create_course_faile:'Thêm mới khoá đào tạo thất bại',
+                delete_course_success:'Xoá khoá đào tạo thành công',
+                delete_course_faile: 'Xoá khoá đào tạo thất bại',
+                edit_course_success:'Chỉnh sửa khoá đào tạo thành công',
+                edit_course_faile:'Chỉnh sửa khoá đào tạo thất bại',
+            }
+        },
+
         // Modules Quản lý tài sản
         asset: {
             //Quản lý loại tài sản

@@ -69,6 +69,7 @@ class CourseCreateForm extends Component {
     }
 
     save = () => {
+        console.log(this.state);
         this.props.createNewCourse(this.state);
     }
 
