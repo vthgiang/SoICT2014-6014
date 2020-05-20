@@ -1119,7 +1119,9 @@ export default {
             count: 'Number of uses',
             creator: 'Creator',
             unit: 'Unit',
-            action: 'Action'
+            action: 'Action',
+
+           
         },
 
         notification: {
@@ -1277,8 +1279,14 @@ export default {
                     err_empty: "Value must be filled"
                 }
             },
-            task_template: {
-                // TODO: code_mesage_task_template
+            task_template: {                
+                create_task_template_success:'Create task template success !',
+                create_task_template_fail:'Create task template fail !',
+                edit_task_template_success:'Edit task template success !',
+                edit_task_template_fail:'Edit task template fail !',
+                delete_task_template_success:'Delete task template success !',
+                delete_task_template_fail:'Delete task template fail !',
+
             }
         },
 

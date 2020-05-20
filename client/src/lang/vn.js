@@ -1598,7 +1598,13 @@ export default {
 
             },
             task_template: {
-                // TODO: code_mesage_task_template
+               
+                create_task_template_success:'Tạo mẫu công việc thành công !',
+                create_task_template_fail:'Tạo mẫu công việc thất bại !',
+                edit_task_template_success:'Sửa mẫu công việc thành công !',
+                edit_task_template_fail:'Sửa mẫu công việc thất bại !',
+                delete_task_template_success:'Xóa mẫu công việc thành công !',
+                delete_task_template_fail:'Xóa mẫu công việc thất bại !',
             }
         },
 
