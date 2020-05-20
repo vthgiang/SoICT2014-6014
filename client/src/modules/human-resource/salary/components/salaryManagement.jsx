@@ -23,6 +23,23 @@ class SalaryManagement extends Component {
         this.props.getDepartment();
     }
 
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
@@ -81,25 +98,11 @@ class SalaryManagement extends Component {
         if (this.state.month === null) {
             await this.setState({
                 ...this.state,
-                month: this.formatDate(Date.now())
+                month: this.formatDate(Date.now(), true)
             })
         }
         this.props.searchSalary(this.state);
     }
-
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [month, year].join('-');
-    }
-
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number) => {
         await this.setState({
@@ -181,7 +184,7 @@ class SalaryManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                value={this.formatDate(Date.now(), true)}
                                 onChange={this.handleMonthChange}
                             />
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
@@ -227,7 +230,7 @@ class SalaryManagement extends Component {
                                         <tr key={index}>
                                             <td>{x.employee.employeeNumber}</td>
                                             <td>{x.employee.fullName}</td>
-                                            <td>{x.month}</td>
+                                            <td>{this.formatDate(x.month, true)}</td>
                                             <td>
                                                 {
                                                     (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
@@ -275,7 +278,7 @@ class SalaryManagement extends Component {
                         _id={this.state.currentRow._id}
                         unit={this.state.currentRow.unit}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        month={this.state.currentRow.month}
+                        month={this.formatDate(this.state.currentRow.month, true)}
                         mainSalary={this.state.currentRow.mainSalary}
                         bonus={this.state.currentRow.bonus}
                     />

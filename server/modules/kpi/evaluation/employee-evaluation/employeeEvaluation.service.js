@@ -146,12 +146,11 @@ exports.getById = async (id) => {
 }
 
 exports.getTaskById = async (data) => {
-    // var task = await Task.find({'evaluations.kpis.kpis': id}) 
-    // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
     var date = data.date.split("-");
+    console.log("dateeee",date);
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
-
+    console.log("rrrrrr", data);
     // tìm kiếm các công việc cần được đánh giá trong tháng
     var task = await getResultTaskByMonth(data);
 
@@ -159,7 +158,6 @@ exports.getTaskById = async (data) => {
     console.log(task);
     var calcPoint = await task.map(item => {
         var prior;
-        console.log('aaaaaaaaa', item);
         if (item.priority === "Cao") prior = 3;
         else if (item.priority === "Trung bình") prior = 2;
         else prior = 1;
@@ -168,14 +166,14 @@ exports.getTaskById = async (data) => {
     console.log("----", task);
 
     // update importanceLevel arr
-    for(var element of task){
-        var setPoint = await updateTaskImportanceLevel(element.taskId, element.employee._id, element.taskImportanceLevel, data.date);
-    }
+    // for(var element of task){
+    //     var setPoint = await updateTaskImportanceLevel(element.taskId, element.employee._id, element.taskImportanceLevel, data.date);
+    // }
 
-    // get task 
-    var resultTask = await getResultTaskByMonth(data);
+    // // get task 
+    // var resultTask = await getResultTaskByMonth(data);
 
-    return resultTask;
+    return task;
 }
 
 exports.getSystemPoint = async (id) => {
@@ -205,13 +203,37 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 exports.setTaskImportanceLevel = async (id, data) => {
     // data body co taskId, date, point employeeId
   //  console.log(data);
-    var result = [];
+    var set = [];
     for (const element of data) {
 
         var setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, element.point, element.date);
-        await result.push(setPoint);
+        await set.push(setPoint);
     };
     // tinh diem kpi ca nhan 
+    var key = {
+        id : id,
+        date : data[0].date,
+        employeeId : data[0].employeeId
+    }
+    console.log("keyyyyyy", key);
+    var task = await getResultTaskByMonth(key);
+    var autoPoint = 0;
+    var approvePoint = 0;
+    var employPoint = 0;
+    console.log("ttttttttttttttttt", task);
+    for(element of task){
+        autoPoint += element.automaticPoint;
+        approvePoint += element.approvedPoint;
+        employPoint += element.contribution;
+    }
+    var n = task.length;
+    var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
+        $set :{
+            "automaticPoint" : autoPoint/n,
+            "employeePoint" : employPoint/n,
+            "approvedPoint" : approvePoint/n,
+        },
+    }, {new: true} );
 
     return result;
 
@@ -248,7 +270,7 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     var setPoint = await Task.findOneAndUpdate(
         {
             "evaluations._id": task[0]._id,
-            "evaluations.results.employee": "5eacf3666bf8ee5458811b89",
+            "evaluations.results.employee": mongoose.Types.ObjectId(employeeId),
         },
         {
             $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
@@ -264,13 +286,16 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
 }
 
 async function getResultTaskByMonth(data) {
-    var date = data.date.split("-");
-    var monthkpi = parseInt(date[1]);
-    var yearkpi = parseInt(date[0]);
-    console.log("dataaaa", data);
+    console.log("data ne", data.id);
+    var date = await data.date.split("-");
+    // var monthkpi = date[1];
+    // var yearkpi = date[0];
+    var date = new Date(data.date);
+    var monthkpi = date.getMonth()+1;
+    var yearkpi = date.getFullYear();
     var task = await Task.aggregate([
         {
-            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
+            $match: { "evaluations.kpis.kpis":  mongoose.Types.ObjectId(data.id) }
         },
         {
             $unwind: "$evaluations"
@@ -295,9 +320,10 @@ async function getResultTaskByMonth(data) {
             }
         },
         { $unwind: "$employee" },
-        { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId) } }
+        { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId)} }
 
     ]);
+    console.log("task funcccc", task);
     return task;
 }
 

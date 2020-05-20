@@ -224,7 +224,7 @@ exports.createTask = async (task) => {
     splitter = task.endDate.split("-");
     var endDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     
-    if(task.taskTemplate !== null){
+    if(task.taskTemplate !== ""){
         var taskTemplate = await TaskTemplate.findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
         var cloneActions = [];
@@ -254,9 +254,9 @@ exports.createTask = async (task) => {
         endDate: endDate,
         priority: task.priority,
         taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskTemplate? taskTemplate.taskInformations: [],
+        taskInformations: (taskTemplate)? taskTemplate.taskInformations: [],
         taskActions: taskTemplate? cloneActions: [],
-        parent: task.parent,
+        parent: (task.parent==="")? null : task.parent,
         level: level,
         evaluations: evaluations,
         responsibleEmployees: task.responsibleEmployees,

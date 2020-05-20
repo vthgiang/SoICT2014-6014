@@ -7,6 +7,22 @@ class TaxTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -59,7 +75,7 @@ class TaxTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.day_active')}&emsp; </strong>
-                            {taxDateOfIssue}
+                            {this.formatDate(taxDateOfIssue)}
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.managed_by')}&emsp; </strong>

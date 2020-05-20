@@ -17,7 +17,7 @@ const DocumentDomainSchema = new Schema({
         ref: 'companies',
         required: true
     },
-    parent: [{
+    parents: [{
         type: Schema.Types.ObjectId,
         replies: this
     }]

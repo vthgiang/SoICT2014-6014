@@ -217,8 +217,8 @@ class ListEducation extends Component {
                         _id={this.state.currentEditRow._id}
                         name={this.state.currentEditRow.name}
                         programId={this.state.currentEditRow.programId}
-                        organizationalUnit={this.state.currentEditRow.applyForOrganizationalUnits}
-                        position={this.state.currentEditRow.applyForPositions}
+                        organizationalUnit={this.state.currentEditRow.applyForOrganizationalUnits.map(x => x._id)}
+                        position={this.state.currentEditRow.applyForPositions.map(x => x._id)}
                     />
                 }
                 {
@@ -228,7 +228,7 @@ class ListEducation extends Component {
                         name={this.state.currentViewRow.name}
                         programId={this.state.currentViewRow.programId}
                         listCourses={this.state.currentViewRow.listCourses}
-                        totalList={this.state.currentViewRow.listCourse}
+                        totalList={this.state.currentViewRow.totalList}
                         data={this.state.currentViewRow}
                     />
                 }

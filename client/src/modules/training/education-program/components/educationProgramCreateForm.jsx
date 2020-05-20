@@ -81,6 +81,20 @@ class EducationProgramCreateForm extends Component {
                 // disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-education" >
+                        <div className="form-group">
+                            <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
+                            <SelectMulti id={`create-multiSelectUnit`} multiple="multiple" display='inline-block'
+                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
+                        </div>
+                        <div className="form-group">
+                            <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
+                            <SelectMulti id={`create-multiSelectPosition`} multiple="multiple" display='inline-block'
+                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
+                        </div>
                         <div className="form-group" >
                             <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="programId" value={programId} onChange={this.handleChange} />
@@ -89,20 +103,7 @@ class EducationProgramCreateForm extends Component {
                             <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Áp dụng cho đơn vị</label>
-                            <SelectMulti id={`create-multiSelectUnit`} multiple="multiple" display='inline-block'
-                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group">
-                            <label>Áp dụng cho chức vụ</label>
-                            <SelectMulti id={`create-multiSelectPosition`} multiple="multiple" display='inline-block'
-                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
-                            </SelectMulti>
-                        </div>
+
                     </form>
                 </DialogModal>
             </React.Fragment>

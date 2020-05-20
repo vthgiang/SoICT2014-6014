@@ -18,14 +18,8 @@ const HolidaySchema = new Schema({
     reason: {
         type: String
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Holiday = mongoose.model("holidays", HolidaySchema);

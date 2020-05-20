@@ -16,11 +16,11 @@ const AnnualLeaveSchema = new Schema({
         ref: Company,
     },
     startDate: {
-        type: String,
+        type: Date,
         required: true
     },
     endDate: {
-        type: String,
+        type: Date,
         required: true
     },
     reason: {
@@ -29,7 +29,8 @@ const AnnualLeaveSchema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
+        enum:['pass', 'process', 'faile'],  // pass-đã chấp nhận, process-chờ phê duyệt, faile-Không cấp nhận  , 
     }
 }, {
     timestamps: true,

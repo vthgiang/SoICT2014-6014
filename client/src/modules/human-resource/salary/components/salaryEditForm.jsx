@@ -212,7 +212,7 @@ class SalaryEditForm extends Component {
                             <ErrorLabel content={errorOnMainSalary} />
                         </div>
                         <div className={`form-group ${(errorOnNameSalary === undefined && errorOnMoreMoneySalary) === undefined ? "" : "has-error"}`}>
-                            <label>{translate('human_resource.salary.table.other_salary')}:<a title={translate('human_resource.salary.table.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
+                            <label>{translate('human_resource.salary.table.other_salary')}<a title={translate('human_resource.salary.table.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
