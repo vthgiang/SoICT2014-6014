@@ -7,7 +7,6 @@ import {
 
 export const CourseService = {
     getListCourse,
-    getCourseByEducation,
     createNewCourse,
     deleteCourse,
     updateCourse,
@@ -19,18 +18,6 @@ export const CourseService = {
 function getListCourse(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/course/paginate`,
-        method: 'POST',
-        data: data,
-    }, false, true, 'human_resource.salary');
-}
-
-/**
- * Lấy danh sách các khoá đào tạo theo chương trình đào tạo
- * @data :  
- */
-function getCourseByEducation(data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/list`,
         method: 'POST',
         data: data,
     }, false, true, 'human_resource.salary');

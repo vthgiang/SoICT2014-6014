@@ -6,7 +6,6 @@ import {
 } from "./services";
 export const CourseActions = {
     getListCourse,
-    getCourseByEducation,
     createNewCourse,
     deleteCourse,
     updateCourse,
@@ -16,47 +15,23 @@ export const CourseActions = {
 function getListCourse(data) {
     return dispatch => {
         dispatch({
-            type: CourseConstants.GET_LISTCOURSE_REQUEST
+            type: CourseConstants.GET_LIST_COURSE_REQUEST
         });
 
         CourseService.getListCourse(data)
             .then(res => {
                 dispatch({
-                    type: CourseConstants.GET_LISTCOURSE_SUCCESS,
+                    type: CourseConstants.GET_LIST_COURSE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: CourseConstants.GET_LISTCOURSE_FAILURE,
+                    type: CourseConstants.GET_LIST_COURSE_FAILURE,
                 });
             })
     }
 }
-
-// lấy danh sách các khoá đào tạo theo chương trinh đào tạo
-function getCourseByEducation(data) {
-    return dispatch => {
-        dispatch({
-            type: CourseConstants.GET_COURSE_BY_EDUCATION_REQUEST,
-        });
-
-        CourseService.getCourseByEducation(data)
-            .then(res => {
-                dispatch({
-                    type: CourseConstants.GET_COURSE_BY_EDUCATION_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: CourseConstants.GET_COURSE_BY_EDUCATION_FAILURE,
-                });
-            })
-    }
-}
-
-
 
 // Tạo mới khoá đào tạo
 function createNewCourse(data) {

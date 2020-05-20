@@ -18,19 +18,9 @@ exports.searchCourses = async (req, res) => {
     }
 }
 
-/** Lấy danh sách khóa học của một chương trình đào tạo */
-exports.getCoursesOfEducationProgram = async (req, res) => {
-    try {
-        var listCourses = await CourseService.getCoursesOfEducationProgram( req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_LIST_COURSE_BY_EDUCATION', req.user.company);
-        res.status(200).json({ success: true, messages:["get_list_course_by_education_success"], content: listCourses});
-    } catch (error) {
-        await LogError(req.user.email, 'GET_LIST_COURSE_BY_EDUCATION', req.user.company);
-        res.status(400).json({success: false, messages:["get_list_course_by_education_faile"], content: {error: error}});
-    }
-}
-
-// Tạo kháo đào tạo
+/**
+ * Thêm mới kháo đào tạo
+ */
 exports.createCourse = async (req, res) => {
     try {
         var data = await CourseService.createCourse(req.body, req.user.company._id);
@@ -42,7 +32,9 @@ exports.createCourse = async (req, res) => {
     }
 }
 
-// Xoá kháo đào tạo
+/**
+ * Xoá kháo đào tạo
+ */
 exports.deleteCourse = async (req, res) => {
     try {
         var data = await CourseService.deleteCourse(req.params.id);
@@ -54,7 +46,9 @@ exports.deleteCourse = async (req, res) => {
     }
 }
 
-// Cập nhật thông tin khoá học
+/**
+ * Cập nhật thông tin khoá học
+ */
 exports.updateCourse = async (req, res) => {
     try {
         var data = await CourseService.updateCourse(req.params.id, req.body);

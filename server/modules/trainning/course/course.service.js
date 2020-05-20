@@ -48,43 +48,6 @@ exports.searchCourses = async (data, company) => {
     }
 }
 
-/** Lấy danh sách khóa học của một chương trình đào tạo */
-exports.getCoursesOfEducationProgram = async (data, company) => {
-    // var keySearch = {
-    //     company: company,
-    //     educationProgram: data._id
-    // }
-    // // Bắt sựu kiện mã khoá đào tạo khác ""
-    // if (data.numberCourse !== "") {
-    //     keySearch = {
-    //         ...keySearch,
-    //         numberCourse: {
-    //             $regex: data.numberCourse,
-    //             $options: "i"
-    //         }
-    //     }
-    // }
-    // // Bắt sựu kiện loại đào tạo khác All
-    // if (data.typeCourse !== "All") {
-    //     keySearch = {
-    //         ...keySearch,
-    //         typeCourse: data.typeCourse
-    //     }
-    // }
-    // var totalList = await Course.count(keySearch);
-    // var allList = await Course.find(keySearch)
-    //     .skip(data.page).limit(data.limit)
-    //     .populate({
-    //         path: 'educationProgram',
-    //         model: EducationProgram
-    //     });
-    // var content = {
-    //     _id: data._id,
-    //     totalList,
-    //     allList
-    // }
-    // return content;
-}
 /**
  * Thêm mới khoá đào tạo
  * @data : dữ liệu khoá đào tạo cần thêm

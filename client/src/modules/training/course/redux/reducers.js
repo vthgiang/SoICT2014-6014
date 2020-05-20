@@ -10,8 +10,7 @@ const initState = {
 }
 export function course(state = initState, action) {
     switch (action.type) {
-        case CourseConstants.GET_LISTCOURSE_REQUEST:
-        case CourseConstants.GET_COURSE_BY_EDUCATION_REQUEST:
+        case CourseConstants.GET_LIST_COURSE_REQUEST:
         case CourseConstants.CREATE_COURSE_REQUEST:
         case CourseConstants.DELETE_COURSE_REQUEST:
         case CourseConstants.UPDATE_COURSE_REQUEST:
@@ -19,17 +18,11 @@ export function course(state = initState, action) {
                 ...state,
                 isLoading: true
             };
-        case CourseConstants.GET_LISTCOURSE_SUCCESS:
+        case CourseConstants.GET_LIST_COURSE_SUCCESS:
             return {
                 ...state,
                 listCourses: action.payload.listCourses,
                     totalList: action.payload.totalList,
-                    isLoading: false,
-            };
-        case CourseConstants.GET_COURSE_BY_EDUCATION_SUCCESS:
-            return {
-                ...state,
-                courseByEducations: action.payload,
                     isLoading: false,
             };
         case CourseConstants.CREATE_COURSE_SUCCESS:
@@ -60,8 +53,7 @@ export function course(state = initState, action) {
                     ),
                     isLoading: false,
             };
-        case CourseConstants.GET_LISTCOURSE_FAILURE:
-        case CourseConstants.GET_COURSE_BY_EDUCATION_FAILURE:
+        case CourseConstants.GET_LIST_COURSE_FAILURE:
         case CourseConstants.CREATE_COURSE_FAILURE:
         case CourseConstants.DELETE_COURSE_FAILURE:
         case CourseConstants.UPDATE_COURSE_FAILURE:
