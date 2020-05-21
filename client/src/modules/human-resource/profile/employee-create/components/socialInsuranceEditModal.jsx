@@ -105,6 +105,7 @@ class SocialInsuranceEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 company: nextProps.company,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,

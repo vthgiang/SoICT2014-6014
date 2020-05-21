@@ -107,6 +107,7 @@ class ModalEditExperience extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 company: nextProps.company,
                 startDate: nextProps.startDate,

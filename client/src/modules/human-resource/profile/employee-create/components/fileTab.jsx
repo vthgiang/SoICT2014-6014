@@ -103,7 +103,7 @@ class FileTab extends Component {
                         </div>
                     </div>
                     <div className="col-md-12">
-                        <h4 className="row col-md-6">{translate('manage_employee.list_attachments')}:</h4>
+                        <h4 className="row col-md-6 col-xs-8">{translate('manage_employee.list_attachments')}:</h4>
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
                         <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
@@ -153,6 +153,7 @@ class FileTab extends Component {
                     this.state.currentRow !== undefined &&
                     <FileEditModal
                         id={`editFile${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}
                         description={this.state.currentRow.description}

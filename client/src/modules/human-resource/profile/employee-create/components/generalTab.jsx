@@ -10,6 +10,7 @@ class GeneralTab extends Component {
         super(props);
         this.state = {};
     }
+
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
         var d = new Date(date),
@@ -26,6 +27,7 @@ class GeneralTab extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
+
     // Function upload avatar 
     handleUpload = (e) => {
         var file = e.target.files[0];
@@ -40,6 +42,7 @@ class GeneralTab extends Component {
             };
         }
     }
+
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,6 +51,7 @@ class GeneralTab extends Component {
         })
         this.props.handleChange(name, value);
     }
+
     // Function bắt sự kiện thay đổi mã nhân viên
     handleMSNVChange = (e) => {
         const { value } = e.target;
@@ -64,6 +68,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi mã chấm công
     handleMSCCChange = (e) => {
         const { value } = e.target;
@@ -84,6 +89,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi Họ và tên
     handleFullNameChange = (e) => {
         const { value } = e.target;
@@ -104,6 +110,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi Email công ty
     handleEmailCompanyChange = (e) => {
         const { value } = e.target;
@@ -124,6 +131,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi số CMND
     handleCMNDChange = (e) => {
         const { value } = e.target;
@@ -144,6 +152,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi nơi cấp
     handleAddressCMNDChange = (e) => {
         const { value } = e.target;
@@ -164,7 +173,6 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
-
 
     // Function bắt sự kiện thay đổi ngày sinh
     handleBrithdayChange = (value) => {
@@ -190,6 +198,7 @@ class GeneralTab extends Component {
     handleDateCMNDChange = (value) => {
         this.validateCMNDDate(value, true);
     }
+
     validateCMNDDate = (value, willUpdateState = true) => {
         let msg = EmployeeCreateValidator.validateCMNDDate(value, this.props.translate)
         if (willUpdateState) {
@@ -205,6 +214,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -300,7 +310,7 @@ class GeneralTab extends Component {
                         </div>
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="brithday">{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
+                                <label >{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
                                     value={this.formatDate(birthdate)}
@@ -316,7 +326,7 @@ class GeneralTab extends Component {
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
+                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
@@ -342,7 +352,7 @@ class GeneralTab extends Component {
                                 <ErrorLabel content={errorOnCMND} />
                             </div>
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
+                                <label >{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
                                     value={this.formatDate(identityCardDate)}

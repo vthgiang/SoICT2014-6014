@@ -150,8 +150,8 @@ class EmployeeManagement extends Component {
             })
         }
 
-        if (employeesManager.listEmployee) {
-            lists = employeesManager.listEmployee;
+        if (employeesManager.listEmployees) {
+            lists = employeesManager.listEmployees;
         }
         console.log(lists);
         var pageTotal = ((employeesManager.totalList % this.state.limit) === 0) ?

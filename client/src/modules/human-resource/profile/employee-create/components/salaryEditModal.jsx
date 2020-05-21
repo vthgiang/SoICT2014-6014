@@ -160,6 +160,7 @@ class SalaryEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 unit: nextProps.unit,
                 month: nextProps.month,

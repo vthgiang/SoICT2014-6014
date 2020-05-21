@@ -118,7 +118,6 @@ exports.getEmployeeProfile = async (id) => {
             employees: employees
         }
     } else {
-        console.log(employees);
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(user.email);
         let salarys = await Salary.find({
             employee: employees[0]._id

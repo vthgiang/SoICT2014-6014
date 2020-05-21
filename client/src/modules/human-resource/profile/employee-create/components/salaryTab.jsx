@@ -218,7 +218,7 @@ class SalaryTab extends Component {
                     this.state.currentRow !== undefined &&
                     <SalaryEditModal
                         id={`editSalary${this.state.currentRow.index}`}
-                        index={this.state.currentRow.index}
+                        _id={this.state.currentRowSabbatical._id}
                         unit={this.state.currentRow.unit}
                         month={this.formatDate(this.state.currentRow.month, true)}
                         mainSalary={this.state.currentRow.mainSalary}
@@ -230,6 +230,7 @@ class SalaryTab extends Component {
                     this.state.currentRowSabbatical !== undefined &&
                     <AnnualLeaveEditModal
                         id={`editSabbatical${this.state.currentRowSabbatical.index}`}
+                        _id={this.state.currentRowSabbatical._id}
                         index={this.state.currentRowSabbatical.index}
                         startDate={this.formatDate(this.state.currentRowSabbatical.startDate)}
                         endDate={this.formatDate(this.state.currentRowSabbatical.endDate)}

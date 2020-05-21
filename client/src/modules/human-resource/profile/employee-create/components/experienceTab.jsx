@@ -163,6 +163,7 @@ class ExperienceTab extends Component {
                     this.state.currentRow !== undefined &&
                     <ModalEditExperience
                         id={`editExperience${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         company={this.state.currentRow.company}
                         startDate={this.formatDate(this.state.currentRow.startDate, true)}

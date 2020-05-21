@@ -97,6 +97,7 @@ class AnnualLeaveEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 endDate: nextProps.endDate,
                 startDate: nextProps.startDate,

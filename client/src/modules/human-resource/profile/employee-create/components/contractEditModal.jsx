@@ -131,6 +131,7 @@ class ContractEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 name: nextProps.name,
                 startDate: nextProps.startDate,

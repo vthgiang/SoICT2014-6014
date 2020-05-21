@@ -162,6 +162,7 @@ class DisciplineEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 decisionNumber: nextProps.decisionNumber,
                 organizationalUnit: nextProps.organizationalUnit,
