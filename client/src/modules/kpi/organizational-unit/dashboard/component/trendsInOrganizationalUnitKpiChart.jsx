@@ -9,16 +9,17 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
         super(props);
+
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             newDataCurrentKpi: false,
             newDataChildTargets: false,
-            newDataTasks: false
+            newDataTasks: false,
+            dataStatus: this.DATA_STATUS.QUERYING
         };
-    }
 
-    componentDidMount() {
         // Lấy Kpi của đơn vị hiện tại
         this.props.getCurrentKPIUnit(this.state.currentRole);
         // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
@@ -28,80 +29,55 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        // Kiểm tra currentKPI đã được bind vào props hay chưa
-        let newDataCurrentKpi = nextProps.createKpiUnit.currentKPI !== undefined 
-                                    && nextProps.createKpiUnit.currentKPI !== null;
-        if(!newDataCurrentKpi) {
-            return false            // Đang lấy dữ liệu, ko cần render lại
-        }
-        if(this.props.createKpiUnit.currentKPI) {
-            newDataCurrentKpi = newDataCurrentKpi && (nextProps.createKpiUnit.currentKPI._id !== this.props.createKpiUnit.currentKPI._id)
-        }
-        // if(!newDataCurrentKpi && !this.state.newDataCurrentKpi) {
-        //     this.setState(state =>{
-        //         return {
-        //             ...state,
-        //             newDataCurrentKpi: true,
-        //         };
-        //     });
-        //     return false; // Cần cập nhật lại state, không cần render
-        // }
+        if (nextState.dataStatus == this.DATA_STATUS.NOT_AVAILABLE){
+            // Lấy Kpi của đơn vị hiện tại
+            this.props.getCurrentKPIUnit(this.state.currentRole);
+            // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
+            this.props.getAllChildTargetOfOrganizationalUnitKpis(this.state.currentRole);
+            // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
+            this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole)
 
-        // Kiểm tra childTarget đã được bind vào props hay chưa
-        let newDataChildTargets = nextProps.dashboardOrganizationalUnitKpi.childTargets !== undefined 
-                                    && nextProps.dashboardOrganizationalUnitKpi.childTargets !== null 
-                                    && nextProps.dashboardOrganizationalUnitKpi.childTargets !== [];                          
-        if(!newDataChildTargets) {
-            return false            // Đang lấy dữ liệu, ko cần render lại
-        }
-        if(this.props.dashboardOrganizationalUnitKpi.childTargets) {
-            newDataChildTargets = newDataChildTargets && (nextProps.dashboardOrganizationalUnitKpi.childTargets.length !== this.props.dashboardOrganizationalUnitKpi.childTargets.length)
-        }
-        // if(!newDataChildTargets && !this.state.newDataChildTargets) {
-        //     this.setState(state =>{
-        //         return {
-        //             ...state,
-        //             newDataChildTargets: true,
-        //         };
-        //     });
-        //     return false; // Cần cập nhật lại state, không cần render
-        // }
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                };
+            });
+            return false;
+        } else if (nextState.dataStatus == this.DATA_STATUS.QUERYING) {
+            // Kiểm tra currentKPI đã được bind vào props hay chưa
+            if(!nextProps.createKpiUnit.currentKPI) {
+                return false            // Đang lấy dữ liệu, ko cần render lại
+            }
 
-        // Kiểm tra tasks đã được bind vào props hay chưa
-        let newDataTasks = nextProps.dashboardOrganizationalUnitKpi.tasks !== undefined 
-                                && nextProps.dashboardOrganizationalUnitKpi.tasks !== null 
-                                && nextProps.dashboardOrganizationalUnitKpi.tasks !== [];
-        if(!newDataTasks) {
-            return false            // Đang lấy dữ liệu, ko cần render lại
-        }
-        if(this.props.dashboardOrganizationalUnitKpi.tasks) {
-            newDataTasks = newDataTasks && (nextProps.dashboardOrganizationalUnitKpi.tasks.length === this.props.dashboardOrganizationalUnitKpi.tasks.length)
-        }
-        // if(!newDataTasks && !this.state.newDataTasks) {
-        //     this.setState(state =>{
-        //         return {
-        //             ...state,
-        //             newDataTasks: true,
-        //         };
-        //     });
-        //     return false; // Cần cập nhật lại state, không cần render
-        // }
+            // Kiểm tra childTarget đã được bind vào props hay chưa
+            if(!nextProps.dashboardOrganizationalUnitKpi.childTargets) {
+                return false            // Đang lấy dữ liệu, ko cần render lại
+            }
 
-        // console.log("00000", nextProps.dashboardOrganizationalUnitKpi.tasks.length === this.props.dashboardOrganizationalUnitKpi.tasks.length)
-        // console.log("---------------", this.props.createKpiUnit.currentKPI.kpis, nextProps.createKpiUnit.currentKPI.kpis)
-        // console.log("---------------", this.props.dashboardOrganizationalUnitKpi.childTargets, nextProps.dashboardOrganizationalUnitKpi.childTargets)
-        // console.log("---------------", this.props.dashboardOrganizationalUnitKpi.tasks, nextProps.dashboardOrganizationalUnitKpi.tasks)
-        // console.log("!newDataCurrentKpi && !newDataChildTargets && !newDataTasks",this.state.newDataCurrentKpi && this.state.newDataChildTargets && this.state.newDataTasks)
-        // console.log("this.state.newDataCurrentKpi", this.state.newDataCurrentKpi)
-        // console.log("this.state.newDataChildTargets", this.state.newDataChildTargets)
-        // console.log("this.state.newDataTasks", this.state.newDataTasks)
-
-        // if(this.state.newDataCurrentKpi && this.state.newDataChildTargets && this.state.newDataTasks) {
-        //     return true
-        // }
-        if(!newDataCurrentKpi && !newDataChildTargets && !newDataTasks) {
-            return true             // Render khi đã bind đủ dữ liệu vào props
+            // Kiểm tra tasks đã được bind vào props hay chưa
+            if(!nextProps.dashboardOrganizationalUnitKpi.tasks) {
+                return false            // Đang lấy dữ liệu, ko cần render lại
+            }
+            
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                };
+            });
+            return false;
+        } else if (nextState.dataStatus == this.DATA_STATUS.AVAILABLE){
+            this.barChart();
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                };
+            });
         }
+
+        return false;
     }
 
     // Lấy danh sách công việc theo từng Kpi đơn vị
@@ -369,8 +345,16 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return weight;
     }
 
+    removePreviousChart(){
+        const chart = this.refs.barChart;
+        while(chart.hasChildNodes()){
+            chart.removeChild(chart.lastChild);
+        }
+    } 
+
     // Khởi tạo Bar Chart bằng D3
     barChart = () => {
+        this.removePreviousChart();
         // Tạo mảng dữ liệu
         var numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, dataChart;
            
@@ -460,14 +444,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
     
     render() {
-        (this.props.createKpiUnit.currentKPI 
-            && this.props.createKpiUnit.currentKPI.kpis 
-            && this.props.dashboardOrganizationalUnitKpi.tasks !== [] 
-            && this.props.dashboardOrganizationalUnitKpi.childTargets !== []
-            && this.props.dashboardOrganizationalUnitKpi.tasks !== undefined 
-            && this.props.dashboardOrganizationalUnitKpi.childTargets !== undefined) 
-            && this.barChart()
-
         return (
             <React.Fragment>
                 <div ref="barChart"></div>
