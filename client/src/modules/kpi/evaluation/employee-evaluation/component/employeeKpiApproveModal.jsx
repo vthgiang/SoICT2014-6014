@@ -8,6 +8,7 @@ class ModalMemberApprove extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            date : this.formatDateBack(Date.now()),
             editing: false,
             edit: "",
             compare: false,
@@ -17,6 +18,7 @@ class ModalMemberApprove extends Component {
         this.newWeight = [];
     }
     componentDidMount() {
+        // console.log('id : ====='+this.props.id);
         this.props.getKPIMemberById(this.props.id);
     }
     componentDidUpdate() {
@@ -83,7 +85,6 @@ class ModalMemberApprove extends Component {
         }
     }
     handleDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -102,11 +103,6 @@ class ModalMemberApprove extends Component {
         return msg;
     }
     handleCompare = async (id) => {
-        // let script = document.createElement('script');
-        // script.src = '../lib/main/js/CoCauToChuc.js';
-        // script.async = true;
-        // script.defer = true;
-        // document.body.appendChild(script);
         await this.setState(state => {
             return {
                 ...state,
@@ -114,11 +110,7 @@ class ModalMemberApprove extends Component {
             }
         })
         if (id) {
-            // console.log("=============="+ this.state.date)
-			// if(this.state.date === undefined) {
 				this.props.getKPIMemberByMonth(id,this.formatDateBack(Date.now()));
-			// }
-			
         }
         
     }
@@ -142,7 +134,7 @@ class ModalMemberApprove extends Component {
             day = '' + d.getDate();
             year = d.getFullYear()-1;
         } else{
-            month = '' + d.getMonth();
+            month = '' + (d.getMonth()+1);
             day = '' + d.getDate();
             year = d.getFullYear();
         }
@@ -181,30 +173,13 @@ class ModalMemberApprove extends Component {
             return "Đã kết thúc"
         }
     }
-    // searchKPIMemberByMonth = async (id, currentTime) => {
     searchKPIMemberByMonth = async (id) => {
-        // await this.setState(state=>{
-        //     return{
-        //         ...state,
-        //         checkInput: false
-        //     }
-        // })
-        // var searchdate = this.date.value.split("-");
-        // var date = new Date(searchdate[1], searchdate[0], 0);
-        // if ((Date.parse(date) >= currentTime) || this.date.value==="") {
-        //     await this.setState(state => {
-        //         return {
-        //             ...state,
-        //             checkInput: true
-        //         }
-        //     })
-        // }
-        //  else {
-        if(this.state.date === undefined){    
+        
+        if(this.state.date === undefined || this.state.date == this.formatDateBack(Date.now()) ){    
+            
             this.props.getKPIMemberByMonth(id, this.formatDateBack(Date.now()));
         }
-        else {    
-            // console.log('this.state.date', this.state.date);
+        else { 
             this.props.getKPIMemberByMonth(id, this.state.date);
         }
     }
@@ -232,39 +207,36 @@ class ModalMemberApprove extends Component {
     }
     render() {
         var kpimember;
-        var kpimembercmp;
+        var kpimembercmp ;
         const { kpimembers } = this.props;
-        // const { checkInput } = this.state;
         const { errorOnDate, date} = this.state;
 
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
         if (kpimembers.kpimembers){
-            // console.log(kpimembers.kpimembers)
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
                 var datekpi= item.date.split('-');
                 var date= new Date();
-                if((date.getMonth()+1)==datekpi[1] && date.getFullYear()==datekpi[2]){
+                if((date.getMonth()+1)===datekpi[1] && date.getFullYear()===datekpi[2]){
                     kpimember= item;
                 }
             });
-            
         } 
-        
-
+        if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
         return (
             <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
                     <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
-                                <span aria-hidden="true">×</span>
-                                <span className="sr-only">Close</span>
-                            </button>
-                                <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                        </div>
+                    <div className="modal-header">
+                    <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
+                        <span aria-hidden="true">×</span>
+                        <span className="sr-only">Close</span>
+                    </button>
+                        <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
+                </div>
                         <div className="box" >
                             <div className="box-body qlcv">
+                            
                                 {this.state.checkWeight&&<div className="col-sm-12" style={{color: "red"}}><label>Trọng số đang không thỏa mãn!</label></div>}
                                 <div className="form-inline">
                                 
@@ -273,26 +245,12 @@ class ModalMemberApprove extends Component {
                                         <button className=" btn btn-success pull-right"  onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>  
                                 
                               </div>  
-                              
+                              <br/>
                             {this.state.compare &&
-                                <div className="col-xs-12">
+                                <div>
                                     <div className="form-inline">
-                                           
-                                            {/* <div className={'input-group col-sm-4 date has-feedback' + (checkInput ? ' has-error' : '')} >
-                                                <div className="input-group-addon">
-                                                    <i className="fa fa-calendar" />
-                                                </div>
-                                                <input type="text" className="form-control pull-right" ref={input => this.date = input} defaultValue={this.formatDateBack(Date.now())} name="date" id="datepicker7" data-date-format="mm-yyyy" />
-                                            
-                                           
-                                            {checkInput &&
-                                                <div className="col-sm-10 help-block" >Thời gian tìm kiếm phải trước thời gian hiện tại và không rỗng</div>
-                                            }
-                                            </div> */}
-                                            <label style={{fontSize:"18px"}}>Chọn tháng so sánh:</label>
-                                          
                                             <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                                {/* <label>Ngày đánh giá:</label> */}
+                                                <label style={{width:"auto"}} >Chọn tháng so sánh:</label>
                                                     <DatePicker
                                                         id="create_date"
                                                         dateFormat="month-year"
@@ -300,14 +258,11 @@ class ModalMemberApprove extends Component {
                                                         onChange={this.handleDateChange}
                                                     />
                                                 <ErrorLabel content={errorOnDate} />
-                                            </div>
-                                           
+                                            
+                                           </div>
                                             <div className="form-group" >
-                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimembercmp.creator._id)}>Tìm kiếm</button>
+                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember.creator._id)}>Tìm kiếm</button>
                                         </div>
-                                         
-                                        {/* </div> */}
-                                        
                                     </div>
                                     <table className="table table-bordered table-striped">
                                         <thead>
@@ -323,12 +278,12 @@ class ModalMemberApprove extends Component {
                                             </tr>
                                         </thead>
                                         <tbody >
-                                            {typeof kpimembercmp !== "undefined" ?
+                                            { kpimembercmp ?
                                                 kpimembercmp.kpis.map((item, index) =>
                                                     <tr >
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
-                                                        <td>{item.parent.name}</td>
+                                                        <td>{item.parent && item.parent.name }</td>
                                                         <td>{this.formatDate(item.date)}</td>
                                                         <td>{item.length}</td>
                                                         <td>{item.criteria}</td>
@@ -340,8 +295,9 @@ class ModalMemberApprove extends Component {
                                             }
                                         </tbody>
                                     </table>
-                                </div>}
-                            <div className="col-xs-12">
+                                </div>
+                                }
+                            <div className="form-inline">
                                 {/* {this.state.compare> */}
                                     <h4 ><b>KPI tháng này</b></h4>
                                 {/* // } */}
@@ -369,7 +325,7 @@ class ModalMemberApprove extends Component {
                                                 <tr >
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
-                                                        <td>{item.parent.name}</td>
+                                                        <td>{item.parent && item.parent.name}</td>
                                                         <td>{this.formatDate(item.date)}</td>
                                                         <td>{item.length}</td>
                                                         <td>{item.criteria}</td>
