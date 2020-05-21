@@ -1,4 +1,5 @@
 const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').schema;
+const mongoose = require('mongoose');
 /**
  * Lấy tất cả các mẫu công việc
  */
@@ -53,46 +54,69 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     })
     var tasktemplates;
     if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
-        var tasks = await Privilege.find({
-            roleId: { $in: allRole },
-            resourceType: 'TaskTemplate'
-        })
-        var taskId = tasks.map(x => x.resourceId);
-        tasktemplates = await TaskTemplate.find({
-            _id: { $in: taskId },
-            name: { "$regex": name, "$options": "i" }
-        })
-            .sort({ 'createdAt': 'asc' })
-            .skip(noResultsPerPage * (pageNumber - 1))
-            .limit(noResultsPerPage)
-            .populate({ path: 'creator organizationalUnit' })
-        var totalCount = await TaskTemplate.count({
-            _id: { $in: taskId },
-            name: { "$regex": name, "$options": "i" }
-        });
+        roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
+        var tasktemplates = await TaskTemplate.aggregate([
+            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }] } },
+            {
+                $lookup:
+                {
+                    from: "privileges",
+                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    as: "creator organizationalUnit"
+                }
+            },
+            { $sort: { 'createdAt': 1 } },
+            { $limit: noResultsPerPage * pageNumber },
+            { $skip: noResultsPerPage * (pageNumber - 1) },
+        ])
+        await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
+        var tasks = await TaskTemplate.aggregate([
+            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }] } },
+            {
+                $lookup:
+                {
+                    from: "privileges",
+                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    as: "creator organizationalUnit"
+                }
+            }
+        ])
+        var totalCount = tasks.length;
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
         
         return { taskTemplates: tasktemplates, pageTotal: totalPages };
     } else {
-        var tasks = await Privilege.find({
-            roleId: { $in: allRole },
-            resourceType: 'TaskTemplate'
-        })
-        var taskId = tasks.map(x => x.resourceId);
-        tasktemplates = await TaskTemplate.find({
-            _id: { $in: taskId },
-            $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: organizationalUnit } }]
-        })
-            .sort({ 'createdAt': 'asc' })
-            .skip(noResultsPerPage * (pageNumber - 1))
-            .limit(noResultsPerPage)
-            .populate({ path: 'creator organizationalUnit' })
-        var totalCount = await TaskTemplate.count({
-            _id: { $in: taskId },
-            $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: organizationalUnit } }]
-        });
+        unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
+        roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
+        var tasktemplates = await TaskTemplate.aggregate([
+            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
+            {
+                $lookup:
+                {
+                    from: "privileges",
+                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    as: "creator organizationalUnit"
+                }
+            },
+            { $sort: { 'createdAt': 1 } },
+            { $limit: noResultsPerPage * pageNumber },
+            { $skip: noResultsPerPage * (pageNumber - 1) },
+        ])
+        await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
+        var tasks = await TaskTemplate.aggregate([
+            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
+            {
+                $lookup:
+                {
+                    from: "privileges",
+                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    as: "creator organizationalUnit"
+                }
+            }
+        ])
+        var totalCount = tasks.length;
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        
+
         return { taskTemplates: tasktemplates, pageTotal: totalPages };
     }
 }

@@ -1237,7 +1237,27 @@ export default {
                     tax_authority_required: 'Cơ quan quản lý thuế không được để trống',
                     temporary_residence_required: 'Địa chỉ Chỗ ở hiện tại không được để trống',
                 }
+            },
+
+            // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
+            holiday : {
+
+                // Thông điệp trả về từ server
+                start_date_required:'Thời gian bắt đầu không được để trống',
+                end_date_required:'Thời gian kết thúc không được để trống',
+                reason_required:'Mô tả lịch nghỉ không được để trống',
+
+                get_holiday_success:'Lấy danh sách lịch làm việc thành công',
+                get_holiday_faile:'Lấy danh sách lịch làm việc thất bại',
+                create_holiday_success:'Thêm mới lịch làm việc thành công',
+                create_holiday_faile:'Thêm mới lịch làm việc thất bại',
+                delete_holiday_success:'Xoá lịch làm việc thành công',
+                delete_holiday_faile:'Xoá lịch làm việc thất bại',
+                edit_holiday_success:'Chỉnh sửa lịch làm việc thành công',
+                edit_holiday_faile:'Chỉnh sửa lịch làm việc thất bại',
+
             }
+
         },
 
         // Modules quản lý đào tạo

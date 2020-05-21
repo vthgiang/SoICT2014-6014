@@ -1,55 +1,53 @@
-import {
-    handleResponse
-} from '../../../../helpers/handleResponse';
 import { LOCAL_SERVER_API } from '../../../../env';
-import {
-    AuthenticateHeader
-} from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const HolidayService = {
     getListHoliday,
     createNewHoliday,
     deleteHoliday,
     updateHoliday,
 }
-
-// Lấy danh sách nghỉ lễ tết
+/**
+ * Lấy danh sách nghỉ lễ tết
+ */
 function getListHoliday() {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/holiday/`,
         method: 'GET',
-        headers: AuthenticateHeader(),
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/holiday/`, requestOptions).then(handleResponse);
-
+    }, false, true, 'human_resource.holiday');
 }
 
-// tạo mới thông tin nghỉ lễ tết
+/**
+ * Thêm mới thông tin nghỉ lễ tết
+ * @param {*} data : dữ liệu thông tin nghỉ lễ tết cần tạo
+ */
 function createNewHoliday(data) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/holiday/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/holiday/create`, requestOptions).then(handleResponse);
+        data: data
+    }, true, true, 'human_resource.holiday');
 }
 
-// Xoá thông tin nghỉ lễ tết
+/**
+ * Xoá thông tin nghỉ lễ tết
+ * @param {*} id :id thông tin nghỉ lễ tết cần xoá
+ */
 function deleteHoliday(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/holiday/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader(),
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/holiday/${id}`, requestOptions).then(handleResponse);
+    }, true, true, 'human_resource.holiday');
 }
 
-// Cập nhật thông tin nghỉ lễ tết
+/**
+ * Chỉnh sửa thông tin nghỉ lễ tết
+ * @param {*} id : id thông tin nghỉ lễ tết cần chỉnh sửa
+ * @param {*} data : dữ liệu chỉnh sửa thông tin nghỉ lễ têt
+ */
 function updateHoliday(id, data) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/holiday/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-    return fetch(`${ LOCAL_SERVER_API }/holiday/${id}`, requestOptions).then(handleResponse);
+        data: data
+    }, true, true, 'human_resource.holiday');
 }

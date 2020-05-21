@@ -1040,6 +1040,25 @@ export default {
 
 
                 }
+            },
+
+            // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
+            holiday : {
+
+                // Thông điệp trả về từ server
+                start_date_required:'Start date required',
+                end_date_required:'End date required',
+                reason_required:'Reason required',
+
+                get_holiday_success:'Get holiday success',
+                get_holiday_faile:'Get holiday faile',
+                create_holiday_success:'Create holiday success',
+                create_holiday_faile:'Create holiday faile',
+                delete_holiday_success:'Delete holiday success',
+                delete_holiday_faile:'Delete holiday faile',
+                edit_holiday_success:'Edit holiday success',
+                edit_holiday_faile:'Edit holiday faile',
+
             }
         },
 

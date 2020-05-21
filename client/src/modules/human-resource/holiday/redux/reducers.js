@@ -9,6 +9,9 @@ const initState = {
 export function holiday(state = initState, action) {
     switch (action.type) {
         case HolidayConstants.GET_HOLIDAY_REQUEST:
+        case HolidayConstants.CREATE_HOLIDAY_REQUEST:
+        case HolidayConstants.DELETE_HOLIDAY_REQUEST:
+        case HolidayConstants.UPDATE_HOLIDAY_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -16,67 +19,41 @@ export function holiday(state = initState, action) {
         case HolidayConstants.GET_HOLIDAY_SUCCESS:
             return {
                 ...state,
-                listHoliday: action.listHoliday.content,
-                    isLoading: false,
-            };
-        case HolidayConstants.GET_HOLIDAY_FAILURE:
-            return {
-                error: action.error,
+                listHoliday: action.payload,
                 isLoading: false,
-            };
-        case HolidayConstants.CREATE_HOLIDAY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case HolidayConstants.CREATE_HOLIDAY_SUCCESS:
             return {
                 ...state,
                 listHoliday: [
                         ...state.listHoliday,
-                        action.newHoliday.content
+                        action.payload
                     ],
-                    isLoading: false,
-            };
-        case HolidayConstants.CREATE_HOLIDAY_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
-            };
-        case HolidayConstants.DELETE_HOLIDAY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case HolidayConstants.DELETE_HOLIDAY_SUCCESS:
             return {
                 ...state,
-                listHoliday: state.listHoliday.filter(Holiday => (Holiday._id !== action.holidayDelete.content._id)),
-                    isLoading: false,
-            };
-        case HolidayConstants.DELETE_HOLIDAY_FAILURE:
-            return {
-                error: action.error,
+                listHoliday: state.listHoliday.filter(holiday => (holiday._id !== action.payload._id)),
                 isLoading: false,
-            };
-        case HolidayConstants.UPDATE_HOLIDAY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case HolidayConstants.UPDATE_HOLIDAY_SUCCESS:
             return {
                 ...state,
-                listHoliday: state.listHoliday.map(Holiday =>
-                        (Holiday._id === action.infoHoliday.content._id) ?
-                        action.infoHoliday.content : Holiday
+                listHoliday: state.listHoliday.map(holiday =>
+                        (holiday._id === action.payload._id) ?
+                        action.payload : holiday
                     ),
-                    isLoading: false,
+                isLoading: false,
             };
+        case HolidayConstants.GET_HOLIDAY_FAILURE:
+        case HolidayConstants.CREATE_HOLIDAY_FAILURE:
+        case HolidayConstants.DELETE_HOLIDAY_FAILURE:
         case HolidayConstants.UPDATE_HOLIDAY_FAILURE:
             return {
-                error: action.error,
+                ...state,
                 isLoading: false,
+                error: action.error.message
             };
         default:
             return state

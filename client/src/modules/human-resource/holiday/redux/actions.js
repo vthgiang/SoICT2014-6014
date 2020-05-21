@@ -11,135 +11,104 @@ export const HolidayActions = {
     updateHoliday,
 };
 
-// lấy danh sách kỷ luật
-function getListHoliday(data) {
+/**
+ * Lấy danh sách lịch nghỉ lễ tết
+ */
+function getListHoliday() {
     return dispatch => {
-        dispatch(request());
-
-        HolidayService.getListHoliday(data)
-            .then(
-                listHoliday => dispatch(success(listHoliday)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: HolidayConstants.GET_HOLIDAY_REQUEST
+        });
+        HolidayService.getListHoliday()
+            .then(res => {
+                dispatch({
+                    type: HolidayConstants.GET_HOLIDAY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: HolidayConstants.GET_HOLIDAY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: HolidayConstants.GET_HOLIDAY_REQUEST,
-        };
-    };
-
-    function success(listHoliday) {
-        return {
-            type: HolidayConstants.GET_HOLIDAY_SUCCESS,
-            listHoliday
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: HolidayConstants.GET_HOLIDAY_FAILURE,
-            error
-        };
-    };
 }
 
-// tạo mới thông tin kỷ luật của nhân viên
-function createNewHoliday(newHoliday) {
+/**
+ * Thêm mới thông tin nghỉ lễ tết
+ * @param {*} data : dữ liệu thông tin nghỉ lễ tết cần tạo
+ */
+function createNewHoliday(data) {
     return dispatch => {
-        dispatch(request(newHoliday));
-
-        HolidayService.createNewHoliday(newHoliday)
-            .then(
-                newHoliday => dispatch(success(newHoliday)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: HolidayConstants.CREATE_HOLIDAY_REQUEST
+        });
+        HolidayService.createNewHoliday(data)
+            .then(res => {
+                dispatch({
+                    type: HolidayConstants.CREATE_HOLIDAY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: HolidayConstants.CREATE_HOLIDAY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request(newHoliday) {
-        return {
-            type: HolidayConstants.CREATE_HOLIDAY_REQUEST,
-            newHoliday
-        };
-    };
-
-    function success(newHoliday) {
-        return {
-            type: HolidayConstants.CREATE_HOLIDAY_SUCCESS,
-            newHoliday
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: HolidayConstants.CREATE_HOLIDAY_FAILURE,
-            error
-        };
-    };
 }
 
-// Xoá thông tin kỷ luật của nhân viên
+/**
+ * Xoá thông tin nghỉ lễ tết
+ * @param {*} id :id thông tin nghỉ lễ tết cần xoá
+ */
 function deleteHoliday(id) {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: HolidayConstants.DELETE_HOLIDAY_REQUEST,
+        });
 
         HolidayService.deleteHoliday(id)
-            .then(
-                holidayDelete => dispatch(success(holidayDelete)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: HolidayConstants.DELETE_HOLIDAY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: HolidayConstants.DELETE_HOLIDAY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: HolidayConstants.DELETE_HOLIDAY_REQUEST,
-        };
-    };
-
-    function success(holidayDelete) {
-        return {
-            type: HolidayConstants.DELETE_HOLIDAY_SUCCESS,
-            holidayDelete
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: HolidayConstants.DELETE_HOLIDAY_FAILURE,
-            error
-        };
-    };
 }
 
-// cập nhật thông tin kỷ luật của nhân viên
+/**
+ * Chỉnh sửa thông tin nghỉ lễ tết
+ * @param {*} id : id thông tin nghỉ lễ tết cần chỉnh sửa
+ * @param {*} data : dữ liệu chỉnh sửa thông tin nghỉ lễ têt
+ */
 function updateHoliday(id, infoHoliday) {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: HolidayConstants.UPDATE_HOLIDAY_REQUEST,
+        });
 
         HolidayService.updateHoliday(id, infoHoliday)
-            .then(
-                infoHoliday => dispatch(success(infoHoliday)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: HolidayConstants.UPDATE_HOLIDAY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: HolidayConstants.UPDATE_HOLIDAY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: HolidayConstants.UPDATE_HOLIDAY_REQUEST,
-        };
-    };
-
-    function success(infoHoliday) {
-        return {
-            type: HolidayConstants.UPDATE_HOLIDAY_SUCCESS,
-            infoHoliday
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: HolidayConstants.UPDATE_HOLIDAY_FAILURE,
-            error
-        };
-    };
 }

@@ -54,7 +54,7 @@ exports.searchCourses = async (data, company) => {
  * @company : id công ty 
  */
 exports.createCourse = async (data, company) => {
-    var isCourse = await Course.find({courseId: data.courseId, company: company}, {_id: 1});
+    var isCourse = await Course.findOne({courseId: data.courseId, company: company}, {_id: 1});
     if (isCourse !== null) {
         return "have_exist"
     } else {
