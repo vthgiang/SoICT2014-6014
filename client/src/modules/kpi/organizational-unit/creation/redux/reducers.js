@@ -6,7 +6,8 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             loading: true,
-            isLoading: true
+            isLoading: true,
+            currentKPI: null
           };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS:
           return {

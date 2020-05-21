@@ -13,6 +13,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST:
             return {
                 ...state,
+                childTargets: null,
                 loading: true,
                 isLoading: false,
             }
@@ -33,6 +34,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
             return {
                 ...state,
                 loading: true,
+                tasks: null,
                 isLoading: false
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS:

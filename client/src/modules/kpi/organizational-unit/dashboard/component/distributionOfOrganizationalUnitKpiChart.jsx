@@ -8,40 +8,46 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
         super(props);
-        
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
-            newDataCurrentKpi: false
+            dataStatus: this.DATA_STATUS.QUERYING
         };
-    }
-
-    componentDidMount() {
-        this.props.getCurrentKPIUnit(this.state.currentRole)
+        this.props.getCurrentKPIUnit(this.state.currentRole);
     }
     
     shouldComponentUpdate = (nextProps, nextState) => {
-        // Kiểm tra currentKPI đã được bind vào props hay chưa
-        let newDataCurrentKpi = nextProps.createKpiUnit.currentKPI !== undefined 
-                                    && nextProps.createKpiUnit.currentKPI !== null;
-        if(!newDataCurrentKpi) {
-            return false
+        if (nextState.dataStatus == this.DATA_STATUS.NOT_AVAILABLE){
+            this.props.getCurrentKPIUnit(this.state.currentRole)
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                };
+            });
+            return false;
+        } else if (nextState.dataStatus == this.DATA_STATUS.QUERYING) {
+            if (!nextProps.createKpiUnit.currentKPI)
+                return false;
+            
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                };
+            });
+            return false;
+        } else if (nextState.dataStatus == this.DATA_STATUS.AVAILABLE){
+            this.pieChart();
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                };
+            });
         }
-        if(this.props.createKpiUnit.currentKPI) {
-            newDataCurrentKpi = newDataCurrentKpi && (nextProps.createKpiUnit.currentKPI._id !== this.props.createKpiUnit.currentKPI._id)
-        }
-        // if(!newDataCurrentKpi && !this.state.newDataCurrentKpi) {
-        //     this.setState(state =>{
-        //         return {
-        //             ...state,
-        //             newDataCurrentKpi: true,
-        //         };
-        //     });
-        //     return false; // Cần cập nhật lại state, không cần render
-        // }
 
-        if(!newDataCurrentKpi) {
-            return true
-        }
+        return false;
     }
 
     setDataPieChart = () => {
@@ -60,7 +66,16 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return dataPieChart;
     }
 
-    pieChart = () => { 
+    removePreviousChart(){
+        const chart = this.refs.pieChart;
+        while(chart.hasChildNodes()){
+            chart.removeChild(chart.lastChild);
+        }
+    } 
+
+    pieChart = () => {
+        this.removePreviousChart();
+
         // Tạo mảng dữ liệu
         var dataPieChart;
         dataPieChart = this.setDataPieChart(); 
@@ -122,9 +137,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        (this.props.createKpiUnit.currentKPI && this.props.createKpiUnit.currentKPI.kpis)
-            && this.pieChart()
-
         return (
             <React.Fragment>
                 <div ref="pieChart"></div>
