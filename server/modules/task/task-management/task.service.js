@@ -234,7 +234,7 @@ exports.createTask = async (task) => {
                 mandatory: taskActions[i].mandatory,
                 name:  taskActions[i].name,
                 description:  taskActions[i].description,
-                creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
+                //creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
                 // createdAt:  taskActions[i].createdAt,
                 // updatedAt:  taskActions[i].updatedAt
             }
