@@ -34,14 +34,12 @@ class ActionTab extends Component {
             showChildComment: "",
             showChildTaskComment: "",
             newCommentOfAction: {
-                //task: this.props.id,
                 creator: idUser,
                 content: "",
                 file: null,
                 taskActionId: null
             },
             newAction: {
-                //task: this.props.id,
                 creator: idUser,
                 content: "",
                 file: null
@@ -58,7 +56,6 @@ class ActionTab extends Component {
             },
             showEdit: false,
             timer: {
-                //task: this.props.id,
                 startTimer: "",
                 stopTimer: null,
                 user: idUser,
@@ -102,11 +99,6 @@ class ActionTab extends Component {
                         pauseTimer: currentTimer.pause,
                     }
                 })
-                //Chỉnh giao diện
-                // document.getElementById("start-timer-task").style.width = "20%";
-                // document.getElementById("btn-approve").style.marginLeft = "50%";
-
-
                 // Setup thời thời gian chạy
                 if (currentTimer.pause === false) {
                     this.timer = setInterval(() => this.setState(state => {
@@ -153,15 +145,6 @@ class ActionTab extends Component {
         }
         return true;
     }
-
-    UNSAFE_componentWillMount() {
-        // this.props.getLogTimer(this.props.id);
-        // this.props.getAllKPIPersonalByMember(this.props.responsible);
-        // this.props.getAllUserOfDepartment(this.props.unit);
-        // this.props.getTaskById(this.props.id);
-        // this.props.getTaskActions(this.props.id);
-        // this.props.getStatusTimer(this.props.id);
-    }
     showEdit(event) {
         event.preventDefault();
         
@@ -180,8 +163,6 @@ class ActionTab extends Component {
         }
     }
     setValueRating = async (id,newValue) => {
-
-        
         await this.setState(state => {
             return {
                 ...state,
@@ -199,14 +180,14 @@ class ActionTab extends Component {
             this.props.evaluationAction(id,evaluations);
         }
     }
-    setHover = async (newHover) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                hover: newHover
-            }
-        })
-    }
+    // setHover = async (newHover) => {
+    //     await this.setState(state => {
+    //         return {
+    //             ...state,
+    //             hover: newHover
+    //         }
+    //     })
+    // }
     handleChangeContent = async (content) => {
         await this.setState(state => {
             return {
@@ -491,22 +472,9 @@ class ActionTab extends Component {
     }   
     
     render() {
-        const labels = {
-            0.5: '1 điểm',
-            1: '2 điểm',
-            1.5: '3 điểm',
-            2: '4 điểm+',
-            2.5: '5 điểm',
-            3: '6 điểm+',
-            3.5: '7 điểm',
-            4: '8 điểm+',
-            4.5: '9 điểm',
-            5: '10 điểm+',
-          };
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
-        
         const { tasks, performtasks, user } = this.props; 
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
@@ -547,7 +515,7 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return <div className="post clearfix"  key={item._id}>
                                         <div class="user-block" style={{marginBottom:"10px"}}>
-                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/91073730_1371042093099601_343244414677680128_n.jpg?_nc_cat=105&_nc_sid=85a577&_nc_ohc=bTZZ2lFe6LEAX9IeYO9&_nc_ht=scontent.fhan2-4.fna&oh=13e478dbbcfb21de73649c5a72d88be9&oe=5EE80E5D" alt="User Image" />
+                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
                                                 <span class="username">
                                                     <a href="#">{item.creator? item.creator.name : ""}</a>
                                                     {/* <a href="#" class="pull-right btn-box-tool btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a> */}
@@ -576,54 +544,52 @@ class ActionTab extends Component {
                                         <ul class="list-inline">
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" class="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i class="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
+                                            {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                            <React.Fragment>
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
                                             <li>
-                                            {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
-                                                <React.Fragment>
-                                                    {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
-                                                        <React.Fragment>
-                                                            
-                                                            {item.evaluations.some(checkUserId)=== true ?
-                                                                <React.Fragment>
-                                                                    
-                                                                    {item.evaluations.map(element => {
-                                                                        if(element.creator._id === currentUser){ 
-                                                                            return  <div>{element.rating}/10</div>
-                                                                        }
-                                                                    })}
-                                                                </React.Fragment>:
-                                                                <React.Fragment>
-                                                                    
-                                                                    <Rating
-                                                                        fractions = {2}
-                                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                                        fullSymbol="fa fa-star fa-2x"
-                                                                        initialRating = {0}
-                                                                        onClick={(value) => {
-                                                                        this.setValueRating(item._id,value);
-                                                                        }}
-                                                                        
-                                                                    />
-                                                                </React.Fragment>
-                                                            }
-                                                        </React.Fragment>:
-                                                        <React.Fragment>
-                                                            
-                                                            <Rating
-                                                                fractions = {2}
-                                                                emptySymbol="fa fa-star-o fa-2x"
-                                                                fullSymbol="fa fa-star fa-2x"
-                                                                initialRating = {0}
-                                                                onClick={(value) => {
-                                                                this.setValueRating(item._id,value);
-                                                                }}
+                                                {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
+                                                    <React.Fragment>
+                                                        
+                                                        {item.evaluations.some(checkUserId)=== true ?
+                                                            <React.Fragment>
                                                                 
-                                                            />
-                                                        </React.Fragment>
-                                                    }
-                                                </React.Fragment>
-                                            }
-                                            </li>
+                                                                {item.evaluations.map(element => {
+                                                                    if(element.creator._id === currentUser){ 
+                                                                        return  <div>{element.rating}/10</div>
+                                                                    }
+                                                                })}
+                                                            </React.Fragment>:
+                                                            <React.Fragment>
+                                                                
+                                                                <Rating
+                                                                    fractions = {2}
+                                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                                    fullSymbol="fa fa-star fa-2x"
+                                                                    initialRating = {0}
+                                                                    onClick={(value) => {
+                                                                    this.setValueRating(item._id,value);
+                                                                    }}
+                                                                    
+                                                                />
+                                                            </React.Fragment>
+                                                        }
+                                                    </React.Fragment>:
+                                                    <React.Fragment>
+                                                        
+                                                        <Rating
+                                                            fractions = {2}
+                                                            emptySymbol="fa fa-star-o fa-2x"
+                                                            fullSymbol="fa fa-star fa-2x"
+                                                            initialRating = {0}
+                                                            onClick={(value) => {
+                                                            this.setValueRating(item._id,value);
+                                                            }}
+                                                            
+                                                        />
+                                                    </React.Fragment>
+                                                }
+                                            </li></React.Fragment>}
                                         </ul>
                                             
                                         
@@ -649,7 +615,7 @@ class ActionTab extends Component {
                                                 {item.comments.map(child => {
                                                     return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{ marginTop: "10px", marginLeft: "10px" }}>
                                                         <div class="user-block" style={{marginBottom:"10px"}}>
-                                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/91073730_1371042093099601_343244414677680128_n.jpg?_nc_cat=105&_nc_sid=85a577&_nc_ohc=bTZZ2lFe6LEAX9IeYO9&_nc_ht=scontent.fhan2-4.fna&oh=13e478dbbcfb21de73649c5a72d88be9&oe=5EE80E5D" style={{ height: "40px", width: "40px" }} alt="User Image" />
+                                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" style={{ height: "40px", width: "40px" }} alt="User Image" />
                                                                 <span class="username">
                                                                     <a href="#">{child.creator.name}</a>
                                                                     {child.creator._id === currentUser && 
@@ -700,7 +666,7 @@ class ActionTab extends Component {
                                                         <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px", marginLeft: "0.7%" }}>
                                                             <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                 <img className="img-circle img-bordered-sm"
-                                                                    src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/91073730_1371042093099601_343244414677680128_n.jpg?_nc_cat=105&_nc_sid=85a577&_nc_ohc=bTZZ2lFe6LEAX9IeYO9&_nc_ht=scontent.fhan2-4.fna&oh=13e478dbbcfb21de73649c5a72d88be9&oe=5EE80E5D" alt="user avatar"
+                                                                    src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar"
                                                                     style={{ height: "30px", width: "30px" }} />
                                                             </div>
                                                             <div className="col-sm-11" >
@@ -727,7 +693,7 @@ class ActionTab extends Component {
                                     <div className="form-group margin-bottom-none">
                                         <div className="row" style={{marginLeft:"3px"}}>
                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/91073730_1371042093099601_343244414677680128_n.jpg?_nc_cat=105&_nc_sid=85a577&_nc_ohc=bTZZ2lFe6LEAX9IeYO9&_nc_ht=scontent.fhan2-4.fna&oh=13e478dbbcfb21de73649c5a72d88be9&oe=5EE80E5D" alt="user avatar" />
+                                                <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="user avatar" />
                                             </div>
                                             <div className="col-sm-9" style={{marginLeft:"19px", width:"81%"}} >
                                                 <textarea placeholder="Hãy nhập nội dung hoạt động"
@@ -736,7 +702,7 @@ class ActionTab extends Component {
 
                                                 <div className="row action-post" style={{width:"110%" }}>
                                                     <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                    <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm " onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</button>
+                                                    <button type="submit" style={{ width: "auto", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm " onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</button>
                                                     
                                                 </div>
                                             </div>
@@ -751,7 +717,7 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return <div className="post clearfix"  key={item._id}>
                                         <div class="user-block">
-                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan3-2.fna.fbcdn.net/v/t1.0-9/p720x720/87838680_203807267501350_3451531148943949824_o.jpg?_nc_cat=111&_nc_sid=7aed08&_nc_ohc=xFXG1jpqSjwAX-uKCVS&_nc_ht=scontent.fhan3-2.fna&_nc_tp=6&oh=fc55da4515759a85630a8a8099fc7e60&oe=5EE81312" alt="User Image" />
+                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
                                                 <span class="username">
                                                 <a href="#">{item.creator.name}</a>
                                                 {item.creator._id === currentUser && 
@@ -801,7 +767,7 @@ class ActionTab extends Component {
                                                 {item.comments.map(child => {
                                                     return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{ marginTop: "10px", }}>
                                                         <div class="user-block" style={{marginBottom:"10px"}}>
-                                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/91073730_1371042093099601_343244414677680128_n.jpg?_nc_cat=105&_nc_sid=85a577&_nc_ohc=bTZZ2lFe6LEAX9IeYO9&_nc_ht=scontent.fhan2-4.fna&oh=13e478dbbcfb21de73649c5a72d88be9&oe=5EE80E5D" style={{ height: "40px", width: "40px" }} alt="User Image" />
+                                                            <img class="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" style={{ height: "40px", width: "40px" }} alt="User Image" />
                                                                 <span class="username">
                                                                     <a href="#">{child.creator.name}</a>
                                                                     {child.creator._id === currentUser && <div class="btn-group dropleft pull-right">
@@ -850,7 +816,7 @@ class ActionTab extends Component {
                                                         <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px" }}>
                                                             <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                 <img className="img-circle img-bordered-sm"
-                                                                    src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                    src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar"
                                                                     style={{ height: "30px", width: "30px" }} />
                                                             </div>
                                                             <div className="col-sm-11" >
@@ -872,11 +838,10 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm bình luận cho công việc*/}
-                            {this.props.role === "responsible" &&
                                 <form className="form-horizontal" style={{ paddingTop: "2%" }}>
                                     <div className="form-group margin-bottom-none">
                                         <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                            <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
+                                            <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar" />
                                         </div>
                                         <div className="col-sm-8" >
                                             <textarea placeholder="Hãy nhập nội dung hoạt động"
@@ -890,7 +855,7 @@ class ActionTab extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                </form>}
+                                </form>
                         </div>
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">

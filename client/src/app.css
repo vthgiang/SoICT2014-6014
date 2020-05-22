@@ -49,19 +49,6 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
-/* CSS body, cơ sở chung cho tất cả */
-body {
-    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-    font-weight: 400;
-    font-size: 14px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    color: #333 !important;
-}
-
-
-
-
 /*
 CSS cho bảng dữ liệu
 */
