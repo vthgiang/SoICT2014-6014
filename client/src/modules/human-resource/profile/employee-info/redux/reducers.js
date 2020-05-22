@@ -44,7 +44,7 @@ export function employeesInfo(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error.message
+                error: action.error
             };
         default:
             return state

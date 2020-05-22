@@ -60,6 +60,7 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
+                error: action.error
             };
         default:
             return state

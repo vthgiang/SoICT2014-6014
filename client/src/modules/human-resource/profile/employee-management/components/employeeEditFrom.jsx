@@ -481,7 +481,6 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
@@ -523,6 +522,7 @@ class EmployeeEditFrom extends Component {
                             <ExperienceTab
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
+                                handleChange={this.handleChange}
                                 handleAddExperience={this.handleCreateExperiences}
                                 handleEditExperience={this.handleEditExperiences}
                                 handleDeleteExperience={this.handleDeleteExperiences}

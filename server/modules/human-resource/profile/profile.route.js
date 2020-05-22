@@ -36,7 +36,7 @@ router.post('/', auth, uploadFile(data, 'fields'), EmployeeController.createEmpl
 /**
  * Cập nhật thông tin nhân viên theo id
  */
-router.put('/update/:id', auth, EmployeeController.updateEmployeeInformation);
+router.put('/update/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEmployeeInformation);
 
 /**
  * Xoá thông tin nhân viên

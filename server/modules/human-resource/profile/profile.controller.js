@@ -66,7 +66,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
 exports.createEmployee = async (req, res) => {
     try {
         let avatar = "";
-        console.log(req.files);
         if (req.files.fileAvatar !== undefined) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
@@ -153,19 +152,27 @@ exports.createEmployee = async (req, res) => {
 }
 
 
-
-// Cập nhật thông tin nhân viên
+/**
+ * Cập nhật thông tin nhân viên
+ */
 exports.updateEmployeeInformation = async (req, res) => {
     try {
-        var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
-        });
+        let avatar = "";
+        console.log('*******File*****',req.files);
+        if (req.files.fileAvatar !== undefined) {
+            avatar = `/${req.files.fileAvatar[0].path}`;
+        }
+        let fileDegree = req.files.fileDegree,
+            fileCertificate = req.files.fileCertificate,
+            fileContract = req.files.fileContract,
+            file = req.files.file;
+        let fileInfo = { fileDegree, fileCertificate, fileContract, file, avatar };
+        // var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body);
+        await LogInfo(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
+        res.status(200).json({success: true, messages: ["edit_employee_success"], content: req.body });
     } catch (error) {
-        res.status(400).json({
-            message: error
-        });
+        await LogError(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
+        res.status(400).json({success: false, messages: ["edit_employee_false"], content: { error: error}});
     }
 }
 

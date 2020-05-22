@@ -30,7 +30,7 @@ function getAllEmployee(data) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.GETALL_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
@@ -56,7 +56,7 @@ function addNewEmployee(employee) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.ADDEMPLOYEE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
@@ -67,13 +67,13 @@ function addNewEmployee(employee) {
  * @param {*} id 
  * @param {*} data 
  */
-function updateInformationEmployee(id, informationEmployee) {
+function updateInformationEmployee(id, employeeInfor) {
     return dispatch => {
         dispatch({
             type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST
         });
 
-        EmployeeService.updateInformationEmployee(id, informationEmployee)
+        EmployeeService.updateInformationEmployee(id, employeeInfor)
             .then(res => {
                 dispatch({
                     type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS,
@@ -83,7 +83,7 @@ function updateInformationEmployee(id, informationEmployee) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
@@ -109,7 +109,7 @@ function deleteEmployee(id) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
-                    error: err.response
+                    error: err
                 });
             })
     }

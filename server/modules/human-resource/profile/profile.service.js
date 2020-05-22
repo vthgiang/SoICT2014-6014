@@ -548,8 +548,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
 }
 
 
-
-// Cập nhât thông tin nhân viên theo id
+/**
+ * Cập nhât thông tin nhân viên theo id
+ */
 exports.updateEmployeeInformation = async (id, data) => {
     // var employee = await Employee.findOne({
     //     _id: id

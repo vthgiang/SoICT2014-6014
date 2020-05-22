@@ -37,8 +37,10 @@ function addNewEmployee(data) {
  * @param {*} data 
  */
 function updateInformationEmployee(id, data) {
+    console.log(data);
+    console.log(id);
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }}/employees/update/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/update/${id}`,
         method: 'PUT',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
