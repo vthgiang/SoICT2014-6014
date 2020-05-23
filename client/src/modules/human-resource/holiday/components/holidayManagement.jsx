@@ -56,7 +56,7 @@ class ManageHoliday extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <button type="button" className="btn btn-success pull-right" style={{ marginLeft: 20 }} id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
+                    <button type="button" className="btn btn-primary pull-right" style={{ marginTop:2, marginBottom:10, marginLeft: 15 }} id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
                     <HolidayCreateForm />
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
