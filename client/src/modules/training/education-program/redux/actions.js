@@ -30,7 +30,7 @@ function getAll() {
             .catch(err => {
                 dispatch({
                     type: EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -56,7 +56,7 @@ function getListEducation(data) {
             .catch(err => {
                 dispatch({
                     type: EducationConstants.GET_LISTEDUCATION_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -81,7 +81,7 @@ function createNewEducation(data) {
             .catch(err => {
                 dispatch({
                     type: EducationConstants.CREATE_EDUCATION_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -105,7 +105,7 @@ function deleteEducation(id) {
             .catch(err => {
                 dispatch({
                     type: EducationConstants.DELETE_EDUCATION_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -132,7 +132,7 @@ function updateEducation(id, data) {
             .catch(err => {
                 dispatch({
                     type: EducationConstants.UPDATE_EDUCATION_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }

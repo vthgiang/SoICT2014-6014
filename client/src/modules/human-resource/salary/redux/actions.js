@@ -29,7 +29,7 @@ function searchSalary(data) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.GET_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -54,7 +54,7 @@ function createSalary(data) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.CREATE_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -79,7 +79,7 @@ function deleteSalary(id) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.DELETE_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -105,7 +105,7 @@ function updateSalary(id, data) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.UPDATE_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -127,7 +127,7 @@ function checkSalary(employeeNumber, month) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.CHECK_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
@@ -149,7 +149,7 @@ function checkArraySalary(data) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.CHECK_ARRAY_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
@@ -171,7 +171,7 @@ function importSalary(data) {
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.IMPORT_SALARY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };

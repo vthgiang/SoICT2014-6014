@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal } from '../../../../../common-components';
 
-import { EmployeeManagerActions } from '../redux/actions';
-import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
+import { DialogModal, ButtonModal } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
+
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from '../../employee-create/components/combinedContent';
+
+import { EmployeeManagerActions } from '../redux/actions';
 class EmployeeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -67,6 +69,10 @@ class EmployeeCreateForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
+        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+            var partValue = value.split('-');
+            value = [partValue[2],partValue[1], partValue[0]].join('-');
+        }
         this.setState({
             employee: {
                 ...employee,
@@ -156,7 +162,27 @@ class EmployeeCreateForm extends Component {
             }
         })
     }
-    // function thêm mới thông tin nhân viên
+
+    // function kiểm tra các trường bắt buộc phải nhập
+    validatorInput = (value) => {
+        if (value !== undefined && value.trim() !== '') {
+            return true;
+        }
+        return false;
+    }
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId)&&
+        this.validatorInput(this.state.employee.fullName)&& this.validatorInput(this.state.employee.birthdate)&&
+        this.validatorInput(this.state.employee.emailInCompany)&& this.validatorInput(this.state.employee.identityCardNumber)&& 
+        this.validatorInput(this.state.employee.identityCardDate)&& this.validatorInput(this.state.employee.identityCardAddress)&& 
+        this.validatorInput(this.state.employee.phoneNumber)&& this.validatorInput(this.state.employee.temporaryResidence) &&
+        this.validatorInput(this.state.employee.taxRepresentative)&& this.validatorInput(this.state.employee.taxNumber) &&
+        this.validatorInput(this.state.employee.taxDateOfIssue)&& this.validatorInput(this.state.employee.taxAuthority);
+        return result;
+    }
+
+    // Function thêm mới thông tin nhân viên
     save = async () => {
         let { employee, degrees, certificates, contracts, files,
             disciplines, commendations, salaries, annualLeaves } = this.state;
@@ -199,7 +225,7 @@ class EmployeeCreateForm extends Component {
                     formID="form-add-employee"
                     title="Thêm mới nhân viên"
                     func={this.save}
-                    disableSubmit={false}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-addAA-employee"> */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }} >
@@ -298,7 +324,6 @@ class EmployeeCreateForm extends Component {
                                 handleAddFile={this.handleChangeFile}
                                 handleEditFile={this.handleChangeFile}
                                 handleDeleteFile={this.handleChangeFile}
-                                handleSubmit={this.handleSubmit}
                             />
                         </div>
                     </div>
@@ -309,8 +334,8 @@ class EmployeeCreateForm extends Component {
     }
 };
 function mapState(state) {
-    const { employeesManager} = state;
-    return { employeesManager};
+    const { employeesManager } = state;
+    return { employeesManager };
 };
 
 const actionCreators = {

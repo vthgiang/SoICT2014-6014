@@ -205,6 +205,7 @@ class CertificateTab extends Component {
                     this.state.currentRow !== undefined &&
                     <DegreeEditModal
                         id={`editCertificate${this.state.currentRow.index}`}
+                        _id = {this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}
                         issuedBy={this.state.currentRow.issuedBy}
@@ -220,6 +221,7 @@ class CertificateTab extends Component {
                     this.state.currentRowcertificates !== undefined &&
                     <CertificateEditModal
                         id={`editCertificateShort${this.state.currentRowcertificates.index}`}
+                        _id = {this.state.currentRowcertificates._id}
                         index={this.state.currentRowcertificates.index}
                         name={this.state.currentRowcertificates.name}
                         issuedBy={this.state.currentRowcertificates.issuedBy}

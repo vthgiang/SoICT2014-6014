@@ -51,7 +51,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             process.env.TOKEN_SECRET
         );
         
-        user.status = 0; 
+        user.status = 0;
         user.tokens.push(token);
         user.save();
 

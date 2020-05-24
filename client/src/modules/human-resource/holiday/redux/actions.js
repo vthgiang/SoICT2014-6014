@@ -29,7 +29,7 @@ function getListHoliday() {
             .catch(err => {
                 dispatch({
                     type: HolidayConstants.GET_HOLIDAY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -54,7 +54,7 @@ function createNewHoliday(data) {
             .catch(err => {
                 dispatch({
                     type: HolidayConstants.CREATE_HOLIDAY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -80,7 +80,7 @@ function deleteHoliday(id) {
             .catch(err => {
                 dispatch({
                     type: HolidayConstants.DELETE_HOLIDAY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -107,7 +107,7 @@ function updateHoliday(id, infoHoliday) {
             .catch(err => {
                 dispatch({
                     type: HolidayConstants.UPDATE_HOLIDAY_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }

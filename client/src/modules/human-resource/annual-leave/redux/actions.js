@@ -26,7 +26,7 @@ function searchAnnualLeaves(data) {
             .catch(err => {
                 dispatch({
                     type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -51,7 +51,7 @@ function createAnnualLeave(data) {
             .catch(err => {
                 dispatch({
                     type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -76,7 +76,7 @@ function deleteAnnualLeave(id) {
             .catch(err => {
                 dispatch({
                     type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -102,7 +102,7 @@ function updateAnnualLeave(id, infoSabbatical) {
             .catch(err => {
                 dispatch({
                     type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }

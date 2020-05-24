@@ -32,12 +32,16 @@ exports.searchAnnualLeaves = async (data, company) => {
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (data.month !== "" && data.month !==null) {
-        keySearch = {...keySearch,startDate: {$regex: data.month,$options: "i"},
-            endDate: {$regex: data.month, $options: "i"}}
+        var date = new Date(data.month);
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        console.log(firstDay);
+        console.log(lastDay);
+        keySearch = {...keySearch,"$or": [{startDate: {"$gt": firstDay, "$lte": lastDay}}, {endDate: {"$gt": firstDay, "$lte": lastDay}}]}
     };
     var totalList = await AnnualLeave.count(keySearch);
     var listAnnualLeaves = await AnnualLeave.find(keySearch).populate({ path: 'employee', model: Employee })
-        .sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit);
+        .sort({ 'createdAt': 'desc' }).skip(data.page).limit(data.limit);
     for (let n in listAnnualLeaves) {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listAnnualLeaves[n].employee.emailInCompany);
         listAnnualLeaves[n] = {...listAnnualLeaves[n]._doc, ...value }
