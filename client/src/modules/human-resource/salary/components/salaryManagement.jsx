@@ -87,6 +87,8 @@ class SalaryManagement extends Component {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
+        let partMonth = value.split('-');
+        value = [partMonth[1], partMonth[0]].join('-');
         this.setState({
             ...this.state,
             month: value
@@ -96,9 +98,11 @@ class SalaryManagement extends Component {
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
         if (this.state.month === null) {
+            let partMonth = this.formatDate(Date.now(), true).split('-');
+            let month = [partMonth[1], partMonth[0]].join('-');
             await this.setState({
                 ...this.state,
-                month: this.formatDate(Date.now(), true)
+                month: month
             })
         }
         this.props.searchSalary(this.state);
