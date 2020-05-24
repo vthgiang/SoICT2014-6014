@@ -61,7 +61,21 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
+                    // pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
                     as: "creator organizationalUnit"
                 }
             },
@@ -88,13 +102,28 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     } else {
         unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
         roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
+        console.log("roleId: "+roleId);
         var tasktemplates = await TaskTemplate.aggregate([
             { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
             {
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
+                    // pipeline: [{ $match: { $and: [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
                     as: "creator organizationalUnit"
                 }
             },
