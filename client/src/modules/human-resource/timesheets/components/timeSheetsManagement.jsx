@@ -190,8 +190,8 @@ class TimeSheetsManagement extends Component {
                                             &emsp;&emsp;&emsp;<i style={{ color: "red", fontSize: 19 }} className="glyphicon glyphicon-remove"></i><span> -- Nghỉ làm</span>
 
                     </div>
-                    <div className="form-inline">
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
+                    <div id="croll-table" className="form-inline">
+                        <div className = "sticky col-lg-3 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
                             <table className="keeping table table-bordered">
                                 <thead>
                                     <tr style={{ height: 42 }}>
@@ -213,7 +213,7 @@ class TimeSheetsManagement extends Component {
 
                             </table>
                         </div>
-                        <div id="croll-table" className="timekeeping col-lg-9 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
+                        <div className="col-lg-9 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
                             <table id="timesheets" className="timekeeping table table-bordered" style={{marginLeft:-1}}>
                                 <thead>
                                     <tr>
@@ -386,12 +386,10 @@ class TimeSheetsManagement extends Component {
                                     </tr>
 
                                 </tbody>
-
                             </table>
-                            <SlimScroll outerComponentId='croll-table' innerComponentId='timesheets' innerComponentWidth={1000} activate={true} />
                         </div>
-
                     </div>
+                    <SlimScroll outerComponentId='croll-table' innerComponentId='timesheets' innerComponentWidth={1000} activate={true} />
 
                 </div>
                 <ModalImportTimekeeping />
