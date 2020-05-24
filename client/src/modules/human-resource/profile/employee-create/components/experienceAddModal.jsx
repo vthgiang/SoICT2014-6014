@@ -111,12 +111,8 @@ class ModalAddExperience extends Component {
         var startDate = [partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[1], partEnd[0]].join('-');
-        await this.setState({
-            startDate: startDate,
-            endDate: endDate
-        })
         if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
         }
     }
     render() {
