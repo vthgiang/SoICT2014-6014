@@ -54,9 +54,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     })
     var tasktemplates = [];
     roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
-    var query = [{ $sort: { 'createdAt': 1 } },
-    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
-    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]];
     if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
         var tasktemplate = await TaskTemplate.aggregate([
             { $match: { name: { "$regex": name, "$options": "i" } } },
