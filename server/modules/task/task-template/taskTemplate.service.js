@@ -61,10 +61,24 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
                     as: "creator organizationalUnit"
                 }
             },
+            {$unwind:  "$creator organizationalUnit"},
             { $sort: { 'createdAt': 1 } },
             { $limit: noResultsPerPage * pageNumber },
             { $skip: noResultsPerPage * (pageNumber - 1) },
@@ -76,10 +90,24 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
                     as: "creator organizationalUnit"
                 }
-            }
+            },
+            {$unwind:  "$creator organizationalUnit"}
         ])
         var totalCount = tasks.length;
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
@@ -94,10 +122,24 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
                     as: "creator organizationalUnit"
                 }
             },
+            {$unwind:  "$creator organizationalUnit"},
             { $sort: { 'createdAt': 1 } },
             { $limit: noResultsPerPage * pageNumber },
             { $skip: noResultsPerPage * (pageNumber - 1) },
@@ -109,10 +151,24 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                 $lookup:
                 {
                     from: "privileges",
-                    pipeline: [{ $match: { "$and": [{ resourceType: "TaskTemplate" }, { roleId: { $in: roleId } }] } }],
+                    let:{id:"$_id"},
+                    pipeline: [
+                        { $match:
+                            { $and :[{ $expr:
+                                { $and:[
+                                        { $eq: ["$resourceId", "$$id"] }
+                                    ]
+                                }
+                            },
+                            {
+                                roleId : { $in: roleId }
+                            }]
+                        } }
+                    ],
                     as: "creator organizationalUnit"
                 }
-            }
+            },
+            {$unwind:  "$creator organizationalUnit"}
         ])
         var totalCount = tasks.length;
         var totalPages = Math.ceil(totalCount / noResultsPerPage);

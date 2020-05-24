@@ -9,7 +9,7 @@ import {
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const performTaskService = {
-    getLogTimerTask,
+    getTimesheetLogs,
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
@@ -68,7 +68,7 @@ function editResultTask(listResult, taskid) {
 }
 
 // get all log timer task
-function getLogTimerTask(task) {
+function getTimesheetLogs(task) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/${task}`,
         method: 'GET',
@@ -93,10 +93,10 @@ function startTimerTask(newTimer) {
 }
 
 // stop timer task
-function stopTimerTask(id, newTimer) {
+function stopTimerTask(newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`,
-        method : 'PUT',
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer`,
+        method : 'POST',
         data : newTimer
     }, false, true, 'task.task_perform');
 }

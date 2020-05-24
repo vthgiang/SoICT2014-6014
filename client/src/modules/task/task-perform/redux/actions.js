@@ -5,12 +5,10 @@ import { taskManagementConstants } from "../../task-management/redux/constants";
 import { performTaskService } from "./services";
 
 export const performTaskAction = {
-    getLogTimerTask,
+    getTimesheetLogs,
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
-    pauseTimerTask,
-    continueTimerTask,
     addActionComment,
     editActionComment,
     deleteActionComment,
@@ -65,14 +63,14 @@ function editResultTask(result, taskid) {
 }
 
 // Get log timer task
-function getLogTimerTask(task) {
+function getTimesheetLogs(task) {
     return dispatch => {
-        dispatch({type: performTaskConstants.GET_LOGTIMER_REQUEST});
+        dispatch({type: performTaskConstants.GET_TIMESHEETLOGS_REQUEST});
 
-        performTaskService.getLogTimerTask(task)
+        performTaskService.getTimesheetLogs(task)
             .then(
-                payload => dispatch({ type: performTaskConstants.GET_LOGTIMER_SUCCESS, payload }),
-                error => dispatch({ type: performTaskConstants.GET_LOGTIMER_FAILURE, error })
+                payload => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_FAILURE, error })
             );
     };
 }
@@ -106,46 +104,13 @@ function startTimerTask(timer) {
     };
 }
 
-// pause timer task
-function pauseTimerTask(id, newTimer) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.PAUSE_TIMER_REQUEST });
-
-        performTaskService.pauseTimerTask(id, newTimer)
-            .then(
-                payload => {
-                    dispatch({ type: performTaskConstants.PAUSE_TIMER_SUCCESS, payload });
-                },
-                error => {
-                    dispatch({ type: performTaskConstants.PAUSE_TIMER_FAILURE, error });
-                }
-            );
-    };
-}
-
-// continue timer task
-function continueTimerTask(id, newTimer) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.CONTINUE_TIMER_REQUEST });
-
-        performTaskService.continueTimerTask(id, newTimer)
-            .then(
-                payload => {
-                    dispatch({ type: performTaskConstants.CONTINUE_TIMER_SUCCESS, payload });
-                },
-                error => {
-                    dispatch({ type: performTaskConstants.CONTINUE_TIMER_FAILURE, error });
-                }
-            );
-    };
-}
 
 // stop timer task
-function stopTimerTask(id, newTimer) {
+function stopTimerTask(newTimer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.STOP_TIMER_REQUEST });
 
-        performTaskService.stopTimerTask(id, newTimer)
+        performTaskService.stopTimerTask(newTimer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.STOP_TIMER_SUCCESS, payload})
