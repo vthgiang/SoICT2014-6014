@@ -67,13 +67,13 @@ function addNewEmployee(employee) {
  * @param {*} id 
  * @param {*} data 
  */
-function updateInformationEmployee(id, employeeInfor) {
+function updateInformationEmployee(id, data) {
     return dispatch => {
         dispatch({
             type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST
         });
 
-        EmployeeService.updateInformationEmployee(id, employeeInfor)
+        EmployeeService.updateInformationEmployee(id, data)
             .then(res => {
                 dispatch({
                     type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS,

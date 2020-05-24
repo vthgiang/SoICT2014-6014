@@ -113,8 +113,6 @@ class InsurranceTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhyt')}</h4></legend>
                         <div className="row">
-
-
                             <div className="form-group col-md-4">
                                 <label>{translate('manage_employee.number_BHYT')}</label>
                                 <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />

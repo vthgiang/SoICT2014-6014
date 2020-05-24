@@ -52,6 +52,24 @@ class GeneralTab extends Component {
         this.props.handleChange(name, value);
     }
 
+    // Funtion bắt sự kiện thay đổi giới tính
+    handleGenderChange = (e)=> {
+        const { value } = e.target;
+        this.setState({
+            gender: value,
+        })
+        this.props.handleChange('gender', value);
+    }
+
+    // Funtion bắt sự kiện thay đổi tình trạng quan hệ
+    handleMaritalStatusChange = (e)=> {
+        const { value } = e.target;
+        this.setState({
+            maritalStatus: value,
+        })
+        this.props.handleChange('maritalStatus', value);
+    }
+
     // Function bắt sự kiện thay đổi mã nhân viên
     handleMSNVChange = (e) => {
         const { value } = e.target;
@@ -299,11 +317,11 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="gender" value="male" onChange={this.handleChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="gender" value="female" onChange={this.handleChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -334,11 +352,11 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="single" onChange={this.handleChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="married" onChange={this.handleChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
                                     </div>
                                 </div>
                             </div>

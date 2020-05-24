@@ -28,6 +28,10 @@ class EmployeeEditFrom extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
+        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+            var partValue = value.split('-');
+            value = [partValue[2],partValue[1], partValue[0]].join('-');
+        }
         this.setState({
             employee: {
                 ...employee,
@@ -434,6 +438,22 @@ class EmployeeEditFrom extends Component {
         formData.append("fileAvatar", this.state.avatar);
         this.props.updateInformationEmployee(this.state._id, formData);
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -481,6 +501,7 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
+        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
