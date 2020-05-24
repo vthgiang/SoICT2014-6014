@@ -176,8 +176,10 @@ exports.uploadFile = (arrData, type) => {
                 }
             },
             filename: function (req, file, cb) {
-                let hash =`${req.user._id}${Date.now()}`+ CryptoJS.MD5(file.fieldname).toString();
                 let  extend = file.originalname.split('.');
+                let oldNameFile = extend.splice(0, extend.length-1);
+                    oldNameFile = oldNameFile.join('.');
+                let hash =`${req.user._id}_${Date.now()}_`+ CryptoJS.MD5(oldNameFile).toString();
                 cb(null, `${hash}.${extend[extend.length-1]}`);
             }
         }),

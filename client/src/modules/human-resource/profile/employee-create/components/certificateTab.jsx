@@ -149,8 +149,11 @@ class CertificateTab extends Component {
                                             <td>{x.issuedBy}</td>
                                             <td>{x.year}</td>
                                             <td>{translate(`manage_employee.${x.degreeType}`)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable' href="/images/myw3schoolsimage.jpg" download={x.name}>
+                                                   <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }
                                             </td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_diploma')}><i className="material-icons">edit</i></a>
@@ -205,7 +208,7 @@ class CertificateTab extends Component {
                     this.state.currentRow !== undefined &&
                     <DegreeEditModal
                         id={`editCertificate${this.state.currentRow.index}`}
-                        _id = {this.state.currentRow._id}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}
                         issuedBy={this.state.currentRow.issuedBy}
@@ -221,7 +224,7 @@ class CertificateTab extends Component {
                     this.state.currentRowcertificates !== undefined &&
                     <CertificateEditModal
                         id={`editCertificateShort${this.state.currentRowcertificates.index}`}
-                        _id = {this.state.currentRowcertificates._id}
+                        _id={this.state.currentRowcertificates._id}
                         index={this.state.currentRowcertificates.index}
                         name={this.state.currentRowcertificates.name}
                         issuedBy={this.state.currentRowcertificates.issuedBy}
