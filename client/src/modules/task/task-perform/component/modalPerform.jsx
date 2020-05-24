@@ -41,7 +41,7 @@ class ModalPerform extends Component {
                     // func={this.save}
                 >
                     <div className="row row-equal-height" style={{height: "100%"}}>
-                        <div className="col-sm-6" style={{ paddingTop: "10px" }}>
+                        <div className="col-sm-6" style={{ paddingTop: "10px",position:"relative" }}>
                             <DetailTaskTab
                                 id={this.props.id}
                                 role={this.props.role}
@@ -50,7 +50,7 @@ class ModalPerform extends Component {
 
                         {/* end div mô tả... */}
 
-                        <div className="col-sm-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4"}}>
+                        <div className="col-sm-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4",position:"relative"}}>
                             <ActionTab 
                                 id = {this.props.id}
                                 role={this.props.role}

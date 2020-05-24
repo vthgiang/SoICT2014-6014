@@ -158,31 +158,33 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
-        case taskManagementConstants.EDIT_TASK_REQUEST:
-            return {
-                ...state,
-                items: state.items.map(task =>
-                    task._id === action.id
-                        ? { ...task, editing: true }
-                        : task
-                ),
-                isLoading: false
-            };
-        case taskManagementConstants.EDIT_TASK_SUCCESS:
-            return {
-                ...state,
-                tasks: state.tasks.map(task =>
-                    task._id === action.payload.info._id
-                        ? action.payload.info : task
-                ),
-                task: action.payload,
-                isLoading: false
-            };
-        case taskManagementConstants.EDIT_TASK_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false
-            };
+        // case taskManagementConstants.EDIT_TASK_REQUEST:
+        //     return {
+        //         ...state,
+        //         items: state.items.map(task =>
+        //             task._id === action.id
+        //                 ? { ...task, editing: true }
+        //                 : task
+        //         ),
+        //         isLoading: false
+        //     };
+        // case taskManagementConstants.EDIT_TASK_SUCCESS:
+
+        // console.log(action.payload)
+        //     return {
+        //         ...state,
+        //         tasks: state.tasks.map(task =>
+        //             task._id === action.payload.info._id
+        //                 ? action.payload.info : task
+        //         ),
+        //         task: action.payload,
+        //         isLoading: false
+        //     };
+        // case taskManagementConstants.EDIT_TASK_FAILURE:
+        //     return {
+        //         error: action.error,
+        //         isLoading: false
+        //     };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST:
             return {
                 ...state,

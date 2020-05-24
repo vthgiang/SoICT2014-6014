@@ -14,9 +14,8 @@ const { evaluationAction } = require("./taskPerform.controller");
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
 exports.getTaskTimesheetLogs = async (params) => {
-    var logTimers= await TimesheetLog.find({ task: params.task }).populate("user");
-
-    return logTimers;
+    var timesheetLogs = await Task.findById(params.task).populate("timesheetLogs.creator")
+    return timesheetLogs.timesheetLogs;
 }
 
 /**
@@ -29,68 +28,36 @@ exports.getTimerStatus = async (params) => {
     return timerStatus
 }
 
-/**
- * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
- */
-exports.startTimesheetLog = async (body) => {
-    var timerUpdate = {
-        user: body.user,
-        startedAt: body.startedAt,
-        description: body.description
-    }
-    var timer = await Task.findByIdAndUpdate(body.task,
-        { $push: { timesheetLogs: timerUpdate } }, { new: true })
-    return timer;
-}
-
-/**
- * ạm dừng: Lưu thời gian đã bấm (time)
- */
-exports.pauseTimer = async (params,body) => {
-    var timer = await TimesheetLog.findByIdAndUpdate(
-        params.id, { time: body.time, pause: true }, { new: true }
-    );
-
-    return timer;
-}
-
-/**
- * Tiếp tục bấm giờ: Cập nhật lại trạng thái bắt đầu (time)
- */
-exports.continueTimer = async (params,body) => {
-    var timer = await TimesheetLog.findByIdAndUpdate(
-        params.id, { startTimer: body.startTimer, pause: false }, { new: true }
-    );
-
-    return timer;
-}
-
+// /**
+//  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
+//  */
+// exports.startTimesheetLog = async (body) => {
+//     console.log(body)
+//     var timerUpdate = {
+//         startedAt: body.startedAt,
+//         description: body.description,
+//         creator:body.creator
+//     }
+//     var timer = await Task.findByIdAndUpdate(body.task,
+//         { $push: { timesheetLogs: timerUpdate } }, { new: true })
+//     return timer;
+// }
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
  */
-exports.stopTimer = async (req, res) => {
-    var timer = await TimesheetLog.findByIdAndUpdate(
-        req.params.id, { stopTimer: req.body.stopTimer, time: req.body.time }, { new: true }
-    );
-    var task = await Task.findByIdAndUpdate(
-        req.body.task, { $inc: { 'time': req.body.time } }, { new: true }
-    );
-    task = await task.populate('responsible unit').execPopulate();
-    if (task.tasktemplate !== null) {
-        var actionTemplates = await TaskAction.find({ tasktemplate: task.tasktemplate._id });
-        var informationTemplate = await TaskTemplateInformation.find({ tasktemplate: task.tasktemplate._id });
-        
-        return {
-            "info": task,
-            "actions": actionTemplates,
-            "informations": informationTemplate
-        
-        }
-    } else {
-        
-        return { "info": task }
-    
+exports.stopTimesheetLog = async (body) => {
+    console.log(body)
+    var timerUpdate = {
+        stoppedAt: body.stoppedAt,
+        duration: body.duration,
+        startedAt: body.startedAt,
+        description: body.description,
+        creator:body.creator
     }
+
+    var timer = await Task.findByIdAndUpdate(body.task,
+        { $push: { timesheetLogs: timerUpdate } }, { new: true }).populate("timesheetLogs.creator")
+    return timer.timesheetLogs;
 }
 
 /**
