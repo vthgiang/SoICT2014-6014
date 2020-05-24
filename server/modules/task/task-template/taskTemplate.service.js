@@ -52,129 +52,109 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         allRole = allRole.concat(item._id); //thêm id role hiện tại vào 1 mảng
         allRole = allRole.concat(item.parents); //thêm các role children vào mảng
     })
-    var tasktemplates;
+    var tasktemplates = [];
+    roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
+    var query = [{ $sort: { 'createdAt': 1 } },
+    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
+    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]];
     if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
-        roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
-        var tasktemplates = await TaskTemplate.aggregate([
-            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }] } },
+        var tasktemplate = await TaskTemplate.aggregate([
+            { $match: { name: { "$regex": name, "$options": "i" } } },
             {
                 $lookup:
                 {
                     from: "privileges",
-                    let:{id:"$_id"},
+                    let: { id: "$_id" },
                     pipeline: [
-                        { $match:
-                            { $and :[{ $expr:
-                                { $and:[
-                                        { $eq: ["$resourceId", "$$id"] }
-                                    ]
-                                }
-                            },
+                        {
+                            $match:
                             {
-                                roleId : { $in: roleId }
-                            }]
-                        } }
+                                $and: [{
+                                    $expr:
+                                    {
+                                        $and: [
+                                            { $eq: ["$resourceId", "$$id"] }
+                                        ]
+                                    }
+                                },
+                                {
+                                    roleId: { $in: roleId }
+                                }]
+                            }
+                        }
                     ],
                     as: "creator organizationalUnit"
                 }
             },
-            {$unwind:  "$creator organizationalUnit"},
-            { $sort: { 'createdAt': 1 } },
-            ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
-            ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }],
-        ])
-        await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
-        var tasks = await TaskTemplate.aggregate([
-            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }] } },
+            { $unwind: "$creator organizationalUnit" },
             {
-                $lookup:
-                {
-                    from: "privileges",
-                    let:{id:"$_id"},
-                    pipeline: [
-                        { $match:
-                            { $and :[{ $expr:
-                                { $and:[
-                                        { $eq: ["$resourceId", "$$id"] }
-                                    ]
-                                }
-                            },
-                            {
-                                roleId : { $in: roleId }
-                            }]
-                        } }
-                    ],
-                    as: "creator organizationalUnit"
+                $facet: {
+                    tasks: [{ $sort: { 'createdAt': 1 } },
+                    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
+                    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
+                    totalCount: [
+                        {
+                            $count: 'count'
+                        }
+                    ]
                 }
-            },
-            {$unwind:  "$creator organizationalUnit"}
+            }
         ])
-        var totalCount = tasks.length;
-        var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        
-        return { taskTemplates: tasktemplates, pageTotal: totalPages };
     } else {
         unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
-        roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
-        var tasktemplates = await TaskTemplate.aggregate([
+        var tasktemplate = await TaskTemplate.aggregate([
             { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
             {
                 $lookup:
                 {
                     from: "privileges",
-                    let:{id:"$_id"},
+                    let: { id: "$_id" },
                     pipeline: [
-                        { $match:
-                            { $and :[{ $expr:
-                                { $and:[
-                                        { $eq: ["$resourceId", "$$id"] }
-                                    ]
-                                }
-                            },
+                        {
+                            $match:
                             {
-                                roleId : { $in: roleId }
-                            }]
-                        } }
+                                $and: [{
+                                    $expr:
+                                    {
+                                        $and: [
+                                            { $eq: ["$resourceId", "$$id"] }
+                                        ]
+                                    }
+                                },
+                                {
+                                    roleId: { $in: roleId }
+                                }]
+                            }
+                        }
                     ],
                     as: "creator organizationalUnit"
                 }
             },
-            {$unwind:  "$creator organizationalUnit"},
-            { $sort: { 'createdAt': 1 } },
-            ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
-            ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }],
-        ])
-        await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
-        var tasks = await TaskTemplate.aggregate([
-            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
+            { $unwind: "$creator organizationalUnit" },
             {
-                $lookup:
-                {
-                    from: "privileges",
-                    let:{id:"$_id"},
-                    pipeline: [
-                        { $match:
-                            { $and :[{ $expr:
-                                { $and:[
-                                        { $eq: ["$resourceId", "$$id"] }
-                                    ]
-                                }
-                            },
-                            {
-                                roleId : { $in: roleId }
-                            }]
-                        } }
-                    ],
-                    as: "creator organizationalUnit"
+                $facet: {
+                    tasks: [{ $sort: { 'createdAt': 1 } },
+                    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
+                    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
+                    totalCount: [
+                        {
+                            $count: 'count'
+                        }
+                    ]
                 }
-            },
-            {$unwind:  "$creator organizationalUnit"}
+            }
         ])
-        var totalCount = tasks.length;
-        var totalPages = Math.ceil(totalCount / noResultsPerPage);
-
-        return { taskTemplates: tasktemplates, pageTotal: totalPages };
     }
+
+    tasktemplates = tasktemplate[0].tasks;
+    await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
+    var totalCount = 0;
+    if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
+        totalCount = tasktemplate[0].totalCount[0].count;
+    }
+    var totalPages = Math.ceil(totalCount / noResultsPerPage);
+
+    return { taskTemplates: tasktemplates, pageTotal: totalPages };
 }
 
 /**
