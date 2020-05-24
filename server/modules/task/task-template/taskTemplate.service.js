@@ -80,8 +80,8 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             },
             {$unwind:  "$creator organizationalUnit"},
             { $sort: { 'createdAt': 1 } },
-            { $limit: noResultsPerPage * pageNumber },
-            { $skip: noResultsPerPage * (pageNumber - 1) },
+            ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
+            ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }],
         ])
         await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
         var tasks = await TaskTemplate.aggregate([
@@ -141,8 +141,8 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             },
             {$unwind:  "$creator organizationalUnit"},
             { $sort: { 'createdAt': 1 } },
-            { $limit: noResultsPerPage * pageNumber },
-            { $skip: noResultsPerPage * (pageNumber - 1) },
+            ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
+            ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }],
         ])
         await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
         var tasks = await TaskTemplate.aggregate([
