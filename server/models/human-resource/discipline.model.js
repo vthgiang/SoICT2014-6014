@@ -24,16 +24,20 @@ const DisciplineSchema = new Schema({
         require: true,
     },
     startDate: {
-        type: String
+        type: Date,
+        require: true,
     },
     endDate: {
-        type: String
+        type: Date,
+        require: true,
     },
     type: { // hình thức kỷ luật
-        type: String
+        type: String,
+        require: true,
     },
     reason: {
-        type: String
+        type: String,
+        require: true,
     }
 }, {
     timestamps: true,

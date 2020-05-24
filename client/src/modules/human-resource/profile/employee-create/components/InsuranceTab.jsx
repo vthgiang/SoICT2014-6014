@@ -13,6 +13,22 @@ class InsurranceTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
 
     // Bắt sự kiện click edit BHXH
     handleEdit = async (value, index) => {
@@ -97,8 +113,6 @@ class InsurranceTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhyt')}</h4></legend>
                         <div className="row">
-
-
                             <div className="form-group col-md-4">
                                 <label>{translate('manage_employee.number_BHYT')}</label>
                                 <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
@@ -107,7 +121,7 @@ class InsurranceTab extends Component {
                                 <label >{translate('manage_employee.start_date')}</label>
                                 <DatePicker
                                     id={`startDateBHYT${id}`}
-                                    value={healthInsuranceStartDate}
+                                    value={healthInsuranceStartDate !== undefined ? this.formatDate(healthInsuranceStartDate) : undefined}
                                     onChange={this.handleStartDateBHYTChange}
                                 />
                             </div>
@@ -115,7 +129,7 @@ class InsurranceTab extends Component {
                                 <label>{translate('manage_employee.end_date_certificate')}</label>
                                 <DatePicker
                                     id={`endDateBHYT${id}`}
-                                    value={healthInsuranceEndDate}
+                                    value={healthInsuranceEndDate !== undefined ? this.formatDate(healthInsuranceEndDate) : undefined}
                                     onChange={this.handleEndDateBHYTChange}
                                 />
                             </div>
@@ -146,8 +160,8 @@ class InsurranceTab extends Component {
                                         {(typeof socialInsuranceDetails !== 'undefined' && socialInsuranceDetails.length !== 0) &&
                                             socialInsuranceDetails.map((x, index) => (
                                                 <tr key={index}>
-                                                    <td>{x.startDate}</td>
-                                                    <td>{x.endDate}</td>
+                                                    <td>{this.formatDate(x.startDate, true)}</td>
+                                                    <td>{this.formatDate(x.endDate, true)}</td>
                                                     <td>{x.company}</td>
                                                     <td>{x.position}</td>
                                                     <td>
@@ -169,10 +183,11 @@ class InsurranceTab extends Component {
                     this.state.currentRow !== undefined &&
                     <SocialInsuranceEditModal
                         id={`editBHXH${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         company={this.state.currentRow.company}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
+                        startDate={this.formatDate(this.state.currentRow.startDate, true)}
+                        endDate={this.formatDate(this.state.currentRow.endDate, true)}
                         position={this.state.currentRow.position}
                         handleChange={this.handleEditBHXH}
                     />

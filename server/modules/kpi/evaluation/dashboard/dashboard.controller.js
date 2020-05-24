@@ -1,7 +1,7 @@
 const { LogInfo, LogError } = require('../../../../logs');
 const DashboardService = require('./dashboard.service');
 
-// get all target of member kpi
+// Lấy tất cả KPI của nhân viên theo vai trò
 exports.getAllEmployeeKpiSetOfUnit = async (req, res) => {
     try {
         const employeeKpis = await DashboardService.getAllEmployeeKpiSetOfUnit(req.params.role.split(','));
@@ -20,7 +20,7 @@ exports.getAllEmployeeKpiSetOfUnit = async (req, res) => {
     }
 };
 
-// get all employee
+// Lấy tất cả nhân viên theo vai trò
 exports.getAllEmployeeOfUnit = async (req, res) => {
     try {
         const employees = await DashboardService.getAllEmployeeOfUnit(req.params.role.split(','));

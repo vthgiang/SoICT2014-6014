@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer } from 'react-toastify';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './combinedContent';
@@ -24,6 +23,22 @@ class EmployeeManagement extends Component {
     componentDidMount() {
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
+    }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
@@ -135,8 +150,8 @@ class EmployeeManagement extends Component {
             })
         }
 
-        if (employeesManager.listEmployee) {
-            lists = employeesManager.listEmployee;
+        if (employeesManager.listEmployees) {
+            lists = employeesManager.listEmployees;
         }
         var pageTotal = ((employeesManager.totalList % this.state.limit) === 0) ?
             parseInt(employeesManager.totalList / this.state.limit) :
@@ -224,7 +239,7 @@ class EmployeeManagement extends Component {
                                         <td>{x.employees.map(y => y.employeeNumber)}</td>
                                         <td>{x.employees.map(y => y.fullName)}</td>
                                         <td>{x.employees.map(y => y.gender)}</td>
-                                        <td>{x.employees.map(y => y.birthdate)}</td>
+                                        <td>{this.formatDate(x.employees.map(y => y.birthdate))}</td>
                                         <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
@@ -261,13 +276,12 @@ class EmployeeManagement extends Component {
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ToastContainer />
                 {
                     this.state.currentRowView !== undefined &&
                     <EmployeeDetailForm
                         _id={this.state.currentRowView.employees[0]._id}
                         employees={this.state.currentRowView.employees}
-                        salarys={this.state.currentRowView.salarys}
+                        salaries={this.state.currentRowView.salarys}
                         annualLeaves={this.state.currentRowView.annualLeaves}
                         commendations={this.state.currentRowView.commendations}
                         disciplines={this.state.currentRowView.disciplines}
@@ -278,7 +292,7 @@ class EmployeeManagement extends Component {
                     <EmployeeEditFrom
                         _id={this.state.currentRow.employees[0]._id}
                         employees={this.state.currentRow.employees}
-                        salarys={this.state.currentRow.salarys}
+                        salaries={this.state.currentRow.salarys}
                         annualLeaves={this.state.currentRow.annualLeaves}
                         commendations={this.state.currentRow.commendations}
                         disciplines={this.state.currentRow.disciplines}

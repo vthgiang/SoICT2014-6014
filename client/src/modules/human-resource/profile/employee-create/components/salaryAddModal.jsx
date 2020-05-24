@@ -183,7 +183,12 @@ class SalaryAddModal extends Component {
     }
 
     // Function bắt sự kiện lưu bảng lương
-    save = () => {
+    save = async () => {
+        var partMonth = this.state.month.split('-');
+        var month = [partMonth[1], partMonth[0]].join('-');
+        await this.setState({
+            month: month
+        })
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }

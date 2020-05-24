@@ -8,8 +8,22 @@ class DisciplineTab extends Component {
         this.state = {
         };
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
 
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -47,7 +61,7 @@ class DisciplineTab extends Component {
                                     commendations.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
-                                            <td>{x.startDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
                                             <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
@@ -78,8 +92,8 @@ class DisciplineTab extends Component {
                                     disciplines.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>

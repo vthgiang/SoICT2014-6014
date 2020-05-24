@@ -27,7 +27,10 @@ const initState = {
             nextPage: 0,
         },
 
-        domains: [], // cây danh mục các văn bản
+        domains: {
+            list: [],
+            tree: []
+        },
 
         listData: {
             list: [], paginate: [],

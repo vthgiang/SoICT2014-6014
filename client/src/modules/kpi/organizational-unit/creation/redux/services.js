@@ -24,7 +24,7 @@ export const createUnitKpiServices = {
 // Lấy KPI đơn vị hiện tại
 function getCurrentKPIUnit(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/roles/${id}`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }
@@ -32,7 +32,7 @@ function getCurrentKPIUnit(id) {
 // Lấy KPI đơn vị cha
 function getKPIParent(parentUnit) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/parent/${parentUnit}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/${parentUnit}/parent-organizational-unit-kpi-sets`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }
@@ -44,7 +44,7 @@ function addKPIUnit(newKPI) {
     newKPI = {...newKPI, creator: id};
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/create`,
+        url: `${LOCAL_SERVER_API}/kpiunits`,
         method: 'POST',
         data: newKPI
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
@@ -53,7 +53,7 @@ function addKPIUnit(newKPI) {
 // Thêm mục tiêu cho KPI đơn vị 
 function addTargetKPIUnit(newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/create-target`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpis`,
         method: 'POST',
         data: newTarget
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_modal');
@@ -66,7 +66,7 @@ function editKPIUnit(id, newKPI) {
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         data: newKPI
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
@@ -74,8 +74,8 @@ function editKPIUnit(id, newKPI) {
 // Chỉnh sửa trạng thái của KPI đơn vị
 function editStatusKPIUnit(id, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/status/${id}/${status}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/kpiunits/${id}/${status}`,
+        method: 'PATCH',
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
@@ -83,7 +83,7 @@ function editStatusKPIUnit(id, status) {
 // Chỉnh sửa mục tiêu của KPI đơn vị
 function editTargetKPIUnit(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/target/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpis/${id}`,
         method: 'PUT',
         data: newTarget
     }, true, true, 'kpi.organizational_unit.edit_target_kpi_modal');
@@ -102,7 +102,7 @@ function deleteKPIUnit(id) {
 function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     let kpiunit = organizationalUnitKpiSetId
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/target/${kpiunit}/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/${kpiunit}/organizational-unit-kpis/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }

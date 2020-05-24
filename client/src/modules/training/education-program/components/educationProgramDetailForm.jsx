@@ -1,13 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, SelectMulti } from '../../../../common-components';
+import { DialogModal, ErrorLabel, SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-components';
 import { CourseActions } from '../../course/redux/actions';
-import { PaginateBarModal } from './paginateBarModal';
 class EducationProgramDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     handleChange = (e) => {
@@ -17,16 +32,38 @@ class EducationProgramDetailForm extends Component {
         });
     }
 
-    // setPage = async (pageNumber) => {
-    //     var page = (pageNumber - 1) * (this.state.limit);
-    //     await this.setState({
-    //         page: parseInt(page),
-    //     });
-    //     this.props.getCourseByEducation(this.state);
-    // }
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
 
-    handleSunmitSearch = () => {
-        this.props.getCourseByEducation(this.state);
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+            search: true
+        });
+        this.props.getListCourse(this.state);
+    }
+
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+            search: true
+        });
+        this.props.getListCourse(this.state);
+    }
+
+    handleSunmitSearch = async () => {
+        await this.setState({
+            search: true
+        });
+        this.props.getListCourse(this.state);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -38,8 +75,8 @@ class EducationProgramDetailForm extends Component {
                 programId: nextProps.programId,
                 listCourses: nextProps.listCourses,
                 totalList: nextProps.totalList,
-                numberCourse: "",
-                typeCourse: "All",
+                courseId: "",
+                type: null,
                 page: 0,
                 limit: 5,
             }
@@ -50,38 +87,35 @@ class EducationProgramDetailForm extends Component {
 
     render() {
         const { education, course, translate } = this.props;
-        const { _id, name, programId, listCourses, page, limit, totalList } = this.state;
-        var { courseByEducation } = this.props.course;
-        // if (courseByEducation._id !== undefined && courseByEducation._id === data._id) {
-        //     listCourse = courseByEducation.allList
-        //     totalList = courseByEducation.totalList
-        // }
+        var { name, programId, listCourses, page, limit, totalList, search } = this.state;
+        if (search === true) {
+            listCourses = course.listCourses;
+            totalList = course.totalList
+        }
+
         var pageTotal = (totalList % limit === 0) ?
             parseInt(totalList / limit) :
             parseInt((totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
+        console.log(pageTotal);
+        console.log(currentPage);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-view-education" isLoading={education.isLoading}
+                    modalID="modal-view-education" isLoading={education.isLoading && course.isLoading}
                     formID="form-view-education"
                     title={`Thông tin chương trình đào tạo: ${name} - ${programId}`}
                     func={this.save}
                     hasSaveButton={false}
                     size={75}
-                    maxWidth={850}
+                    maxWidth={900}
                 >
                     <form className="form-group" id="form-view-education" >
                         <div className="qlcv">
-                            <div className="form-inline">
-                                <div className="form-group">
-                                    <h4 className="box-title">Danh sách khoá đào tạo của chương trình đào tạo:</h4>
-                                </div>
-                            </div>
                             <div className="form-inline" >
                                 <div className="form-group">
                                     <label style={{ width: 110 }} className="form-control-static">Mã khoá đào tạo</label>
-                                    <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} />
+                                    <input type="text" className="form-control" name="courseId" onChange={this.handleChange} />
                                 </div>
                             </div>
                             <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -89,10 +123,10 @@ class EducationProgramDetailForm extends Component {
                                     <label style={{ width: 110 }} className="form-control-static">Loại đào tạo</label>
                                     <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
                                         options={{ nonSelectedText: "Chọn loại đào tạo", allSelectedText: "Chọn tất cả loại đào tạo" }}
-                                        onChange={this.handleStatusChange}
+                                        onChange={this.handleTypeChange}
                                         items={[
-                                            { value: "Đào tạo nội bộ", text: "Đào tạo nội bộ" },
-                                            { value: "Đào tạo ngoài", text: "Đào tạo ngoài" },
+                                            { value: "internal", text: "Đào tạo nội bộ" },
+                                            { value: "external", text: "Đào tạo ngoài" },
                                         ]}
                                     >
                                     </SelectMulti>
@@ -100,15 +134,30 @@ class EducationProgramDetailForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <table id="course-table" className="table table-striped table-bordered table-hover" style={{ marginBottom:0 }}>
+                        <DataTableSetting
+                            tableId="course-table"
+                            columnArr={[
+                                "Mã khoá đào tạo",
+                                "Tên khoá đào tạo",
+                                "Bắt đầu",
+                                "Kết thúc",
+                                "Địa điểm đào tạo",
+                                "Đơn vị đào tạo",
+                                "Loại đào tạo"
+                            ]}
+                            limit={limit}
+                            setLimit={this.setLimit}
+                            hideColumnOption={true}
+                        />
+                        <table id="course-table" className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th title="Mã khoá đào tạo" style={{ width: "14%" }}>Mã khoá đào tạo</th>
-                                    <th style={{ width: "20%" }}>Tên khoá đào tạo</th>
+                                    <th title="Mã khoá đào tạo">Mã khoá đào tạo</th>
+                                    <th>Tên khoá đào tạo</th>
                                     <th title="Thời gian bắt đầu">Bắt đầu</th>
                                     <th title="Thời gian kết thúc">Kết thúc</th>
-                                    <th style={{ width: "15%" }} title="Địa điểm đào tạo">Địa điểm đào tạo</th>
-                                    <th style={{ width: "15%" }}>Đơn vị đào tạo</th>
+                                    <th title="Địa điểm đào tạo">Địa điểm đào tạo</th>
+                                    <th>Đơn vị đào tạo</th>
                                     <th style={{ width: "120px" }}>Loại đào tạo</th>
                                 </tr>
                             </thead>
@@ -119,8 +168,8 @@ class EducationProgramDetailForm extends Component {
                                         <tr key={index}>
                                             <td>{x.courseId}</td>
                                             <td>{x.name}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.coursePlace}</td>
                                             <td>{x.offeredBy}</td>
                                             <td>{x.type}</td>
@@ -133,8 +182,7 @@ class EducationProgramDetailForm extends Component {
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                             (typeof listCourses === 'undefined' || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
-                        <PaginateBarModal pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} _id={_id} />
-
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -148,7 +196,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    getCourseByEducation: CourseActions.getCourseByEducation,
+    getListCourse: CourseActions.getListCourse,
 };
 
 const detailForm = connect(mapState, actionCreators)(withTranslate(EducationProgramDetailForm));

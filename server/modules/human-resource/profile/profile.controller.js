@@ -66,7 +66,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
 exports.createEmployee = async (req, res) => {
     try {
         let avatar = "";
-        console.log(req.files);
         if (req.files.fileAvatar !== undefined) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
@@ -140,8 +139,7 @@ exports.createEmployee = async (req, res) => {
                             email: req.body.emailInCompany,
                             name: req.body.fullName
                         }
-                        let user = await UserService.createUser(userInfo, req.user.company._id);
-                        console.log(user)
+                        await UserService.createUser(userInfo, req.user.company._id);
                     }
                     await LogInfo(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
                     res.status(200).json({success: true, messages: ["create_employee_success"], content: data });
@@ -150,24 +148,93 @@ exports.createEmployee = async (req, res) => {
         }
     } catch (error) {
         await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: req.body}});
+        res.status(400).json({success: false, messages: ["create_employee_false"], content: { error: error}});
     }
 }
 
 
-
-// Cập nhật thông tin nhân viên
+/**
+ * Cập nhật thông tin nhân viên
+ */
 exports.updateEmployeeInformation = async (req, res) => {
     try {
-        var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
-        });
+        let avatar = "";
+        if (req.files.fileAvatar !== undefined) {
+            avatar = `/${req.files.fileAvatar[0].path}`;
+        }
+        let fileDegree = req.files.fileDegree,
+            fileCertificate = req.files.fileCertificate,
+            fileContract = req.files.fileContract,
+            file = req.files.file;
+        let fileInfo = { fileDegree, fileCertificate, fileContract, file, avatar };
+        // Kiểm tra dữ liệu truyền vào
+        if (req.body.employee.employeeNumber === undefined || req.body.employee.employeeNumber.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["employee_number_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.emailInCompany === undefined || req.body.employee.emailInCompany.trim()==="" ){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["email_in_company_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.employeeTimesheetId === undefined || req.body.employee.employeeTimesheetId.trim()==="" ){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["employee_timesheet_id_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.fullName === undefined || req.body.employee.fullName.trim()==="" ){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["full_name_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.birthdate === undefined || req.body.employee.birthdate.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["birthdate_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.identityCardNumber.toString() === undefined || req.body.employee.identityCardNumber.toString().trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["identity_card_number_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.identityCardDate === undefined || req.body.employee.identityCardDate.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["identity_card_date_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.identityCardAddress === undefined || req.body.employee.identityCardAddress.trim()==="" ){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["identity_card_address_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.phoneNumber.toString() === undefined || req.body.employee.phoneNumber.toString().trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["phone_number_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.temporaryResidence === undefined || req.body.employee.temporaryResidence.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["temporary_residence_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.taxDateOfIssue === undefined || req.body.employee.taxDateOfIssue.trim()==="" ){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["tax_date_of_issue_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.taxNumber.toString() === undefined || req.body.employee.taxNumber.toString().trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["tax_number_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.taxRepresentative === undefined || req.body.employee.taxRepresentative.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["tax_representative_required"], content:{ inputData: req.body } });
+        } else if(req.body.employee.taxAuthority === undefined || req.body.employee.taxAuthority.trim()===""){
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({ success: false, messages: ["tax_authority_required"], content:{ inputData: req.body } });
+        } else {
+            let oldEmployee = await EmployeeService.getEmployeeInforById(req.params.id);
+            if(req.body.employee.employeeNumber!==oldEmployee.employeeNumber){
+                // Kiểm tra sự tồn tại của mã nhân viên
+                let checkMSNV = await EmployeeService.checkEmployeeExisted(req.body.employee.employeeNumber, req.user.company._id );
+                if(checkMSNV === true){
+                    await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+                    res.status(400).json({ success: false, messages: ["employee_number_have_exist"], content:{ inputData: req.body } });
+                }
+            }
+            if(req.body.employee.emailInCompany!==oldEmployee.emailInCompany){
+                // Kiểm tra sự tồn tại của email công ty nhân viên
+                let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.body.employee.emailInCompany);
+                if(checkEmail === true){
+                    await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+                    res.status(400).json({ success: false, messages: ["email_in_company_have_exist"], content:{ inputData: req.body } });
+                }
+            }
+            var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body, fileInfo);
+            await LogInfo(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
+            res.status(200).json({success: true, messages: ["edit_employee_success"], content: data });
+        }
     } catch (error) {
-        res.status(400).json({
-            message: error
-        });
+        await LogError(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
+        res.status(400).json({success: false, messages: ["edit_employee_false"], content: { error: error}});
     }
 }
 
@@ -180,132 +247,5 @@ exports.deleteEmployee = async (req, res) => {
         res.status(200).json({success: true, messages: ["delete_employee_success"], content: data });
     } catch (error) {
         res.status(400).json({success: false, messages: ["delete_employee_false"], content: { error: error}});
-    }
-}
-
-
-
-// Kiểm tra sự tồn tại của MSNV
-exports.checkEmployeeExisted = async (req, res) => {
-    try {
-        var checkMSNV = await EmployeeService.checkEmployeeExisted(req.params.employeeNumber, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: checkMSNV
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error,
-        });
-    }
-}
-// Kiểm tra sự tồn tại của email công ty
-exports.checkEmployeeCompanyEmailExisted = async (req, res) => {
-    try {
-        var checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.params.email);
-        res.status(200).json({
-            message: "success",
-            content: checkEmail
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật avater nhân viên
-exports.updateEmployeeAvatar = async (req, res) => {
-    try {
-        var updateAvatar = await EmployeeService.updateEmployeeAvatar(req.params.employeeNumber, req.file.filename, req.user.company._id);
-        await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
-        res.status(200).json({
-            success: true,
-            message: ["update_avatar_success"],
-            content: updateAvatar
-        });
-    } catch (error) {
-        await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({
-            success: false,
-            message: ["update_avatar_faile"],
-            content: {
-                error: error
-            }
-        });
-    }
-}
-// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateEmployeeContract = async (req, res) => {
-    try {
-        var updateContract = await EmployeeService.updateEmployeeContract(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateContract
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-// Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateCertificate = async (req, res) => {
-    try {
-        var updateCertificate = await EmployeeService.updateEmployeeDegrees(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateCertificate
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateEmployeeCertificates = async (req, res) => {
-    try {
-        var updateCertificateShort = await EmployeeService.updateEmployeeCertificates(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateCertificateShort
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-exports.updateFile = async (req, res) => {
-    try {
-        var updateFile = await EmployeeService.updateFile(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateFile
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-
-// Kiểm tra sự tồn tại của MSNV trong array
-exports.checkEmployeesExisted = async (req, res) => {
-    try {
-        var checkArrayMSNV = await EmployeeService.checkEmployeesExisted(req.body, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: checkArrayMSNV
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error,
-        });
     }
 }

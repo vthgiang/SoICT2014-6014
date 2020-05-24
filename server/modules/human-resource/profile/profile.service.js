@@ -1,4 +1,4 @@
-const { 
+const {
     Employee,
     Discipline,
     Commendation,
@@ -14,74 +14,110 @@ const {
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
  * @emailInCompany: email công ty của nhân viên
  */
-exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)=>{
-    let roles = [], organizationalUnits = [];
-    let user = await User.findOne({email: emailInCompany},{ _id:1 })
+exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany) => {
+    let roles = [],
+        organizationalUnits = [];
+    let user = await User.findOne({
+        email: emailInCompany
+    }, {
+        _id: 1
+    })
     if (user !== null) {
-        roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'viceDean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ] 
+            $or: [{
+                    'dean': {
+                        $in: newRoles
+                    }
+                },
+                {
+                    'viceDean': {
+                        $in: newRoles
+                    }
+                },
+                {
+                    'employee': {
+                        $in: newRoles
+                    }
+                }
+            ]
         });
     }
     if (roles !== []) {
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
-    
-    return { roles, organizationalUnits }
+
+    return {
+        roles,
+        organizationalUnits
+    }
     // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 
 /**
  * Lấy danh sách email công ty theo phòng ban và chức vụ
- * @organizationalUnits: mảng id phòng ban
- * @position: mảng id chức vụ(role)
+ * @organizationalUnits : mảng id phòng ban
+ * @position : mảng id chức vụ(role)
  */
-exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationalUnits, position)=>{
-    let units = [], roles = [];
-    for(let n in organizationalUnits){
+exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organizationalUnits, position) => {
+    let units = [],
+        roles = [];
+    for (let n in organizationalUnits) {
         // Lấy thông tin đơn vị
-        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);  
+        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);
         units = [...units, unitInfo]
     }
     if (position === null) {
         units.forEach(u => {
-            let role = [u.dean, u.viceDean, u.employee]; 
-            roles = roles.concat(role); 
+            let role = [u.dean, u.viceDean, u.employee];
+            roles = roles.concat(role);
         })
     } else {
         roles = position
     }
 
     // Lấy danh sách người dùng theo phòng ban và chức danh
-    let userRoles = await UserRole.find({roleId: {$in: roles}});
+    let userRoles = await UserRole.find({
+        roleId: {
+            $in: roles
+        }
+    });
 
     // Lấy userID vào 1 arr
-    let userId = userRoles.map(userRole => userRole.userId); 
+    let userId = userRoles.map(userRole => userRole.userId);
 
     // Lấy email của người dùng theo phòng ban và chức danh
-    var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
-    
+    var emailUsers = await User.find({
+        _id: {
+            $in: userId
+        }
+    }, {
+        email: 1
+    });
+
     return emailUsers.map(user => user.email)
 }
 
 /**
- * Lấy thông tin cá nhân của nhân viên
- * @email: email công ty của nhân viên
- */ 
+ * Lấy thông tin cá nhân của nhân viên theo id user(tài khoản đăng nhập)
+ * @id : id người dùng(tài khoản)
+ */
 exports.getEmployeeProfile = async (id) => {
     let user = await User.findById(id);
     let employees = await Employee.find({
         emailInCompany: user.email
     });
-    if(employees.length === 0){
-        return { employees: employees}
+    if (employees.length === 0) {
+        return {
+            employees: employees
+        }
     } else {
-        console.log(employees);
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(user.email);
         let salarys = await Salary.find({
             employee: employees[0]._id
@@ -95,21 +131,41 @@ exports.getEmployeeProfile = async (id) => {
         let disciplines = await Discipline.find({
             employee: employees[0]._id
         })
-        return { employees: employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        return {
+            employees: employees,
+            salarys,
+            annualLeaves,
+            commendations,
+            disciplines,
+            ...value
+        }
     }
-    
+
 }
+
+/**
+ * Lấy thông tin nhân viên theo id
+ * @id : id thông tin nhân viên cần lấy
+ */
+exports.getEmployeeInforById = async(id)=>{
+    return await Employee.findById(id);
+}
+
 /**
  * Cập nhật thông tin cá nhân của nhân viên
  * @eamil: email công ty của nhân viên 
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
 exports.updatePersonalInformation = async (id, data, avatar) => {
-    if(avatar===""){
-        avatar=data.avatar;
+    if (avatar === "") {
+        avatar = data.avatar;
     }
     let user = await User.findById(id);
-    var employeeInfo = await Employee.findOne({emailInCompany: user.email}, { _id: 1});
+    var employeeInfo = await Employee.findOne({
+        emailInCompany: user.email
+    }, {
+        _id: 1
+    });
     // Thông tin cần cập nhật 
     var employeeUpdate = {
         avatar: avatar,
@@ -141,58 +197,129 @@ exports.updatePersonalInformation = async (id, data, avatar) => {
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
     // Cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
-    
-    return await Employee.find({_id: employeeInfo._id});
+    await Employee.findOneAndUpdate({
+        _id: employeeInfo._id
+    }, {
+        $set: employeeUpdate
+    });
+
+    return await Employee.find({
+        _id: employeeInfo._id
+    });
 }
 
 /**
  * Lấy danh sách nhân viên
  * @data: dữ liệu key tìm kiếm
  * @company: Id công ty người tìm kiếm
- */ 
+ */
 exports.searchEmployeeProfiles = async (data, company) => {
-    var keySearch = {company: company};
+    var keySearch = {
+        company: company
+    };
 
     // Bắt sựu kiện đơn vị tìm kiếm khác null
     if (data.organizationalUnit !== null) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
-        keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+        keySearch = {
+            ...keySearch,
+            emailInCompany: {
+                $in: emailInCompany
+            }
+        }
     }
 
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.employeeNumber !== "") {
-        keySearch = {...keySearch, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
+        keySearch = {
+            ...keySearch,
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        }
     };
 
     // Bắt sựu kiện MSNV tìm kiếm khác "Null"
     if (data.gender !== null) {
-        keySearch = {...keySearch, gender: {$in: data.gender}};
+        keySearch = {
+            ...keySearch,
+            gender: {
+                $in: data.gender
+            }
+        };
     };
 
     // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
     if (data.status !== null) {
-        keySearch = {...keySearch, status: {$in: data.status}};
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: data.status
+            }
+        };
     };
-    
+
     // Lấy danh sách nhân viên
     var totalList = await Employee.count(keySearch);
-    var listEmployees = await Employee.find(keySearch, {field1: 1, emailInCompany: 1})
-    .sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
+    var listEmployees = await Employee.find(keySearch, {
+            field1: 1,
+            emailInCompany: 1
+        })
+        .sort({
+            'createdAt': 'desc'
+        }).skip(data.page).limit(data.limit);
     var data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
-        var employees = await Employee.find({_id: listEmployees[n]._id});
-        var salarys = await Salary.find({employee: listEmployees[n]._id})
-        var annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
-        var commendations = await Commendation.find({employee: listEmployees[n]._id})
-        var disciplines = await Discipline.find({employee: listEmployees[n]._id})
-        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        var employees = await Employee.find({
+            _id: listEmployees[n]._id
+        });
+        var salarys = await Salary.find({
+            employee: listEmployees[n]._id
+        })
+        var annualLeaves = await AnnualLeave.find({
+            employee: listEmployees[n]._id
+        })
+        var commendations = await Commendation.find({
+            employee: listEmployees[n]._id
+        })
+        var disciplines = await Discipline.find({
+            employee: listEmployees[n]._id
+        })
+        data[n] = {
+            employees,
+            salarys,
+            annualLeaves,
+            commendations,
+            disciplines,
+            ...value
+        }
     }
 
-    return { data, totalList}
+    return {
+        data,
+        totalList
+    }
 }
 
+/**
+ * Function merge urlFile upload với object
+ */
+exports.mergeUrlFileToObject = (arrayFile, arrayObject)=>{
+    if (arrayFile !== undefined) {
+        arrayObject.forEach(x => {
+            arrayFile.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
+                }
+            })
+        });
+        return arrayObject;
+    }else{
+        return arrayObject;
+    }
+}
 
 /**
  * Thêm mới nhân viên
@@ -200,49 +327,18 @@ exports.searchEmployeeProfiles = async (data, company) => {
  * @company : Id công ty
  * @fileInfo : Thông tin file đính kèm
  */
-// 
 exports.createEmployee = async (data, company, fileInfo) => {
-    let avatar = fileInfo.avatar==="" ? data.avatar : fileInfo.avatar,
-        fileDegree = fileInfo.fileDegree, fileCertificate = fileInfo.fileCertificate,
-        fileContract = fileInfo.fileContract, file = fileInfo.file;
-        degrees = data.degrees, certificates = data.certificates, contracts = data.contracts,
-        files = data.files;
-        if(fileDegree !== undefined){
-            degrees.forEach(x=>{
-                fileDegree.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
-            })
-        }
-        if(fileCertificate !== undefined){
-            certificates.forEach(x=>{
-                fileCertificate.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
-            })
-        }
-        if(fileContract !== undefined){
-            contracts.forEach(x=>{
-                fileContract.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
-            })
-        }
-        if(fileContract !== undefined){
-            files.forEach(x=>{
-                file.forEach(y=>{
-                    if(x.file===y.originalname){
-                        x.urlFile = `/${y.path}`;
-                    }
-                })
-            })
-        }
+    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        fileDegree = fileInfo.fileDegree,
+        fileCertificate = fileInfo.fileCertificate,
+        fileContract = fileInfo.fileContract,
+        file = fileInfo.file;
+    let {degrees, certificates, contracts, files} = data;
+    degrees = this.mergeUrlFileToObject(fileDegree, degrees);
+    certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
+    contracts = this.mergeUrlFileToObject(fileContract, contracts);
+    files = this.mergeUrlFileToObject(file, files);
+
     var createEmployee = await Employee.create({
         avatar: avatar,
         fullName: data.fullName,
@@ -305,9 +401,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
     });
-    if(data.disciplines !== undefined){
+    if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;
-        for(let x in disciplines){
+        for (let x in disciplines) {
             await Discipline.create({
                 employee: createEmployee._id,
                 company: company,
@@ -320,9 +416,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
-    if(data.commendations !== undefined){
+    if (data.commendations !== undefined) {
         let commendations = data.commendations;
-        for(let x in commendations){
+        for (let x in commendations) {
             await Commendation.create({
                 employee: createEmployee._id,
                 company: company,
@@ -334,9 +430,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
-    if(data.salaries !== undefined){
+    if (data.salaries !== undefined) {
         let salaries = data.salaries;
-        for(let x in salaries){
+        for (let x in salaries) {
             await Salary.create({
                 employee: createEmployee._id,
                 company: company,
@@ -347,10 +443,10 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
-    if(data.annualLeaves !== undefined){
+    if (data.annualLeaves !== undefined) {
         let annualLeaves = data.annualLeaves;
-        for(let x in annualLeaves){
-            await AnnualLeave.create({
+        for (let x in annualLeaves) {
+             AnnualLeave.create({
                 employee: createEmployee._id,
                 company: company,
                 startDate: annualLeaves[x].startDate,
@@ -362,122 +458,168 @@ exports.createEmployee = async (data, company, fileInfo) => {
     }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
-    var employees = await Employee.find({_id: createEmployee._id});
-    var salarys = await Salary.find({employee: createEmployee._id})
-    var annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
-    var commendations = await Commendation.find({employee: createEmployee._id})
-    var disciplines = await Discipline.find({employee: createEmployee._id})
+    var employees = await Employee.find({
+        _id: createEmployee._id
+    });
+    var salarys = await Salary.find({
+        employee: createEmployee._id
+    })
+    var annualLeaves = await AnnualLeave.find({
+        employee: createEmployee._id
+    })
+    var commendations = await Commendation.find({
+        employee: createEmployee._id
+    })
+    var disciplines = await Discipline.find({
+        employee: createEmployee._id
+    })
 
-    return {employees, salarys, annualLeaves, commendations, disciplines, ...value};
-}
-
-
-
-// Cập nhât thông tin nhân viên theo id
-exports.updateEmployeeInformation = async (id, data) => {
-    // var employee = await Employee.findOne({
-    //     _id: id
-    // });
-    // var employeeContact = await EmployeeContact.findOne({
-    //     employee: id
-    // });
-    // var employeeUpdate = {
-    //     avatar: data.avatar ? data.avatar : employee.avatar,
-    //     fullName: data.fullName ? data.fullName : employee.fullName,
-    //     employeeNumber: data.employeeNumber ? data.employeeNumber : employee.employeeNumber,
-    //     MSCC: data.MSCC ? data.MSCC : employee.MSCC,
-    //     gender: data.gender ? data.gender : employee.gender,
-    //     brithday: data.brithday ? data.brithday : employee.brithday,
-    //     birthplace: data.birthplace ? data.birthplace : employee.birthplace,
-    //     CMND: data.CMND ? data.CMND : employee.CMND,
-    //     dateCMND: data.dateCMND ? data.dateCMND : employee.dateCMND,
-    //     addressCMND: data.addressCMND ? data.addressCMND : employee.addressCMND,
-    //     emailCompany: data.emailCompany ? data.emailCompany : employee.emailCompany,
-    //     numberTax: data.numberTax ? data.numberTax : employee.numberTax,
-    //     userTax: data.userTax ? data.userTax : employee.userTax,
-    //     startTax: data.startTax ? data.startTax : employee.startTax,
-    //     unitTax: data.unitTax ? data.unitTax : employee.unitTax,
-    //     ATM: data.ATM ? data.ATM : employee.ATM,
-    //     nameBank: data.nameBank ? data.nameBank : employee.nameBank,
-    //     addressBank: data.addressBank ? data.addressBank : employee.addressBank,
-    //     BHYT: data.BHYT ? data.BHYT : employee.BHYT,
-    //     numberBHYT: data.numberBHYT ? data.numberBHYT : employee.numberBHYT,
-    //     startDateBHYT: data.startDateBHYT ? data.startDateBHYT : employee.startDateBHYT,
-    //     endDateBHYT: data.endDateBHYT ? data.endDateBHYT : employee.endDateBHYT,
-    //     numberBHXH: data.numberBHXH ? data.numberBHXH : employee.numberBHXH,
-    //     BHXH: data.BHXH ? data.BHXH : employee.BHXH,
-    //     national: data.national ? data.national : employee.national,
-    //     religion: data.religion ? data.religion : employee.religion,
-    //     relationship: data.relationship ? data.relationship : employee.relationship,
-    //     cultural: data.cultural ? data.cultural : employee.cultural,
-    //     foreignLanguage: data.foreignLanguage ? data.foreignLanguage : employee.foreignLanguage,
-    //     educational: data.educational ? data.educational : employee.educational,
-    //     experience: data.experience ? data.experience : employee.experience,
-    //     certificate: data.certificate ? data.certificate : employee.certificate,
-    //     certificateShort: data.certificateShort ? data.certificateShort : employee.certificateShort,
-    //     contract: data.contract ? data.contract : employee.contract,
-    //     insurrance: data.insurrance ? data.insurrance : employee.insurrance,
-    //     course: data.course ? data.course : employee.course,
-    //     nation: data.nation ? data.nation : employee.nation,
-    //     numberFile: data.numberFile ? data.numberFile : employee.numberFile,
-    //     file: data.file ? data.file : employee.file,
-    // }
-    // var employeeContactUpdate = {
-    //     employee: id,
-    //     phoneNumber: data.phoneNumber ? data.phoneNumber : employeeContact.phoneNumber,
-    //     emailPersonal: data.emailPersonal ? data.emailPersonal : employeeContact.emailPersonal,
-    //     phoneNumber2: data.phoneNumber2 ? data.phoneNumber2 : employeeContact.phoneNumber2,
-    //     emailPersonal2: data.emailPersonal2 ? data.emailPersonal2 : employeeContact.emailPersonal2,
-    //     phoneNumberAddress: data.phoneNumberAddress ? data.phoneNumberAddress : employeeContact.phoneNumberAddress,
-    //     friendName: data.friendName ? data.friendName : employeeContact.friendName,
-    //     relation: data.relation ? data.relation : employeeContact.relation,
-    //     friendPhone: data.friendPhone ? data.friendPhone : employeeContact.friendPhone,
-    //     friendEmail: data.friendEmail ? data.friendEmail : employeeContact.friendEmail,
-    //     friendPhoneAddress: data.friendPhoneAddress ? data.friendPhoneAddress : employeeContact.friendPhoneAddress,
-    //     friendAddress: data.friendAddress ? data.friendAddress : employeeContact.friendAddress,
-    //     localAddress: data.localAddress ? data.localAddress : employeeContact.localAddress,
-    //     localNational: data.localNational ? data.localNational : employeeContact.localNational,
-    //     localCity: data.localCity ? data.localCity : employeeContact.localCity,
-    //     localDistrict: data.localDistrict ? data.localDistrict : employeeContact.localDistrict,
-    //     localCommune: data.localCommune ? data.localCommune : employeeContact.localCommune,
-    //     nowAddress: data.nowAddress ? data.nowAddress : employeeContact.nowAddress,
-    //     nowNational: data.nowNational ? data.nowNational : employeeContact.nowNational,
-    //     nowCity: data.nowCity ? data.nowCity : employeeContact.nowCity,
-    //     nowDistrict: data.nowDistrict ? data.nowDistrict : employeeContact.nowDistrict,
-    //     nowCommune: data.nowCommune ? data.nowCommune : employeeContact.nowCommune,
-    // }
-    // await Employee.findOneAndUpdate({
-    //     _id: id
-    // }, {
-    //     $set: employeeUpdate
-    // });
-    // await EmployeeContact.findOneAndUpdate({
-    //     employee: id
-    // }, {
-    //     $set: employeeContactUpdate
-    // });
-
-    // employeeUpdate = {
-    //     ...employeeUpdate,
-    //     _id: id
-    // };
-    // employeeContactUpdate = {
-    //     ...employeeContactUpdate,
-    //     _id: id
-    // }
-    // var content = {
-    //     employeeContactUpdate,
-    //     employeeUpdate
-    // }
-    // return content;
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
 }
 
 
 
 /**
+ * Cập nhât thông tin nhân viên theo id
+ */
+exports.updateEmployeeInformation = async (id, data, fileInfo) => {
+    let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
+        createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
+        createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
+        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, 
+        createFiles, editFiles, deleteFiles, createSocialInsuranceDetails, editSocialInsuranceDetails, deleteSocialInsuranceDetails} = data;
+    let avatar = fileInfo.avatar === "" ? employee.avatar : fileInfo.avatar,
+        fileDegree = fileInfo.fileDegree,
+        fileCertificate = fileInfo.fileCertificate,
+        fileContract = fileInfo.fileContract,
+        file = fileInfo.file;
+
+    let oldEmployee = await Employee.findById(id);
+
+    deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) =>{
+        if(arrDelete!==undefined) {
+            for(let n in arrDelete){
+                arrObject = arrObject.filter(x => x._id.toString() !== arrDelete[n]._id);
+            };
+        };
+        if(arrEdit!==undefined){
+            if(fileInfor!==undefined){
+                arrEdit = this.mergeUrlFileToObject(fileInfor, arrEdit);
+            }
+            for(let n in arrEdit){
+                arrObject = arrObject.map(x => (x._id.toString() !== arrEdit[n]._id) ? x : arrEdit[n])
+            }
+        };
+        if(arrCreate!==undefined) {
+            if(fileInfor!==undefined){
+                arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
+            }
+            arrCreate.forEach(x => arrObject.push(x));
+        };
+        return arrObject;
+    }
+    oldEmployee.experiences = deleteEditCreateObjectInArrayObject(oldEmployee.experiences, deleteExperiences, editExperiences, createExperiences);
+    oldEmployee.socialInsuranceDetails = deleteEditCreateObjectInArrayObject(oldEmployee.socialInsuranceDetails, deleteSocialInsuranceDetails, editSocialInsuranceDetails, createSocialInsuranceDetails);
+
+    oldEmployee.degrees = deleteEditCreateObjectInArrayObject(oldEmployee.degrees, deleteDegrees, editDegrees, createDegrees, fileDegree);
+    oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
+    oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
+    oldEmployee.files = deleteEditCreateObjectInArrayObject(oldEmployee.files, deleteFiles, editFiles, createFiles, file);
+
+    oldEmployee.avatar= avatar;
+    oldEmployee.fullName= employee.fullName;
+    oldEmployee.employeeNumber= employee.employeeNumber;
+    oldEmployee.employeeTimesheetId= employee.employeeTimesheetId;
+    oldEmployee.gender= employee.gender;
+    oldEmployee.birthdate= employee.birthdate;
+    oldEmployee.birthplace= employee.birthplace;
+    oldEmployee.identityCardNumber= employee.identityCardNumber;
+    oldEmployee.identityCardDate= employee.identityCardDate;
+    oldEmployee.identityCardAddress= employee.identityCardAddress;
+    oldEmployee.emailInCompany= employee.emailInCompany;
+    oldEmployee.taxNumber= employee.taxNumber;
+    oldEmployee.taxRepresentative= employee.taxRepresentative;
+    oldEmployee.taxDateOfIssue= employee.taxDateOfIssue;
+    oldEmployee.taxAuthority= employee.taxAuthority;
+    oldEmployee.atmNumber= employee.atmNumber;
+    oldEmployee.bankName= employee.bankName;
+    oldEmployee.bankAddress= employee.bankAddress;
+    oldEmployee.healthInsuranceNumber= employee.healthInsuranceNumber;
+    oldEmployee.healthInsuranceStartDate= employee.healthInsuranceStartDate;
+    oldEmployee.healthInsuranceEndDate= employee.healthInsuranceEndDate;
+    oldEmployee.socialInsuranceNumber= employee.socialInsuranceNumber;
+    oldEmployee.nationality= employee.nationality;
+    oldEmployee.religion= employee.religion;
+    oldEmployee.maritalStatus= employee.maritalStatus;
+    oldEmployee.ethnic= employee.ethnic;
+    oldEmployee.professionalSkill= employee.professionalSkill;
+    oldEmployee.foreignLanguage= employee.foreignLanguage;
+    oldEmployee.educationalLevel= employee.educationalLevel;
+    oldEmployee.insurrance= employee.insurrance;
+    oldEmployee.archivedRecordNumber= employee.archivedRecordNumber;
+    oldEmployee.phoneNumber= employee.phoneNumber;
+    oldEmployee.phoneNumber2= employee.phoneNumber2;
+    oldEmployee.personalEmail= employee.personalEmail;
+    oldEmployee.personalEmail2= employee.personalEmail2;
+    oldEmployee.homePhone= employee.homePhone;
+    oldEmployee.emergencyContactPerson= employee.emergencyContactPerson;
+    oldEmployee.relationWithEmergencyContactPerson= employee.relationWithEmergencyContactPerson;
+    oldEmployee.emergencyContactPersonPhoneNumber= employee.emergencyContactPersonPhoneNumber;
+    oldEmployee.emergencyContactPersonEmail= employee.emergencyContactPersonEmail;
+    oldEmployee.emergencyContactPersonHomePhone= employee.emergencyContactPersonHomePhone;
+    oldEmployee.emergencyContactPersonAddress= employee.emergencyContactPersonAddress;
+    oldEmployee.permanentResidence= employee.permanentResidence;
+    oldEmployee.permanentResidenceCountry= employee.permanentResidenceCountry;
+    oldEmployee.permanentResidenceCity= employee.permanentResidenceCity;
+    oldEmployee.permanentResidenceDistrict= employee.permanentResidenceDistrict;
+    oldEmployee.permanentResidenceWard= employee.permanentResidenceWard;
+    oldEmployee.temporaryResidence= employee.temporaryResidence;
+    oldEmployee.temporaryResidenceCountry= employee.temporaryResidenceCountry;
+    oldEmployee.temporaryResidenceCity= employee.temporaryResidenceCity;
+    oldEmployee.temporaryResidenceDistrict= employee.temporaryResidenceDistrict;
+    oldEmployee. temporaryResidenceWard= employee.temporaryResidenceWard;
+
+    // Edit  thông tin nhân viên
+    oldEmployee.save();
+
+    // Function edit, create, Delete Document of collection
+    queryEditCreateDeleteDocumentInCollection = async (employeeId, collection, arrDelete, arrEdit, arrCreate)  => {
+        let queryDelete = arrDelete!==undefined ? arrDelete.map(x => {return { deleteOne : { "filter" : { "_id" : x._id} } }}): [];
+        let queryEdit = arrEdit!==undefined ? arrEdit.map(x => {
+        return { updateOne : {"filter" : { "_id" : x._id }, "update" : { $set : x }}}}) : [];
+        let queryCrete = arrCreate !== undefined ? arrCreate.map(x=>{return { insertOne: { "document": {...x, employee: employeeId} }}}) : [];
+        let query = [...queryDelete, ...queryEdit, ...queryCrete];
+        if(query.length!==0){
+            await collection.bulkWrite(query);
+        }
+    };
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteDisciplines, editDisciplines, createDisciplines );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Commendation, deleteConmmendations, editConmmendations, createCommendations );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteSalaries, editSalaries, createSalaries );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    
+    // Lấy thông tin nhân viên vừa thêm vào
+    let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
+    var employees = [oldEmployee];
+    var salarys = await Salary.find({
+        employee: oldEmployee._id
+    })
+    var annualLeaves = await AnnualLeave.find({
+        employee: oldEmployee._id
+    })
+    var commendations = await Commendation.find({
+        employee: oldEmployee._id
+    })
+    var disciplines = await Discipline.find({
+        employee: oldEmployee._id
+    })
+
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+}
+/**
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
- */ 
+ */
 exports.deleteEmployee = async (id) => {
     var employee = await Employee.findOneAndDelete({
         _id: id
@@ -532,182 +674,3 @@ exports.checkEmployeeCompanyEmailExisted = async (email) => {
     }
     return checkEmail;
 }
-
-
-// Cập nhật(thêm mới) Avatar nhân viên
-exports.updateEmployeeAvatar = async (employeeNumber, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // avatarUpdate = {
-    //     avatar: "fileupload/employee-manage/avatar/" + url
-    // }
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: avatarUpdate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     avatar: "fileupload/employee-manage/avatar/" + url
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateEmployeeContract = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var contractUpdate = {
-    //     contract: [...employeeinfo.contract, {
-    //         nameContract: data.nameContract,
-    //         typeContract: data.typeContract,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/contract/" + url
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: contractUpdate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     contract: [...employeeinfo.contract, {
-    //         nameContract: data.nameContract,
-    //         typeContract: data.typeContract,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/contract/" + url
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateEmployeeDegrees = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateCertificate = {
-    //     certificate: [...employeeinfo.certificate, {
-    //         nameCertificate: data.nameCertificate,
-    //         addressCertificate: data.addressCertificate,
-    //         yearCertificate: data.yearCertificate,
-    //         typeCertificate: data.typeCertificate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificate/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateCertificate
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     certificate: [...employeeinfo.certificate, {
-    //         nameCertificate: data.nameCertificate,
-    //         addressCertificate: data.addressCertificate,
-    //         yearCertificate: data.yearCertificate,
-    //         typeCertificate: data.typeCertificate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificate/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateEmployeeCertificates = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateCertificateShort = {
-    //     certificateShort: [...employeeinfo.certificateShort, {
-    //         nameCertificateShort: data.nameCertificateShort,
-    //         unit: data.unit,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificateshort/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateCertificateShort
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     certificateShort: [...employeeinfo.certificateShort, {
-    //         nameCertificateShort: data.nameCertificateShort,
-    //         unit: data.unit,
-    //         startDate: data.startDate,
-    //         endDate: data.endDate,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/certificateshort/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-exports.updateFile = async (employeeNumber, data, url, company) => {
-    // var employeeinfo = await Employee.findOne({
-    //     employeeNumber: employeeNumber,
-    //     company: company
-    // });
-    // var updateFile = {
-    //     file: [...employeeinfo.file, {
-    //         nameFile: data.nameFile,
-    //         discFile: data.discFile,
-    //         number: data.number,
-    //         status: data.status,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/file/" + url,
-    //     }]
-    // };
-    // await Employee.findOneAndUpdate({
-    //     _id: employeeinfo._id
-    // }, {
-    //     $set: updateFile
-    // });
-    // var content = {
-    //     _id: employeeinfo._id,
-    //     file: [...employeeinfo.file, {
-    //         nameFile: data.nameFile,
-    //         discFile: data.discFile,
-    //         number: data.number,
-    //         status: data.status,
-    //         file: data.file,
-    //         urlFile: "fileupload/employee-manage/file/" + url,
-    //     }]
-    // }
-    // return content;
-}
-
-
-// Kiểm tra sự tồn tại của MSNV trong array 
-exports.checkEmployeesExisted = async (data, company) => {
-    // var list=[];
-    // for(let i=0;i<data.arrayMSNV.length;i++){
-    //     let employee=await Employee.findOne({
-    //         employeeNumber: data.arrayMSNV[i],
-    //         company: company
-    //     }, {
-    //         field1: 1
-    //     })
-    //     if(employee===null){
-    //         list.push(i);
-    //     }
-    // }
-    // return list;
-}
-

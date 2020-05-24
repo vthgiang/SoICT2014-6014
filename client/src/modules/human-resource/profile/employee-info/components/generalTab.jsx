@@ -7,6 +7,22 @@ class GeneralTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -34,14 +50,14 @@ class GeneralTab extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender,birthdate, birthplace,
+        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace,
             emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion } = this.state;
         return (
             <div id={id} className="tab-pane active">
                 <div className=" row box-body">
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            <img className="attachment-img avarta" src={LOCAL_SERVER_API+avatar} alt="Attachment" />
+                            <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
                         </div>
                     </div>
                     <div className="pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12">
@@ -68,7 +84,7 @@ class GeneralTab extends Component {
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.date_birth')}&emsp; </strong>
-                                {birthdate}
+                                {this.formatDate(birthdate)}
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.place_birth')}&emsp; </strong>
@@ -94,7 +110,7 @@ class GeneralTab extends Component {
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.date_issued')}&emsp; </strong>
-                                {identityCardDate}
+                                {this.formatDate(identityCardDate)}
                             </div>
 
                         </div>

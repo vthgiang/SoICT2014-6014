@@ -36,22 +36,22 @@ router.put('/information-task-template',auth,  PerformTaskController.editTaskInf
 router.post('/result-task/create',auth, PerformTaskController.createTaskResult);
 router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
 //task action
-router.post('/task-action/create', PerformTaskController.createTaskAction)
-router.get('/task-action/:task', PerformTaskController.getTaskActions);
-router.put('/task-action', PerformTaskController.editTaskAction);
-router.delete('/task-action/:task/:id', PerformTaskController.deleteTaskAction);
+router.post('/task-action/create',auth, PerformTaskController.createTaskAction)
+router.get('/task-action',auth, PerformTaskController.getTaskActions);
+router.put('/task-action',auth, PerformTaskController.editTaskAction);
+router.delete('/task-action/:task/:id',auth, PerformTaskController.deleteTaskAction);
 //comment of task action
 router.post('/action-comment/create',auth,  PerformTaskController.createCommentOfTaskAction);//,upload.single('file')
 router.put('/action-comment/:id',auth,  PerformTaskController.editCommentOfTaskAction);
 router.delete('/action-comment/:task/:id',auth,  PerformTaskController.deleteCommentOfTaskAction);
 //task comment
-router.post('/task-comment/create',PerformTaskController.createTaskComment);
-router.get('/task-comment/:task',PerformTaskController.getTaskComments);
-router.put('/task-comment/:id',PerformTaskController.editTaskComment);
-router.delete('/task-comment/:task/:id',PerformTaskController.deleteTaskComment);
+router.post('/task-comment/create',auth,PerformTaskController.createTaskComment);
+router.get('/task-comment/:task',auth,PerformTaskController.getTaskComments);
+router.put('/task-comment/:id',auth,PerformTaskController.editTaskComment);
+router.delete('/task-comment/:task/:id',auth,PerformTaskController.deleteTaskComment);
 //comment of task comment
-router.post('/task-comment/comment/create',PerformTaskController.createCommentOfTaskComment);
-router.put('/task-comment/comment/:id',PerformTaskController.editCommentOfTaskComment);
-router.delete('/task-comment/comment/:id/:task',PerformTaskController.deleteCommentOfTaskComment);
+router.post('/task-comment/comment/create',auth,PerformTaskController.createCommentOfTaskComment);
+router.put('/task-comment/comment/:id',auth,PerformTaskController.editCommentOfTaskComment);
+router.delete('/task-comment/comment/:id/:task',auth,PerformTaskController.deleteCommentOfTaskComment);
 
 module.exports = router;

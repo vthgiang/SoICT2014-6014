@@ -26,7 +26,7 @@ class ModalImportFileBHXH extends Component {
     render() {
         return (
             <React.Fragment>
-                <a className="btn btn-primary pull-right" style={{ marginBottom: 15, marginLeft: 10 }} data-toggle="modal" href={`#modal-importFileBHXH-${this.props.index+this.props.keys}`} title="Thêm mới bằng file excel">Import file</a>
+                <a className="btn btn-primary pull-right" style={{ marginTop:2, marginBottom:10, marginLeft:15}} data-toggle="modal" href={`#modal-importFileBHXH-${this.props.index+this.props.keys}`} title="Thêm mới bằng file excel">Import file</a>
                 <div className="modal fade" id={`modal-importFileBHXH-${this.props.index+this.props.keys}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">

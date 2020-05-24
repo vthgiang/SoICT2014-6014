@@ -182,7 +182,7 @@ exports.uploadFile = (arrData, type) => {
             }
         }),
     });
-
+    
     switch (type) {
         case 'single':
             name = arrData[0].name;

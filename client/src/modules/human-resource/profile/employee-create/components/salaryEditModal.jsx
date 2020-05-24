@@ -145,7 +145,12 @@ class SalaryEditModal extends Component {
         return result;
     }
     // Function bắt sự kiện lưu bảng lương
-    save = () => {
+    save = async () => {
+        var partMonth = this.state.month.split('-');
+        var month = [partMonth[1], partMonth[0]].join('-');
+        await this.setState({
+            month: month
+        })
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }
@@ -155,6 +160,7 @@ class SalaryEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 unit: nextProps.unit,
                 month: nextProps.month,

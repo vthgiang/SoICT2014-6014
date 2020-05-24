@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { HolidayFormValidator } from './combinedContent';
 
 import { DialogModal, ButtonModal, DatePicker, ErrorLabel } from '../../../../common-components';
 
@@ -9,35 +10,98 @@ class HolidayCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            startDate: "",
-            endDate: "",
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now()),
             reason: ""
         };
     }
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-    handleChange = (e) => {
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+
+    // Bắt sự kiện thay đổi lý do nghỉ
+    handleReasonChange = (e) => {
         const { value } = e.target;
-        this.setState({
-            reason: value
-        })
+        this.validateReason(value, true);
+    }
+    validateReason = (value, willUpdateState = true) => {
+        let msg = HolidayFormValidator.validateReason(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnReason: msg,
+                    reason: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
+    // Bắt sự kiện thay đổi thời gian bắt đầu
     handleStartDateChange = (value) => {
-        this.setState({
-            startDate: value
-        })
+        this.validateStartDate(value, true);
     }
+    validateStartDate = (value, willUpdateState = true) => {
+        let msg = HolidayFormValidator.validateStartDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDate: msg,
+                    startDate: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi thời gian kết thúc
     handleEndDateChange = (value) => {
-        this.setState({
-            endDate: value
-        })
+        this.validateEndDate(value, true);
     }
+    validateEndDate = (value, willUpdateState = true) => {
+        let msg = HolidayFormValidator.validateEndDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEndDate: msg,
+                    endDate: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        let result =
+            this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
+            this.validateReason(this.state.reason, false);
+        return result;
+    }
+
+    // Bắt sự kiện submit form
     save = () => {
-        this.props.createNewHoliday(this.state);
+        if (this.isFormValidated()) {
+            this.props.createNewHoliday(this.state);
+        }
     }
     render() {
         const { translate, holiday } = this.props;
-        const { startDate, endDate, reason } = this.state;
+        const { startDate, endDate, reason, errorOnStartDate, errorOnEndDate, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-holiday" button_name="Thêm mới" title="Thêm mới lịch nghỉ" />
@@ -46,88 +110,39 @@ class HolidayCreateForm extends Component {
                     formID="form-create-holiday"
                     title="Thêm mới lịch nghỉ"
                     func={this.save}
-                    disableSubmit={false}
                     size={50}
                     maxWidth={500}
-                // disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-holiday" >
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_start_date"
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_end_date"
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                             <label htmlFor="reason">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleChange}></textarea>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
+                            <ErrorLabel content={errorOnReason} />
                         </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
-
-
-
-            // <div className="modal fade" id="modal-addHoliday" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            //     <div className="modal-dialog">
-            //         <div className="modal-content">
-            //             <div className="modal-header">
-            //                 <button type="button" className="close" onClick={() => this.handleCloseModal()} aria-label="Close">
-            //                     <span aria-hidden="true">×</span></button>
-            //                 <h4 className="modal-title">Thêm mới lịch nghỉ:</h4>
-            //             </div>
-            //             <form id="formAddaddHoliday">
-            //                 <div className="modal-body">
-            //                     {/* /.box-header */}
-            //                     <div className="box-body">
-            //                         <div className="col-md-12">
-            //                             <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-            //                                 <label htmlFor="startDate">Ngày bắt đầu:<span className="text-red">&#42;</span></label>
-            //                                 <div className={'input-group date has-feedback'}>
-            //                                     <div className="input-group-addon">
-            //                                         <i className="fa fa-calendar" />
-            //                                     </div>
-            //                                     <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-            //                                 </div>
-            //                             </div>
-            //                             <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-            //                                 <label htmlFor="endDate">Ngày kết thúc:<span className="text-red">&#42;</span></label>
-            //                                 <div className={'input-group date has-feedback'}>
-            //                                     <div className="input-group-addon">
-            //                                         <i className="fa fa-calendar" />
-            //                                     </div>
-            //                                     <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-            //                                 </div>
-            //                             </div>
-            //                             <div className="form-group">
-            //                                 <label htmlFor="reason">Mô tả lịch nghỉ:<span className="text-red">&#42;</span></label>
-            //                                 <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" ref="reason"></textarea>
-            //                             </div>
-
-            //                         </div>
-            //                     </div>
-            //                     {/* /.box-body */}
-            //                 </div>
-            //                 <div className="modal-footer">
-            //                     <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>Đóng</button>
-            //                     <button style={{ marginRight: 15 }} type="button" title="Thêm mới lịch nghỉ" onClick={() => this.handleSunmit()} className="btn btn-success pull-right">Thêm mới</button>
-            //                 </div>
-            //             </form>
-            //         </div>
-            //     </div>
-            // </div >
         );
     }
 };

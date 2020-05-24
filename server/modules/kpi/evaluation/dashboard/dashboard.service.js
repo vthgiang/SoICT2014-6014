@@ -1,7 +1,10 @@
 const { OrganizationalUnit, EmployeeKpiSet } = require('../../../../models').schema;
 const arrayToTree = require('array-to-tree');
 
-// Lấy tất cả KPI cá nhân hiện tại của một phòng ban
+/**
+ * Lấy tất cả KPI của nhân viên theo vai trò
+ * @role Mảng id các role
+ */
 exports.getAllEmployeeKpiSetOfUnit = async (role) => {
     var data = [];
 
@@ -25,7 +28,10 @@ exports.getAllEmployeeKpiSetOfUnit = async (role) => {
     return data;
 }
 
-// Lấy tất cả KPI cá nhân hiện tại của một phòng ban
+/**
+ * Lấy tất cả nhân viên theo vai trò
+ * @role Mảng id các role
+ */
 exports.getAllEmployeeOfUnit = async (role) => {
     var data = [];
 
@@ -46,7 +52,11 @@ exports.getAllEmployeeOfUnit = async (role) => {
     return data;
 }
 
-// Lấy các đơn vị con của một đơn vị và đơn vị đó
+/**
+ * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @id Id công ty
+ * @role Id của role ứng với đơn vị cần lấy đơn vị con
+ */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [

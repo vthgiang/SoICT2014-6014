@@ -23,14 +23,12 @@ function getAllKPIUnit(id) {
 
 function getKPIUnits(infosearch) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpiunits/all-unit/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
+        url:`${LOCAL_SERVER_API}/kpiunits/all-unit/${infosearch.role}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }
 // Lấy tất cả KPI đơn vị
 function getChildTargetOfCurrentTarget(id) {
-    var id = getStorage("userId");
-
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
         method: 'GET',

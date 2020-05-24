@@ -1,23 +1,21 @@
-//import { Slider, Tooltip } from '@material-ui/core';
+//import { Slider, Tooltip} from '@material-ui/core';
 //import React, { useState } from 'react';
-import 'rc-slider/assets/index.css';
+// import 'rc-slider/assets/index.css';
 
-import 'rc-tooltip/assets/bootstrap.css';
+// import 'rc-tooltip/assets/bootstrap.css';
 
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
-import Slider, { Range } from 'rc-slider';
-
-import Tooltip from 'rc-tooltip';
-
 import React, { Component, useState } from 'react';
+
+import ReactSlider from 'react-slider';
 
 import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
-const Handle = Slider.Handle;
+//const Handle = Slider.Handle;
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -97,8 +95,7 @@ class ModalMemberEvaluate extends Component {
         console.log('====', id, employeeId, date);
         console.log('date', date.getMonth());
         await this.setState(state => {
-            this.props.getTaskById(id, employeeId, date);
-            console.log("--Lay dc ko nhi--", this.props.getTaskById(id, employeeId, date));
+            this.props.getTaskById(id, employeeId,date);
             return {
                 ...state,
                 content: id
@@ -134,20 +131,20 @@ class ModalMemberEvaluate extends Component {
 
         })
     }
-    handle = () => {
-        const { value, dragging, index, ...restProps } = this.props;
-        return (
-            <Tooltip
-                prefixCls="rc-slider-tooltip"
-                overlay={value}
-                visible={dragging}
-                placement="top"
-                key={index}
-            >
-                <Handle value={value} {...restProps} />
-            </Tooltip>
-        );
-    };
+    // handle = () => {
+    //     const { value, dragging, index, ...restProps } = this.props;
+    //     return (
+    //         <Tooltip
+    //             prefixCls="rc-slider-tooltip"
+    //             overlay={value}
+    //             visible={dragging}
+    //             placement="top"
+    //             key={index}
+    //         >
+    //             <Handle value={value} {...restProps} />
+    //         </Tooltip>
+    //     );
+    // };
     render() {
         var { value } = this.state
         var list;
@@ -251,15 +248,15 @@ class ModalMemberEvaluate extends Component {
                                                                         <td>{itemTask.contribution}</td>
                                                                         <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                                         <td>
-                                                                            <div class="d-flex justify-content-center my-4">
-                                                                                <Slider
-                                                                                    min={0}
-                                                                                    max={10}
+                                                                            <div>
+                                                                                <ReactSlider
+                                                                                    className="horizontal-slider"
+                                                                                    thumbClassName="thumb-1"
+                                                                                    trackClassName="track-1"
                                                                                     defaultValue={itemTask.taskImportanceLevel}
-                                                                                    //value={value}
-                                                                                    handle={this.handle}
-                                                                                    //onAfterChange = {this.setValueSlider(value)}
+                                                                                    renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                                                                                 />
+                                                                            </div> 
                                                                                 {/* <Slider
                                                                                 //     defaultValue={itemTask.taskImportanceLevel}
                                                                                 //     getAriaValueText={this.state.valuetext}
@@ -278,7 +275,6 @@ class ModalMemberEvaluate extends Component {
                                                                                 //     // getAriaValueText={this.state.valuetext}
                                                                                 //     // onChange={this.handleChangeSlider}
                                                                                 // />*/}
-                                                                            </div>
                                                                         </td>
                                                                         {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
                                                                     </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>

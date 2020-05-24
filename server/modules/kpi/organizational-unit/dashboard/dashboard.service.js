@@ -1,12 +1,12 @@
 const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, Task } = require('../../../../models/index').schema;
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-exports.getAllChildTargetOfOrganizationalUnitKpis = async (id) => {
+exports.getAllChildTargetOfOrganizationalUnitKpis = async (userRoleId) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': id },
-            { 'viceDean': id },
-            { 'employee': id }
+            { 'dean': userRoleId },
+            { 'viceDean': userRoleId },
+            { 'employee': userRoleId }
         ]
     });
 
@@ -55,12 +55,12 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (id) => {
 }
 
 /** Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại) */
-exports.getAllTaskOfOrganizationalUnit = async (id) => {
+exports.getAllTaskOfOrganizationalUnit = async (userRoleId) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': id },
-            { 'viceDean': id },
-            { 'employee': id }
+            { 'dean': userRoleId },
+            { 'viceDean': userRoleId },
+            { 'employee': userRoleId }
         ]
     });
 
@@ -87,8 +87,30 @@ exports.getAllTaskOfOrganizationalUnit = async (id) => {
             ]
         }},
 
-        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1 }}
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1 }}
     ])
 
     return tasks;
+}
+
+/** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
+exports.getAllOrganizationalUnitKpiSetEachYear = async (userRoleId, year) => {
+    
+    var organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            { 'dean': userRoleId },
+            { 'viceDean': userRoleId },
+            { 'employee': userRoleId }
+        ]
+    });
+
+    var beginOfYear = new Date(year);
+    var endOfYear = new Date(year, 12);
+
+    var organizational_unit_kpi_sets = await OrganizationalUnitKpiSet.find(
+        { 'organizationalUnit': organizationalUnit._id, 'date': { $gte: beginOfYear, $lte: endOfYear} },
+        { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
+    )
+    
+    return organizational_unit_kpi_sets;
 }

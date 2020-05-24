@@ -9,6 +9,22 @@ class CertificateTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     // Bắt sự kiện click edit bằng cấp
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -168,8 +184,8 @@ class CertificateTab extends Component {
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
@@ -189,6 +205,7 @@ class CertificateTab extends Component {
                     this.state.currentRow !== undefined &&
                     <DegreeEditModal
                         id={`editCertificate${this.state.currentRow.index}`}
+                        _id = {this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}
                         issuedBy={this.state.currentRow.issuedBy}
@@ -204,11 +221,12 @@ class CertificateTab extends Component {
                     this.state.currentRowcertificates !== undefined &&
                     <CertificateEditModal
                         id={`editCertificateShort${this.state.currentRowcertificates.index}`}
+                        _id = {this.state.currentRowcertificates._id}
                         index={this.state.currentRowcertificates.index}
                         name={this.state.currentRowcertificates.name}
                         issuedBy={this.state.currentRowcertificates.issuedBy}
-                        startDate={this.state.currentRowcertificates.startDate}
-                        endDate={this.state.currentRowcertificates.endDate}
+                        startDate={this.formatDate(this.state.currentRowcertificates.startDate)}
+                        endDate={this.formatDate(this.state.currentRowcertificates.endDate)}
                         file={this.state.currentRowcertificates.file}
                         urlFile={this.state.currentRowcertificates.urlFile}
                         fileUpload={this.state.currentRowcertificates.fileUpload}

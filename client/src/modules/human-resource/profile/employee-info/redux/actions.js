@@ -23,7 +23,7 @@ function getEmployeeProfile() {
             .catch(err => {
                 dispatch({
                     type: Constants.GET_PERSONAL_INFOR_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -47,7 +47,7 @@ function updatePersonalInformation(data) {
             .catch(err => {
                 dispatch({
                     type: Constants.UPDATE_PERSONAL_INFOR_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
