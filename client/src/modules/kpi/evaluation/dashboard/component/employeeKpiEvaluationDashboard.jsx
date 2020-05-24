@@ -34,10 +34,11 @@ class DashBoardKPIMember extends Component {
 
             dateOfExcellentEmployees: this.formatDate(new Date(currentYear, currentMonth - 1, 1)),
             numberOfExcellentEmployees: 5,
-            role: [localStorage.getItem("currentRole")],
+            ids: null,
             editing: false,
         };
     }
+
     componentDidMount() {
         var currentDate = new Date();
         var currentMonth = currentDate.getMonth();
@@ -55,18 +56,14 @@ class DashBoardKPIMember extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllKPIMemberOfUnit(infosearch);
         this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        
         this.handleResizeColumn();
 
-
-        this.props.getAllEmployeeKpiSetOfUnit([localStorage.getItem("currentRole")]);
-        this.props.getAllEmployeeOfUnit([localStorage.getItem("currentRole")]);
+        this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
+        this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -95,6 +92,7 @@ class DashBoardKPIMember extends Component {
             });
         });
     }
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -108,6 +106,7 @@ class DashBoardKPIMember extends Component {
  
         return [month, year].join('-');
     }
+
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -119,6 +118,7 @@ class DashBoardKPIMember extends Component {
             return "Đã kết thúc"
         }
     }
+    
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -150,6 +150,7 @@ class DashBoardKPIMember extends Component {
             }
         }
     }
+
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
             return {
@@ -163,6 +164,7 @@ class DashBoardKPIMember extends Component {
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+
     showEvaluateModal = async (id) => {
         await this.setState(state => {
             return {
@@ -200,14 +202,14 @@ class DashBoardKPIMember extends Component {
         this.setState(state => {
             return {
                 ...state,
-                role: value
+                ids: value
             }
         });   
     }
 
     handleUpdateData = () => {
-        this.props.getAllEmployeeKpiSetOfUnit(this.state.role);
-        this.props.getAllEmployeeOfUnit(this.state.role);
+        this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
+        this.props.getAllEmployeeOfUnitByIds(this.state.ids);
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
@@ -276,7 +278,7 @@ class DashBoardKPIMember extends Component {
             }
            }
         }        
-
+        
 
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
@@ -344,8 +346,8 @@ class DashBoardKPIMember extends Component {
                             <label className = "form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                             {childrenOrganizationalUnit &&
                                 <SelectMulti id="multiSelectOrganizationalUnit"
-                                    defaultValue = {childrenOrganizationalUnit.map(item => {return item.dean})}
-                                    items = {childrenOrganizationalUnit.map(item => {return {value: item.dean, text: item.name}})} 
+                                    //value = {childrenOrganizationalUnit.map(item => {return item.id})}
+                                    items = {childrenOrganizationalUnit.map(item => {return {value: item.id, text: item.name}})} 
                                     options = {{nonSelectedText: translate('kpi.evaluation.dashboard.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit')}}
                                     onChange={this.handleSelectOrganizationalUnit}
                                 >
@@ -677,8 +679,10 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
-    getAllEmployeeKpiSetOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnit,
-    getAllEmployeeOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnit,
+    getAllEmployeeKpiSetOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
+    getAllEmployeeOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByRole,
+    getAllEmployeeKpiSetOfUnitByIds : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
+    getAllEmployeeOfUnitByIds : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree : DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));

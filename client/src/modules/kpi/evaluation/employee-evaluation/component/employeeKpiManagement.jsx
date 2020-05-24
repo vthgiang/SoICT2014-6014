@@ -167,8 +167,12 @@ class KPIMember extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: this.user.value,
-                    status: this.status.value,
+                    // user: this.user.value,
+                    // status: this.status.value,
+                    // startDate: this.state.startDate,
+                    // endDate: this.state.endDate
+                    user: this.state.user,
+                    status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
                 }
