@@ -214,7 +214,7 @@ class TimeSheetsManagement extends Component {
                             </table>
                         </div>
                         <div className="col-lg-9 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
-                            <table id="timesheets" className="timekeeping table table-bordered" style={{marginLeft:-1}}>
+                            <table id="timesheets" className="timekeeping table table table-striped table-bordered table-hover" style={{marginLeft:-1}}>
                                 <thead>
                                     <tr>
                                         <th>1</th>
