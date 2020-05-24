@@ -4,23 +4,41 @@ import {
 
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
-    getAllEmployeeKpiSetOfUnit,
-    getAllEmployeeOfUnit,
+    getAllEmployeeKpiSetOfUnitByRole,
+    getAllEmployeeOfUnitByRole,
+    getAllEmployeeKpiSetOfUnitByIds,
+    getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree
 };
 
-// Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
-function getAllEmployeeKpiSetOfUnit(role) {    
+// Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo role
+function getAllEmployeeKpiSetOfUnitByRole(role) {    
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/roles/${role}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
 
-// Lấy tất cả nhân viên trong đơn vị
-function getAllEmployeeOfUnit(role) {
+// Lấy tất cả nhân viên trong đơn vị theo role
+function getAllEmployeeOfUnitByRole(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/${role}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/roles/${role}`,
+        method: 'GET',
+    }, false, true, 'kpi.evaluation');
+}
+
+// Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo mảng id đơn vị
+function getAllEmployeeKpiSetOfUnitByIds(ids) {    
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/organizational-units/${ids}`,
+        method: 'GET',
+    }, false, true, 'kpi.evaluation');
+}
+
+// Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
+function getAllEmployeeOfUnitByIds(ids) {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/organizational-units/${ids}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
