@@ -49,6 +49,22 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+
+/* CSS cho C3 Chart */
+.c3-tooltip-container {
+    max-height: none !important;
+    width: 50%;
+}
+
+.c3-tooltip {
+    box-shadow: none;
+    width: 100%;
+}
+
+
+
+
+
 /*
 CSS cho bảng dữ liệu
 */

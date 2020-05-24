@@ -339,8 +339,10 @@ exports.data = [
     // { path: '/recommenddistribute/checkRecommendNumber/:recommendNumber', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
 
     // Module DashboardEvaluationEmployeeKpiSet
-    { path: '/kpi/evaluation/dashboard/employee-kpis/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/kpi/evaluation/dashboard/users/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/kpi/evaluation/dashboard/organizational-units/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     
 ];
