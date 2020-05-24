@@ -202,6 +202,7 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 
 exports.setTaskImportanceLevel = async (id, data) => {
     // data body co taskId, date, point employeeId
+    // id là id của employee kpi
   //  console.log(data);
     var set = [];
     for (const element of data) {
@@ -286,6 +287,7 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
 }
 
 async function getResultTaskByMonth(data) {
+    // data gồm : id ( id của kpi nhân viên), date(ngày hiện tại), employeeId : id của nhân viên
     console.log("data ne", data.id);
     var date = await data.date.split("-");
     // var monthkpi = date[1];

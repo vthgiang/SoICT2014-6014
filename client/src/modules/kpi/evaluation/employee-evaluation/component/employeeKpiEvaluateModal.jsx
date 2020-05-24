@@ -1,12 +1,23 @@
-import { Slider, Tooltip } from '@material-ui/core';
+//import { Slider, Tooltip } from '@material-ui/core';
+//import React, { useState } from 'react';
+import 'rc-slider/assets/index.css';
 
-import React, { Component } from 'react';
+import 'rc-tooltip/assets/bootstrap.css';
+
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
+
+import Slider, { Range } from 'rc-slider';
+
+import Tooltip from 'rc-tooltip';
+
+import React, { Component, useState } from 'react';
 
 import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
+const Handle = Slider.Handle;
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +27,8 @@ class ModalMemberEvaluate extends Component {
             name: "",
             description: "",
             point: 0,
-            status: 0
+            status: 0,
+            value: 0
         };
     }
     componentDidMount() {
@@ -95,10 +107,10 @@ class ModalMemberEvaluate extends Component {
 
     }
 
-    handleSetPointKPI = async (id_kpi, id_target, input) => {
+    handleSetPointKPI = async (id_kpi, id_target, input, date) => {
         //event.preventDefault();
         var point = { point: input };
-        this.props.setPointKPI(id_kpi, id_target, point)
+        this.props.setPointKPI(id_kpi, id_target, point, date)
         // await this.setState({
         //     editing: true,
         //     this.props.setPointKPI( id_kpi, id_target, point)
@@ -113,30 +125,31 @@ class ModalMemberEvaluate extends Component {
         modal.style = "display: none;";
     }
 
-    // handleChangeSlider = (e)=>{
-    //     var target = e.value.target;
+    setValueSlider = async (point) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                value: point
+            }
 
-    //     this.setState(state=>{
-    //         return{
-    //             ...state,
-    //             valuetext: target
-    //         }
-    //     })
-    // }
-
-    // ValueLabelComponent(props) {
-    //     const { children, open, value } = props;
-
-    //     return (
-    //         <Tooltip open={open} enterTouchDelay={0} placement="top" title={value} size='large'>
-    //             {children}
-    //         </Tooltip>
-    //     );
-    // }
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     console.log("this.state.valuetext",nextProps.valuetext, prevState);
-    // }
+        })
+    }
+    handle = () => {
+        const { value, dragging, index, ...restProps } = this.props;
+        return (
+            <Tooltip
+                prefixCls="rc-slider-tooltip"
+                overlay={value}
+                visible={dragging}
+                placement="top"
+                key={index}
+            >
+                <Handle value={value} {...restProps} />
+            </Tooltip>
+        );
+    };
     render() {
+        var { value } = this.state
         var list;
         var myTask = [];
         const { kpimembers } = this.props;
@@ -181,18 +194,18 @@ class ModalMemberEvaluate extends Component {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="qlcv">
                                                 <h4>Thông tin mục tiêu</h4>
-                                                    <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Tiêu chí đính giá:</label>
-                                                        <label >{item.criteria}</label>
-                                                    </div>
-                                                    <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Trọng số:</label>
-                                                        <label style={{display: "inline" }}>{item.weight}</label>
-                                                    </div>
-                                                
-                                                    <div className="form-inline">
-                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
-                                                    </div>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Tiêu chí đính giá:</label>
+                                                    <label >{item.criteria}</label>
+                                                </div>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Trọng số:</label>
+                                                    <label style={{ display: "inline" }}>{item.weight}</label>
+                                                </div>
+
+                                                <div className="form-inline">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI(this.props.id, item.creator._id, this.approvepoint.value, new Date())}>Tính điểm KPI</button>
+                                                </div>
                                             </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
@@ -240,15 +253,24 @@ class ModalMemberEvaluate extends Component {
                                                                         <td>
                                                                             <div class="d-flex justify-content-center my-4">
                                                                                 <Slider
-                                                                                    defaultValue={itemTask.taskImportanceLevel}
-                                                                                    getAriaValueText={this.state.valuetext}
-                                                                                    aria-labelledby="discrete-slider"
-                                                                                    valueLabelDisplay="auto"
-                                                                                    step={0.1}
-                                                                                    // marks
                                                                                     min={0}
                                                                                     max={10}
-                                                                                /> 
+                                                                                    defaultValue={itemTask.taskImportanceLevel}
+                                                                                    //value={value}
+                                                                                    handle={this.handle}
+                                                                                    //onAfterChange = {this.setValueSlider(value)}
+                                                                                />
+                                                                                {/* <Slider
+                                                                                //     defaultValue={itemTask.taskImportanceLevel}
+                                                                                //     getAriaValueText={this.state.valuetext}
+                                                                                //     aria-labelledby="discrete-slider"
+                                                                                //     valueLabelDisplay="auto"
+                                                                                //     step={0.1}
+                                                                                //     // marks
+                                                                                //     min={0}
+                                                                                //     max={10}
+                                                                                    >*/}
+
                                                                                 {/*<Slider
                                                                                 //     ValueLabelComponent={this.ValueLabelComponent}
                                                                                 //     aria-label="custom thumb label"
