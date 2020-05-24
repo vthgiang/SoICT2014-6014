@@ -14,6 +14,7 @@ class ModalMemberApprove extends Component {
             compare: false,
             checkInput: false,
             checkWeight: false,
+            
         };
         this.newWeight = [];
     }
@@ -54,23 +55,31 @@ class ModalMemberApprove extends Component {
     }
     handleEdit = async (id) => {
         await this.setState(state => {
+            console.log('weight 1: =================== ' + this.state.weight);
+
             return {
                 ...state,
                 editing: true,
-                edit: state.edit ===id ? "" : id
+                edit: state.edit ===id ? "" : id,
+                // weight: this.state.weight
             }
         })
     }
     handleSaveEdit = async (target) => {
+        
+
         await this.setState(state=>{
             return{
                 ...state,
                 newTarget: {
                     ...target,
-                    weight: parseInt(this.newWeight[target._id].value)
-                },
+                    weight: parseInt(this.newWeight[target._id].value)                
+                    // weight: parseInt(this.newWeight[target._id].value)                
+                },            
             }
         })
+        // console.log('weight 2 ===================' + this.state.weight);
+        console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
             this.props.editTarget(target._id, newTarget);
@@ -223,17 +232,24 @@ class ModalMemberApprove extends Component {
             });
         } 
         if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
+        console.log('kpimembercmp'+ kpimember);
         return (
+            // <React.Fragment>
+            //     <DialogModal
+            //     modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+            //     formID={`form-evaluate-task-by-${this.props.role}`}
+            //     title={this.props.title}
+            //     >
             <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
                     <div className="modal-content">
                     <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
-                        <span aria-hidden="true">×</span>
-                        <span className="sr-only">Close</span>
-                    </button>
+                        <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
+                            <span aria-hidden="true">×</span>
+                            <span className="sr-only">Close</span>
+                        </button>
                         <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                </div>
+                    </div>
                         <div className="box" >
                             <div className="box-body qlcv">
                             
@@ -250,7 +266,7 @@ class ModalMemberApprove extends Component {
                                 <div>
                                     <div className="form-inline">
                                             <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                                <label style={{width:"auto"}} >Chọn tháng so sánh:</label>
+                                                <label style={{width:"auto", fontSize:"18px"}} >Chọn tháng so sánh:</label>
                                                     <DatePicker
                                                         id="create_date"
                                                         dateFormat="month-year"
@@ -270,8 +286,8 @@ class ModalMemberApprove extends Component {
                                                 <th title="STT">STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                <th title="Mục tiêu đơn vị">Thời gian</th>
-                                                <th title="Mục tiêu đơn vị">Số mục tiêu</th>
+                                                {/* <th title="Thời gian">Thời gian</th> */}
+                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
@@ -284,14 +300,14 @@ class ModalMemberApprove extends Component {
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.parent && item.parent.name }</td>
-                                                        <td>{this.formatDate(item.date)}</td>
-                                                        <td>{item.length}</td>
+                                                        {/* <td>{this.formatDate(kpimembercmp.date)}</td> */}
+                                                        {/* <td>{kpimembercmp.kpis.length}</td> */}
                                                         <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                         <td>{item.approvedPoint}</td>
                                                         
                                                     </tr>
-                                                ) : <tr><td colSpan={8}>Không có dữ liệu phù hợp</td></tr>
+                                                ) : <tr><td colSpan={6}>Không có dữ liệu phù hợp</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -303,15 +319,15 @@ class ModalMemberApprove extends Component {
                                 {/* // } */}
                                 
                                 <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
-                                columnArr={[ 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Trạng thái' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                                columnArr={[ 'STT', 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Kết quả đánh giá' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
                                 <table id ="kpiApprove" className="table table-bordered table-striped">
                                 <thead>
                                             <tr>
                                                 <th title="STT">STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                <th title="Mục tiêu đơn vị">Thời gian</th>
-                                                <th title="Mục tiêu đơn vị">Số mục tiêu</th>
+                                                {/* <th title="Thời gian">Thời gian</th> */}
+                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
@@ -326,10 +342,10 @@ class ModalMemberApprove extends Component {
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.parent && item.parent.name}</td>
-                                                        <td>{this.formatDate(item.date)}</td>
-                                                        <td>{item.length}</td>
+                                                        {/* <td>{this.formatDate(kpimember.date)}</td> */}
+                                                        {/* <td>{kpimember.kpis.length}</td> */}
                                                         <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref={input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                         <td>{item.approvedPoint}</td>
                                                         <td>
                                                         {this.state.edit === item._id?<a href="#edit" className="approve" title="Lưu kết quả" onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
@@ -338,7 +354,7 @@ class ModalMemberApprove extends Component {
                                                         <a href="#abc" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">cancel</i></a>
                                                     </td>
                                                     </tr>
-                                                ) : <tr><td colSpan={9}>Không có dữ liệu phù hợp</td></tr>
+                                                ) : <tr><td colSpan={7}>Không có dữ liệu phù hợp</td></tr>
                                             }
                                     </tbody>
                                 </table>
@@ -348,7 +364,10 @@ class ModalMemberApprove extends Component {
                     </div>
                 </div>
             </div >
+        //     </DialogModal>
+        // </React.Fragment>
         );
+        
     }
 }
 
