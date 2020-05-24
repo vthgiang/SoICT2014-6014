@@ -5,8 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import {
     getStorage
 } from '../../../../config';
-
-import Box from '@material-ui/core/Box';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -136,7 +134,7 @@ class ActionTab extends Component {
 
         if (nextProps.id !== this.state.id) {
             
-            this.props.getLogTimer(nextProps.id);
+            this.props.getTimesheetLogs(nextProps.id);
             this.props.getTaskById(nextProps.id);
             this.props.getTaskActions(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
@@ -482,6 +480,8 @@ class ActionTab extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
+        
+        
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const { time } = this.state.timer;
@@ -496,6 +496,7 @@ class ActionTab extends Component {
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
+        console.log(logTimer)
         
         return (
             <div>
@@ -531,8 +532,7 @@ class ActionTab extends Component {
                                                             <div class="dropdown-divider"></div>
                                                             <button class="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</button>
                                                             <div class="dropdown-divider"></div>
-                                                            {item.creator === undefined &&
-                                                            <button class="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.props.confirmAction(item._id, currentUser)} >Xác nhận hành động</button>}
+                                                            
                                                         </div>
                                                     </div>}
                                                 </span>
@@ -544,6 +544,8 @@ class ActionTab extends Component {
                                         <ul class="list-inline">
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" class="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i class="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
+                                            {item.creator === undefined &&
+                                            <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5" onClick={() => this.props.confirmAction(item._id, currentUser)}></i> Xác nhận hoạt động</a></li>}
                                             {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                             <React.Fragment>
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
@@ -869,12 +871,12 @@ class ActionTab extends Component {
                         </div>
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            <ul style={{ listStyle: "none" }}>
+                            <ul style={{ listStyle: "none",fontFamily:'sans-serif' }}>
                                 {
                                     logTimer &&
                                     logTimer.map(item =>
                                         <li className="list-log-timer" key={item._id}>
-                                            <p style={{ fontSize: "15px" }}>{item.user.name} Bắt đầu: {this.format(item.start, 'H:i:s d-m-Y')} Kết thúc: {this.format(item.stopTimer, 'H:i:s d-m-Y')} Thời gian làm việc: {this.convertTime(item.time)}</p>
+                                            <p style={{ fontSize: "15px" }}>{item.creator.name} : Bắt đầu: {moment(item.startedAt, "x").format("DD MMM YYYY hh:mm a")} - Kết thúc: {moment(item.stoppedAt).format("DD MMM YYYY hh:mm a")} Thời gian làm việc: {moment.utc(item.duration, "x").format('HH:mm:ss')} </p>
                                         </li>)
                                 }
                             </ul>
@@ -902,10 +904,8 @@ const actionCreators = {
     editTaskAction: performTaskAction.editTaskAction,
     deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,
-    pauseTimer: performTaskAction.pauseTimerTask,
-    continueTimer: performTaskAction.continueTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
-    getLogTimer: performTaskAction.getLogTimerTask,
+    getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,
