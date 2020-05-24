@@ -46,14 +46,14 @@ exports.getActiveTimesheetLog = async (req, res) => {
 exports.startTimesheetLog = async (req, res) => {
     try {
         var timerStatus = await PerformTaskService.startTimesheetLog(req.body);
-        await LogInfo(req.user.email, ` start timer `,req.user.company)
+        //await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
             messages:['start_timer_success'],
             content : timerStatus
         })
     } catch (error) {
-        await LogError(req.user.email, ` start timer `,req.user.company)
+        //await LogError(req.user.email, ` start timer `,req.user.company)
         res.status(400).json({
             success: false,
             messages :['start_timer_fail'],
@@ -62,59 +62,20 @@ exports.startTimesheetLog = async (req, res) => {
     }
 }
 
-// TODO: Bỏ service này
-// Tạm dừng bấm giờ
-exports.pauseTimesheetLog = async (req, res) => {
-    try {
-        var timerStatus = await PerformTaskService.pauseTimesheetLog(req.params,req.body);
-        await LogInfo(req.user.email, ` pause timer `,req.user.company);
-        res.status(200).json({
-            success: true ,
-            messages : ['pause_timer_success'],
-            content : timerStatus
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` pause timer `,req.user.company)
-        res.status(400).json({
-            success: false,
-            messages : ['pause_timer_fail'],
-            content : error
-        })
-    }
-}
-
-// Tiếp tục bấm giờ
-exports.continueTimesheetLog = async (req, res) => {
-    try {
-        var timerStatus = await PerformTaskService.continueTimesheetLog(req.params,req.body);
-        await(req.user.email, ` continue timer `,req.user.company)
-        res.status(200).json({
-            success : true,
-            messages : ['continue_timer_success'],
-            content : timerStatus
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` continue timer `,req.user.company)
-        res.status(400).json({
-            success : false , 
-            messages : ['continue_timer_fail'],
-            content : error
-        })
-    }
-}
-
 // Kết thúc bấm giờ
 exports.stopTimesheetLog = async (req, res) => {
+    console.log("hihihi")
     try {
-        var timer = await PerformTaskService.stopTimesheetLog(req.params,req.body);
-        await LogInfo(req.user.email, ` stop timer `,req.user.company)
+        console.log(req.body)
+        var timer = await PerformTaskService.stopTimesheetLog(req.body);
+        //await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['stop_timer_success'],
             content : timer
         })
     } catch (error) {
-        await LogError(req.user.email, ` stop timer `,req.user.company)
+        //await LogError(req.user.email, ` stop timer `,req.user.company)
         res.status(400).json({
             success: false,
             messages : ['stop_timer_fail'],

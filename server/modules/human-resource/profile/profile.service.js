@@ -482,7 +482,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
 /**
  * Cập nhât thông tin nhân viên theo id
  */
-exports.updateEmployeeInformation = async (id, data, fileInfo) => {
+exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
         createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
         createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
@@ -583,20 +583,20 @@ exports.updateEmployeeInformation = async (id, data, fileInfo) => {
     oldEmployee.save();
 
     // Function edit, create, Delete Document of collection
-    queryEditCreateDeleteDocumentInCollection = async (employeeId, collection, arrDelete, arrEdit, arrCreate)  => {
+    queryEditCreateDeleteDocumentInCollection = async (employeeId, company, collection, arrDelete, arrEdit, arrCreate)  => {
         let queryDelete = arrDelete!==undefined ? arrDelete.map(x => {return { deleteOne : { "filter" : { "_id" : x._id} } }}): [];
         let queryEdit = arrEdit!==undefined ? arrEdit.map(x => {
         return { updateOne : {"filter" : { "_id" : x._id }, "update" : { $set : x }}}}) : [];
-        let queryCrete = arrCreate !== undefined ? arrCreate.map(x=>{return { insertOne: { "document": {...x, employee: employeeId} }}}) : [];
+        let queryCrete = arrCreate !== undefined ? arrCreate.map(x=>{return { insertOne: { "document": {...x, employee: employeeId, company: company} }}}) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if(query.length!==0){
             await collection.bulkWrite(query);
         }
     };
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteDisciplines, editDisciplines, createDisciplines );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Commendation, deleteConmmendations, editConmmendations, createCommendations );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteSalaries, editSalaries, createSalaries );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);

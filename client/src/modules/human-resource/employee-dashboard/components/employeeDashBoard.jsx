@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LineAndBarChart } from './lineAndBarChart';
 import { ThreeBarChart } from './threeBarChart';
+import './employeeDashBoard.css';
 
 class DashBoardEmployees extends Component {
     constructor(props) {

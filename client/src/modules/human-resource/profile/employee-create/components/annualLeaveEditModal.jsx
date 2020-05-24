@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 class AnnualLeaveEditModal extends Component {
     constructor(props) {
@@ -84,12 +84,8 @@ class AnnualLeaveEditModal extends Component {
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        await this.setState({
-            startDate: startDate,
-            endDate: endDate
-        })
         if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -119,7 +115,6 @@ class AnnualLeaveEditModal extends Component {
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-edit-sabbatical-${id}`} button_name="Thêm mới" title={translate('sabbatical.add_sabbatical_title')} />
                 <DialogModal
                     size='50' modalID={`modal-edit-sabbatical-${id}`} isLoading={false}
                     formID={`form-edit-sabbatical-${id}`}
