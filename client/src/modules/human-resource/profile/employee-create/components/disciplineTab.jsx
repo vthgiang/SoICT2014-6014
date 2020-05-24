@@ -10,6 +10,22 @@ class DisciplineTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     // Bắt sự kiện click edit khen thưởng
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -133,7 +149,7 @@ class DisciplineTab extends Component {
                                     commendations.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
-                                            <td>{x.startDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
                                             <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
@@ -170,8 +186,8 @@ class DisciplineTab extends Component {
                                     disciplines.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
@@ -192,10 +208,11 @@ class DisciplineTab extends Component {
                     this.state.currentRow !== undefined &&
                     <CommendationEditModal
                         id={`editPraise${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         decisionNumber={this.state.currentRow.decisionNumber}
                         organizationalUnit={this.state.currentRow.organizationalUnit}
-                        startDate={this.state.currentRow.startDate}
+                        startDate={this.formatDate(this.state.currentRow.startDate)}
                         type={this.state.currentRow.type}
                         reason={this.state.currentRow.reason}
                         handleChange={this.handleEditConmmendation}
@@ -205,11 +222,12 @@ class DisciplineTab extends Component {
                     this.state.currentRowDiscipline !== undefined &&
                     <DisciplineEditModal
                         id={`editDiscipline${this.state.currentRowDiscipline.index}`}
+                        _id={this.state.currentRowDiscipline._id}
                         index={this.state.currentRowDiscipline.index}
                         decisionNumber={this.state.currentRowDiscipline.decisionNumber}
                         organizationalUnit={this.state.currentRowDiscipline.organizationalUnit}
-                        startDate={this.state.currentRowDiscipline.startDate}
-                        endDate={this.state.currentRowDiscipline.endDate}
+                        startDate={this.formatDate(this.state.currentRowDiscipline.startDate)}
+                        endDate={this.formatDate(this.state.currentRowDiscipline.endDate)}
                         type={this.state.currentRowDiscipline.type}
                         reason={this.state.currentRowDiscipline.reason}
                         handleChange={this.handleEditDiscipline}

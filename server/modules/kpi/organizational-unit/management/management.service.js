@@ -2,6 +2,8 @@ const Department = require('../../../../models/super-admin/organizationalUnit.mo
 const KPIUnit = require('../../../../models/kpi/organizationalUnitKpiSet.model');
 const DetailKPIUnit = require('../../../../models/kpi/organizationalUnitKpi.model');
 const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
+
 
 // get all kpi unit của một đơn vị
 exports.get = async (id) => {
@@ -32,12 +34,16 @@ exports.getKPIUnits = async (data) => {
     });
     var kpiunits;
     var startDate = data.startDate.split("-");
-    var startdate = new Date(startDate[2]+"-"+ startDate[1]+ "-" + startDate[0]);
+    var startdate = new Date( startDate[1]+ "-" + startDate[0]+"-" + "01");
     var endDate = data.endDate.split("-");
-    var enddate = new Date(endDate[2]+"-"+ endDate[1]+ "-"+ endDate[0]);
+    if(endDate[0]=== "12"){
+        endDate[1]=String(parseInt(endDate[1])+1);
+        endDate[0]="1";
+    }
+    endDate[0]=String(parseInt(endDate[0])+1);
+    var enddate = new Date(endDate[2]+"-"+ endDate[1] + "-"+ endDate[0]);
     var status = parseInt(data.status);
 
-    if (data.user === "all") {
         if (status === 3) {
             kpiunits = await KPIUnit.find({
                 organizationalUnit: department._id,
@@ -56,36 +62,33 @@ exports.getKPIUnits = async (data) => {
                 date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
         }
-    } else {
-        if (status === 3) {
-            kpiunits = await KPIUnit.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else if (status === 1) {
-            kpiunits = await KPIUnit.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                status: { $ne: 2 },
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else {
-            kpiunits = await KPIUnit.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                status: status,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
-        }
-    }
     return kpiunits;
 }
 
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
 exports.getChildTargetByParentId = async (id) => {
     //req.params.id
+    
     var childTarget = await DetailKPIPersonal.find({parent: id});
+    var clone = [];
+    for (let i in childTarget ) {
+        var employeekpiset= await EmployeeKPISet.findOne({
+            kpis: childTarget[i]._id
+        }).populate("organizationalUnit creator").select("organizationalUnit creator");
+        var Target = {  _id: childTarget[i]._id,
+                        status: childTarget[i].status,
+                        automaticPoint: childTarget[i].automaticPoint,
+                        employeePoint: childTarget[i].employeePoint,
+                        approvedPoint: childTarget[i].approvedPoint,
+                        name: childTarget[i].name,
+                        parent: childTarget[i].parent,
+                        criteria: childTarget[i].criteria,
+                        weight: childTarget[i].weight,
+        
+        };
+        clone[i]= Object.assign(childTarget[i], employeekpiset);
+        clone[i]= Object.assign(childTarget[i], Target);
+    }
     return childTarget;   
 }
 

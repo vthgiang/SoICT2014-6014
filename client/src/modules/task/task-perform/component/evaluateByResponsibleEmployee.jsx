@@ -17,7 +17,12 @@ class EvaluateByResponsibleEmployee extends Component {
         var idUser = getStorage("userId");
         super(props);
         this.state={
-            idUser: idUser 
+            idUser: idUser ,
+            // progress:89,
+            // "p1" : {
+            //     value: ['SSD'],
+            //     code: "p1"
+            // } 
         }
     }
 
@@ -42,6 +47,27 @@ class EvaluateByResponsibleEmployee extends Component {
         return [day, month, year].join('-');
     }
 
+    handleKpiChange =(value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                kpi: value
+            }
+        });
+    }
+
+    handleDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDate: this.validateDate(value),
+                    date: value,
+                }
+            });
+        
+    }
+
     handleChangePoint = async (e) => {
         var value = parseInt(e.target.value);
         await this.setState(state =>{
@@ -52,6 +78,9 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         })
     }
+
+
+    // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
         var value = parseInt(e.target.value);
@@ -71,7 +100,10 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
-                [name]: value,
+                [name]: {
+                    value: value,
+                    code: name
+                },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -83,28 +115,72 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
-                [name]: value,
+                [name]: {
+                    value: value,
+                    code: name
+                },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
+    }
+    
+    handleInfoDateChange = (value, code) => {
+        console.log('value', value);
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+                errorOnInfoDate: this.validateDate(value),
+                // infoDate: value,
+            }
+        });
+    }
+
+    handleSetOfValueChange = async (value, code) => {
+        console.log('value', value);
+
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    handleInfoBooleanChange  = (event) => {
+        var {name, value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                }
+                // errorOnInfoBoolean: this.validateInfoBoolean(value)
+            }
+        });
+    }
+
+    
+    validateInfoBoolean = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.indexOf("") !== -1) {
+            msg = "Giá trị bắt buộc phải chọn";
+        }
+        
+        return msg;
     }
     
     validateTextInfo = (value) =>{
         let msg = undefined;
         if(value === ""){
             msg = "Giá trị không được để trống"
-        }
-        return msg;
-    }
-
-    validatePoint = (value) => {
-        var { translate } = this.props;
-        let msg = undefined;
-        if (value < 0 || value > 100) {
-            msg = translate('task.task_perform.modal_approve_task.err_range');
-        }
-        if (isNaN(value)) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -118,29 +194,10 @@ class EvaluateByResponsibleEmployee extends Component {
         }
         return msg;
     }
+    
+    // ==============================END HANDLE TASK INFORMATION===================================
 
-    handleDateChange = (value) => {
-        // var value = e.target.value;
-        this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDate: this.validateDate(value),
-                    date: value,
-                }
-            });
-        
-    }
-
-    handleInfoDateChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                // errorOnInfoDate: this.validateDate(value),
-                infoDate: value,
-            }
-        });
-    }
-
+    
     validateDate = (value, willUpdateState = true) => {
         let msg = undefined;
         if (value.trim() === "") {
@@ -150,52 +207,16 @@ class EvaluateByResponsibleEmployee extends Component {
         return msg;
     }
 
-    handleKpiChange =(value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                kpi: value
-            }
-        });
-    }
-
-    handleInfoBooleanChange  = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                infoBoolean: value,
-                errorOnInfoBoolean: this.validateInfoBoolean(value)
-            }
-        });
-    }
-
-    validateInfoBoolean = (value, willUpdateState = true) => {
+    validatePoint = (value) => {
+        var { translate } = this.props;
         let msg = undefined;
-        if (value.indexOf("") !== -1) {
-            msg = "Giá trị bắt buộc phải chọn";
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
         }
-        
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         return msg;
-    }
-
-    // handleInfoBooleanChange  = async (value) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             infoBoolean: value,
-    //             errorOnInfoBoolean: this.validateInfoBoolean(value)
-    //         }
-    //     });
-    //     await this.props.handleInfoBooleanChange(value)
-    // }
-    
-    handleSetOfValueChange =(value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                setOfValue: value
-            }
-        });
     }
 
     isFormValidated = () => {
@@ -268,7 +289,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
-                                // items = {items}
                                 onChange={this.handleKpiChange}
                                 multiple={true}
                                 value={kpi}
@@ -286,11 +306,13 @@ class EvaluateByResponsibleEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
-                            errorOnInfoBoolean={errorOnInfoBoolean}
-                            errorOnProgress={errorOnProgress}
-                            errorOnInfoDate={errorOnInfoDate}
-                            errorOnTextInfo={errorOnTextInfo}
-                            errorOnNumberInfo={errorOnNumberInfo}
+                            // errorOnInfoBoolean={errorOnInfoBoolean}
+                            // errorOnProgress={errorOnProgress}
+                            // errorOnInfoDate={errorOnInfoDate}
+                            // errorOnTextInfo={errorOnTextInfo}
+                            // errorOnNumberInfo={errorOnNumberInfo}
+
+                            value={this.state}
                         />
                         
                     </div>

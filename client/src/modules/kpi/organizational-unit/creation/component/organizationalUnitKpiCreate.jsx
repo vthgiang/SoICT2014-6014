@@ -310,7 +310,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                         <DatePicker
                                             id="month"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                            value={this.formatDate(Date.now())} // giá trị mặc định cho datePicker    
+                                            value={this.state.organizationalUnitKpiSet.date} // giá trị mặc định cho datePicker    
                                             onChange={this.handleChangeDate}
                                             disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                                         />

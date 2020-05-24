@@ -114,6 +114,7 @@ class FileEditModal extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                _id: nextProps._id,
                 index: nextProps.index,
                 name: nextProps.name,
                 description: nextProps.description,

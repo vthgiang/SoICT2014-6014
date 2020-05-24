@@ -146,9 +146,11 @@ class CommendationAddModal extends Component {
     /**
      * Bắt sự kiện submit form
      */
-    save = () => {
+    save = async() => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+            return this.props.handleChange({...this.state, startDate: startDate});
         }
     }
     render() {

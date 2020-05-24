@@ -23,19 +23,19 @@ exports.delete = async(id) => {
 
 // Danh mục văn bản - domain
 exports.getDocumentDomains = async (company) => {
-    const domains = await DocumentDomain.find({ company });
-    const dataConverted = domains.map( domain => {
+    const list = await DocumentDomain.find({ company });
+    const dataConverted = list.map( domain => {
         return {
             id: domain._id.toString(),
             key: domain._id.toString(),
             value: domain._id.toString(),
             title: domain.name,
-            parent_id: domain.parent !== null ? domain.parent.toString() : null
+            parent_id: domain.parent !== undefined ? domain.parent.toString() : null
         }
     });
     const tree = await arrayToTree(dataConverted, {});
 
-    return tree;
+    return {list, tree};
 }
 
 exports.createDocumentDomain = async (company, data) => {

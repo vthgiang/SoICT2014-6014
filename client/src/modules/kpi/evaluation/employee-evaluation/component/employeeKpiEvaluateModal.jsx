@@ -1,27 +1,29 @@
+import { Slider, Tooltip } from '@material-ui/core';
+
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
+import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationalUnit:"",
+            organizationalUnit: "",
             content: "",
-            name:"",
-            description:"",
-            point:0,
-            status:0
+            name: "",
+            description: "",
+            point: 0,
+            status: 0
         };
     }
     componentDidMount() {
         this.props.getKPIMemberById(this.props.id);
     }
- 
- 
+
+
     componentDidUpdate() {
         this.handleResizeColumn();
     }
@@ -30,7 +32,7 @@ class ModalMemberEvaluate extends Component {
             var pressed = false;
             var start = undefined;
             var startX, startWidth;
- 
+
             window.$("table thead tr th").mousedown(function (e) {
                 start = window.$(this);
                 pressed = true;
@@ -38,13 +40,13 @@ class ModalMemberEvaluate extends Component {
                 startWidth = window.$(this).width();
                 window.$(start).addClass("resizing");
             });
- 
+
             window.$(document).mousemove(function (e) {
                 if (pressed) {
                     window.$(start).width(startWidth + (e.pageX - startX));
                 }
             });
- 
+
             window.$(document).mouseup(function () {
                 if (pressed) {
                     window.$(start).removeClass("resizing");
@@ -79,29 +81,29 @@ class ModalMemberEvaluate extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = async (id, employeeId,date) => {
-        console.log('====', id, employeeId,date);
+    handleChangeContent = async (id, employeeId, date) => {
+        console.log('====', id, employeeId, date);
+        console.log('date', date.getMonth());
         await this.setState(state => {
             this.props.getTaskById(id, employeeId,date);
-            console.log("--Lay dc ko nhi--",this.props.getTaskById(id, employeeId,date));
             return {
                 ...state,
                 content: id
             }
         });
- 
+
     }
- 
-    handleSetPointKPI = async(id_kpi, id_target, input) =>{
+
+    handleSetPointKPI = async (id_kpi, id_target, input) => {
         //event.preventDefault();
-        var point = {point: input};
-        this.props.setPointKPI( id_kpi, id_target, point)
+        var point = { point: input };
+        this.props.setPointKPI(id_kpi, id_target, point)
         // await this.setState({
         //     editing: true,
         //     this.props.setPointKPI( id_kpi, id_target, point)
         // })
     }
- 
+
     handleCloseModal = async (id) => {
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");
@@ -109,12 +111,36 @@ class ModalMemberEvaluate extends Component {
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
+
+    // handleChangeSlider = (e)=>{
+    //     var target = e.value.target;
+
+    //     this.setState(state=>{
+    //         return{
+    //             ...state,
+    //             valuetext: target
+    //         }
+    //     })
+    // }
+
+    // ValueLabelComponent(props) {
+    //     const { children, open, value } = props;
+
+    //     return (
+    //         <Tooltip open={open} enterTouchDelay={0} placement="top" title={value} size='large'>
+    //             {children}
+    //         </Tooltip>
+    //     );
+    // }
+    // static getDerivedStateFromProps(nextProps, prevState){
+    //     console.log("this.state.valuetext",nextProps.valuetext, prevState);
+    // }
     render() {
         var list;
-        var myTask=[];
+        var myTask = [];
         const { kpimembers } = this.props;
-        if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
-        
+        if (typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
@@ -129,7 +155,7 @@ class ModalMemberEvaluate extends Component {
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
-                        <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(this.props.date)}</h3>
+                            <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(this.props.date)}</h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -140,7 +166,7 @@ class ModalMemberEvaluate extends Component {
                                 <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
-                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId,this.props.date)} className="list-group-item" key={index}>
+                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId, new Date())} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
                                                 {/* <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small> */}
                                                 {/* <span className="badge">{15 + index}</span> */}
@@ -162,7 +188,7 @@ class ModalMemberEvaluate extends Component {
                                                         <label style={{width: "150px"}}>Trọng số:</label>
                                                         <label style={{display: "inline" }}>{item.weight}</label>
                                                     </div>
-                                                   
+                                                
                                                     <div className="form-inline">
                                                         <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
                                                     </div>
@@ -171,24 +197,24 @@ class ModalMemberEvaluate extends Component {
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                
+
                                                 <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
-                                                columnArr={[ 
-                                                    'STT' ,
-                                                    'Tên công việc',
-                                                    'Thời gian' , 
-                                                    'Trạng thái' , 
-                                                    'Đóng góp' ,
-                                                    'Điểm' ,
-                                                    'Độ quan trọng']} 
-                                                limit={this.state.perPage} 
-                                                setLimit={this.setLimit} 
-                                                hideColumnOption={true} />
+                                                    columnArr={[
+                                                        'STT',
+                                                        'Tên công việc',
+                                                        'Thời gian',
+                                                        'Trạng thái',
+                                                        'Đóng góp',
+                                                        'Điểm',
+                                                        'Độ quan trọng']}
+                                                    limit={this.state.perPage}
+                                                    setLimit={this.setLimit}
+                                                    hideColumnOption={true} />
 
                                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th title ="STT" style={{ width: "20px" }}>Stt</th>
+                                                            <th title="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
                                                             <th title="Thời gian">Thời gian</th>
                                                             <th title="Trạng thái">Trạng thái</th>
@@ -199,23 +225,42 @@ class ModalMemberEvaluate extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
- 
-                                                        (typeof kpimembers.tasks !== "undefined" &&  kpimembers.tasks )?
-                                                            (kpimembers.tasks.map((itemTask,index) =>
- 
-                                                                <tr key ={index}>
-                                                                    <td>{index+1}</td>
-                                                                    <td>{itemTask.name}</td>                                                                   
-                                                                    <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
-                                                                    <td>{itemTask.status}</td>
-                                                                    <td>{itemTask.contribution}</td>
-                                                                    <td>{itemTask.automaticPoint + '-' +itemTask.employeePoint+ '-'+itemTask.approvedPoint }</td>
-                                                                    <td>
-                                                                        <input id="slider11" class="border-0" type="range" min="0" max="10" value={itemTask.taskImportanceLevel} />
-                                                                    </td>
-                                                            </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>
+
+                                                            (typeof kpimembers.tasks !== "undefined" && kpimembers.tasks) ?
+                                                                (kpimembers.tasks.map((itemTask, index) =>
+
+                                                                    <tr key={index}>
+                                                                        <td>{index + 1}</td>
+                                                                        <td>{itemTask.name}</td>
+                                                                        <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
+                                                                        <td>{itemTask.status}</td>
+                                                                        <td>{itemTask.contribution}</td>
+                                                                        <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
+                                                                        <td>
+                                                                            <div class="d-flex justify-content-center my-4">
+                                                                                <Slider
+                                                                                    defaultValue={itemTask.taskImportanceLevel}
+                                                                                    getAriaValueText={this.state.valuetext}
+                                                                                    aria-labelledby="discrete-slider"
+                                                                                    valueLabelDisplay="auto"
+                                                                                    step={0.1}
+                                                                                    // marks
+                                                                                    min={0}
+                                                                                    max={10}
+                                                                                /> 
+                                                                                {/*<Slider
+                                                                                //     ValueLabelComponent={this.ValueLabelComponent}
+                                                                                //     aria-label="custom thumb label"
+                                                                                //     defaultValue={itemTask.taskImportanceLevel*10}
+                                                                                //     // getAriaValueText={this.state.valuetext}
+                                                                                //     // onChange={this.handleChangeSlider}
+                                                                                // />*/}
+                                                                            </div>
+                                                                        </td>
+                                                                        {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
+                                                                    </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>
                                                         }
- 
+
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -234,16 +279,16 @@ class ModalMemberEvaluate extends Component {
         );
     }
 }
- 
+
 function mapState(state) {
     const { kpimembers } = state;
     return { kpimembers };
 }
- 
+
 const actionCreators = {
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getTaskById: kpiMemberActions.getTaskById,
-    setPointKPI : kpiMemberActions.setPointKPI
+    setPointKPI: kpiMemberActions.setPointKPI
 };
 const connectedModalMemberEvaluate = connect(mapState, actionCreators)(ModalMemberEvaluate);
 export { connectedModalMemberEvaluate as ModalMemberEvaluate };

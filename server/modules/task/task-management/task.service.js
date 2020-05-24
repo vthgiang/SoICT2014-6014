@@ -224,7 +224,7 @@ exports.createTask = async (task) => {
     splitter = task.endDate.split("-");
     var endDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     
-    if(task.taskTemplate !== null){
+    if(task.taskTemplate !== ""){
         var taskTemplate = await TaskTemplate.findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
         var cloneActions = [];
@@ -234,7 +234,7 @@ exports.createTask = async (task) => {
                 mandatory: taskActions[i].mandatory,
                 name:  taskActions[i].name,
                 description:  taskActions[i].description,
-                creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
+                //creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
                 // createdAt:  taskActions[i].createdAt,
                 // updatedAt:  taskActions[i].updatedAt
             }
@@ -254,9 +254,9 @@ exports.createTask = async (task) => {
         endDate: endDate,
         priority: task.priority,
         taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskTemplate? taskTemplate.taskInformations: [],
+        taskInformations: (taskTemplate)? taskTemplate.taskInformations: [],
         taskActions: taskTemplate? cloneActions: [],
-        parent: task.parent,
+        parent: (task.parent==="")? null : task.parent,
         level: level,
         evaluations: evaluations,
         responsibleEmployees: task.responsibleEmployees,

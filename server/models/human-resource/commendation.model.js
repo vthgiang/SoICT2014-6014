@@ -24,13 +24,16 @@ const CommendationSchema = new Schema({
         require: true,
     },
     startDate: { // ngày ra quyết định
-        type: String
+        type: Date,
+        require: true,
     },
     type: { // hình thức khen thưởng: tiền, bằng khen, ...
-        type: String
+        type: String,
+        require: true,
     },
     reason: {
-        type: String
+        type: String,
+        require: true,
     }
 }, {
     timestamps: true,

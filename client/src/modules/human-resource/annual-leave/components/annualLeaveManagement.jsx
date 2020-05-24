@@ -35,9 +35,8 @@ class AnnualLeaveManagement extends Component {
         });
         window.$('#modal-edit-sabbtical').modal('show');
     }
-
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -48,7 +47,9 @@ class AnnualLeaveManagement extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [month, year].join('-');
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
@@ -61,6 +62,8 @@ class AnnualLeaveManagement extends Component {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
+        let partMonth = value.split('-');
+        value = [partMonth[1], partMonth[0]].join('-');
         this.setState({
             ...this.state,
             month: value
@@ -103,9 +106,11 @@ class AnnualLeaveManagement extends Component {
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
         if (this.state.month === null) {
+            let partMonth = this.formatDate(Date.now(), true).split('-');
+            let month = [partMonth[1], partMonth[0]].join('-');
             await this.setState({
                 ...this.state,
-                month: this.formatDate(Date.now())
+                month: month
             })
         }
         this.props.searchAnnualLeaves(this.state);
@@ -185,7 +190,7 @@ class AnnualLeaveManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                value={this.formatDate(Date.now(), true)}
                                 onChange={this.handleMonthChange}
                             />
 
@@ -247,8 +252,8 @@ class AnnualLeaveManagement extends Component {
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
                                         <td>{x.employee.fullName}</td>
-                                        <td>{x.startDate}</td>
-                                        <td>{x.endDate}</td>
+                                        <td>{this.formatDate(x.startDate)}</td>
+                                        <td>{this.formatDate(x.endDate)}</td>
                                         <td>{x.reason}</td>
                                         <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
@@ -287,8 +292,8 @@ class AnnualLeaveManagement extends Component {
                     <AnnualLeaveEditForm
                         _id={this.state.currentRow._id}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        endDate={this.state.currentRow.endDate}
-                        startDate={this.state.currentRow.startDate}
+                        endDate={this.formatDate(this.state.currentRow.endDate)}
+                        startDate={this.formatDate(this.state.currentRow.startDate)}
                         reason={this.state.currentRow.reason}
                         status={this.state.currentRow.status}
                     />

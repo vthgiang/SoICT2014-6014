@@ -36,7 +36,7 @@ function getListDiscipline(data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.GET_DISCIPLINE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -61,7 +61,7 @@ function createNewDiscipline(data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.CREATE_DISCIPLINE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -86,7 +86,7 @@ function deleteDiscipline(id) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.DELETE_DISCIPLINE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -112,7 +112,7 @@ function updateDiscipline(id, data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.UPDATE_DISCIPLINE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }

@@ -179,6 +179,9 @@ const TaskSchema = new Schema({
         },
         description: { // Mô tả ngắn gọn việc đã làm khi log 
             type: String,
+        },
+        duration:{
+            type:Number
         }
     }],
     totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
@@ -266,11 +269,6 @@ const TaskSchema = new Schema({
             updatedAt:{
                 type: Date,
                 default: Date.now
-            },
-            status: {// 0 là đang chờ,1 là đã đạt, 2 là chưa đạt
-                type: Number,
-                enum:[0,1,2],
-                default: 0
             },
             rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
                 type: Number,

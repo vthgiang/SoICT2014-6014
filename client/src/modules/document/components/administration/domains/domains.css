@@ -1,0 +1,8 @@
+ul.domain-tree {
+    list-style-type: none;
+}
+
+li.domain-tree {
+    border-left: 0.5px solid rgb(194, 194, 194);
+    padding: 10px;
+}

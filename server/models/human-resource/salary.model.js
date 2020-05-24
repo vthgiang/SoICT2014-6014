@@ -16,7 +16,7 @@ const SalarySchema = new Schema({
         ref: Company
     },
     month: {
-        type: String,
+        type: Date,
         require: true,
     },
     mainSalary: { // Lương chính

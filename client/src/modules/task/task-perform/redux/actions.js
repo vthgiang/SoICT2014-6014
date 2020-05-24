@@ -5,12 +5,10 @@ import { taskManagementConstants } from "../../task-management/redux/constants";
 import { performTaskService } from "./services";
 
 export const performTaskAction = {
-    getLogTimerTask,
+    getTimesheetLogs,
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
-    pauseTimerTask,
-    continueTimerTask,
     addActionComment,
     editActionComment,
     deleteActionComment,
@@ -27,7 +25,8 @@ export const performTaskAction = {
     createCommentOfTaskComment,
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
-    evaluationAction
+    evaluationAction,
+    confirmAction
 };
 
 // Create result task
@@ -64,359 +63,254 @@ function editResultTask(result, taskid) {
 }
 
 // Get log timer task
-function getLogTimerTask(task) {
+function getTimesheetLogs(task) {
     return dispatch => {
-        dispatch(request(task));
+        dispatch({type: performTaskConstants.GET_TIMESHEETLOGS_REQUEST});
 
-        performTaskService.getLogTimerTask(task)
+        performTaskService.getTimesheetLogs(task)
             .then(
-                logTimer => dispatch(success(logTimer)),
-                error => dispatch(failure(error.toString()))
+                payload => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_FAILURE, error })
             );
     };
-
-    function request(task) { return { type: performTaskConstants.GET_LOGTIMER_REQUEST, task } }
-    function success(logTimer) { return { type: performTaskConstants.GET_LOGTIMER_SUCCESS, logTimer } }
-    function failure(error) { return { type: performTaskConstants.GET_LOGTIMER_FAILURE, error } }
 }
 
 // Get timer status task
 function getTimerStatusTask(task) { //param -- , user
     return dispatch => {
-        dispatch(request(task));
+        dispatch({ type: performTaskConstants.GET_TIMERSTATUS_REQUEST });
         //performTaskService.getTimerStatusTask(task,user)
         performTaskService.getTimerStatusTask(task)
             .then(
-                currentTimer => dispatch(success(currentTimer)),
-                error => dispatch(failure(error.toString()))
+                payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_FAILURE, error })
             );
     };
-
-    function request(task) { return { type: performTaskConstants.GET_TIMERSTATUS_REQUEST, task } }
-    function success(currentTimer) { return { type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, currentTimer } }
-    function failure(error) { return { type: performTaskConstants.GET_TIMERSTATUS_FAILURE, error } }
 }
 
 // start timer task
 function startTimerTask(timer) {
     return dispatch => {
-        dispatch(request(timer));
+        dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
         performTaskService.startTimerTask(timer)
             .then(
-                timer => {
-                    dispatch(success(timer));
+                payload => {
+                    dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
                 },
                 error => {
-                    dispatch(failure(error.toString()));
+                    dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
                 }
             );
     };
-
-    function request(timer) { return { type: performTaskConstants.START_TIMER_REQUEST, timer } }
-    function success(timer) { return { type: performTaskConstants.START_TIMER_SUCCESS, timer } }
-    function failure(error) { return { type: performTaskConstants.STOP_TIMER_FAILURE, error } }
 }
 
-// pause timer task
-function pauseTimerTask(id, newTimer) {
-    return dispatch => {
-        dispatch(request(id));
-
-        performTaskService.pauseTimerTask(id, newTimer)
-            .then(
-                newTimer => {
-                    dispatch(success(newTimer));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
-    };
-
-    function request(id) { return { type: performTaskConstants.PAUSE_TIMER_REQUEST, id } }
-    function success(newTimer) { return { type: performTaskConstants.PAUSE_TIMER_SUCCESS, newTimer } }
-    function failure(error) { return { type: performTaskConstants.PAUSE_TIMER_FAILURE, error } }
-}
-
-// continue timer task
-function continueTimerTask(id, newTimer) {
-    return dispatch => {
-        dispatch(request(id));
-
-        performTaskService.continueTimerTask(id, newTimer)
-            .then(
-                newTimer => {
-                    dispatch(success(newTimer));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
-    };
-
-    function request(id) { return { type: performTaskConstants.CONTINUE_TIMER_REQUEST, id } }
-    function success(newTimer) { return { type: performTaskConstants.CONTINUE_TIMER_SUCCESS, newTimer } }
-    function failure(error) { return { type: performTaskConstants.CONTINUE_TIMER_FAILURE, error } }
-}
 
 // stop timer task
-function stopTimerTask(id, newTimer) {
+function stopTimerTask(newTimer) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.STOP_TIMER_REQUEST });
 
-        performTaskService.stopTimerTask(id, newTimer)
+        performTaskService.stopTimerTask(newTimer)
             .then(
-                newTask => {
-                    dispatch(success(newTask))
-                    dispatch(updatetask(newTask))
+                payload => {
+                    dispatch({ type: performTaskConstants.STOP_TIMER_SUCCESS, payload})
+                    dispatch({ type: taskManagementConstants.EDIT_TASK_SUCCESS, payload })
                 },
                 error => {
-                    dispatch(failure(error.toString()));
+                    dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
                 }
             );
     };
-
-    function request(id) { return { type: performTaskConstants.STOP_TIMER_REQUEST, id } }
-    function success(newTask) { return { type: performTaskConstants.STOP_TIMER_SUCCESS, newTask } }
-    function updatetask(newTask) { return { type: taskManagementConstants.EDIT_TASK_SUCCESS, newTask } }
-    function failure(error) { return { type: performTaskConstants.STOP_TIMER_FAILURE, error } }
 }
 //get Action task
 function getTaskActions(task) {
     return dispatch => {
-        dispatch(request(task));
+        dispatch({ type: performTaskConstants.GET_TASKACTION_REQUEST });
 
         performTaskService.getTaskAction(task)
             .then(
-                taskActions => dispatch(success(taskActions)),
-                error => dispatch(failure(error.toString()))
+                payload => dispatch({ type: performTaskConstants.GET_TASKACTION_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TASKACTION_FAILURE, error })
             )
     };
-    function request(task) { return { type: performTaskConstants.GET_TASKACTION_REQUEST, task } }
-    function success(taskActions) { return { type: performTaskConstants.GET_TASKACTION_SUCCESS, taskActions } }
-    function failure(error) { return { type: performTaskConstants.GET_TASKACTION_FAILURE, error } }
 }
 
 // add comment task
 function addActionComment(newComment) {
     return dispatch => {
-        dispatch(request(newComment));
+        dispatch({ type: performTaskConstants.ADDNEW_ACTIONCOMMENT_REQUEST });
 
         performTaskService.addActionComment(newComment)
             .then(
-                newComment => {
-                    dispatch(success(newComment));
+                payload => {
+                    dispatch({ type: performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS, payload });
                 },
                 error => {
-                    dispatch(failure(error.toString()));
+                    dispatch({ type: performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE, error });
                 }
             );
     };
-
-    function request(newComment) { return { type: performTaskConstants.ADDNEW_ACTIONCOMMENT_REQUEST, newComment } }
-    function success(newComment) { return { type: performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS, newComment } }
-    function failure(error) { return { type: performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE, error } }
 }
 //add action task
 function addTaskAction(newAction) {
     return dispatch => {
-        dispatch(request(newAction));
+        dispatch({ type: performTaskConstants.ADDNEW_TASKACTION_REQUEST });
 
         performTaskService.addTaskAction(newAction)
             .then(
-                newAction => dispatch(success(newAction)),
-                error => dispatch(failure(newAction, error.toString()))
+                payload => dispatch({ type: performTaskConstants.ADDNEW_TASKACTION_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.ADDNEW_TASKACTION_FAILURE, error })
             );
     };
-
-    function request(newAction) { return { type: performTaskConstants.ADDNEW_TASKACTION_REQUEST, newAction } }
-    function success(newAction) { return { type: performTaskConstants.ADDNEW_TASKACTION_SUCCESS, newAction } }
-    function failure(error) { return { type: performTaskConstants.ADDNEW_TASKACTION_FAILURE, error } }
 }
 
 // edit comment task
 function editActionComment(id, newComment) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.EDIT_ACTIONCOMMENT_REQUEST });
 
         performTaskService.editActionComment(id, newComment)
             .then(
-                newComment => {
-                    dispatch(success(newComment));
+                payload => {
+                    dispatch({ type: performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS, payload });
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    // dispatch(alertActions.error(error.toString()));
+                    dispatch({ type: performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE, error });
                 }
             );
     };
-
-    function request(id) { return { type: performTaskConstants.EDIT_ACTIONCOMMENT_REQUEST, id } }
-    function success(newComment) { return { type: performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS, newComment } }
-    function failure(error) { return { type: performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE, error } }
 }
 function editTaskAction(id, newAction) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.EDIT_TASKACTION_REQUEST });
         performTaskService.editTaskAction(id, newAction)
             .then(
-                newAction => {
-                    dispatch(success(newAction));
+                payload => {
+                    dispatch({ type: performTaskConstants.EDIT_TASKACTION_SUCCESS, payload });
                 },
                 error => {
-                    dispatch(failure(error.toString()));
+                    dispatch({ type: performTaskConstants.EDIT_TASKACTION_FAILURE, error });
                 }
             )
     }
-    function request(id) { return { type: performTaskConstants.EDIT_TASKACTION_REQUEST, id } }
-    function success(newAction) { return { type: performTaskConstants.EDIT_TASKACTION_SUCCESS, newAction } }
-    function failure(error) { return { type: performTaskConstants.EDIT_TASKACTION_FAILURE, error } }
 }
 // delete comment task: prefixed function name with underscore because delete is a reserved word in javascript
 function deleteActionComment(id,task) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.DELETE_ACTIONCOMMENT_REQUEST });
 
         performTaskService.deleteActionComment(id,task)
             .then(
-                task => dispatch(success(task)),
-                error => dispatch(failure(id, error.toString()))
+                payload => dispatch({ type: performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_ACTIONCOMMENT_FAILURE, id, error })
             );
     };
-
-    function request(id) { return { type: performTaskConstants.DELETE_ACTIONCOMMENT_REQUEST, id } }
-    function success(task) { return { type: performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS, task } }
-    function failure(id, error) { return { type: performTaskConstants.DELETE_ACTIONCOMMENT_FAILURE, id, error } }
 }
 function deleteTaskAction(id,task) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.DELETE_TASKACTION_REQUEST });
 
         performTaskService.deleteTaskAction(id,task)
             .then(
-                task => dispatch(success(task)),
-                error => dispatch(failure(id, error.toString()))
+                payload => dispatch({ type: performTaskConstants.DELETE_TASKACTION_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_TASKACTION_FAILURE, id, error })
             );
     };
-
-    function request(id) { return { type: performTaskConstants.DELETE_TASKACTION_REQUEST, id } }
-    function success(task) { return { type: performTaskConstants.DELETE_TASKACTION_SUCCESS, task } }
-    function failure(id, error) { return { type: performTaskConstants.DELETE_TASKACTION_FAILURE, id, error } }
 }
 
 function createTaskComment(newComment) {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: performTaskConstants.CREATE_TASKCOMMENT_REQUEST});
 
         performTaskService.createTaskComment(newComment)
             .then(
-                newComment => dispatch(success(newComment)),
-                error => dispatch(failure(error))
+                payload => dispatch({ type: performTaskConstants.CREATE_TASKCOMMENT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.CREATE_TASKCOMMENT_FAILURE, error })
             );
     }
-    function request() { return { type: performTaskConstants.CREATE_TASKCOMMENT_REQUEST} }
-    function success(newComment) { return { type: performTaskConstants.CREATE_TASKCOMMENT_SUCCESS, newComment } }
-    function failure(error) { return { type: performTaskConstants.CREATE_TASKCOMMENT_FAILURE, error } }
 }
 function getTaskComments(task) {
-    console.log("Task"+ task)
     return dispatch => {
-        dispatch(request(task));
+        dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_REQUEST });
 
         performTaskService.getTaskComments(task)
             .then(
-                taskComments => dispatch(success(taskComments)),
-                error => dispatch(failure(error.toString()))
+                payload => dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_SUCCESS, payload }),
+                error => dispatch( { type: performTaskConstants.GET_TASKCOMMENTS_FAILURE, error })
             )
     };
-    function request(task) { return { type: performTaskConstants.GET_TASKCOMMENTS_REQUEST, task } }
-    function success(taskComments) { return { type: performTaskConstants.GET_TASKCOMMENTS_SUCCESS, taskComments } }
-    function failure(error) { return { type: performTaskConstants.GET_TASKCOMMENTS_FAILURE, error } }
 }
 function editTaskComment(id, newComment) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.EDIT_TASKCOMMENT_REQUEST });
         performTaskService.editTaskComment(id, newComment)
             .then(
-                newComment => {
-                    dispatch(success(newComment));
+                payload => {
+                    dispatch({ type: performTaskConstants.EDIT_TASKCOMMENT_SUCCESS, payload });
                 },
                 error => {
-                    dispatch(failure(error.toString()));
+                    dispatch({ type: performTaskConstants.EDIT_TASKCOMMENT_FAILURE, error });
                 }
             )
     }
-    function request(id) { return { type: performTaskConstants.EDIT_TASKCOMMENT_REQUEST, id } }
-    function success(newComment) { return { type: performTaskConstants.EDIT_TASKCOMMENT_SUCCESS, newComment } }
-    function failure(error) { return { type: performTaskConstants.EDIT_TASKCOMMENT_FAILURE, error } }
 }
 function deleteTaskComment(id,task) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: performTaskConstants.DELETE_TASKCOMMENT_REQUEST});
         performTaskService.deleteTaskComment(id,task)
         .then(
-            task => dispatch(success(task)),
-            error => dispatch(failure(id, error.toString()))
+            payload => dispatch({ type: performTaskConstants.DELETE_TASKCOMMENT_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.DELETE_TASKCOMMENT_FAILURE, error })
         );
     }
-
-    function request(id) { return { type: performTaskConstants.DELETE_TASKCOMMENT_REQUEST, id } }
-    function success(task) { return { type: performTaskConstants.DELETE_TASKCOMMENT_SUCCESS, task } }
-    function failure(id, error) { return { type: performTaskConstants.DELETE_TASKCOMMENT_FAILURE, id, error } }
 }
 function createCommentOfTaskComment(newComment){
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_REQUEST });
         performTaskService.createCommentOfTaskComment(newComment)
         .then(
-            newComment => dispatch(success(newComment)),
-            error => dispatch(failure(error.toString()))
+            payload => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_FAILURE, error })
         );
     }
-
-    function request() { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_REQUEST } }
-    function success(newComment) { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_SUCCESS, newComment } }
-    function failure( error) { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
 }
 function editCommentOfTaskComment(id,newComment) {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_REQUEST });
         performTaskService.editCommentOfTaskComment(id,newComment)
         .then(
-            newComment => dispatch(success(newComment)),
-            error => dispatch(failure(error.toString()))
+            payload => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE, error })
         );
     }
-
-    function request() { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_REQUEST } }
-    function success(newComment) { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_SUCCESS, newComment } }
-    function failure( error) { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
 }
 function deleteCommentOfTaskComment(task,id) {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_REQUEST });
         performTaskService.deleteCommentOfTaskComment(task,id)
         .then(
-            comment => dispatch(success(comment)),
-            error => dispatch(failure(error.toString()))
+            payload => dispatch({ type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE, error })
         );
     }
-
-    function request() { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_REQUEST } }
-    function success(comment) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS, comment } }
-    function failure( error) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
 }
 function evaluationAction(id,evaluations) {
     return dispatch => {
-        dispatch(request());
+        dispatch({ type: performTaskConstants.EVALUATION_ACTION_REQUEST });
         performTaskService.evaluationAction(id,evaluations)
         .then(
-            evaluations => dispatch(success(evaluations)),
-            error => dispatch(failure(error.toString()))
+            payload => dispatch({ type: performTaskConstants.EVALUATION_ACTION_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.EVALUATION_ACTION_FAILURE, error })
         );
     }
-
-    function request() { return { type: performTaskConstants.EVALUATION_ACTION_REQUEST } }
-    function success(evaluations) { return { type: performTaskConstants.EVALUATION_ACTION_SUCCESS, evaluations } }
-    function failure( error) { return { type: performTaskConstants.EVALUATION_ACTION_FAILURE, error } }
+}
+function confirmAction(id,idUser) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.CONFIRM_ACTION_REQUEST });
+        performTaskService.confirmAction(id,idUser)
+        .then(
+            payload => dispatch({ type: performTaskConstants.CONFIRM_ACTION_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.CONFIRM_ACTION_FAILURE, error })
+        );
+    }
 }

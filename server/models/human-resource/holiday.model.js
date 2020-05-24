@@ -10,22 +10,19 @@ const HolidaySchema = new Schema({
         ref: Company
     },
     startDate: {
-        type: Date
+        type: Date,
+        required: true
     },
     endDate: {
-        type: Date
+        type: Date,
+        required: true
     },
     reason: {
-        type: String
+        type: String,
+        required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Holiday = mongoose.model("holidays", HolidaySchema);

@@ -95,8 +95,6 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
-      console.log("----kpis---", state.currentKPI.kpis);
-      console.log("--id--", action.id);
       return {
         ...state,
         currentKPI: {
@@ -177,7 +175,7 @@ export function kpimembers(state = {}, action) {
           error: action.payload
         };
     //----------------------------------------------------------------
-   
+  
     case  kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
         return {
           ...state,

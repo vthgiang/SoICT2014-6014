@@ -9,6 +9,22 @@ class ContractTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     // Bắt sự kiện click edit bằng cấp
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -92,13 +108,13 @@ class ContractTab extends Component {
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.contractType}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_contract')} ><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -152,11 +168,12 @@ class ContractTab extends Component {
                     this.state.currentRow !== undefined &&
                     <ContractEditModal
                         id={`editContract${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}
                         contractType={this.state.currentRow.contractType}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
+                        startDate={this.formatDate(this.state.currentRow.startDate)}
+                        endDate={this.formatDate(this.state.currentRow.endDate)}
                         file={this.state.currentRow.file}
                         urlFile={this.state.currentRow.urlFile}
                         fileUpload={this.state.currentRow.fileUpload}

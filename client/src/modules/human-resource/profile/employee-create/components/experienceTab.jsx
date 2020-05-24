@@ -8,6 +8,23 @@ class ExperienceTab extends Component {
         super(props);
         this.state = {};
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
     // Bắt sự kiện click edit kinh nghiệm làm việc
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -124,8 +141,8 @@ class ExperienceTab extends Component {
                                 {(typeof experiences !== 'undefined' && experiences.length !== 0) &&
                                     experiences.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
+                                            <td>{this.formatDate(x.startDate, true)}</td>
+                                            <td>{this.formatDate(x.endDate, true)}</td>
                                             <td>{x.company}</td>
                                             <td>{x.position}</td>
                                             <td >
@@ -146,10 +163,11 @@ class ExperienceTab extends Component {
                     this.state.currentRow !== undefined &&
                     <ModalEditExperience
                         id={`editExperience${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         company={this.state.currentRow.company}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
+                        startDate={this.formatDate(this.state.currentRow.startDate, true)}
+                        endDate={this.formatDate(this.state.currentRow.endDate, true)}
                         position={this.state.currentRow.position}
                         handleChange={this.handleEditExperience}
                     />

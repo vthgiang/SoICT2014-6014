@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 // import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
+
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
+import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
+import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
+
 class OrganizationalUnitKpiDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            date: new Date().getMonth() + 1,
             currentRole: localStorage.getItem("currentRole")
         };
     }
+
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
         this.handleResizeColumn();
     }
+
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
@@ -68,7 +76,7 @@ class OrganizationalUnitKpiDashboard extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-
+            
         return [month, year].join('-');
     }
     // showModalCopy = async (id) => {
@@ -87,9 +95,11 @@ class OrganizationalUnitKpiDashboard extends Component {
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
+        
     }
 
     render() {
+        
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
         const { user, managerKpiUnit } = this.props;
@@ -128,26 +138,6 @@ class OrganizationalUnitKpiDashboard extends Component {
             };
         }
         
-        const options1 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            title: {
-                text: "Kết quả KPI đơn vị năm 2019",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            axisX: {
-                title: "Tháng"
-            },
-            axisY: {
-                title: "Điểm",
-            },
-            data: [{
-                type: "line",
-                dataPoints: datachat1
-            }]
-        }
         const options2 = {
             animationEnabled: true,
             exportEnabled: true,
@@ -191,26 +181,6 @@ class OrganizationalUnitKpiDashboard extends Component {
                 dataPoints: misspoint
             }]
         }
-        const options3 = {
-            exportEnabled: true,
-            animationEnabled: true,
-            title: {
-                text: "Phân bố mục tiêu tháng 12",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            legend: {
-                cursor: "pointer",
-            },
-            data: [{
-                type: "pie",
-                showInLegend: true,
-                toolTipContent: "{name}: <strong>{y}%</strong>",
-                indexLabel: "{name} - {y}%",
-                dataPoints: currentTargets
-            }]
-        }
         
         return (
             <div className="table-wrapper box">
@@ -223,25 +193,37 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
 
                             {managerKpiUnit.kpis ?
-                                <div className="col-xs-12">
+                                <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
+                                    <h1>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h1>
                                     <TrendsInOrganizationalUnitKpiChart/>
                                 </div>
                                 : <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
-                                    <h1>Xu hướng thực hiện mục tiêu của nhân viên</h1>
-                                    <h4>Chưa khởi tạo tập Kpi đơn vị</h4>
+                                    <h2>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h2>
+                                    <h4>Chưa khởi tạo tập Kpi đơn vị tháng {this.state.date}</h4>
                                 </div>
                             }   
                             
                             <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options1} />
+                                <div className="box box-primary" style={ {textAlign: 'center'}}>
+                                    <h1>Kết quả KPI đơn vị năm 2019</h1>
+                                    <ResultsOfOrganizationalUnitKpiChart/>
                                 </div>
                             </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options3} />
+                                
+                            {managerKpiUnit.kpis ?
+                                <div className="col-xs-6">
+                                    <div className="box box-primary" style={ {textAlign: 'center'}}>
+                                        <h1>Phân bố KPI đơn vị tháng {this.state.date}</h1>
+                                        <DistributionOfOrganizationalUnitKpiChart/>
+                                    </div>
                                 </div>
-                            </div>
+                                : <div className="col-xs-6">
+                                    <div className="box box-primary" style={ {textAlign: 'center'}}>
+                                        <h2>Phân bố KPI đơn vị tháng {this.state.date}</h2>
+                                        <h4>Chưa khởi tạo tập Kpi đơn vị tháng {this.state.date}</h4>
+                                    </div>
+                                </div>
+                            }   
                         </div>
                     </section>
             </div>

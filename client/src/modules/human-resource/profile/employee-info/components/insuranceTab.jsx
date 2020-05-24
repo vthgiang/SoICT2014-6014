@@ -8,6 +8,22 @@ class InsurranceTab extends Component {
         this.state = {
         };
     }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -40,11 +56,11 @@ class InsurranceTab extends Component {
                             </div>
                             <div className="form-group col-md-4" >
                                 <strong>{translate('manage_employee.start_date')}&emsp; </strong>
-                                {healthInsuranceStartDate}
+                                {this.formatDate(healthInsuranceStartDate)}
                             </div>
                             <div className="form-group col-md-4" >
                                 <strong>{translate('manage_employee.end_date_certificate')}&emsp; </strong>
-                                {healthInsuranceEndDate}
+                                {this.formatDate(healthInsuranceEndDate)}
                             </div>
                         </div>
                     </fieldset>
@@ -67,14 +83,14 @@ class InsurranceTab extends Component {
                             <tbody>
                                 {
                                     (typeof socialInsuranceDetails !== 'undefined' && socialInsuranceDetails.length !== 0) &&
-                                        socialInsuranceDetails.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.startDate}</td>
-                                                <td>{x.endDate}</td>
-                                                <td>{x.company}</td>
-                                                <td>{x.position}</td>
-                                            </tr>
-                                        ))
+                                    socialInsuranceDetails.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{this.formatDate(x.startDate, true)}</td>
+                                            <td>{this.formatDate(x.endDate, true)}</td>
+                                            <td>{x.company}</td>
+                                            <td>{x.position}</td>
+                                        </tr>
+                                    ))
                                 }
                             </tbody>
                         </table>
