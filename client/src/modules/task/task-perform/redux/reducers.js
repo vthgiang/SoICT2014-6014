@@ -60,20 +60,20 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        // case performTaskConstants.START_TIMER_REQUEST:
-        //     return {
-        //         ...state,
-        //         loading: true
-        //     };
-        // case performTaskConstants.START_TIMER_SUCCESS:
-        //     return {
-        //         ...state,
-        //         currentTimer: action.payload.data.content
-        //     };
-        // case performTaskConstants.START_TIMER_FAILURE:
-        //     return {
-        //         error: action.error
-        //     };
+        case performTaskConstants.START_TIMER_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case performTaskConstants.START_TIMER_SUCCESS:
+            return {
+                ...state,
+                currentTimer: action.payload.data.content
+            };
+        case performTaskConstants.START_TIMER_FAILURE:
+            return {
+                error: action.error
+            };
         case performTaskConstants.STOP_TIMER_REQUEST:
             return {
                 ...state,
@@ -82,7 +82,8 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return {
                 ...state,
-                logtimer: action.payload.data.content
+                logtimer: action.payload.data.content,
+                currentTimer: null,
             };
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {

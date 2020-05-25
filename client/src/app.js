@@ -4,7 +4,9 @@ import { createBrowserHistory } from 'history';
 import Routes from './react-routes/routes';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
-import { PinnedPanel } from '../src/common-components'
+
+import { PinnedPanel } from '../src/common-components';
+import TaskTimesheetLog from '../src/modules/task/task-perform/component/taskTimesheetLog';
 
 import './app.css'
 
@@ -32,6 +34,8 @@ class App extends Component {
             localStorage.setItem('lang', 'vn');
             store.dispatch(IntlActions.setLocale('vn'));
         }
+
+        PinnedPanel.addPanel("task-timesheet-Log", <TaskTimesheetLog/>)
     }
     render() {
         return (

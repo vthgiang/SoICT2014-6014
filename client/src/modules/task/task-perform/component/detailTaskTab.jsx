@@ -9,11 +9,10 @@ import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 import Swal from 'sweetalert2';
-import moment from 'moment'
 import {
     getStorage
 } from '../../../../config';
-import Draggable from 'react-draggable';
+
 // import './actionTab.css'
 class DetailTaskTab extends Component {
 
@@ -28,55 +27,11 @@ class DetailTaskTab extends Component {
             startTimer: false,
             pauseTimer: false,
             highestIndex: 0,
-            timer: {
-                duration:null,
-                startedAt: null,
-                stoppedAt: null,
-                creator: null,
-                description: ""
-            },
             currentUser: idUser,
             showModalApprove: "",
             showEdit: ""
         }
     }
-
-    // componentDidUpdate() {
-
-    //         const { performtasks } = this.props;
-    //         var currentTimer;
-    //         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-    //         if (currentTimer && this.state.timer.startTimer === "") {
-    //             this.setState(state => {
-    //                 return {
-    //                     ...state,
-    //                     timer: {
-    //                         ...currentTimer,
-    //                         startTimer: currentTimer.startTimer - currentTimer.time
-    //                     },
-    //                     startTimer: true,
-    //                     pauseTimer: currentTimer.pause,
-    //                 }
-    //             })
-    //             //Chỉnh giao diện
-    //             document.getElementById("start-timer-task").style.width = "20%";
-    //             document.getElementById("btn-approve").style.marginLeft = "50%";
-    //             // Setup thời thời gian chạy
-    //             if (currentTimer.pause === false) {
-    //                 this.timer = setInterval(() => this.setState(state => {
-    //                     return {
-    //                         ...state,
-    //                         timer: {
-    //                             ...state.timer,
-    //                             time: Date.now() - this.state.timer.startTimer,
-    //                         },
-    //                     }
-    //                 }), 1000);
-    //             }
-    //         }
-    //     }
-
-    // }
 
     
 
@@ -111,159 +66,18 @@ class DetailTaskTab extends Component {
         });
     }
 
-    // ========================TIMER=========================
-
+    
     startTimer = async (taskId,userId) => {
-        
-        await this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    startedAt: Date.now(),
-                    creator: userId,
-                    task: taskId
-                },
-                openTimeCounnt: true
-            }
-        })
-        // var { timer} = this.state;
-        // console.log(timer)
-        // this.props.startTimer(timer);
-        // //Chỉnh trạng thái bấm giờ và update database
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         timer: {
-        //             ...state.timer,
-        //             time: 0,
-        //             startTimer: Date.now(),
-        //         },
-        //         startTimer: true,
-        //         pauseTimer: false
-        //     }
-        // })
-        //Setup thời thời gian chạy
-        this.timer = setInterval(() => this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    time: Date.now() - this.state.timer.startedAt,
-                },
-            }
-        }), 1000);
+        var timer = {
+            startedAt: Date.now(),
+            creator: userId,
+            task: taskId
+        };
+        this.props.startTimer(timer);
     }
-    stopTimer = async (taskId,userId) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    stoppedAt: Date.now(),
-                    duration: Date.now()-this.state.timer.startedAt,
-                    creator:userId,
-                    task:taskId
-                },
-                openTimeCounnt:false
-            }
-        })
-        
-        var {timer} = this.state;
-        console.log(timer)
-        this.props.stopTimer(timer)
-        // // Xóa biến timer
-        // clearInterval(this.timer);
-        // // Chỉnh giao diện
-        // // document.getElementById("start-timer-task").style.width = "9%";
-        // document.getElementById("btn-approve").style.marginLeft = "80%";
 
-        // Swal.fire({
-        //     title: "Thời gian đã làm: " + this.convertTime(this.state.timer.time),
-        //     type: 'success',
-        //     showCancelButton: true,
-        //     confirmButtonColor: '#3085d6',
-        //     cancelButtonColor: '#d33',
-        //     confirmButtonText: 'Lưu'
-        // }).then((res) => {
-        //     // Update dữ liệu: Thời gian kết thúc, time = oldTime + newTime
-        //     this.props.stopTimer(timer._id, this.state.timer);
-        //     this.setState(state => {
-        //         // TODO: test sau
-        //         return {
-        //             ...state,
-        //             timer: {
-        //                 task: this.props.id,
-        //                 startTimer: "",
-        //                 stopTimer: null,
-        //                 time: 0
-        //             }
-        //         }
-        //     })
-        // });
-        // reset trạng thái timer
-    }
-    // pauseTimer = async (timer) => {
-    //     // Chuyển sang trạng thái dừng bấm giờ
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             pauseTimer: true
-    //         }
-    //     })
-    //     // Xóa biến timer
-    //     clearInterval(this.timer);
-    //     // Update database: time
-    //     this.props.pauseTimer(timer._id, this.state.timer);
-    // }
-    // continueTimer = async (timer) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 startTimer: Date.now()
-    //             },
-    //             startTimer: true,
-    //             pauseTimer: false,
-    //         }
-    //     })
-    //     this.props.continueTimer(timer._id, this.state.timer);
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 startTimer: this.state.timer.startTimer - this.state.timer.time
-    //             },
-    //             startTimer: true,
-    //             pauseTimer: false,
-    //         }
-    //     })
-    //     this.timer = setInterval(() => this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 time: Date.now() - this.state.timer.startTimer,
-    //             },
-    //         }
-    //     }), 1);
-    // }
-    // convertTime = (duration) => {
-    //     // var milliseconds = parseInt((duration % 1000) / 100),
-    //     var seconds = Math.floor((duration / 1000) % 60),
-    //         minutes = Math.floor((duration / (1000 * 60)) % 60),
-    //         hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    //     hours = (hours < 10) ? "0" + hours : hours;
-    //     minutes = (minutes < 10) ? "0" + minutes : minutes;
-    //     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    //     return hours + ":" + minutes + ":" + seconds;
-    // }
-
-    // =============================END TIMER==================================
 
     formatDate(date) {
         var d = new Date(date),
@@ -350,12 +164,11 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        const count = Date.now()-this.state.timer.startedAt
         const { translate } = this.props;
-        var task, actions, informations, currentTimer, logTimer;
+        var task, actions, informations;
         var statusTask;
         const{currentUser}= this.state
-        const { time } = this.state.timer;
+        
         const { tasks, performtasks, user } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
@@ -363,9 +176,6 @@ class DetailTaskTab extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (performtasks.logtimer) logTimer = performtasks.logtimer;
 
         return (
       
@@ -405,27 +215,7 @@ class DetailTaskTab extends Component {
                         </a>
                     }
         
-                </div>
-                {this.state.openTimeCounnt &&
-                        <Draggable
-                        handle=".handle"
-                        defaultPosition={{x: 0, y: 0}}
-                        position={null}
-                        grid={[1, 1]}
-                        onStart={this.handleStart}
-                        onDrag={this.handleDrag}
-                        onStop={this.handleStop}>
-                        <div className="handle" style={{height:"auto",width:'110px',backgroundColor:'white',zIndex:"1000000000000000000",border:"solid 1px",borderRadius:"20px",paddingLeft:"15px",paddingTop:'5px',paddingBottom:'5px'}}>
-                           <ul className="list-inline" style={{marginBottom:'0px',marginTop:'2px',fontFamily:'sans-serif'}}>
-                               <li>
-                                    {moment.utc(count).format('HH:mm:ss')}
-                               </li>
-                               <li><a href="#" className="link-black text-lg" ><i class="fa fa-stop-circle-o fa-lg" aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer(task._id,currentUser)}></i></a></li>
-                               
-                           </ul>
-                        </div>
-                      </Draggable>
-                    }    
+                </div>   
 
                 <br />
                 <div>
@@ -752,7 +542,6 @@ const actionGetState = { //dispatchActionToProps
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
-    getStatusTimer: performTaskAction.getTimerStatusTask
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

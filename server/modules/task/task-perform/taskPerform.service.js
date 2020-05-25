@@ -22,41 +22,53 @@ exports.getTaskTimesheetLogs = async (params) => {
  * Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
-exports.getTimerStatus = async (params) => {
-    var timerStatus =await TimesheetLog.findOne({ task: params.task, user: params.user, stopTimer: null })
+exports.getActiveTimesheetLog = async (params) => {
+    var timerStatus = await Task.findOne(
+        {"timesheetLogs.creator": mongoose.Types.ObjectId(params.user), "timesheetLogs.stoppedAt": null},
+        {"timesheetLogs" : 1, '_id': 1, 'name': 1 }
+    );
 
-    return timerStatus
+    if (timerStatus !== null) {
+        timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(element => !(element.stoppedAt));
+        return timerStatus;
+    } else {
+        return null;
+    }
 }
 
-// /**
-//  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
-//  */
-// exports.startTimesheetLog = async (body) => {
-//     console.log(body)
-//     var timerUpdate = {
-//         startedAt: body.startedAt,
-//         description: body.description,
-//         creator:body.creator
-//     }
-//     var timer = await Task.findByIdAndUpdate(body.task,
-//         { $push: { timesheetLogs: timerUpdate } }, { new: true })
-//     return timer;
-// }
+/**
+ * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
+ */
+exports.startTimesheetLog = async (body) => {
+    var timerUpdate = {
+        startedAt: body.startedAt,
+        creator:body.creator
+    }
+    var timer = await Task.findByIdAndUpdate(body.task, 
+        { $push: { timesheetLogs: timerUpdate } },
+        { new: true, "fields": {"timesheetLogs" : 1, '_id': 1, 'name': 1 } }
+    );
+    
+    timer.timesheetLogs = timer.timesheetLogs.find(element => !(element.stoppedAt));
+
+    return timer;
+}
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
  */
 exports.stopTimesheetLog = async (body) => {
-    console.log(body)
-    var timerUpdate = {
-        stoppedAt: body.stoppedAt,
-        duration: body.duration,
-        startedAt: body.startedAt,
-        description: body.description,
-        creator:body.creator
-    }
-
-    var timer = await Task.findByIdAndUpdate(body.task,
-        { $push: { timesheetLogs: timerUpdate } }, { new: true }).populate("timesheetLogs.creator")
+    var timer = await Task.findOneAndUpdate(
+        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        {
+            $set: {
+                "timesheetLogs.$.stoppedAt": body.stoppedAt,
+                "timesheetLogs.$.duration": body.duration,
+                "timesheetLogs.$.description": body.description,
+            }
+        },
+        {new: true}
+    ).populate({path: "timesheetLogs.creator", select: "name"});
+    
     return timer.timesheetLogs;
 }
 
