@@ -103,7 +103,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             },
 
             legend: {                               // Ẩn chú thích biểu đồ
-                show: false
+                show: true
             }
         });
 
