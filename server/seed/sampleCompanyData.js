@@ -1044,7 +1044,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1052,7 +1051,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1066,7 +1064,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1136,7 +1133,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1144,7 +1140,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1158,7 +1153,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1230,7 +1224,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1238,7 +1231,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1252,7 +1244,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1262,7 +1253,6 @@ const sampleCompanyData = async () => {
             description: "Ảnh 3x4",
             number: "1",
             status: "submitted",
-            file: "3.5.1.PNG",
             urlFile: "lib/fileEmployee/1582212624054-3.5.1.png"
         }],
     });

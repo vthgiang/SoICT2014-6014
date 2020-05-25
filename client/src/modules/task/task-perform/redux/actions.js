@@ -76,11 +76,11 @@ function getTimesheetLogs(task) {
 }
 
 // Get timer status task
-function getTimerStatusTask(task) { //param -- , user
+function getTimerStatusTask() { //param -- , user
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TIMERSTATUS_REQUEST });
         //performTaskService.getTimerStatusTask(task,user)
-        performTaskService.getTimerStatusTask(task)
+        performTaskService.getTimerStatusTask()
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_FAILURE, error })

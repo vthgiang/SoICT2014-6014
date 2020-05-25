@@ -105,7 +105,7 @@ class FileTab extends Component {
                     <div className="col-md-12">
                         <h4 className="row col-md-6 col-xs-8">{translate('manage_employee.list_attachments')}:</h4>
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
-                        <button style={{marginTop:2, marginBottom:10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
+                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -125,8 +125,13 @@ class FileTab extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
+                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                             <td >
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
