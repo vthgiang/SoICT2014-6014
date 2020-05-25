@@ -22,6 +22,7 @@ class PinnedPanel extends Component {
                     Object.keys(PinnedPanel.panels).map(id => 
                         <Draggable
                             handle={`#${id}`}
+                            key={id}
                             defaultPosition={{x: 0, y: 0}}
                             position={null}
                             grid={[1, 1]}
