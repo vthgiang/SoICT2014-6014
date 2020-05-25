@@ -12,6 +12,7 @@ import { managerKpiActions } from "../../../kpi/employee/management/redux/action
 import Rating from 'react-rating'
 import moment from 'moment'
 import Files from 'react-files'
+import TextareaAutosize from 'react-textarea-autosize';
 class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -59,6 +60,10 @@ class ActionTab extends Component {
             evaluations: {
                 creator: idUser,
             },
+            value: '',
+			rows: 3,
+			minRows: 3,
+			maxRows: 25,
         };
         this.contentTaskComment= [];
         this.contentCommentOfAction= [];
@@ -472,6 +477,27 @@ class ActionTab extends Component {
         e.preventDefault();
         this.props.confirmAction(actionId,userId)
     }
+    handleChange = (event) => {
+
+		const textareaLineHeight = 13;
+		const { minRows, maxRows } = this.state;
+        const previousRows = event.target.rows;//3
+  	    event.target.rows = minRows; // reset number of rows in textarea 
+        const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+        if (currentRows === previousRows) {
+            event.target.rows = currentRows;
+        }
+
+		if (currentRows >= maxRows) {
+			event.target.rows = maxRows;
+			event.target.scrollTop = event.target.scrollHeight;
+		}
+    
+  	this.setState({
+    	value: event.target.value,
+        rows: currentRows < maxRows ? currentRows : maxRows,
+    });
+	};
     onFilesChange = (files) => {
         this.setState({
           files
@@ -508,7 +534,6 @@ class ActionTab extends Component {
         
         const checkUserId = obj =>  obj.creator._id === currentUser;
         if(typeof tasks.task !== 'undefined' && tasks.task !== null) taskInfo = tasks.task.info
-        console.log(taskInfo)
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
@@ -662,6 +687,11 @@ class ActionTab extends Component {
                                                             <React.Fragment>
                                                                 <div style={{ width: "83%", marginLeft: "8.2%" }}>
                                                                     <textarea
+                                                                        rows={this.state.rows}
+                                                                        value={this.state.value}
+                                                                        placeholder={'Enter your text here...'}
+                                                                        className={'textarea'}
+                                                                        onChange={this.handleChange}
                                                                         style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius: "18px"  }}
                                                                         defaultValue={child.content}
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
@@ -711,9 +741,21 @@ class ActionTab extends Component {
                                 <div class="user-block">
                                 <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="user avatar" />
                                     <span class="username">
-                                        <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                            style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
-                                            ref={input => this.contentAction[0] = input} /> 
+                                    <TextareaAutosize
+                                        placeholder="Hãy nhập nội dung hoạt động"
+                                        useCacheForDOMMeasurements
+                                        minRows={3}
+                                        maxRows={20}
+                                        style={{ width: '100%', height: "auto", fontSize: 13,boxSizing: 'border-box', border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
+                                    />
+                                        {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
+                                            rows={this.state.rows}
+                                            value={this.state.value}
+                                            
+                                            className={'textarea'}
+                                            onChange={this.handleChange}
+                                            style={{ width: '100%', height: "auto", fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
+                                            ref={input => this.contentAction[0] = input} />  */}
                                     </span>
                                 </div>
                                 <div className="row action-post" style={{width:"110%" }}>
