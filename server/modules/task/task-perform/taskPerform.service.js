@@ -24,10 +24,10 @@ exports.getTaskTimesheetLogs = async (params) => {
  */
 exports.getActiveTimesheetLog = async (params) => {
     var timerStatus = await Task.findOne(
-        {"timesheetLogs.creator": mongoose.Types.ObjectId(params.user), "timesheetLogs.stoppedAt": null},
+        {"timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.user), "stoppedAt": null } } },
         {"timesheetLogs" : 1, '_id': 1, 'name': 1 }
     );
-
+    
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(element => !(element.stoppedAt));
         return timerStatus;
