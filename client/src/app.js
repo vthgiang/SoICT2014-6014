@@ -4,6 +4,7 @@ import { createBrowserHistory } from 'history';
 import Routes from './react-routes/routes';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
+import { PinnedPanel } from '../src/common-components'
 
 import './app.css'
 
@@ -38,6 +39,7 @@ class App extends Component {
                 <Router history={history}>
                     <Routes/>
                 </Router>
+                <PinnedPanel />
             </React.Fragment>
         );
     }

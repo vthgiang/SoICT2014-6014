@@ -1,0 +1,10 @@
+.pinned-panel {
+    height: 100px;
+    width: 110px;
+    background-color: pink;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    position: fixed;
+    cursor: move;
+}
