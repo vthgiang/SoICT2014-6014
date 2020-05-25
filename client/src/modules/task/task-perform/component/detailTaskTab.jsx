@@ -41,45 +41,6 @@ class DetailTaskTab extends Component {
         }
     }
 
-    // componentDidUpdate() {
-
-    //         const { performtasks } = this.props;
-    //         var currentTimer;
-    //         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-    //         if (currentTimer && this.state.timer.startTimer === "") {
-    //             this.setState(state => {
-    //                 return {
-    //                     ...state,
-    //                     timer: {
-    //                         ...currentTimer,
-    //                         startTimer: currentTimer.startTimer - currentTimer.time
-    //                     },
-    //                     startTimer: true,
-    //                     pauseTimer: currentTimer.pause,
-    //                 }
-    //             })
-    //             //Chỉnh giao diện
-    //             document.getElementById("start-timer-task").style.width = "20%";
-    //             document.getElementById("btn-approve").style.marginLeft = "50%";
-    //             // Setup thời thời gian chạy
-    //             if (currentTimer.pause === false) {
-    //                 this.timer = setInterval(() => this.setState(state => {
-    //                     return {
-    //                         ...state,
-    //                         timer: {
-    //                             ...state.timer,
-    //                             time: Date.now() - this.state.timer.startTimer,
-    //                         },
-    //                     }
-    //                 }), 1000);
-    //             }
-    //         }
-    //     }
-
-    // }
-
-    
-
     static getDerivedStateFromProps(nextProps, prevState) {
 
         if (nextProps.id !== prevState.id) {
@@ -89,6 +50,7 @@ class DetailTaskTab extends Component {
                 id: nextProps.id
             }
         }
+        return true;
     }
     shouldComponentUpdate = (nextProps, nextState) => {
 
@@ -111,8 +73,6 @@ class DetailTaskTab extends Component {
         });
     }
 
-    // ========================TIMER=========================
-
     startTimer = async (taskId,userId) => {
         
         await this.setState(state => {
@@ -127,22 +87,6 @@ class DetailTaskTab extends Component {
                 openTimeCounnt: true
             }
         })
-        // var { timer} = this.state;
-        // console.log(timer)
-        // this.props.startTimer(timer);
-        // //Chỉnh trạng thái bấm giờ và update database
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         timer: {
-        //             ...state.timer,
-        //             time: 0,
-        //             startTimer: Date.now(),
-        //         },
-        //         startTimer: true,
-        //         pauseTimer: false
-        //     }
-        // })
         //Setup thời thời gian chạy
         this.timer = setInterval(() => this.setState(state => {
             return {
@@ -152,7 +96,7 @@ class DetailTaskTab extends Component {
                     time: Date.now() - this.state.timer.startedAt,
                 },
             }
-        }), 1000);
+        }), 100);
     }
     stopTimer = async (taskId,userId) => {
         await this.setState(state => {
@@ -172,149 +116,11 @@ class DetailTaskTab extends Component {
         var {timer} = this.state;
         console.log(timer)
         this.props.stopTimer(timer)
-        // // Xóa biến timer
-        // clearInterval(this.timer);
-        // // Chỉnh giao diện
-        // // document.getElementById("start-timer-task").style.width = "9%";
-        // document.getElementById("btn-approve").style.marginLeft = "80%";
-
-        // Swal.fire({
-        //     title: "Thời gian đã làm: " + this.convertTime(this.state.timer.time),
-        //     type: 'success',
-        //     showCancelButton: true,
-        //     confirmButtonColor: '#3085d6',
-        //     cancelButtonColor: '#d33',
-        //     confirmButtonText: 'Lưu'
-        // }).then((res) => {
-        //     // Update dữ liệu: Thời gian kết thúc, time = oldTime + newTime
-        //     this.props.stopTimer(timer._id, this.state.timer);
-        //     this.setState(state => {
-        //         // TODO: test sau
-        //         return {
-        //             ...state,
-        //             timer: {
-        //                 task: this.props.id,
-        //                 startTimer: "",
-        //                 stopTimer: null,
-        //                 time: 0
-        //             }
-        //         }
-        //     })
-        // });
-        // reset trạng thái timer
-    }
-    // pauseTimer = async (timer) => {
-    //     // Chuyển sang trạng thái dừng bấm giờ
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             pauseTimer: true
-    //         }
-    //     })
-    //     // Xóa biến timer
-    //     clearInterval(this.timer);
-    //     // Update database: time
-    //     this.props.pauseTimer(timer._id, this.state.timer);
-    // }
-    // continueTimer = async (timer) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 startTimer: Date.now()
-    //             },
-    //             startTimer: true,
-    //             pauseTimer: false,
-    //         }
-    //     })
-    //     this.props.continueTimer(timer._id, this.state.timer);
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 startTimer: this.state.timer.startTimer - this.state.timer.time
-    //             },
-    //             startTimer: true,
-    //             pauseTimer: false,
-    //         }
-    //     })
-    //     this.timer = setInterval(() => this.setState(state => {
-    //         return {
-    //             ...state,
-    //             timer: {
-    //                 ...state.timer,
-    //                 time: Date.now() - this.state.timer.startTimer,
-    //             },
-    //         }
-    //     }), 1);
-    // }
-    // convertTime = (duration) => {
-    //     // var milliseconds = parseInt((duration % 1000) / 100),
-    //     var seconds = Math.floor((duration / 1000) % 60),
-    //         minutes = Math.floor((duration / (1000 * 60)) % 60),
-    //         hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-    //     hours = (hours < 10) ? "0" + hours : hours;
-    //     minutes = (minutes < 10) ? "0" + minutes : minutes;
-    //     seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-    //     return hours + ":" + minutes + ":" + seconds;
-    // }
-
-    // =============================END TIMER==================================
-
-    formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('/');
     }
 
-    calculateOverdueDate = (enddate) => {
-        var endTime = new Date(enddate).getTime();
-        var time = Date.now() - endTime - 1000 * 3600 * 24;
-        if (time <= 0) {
-            return 0;
-        } else {
-            var day = Math.ceil(time / (1000 * 3600 * 24));
-            return day;
-        }
-    }
 
-    // Chuyển thời gian về định dạng mong muốn
-    toDate = (date) => {
-        if (date === void 0) {
-            return new Date(0);
-        }
-        if (this.isDate(date)) {
-            return date;
-        } else {
-            return new Date(parseFloat(date.toString()));
-        }
-    }
-    isDate = (date) => {
-        return (date instanceof Date);
-    }
-    format = (date, format) => {
-        var d = this.toDate(date);
-        return format
-            .replace(/Y/gm, d.getFullYear().toString())
-            .replace(/m/gm, ('0' + (d.getMonth() + 1)).substr(-2))
-            .replace(/d/gm, ('0' + (d.getDate() + 1)).substr(-2))
-            .replace(/H/gm, ('0' + (d.getHours() + 0)).substr(-2))
-            .replace(/i/gm, ('0' + (d.getMinutes() + 0)).substr(-2))
-            .replace(/s/gm, ('0' + (d.getSeconds() + 0)).substr(-2))
-            .replace(/v/gm, ('0000' + (d.getMilliseconds() % 1000)).substr(-3));
-    }
+
+    
 
     handleShowEdit = async (id, role) => {
         await this.setState(state => {
@@ -425,15 +231,16 @@ class DetailTaskTab extends Component {
                            </ul>
                         </div>
                       </Draggable>
-                    }    
-
+                    }    {/**14400000 */}
+                {this.state.timer.time> 15000 &&
+                <div>Mày làm quá 4 tiếng rồi em ê</div>}
                 <br />
                 <div>
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p>
                         <p><strong>Trạng thái công việc:</strong> {task && task.status}</p>
-                        <p><strong>Thời gian thực hiện:</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
+                        <p><strong>Thời gian thực hiện:</strong> {}</p>
                         {/* </div>
                                 <hr />
                             </div>
@@ -676,14 +483,6 @@ class DetailTaskTab extends Component {
                         title='Chỉnh sửa công việc với vai trò người phê duyệt'
                     />
                 }
-
-                {/*{*/}
-                {/*    (this.props.id && this.state.showEdit === this.props.id) &&*/}
-                {/*    <ModalEditTaskByResponsibleEmployee*/}
-                {/*        id={`editTask${this.props.id}`}*/}
-                {/*    />*/}
-                {/*}*/}
-
 
                 {
                     (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "responsible") &&

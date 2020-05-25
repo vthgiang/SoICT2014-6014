@@ -160,10 +160,11 @@ exports.getTaskActions = async (taskId) => {
  * Thêm hoạt động cho công việc
  */
 
-exports.createTaskAction = async (body) => {
+exports.createTaskAction = async (body,files) => {
     var actionInformation = {
         creator: body.creator,
-        description: body.content
+        description: body.content,
+        files: files
     }
     // var actionTaskabc = await Task.findById(req.body.task)
     var taskAction1 = await Task.findByIdAndUpdate(body.task,

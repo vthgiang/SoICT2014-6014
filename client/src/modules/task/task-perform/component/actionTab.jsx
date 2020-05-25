@@ -11,7 +11,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
 import Rating from 'react-rating'
 import moment from 'moment'
-
+import Files from 'react-files'
 class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -23,34 +23,31 @@ class ActionTab extends Component {
             action: false,
             editComment: "",
             valueRating:2.5,
-            hover:-1,
+            files: [],
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
-            startTimer: false,
             pauseTimer: false,
             showChildComment: "",
             showChildTaskComment: "",
             newCommentOfAction: {
                 creator: idUser,
                 content: "",
-                file: null,
+                files: null,
                 taskActionId: null
             },
             newAction: {
                 creator: idUser,
                 content: "",
-                file: null
+                files: null
             },
             newTaskComment: {
                 creator: idUser,
                 content: "",
-                file: null
             },
             newCommentOfTaskComment: {
                 creator: idUser,
                 content: "",
-                file : null
             },
             showEdit: false,
             timer: {
@@ -63,8 +60,6 @@ class ActionTab extends Component {
                 creator: idUser,
                 status: 0
             },
-            resultTask: 0,
-            showModal: ""
         };
         this.contentTaskComment= [];
         this.contentCommentOfAction= [];
@@ -75,10 +70,7 @@ class ActionTab extends Component {
         this.contentCommentOfTaskComment= [];
         this.newContentCommentOfTaskComment= [];
         //this.onHandleChangeFile = this.onHandleChangeFile.bind(this);
-        this.showEdit = this.showEdit.bind(this);
-        this.closeEdit = this.closeEdit.bind(this);
-        this.mypoint = [];
-        this.approvepoint = [];
+
     }
     componentDidUpdate() {
         if (this.props.id !== undefined) {
@@ -178,14 +170,6 @@ class ActionTab extends Component {
             this.props.evaluationAction(id,evaluations);
         }
     }
-    // setHover = async (newHover) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             hover: newHover
-    //         }
-    //     })
-    // }
     handleChangeContent = async (content) => {
         await this.setState(state => {
             return {
@@ -300,15 +284,31 @@ class ActionTab extends Component {
                 newAction: {
                     ...state.newAction,
                     content: this.contentAction[index].value,
-                    task: taskId
+                    task: taskId,
+                    files: this.state.files
                 }
             }
         })
         var { newAction } = this.state;
-        if (newAction.content && newAction.creator) {
+        console.log(this.state);
+        
+
+        const data = new FormData();
+        data.append("task", newAction.task);
+        data.append("creator", newAction.creator);
+        data.append("content", newAction.content);
+        newAction.files.forEach(x=>{
+            data.append("files", x);
+        })
+        //Xóa file đã được chọn mỗi khi gửi hoạt động
+        this.state.files.forEach(item=>{
+            this.refs.files.removeFile(item)
+        })
+        if(newAction.creator && newAction.content){
             
-            this.props.addTaskAction(newAction);
+            this.props.addTaskAction(data);
         }
+        
         this.contentAction[index].value = "";
     }
     //Thêm mới bình luận của công việc
@@ -468,6 +468,31 @@ class ActionTab extends Component {
             this.props.evaluationAction(id,evaluations);
         }
     }   
+    onFilesChange = (files) => {
+        this.setState({
+          files
+        }, () => {
+          console.log(this.state.files)
+        })
+      }
+    
+    onFilesError = (error, file) => {
+    console.log('error code ' + error.code + ': ' + error.message)
+    }
+
+    filesRemoveOne = (file) => {
+    this.refs.files.removeFile(file)
+    }
+    // filesRemoveAll = () => {
+    // this.refs.files.removeFiles()
+    // }
+
+    // filesUpload = () => {
+    // const formData = new FormData()
+    // Object.keys(this.state.files).forEach((key) => {
+    //     const file = this.state.files[key]
+    //     formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
+    // })}
     
     render() {
         const { translate } = this.props;
@@ -495,9 +520,7 @@ class ActionTab extends Component {
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (performtasks.logtimer) logTimer = performtasks.logtimer;
-        console.log(logTimer)
-        
+        if (performtasks.logtimer) logTimer = performtasks.logtimer; 
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
@@ -524,7 +547,7 @@ class ActionTab extends Component {
                                                     {this.props.role === 'responsible' && <div class="btn-group dropleft pull-right">
                                                         <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                             <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                             </svg>
                                                         </button>
                                                         <div class="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
@@ -541,6 +564,7 @@ class ActionTab extends Component {
                                         <p style={{backgroundColor:"#f2f3f5",borderRadius:"15px",padding:"10px", wordWrap:"break-word",overflowWrap:"break-word"}}>
                                             {item.description}
                                         </p>
+                                        <div>{item.files.length>0?item.files[0].url:null}</div>
                                         <ul class="list-inline">
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" class="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i class="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
@@ -555,7 +579,6 @@ class ActionTab extends Component {
                                                         
                                                         {item.evaluations.some(checkUserId)=== true ?
                                                             <React.Fragment>
-                                                                
                                                                 {item.evaluations.map(element => {
                                                                     if(element.creator._id === currentUser){ 
                                                                         return  <div>{element.rating}/10</div>
@@ -563,7 +586,6 @@ class ActionTab extends Component {
                                                                 })}
                                                             </React.Fragment>:
                                                             <React.Fragment>
-                                                                
                                                                 <Rating
                                                                     fractions = {2}
                                                                     emptySymbol="fa fa-star-o fa-2x"
@@ -578,7 +600,6 @@ class ActionTab extends Component {
                                                         }
                                                     </React.Fragment>:
                                                     <React.Fragment>
-                                                        
                                                         <Rating
                                                             fractions = {2}
                                                             emptySymbol="fa fa-star-o fa-2x"
@@ -589,8 +610,7 @@ class ActionTab extends Component {
                                                             }}
                                                             
                                                         />
-                                                    </React.Fragment>
-                                                }
+                                                    </React.Fragment>}
                                             </li></React.Fragment>}
                                         </ul>
                                             
@@ -624,7 +644,7 @@ class ActionTab extends Component {
                                                                     <div class="btn-group dropleft pull-right">
                                                                         <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                                             <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+                                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                                             </svg>
                                                                         </button>
                                                                         <div class="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
@@ -691,26 +711,56 @@ class ActionTab extends Component {
                             }
                             {/* Thêm hoạt động cho công việc*/}
                             {this.props.role === "responsible" &&
-                                <form className="form-horizontal" style={{ paddingTop: "2%" }}>
-                                    <div className="form-group margin-bottom-none">
-                                        <div className="row" style={{marginLeft:"3px"}}>
-                                            <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="user avatar" />
-                                            </div>
-                                            <div className="col-sm-9" style={{marginLeft:"19px", width:"81%"}} >
-                                                <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
-                                                    ref={input => this.contentAction[0] = input} />
-
-                                                <div className="row action-post" style={{width:"110%" }}>
-                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                    <button type="submit" style={{ width: "auto", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm " onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</button>
-                                                    
+                            <React.Fragment>
+                                <div class="user-block">
+                                <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="user avatar" />
+                                    <span class="username">
+                                        <textarea placeholder="Hãy nhập nội dung hoạt động"
+                                            style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
+                                            ref={input => this.contentAction[0] = input} /> 
+                                    </span>
+                                </div>
+                                <div className="row action-post" style={{width:"110%" }}>
+                                {this.state.files.length > 0 ?
+                                    <div className='files-list'>
+                                        <ul style={{listStyle: 'none',marginLeft:'25px'}}>{this.state.files.map((file) =>
+                                            <li className='files-list-item' key={file.id}>
+                                                <div className='files-list-item-preview' style={{width:"92%"}}>
+                                                {file.preview.type === 'image' ?  
+                                                <React.Fragment>
+                                                    <img className='files-list-item-preview-image' style={{width:"20%"}} src={file.preview.url} />
+                                                </React.Fragment>    
+                                                : 
+                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                                    <a href="#" class="pull-right btn-box-tool" onClick={this.filesRemoveOne.bind(this, file)}><i class="fa fa-times"></i></a>
                                                 </div>
-                                            </div>
-                                        </div>    
-                                    </div>
-                                </form>}
+                                                <div className='files-list-item-content'>
+                                                    <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                                    <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
+                                                </div>
+                                            </li>
+                                        )}
+                                        </ul>
+                                    </div>:null} 
+                                    <div className="files col-xs-1" style={{}}>
+                                        <Files
+                                        ref='files'
+                                        className='files-dropzone-list'
+                                        style={{ height: '20px' }}
+                                        onChange={this.onFilesChange}
+                                        onError={this.onFilesError}
+                                        multiple
+                                        maxFiles={10}
+                                        maxFileSize={10000000}
+                                        minFileSize={0}
+                                        clickable
+                                        >
+                                        <button className="btn btn-primary" style={{marginLeft:"50px"}}>Upload file</button>
+                                        </Files>
+                                    </div>   
+                                    <button type="submit" style={{ marginLeft:"120px" }} className="btn btn-success" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</button>
+                                </div>
+                            </React.Fragment>}
                         </div>
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
@@ -726,7 +776,7 @@ class ActionTab extends Component {
                                                 <div class="btn-group dropleft pull-right">
                                                     <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                         <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                         </svg>
                                                     </button>
                                                     <div class="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
@@ -775,7 +825,7 @@ class ActionTab extends Component {
                                                                     {child.creator._id === currentUser && <div class="btn-group dropleft pull-right">
                                                                     <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                                         <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                                         </svg>
                                                                     </button>
                                                                     <div class="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
@@ -840,24 +890,15 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm bình luận cho công việc*/}
-                                <form className="form-horizontal" style={{ paddingTop: "2%" }}>
-                                    <div className="form-group margin-bottom-none">
-                                        <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                            <img className="img-circle img-bordered-sm" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar" />
-                                        </div>
-                                        <div className="col-sm-8" >
-                                            <textarea placeholder="Hãy nhập nội dung hoạt động"
+                            <div class="user-block">
+                                <img class="img-circle img-bordered-sm" src="../../dist/img/user7-128x128.jpg" alt="User Image" />
+                                    <span class="username">
+                                    <textarea placeholder="Hãy nhập nội dung hoạt động"
                                                 style={{ width: '123%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "20px" }}
                                                 ref={input => this.contentTaskComment[0] = input} />
 
-                                            <div className="row action-post" style={{ width: "150%",marginLeft:"5px" }}>
-                                                <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm hoạt động</button>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </span>
+                            </div>
                         </div>
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
