@@ -138,8 +138,6 @@ class AnnualLeaveCreateForm extends Component {
                     size='50' modalID="modal-create-sabbtical" isLoading={annualLeave.isLoading}
                     formID="form-create-sabbtical"
                     title={translate('sabbatical.add_sabbatical_title')}
-                    // msg_success={translate('modal.add_success')}
-                    // msg_faile={translate('modal.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

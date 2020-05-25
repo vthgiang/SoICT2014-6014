@@ -208,6 +208,7 @@ class DisciplineTab extends Component {
                     this.state.currentRow !== undefined &&
                     <CommendationEditModal
                         id={`editPraise${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         decisionNumber={this.state.currentRow.decisionNumber}
                         organizationalUnit={this.state.currentRow.organizationalUnit}
@@ -221,6 +222,7 @@ class DisciplineTab extends Component {
                     this.state.currentRowDiscipline !== undefined &&
                     <DisciplineEditModal
                         id={`editDiscipline${this.state.currentRowDiscipline.index}`}
+                        _id={this.state.currentRowDiscipline._id}
                         index={this.state.currentRowDiscipline.index}
                         decisionNumber={this.state.currentRowDiscipline.decisionNumber}
                         organizationalUnit={this.state.currentRowDiscipline.organizationalUnit}

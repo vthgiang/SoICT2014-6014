@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CourseFormValidator } from './combinedContent';
 
 import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 
@@ -12,36 +13,171 @@ class CourseEditForm extends Component {
         this.state = {};
     }
 
+    // Bắt sự kiện thay đổi tên kháo đào tạo
+    handleCourseNameChange = (e) => {
+        const { value } = e.target;
+        this.validateCourseName(value, true);
+    }
+    validateCourseName = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateCourseName(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnCourseName: msg,
+                    name: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi địa điểm đào tạo
+    handleCoursePlaceChange = (e) => {
+        const { value } = e.target;
+        this.validateCoursePlace(value, true);
+    }
+    validateCoursePlace = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateCoursePlace(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnCoursePlace: msg,
+                    coursePlace: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi đơn vị đào tạo
+    handleOfferedByChange = (e) => {
+        const { value } = e.target;
+        this.validateOfferedBy(value, true);
+    }
+    validateOfferedBy = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateOfferedBy(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnOfferedBy: msg,
+                    offeredBy: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi loại đào tạo và giảng viên
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
         });
     }
+
+    // Bắt sự kiện thay chi phí đào tạo
+    handleCostChange = (e) => {
+        const { value } = e.target;
+        this.validateCost(value, true);
+    }
+    validateCost = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateCost(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnCost: msg,
+                    cost: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi thời gian cam kết
+    handleEmployeeCommitmentTimeChange = (e) => {
+        const { value } = e.target;
+        this.validateEmployeeCommitmentTime(value, true);
+    }
+    validateEmployeeCommitmentTime = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateEmployeeCommitmentTime(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEmployeeCommitmentTime: msg,
+                    employeeCommitmentTime: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi thuộc chương trình đào tạo
     handleEducationProgramChange = (value) => {
-        this.setState({
-            educationProgram: value,
-        })
+        this.validateEducationProgram(value[0], true);
+    }
+    validateEducationProgram = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateEducationProgram(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEducationProgram: msg,
+                    educationProgram: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
+    // Bắt sự kiện thay đổi thời gian bắt đầu
     handleStartDateChange = (value) => {
-        this.setState({
-            startDate: value,
-        })
+        this.validateStartDate(value, true);
+    }
+    validateStartDate = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateStartDate(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDate: msg,
+                    startDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
+    // Bắt sự kiện thay đổi thời gian kết thúc
     handleEndDateChange = (value) => {
-        this.setState({
-            endDate: value,
-        })
+        this.validateEndDate(value, true);
+    }
+    validateEndDate = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateEndDate(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEndDate: msg,
+                    endDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
+    // Bắt sự kiện thêm nhân viên tham gia
     handleEmployeeChange = (value) => {
         this.setState({
             addEmployees: value
         })
     }
 
+    // Bắt sự kiện click buttom thêm nhân viên tham gia
     handleAdd = (e) => {
         e.preventDefault();
         this.setState({
@@ -50,9 +186,20 @@ class CourseEditForm extends Component {
         })
     }
 
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        let result =
+            this.validateCourseName(this.state.name, false) && this.validateStartDate(this.state.startDate, false) &&
+            this.validateCoursePlace(this.state.coursePlace, false) && this.validateCost(this.state.cost, false) &&
+            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false) &&
+            this.validateEndDate(this.state.endDate, false) && this.validateOfferedBy(this.state.offeredBy, false);
+        return result;
+    }
+
     save = () => {
-        console.log(this.state);
-        this.props.updateCourse(this.state._id, this.state);
+        if (this.isFormValidated()) {
+            this.props.updateCourse(this.state._id, this.state);
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -74,6 +221,15 @@ class CourseEditForm extends Component {
                 type: nextProps.type,
                 listEmployees: nextProps.listEmployees,
                 addEmployees: [],
+
+                errorOnCourseName: undefined,
+                errorOnCoursePlace: undefined,
+                errorOnOfferedBy: undefined,
+                errorOnCost: undefined,
+                errorOnEmployeeCommitmentTime: undefined,
+                errorOnEducationProgram: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined,
             }
         } else {
             return null;
@@ -83,8 +239,9 @@ class CourseEditForm extends Component {
     render() {
         console.log(this.state);
         const { education, translate, user } = this.props;
-        const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
-            endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
+        const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
+            employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
+            errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
         var listEducations = this.props.education.listAll;
         var userlist = user.list;
         for (let n in listEmployees) {
@@ -106,39 +263,44 @@ class CourseEditForm extends Component {
                         <div className="row">
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>Mã khoá đào tạo<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="courseId" value={courseId} onChange={this.handleChange} autoComplete="off" disabled />
+                                <input type="text" className="form-control" name="courseId" value={courseId} autoComplete="off" disabled />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCourseName === undefined ? "" : "has-error"}`}>
                                 <label>Tên khoá đào tạo<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="name" value={name} onChange={this.handleChange} autoComplete="off" />
+                                <input type="text" className="form-control" name="name" value={name} onChange={this.handleCourseNameChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnCourseName} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_start_date"
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_end_date"
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCoursePlace === undefined ? "" : "has-error"}`}>
                                 <label>Địa điểm đào tạo<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="coursePlace" value={coursePlace} onChange={this.handleChange} autoComplete="off" />
+                                <input type="text" className="form-control" name="coursePlace" value={coursePlace} onChange={this.handleCoursePlaceChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnCoursePlace} />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnOfferedBy === undefined ? "" : "has-error"}`}>
                                 <label>Đơn vị đào tạo<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="offeredBy" value={offeredBy} onChange={this.handleChange} autoComplete="off" />
+                                <input type="text" className="form-control" name="offeredBy" value={offeredBy} onChange={this.handleOfferedByChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnOfferedBy} />
                             </div>
                         </div>
                         <div className="row">
@@ -155,7 +317,7 @@ class CourseEditForm extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram === undefined ? "" : "has-error"}`}>
                                 <label>Thuộc chương trình đào tạo<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`edit-educationProgram`}
@@ -165,22 +327,25 @@ class CourseEditForm extends Component {
                                     items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: "", text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
                                 />
+                                <ErrorLabel content={errorOnEducationProgram} />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCost === undefined ? "" : "has-error"}`}>
                                 <label>Chi phí đào tạo<span className="text-red">*</span></label>
                                 <div>
-                                    <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleChange} style={{ display: "inline", width: "80%" }} autoComplete="off" placeholder="Chi phí đào tạo" />
+                                    <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange} style={{ display: "inline", width: "80%" }} autoComplete="off" placeholder="Chi phí đào tạo" />
                                     <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ display: "inline", width: "20%" }}>
                                         <option value="VND">VND</option>
                                         <option value="USD">USD</option>
                                     </select>
                                 </div>
+                                <ErrorLabel content={errorOnCost} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEmployeeCommitmentTime === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian cam kết (đơn vị: Tháng)<span className="text-red">*</span></label>
-                                <input type="number" className="form-control" name="employeeCommitmentTime" value={employeeCommitmentTime} onChange={this.handleChange} autoComplete="off" />
+                                <input type="number" className="form-control" name="employeeCommitmentTime" value={employeeCommitmentTime} onChange={this.handleEmployeeCommitmentTimeChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnEmployeeCommitmentTime} />
                             </div>
                         </div>
                         <div className="form-group" style={{ marginBottom: 0, marginTop: 20 }}>

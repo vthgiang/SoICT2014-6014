@@ -28,6 +28,7 @@ function getListCourse(data) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.GET_LIST_COURSE_FAILURE,
+                    error: err
                 });
             })
     }
@@ -50,6 +51,7 @@ function createNewCourse(data) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.CREATE_COURSE_FAILURE,
+                    error: err
                 });
             })
     }
@@ -71,6 +73,7 @@ function deleteCourse(id) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.DELETE_COURSE_FAILURE,
+                    error: err
                 });
             })
     }
@@ -93,6 +96,7 @@ function updateCourse(id, infoCourse) {
             .catch(err => {
                 dispatch({
                     type: CourseConstants.UPDATE_COURSE_FAILURE,
+                    error: err
                 });
             })
     }

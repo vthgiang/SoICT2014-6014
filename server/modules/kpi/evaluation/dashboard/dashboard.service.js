@@ -3,22 +3,53 @@ const arrayToTree = require('array-to-tree');
 
 /**
  * Lấy tất cả KPI của nhân viên theo vai trò
- * @role Mảng id các role
+ * @role id của role
  */
-exports.getAllEmployeeKpiSetOfUnit = async (role) => {
-    var data = [];
+exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
 
-    for(var i = 0; i < role.length; i++) {
+    var organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            { 'dean': role },
+            { 'viceDean': role },
+            { 'employee': role }
+        ]
+    });
+
+    var employeekpis = await EmployeeKpiSet.find({
+        organizationalUnit: organizationalUnit._id
+    }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+
+    return employeekpis;
+}
+
+/**
+ * Lấy tất cả nhân viên theo vai trò
+ * @role id của role
+ */
+exports.getAllEmployeeOfUnitByRole = async (role) => {
         var organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
-                { 'dean': role[i] },
-                { 'viceDean': role[i] },
-                { 'employee': role[i] }
+                { 'dean': role },
+                { 'viceDean': role },
+                { 'employee': role }
             ]
         });
 
+        var employees = await UserRole.find({ roleId: organizationalUnit.employee}).populate('userId roleId');
+
+        return employees;
+}
+
+/**
+ * Lấy tất cả KPI của nhân viên theo mảng id đơn vị
+ * @id Mảng id các đơn vị
+ */
+exports.getAllEmployeeKpiSetOfUnitByIds = async (id) => {
+    var data = [];
+
+    for(var i = 0; i < id.length; i++) {
         var employeekpis = await EmployeeKpiSet.find({
-            organizationalUnit: organizationalUnit._id
+            organizationalUnit: id[i]
         }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
 
         data = data.concat(employeekpis);
@@ -29,20 +60,14 @@ exports.getAllEmployeeKpiSetOfUnit = async (role) => {
 }
 
 /**
- * Lấy tất cả nhân viên theo vai trò
- * @role Mảng id các role
+ * Lấy tất cả nhân viên theo mảng id đơn vị
+ * @id Mảng id các đơn vị
  */
-exports.getAllEmployeeOfUnit = async (role) => {
+exports.getAllEmployeeOfUnitByIds = async (id) => {
     var data = [];
 
-    for(var i = 0; i < role.length; i++) {
-        var organizationalUnit = await OrganizationalUnit.findOne({
-            $or: [
-                { 'dean': role[i] },
-                { 'viceDean': role[i] },
-                { 'employee': role[i] }
-            ]
-        });
+    for(var i = 0; i < id.length; i++) {
+        var organizationalUnit = await OrganizationalUnit.findById(id[i]);
 
         var employees = await UserRole.find({ roleId: organizationalUnit.employee}).populate('userId roleId');
 

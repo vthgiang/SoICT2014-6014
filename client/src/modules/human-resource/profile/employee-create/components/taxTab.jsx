@@ -28,6 +28,9 @@ class TaxTab extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
+        this.setState({
+            [name]: value
+        })
         this.props.handleChange(name, value);
     }
     // Function Bắt sự kiện thay đổi người đại diện

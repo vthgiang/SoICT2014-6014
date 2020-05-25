@@ -113,8 +113,6 @@ class InsurranceTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhyt')}</h4></legend>
                         <div className="row">
-
-
                             <div className="form-group col-md-4">
                                 <label>{translate('manage_employee.number_BHYT')}</label>
                                 <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
@@ -185,6 +183,7 @@ class InsurranceTab extends Component {
                     this.state.currentRow !== undefined &&
                     <SocialInsuranceEditModal
                         id={`editBHXH${this.state.currentRow.index}`}
+                        _id={this.state.currentRow._id}
                         index={this.state.currentRow.index}
                         company={this.state.currentRow.company}
                         startDate={this.formatDate(this.state.currentRow.startDate, true)}

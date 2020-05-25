@@ -33,11 +33,12 @@ class DashBoardKPIMember extends Component {
             showEvaluateModal: "",
 
             dateOfExcellentEmployees: this.formatDate(new Date(currentYear, currentMonth - 1, 1)),
-            numberOfExcellentEmployees: 1,
-            role: [localStorage.getItem("currentRole")],
+            numberOfExcellentEmployees: 5,
+            ids: null,
             editing: false,
         };
     }
+
     componentDidMount() {
         var currentDate = new Date();
         var currentMonth = currentDate.getMonth();
@@ -55,18 +56,14 @@ class DashBoardKPIMember extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllKPIMemberOfUnit(infosearch);
         this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        
         this.handleResizeColumn();
 
-
-        this.props.getAllEmployeeKpiSetOfUnit([localStorage.getItem("currentRole")]);
-        this.props.getAllEmployeeOfUnit([localStorage.getItem("currentRole")]);
+        this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
+        this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -95,6 +92,7 @@ class DashBoardKPIMember extends Component {
             });
         });
     }
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -108,6 +106,7 @@ class DashBoardKPIMember extends Component {
  
         return [month, year].join('-');
     }
+
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -119,6 +118,7 @@ class DashBoardKPIMember extends Component {
             return "Đã kết thúc"
         }
     }
+    
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -150,6 +150,7 @@ class DashBoardKPIMember extends Component {
             }
         }
     }
+
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
             return {
@@ -163,6 +164,7 @@ class DashBoardKPIMember extends Component {
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+
     showEvaluateModal = async (id) => {
         await this.setState(state => {
             return {
@@ -186,11 +188,12 @@ class DashBoardKPIMember extends Component {
         })
     }
 
-    handleNumberOfEmployeesChange = (value) => {
+    handleNumberOfEmployeesChange = (event) => {
+        const value = event.target.value;
         this.setState(state => {
             return {
                 ...state,
-                numberOfExcellentEmployees: value[0]   
+                numberOfExcellentEmployees: value
             }
         });    
     }
@@ -199,14 +202,15 @@ class DashBoardKPIMember extends Component {
         this.setState(state => {
             return {
                 ...state,
-                role: value
+                ids: value
             }
         });   
     }
 
     handleUpdateData = () => {
-        this.props.getAllEmployeeKpiSetOfUnit(this.state.role);
-        this.props.getAllEmployeeOfUnit(this.state.role);
+        this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
+        this.props.getAllEmployeeOfUnitByIds(this.state.ids);
+        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
     handleShowEditing = () => {
@@ -237,11 +241,6 @@ class DashBoardKPIMember extends Component {
 
             // Lấy các kpi set có điểm được phê duyệt cao nhất
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
-        }
-        
-        var employeeItems = [];
-        for(var i = 1; i <= 20; i++){
-            employeeItems[i - 1] = {value: i, text: i}
         }
         
 
@@ -278,10 +277,8 @@ class DashBoardKPIMember extends Component {
                 }
             }
            }
-        }
+        }        
         
-
-
 
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
@@ -349,8 +346,8 @@ class DashBoardKPIMember extends Component {
                             <label className = "form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                             {childrenOrganizationalUnit &&
                                 <SelectMulti id="multiSelectOrganizationalUnit"
-                                    defaultValue = {childrenOrganizationalUnit.map(item => {return item.dean})}
-                                    items = {childrenOrganizationalUnit.map(item => {return {value: item.dean, text: item.name}})} 
+                                    //value = {childrenOrganizationalUnit.map(item => {return item.id})}
+                                    items = {childrenOrganizationalUnit.map(item => {return {value: item.id, text: item.name}})} 
                                     options = {{nonSelectedText: translate('kpi.evaluation.dashboard.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit')}}
                                     onChange={this.handleSelectOrganizationalUnit}
                                 >
@@ -410,133 +407,48 @@ class DashBoardKPIMember extends Component {
                                     <h3 className="box-title">{translate('kpi.evaluation.dashboard.excellent_employee')}</h3>
                                     <div className="box-tools pull-right">
                                         <span className="label label-danger">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</span>
-                                        <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" onClick={() => this.handleShowEditing()}>
-                                            <span className="caret" />
-                                        </button>
 
-                                        <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i></button>
-                                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
-                                        <button type="button" className="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        <button type="button" data-toggle="collapse" data-target="#setting-excellent-employee" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                                        <div id="setting-excellent-employee" className="box collapse setting-table">
+                                            <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
+
+                                            <div className = "form-group">
+                                                <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                                <DatePicker
+                                                    id="kpi_month"      
+                                                    dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                    value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
+                                                    onChange={this.handleChangeDate}
+                                                    disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                                /> 
+                                            </div> 
+
+                                            <div className="form-group">
+                                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
+                                                <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees}/>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>                                 
                                 <div className="box-body no-parding">
-                            
-                                    <div className="row">
-                                        <div className="col-sm-8">
-                                            <ul className="users-list clearfix">
-                                                {
-                                                    (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
-                                                        lastMonthEmployeeKpiSets.map(item =>
-                                                            <li>
-                                                                <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
-                                                                <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
-                                                                <span className="users-list-date">{item.approvedPoint}</span>
-                                                            </li>
-                                                        )
-                                                    : <li>Không có dữ liệu</li>
-                                                }
-                                            </ul>
-                                        </div>
-
-                                        {   editing &&
-                                            <div className="col-sm-4">
-                                                <div className = "form-group">
-                                                    <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
-                                                    <DatePicker
-                                                        id="kpi_month"      
-                                                        dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                        value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
-                                                        onChange={this.handleChangeDate}
-                                                        disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
-                                                    /> 
-                                                </div>    
-                                                <div className = "form-group">
-                                                    <label className = "form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                        id={`number-of-employees`}
-                                                        className="form-control select2"
-                                                        style={{width: "100%"}}
-                                                        items = {employeeItems}
-                                                        onChange={this.handleNumberOfEmployeesChange}
-                                                        multiple={false}
-                                                    /> 
-                                                </div>    
-                                            </div>
+                                    <ul className="users-list clearfix">
+                                        {
+                                            (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
+                                                lastMonthEmployeeKpiSets.map(item =>
+                                                    <li>
+                                                        <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
+                                                        <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
+                                                        <span className="users-list-date">{item.approvedPoint}</span>
+                                                    </li>
+                                                )
+                                            : <li>Không có dữ liệu</li>
                                         }
-
-                                    </div>
-
+                                    </ul>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Yêu cầu Phê duyệt kpi nhân viên này KPI */}
-                        {/* <div className="col-md-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Yêu cầu Phê duyệt kpi nhân viên này KPI</h3>
-                                    <div className="box-tools pull-right">
-                                        <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="box-body">
-                                    <ul className="products-list product-list-in-box">
-                                        <li className="item">
-                                            <div className="product-img">
-                                                <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar member" />
-                                            </div>
-                                            <div className="product-info">
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2" className="product-title">Alexander
-                                                <span className="label label-info pull-right">Mới</span></a>
-                                                <span className="product-description">
-                                                    Sếp duyệt KPI tháng tới giúp em nhé sếp!
-                                                </span>
-                                            </div>
-                                        </li>
-                                        <li className="item">
-                                            <div className="product-img">
-                                                <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" alt="Avatar member" />
-                                            </div>
-                                            <div className="product-info">
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2" className="product-title">John
-                                                <span className="label label-warning pull-right">Chưa xem</span></a>
-                                                <span className="product-description">
-                                                    Sếp duyệt KPI giúp em với sếp.
-                                                </span>
-                                            </div>
-                                        </li>
-                                        <li className="item">
-                                            <div className="product-img">
-                                                <img src="/lib/adminLTE/dist/img/user3-128x128.jpg" alt="Avatar member" />
-                                            </div>
-                                            <div className="product-info">
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2" className="product-title"> Sahara
-                                                <span className="label label-danger pull-right">Gấp</span></a>
-                                                <span className="product-description">
-                                                    E đã sửa lại. Sếp duyệt lại giúp em nhé.
-                                                </span>
-                                            </div>
-                                        </li>
-                                        <li className="item">
-                                            <div className="product-img">
-                                                <img src="/lib/adminLTE/dist/img/user4-128x128.jpg" alt="Avatar member" />
-                                            </div>
-                                            <div className="product-info">
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2" className="product-title">Nora
-                                                <span className="label label-success pull-right">Đã xem</span></a>
-                                                <span className="product-description">
-                                                    Sếp duyệt KPI giúp em nhé sếp.
-                                                </span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="box-footer text-center">
-                                    <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2" className="uppercase">Xem tất cả yêu cầu</a>
-                                </div>
-                            </div>
-                        </div> */}
 
                         {/* Thống kê kết quả thực hiện mục tiêu của nhân viên */}
                         <div className="col-md-12">
@@ -767,8 +679,10 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
-    getAllEmployeeKpiSetOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnit,
-    getAllEmployeeOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnit,
+    getAllEmployeeKpiSetOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
+    getAllEmployeeOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByRole,
+    getAllEmployeeKpiSetOfUnitByIds : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
+    getAllEmployeeOfUnitByIds : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree : DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));

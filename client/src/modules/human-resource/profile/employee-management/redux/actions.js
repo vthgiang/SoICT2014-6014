@@ -11,7 +11,10 @@ export const EmployeeManagerActions = {
     deleteEmployee,
 };
 
-// Lấy danh sách nhân viên
+/**
+ * Lấy danh sách nhân viên
+ * @param {*} data : dữ liệu key tìm kiếm
+ */
 function getAllEmployee(data) {
     return dispatch => {
         dispatch({
@@ -27,13 +30,16 @@ function getAllEmployee(data) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.GETALL_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
 }
 
-// Tạo mới một nhân viên mới
+/**
+ * Thêm mới thông tin nhân viên
+ * @param {*} data : dữ liệu thông tin nhân viên cần tạo
+ */
 function addNewEmployee(employee) {
     return dispatch => {
         dispatch({
@@ -50,51 +56,43 @@ function addNewEmployee(employee) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.ADDEMPLOYEE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     };
 }
 
-// update thông tin nhân viên theo id
-function updateInformationEmployee(id, informationEmployee) {
+/**
+ * Cập nhật thông tin nhân viên theo id
+ * @param {*} id 
+ * @param {*} data 
+ */
+function updateInformationEmployee(id, data) {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST
+        });
 
-        EmployeeService.updateInformationEmployee(id, informationEmployee)
-            .then(
-                informationEmployee => {
-                    dispatch(success(informationEmployee));
-                },
-                error => {
-                    dispatch(failure(error).toString());
-                }
-            );
+        EmployeeService.updateInformationEmployee(id, data)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE,
+                    error: err
+                });
+            })
     };
-
-    function request() {
-        return {
-            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST,
-        }
-    };
-
-    function success(informationEmployee) {
-        return {
-            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS,
-            informationEmployee
-        }
-    };
-
-    function failure(error) {
-        return {
-            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE,
-            error
-        }
-    };
-
 }
 
-// Xoá thông tin nhân viên
+/**
+ * Xoá thông tin nhân viên
+ * @id : id thông tin nhân viên cần xoá
+ */
 function deleteEmployee(id) {
     return dispatch => {
         dispatch({
@@ -111,7 +109,7 @@ function deleteEmployee(id) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
-                    error: err.response
+                    error: err
                 });
             })
     }

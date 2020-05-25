@@ -10,6 +10,7 @@ class GeneralTab extends Component {
         super(props);
         this.state = {};
     }
+
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
         var d = new Date(date),
@@ -26,6 +27,7 @@ class GeneralTab extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
+
     // Function upload avatar 
     handleUpload = (e) => {
         var file = e.target.files[0];
@@ -40,6 +42,7 @@ class GeneralTab extends Component {
             };
         }
     }
+
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,6 +51,25 @@ class GeneralTab extends Component {
         })
         this.props.handleChange(name, value);
     }
+
+    // Funtion bắt sự kiện thay đổi giới tính
+    handleGenderChange = (e)=> {
+        const { value } = e.target;
+        this.setState({
+            gender: value,
+        })
+        this.props.handleChange('gender', value);
+    }
+
+    // Funtion bắt sự kiện thay đổi tình trạng quan hệ
+    handleMaritalStatusChange = (e)=> {
+        const { value } = e.target;
+        this.setState({
+            maritalStatus: value,
+        })
+        this.props.handleChange('maritalStatus', value);
+    }
+
     // Function bắt sự kiện thay đổi mã nhân viên
     handleMSNVChange = (e) => {
         const { value } = e.target;
@@ -64,6 +86,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi mã chấm công
     handleMSCCChange = (e) => {
         const { value } = e.target;
@@ -84,6 +107,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi Họ và tên
     handleFullNameChange = (e) => {
         const { value } = e.target;
@@ -104,6 +128,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi Email công ty
     handleEmailCompanyChange = (e) => {
         const { value } = e.target;
@@ -124,6 +149,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi số CMND
     handleCMNDChange = (e) => {
         const { value } = e.target;
@@ -144,6 +170,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi nơi cấp
     handleAddressCMNDChange = (e) => {
         const { value } = e.target;
@@ -164,7 +191,6 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
-
 
     // Function bắt sự kiện thay đổi ngày sinh
     handleBrithdayChange = (value) => {
@@ -190,6 +216,7 @@ class GeneralTab extends Component {
     handleDateCMNDChange = (value) => {
         this.validateCMNDDate(value, true);
     }
+
     validateCMNDDate = (value, willUpdateState = true) => {
         let msg = EmployeeCreateValidator.validateCMNDDate(value, this.props.translate)
         if (willUpdateState) {
@@ -205,6 +232,7 @@ class GeneralTab extends Component {
         }
         return msg === undefined;
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -289,18 +317,18 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="gender" value="male" onChange={this.handleChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="gender" value="female" onChange={this.handleChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="brithday">{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
+                                <label >{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
                                     value={this.formatDate(birthdate)}
@@ -316,7 +344,7 @@ class GeneralTab extends Component {
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
+                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
@@ -324,11 +352,11 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="single" onChange={this.handleChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="married" onChange={this.handleChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +370,7 @@ class GeneralTab extends Component {
                                 <ErrorLabel content={errorOnCMND} />
                             </div>
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
+                                <label >{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
                                     value={this.formatDate(identityCardDate)}

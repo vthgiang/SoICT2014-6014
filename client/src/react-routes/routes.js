@@ -40,7 +40,7 @@ import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile
 import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
-import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
+import TimesheetsManager from '../modules/human-resource/timesheets/components';
 
 import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan} from '../modules/training/course/components/course';
@@ -426,7 +426,7 @@ class Routes extends Component {
                         path={ '/hr-time-keeping' }
                         pageName={'time_keeping' }
                         layout={ Layout }
-                        component={ Timekeeping }
+                        component={ TimesheetsManager }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.education.isLoading }

@@ -214,8 +214,9 @@ exports.data = [
     { path: '/kpiunits', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpiunits/unit/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpiunits/all-unit/:role/:status/:startDate/:endDate', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
-    { path: '/kpiunits/childTargets/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpiunits/child-targets/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpiunits/tasks/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpiunits/organizational-unit-kpi-set-each-year/:id/:year', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpiunits/child-target/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpiunits/evaluate/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpipersonals/current/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -258,17 +259,25 @@ exports.data = [
     { path: '/performtask/log-timer/pause-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
-    
-    { path: '/performtask/action-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    //comment of task action
     { path: '/performtask/action-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/action-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/action-comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
-
-    { path: '/performtask/task-action/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    //task action
+    { path: '/performtask/task-action', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/task-action/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/task-action/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/task-action/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
-    
+    { path: '/performtask/task-action', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-action/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    //taskcomment
+    { path: '/performtask/task-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-comment/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    //comment of task comment
+    { path: '/performtask/task-comment/comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-comment/comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-comment/comment/:id/:task', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+
     { path: '/performtask/add-result/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/information-task-template/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/information-task-template', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -330,8 +339,10 @@ exports.data = [
     // { path: '/recommenddistribute/checkRecommendNumber/:recommendNumber', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
 
     // Module DashboardEvaluationEmployeeKpiSet
-    { path: '/kpi/evaluation/dashboard/employee-kpis/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/kpi/evaluation/dashboard/users/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/kpi/evaluation/dashboard/organizational-units/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     
 ];

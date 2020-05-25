@@ -4,29 +4,19 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { DialogModal } from '../../../../../common-components';
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 
-
-import { EmployeeManagerActions } from '../redux/actions';
-import { SalaryActions } from '../../../salary/redux/actions';
-import { AnnualLeaveActions } from '../../../annual-leave/redux/actions';
-import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from '../../employee-create/components/combinedContent';
 
+import { EmployeeManagerActions } from '../redux/actions';
 class EmployeeEditFrom extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
-
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
 
     // Function upload avatar 
     handleUpload = (img, avatar) => {
@@ -37,81 +27,347 @@ class EmployeeEditFrom extends Component {
     }
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        const { employeeNew } = this.state;
+        const { employee } = this.state;
+        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+            var partValue = value.split('-');
+            value = [partValue[2],partValue[1], partValue[0]].join('-');
+        }
         this.setState({
-            employeeNew: {
-                ...employeeNew,
+            employee: {
+                ...employee,
                 [name]: value
             }
         });
     }
-    // Function thêm mới kinh nghiệm làm việc
-    handleChangeExperience = (data) => {
-        const { employeeNew } = this.state;
+
+
+    // Function thêm kinh nghiệm làm việc
+    handleCreateExperiences = (data, addData) => {
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                experience: data
-            }
+            experiences: data
         })
     }
-    // Function thêm, chỉnh sửa thông tin bằng cấp
-    handleChangeCertificate = (data) => {
+    // Function chỉnh sửa kinh nghiệm làm việc
+    handleEditExperiences = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editExperiences: [...this.state.editExperiences, editData]
+            })
+        } else {
+            this.setState({
+                experiences: data
+            })
+        }
+    }
+    // Function xoá kinh nghiệm làm việc
+    handleDeleteExperiences = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteExperiences: [...this.state.deleteExperiences, deleteData],
+                editExperiences: this.state.editExperiences.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                experiences: data
+            })
+        }
+    }
+
+
+    // Function thêm thông tin bằng cấp
+    handleCreateDegree = (data, addData) => {
         this.setState({
-            certificate: data
+            degrees: data
         })
     }
-    // Function thêm, chỉnh sửa thông tin chứng chỉ
-    handleChangeCertificateShort = (data) => {
+    // Function chỉnh sửa thông tin bằng cấp
+    handleEditDegree = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editDegrees: [...this.state.editDegrees, editData]
+            })
+        } else {
+            this.setState({
+                degrees: data
+            })
+        }
+    }
+    // Function xoá thông tin bằng cấp
+    handleDeleteDegree = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteDegrees: [...this.state.deleteDegrees, deleteData],
+                editDegrees: this.state.editDegrees.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                degrees: data
+            })
+        }
+    }
+
+
+    // Function thêm thông tin chứng chỉ
+    handleCreateCertificate = (data, addData) => {
         this.setState({
-            certificateShort: data
+            certificates: data
         })
     }
-    // Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
-    handleChangeBHXH = (data) => {
-        const { employeeNew } = this.state;
+    // Function chỉnh sửa thông tin chứng chỉ
+    handleEditCertificate = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editCertificates: [...this.state.editCertificates, editData]
+            })
+        } else {
+            this.setState({
+                certificates: data
+            })
+        }
+    }
+    // Function xoá thông tin chứng chỉ
+    handleDeleteCertificate = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteCertificates: [...this.state.deleteCertificates, deleteData],
+                editCertificates: this.state.editCertificates.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                certificates: data
+            })
+        }
+    }
+
+
+    // Function thêm thông tin đóng bảo hiểm xã hội
+    handleCreateBHXH = (data, addData) => {
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                BHXH: data
-            }
+            socialInsuranceDetails: data
         })
     }
+    // Function chỉnh sửa thông tin đóng bảo hiểm xã hội
+    handleEditBHXH = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editSocialInsuranceDetails: [...this.state.editSocialInsuranceDetails, editData]
+            })
+        } else {
+            this.setState({
+                socialInsuranceDetails: data
+            })
+        }
+    }
+    // Function xoá thông tin đóng bảo hiểm xã hội
+    handleDeleteBHXH = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteSocialInsuranceDetails: [...this.state.deleteSocialInsuranceDetails, deleteData],
+                editSocialInsuranceDetails: this.state.editSocialInsuranceDetails.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                socialInsuranceDetails: data
+            })
+        }
+    }
+
+
     // Function thêm thông tin hợp đồng lao động
-    handleChangeContract = (data) => {
+    handleCreateContract = (data, addData) => {
         this.setState({
-            contract: data
+            contracts: data
         })
     }
+    // Function chỉnh sửa thông tin hợp đồng lao động
+    handleEditContract = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editContracts: [...this.state.editContracts, editData]
+            })
+        } else {
+            this.setState({
+                contracts: data
+            })
+        }
+    }
+    // Function xoá thông tin hợp đồng lao động
+    handleDeleteContract = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteContracts: [...this.state.deleteContracts, deleteData],
+                editContracts: this.state.editContracts.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                contracts: data
+            })
+        }
+    }
+
+
     // Function thêm thông tin khen thưởng
-    handleChangePraise = (data) => {
+    handleCreateConmmendation = (data, addData) => {
         this.setState({
-            praiseNew: data
+            commendations: data
         })
     }
+    // Function chỉnh sửa thông tin khen thưởng
+    handleEditConmmendation = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editConmmendations: [...this.state.editConmmendations, editData]
+            })
+        } else {
+            this.setState({
+                commendations: data
+            })
+        }
+    }
+    // Function xoá thông tin khen thưởng
+    handleDeleteConmmendation = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteConmmendations: [...this.state.deleteConmmendations, deleteData],
+                editConmmendations: this.state.editConmmendations.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                commendations: data
+            })
+        }
+    }
+
+
     // Function thêm thông tin kỷ luật
-    handleChangeDiscipline = (data) => {
+    handleCreateDiscipline = (data, addData) => {
         this.setState({
-            disciplineNew: data
+            disciplines: data
         })
     }
+    // Function chỉnh sửa thông tin kỷ luật
+    handleEditDiscipline = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editDisciplines: [...this.state.editDisciplines, editData]
+            })
+        } else {
+            this.setState({
+                disciplines: data
+            })
+        }
+    }
+    // Function xoá thông tin kỷ luật
+    handleDeleteDiscipline = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteDisciplines: [...this.state.deleteDisciplines, deleteData],
+                editDisciplines: this.state.editDisciplines.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                disciplines: data
+            })
+        }
+    }
+
+
     // Function thêm thông tin lịch sử lương
-    handleChangeSalary = (data) => {
+    handleCreateSalary = (data, addData) => {
         this.setState({
-            salaryNew: data
+            salaries: data
         })
     }
+    // Function chỉnh sửa thông tin lịch sử lương
+    handleEditSalary = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editSalaries: [...this.state.editSalaries, editData]
+            })
+        } else {
+            this.setState({
+                salaries: data
+            })
+        }
+    }
+    // Function xoá thông tin lịch sử lương
+    handleDeleteSalary = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteSalaries: [...this.state.deleteSalaries, deleteData],
+                editSalaries: this.state.editSalaries.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                salaries: data
+            })
+        }
+    }
+
+
     // Function thêm thông tin nghỉ phép
-    handleChangeSabbatical = (data) => {
+    handleCreateAnnualLeave = (data, addData) => {
         this.setState({
-            sabbaticalNew: data
+            annualLeaves: data
         })
     }
-    // Function thêm thông tin tài liệu đính kèm
-    handleChangeFile = (data) => {
+    // Function chỉnh sửa thông tin nghỉ phép
+    handleEditAnnualLeave = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editAnnualLeaves: [...this.state.editAnnualLeaves, editData]
+            })
+        } else {
+            this.setState({
+                annualLeaves: data
+            })
+        }
+    }
+    // Function xoá thông tin nghỉ phép
+    handleDeleteAnnualLeave = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteAnnualLeaves: [...this.state.deleteAnnualLeaves, deleteData],
+                editAnnualLeaves: this.state.editAnnualLeaves.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                annualLeaves: data
+            })
+        }
+    }
+
+
+    // Function thêm thông tin nghỉ phép
+    handleCreateFile = (data, addData) => {
         this.setState({
-            file: data
+            files: data
         })
+    }
+    // Function chỉnh sửa thông tin nghỉ phép
+    handleEditFile = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editFiles: [...this.state.editFiles, editData]
+            })
+        } else {
+            this.setState({
+                files: data
+            })
+        }
+    }
+    // Function xoá thông tin nghỉ phép
+    handleDeleteFile = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteFiles: [...this.state.deleteFiles, deleteData],
+                editFiles: this.state.editFiles.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                files: data
+            })
+        }
     }
 
     // TODO: function thêm thông tin quá trình đào tạo
@@ -128,202 +384,75 @@ class EmployeeEditFrom extends Component {
         })
     }
 
+    // function kiểm tra các trường bắt buộc phải nhập
+    validatorInput = (value) => {
+        if (value !== undefined && value.trim() !== '') {
+            return true;
+        }
+        return false;
+    }
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        if (this.state.employee !== undefined) {
+            let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId) &&
+                this.validatorInput(this.state.employee.fullName) && this.validatorInput(this.state.employee.birthdate) &&
+                this.validatorInput(this.state.employee.emailInCompany) && this.validatorInput(this.state.employee.identityCardNumber.toString()) &&
+                this.validatorInput(this.state.employee.identityCardDate) && this.validatorInput(this.state.employee.identityCardAddress) &&
+                this.validatorInput(this.state.employee.phoneNumber.toString()) && this.validatorInput(this.state.employee.temporaryResidence) &&
+                this.validatorInput(this.state.employee.taxRepresentative) && this.validatorInput(this.state.employee.taxNumber.toString()) &&
+                this.validatorInput(this.state.employee.taxDateOfIssue) && this.validatorInput(this.state.employee.taxAuthority);
+            return result;
+        }
+        return true;
+    }
+
+
     save = async () => {
-        // let newEmployee = this.state.employeeNew;
-        // let { file, contract, certificate, certificateShort } = this.state;
-        // // cập nhật lại state trước khi add employee
-        // await this.setState({
-        //     employeeNew: {
-        //         ...newEmployee,
-        //         brithday: this.refs.brithday.value.length !== 0 ? this.refs.brithday.value : newEmployee.brithday,
-        //         dateCMND: this.refs.dateCMND.value.length !== 0 ? this.refs.dateCMND.value : newEmployee.dateCMND,
-        //         startTax: this.refs.startTax.value.length !== 0 ? this.refs.startTax.value : newEmployee.startTax,
-        //         startDateBHYT: this.refs.startDateBHYT.value.length !== 0 ? this.refs.startDateBHYT.value : newEmployee.startDateBHYT,
-        //         endDateBHYT: this.refs.endDateBHYT.value.length !== 0 ? this.refs.endDateBHYT.value : newEmployee.endDateBHYT,
-        //         certificate: certificate.filter(certificate => (certificate.fileUpload === undefined)),
-        //         certificateShort: certificateShort.filter(certificateShort => (certificateShort.fileUpload === undefined)),
-        //         contract: contract.filter(contract => (contract.fileUpload === undefined)),
-        //         file: file.filter(file => (file.fileUpload === undefined))
-        //     }
-        // });
-        // const { employeeNew } = this.state;
-        // // kiểm tra việc nhập các trường bắt buộc
-        // if (employeeNew.employeeNumber !== undefined && employeeNew.employeeNumber === " ") {
-        //     this.notifyerror("Bạn chưa nhập mã nhân viên");
-        // } else if (employeeNew.employeeNumber !== undefined && this.props.employeesManager.checkMSNV === true) {
-        //     this.notifyerror("Mã số nhân viên đã tồn tại");
-        // } else if (employeeNew.fullName !== undefined && employeeNew.fullName === " ") {
-        //     this.notifyerror("Bạn chưa nhập tên nhân viên");
-        // } else if (employeeNew.MSCC !== undefined && employeeNew.MSCC === " ") {
-        //     this.notifyerror("Bạn chưa nhập mã chấm công");
-        // } else if (employeeNew.brithday !== undefined && employeeNew.brithday === " ") {
-        //     this.notifyerror("Bạn chưa nhập ngày sinh");
-        // } else if (employeeNew.emailCompany !== undefined && employeeNew.emailCompany === " ") {
-        //     this.notifyerror("Bạn chưa nhập email công ty");
-        // } else if (employeeNew.emailCompany !== undefined && this.props.employeesManager.checkEmail === true) {
-        //     this.notifyerror("Email công ty đã được sử dụng");
-        // } else if (employeeNew.CMND !== undefined && employeeNew.CMND === " ") {
-        //     this.notifyerror("Bạn chưa nhập số CMND/ Hộ chiếu");
-        // } else if (employeeNew.dateCMND !== undefined && employeeNew.dateCMND === " ") {
-        //     this.notifyerror("Bạn chưa nhập ngày cấp CMND/ Hộ chiếu");
-        // } else if (employeeNew.addressCMND !== undefined && employeeNew.addressCMND === " ") {
-        //     this.notifyerror("Bạn chưa nhập nơi cấp CMND/ Hộ chiếu");
-        // } else if (employeeNew.phoneNumber !== undefined && employeeNew.phoneNumber === " ") {
-        //     this.notifyerror("Bạn chưa nhập số điện thoại");
-        // } else if (employeeNew.nowAddress !== undefined && employeeNew.nowAddress === " ") {
-        //     this.notifyerror("Bạn chưa nhập nơi ở hiện tại");
-        // } else if ((employeeNew.numberTax !== undefined && employeeNew.numberTax === " ") || (employeeNew.userTax !== undefined && employeeNew.userTax === " ") ||
-        //     (employeeNew.startTax !== undefined && employeeNew.startTax === " ") || (employeeNew.unitTax !== undefined && employeeNew.unitTax === " ")) {
-        //     this.notifyerror("Bạn chưa nhập đủ thông tin thuế");
-        // } else {
-        //     await this.props.updateInformationEmployee(this.props.employee[0]._id, employeeNew);
-        //     var employeeNumber = this.state.employeeNew.employeeNumber ? this.state.employeeNew.employeeNumber : this.props.employee[0].employeeNumber;
-        //     if (this.state.avatar !== "") {
-        //         let formData = new FormData();
-        //         formData.append('fileUpload', this.state.avatar);
-        //         this.props.uploadAvatar(employeeNumber, formData);
-        //     };
-        //     // lưu hợp đồng lao động
-        //     if (this.state.contract.length !== 0) {
-        //         let listContract = this.state.contract;
-        //         listContract = listContract.filter(contract => (contract.fileUpload !== undefined))
-        //         listContract.map(x => {
-        //             let formData = new FormData();
-        //             formData.append('fileUpload', x.fileUpload);
-        //             formData.append('nameContract', x.nameContract);
-        //             formData.append('typeContract', x.typeContract);
-        //             formData.append('file', x.file);
-        //             formData.append('startDate', x.startDate);
-        //             formData.append('endDate', x.endDate);
-        //             //console.log("hdhadhahwhdhsfhjaw",x.fileUpload)
-        //             this.props.updateContract(employeeNumber, formData)
-        //         })
-        //     }
-        //     // lưu thông tin bằng cấp
-        //     if (this.state.certificate.length !== 0) {
-        //         let listCertificate = this.state.certificate;
-        //         listCertificate = listCertificate.filter(certificate => (certificate.fileUpload !== undefined))
-        //         listCertificate.map(x => {
-        //             let formData = new FormData();
-        //             formData.append('fileUpload', x.fileUpload);
-        //             formData.append('nameCertificate', x.nameCertificate);
-        //             formData.append('addressCertificate', x.addressCertificate);
-        //             formData.append('file', x.file);
-        //             formData.append('yearCertificate', x.yearCertificate);
-        //             formData.append('typeCertificate', x.typeCertificate);
-        //             this.props.updateCertificate(employeeNumber, formData)
-        //         })
-        //     }
-        //     // lưu thông tin chứng chỉ
-        //     if (this.state.certificateShort.length !== 0) {
-        //         let listCertificateShort = this.state.certificateShort;
-        //         listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== undefined))
-        //         listCertificateShort.map(x => {
-        //             let formData = new FormData();
-        //             formData.append('fileUpload', x.fileUpload);
-        //             formData.append('nameCertificateShort', x.nameCertificateShort);
-        //             formData.append('unit', x.unit);
-        //             formData.append('file', x.file);
-        //             formData.append('startDate', x.startDate);
-        //             formData.append('endDate', x.endDate);
-        //             this.props.updateCertificateShort(employeeNumber, formData)
-        //         })
-        //     }
-        //     // lưu thông tin tài liệu đính kèm
-        //     if (this.state.file.length !== 0) {
-        //         let listFile = this.state.file;
-        //         listFile = listFile.filter(file => (file.fileUpload !== undefined))
-        //         listFile.map(x => {
-        //             let formData = new FormData();
-        //             formData.append('fileUpload', x.fileUpload);
-        //             formData.append('nameFile', x.nameFile);
-        //             formData.append('discFile', x.discFile);
-        //             formData.append('file', x.file);
-        //             formData.append('number', x.number);
-        //             formData.append('status', x.status);
-        //             this.props.updateFile(employeeNumber, formData)
-        //         })
-        //     }
-        //     // lưu lịch sử tăng giảm lương
-        //     if (this.state.salaryNew.length !== 0) {
-        //         let createSalary = this.state.salaryNew.filter(salary => (salary._id === " "));
-        //         if (createSalary.length !== 0) {
-        //             createSalary.map(x => {
-        //                 this.props.createNewSalary({ ...x, employeeNumber })
-        //             });
-        //         }
-        //     }
-        //     if (this.state.salaryEdit.length !== 0) {
-        //         this.state.salaryEdit.map(x => {
-        //             this.props.updateSalary(x._id, { ...x, employeeNumber })
-        //         });
-        //     }
-        //     if (this.state.salaryDelete.length !== 0) {
-        //         this.state.salaryDelete.map(x => {
-        //             this.props.deleteSalary(x._id);
-        //         })
-        //     }
-        //     // lưu thông tin nghỉ phép
-        //     if (this.state.sabbaticalNew.length !== 0) {
-        //         let createSabbatical = this.state.sabbaticalNew.filter(sabbatical => (sabbatical._id === " "));
-        //         if (createSabbatical.length !== 0) {
-        //             createSabbatical.map(x => {
-        //                 this.props.createAnnualLeave({ ...x, employeeNumber })
-        //             });
-        //         }
-        //     }
-        //     if (this.state.sabbaticalEdit.length !== 0) {
-        //         this.state.sabbaticalEdit.map(x => {
-        //             this.props.updateAnnualLeave(x._id, { ...x, employeeNumber })
-        //         });
-        //     }
-        //     if (this.state.sabbaticalDelete.length !== 0) {
-        //         this.state.sabbaticalDelete.map(x => {
-        //             this.props.deleteAnnualLeave(x._id);
-        //         })
-        //     }
-        //     // lưu thông tin khen thưởng
-        //     if (this.state.praiseNew.length !== 0) {
-        //         let createPraise = this.state.praiseNew.filter(praise => (praise._id === " "));
-        //         if (createPraise.length !== 0) {
-        //             createPraise.map(x => {
-        //                 this.props.createNewPraise({ ...x, employeeNumber })
-        //             });
-        //         }
-        //     }
-        //     if (this.state.praiseEdit.length !== 0) {
-        //         this.state.praiseEdit.map(x => {
-        //             this.props.updatePraise(x._id, { ...x, employeeNumber })
-        //         });
-        //     }
-        //     if (this.state.praiseDelete.length !== 0) {
-        //         this.state.praiseDelete.map(x => {
-        //             this.props.deletePraise(x._id);
-        //         })
-        //     }
-        //     // lưu thông tin kỷ luật
-        //     if (this.state.disciplineNew.length !== 0) {
-        //         let createDiscipline = this.state.disciplineNew.filter(discipline => (discipline._id === " "));
-        //         if (createDiscipline.length !== 0) {
-        //             createDiscipline.map(x => {
-        //                 this.props.createNewDiscipline({ ...x, employeeNumber })
-        //             });
-        //         }
-        //     }
-        //     if (this.state.disciplineEdit.length !== 0) {
-        //         this.state.disciplineEdit.map(x => {
-        //             this.props.updateDiscipline(x._id, { ...x, employeeNumber })
-        //         });
-        //     }
-        //     if (this.state.disciplineDelete.length !== 0) {
-        //         this.state.disciplineDelete.map(x => {
-        //             this.props.deleteDiscipline(x._id);
-        //         })
-        //     }
-        //     await this.props.getAllEmployee(this.props.initState);
-        //     this.notifysuccess("Chỉnh sửa thông tin thành công");
-        //     window.$(`#modal-editEmployee-${this.props.employee[0].employeeNumber}`).modal("hide");
-        // }
+        let { experiences, degrees, certificates, contracts, files,
+            disciplines, commendations, salaries, annualLeaves, socialInsuranceDetails, courses } = this.state;
+        await this.setState({
+            createExperiences: experiences.filter(x => x._id === undefined),
+            createDegrees: degrees.filter(x => x._id === undefined),
+            createCertificates: certificates.filter(x => x._id === undefined),
+            createContracts: contracts.filter(x => x._id === undefined),
+            createDisciplines: disciplines.filter(x => x._id === undefined),
+            createCommendations: commendations.filter(x => x._id === undefined),
+            createSalaries: salaries.filter(x => x._id === undefined),
+            createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
+            createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
+            createFiles: files.filter(x => x._id === undefined),
+        })
+        let formData = convertJsonObjectToFormData(this.state);
+        degrees.forEach(x => {
+            formData.append("fileDegree", x.fileUpload);
+        })
+        certificates.forEach(x => {
+            formData.append("fileCertificate", x.fileUpload);
+        })
+        contracts.forEach(x => {
+            formData.append("fileContract", x.fileUpload);
+        })
+        files.forEach(x => {
+            formData.append("file", x.fileUpload);
+        })
+        formData.append("fileAvatar", this.state.avatar);
+        this.props.updateInformationEmployee(this.state._id, formData);
+    }
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
@@ -333,31 +462,46 @@ class EmployeeEditFrom extends Component {
                 img: LOCAL_SERVER_API + nextProps.employees[0].avatar,
                 avatar: "",
                 employee: nextProps.employees[0],
+                experiences: nextProps.employees[0].experiences,
+                degrees: nextProps.employees[0].degrees,
+                certificates: nextProps.employees[0].certificates,
+                contracts: nextProps.employees[0].contracts,
+                files: nextProps.employees[0].files,
                 commendations: nextProps.commendations,
                 salaries: nextProps.salaries,
                 annualLeaves: nextProps.annualLeaves,
                 disciplines: nextProps.disciplines,
-                files: nextProps.employees[0].files,
-                degrees: nextProps.employees[0].degrees,
-                certificates: nextProps.employees[0].certificates,
-                contracts: nextProps.employees[0].contracts,
                 socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
                 courses: nextProps.employees[0].courses,
 
-                // disciplineDelete: [],
-                // praiseDelete: [],
-                // salaryDelete: [],
-                // sabbaticalDelete: [],
-                // disciplineEdit: [],
-                // praiseEdit: [],
-                // salaryEdit: [],
-                // sabbaticalEdit: [],
+                editExperiences: [],
+                deleteExperiences: [],
+                editDegrees: [],
+                deleteDegrees: [],
+                editCertificates: [],
+                deleteCertificates: [],
+                editSocialInsuranceDetails: [],
+                deleteSocialInsuranceDetails: [],
+                editContracts: [],
+                deleteContracts: [],
+                editConmmendations: [],
+                deleteConmmendations: [],
+                editDisciplines: [],
+                deleteDisciplines: [],
+                editSalaries: [],
+                deleteSalaries: [],
+                editAnnualLeaves: [],
+                deleteAnnualLeaves: [],
+                editFiles: [],
+                deleteFiles: [],
+
             }
         } else {
             return null;
         }
     }
     render() {
+        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
@@ -367,7 +511,7 @@ class EmployeeEditFrom extends Component {
                     formID="form-edit-employee"
                     title={translate('manage_employee.edit_diploma')}
                     func={this.save}
-                    disableSubmit={false}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-edit-employee"> */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }} >
@@ -399,20 +543,21 @@ class EmployeeEditFrom extends Component {
                             <ExperienceTab
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
-                                handleAddExperience={this.handleChangeExperience}
-                                handleEditExperience={this.handleChangeExperience}
-                                handleDeleteExperience={this.handleChangeExperience}
+                                handleChange={this.handleChange}
+                                handleAddExperience={this.handleCreateExperiences}
+                                handleEditExperience={this.handleEditExperiences}
+                                handleDeleteExperience={this.handleDeleteExperiences}
                             />
                             <CertificateTab
                                 id={`edit_diploma${_id}`}
                                 degrees={this.state.degrees}
                                 certificates={this.state.certificates}
-                                handleAddCertificate={this.handleChangeCertificate}
-                                handleEditCertificate={this.handleChangeCertificate}
-                                handleDeleteCertificate={this.handleChangeCertificate}
-                                handleAddCertificateShort={this.handleChangeCertificateShort}
-                                handleEditCertificateShort={this.handleChangeCertificateShort}
-                                handleDeleteCertificateShort={this.handleChangeCertificateShort}
+                                handleAddDegree={this.handleCreateDegree}
+                                handleEditDegree={this.handleEditDegree}
+                                handleDeleteDegree={this.handleDeleteDegree}
+                                handleAddCertificate={this.handleCreateCertificate}
+                                handleEditCertificate={this.handleEditCertificate}
+                                handleDeleteCertificate={this.handleDeleteCertificate}
                             />
                             <TaxTab
                                 id={`edit_account${_id}`}
@@ -423,49 +568,48 @@ class EmployeeEditFrom extends Component {
                                 socialInsuranceDetails={this.state.socialInsuranceDetails}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
-                                handleAddBHXH={this.handleChangeBHXH}
-                                handleEditBHXH={this.handleChangeBHXH}
-                                handleDeleteBHXH={this.handleChangeBHXH}
+                                handleAddBHXH={this.handleCreateBHXH}
+                                handleEditBHXH={this.handleEditBHXH}
+                                handleDeleteBHXH={this.handleDeleteBHXH}
                             />
                             <ContractTab
                                 id={`edit_contract${_id}`}
                                 contracts={this.state.contracts}
                                 courses={this.state.courses}
-                                handleAddContract={this.handleChangeContract}
-                                handleEditContract={this.handleChangeContract}
-                                handleDeleteContract={this.handleChangeContract}
+                                handleAddContract={this.handleEditContract}
+                                handleEditContract={this.handleEditContract}
+                                handleDeleteContract={this.handleDeleteContract}
                             />
                             <DisciplineTab
                                 id={`edit_reward${_id}`}
                                 commendations={this.state.commendations}
                                 disciplines={this.state.disciplines}
-                                handleAddPraise={this.handleChangePraise}
-                                handleEditPraise={this.handleChangePraise}
-                                handleDeletePraise={this.handleChangePraise}
-                                handleAddDiscipline={this.handleChangeDiscipline}
-                                handleEditDiscipline={this.handleChangeDiscipline}
-                                handleDeleteDiscipline={this.handleChangeDiscipline}
+                                handleAddConmmendation={this.handleCreateConmmendation}
+                                handleEditConmmendation={this.handleEditConmmendation}
+                                handleDeleteConmmendation={this.handleDeleteConmmendation}
+                                handleAddDiscipline={this.handleCreateDiscipline}
+                                handleEditDiscipline={this.handleEditDiscipline}
+                                handleDeleteDiscipline={this.handleDeleteDiscipline}
                             />
                             <SalaryTab
                                 id={`edit_salary${_id}`}
                                 salaries={this.state.salaries}
                                 annualLeaves={this.state.annualLeaves}
-                                handleAddSalary={this.handleChangeSalary}
-                                handleEditSalary={this.handleChangeSalary}
-                                handleDeleteSalary={this.handleChangeSalary}
-                                handleAddSabbatical={this.handleChangeSabbatical}
-                                handleEditSabbatical={this.handleChangeSabbatical}
-                                handleDeleteSabbatical={this.handleChangeSabbatical}
+                                handleAddSalary={this.handleCreateSalary}
+                                handleEditSalary={this.handleEditSalary}
+                                handleDeleteSalary={this.handleDeleteSalary}
+                                handleAddAnnualLeave={this.handleCreateAnnualLeave}
+                                handleEditAnnualLeave={this.handleEditAnnualLeave}
+                                handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
                             />
                             <FileTab
                                 id={`edit_attachments${_id}`}
                                 files={this.state.files}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
-                                handleAddFile={this.handleChangeFile}
-                                handleEditFile={this.handleChangeFile}
-                                handleDeleteFile={this.handleChangeFile}
-                                handleSubmit={this.handleSubmit}
+                                handleAddFile={this.handleCreateFile}
+                                handleEditFile={this.handleEditFile}
+                                handleDeleteFile={this.handleDeleteFile}
                             />
                         </div>
                     </div>
@@ -482,30 +626,6 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    uploadAvatar: EmployeeManagerActions.uploadAvatar,
-    checkMSNV: EmployeeManagerActions.checkMSNV,
-    checkEmail: EmployeeManagerActions.checkEmail,
-
-    updateCertificate: EmployeeManagerActions.updateCertificate,
-    updateCertificateShort: EmployeeManagerActions.updateCertificateShort,
-    updateContract: EmployeeManagerActions.updateContract,
-    updateFile: EmployeeManagerActions.updateFile,
-
-    createNewSalary: SalaryActions.createNewSalary,
-    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
-    createNewPraise: DisciplineActions.createNewPraise,
-    createNewDiscipline: DisciplineActions.createNewDiscipline,
-
-    updateSalary: SalaryActions.updateSalary,
-    updateAnnualLeave: AnnualLeaveActions.updateAnnualLeave,
-    updateDiscipline: DisciplineActions.updateDiscipline,
-    updatePraise: DisciplineActions.updatePraise,
-
-    deleteSalary: SalaryActions.deleteSalary,
-    deleteAnnualLeave: AnnualLeaveActions.deleteAnnualLeave,
-    deleteDiscipline: DisciplineActions.deleteDiscipline,
-    deletePraise: DisciplineActions.deletePraise,
 };
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));
 export { editFrom as EmployeeEditFrom };
