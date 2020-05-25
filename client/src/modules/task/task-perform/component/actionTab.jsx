@@ -532,11 +532,11 @@ class ActionTab extends Component {
         var task, actions, informations;
         var statusTask;
         const { tasks, performtasks, user } = this.props; 
-        var taskInfo, actionComments, taskActions,taskComments, actions,logTimer;
+        var actionComments, taskActions,taskComments, actions,logTimer;
         const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         
         const checkUserId = obj =>  obj.creator._id === currentUser;
-        if(typeof tasks.task !== 'undefined' && tasks.task !== null) taskInfo = tasks.task.info
+        if(typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
@@ -592,8 +592,8 @@ class ActionTab extends Component {
                                                         {item.evaluations.some(checkUserId)=== true ?
                                                             <React.Fragment>
                                                                 {item.evaluations.map(element => {
-                                                                    if(taskInfo){
-                                                                        if(taskInfo.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                    if(task){
+                                                                        if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
                                                                             return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
                                                                         }else{
                                                                             return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
