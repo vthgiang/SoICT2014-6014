@@ -1175,6 +1175,7 @@ export default {
                 department: 'Department',
                 select_department: 'Select department',
                 select_all_department: 'Selected all',
+                role: 'Role',
 
                 status: 'Status',
                 select_status: 'Select status',

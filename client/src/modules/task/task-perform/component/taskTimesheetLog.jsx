@@ -5,6 +5,8 @@ import moment from 'moment';
 
 import { getStorage } from "../../../../config";
 
+import { CallApiStatus } from '../../../auth/redux/reducers'
+
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
 
@@ -12,14 +14,25 @@ class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
+        this.sendQuery = false;
     }
 
-    componentDidMount(){
-        if (getStorage("userId"))
+    callApi = () => {
+        if (!this.called && this.props.auth.calledAPI === CallApiStatus.FINISHED){
             this.props.getStatusTimer();
+            this.called = true;
+        }
     }
+
+
+    componentDidMount = () =>{
+        this.callApi();
+    }
+
 
     shouldComponentUpdate = (nextProps, nextState) => {
+        this.callApi(); // Khi logout rồi login vào website (hoặc login mới), chưa gọi API lấy task đang được bấm giờ trong componentDidMount -> Cần gọi lại
+
         if (nextProps.performtasks && nextProps.performtasks.currentTimer) {
             if (!this.timer) {
                 this.timer = setInterval(() => this.setState(state => {
@@ -39,6 +52,13 @@ class TaskTimesheetLog extends Component {
         return true;
     }
 
+    componentWillUnmount = () => {
+        if (this.timer){
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
     stopTimer = () => {
         const { performtasks } = this.props;
 
@@ -54,24 +74,24 @@ class TaskTimesheetLog extends Component {
     }
 
     render() { 
-        const { translate, performtasks } = this.props;
+        const { translate, performtasks, auth } = this.props;
         const currentTimer = performtasks.currentTimer;
 
         return ( 
             <React.Fragment>
                 {
                     currentTimer &&
-                    <div className="info-box">
-                        <span className="info-box-icon">
+                    <div className="timer info-box">
+                        <span className="timer info-box-icon">
                             <a href="#" className="link-black text-lg" >
-                                <i class="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer()}></i>
+                                <i className="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer()}></i>
                             </a>
                         </span>
-                        <div className="info-box-content">
-                            <span className="info-box-text">
+                        <div className="timer info-box-content">
+                            <span className="timer info-box-text">
                                 {currentTimer.name}
                             </span>
-                            <span className="info-box-number">
+                            <span className="timer info-box-number">
                                 {moment.utc(this.state.time - currentTimer.timesheetLogs[0].startedAt).format('HH:mm:ss')}
                             </span>
                         </div>
@@ -83,8 +103,8 @@ class TaskTimesheetLog extends Component {
 }
  
 const mapStateToProps = state => {
-    const { translate, performtasks } = state;
-    return { translate, performtasks };
+    const { translate, performtasks, auth } = state;
+    return { translate, performtasks, auth };
 }
 
 const mapDispatchToProps = {
