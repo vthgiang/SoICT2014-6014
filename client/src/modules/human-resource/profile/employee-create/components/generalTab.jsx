@@ -53,7 +53,7 @@ class GeneralTab extends Component {
     }
 
     // Funtion bắt sự kiện thay đổi giới tính
-    handleGenderChange = (e)=> {
+    handleGenderChange = (e) => {
         const { value } = e.target;
         this.setState({
             gender: value,
@@ -62,7 +62,7 @@ class GeneralTab extends Component {
     }
 
     // Funtion bắt sự kiện thay đổi tình trạng quan hệ
-    handleMaritalStatusChange = (e)=> {
+    handleMaritalStatusChange = (e) => {
         const { value } = e.target;
         this.setState({
             maritalStatus: value,
@@ -279,7 +279,9 @@ class GeneralTab extends Component {
                 <div className="row box-body">
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            <img className="attachment-img avarta" src={img} alt="Attachment" />
+                            <a href={img} target="_blank">
+                                <img className="attachment-img avarta" src={img} alt="Attachment" />
+                            </a>
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_employee.upload')}

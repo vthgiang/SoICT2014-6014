@@ -201,7 +201,6 @@ const EmployeeSchema = new Schema({
             type: String,
             enum: ['excellent','very_good','good','average_good','ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         },
-        file: String,
         urlFile: String
     }],
     certificates: [{ // Chứng chỉ ngắn hạn
@@ -209,7 +208,6 @@ const EmployeeSchema = new Schema({
         issuedBy: String,
         startDate: Date,
         endDate: Date,
-        file: String,
         urlFile: String
     }],
     experiences: [{ // Kinh nghiệm làm việc
@@ -223,7 +221,6 @@ const EmployeeSchema = new Schema({
         contractType: String,
         startDate: Date,
         endDate: Date,
-        file: String,
         urlFile: String
     }],
     // TODO: Làm sau
@@ -246,7 +243,6 @@ const EmployeeSchema = new Schema({
             type: String,
             enum: ['submitted', 'no_submitted', 'returned'] //submitted-Đã nộp, no_submitted-Chưa nộp, returned-Đã trả
         },
-        file: String,
         urlFile: String
     }],
 }, {
