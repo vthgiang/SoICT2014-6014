@@ -24,10 +24,10 @@ exports.getTaskTimesheetLogs = async (params) => {
  */
 exports.getActiveTimesheetLog = async (params) => {
     var timerStatus = await Task.findOne(
-        {"timesheetLogs.creator": mongoose.Types.ObjectId(params.user), "timesheetLogs.stoppedAt": null},
+        {"timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.user), "stoppedAt": null } } },
         {"timesheetLogs" : 1, '_id': 1, 'name': 1 }
     );
-
+    
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(element => !(element.stoppedAt));
         return timerStatus;
@@ -172,10 +172,11 @@ exports.getTaskActions = async (taskId) => {
  * Thêm hoạt động cho công việc
  */
 
-exports.createTaskAction = async (body) => {
+exports.createTaskAction = async (body,files) => {
     var actionInformation = {
         creator: body.creator,
-        description: body.content
+        description: body.content,
+        files: files
     }
     // var actionTaskabc = await Task.findById(req.body.task)
     var taskAction1 = await Task.findByIdAndUpdate(body.task,

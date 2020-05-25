@@ -107,6 +107,7 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.changeInformation = async (req, res) => {
+
     try {
         var avatar;
         if(req.file !== undefined){
