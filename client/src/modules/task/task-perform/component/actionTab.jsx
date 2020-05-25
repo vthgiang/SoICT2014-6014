@@ -58,7 +58,6 @@ class ActionTab extends Component {
             },
             evaluations: {
                 creator: idUser,
-                status: 0
             },
         };
         this.contentTaskComment= [];
@@ -153,6 +152,7 @@ class ActionTab extends Component {
         }
     }
     setValueRating = async (id,newValue) => {
+        
         await this.setState(state => {
             return {
                 ...state,
@@ -164,7 +164,7 @@ class ActionTab extends Component {
             }
         })
         var {evaluations} = this.state;
-        
+        console.log(evaluations)
         if(evaluations.rating){
             
             this.props.evaluationAction(id,evaluations);
@@ -467,7 +467,11 @@ class ActionTab extends Component {
         if(evaluations.status){
             this.props.evaluationAction(id,evaluations);
         }
-    }   
+    }  
+    handleConfirmAction = async (e,actionId,userId) => {
+        e.preventDefault();
+        this.props.confirmAction(actionId,userId)
+    }
     onFilesChange = (files) => {
         this.setState({
           files
@@ -499,27 +503,14 @@ class ActionTab extends Component {
         var task, actions, informations;
         var statusTask;
         const { tasks, performtasks, user } = this.props; 
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
-        }
+        var taskInfo, actionComments, taskActions,taskComments, actions,logTimer;
+        const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         
-        
-        var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
-        const { selected,comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
-        const { time } = this.state.timer;
         const checkUserId = obj =>  obj.creator._id === currentUser;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
-        }
+        if(typeof tasks.task !== 'undefined' && tasks.task !== null) taskInfo = tasks.task.info
+        console.log(taskInfo)
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
         return (
             <div>
@@ -568,21 +559,26 @@ class ActionTab extends Component {
                                         <ul class="list-inline">
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" class="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i class="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
-                                            {item.creator === undefined &&
-                                            <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5" onClick={() => this.props.confirmAction(item._id, currentUser)}></i> Xác nhận hoạt động</a></li>}
+                                            {(item.creator === undefined && this.props.role ==="responsible") &&
+                                            <li><a href="#" class="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i class="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
                                             {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                             <React.Fragment>
                                             <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                            <li>
+                                            <li style={{display:"inline-table"}}>
                                                 {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
                                                     <React.Fragment>
                                                         
                                                         {item.evaluations.some(checkUserId)=== true ?
                                                             <React.Fragment>
                                                                 {item.evaluations.map(element => {
-                                                                    if(element.creator._id === currentUser){ 
-                                                                        return  <div>{element.rating}/10</div>
+                                                                    if(taskInfo){
+                                                                        if(taskInfo.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                            return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
+                                                                        }else{
+                                                                            return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
+                                                                        }
                                                                     }
+
                                                                 })}
                                                             </React.Fragment>:
                                                             <React.Fragment>
