@@ -1493,6 +1493,7 @@ export default {
                 department: 'Đơn vị',
                 select_department: 'Chọn đơn vị',
                 select_all_department: 'Tất cả các đơn vị',
+                role: 'Vai trò',
 
                 status: 'Trạng thái',
                 select_status: 'Chon trang thái',
