@@ -24,3 +24,7 @@ input#file {
     right: 0;
     top: 0;
 }
+
+a.intable:hover {
+    color: cyan;
+}

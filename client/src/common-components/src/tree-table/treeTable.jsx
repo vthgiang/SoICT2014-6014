@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { treeTableShowChildren, treeTableHideChildren } from './tree-table';
 import './treeTable.css';
 
 class TreeTable extends Component {
@@ -11,23 +10,107 @@ class TreeTable extends Component {
 
     componentDidUpdate() {
         if (this.props.data !== null && this.props.behaviour === "show-children") {
-            window.$("#script-tree-table-show-children").remove();
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-tree-table-show-children";
-            script.innerHTML = treeTableShowChildren
-            document.body.appendChild(script);
+            this.addScriptTreeTable(true);
         }
         if (this.props.data !== null && this.props.behaviour === "hide-children") {
-            window.$("#script-tree-table-show-children").remove();
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-tree-table-hide-children";
-            script.innerHTML = treeTableHideChildren
-            document.body.appendChild(script);
+            this.addScriptTreeTable(false);
         }
     }
 
+    /**
+     * Function thêm script cho tree table
+     * showChildren = true : hiện thị nút con
+     * showChildren = false : Ẩn nút con
+     */ 
+    addScriptTreeTable = (showChildren = true) => {
+        window.$(function () {
+            var
+                $table = window.$('#tree-table'),
+                rows = $table.find('tr');
+
+            rows.each(function (index, row) {
+                var
+                    $row = window.$(row),
+                    level = $row.data('level'),
+                    id = $row.data('id'),
+                    $columnName = $row.find('td[data-column="name"]'),
+                    children = $table.find('tr[data-parent="' + id + '"]')
+                //var tagSpan = $columnName.find("span").length;
+
+
+                var div = window.$("<div/>").attr({
+                    "style": "display: inline-block; margin-left: " + (15 + 30 * (level - 1)) + "px"
+                }).html($columnName.text());
+                if (children.length) {
+                    var expander = window.$('<span />').attr('class', `treegrid-expander glyphicon ${showChildren ? "glyphicon-chevron-down" : "glyphicon-chevron-right"}`).html('');
+                    div.prepend(expander);
+
+                    {showChildren? children.show() : children.hide() }
+                    expander.on('click', function (e) {
+                        var $target = window.$(e.target);
+                        if ($target.hasClass('glyphicon-chevron-right')) {
+                            $target
+                                .removeClass('glyphicon-chevron-right')
+                                .addClass('glyphicon-chevron-down');
+
+                            children.show();
+                            reverseShow($table, $row);
+                        } else {
+                            $target
+                                .removeClass('glyphicon-chevron-down')
+                                .addClass('glyphicon-chevron-right');
+
+                            reverseHide($table, $row);
+                        }
+                    });
+                }
+                $columnName.html('');
+                $columnName.append(div);
+            });
+
+            // Reverse hide all elements
+            const reverseHide = (table, element) => {
+                var
+                    $element = window.$(element),
+                    id = $element.data('id'),
+                    children = table.find('tr[data-parent="' + id + '"]');
+
+                if (children.length) {
+                    children.each(function (i, e) {
+                        reverseHide(table, e);
+                    });
+
+                    $element
+                        .find('glyphicon-chevron-down')
+                        .removeClass('glyphicon-chevron-down')
+                        .addClass('glyphicon-chevron-right');
+
+                    children.hide();
+                }
+            };
+
+            // Reverse show all elements
+            const reverseShow = (table, element) => {
+                var
+                    $element = window.$(element),
+                    id = $element.data('id'),
+                    children = table.find('tr[data-parent="' + id + '"]');
+
+                if (children.length) {
+                    children.each(function (i, e) {
+                        reverseShow(table, e);
+                    });
+
+                    $element
+                        .find('.glyphicon-chevron-right')
+                        .removeClass('glyphicon-chevron-right')
+                        .addClass('glyphicon-chevron-down');
+
+                    children.show();
+                }
+            };
+        });
+    }
 
     // function thực hiện format dữ liệu truyền vào
     dataTreetable = (column, data) => {

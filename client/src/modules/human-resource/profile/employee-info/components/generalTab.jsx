@@ -57,7 +57,9 @@ class GeneralTab extends Component {
                 <div className=" row box-body">
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
+                            <a href={LOCAL_SERVER_API + avatar} target="_blank">
                             <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                            </a>
                         </div>
                     </div>
                     <div className="pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12">

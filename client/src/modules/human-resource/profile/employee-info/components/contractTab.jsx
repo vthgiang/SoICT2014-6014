@@ -66,9 +66,13 @@ class ContractTab extends Component {
                                             <td>{x.contractType}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
-                                                <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}
-                                            </td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable'
+                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                         </tr>
                                     ))
                                 }

@@ -9,11 +9,10 @@ import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 import Swal from 'sweetalert2';
-import moment from 'moment'
 import {
     getStorage
 } from '../../../../config';
-import Draggable from 'react-draggable';
+
 // import './actionTab.css'
 class DetailTaskTab extends Component {
 
@@ -28,18 +27,13 @@ class DetailTaskTab extends Component {
             startTimer: false,
             pauseTimer: false,
             highestIndex: 0,
-            timer: {
-                duration:null,
-                startedAt: null,
-                stoppedAt: null,
-                creator: null,
-                description: ""
-            },
             currentUser: idUser,
             showModalApprove: "",
             showEdit: ""
         }
     }
+
+    
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
@@ -73,49 +67,31 @@ class DetailTaskTab extends Component {
         });
     }
 
+    
     startTimer = async (taskId,userId) => {
-        
-        await this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    startedAt: Date.now(),
-                    creator: userId,
-                    task: taskId
-                },
-                openTimeCounnt: true
-            }
-        })
-        //Setup thời thời gian chạy
-        this.timer = setInterval(() => this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    time: Date.now() - this.state.timer.startedAt,
-                },
-            }
-        }), 100);
+        var timer = {
+            startedAt: Date.now(),
+            creator: userId,
+            task: taskId
+        };
+        this.props.startTimer(timer);
     }
-    stopTimer = async (taskId,userId) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                timer: {
-                    ...state.timer,
-                    stoppedAt: Date.now(),
-                    duration: Date.now()-this.state.timer.startedAt,
-                    creator:userId,
-                    task:taskId
-                },
-                openTimeCounnt:false
-            }
-        })
-        
-        var {timer} = this.state;
-        console.log(timer)
-        this.props.stopTimer(timer)
+
+
+
+
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('/');
     }
 
 
@@ -156,12 +132,11 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        const count = Date.now()-this.state.timer.startedAt
         const { translate } = this.props;
-        var task, actions, informations, currentTimer, logTimer;
+        var task, actions, informations;
         var statusTask;
         const{currentUser}= this.state
-        const { time } = this.state.timer;
+        
         const { tasks, performtasks, user } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
@@ -169,9 +144,6 @@ class DetailTaskTab extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (performtasks.logtimer) logTimer = performtasks.logtimer;
 
         return (
       
@@ -211,29 +183,8 @@ class DetailTaskTab extends Component {
                         </a>
                     }
         
-                </div>
-                {this.state.openTimeCounnt &&
-                        <Draggable
-                        handle=".handle"
-                        defaultPosition={{x: 0, y: 0}}
-                        position={null}
-                        grid={[1, 1]}
-                        onStart={this.handleStart}
-                        onDrag={this.handleDrag}
-                        onStop={this.handleStop}>
-                        <div className="handle" style={{height:"auto",width:'110px',backgroundColor:'white',zIndex:"1000000000000000000",border:"solid 1px",borderRadius:"20px",paddingLeft:"15px",paddingTop:'5px',paddingBottom:'5px'}}>
-                           <ul className="list-inline" style={{marginBottom:'0px',marginTop:'2px',fontFamily:'sans-serif'}}>
-                               <li>
-                                    {moment.utc(count).format('HH:mm:ss')}
-                               </li>
-                               <li><a href="#" className="link-black text-lg" ><i class="fa fa-stop-circle-o fa-lg" aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer(task._id,currentUser)}></i></a></li>
-                               
-                           </ul>
-                        </div>
-                      </Draggable>
-                    }    {/**14400000 */}
-                {this.state.timer.time> 15000 &&
-                <div>Mày làm quá 4 tiếng rồi em ê</div>}
+                </div>   
+
                 <br />
                 <div>
                     
@@ -551,7 +502,6 @@ const actionGetState = { //dispatchActionToProps
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
-    getStatusTimer: performTaskAction.getTimerStatusTask
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

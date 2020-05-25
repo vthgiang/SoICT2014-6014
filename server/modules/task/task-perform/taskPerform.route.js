@@ -5,8 +5,8 @@ const {auth,uploadFile} = require('../../../middleware');
 const PerformTaskController = require("./taskPerform.controller");
 
 router.get('/log-timer/:task',auth,  PerformTaskController.getTaskTimesheetLogs);
-router.get('/log-timer/currentTimer/:task/:user', auth, PerformTaskController.getActiveTimesheetLog);
-// router.post('/log-timer/start-timer',  PerformTaskController.startTimesheetLog);
+router.get('/log-timer/currentTimer/:user', auth, PerformTaskController.getActiveTimesheetLog);
+router.post('/log-timer/start-timer',  PerformTaskController.startTimesheetLog);
 router.post('/log-timer/stop-timer',  PerformTaskController.stopTimesheetLog);
 router.post('/add-result/create',auth,  PerformTaskController.createResultInfoTask);
 router.post('/information-task-template/create',auth,  PerformTaskController.createTaskInformation);

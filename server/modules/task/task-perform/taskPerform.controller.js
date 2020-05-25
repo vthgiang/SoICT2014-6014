@@ -64,7 +64,6 @@ exports.startTimesheetLog = async (req, res) => {
 
 // Kết thúc bấm giờ
 exports.stopTimesheetLog = async (req, res) => {
-    console.log("hihihi")
     try {
         console.log(req.body)
         var timer = await PerformTaskService.stopTimesheetLog(req.body);

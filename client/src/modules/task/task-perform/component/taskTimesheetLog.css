@@ -1,0 +1,9 @@
+.info-box {
+    margin: 0;
+    border: 1px solid;
+    width: 250px;
+
+    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+}

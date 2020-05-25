@@ -254,7 +254,7 @@ exports.data = [
     
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/log-timer/currentTimer/:task/:user', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/log-timer/currentTimer/:user', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/start-timer', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/pause-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -339,8 +339,10 @@ exports.data = [
     // { path: '/recommenddistribute/checkRecommendNumber/:recommendNumber', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
 
     // Module DashboardEvaluationEmployeeKpiSet
-    { path: '/kpi/evaluation/dashboard/employee-kpis/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/kpi/evaluation/dashboard/users/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/roles/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/employee-kpis/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/kpi/evaluation/dashboard/users/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/kpi/evaluation/dashboard/organizational-units/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     
 ];

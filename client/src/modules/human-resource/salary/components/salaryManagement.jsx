@@ -156,7 +156,7 @@ class SalaryManagement extends Component {
                     <div className="form-inline">
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
+                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop:0 }}>
                                 <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('human_resource.salary.add_import')}</a></li>
                                 <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>

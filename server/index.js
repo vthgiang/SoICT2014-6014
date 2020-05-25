@@ -94,6 +94,10 @@ mongoose // Connect to MongoDB
     )
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
+mongoose.set('useFindAndModify', false); // Global setting cho mongoose, không dùng useFindAndModify
+
+
+
 global.isLog = false;
 const Logger = require('./models/system-admin/log.model');
 Logger.findOne({

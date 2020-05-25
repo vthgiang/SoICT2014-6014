@@ -4,11 +4,6 @@ import { managerActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions'
 
 class ModalDetailKPI extends Component {
-    componentDidMount() {
-        // get all target of unit
-        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
-    }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +12,6 @@ class ModalDetailKPI extends Component {
         };
     }
     handleChangeContent = async (id) => {
-        console.log("id---", id);
         await this.setState(state => {
             this.props.getChildTarget(id);
             return {
@@ -26,13 +20,23 @@ class ModalDetailKPI extends Component {
             }
         })
     }
+    formatMonth(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
     render() {
         var currentKPI, listchildtarget;
-        const { createKpiUnit, kpiunit, managerKpiUnit } = this.props;
-        if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
+        const {  kpiunit, managerKpiUnit } = this.props;
         if( managerKpiUnit.childtarget)listchildtarget= managerKpiUnit.childtarget;
-        // if(currentKPI.childtarget)
-        console.log("----------------", listchildtarget);
         return (
             <div className="modal modal-full fade" id={"dataResultTask" + this.props.kpiunit._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -43,7 +47,7 @@ class ModalDetailKPI extends Component {
                                 <span  className="modal-full" style={{color:"#ffffff"}}>×</span>
                                 {/* <span className="sr-only">Close</span> */}
                             </button>
-                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi đơn vị tháng 1 năm 2020</h3>
+                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi đơn vị tháng {this.formatMonth(this.props.date)} </h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -63,7 +67,7 @@ class ModalDetailKPI extends Component {
                             </div>
                             <div className="right-modal">
                                 {
-                                    currentKPI && currentKPI.kpis.map(item => {
+                                    kpiunit && kpiunit.kpis.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="header-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
@@ -131,12 +135,11 @@ class ModalDetailKPI extends Component {
 }
 
 function mapState(state) {
-    const { createKpiUnit, managerKpiUnit } = state;
-    return { createKpiUnit, managerKpiUnit };
+    const {  managerKpiUnit } = state;
+    return {  managerKpiUnit };
 }
 
 const actionCreators = {
-    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     getChildTarget: managerActions.getChildTargetOfCurrentTarget
 };
 const connectedModalDetailKPI = connect(mapState, actionCreators)(ModalDetailKPI);

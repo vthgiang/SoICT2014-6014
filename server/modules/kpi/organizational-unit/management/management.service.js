@@ -40,6 +40,7 @@ exports.getKPIUnits = async (data) => {
         endDate[1]=String(parseInt(endDate[1])+1);
         endDate[0]="1";
     }
+    endDate[0]=String(parseInt(endDate[0])+1);
     var enddate = new Date(endDate[2]+"-"+ endDate[1] + "-"+ endDate[0]);
     var status = parseInt(data.status);
 
