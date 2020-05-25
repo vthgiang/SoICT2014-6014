@@ -747,6 +747,7 @@ class ActionTab extends Component {
                                         minRows={3}
                                         maxRows={20}
                                         style={{ width: '100%', height: "auto", fontSize: 13,boxSizing: 'border-box', border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
+                                        ref={input => this.contentAction[0] = input} />
                                     />
                                         {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
                                             rows={this.state.rows}
