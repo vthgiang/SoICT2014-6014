@@ -84,7 +84,7 @@ class TaskTimesheetLog extends Component {
                     <div className="timer info-box">
                         <span className="timer info-box-icon">
                             <a href="#" className="link-black text-lg" >
-                                <i class="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer()}></i>
+                                <i className="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onClick={() => this.stopTimer()}></i>
                             </a>
                         </span>
                         <div className="timer info-box-content">
