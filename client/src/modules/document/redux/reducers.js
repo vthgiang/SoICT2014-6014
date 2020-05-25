@@ -77,6 +77,7 @@ export function documents(state = initState, action) {
             }
 
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:
+        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
 
             return {
                 ...state,
@@ -86,22 +87,6 @@ export function documents(state = initState, action) {
                     categories: {
                         ...state.administration.categories,
                         list: action.payload
-                    }
-                }
-            };
-
-        case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                administration: {
-                    ...state.administration,
-                    categories: {
-                        ...state.administration.categories,
-                        list: [
-                            action.payload,
-                            ...state.administration.categories.list
-                        ]
                     }
                 }
             };

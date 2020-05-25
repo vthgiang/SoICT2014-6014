@@ -176,6 +176,7 @@ exports.uploadFile = (arrData, type) => {
                 }
             },
             filename: function (req, file, cb) {
+                console.log("ffffffile", file)
                 var fileName = `${Date.now()}${req.user._id}`;
                 var hash = CryptoJS.MD5(fileName).toString() + fileName;
                 cb(null, `${hash}.png`);

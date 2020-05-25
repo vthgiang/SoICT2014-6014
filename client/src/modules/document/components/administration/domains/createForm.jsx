@@ -26,7 +26,7 @@ class CreateForm extends Component {
 
 
     handleParent = value => {
-        this.setState({ documentParent: value });
+        this.setState({ documentParent: value[0] });
     }
 
     save = () => {
@@ -77,7 +77,7 @@ class CreateForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {domains}
-                                onChange={this.handleDomainParent}
+                                onChange={this.handleParent}
                                 multiple={false}
                                 options={{placeholder: translate('document.administration.categories.select')}}
                             />
