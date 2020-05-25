@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
+import { getStorage } from "../../../../config";
+
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
 
@@ -13,7 +15,8 @@ class TaskTimesheetLog extends Component {
     }
 
     componentDidMount(){
-        this.props.getStatusTimer();
+        if (getStorage("userId"))
+            this.props.getStatusTimer();
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
