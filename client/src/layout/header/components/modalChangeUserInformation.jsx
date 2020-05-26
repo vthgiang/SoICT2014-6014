@@ -19,7 +19,6 @@ class ModalChangeUserInformation extends Component {
     }
 
     getImage = (img) => {
-        console.log("src ", img)
         this.setState({
             img: img
         })
@@ -37,7 +36,6 @@ class ModalChangeUserInformation extends Component {
     render() { 
         const {translate} = this.props;
         const {userAvatar, userName, userEmail, userNameError, userEmailError} = this.state;
-        console.log("img:", this.state)
         return ( 
             <React.Fragment>
                 <DialogModal

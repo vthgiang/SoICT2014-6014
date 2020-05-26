@@ -16,17 +16,17 @@ const data =[
 /**
  * Lấy thông tin cá nhân
  */
-router.get('/personals/:id', auth, EmployeeController.getEmployeeProfile);
+router.get('/:userId', auth, EmployeeController.getEmployeeProfile);
 
 /**
  * Cập nhật thông tin cá nhân
  */
-router.patch('/personals/:id', auth, uploadFile([{name:'fileAvatar', path:'/human-resource/avatars'}], 'single'), EmployeeController.updatePersonalInformation);
+router.patch('/:userId', auth, uploadFile([{name:'fileAvatar', path:'/human-resource/avatars'}], 'single'), EmployeeController.updatePersonalInformation);
 
 /**
  * Lấy danh sách nhân viên
  */
-router.post('/paginate', auth, EmployeeController.searchEmployeeProfiles);
+router.get('/', auth, EmployeeController.searchEmployeeProfiles);
 
 /**
  * Thêm mới một nhân viên
@@ -36,7 +36,7 @@ router.post('/', auth, uploadFile(data, 'fields'), EmployeeController.createEmpl
 /**
  * Cập nhật thông tin nhân viên theo id
  */
-router.put('/update/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEmployeeInformation);
+router.put('/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEmployeeInformation);
 
 /**
  * Xoá thông tin nhân viên

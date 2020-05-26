@@ -6,7 +6,15 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.searchSalaries = async (req, res) => {
     try {
-        var listSaralys = await SalaryService.searchSalaries(req.body, req.user.company._id);
+        params = {
+            organizationalUnit: req.query.organizationalUnit,
+            position: req.query.position,
+            employeeNumber: req.query.employeeNumber,
+            month: req.query.month,
+            page: req.query.page !==undefined ? Number(req.query.page) : 0,
+            limit: req.query.limit !==undefined ? Number(req.query.limit) :100,
+        }
+        var listSaralys = await SalaryService.searchSalaries(params, req.user.company._id);
         await LogInfo(req.user.email, 'GET_SARALY', req.user.company);
         res.status(200).json({ success: true, messages:["get_salary_success"], content: listSaralys});
     } catch (error) {

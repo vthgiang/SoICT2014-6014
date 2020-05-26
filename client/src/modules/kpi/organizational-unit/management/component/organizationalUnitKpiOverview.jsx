@@ -95,7 +95,7 @@ class KPIUnitManager extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    status: this.state.status[0],
+                    status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
                 }
@@ -260,7 +260,7 @@ class KPIUnitManager extends Component {
                                     <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
                                             className="material-icons">view_list</i></a>
-                                    <ModalDetailKPI kpiunit={item} />
+                                    <ModalDetailKPI date={item.date} kpiunit={item} />
                                 </td>
                                 <td>{this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"

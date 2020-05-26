@@ -1,9 +1,9 @@
 import { dashboardOrganizationalUnitKpiConstants } from "./constants";
 
 const initState = {
-    childTargets: [],
-    tasks: [],
-    organizationalUnitKpiSetsEachYear: [],
+    childTargets: null,
+    tasks: null,
+    organizationalUnitKpiSetsEachYear: null,
     isLoading: false,
     error: null
 }
@@ -15,7 +15,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 ...state,
                 childTargets: null,
                 loading: true,
-                isLoading: false,
+                isLoading: false
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS:
             return {
@@ -33,6 +33,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
+                tasks: null,
                 loading: true,
                 tasks: null,
                 isLoading: false
@@ -53,6 +54,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_REQUEST:
             return {
                 ...state,
+                organizationalUnitKpiSetsEachYear: null,
                 loading: true,
                 isLoading: false
             }
@@ -63,7 +65,7 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 isLoading: false,
                 organizationalUnitKpiSetsEachYear: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE:
             return {
                 ...state,
                 loading: false,

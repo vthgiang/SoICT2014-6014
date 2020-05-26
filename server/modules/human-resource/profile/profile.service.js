@@ -73,7 +73,7 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
         let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);
         units = [...units, unitInfo]
     }
-    if (position === null) {
+    if (position === undefined) {
         units.forEach(u => {
             let role = [u.dean, u.viceDean, u.employee];
             roles = roles.concat(role);
@@ -106,10 +106,10 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
 
 /**
  * Lấy thông tin cá nhân của nhân viên theo id user(tài khoản đăng nhập)
- * @id : id người dùng(tài khoản)
+ * @userId : id người dùng(tài khoản)
  */
-exports.getEmployeeProfile = async (id) => {
-    let user = await User.findById(id);
+exports.getEmployeeProfile = async (userId) => {
+    let user = await User.findById(userId);
     let employees = await Employee.find({
         emailInCompany: user.email
     });
@@ -153,14 +153,15 @@ exports.getEmployeeInforById = async(id)=>{
 
 /**
  * Cập nhật thông tin cá nhân của nhân viên
- * @eamil: email công ty của nhân viên 
- * @data: dữ liệu chỉnh sửa thông tin của nhân viên
+ * @userId : id người dùng
+ * @data : dữ liệu chỉnh sửa thông tin của nhân viên
+ * @avatar : url file avatar
  */
-exports.updatePersonalInformation = async (id, data, avatar) => {
+exports.updatePersonalInformation = async (userId, data, avatar) => {
     if (avatar === "") {
         avatar = data.avatar;
     }
-    let user = await User.findById(id);
+    let user = await User.findById(userId);
     var employeeInfo = await Employee.findOne({
         emailInCompany: user.email
     }, {
@@ -213,14 +214,14 @@ exports.updatePersonalInformation = async (id, data, avatar) => {
  * @data: dữ liệu key tìm kiếm
  * @company: Id công ty người tìm kiếm
  */
-exports.searchEmployeeProfiles = async (data, company) => {
+exports.searchEmployeeProfiles = async (params, company) => {
     var keySearch = {
         company: company
     };
-
-    // Bắt sựu kiện đơn vị tìm kiếm khác null
-    if (data.organizationalUnit !== null) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
+    
+    // Bắt sựu kiện đơn vị tìm kiếm khác undefined
+    if (params.organizationalUnit !== undefined) {
+        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearch = {
             ...keySearch,
             emailInCompany: {
@@ -228,38 +229,37 @@ exports.searchEmployeeProfiles = async (data, company) => {
             }
         }
     }
-
     // Bắt sựu kiện MSNV tìm kiếm khác ""
-    if (data.employeeNumber !== "") {
+    if (params.employeeNumber !==undefined && params.employeeNumber.length !==0) {
         keySearch = {
             ...keySearch,
             employeeNumber: {
-                $regex: data.employeeNumber,
+                $regex: params.employeeNumber,
                 $options: "i"
             }
         }
     };
 
-    // Bắt sựu kiện MSNV tìm kiếm khác "Null"
-    if (data.gender !== null) {
+    // Bắt sựu kiện MSNV tìm kiếm khác "undefined"
+    if (params.gender !== undefined) {
         keySearch = {
             ...keySearch,
             gender: {
-                $in: data.gender
+                $in: params.gender
             }
         };
     };
 
     // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
-    if (data.status !== null) {
+    if (params.status !== undefined) {
         keySearch = {
             ...keySearch,
             status: {
-                $in: data.status
+                $in: params.status
             }
         };
     };
-
+    
     // Lấy danh sách nhân viên
     var totalList = await Employee.count(keySearch);
     var listEmployees = await Employee.find(keySearch, {
@@ -268,7 +268,7 @@ exports.searchEmployeeProfiles = async (data, company) => {
         })
         .sort({
             'createdAt': 'desc'
-        }).skip(data.page).limit(data.limit);
+        }).skip(params.page).limit(params.limit);
     var data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
@@ -296,7 +296,7 @@ exports.searchEmployeeProfiles = async (data, company) => {
             ...value
         }
     }
-
+    
     return {
         data,
         totalList
@@ -482,7 +482,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
 /**
  * Cập nhât thông tin nhân viên theo id
  */
-exports.updateEmployeeInformation = async (id, data, fileInfo) => {
+exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
         createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
         createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
@@ -583,20 +583,20 @@ exports.updateEmployeeInformation = async (id, data, fileInfo) => {
     oldEmployee.save();
 
     // Function edit, create, Delete Document of collection
-    queryEditCreateDeleteDocumentInCollection = async (employeeId, collection, arrDelete, arrEdit, arrCreate)  => {
+    queryEditCreateDeleteDocumentInCollection = async (employeeId, company, collection, arrDelete, arrEdit, arrCreate)  => {
         let queryDelete = arrDelete!==undefined ? arrDelete.map(x => {return { deleteOne : { "filter" : { "_id" : x._id} } }}): [];
         let queryEdit = arrEdit!==undefined ? arrEdit.map(x => {
         return { updateOne : {"filter" : { "_id" : x._id }, "update" : { $set : x }}}}) : [];
-        let queryCrete = arrCreate !== undefined ? arrCreate.map(x=>{return { insertOne: { "document": {...x, employee: employeeId} }}}) : [];
+        let queryCrete = arrCreate !== undefined ? arrCreate.map(x=>{return { insertOne: { "document": {...x, employee: employeeId, company: company} }}}) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if(query.length!==0){
             await collection.bulkWrite(query);
         }
     };
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteDisciplines, editDisciplines, createDisciplines );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Commendation, deleteConmmendations, editConmmendations, createCommendations );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteSalaries, editSalaries, createSalaries );
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, Discipline, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);

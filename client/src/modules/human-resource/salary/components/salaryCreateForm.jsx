@@ -209,8 +209,10 @@ class SalaryCreateForm extends Component {
 
     // Function bắt sự kiện lưu bảng lương
     save = () => {
+        var partMonth = this.state.month.split('-');
+        var month = [partMonth[1], partMonth[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.createSalary(this.state);
+            this.props.createSalary({...this.state, month:month});
         }
     }
 

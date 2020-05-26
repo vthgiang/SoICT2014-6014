@@ -122,8 +122,12 @@ class AnnualLeaveCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        var partEnd = this.state.endDate.split('-');
+        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.createAnnualLeave(this.state);
+            return this.props.createAnnualLeave({ ...this.state, startDate: startDate, endDate: endDate});
         }
     }
 

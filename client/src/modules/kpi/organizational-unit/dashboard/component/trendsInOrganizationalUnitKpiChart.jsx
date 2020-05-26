@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
+
+import c3 from 'c3';
+import 'c3/c3.css';
 import * as d3 from "d3";
 
 class TrendsInOrganizationalUnitKpiChart extends Component {
@@ -14,9 +17,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
-            newDataCurrentKpi: false,
-            newDataChildTargets: false,
-            newDataTasks: false,
             dataStatus: this.DATA_STATUS.QUERYING
         };
 
@@ -37,7 +37,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
             this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole)
 
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
@@ -345,7 +345,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return weight;
     }
 
-    removePreviousChart(){
+    // Xóa các chart đã render trước khi đủ dữ liệu
+    removePreviousBarChart = () => {
         const chart = this.refs.barChart;
         while(chart.hasChildNodes()){
             chart.removeChild(chart.lastChild);
@@ -354,17 +355,23 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     // Khởi tạo Bar Chart bằng D3
     barChart = () => {
-        this.removePreviousChart();
-        // Tạo mảng dữ liệu
-        var numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, dataChart;
+       this.removePreviousBarChart();
+       
+        const { createKpiUnit } = this.props;
+        var numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
            
+        if(createKpiUnit.currentKPI) {
+            listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
+        }
+
         executionTimes = this.setExecutionTimeData();
         numberOfChildKpis = this.setNumberOfChildKpiData();
         numberOfParticipants = this.setNumberOfParticipantData();
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        dataChart = [               
+        // Dữ liệu dạng mảng theo từng chỉ số
+        data = [               
             executionTimes,
             numberOfParticipants,
             numberOfTasks,
@@ -372,75 +379,150 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             weight
         ]
 
-        // Lấy các keys của dữ liệu biểu đồ
-        var keys = Object.keys(dataChart[0]).slice(1,5);  
+        // Giá trị các thanh bar(trục y)
+        if(data !== undefined) {
+            titleX = data.map(x => x.name);
+            titleX = ['x'].concat(titleX);
+        }
 
-        // Tạo dữ liệu dạng stack cho biểu đồ
-        var series = d3.stack()
-            .keys(keys)
-            .offset(d3.stackOffsetExpand)(dataChart)
-            .map(d => (d.forEach(v => v.key = d.key), d));
+        // Dữ liệu dạng mảng theo từng KPI để vẽ biểu đồ
+        if(listOrganizationalUnitKpi !== undefined) {
+            dataChart = listOrganizationalUnitKpi.map(kpis => {
+                var temporary;
+                temporary = data.map(x => {
+                    return (x[kpis.name]/x.total).toFixed(4);
+                })
+                
+                temporary = [kpis.name].concat(temporary);
 
-        // Kích thước biểu đồ
-        var margin = ({top: 30, right: 10, bottom: 0, left: 120});
-        var height = dataChart.length * 25 + margin.top + margin.bottom;
-        var width = 600 + margin.top + margin.bottom;
+                return temporary;
+            })
+        }
+        dataChart.unshift(titleX);
+    
+        // Khởi tạo biểu đồ
+        this.chart = c3.generate({
+            bindto: this.refs.barChart,         // Đẩy chart vào thẻ div có id="barChart"        
+
+            size: {                                 
+                height: 350                     // Thiết lập size biểu đồ
+            },
+
+            padding: {                          // Căn lề biểu đồ
+                top: 20,
+                left: 100,
+                right: 20,
+                bottom: 20
+            },
+
+            data: {                             // Dữ liệu biểu đồ
+                x: 'x',
+                columns: dataChart,
+                type: 'bar',
+                groups: [
+                    listOrganizationalUnitKpi.map(x => x.name)
+                ]
+            },
+
+            bar: {                              // Thiết lập size thanh bar
+                width: {
+                    ratio: 0.8
+                }
+            },
+
+            axis: {                             // Config các trục tọa độ
+                rotated: true,
+                x: {
+                    type: 'category',
+                    tick: {
+                        outer: true
+                    }
+                },
+                y: {
+                    max: 0.91,
+                    tick: {
+                        format: d3.format('.0%')
+                    }
+                }
+            },
+
+            tooltip: {                          // Config tooltip
+                format: {
+                    value:d3.format('.2%')
+                }
+            },
+        })
+
+
+        // // Lấy các keys của dữ liệu biểu đồ
+        // var keys = Object.keys(dataChart[0]).slice(1,5);  
+
+        // // Tạo dữ liệu dạng stack cho biểu đồ
+        // var series = d3.stack()
+        //     .keys(keys)
+        //     .offset(d3.stackOffsetExpand)(dataChart)
+        //     .map(d => (d.forEach(v => v.key = d.key), d));
+
+        // // Kích thước biểu đồ
+        // var margin = ({top: 30, right: 10, bottom: 0, left: 120});
+        // var height = dataChart.length * 25 + margin.top + margin.bottom;
+        // var width = 600 + margin.top + margin.bottom;
         
-        // Màu các thanh keys dữ liệu
-        var color = d3.scaleOrdinal()
-            .domain(series.map(d => d.key))
-            .range(d3.schemeSpectral[series.length])
-            .unknown("#ccc");
+        // // Màu các thanh keys dữ liệu
+        // var color = d3.scaleOrdinal()
+        //     .domain(series.map(d => d.key))
+        //     .range(d3.schemeSpectral[series.length])
+        //     .unknown("#ccc");
         
-        // Vẽ các trục tọa độ x, y
-        var x = d3.scaleLinear()
-            .range([margin.left, width - margin.right]);
+        // // Vẽ các trục tọa độ x, y
+        // var x = d3.scaleLinear()
+        //     .range([margin.left, width - margin.right]);
 
-        var y = d3.scaleBand()
-            .domain(dataChart.map(d => d.name))
-            .range([margin.top, height - margin.bottom])
-            .padding(0.08);
+        // var y = d3.scaleBand()
+        //     .domain(dataChart.map(d => d.name))
+        //     .range([margin.top, height - margin.bottom])
+        //     .padding(0.08);
 
-        var xAxis = g => g
-            .attr("transform", `translate(0,${margin.top})`)
-            .call(d3.axisTop(x).ticks(width / 100, "%"))
-            .call(g => g.selectAll(".domain").remove());
+        // var xAxis = g => g
+        //     .attr("transform", `translate(0,${margin.top})`)
+        //     .call(d3.axisTop(x).ticks(width / 100, "%"))
+        //     .call(g => g.selectAll(".domain").remove());
 
-        var yAxis = g => g
-            .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).tickSizeOuter(0))
-            .call(g => g.selectAll(".domain").remove());
+        // var yAxis = g => g
+        //     .attr("transform", `translate(${margin.left},0)`)
+        //     .call(d3.axisLeft(y).tickSizeOuter(0))
+        //     .call(g => g.selectAll(".domain").remove());
 
-        // Định dạng %
-        var formatValue = (x) => isNaN(x) ? "N/A" : x.toLocaleString("en");
-        var formatPercent = d3.format(".1%");
+        // // Định dạng %
+        // var formatValue = (x) => isNaN(x) ? "N/A" : x.toLocaleString("en");
+        // var formatPercent = d3.format(".1%");
 
-        // Tạo thẻ svg và đổ vào div có ref="barChart", các thẻ svg sẽ render thành biểu đồ trên giao diện
-        var svg = d3.select(this.refs.barChart)
-            .append("svg")
-            .attr("viewBox", [0, 0, width, height])
-            .style("overflow", "visible");
+        // // Tạo thẻ svg và đổ vào div có ref="barChart", các thẻ svg sẽ render thành biểu đồ trên giao diện
+        // var svg = d3.select(this.refs.barChart)
+        //     .append("svg")
+        //     .attr("viewBox", [0, 0, width, height])
+        //     .style("overflow", "visible");
 
-        svg.append("g")
-            .selectAll("g")
-            .data(series)
-            .enter().append("g")
-                .attr("fill", d => color(d.key))
-            .selectAll("rect")
-            .data(d => d)
-            .join("rect")
-                .attr("x", d => x(d[0]))
-                .attr("y", (d, i) => y(d.data.name))
-                .attr("width", d => x(d[1]) - x(d[0]))
-                .attr("height", y.bandwidth())
-            .append("title")
-            .text(d => `${d.key}: ${formatPercent(d[1] - d[0])} (${formatValue(d.data[d.key])})`);
+        // svg.append("g")
+        //     .selectAll("g")
+        //     .data(series)
+        //     .enter().append("g")
+        //         .attr("fill", d => color(d.key))
+        //     .selectAll("rect")
+        //     .data(d => d)
+        //     .join("rect")
+        //         .attr("x", d => x(d[0]))
+        //         .attr("y", (d, i) => y(d.data.name))
+        //         .attr("width", d => x(d[1]) - x(d[0]))
+        //         .attr("height", y.bandwidth())
+        //     .append("title")
+        //     .text(d => `${d.key}: ${formatPercent(d[1] - d[0])} (${formatValue(d.data[d.key])})`);
 
-        svg.append("g")
-            .call(xAxis);
+        // svg.append("g")
+        //     .call(xAxis);
 
-        svg.append("g")
-            .call(yAxis);
+        // svg.append("g")
+        //     .call(yAxis);
     }
     
     render() {

@@ -67,6 +67,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (perpageId,numberId,
     var responsibleTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
+        
         if (unitId === "[]" && statusId === "[]") {
             responsibleTasks = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });

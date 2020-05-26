@@ -247,15 +247,15 @@ const TaskSchema = new Schema({
             type: Number,
             default: -1
         },
-        // files: [{ // Các files đi kèm actions
-        //     name: {
-        //         type: String,
-        //     },
-        //     url: {
-        //         type: String,
-        //         required: true
-        //     }
-        // }],
+        files: [{ // Các files đi kèm actions
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            }
+        }],
         evaluations:[{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
