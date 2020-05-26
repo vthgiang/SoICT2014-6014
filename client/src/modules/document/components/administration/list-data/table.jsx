@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
+import EditForm from './editForm';
 
 class Table extends Component {
     constructor(props) {
@@ -12,17 +13,25 @@ class Table extends Component {
     }
 
     componentDidMount(){
+        this.props.getAllDocuments();
+    }
+
+    toggleEditDocument = async (data) => {
+        await this.setState({
+            currentRow: data
+        });
+        window.$('#modal-edit-document').modal('show');
     }
 
     render() { 
         const {translate} = this.props;
-        const {list} = this.props.documents.administration.listData;
+        const {list} = this.props.documents.administration.data;
         const {isLoading} = this.props.documents;
-        if(this.props.documents.value)
-            console.log("this.propfsdfsdfsdfsfsd.")
+        const {currentRow} = this.state;
         return ( 
             <React.Fragment>
                 <CreateForm/>
+                <EditForm data={currentRow}/>
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>
@@ -54,12 +63,16 @@ class Table extends Component {
                     <tbody>
                         {
                             list.length > 0 ?
-                            list.map(docType => 
-                            <tr key={docType._id}>
-                                <td>{docType.name}</td>
-                                <td>{docType.description}</td>
+                            list.map(doc => 
+                            <tr key={doc._id}>
+                                <td>{doc.name}</td>
+                                <td>{doc.description}</td>
+                                <td>{doc.description}</td>
+                                <td>{doc.description}</td>
+                                <td>{doc.description}</td>
+                                <td>{doc.description}</td>
                                 <td>
-                                    <a className="text-yellow" title={translate('document.edit')}><i className="material-icons">edit</i></a>
+                                    <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
                                     <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>):
@@ -77,6 +90,7 @@ class Table extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
+    getAllDocuments: DocumentActions.getDocuments
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

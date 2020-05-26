@@ -3,6 +3,14 @@ const router = express.Router();
 const DocumentController = require('./document.controller');
 const { auth } = require('../../middleware');
 
+// Văn bản tài liệu
+router.get("/", auth, DocumentController.getDocuments);
+router.get("/:id", auth, DocumentController.showDocument);
+router.post("/", auth, DocumentController.createDocument);
+router.patch("/:id", auth, DocumentController.editDocument);
+router.delete("/:id", auth, DocumentController.deleteDocument);
+
+
 // Loại văn bản - category
 router.get("/categories", auth, DocumentController.getDocumentCategories);
 router.get("/categories/:id", auth, DocumentController.showDocumentCategory);

@@ -2,11 +2,28 @@ import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const DocumentServices = {
+    getDocuments,
+    createDocument,
     getDocumentCategories,
     createDocumentCategory,
     getDocumentDomains,
     createDocumentDomain
 };
+
+function getDocuments() {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents`,
+        method: 'GET',
+    }, false, true, 'document');
+}
+
+function createDocument(data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents`,
+        method: 'POST',
+        data,
+    }, false, true, 'document');
+}
 
 function getDocumentCategories() {
     return sendRequest({

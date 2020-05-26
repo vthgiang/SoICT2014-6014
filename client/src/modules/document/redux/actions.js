@@ -2,12 +2,49 @@ import { DocumentServices } from "./services";
 import { DocumentConstants } from "./constants";
 
 export const DocumentActions = {
+
+    getDocuments,
+    createDocument,
+
     getDocumentCategories,
     createDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain
 };
+
+function getDocuments(){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.GET_DOCUMENTS_REQUEST});
+        DocumentServices.getDocuments()
+        .then(res => {
+            dispatch({
+                type: DocumentConstants.GET_DOCUMENTS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({ type: DocumentConstants.GET_DOCUMENTS_FAILE});
+            
+        })
+    }
+}
+
+function createDocument(data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.CREATE_DOCUMENT_REQUEST});
+        DocumentServices.createDocument(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.CREATE_DOCUMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.CREATE_DOCUMENT_FAILE});
+            })
+    }
+}
 
 function getDocumentCategories(){
     return dispatch => {
