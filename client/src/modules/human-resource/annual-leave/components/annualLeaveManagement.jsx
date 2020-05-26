@@ -112,6 +112,11 @@ class AnnualLeaveManagement extends Component {
                 ...this.state,
                 month: month
             })
+        } else if (this.state.month === "-") {
+            await this.setState({
+                ...this.state,
+                month: null
+            })
         }
         this.props.searchAnnualLeaves(this.state);
     }
