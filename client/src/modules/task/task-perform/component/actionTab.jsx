@@ -13,7 +13,7 @@ import Rating from 'react-rating'
 import moment from 'moment'
 import Files from 'react-files'
 import TextareaAutosize from 'react-textarea-autosize';
-
+import { LOCAL_SERVER_API } from '../../../../env';
 import './actionTab.css';
 
 class ActionTab extends Component {
@@ -28,6 +28,7 @@ class ActionTab extends Component {
             editComment: "",
             valueRating:2.5,
             files: [],
+            hover: {},
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
@@ -68,6 +69,7 @@ class ActionTab extends Component {
 			minRows: 3,
 			maxRows: 25,
         };
+        this.hover =[];
         this.contentTaskComment= [];
         this.contentCommentOfAction= [];
         this.newContentCommentOfAction = [];
@@ -159,8 +161,23 @@ class ActionTab extends Component {
           
         }
     }
-    setValueRating = async (id,newValue) => {
+    setHover = async (id,value) =>{
+        if(isNaN(value)){
+            this.hover[id] = 0;
+        }else this.hover[id] = value*2;
         
+        await this.setState(state => {
+            return {
+                ...state,
+                hover : {
+                    ...state.hover,
+                    id:value
+                }
+            }
+        })
+        console.log(this.hover[id])
+    }
+    setValueRating = async (id,newValue) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -513,9 +530,9 @@ class ActionTab extends Component {
     console.log('error code ' + error.code + ': ' + error.message)
     }
 
-    filesRemoveOne = (file) => {
-    this.refs.files.removeFile(file)
-    }
+    // filesRemoveOne = (file) => {
+    // this.refs.files.removeFile(file)
+    // }
     // filesRemoveAll = () => {
     // this.refs.files.removeFiles()
     // }
@@ -531,10 +548,21 @@ class ActionTab extends Component {
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
-        const { tasks, performtasks, user } = this.props; 
+        const { tasks, performtasks, user,auth } = this.props; 
         var actionComments, taskActions,taskComments, actions,logTimer;
         const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
-        
+        const labels = {
+            0.5: 'Useless',
+            1: 'Useless+',
+            1.5: 'Poor',
+            2: 'Poor+',
+            2.5: 'Ok',
+            3: 'Ok+',
+            3.5: 'Good',
+            4: 'Good+',
+            4.5: 'Excellent',
+            5: 'Excellent+',
+          };
         const checkUserId = obj =>  obj.creator._id === currentUser;
         if(typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
@@ -558,7 +586,7 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return (
                                     <div className="post clearfix"  key={item._id}>
-                                        <img className="user-img-level1" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
+                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
                                         
                                         {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
                                         <React.Fragment>
@@ -583,32 +611,37 @@ class ActionTab extends Component {
                                             <div>{item.files.length>0?item.files[0].url:null}</div>
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
                                                 {(item.creator === undefined && this.props.role ==="responsible") &&
                                                 <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
                                                 {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                 <React.Fragment>
                                                 <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                                <li style={{display:"inline-table"}}>
+                                                <li style={{display:"inline-table"}} className="list-inline">
                                                     {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
                                                         <React.Fragment>
                                                             
                                                             {item.evaluations.some(checkUserId)=== true ?
                                                                 <React.Fragment>
                                                                     {item.evaluations.map(element => {
-                                                                        if(task){
-                                                                            if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
-                                                                                return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
-                                                                            }else{
-                                                                                return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
-                                                                            }
+                                                                    if(task){
+                                                                        if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                            return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
                                                                         }
-
-                                                                    })}
+                                                                    }
+                                                                })}
+                                                                {item.evaluations.map(element => {
+                                                                    if(task){
+                                                                        if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)){
+                                                                            return <div> {element.creator.name} đánh giá {element.rating}/10 </div>
+                                                                        }
+                                                                    }
+                                                                })}
                                                                 </React.Fragment>:
                                                                 <React.Fragment>
                                                                     <Rating
+                                                                        
                                                                         fractions = {2}
                                                                         emptySymbol="fa fa-star-o fa-2x"
                                                                         fullSymbol="fa fa-star fa-2x"
@@ -616,13 +649,18 @@ class ActionTab extends Component {
                                                                         onClick={(value) => {
                                                                         this.setValueRating(item._id,value);
                                                                         }}
-                                                                        
+                                                                        onHover={(value)=> {                                                                                                                                                   
+                                                                            this.setHover(item._id,value)
+                                                                        }}
                                                                     />
+                                                                    <div style={{display:"inline",marginLeft:"5px"}}>{this.hover[item._id]*2}</div> 
                                                                 </React.Fragment>
                                                             }
                                                         </React.Fragment>:
                                                         <React.Fragment>
+                                                           
                                                             <Rating
+                                                                
                                                                 fractions = {2}
                                                                 emptySymbol="fa fa-star-o fa-2x"
                                                                 fullSymbol="fa fa-star fa-2x"
@@ -630,10 +668,17 @@ class ActionTab extends Component {
                                                                 onClick={(value) => {
                                                                 this.setValueRating(item._id,value);
                                                                 }}
-                                                                
+                                                                onHover={(value)=> {
+                                                                    this.setHover(item._id,value)
+                                                                }}
                                                             />
+                                                            <div style={{display:"inline",marginLeft:"5px"}}>{this.hover && this.hover[item._id]}</div> 
+                                                            
                                                         </React.Fragment>}
-                                                </li></React.Fragment>}
+                                                
+                                                </li>
+                                                
+                                                </React.Fragment>}
                                             </ul>
                                         </React.Fragment>
                                         }
@@ -663,7 +708,7 @@ class ActionTab extends Component {
                                             <div>
                                                 {item.comments.map(child => {
                                                     return <div  key={child._id}>
-                                                        <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
+                                                        <img className="user-img-level2" src={(LOCAL_SERVER_API+child.creator.avatar)} alt="User Image" />
                                                         
                                                         {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                         <div>
@@ -711,7 +756,6 @@ class ActionTab extends Component {
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
                                                                 <div className="tool-level2">
-                                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
                                                                 </div>
                                                             </div>
                                                         }
@@ -722,14 +766,14 @@ class ActionTab extends Component {
                                                 {/*Thêm bình luận cho hoạt động */}
                                                 <div>
                                                     <img className="user-img-level2"
-                                                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar"
+                                                        src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"
                                                     />
                                                     <div className="text-input-level2">
                                                         <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment" ref={input => this.contentCommentOfAction[item._id] = input} />    
                                                     </div>
                                                     <div className="tool-level2">
                                                         <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitComment(e, item._id, item._id, task._id)}>Gửi bình luận</a>
-                                                        <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -741,7 +785,7 @@ class ActionTab extends Component {
                             {this.props.role === "responsible" &&
                             <React.Fragment>
                                 
-                                <img className="user-img-level1" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="user avatar" />
+                                <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
                                 <div className="text-input-level1">
                                     <TextareaAutosize
                                         placeholder="Hãy nhập nội dung hoạt động"
@@ -751,56 +795,45 @@ class ActionTab extends Component {
                                         ref={input => this.contentAction[0] = input} />
                                 </div>
                                 
-                                <div className="tool-level2">
-                                    <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
-                                        {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                            rows={this.state.rows}
-                                            value={this.state.value}
-                                            
-                                            className={'textarea'}
-                                            onChange={this.handleChange}
-                                            style={{ width: '100%', height: "auto", fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
-                                            ref={input => this.contentAction[0] = input} />  */}
+                                <div className="tool-level1">
+                                    <div className="pull-right">
+                                        <a href="#" className="link-black text-sm" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
+                                    </div>
                                     
-                                
-                                
-                                    {this.state.files.length > 0 ?
-                                    <div className='files-list'>
-                                        <ul style={{listStyle: 'none',marginLeft:'25px'}}>{this.state.files.map((file) =>
-                                            <li className='files-list-item' key={file.id}>
-                                                <div className='files-list-item-preview' style={{width:"92%"}}>
-                                                {file.preview.type === 'image' ?  
-                                                <React.Fragment>
-                                                    <img className='files-list-item-preview-image' style={{width:"20%"}} src={file.preview.url} />
-                                                </React.Fragment>    
-                                                : 
-                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                    <a href="#" className="pull-right btn-box-tool" onClick={this.filesRemoveOne.bind(this, file)}><i className="fa fa-times"></i></a>
-                                                </div>
-                                                <div className='files-list-item-content'>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
-                                                </div>
-                                            </li>
-                                        )}
-                                        </ul>
-                                    </div>:null} 
-                                    <div className="files col-xs-1" style={{}}>
-                                        <Files
-                                        ref='files'
+                                    <Files
+                                        ref='filesAddAction'
                                         className='files-dropzone-list'
-                                        style={{ height: '20px' }}
                                         onChange={this.onFilesChange}
                                         onError={this.onFilesError}
                                         multiple
                                         maxFiles={10}
                                         maxFileSize={10000000}
                                         minFileSize={0}
-                                        clickable
-                                        >
-                                        <button className="btn btn-primary" style={{marginLeft:"50px"}}>Upload file</button>
-                                        </Files>
-                                    </div>   
+                                        clickable={false}>
+
+                                        <a href="#" className="link-black text-sm" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>Chọn file</a>
+                                        <div className='files-list'>
+                                            <span>Drop files here</span>
+                                            <ul>{this.state.files.map((file) =>
+                                                <li className='files-list-item' key={file.id}>
+                                                    <div className='files-list-item-preview'>
+                                                    {file.preview.type === 'image' ?  
+                                                    <React.Fragment>
+                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
+                                                    </React.Fragment>    
+                                                    : 
+                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddAction.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                    </div>
+                                                    <div className='files-list-item-content'>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
+                                                    </div>
+                                                </li>
+                                            )}
+                                            </ul>
+                                        </div>
+                                    </Files>
                                     
                                 </div>
                             </React.Fragment>}
@@ -814,14 +847,13 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return (
                                     <div className="post clearfix"  key={item._id}>
-                                        <img className="user-img-level1" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
+                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
                                         
                                         { editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                         <React.Fragment>
                                             <p className="content-level1">
                                                 <a href="#">{item.creator.name} </a>
                                                 {item.content}
-
                                                 {item.creator._id === currentUser && 
                                                 <div className="btn-group dropleft pull-right">
                                                     <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
@@ -842,7 +874,7 @@ class ActionTab extends Component {
 
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
                                             </ul>
                                         </React.Fragment>
@@ -871,7 +903,7 @@ class ActionTab extends Component {
                                             <div className="comment-content-child">
                                                 {item.comments.map(child => {
                                                     return <div key={child._id}>
-                                                        <img className="user-img-level2" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
+                                                        <img className="user-img-level2" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
                                                         
                                                         {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                         <div>
@@ -924,7 +956,7 @@ class ActionTab extends Component {
                                                 }
                                                 {/*Thêm bình luận cho bình luận */}
                                                 <div>
-                                                    <img className="user-img-level2" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="user avatar"/>
+                                                    <img className="user-img-level2" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"/>
                                                     <div className="text-input-level2" >
                                                         <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment" ref={input => this.contentCommentOfTaskComment[item._id] = input} />
                                                     </div>
@@ -941,7 +973,7 @@ class ActionTab extends Component {
                             }
 
                             {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="User Image" />
+                            <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="User Image" />
                             <div className="text-input-level1">
                                 <textarea placeholder="Hãy nhập nội dung trao đổi" ref={input => this.contentTaskComment[0] = input} />
                             </div>
@@ -959,7 +991,7 @@ class ActionTab extends Component {
                             {/* </div> */}
                         </div>
 
-                        
+
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
 
@@ -971,7 +1003,7 @@ class ActionTab extends Component {
                                     logTimer &&
                                     logTimer.map(item =>
                                         <li className="list-log-timer" key={item._id}>
-                                            <p style={{ fontSize: "15px" }}>{item.creator.name} : Bắt đầu: {moment(item.startedAt, "x").format("DD MMM YYYY hh:mm a")} - Kết thúc: {moment(item.stoppedAt).format("DD MMM YYYY hh:mm a")} Thời gian làm việc: {moment.utc(item.duration, "x").format('HH:mm:ss')} </p>
+                                            <p style={{ fontSize: "13px" }}><a href="#">{item.creator.name}</a> : {moment(item.startedAt, "x").format("DD MMM YYYY HH:mm")} - {moment(item.stoppedAt).format("DD MMM YYYY HH:mm ")} - {moment.utc(item.duration, "x").format('HH:mm:ss')} - Mô tả: {item.description} </p>
                                         </li>)
                                 }
                             </ul>
@@ -984,8 +1016,8 @@ class ActionTab extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, } = state;
-    return { tasks, performtasks, user, };
+    const { tasks, performtasks, user,auth } = state;
+    return { tasks, performtasks, user,auth };
 }
 
 const actionCreators = {
