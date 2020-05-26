@@ -189,7 +189,7 @@ class DetailTaskTab extends Component {
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p>
                         <p><strong>Trạng thái công việc:</strong> {task && task.status}</p>
-                        <p><strong>Thời gian thực hiện:</strong> {}</p>
+                        <p><strong>Thời gian thực hiện:</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         {/* </div>
                                 <hr />
                             </div>
@@ -423,6 +423,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Chỉnh sửa công việc với vai trò người thực hiện'
+                        perform={`edit-${this.props.role}`}
                     />
                 }
 
@@ -432,6 +433,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Chỉnh sửa công việc với vai trò người phê duyệt'
+                        perform={`edit-${this.props.role}`}
                     />
                 }
 

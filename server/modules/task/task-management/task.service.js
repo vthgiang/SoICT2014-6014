@@ -23,7 +23,7 @@ exports.getTask = async (id) => {
     var task = await Task.findById(id).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"}

@@ -9,7 +9,9 @@ import { TaskInformationForm } from './taskInformationForm';
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            info: {}
+        }
     }
     
     componentWillMount() {
@@ -99,12 +101,16 @@ class EvaluateByAccountableEmployee extends Component {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -114,12 +120,16 @@ class EvaluateByAccountableEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -140,7 +150,7 @@ class EvaluateByAccountableEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -156,12 +166,16 @@ class EvaluateByAccountableEmployee extends Component {
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -222,7 +236,7 @@ class EvaluateByAccountableEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -340,6 +354,7 @@ class EvaluateByAccountableEmployee extends Component {
                             // errorOnTextInfo={errorOnTextInfo}
                             // errorOnNumberInfo={errorOnNumberInfo}
                             
+                            perform={this.props.perform}
                             value={this.state}
                         />
                         

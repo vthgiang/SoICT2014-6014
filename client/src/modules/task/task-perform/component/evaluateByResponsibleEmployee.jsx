@@ -18,6 +18,7 @@ class EvaluateByResponsibleEmployee extends Component {
         super(props);
         this.state={
             idUser: idUser ,
+            info: {}
             // progress:89,
             // "p1" : {
             //     value: ['SSD'],
@@ -98,12 +99,16 @@ class EvaluateByResponsibleEmployee extends Component {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -113,12 +118,16 @@ class EvaluateByResponsibleEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -127,7 +136,7 @@ class EvaluateByResponsibleEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -143,7 +152,7 @@ class EvaluateByResponsibleEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -156,12 +165,16 @@ class EvaluateByResponsibleEmployee extends Component {
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -311,7 +324,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             // errorOnInfoDate={errorOnInfoDate}
                             // errorOnTextInfo={errorOnTextInfo}
                             // errorOnNumberInfo={errorOnNumberInfo}
-
+                            perform={this.props.perform}
                             value={this.state}
                         />
                         

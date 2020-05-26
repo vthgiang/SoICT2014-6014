@@ -8,7 +8,9 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            info: {}
+        }
     }
     
     componentWillMount() {
