@@ -4,6 +4,9 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
+import { TaskInformationForm } from './taskInformationForm';
+import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
+import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 
 
 class ModalEditTaskByResponsibleEmployee extends Component {
@@ -17,14 +20,161 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let { tasks } = this.props;
 
         let task = (tasks && tasks.task) && tasks.task.info;
-        let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
+        // let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
         // let taskInformation = task && task.taskInformations;
 
         this.state = {
             userId: userId,
             task: task,
-            taskInformation: taskInformation,
+            // taskInformation: taskInformation,
         }
+    }
+
+    // ==============================BEGIN HANDLE TASK INFORMATION===================================
+
+    handleChangeProgress = async (e) => {
+        var value = parseInt(e.target.value);
+        await this.setState(state =>{
+            return {
+                ...state,
+                progress: value,
+                errorOnProgress: this.validatePoint(value)
+            }
+        })
+        document.getElementById("autoPoint").innerHTML = value;
+    } 
+    
+    handleChangeNumberInfo = async (e) => {
+        var value = parseInt(e.target.value);
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                },
+                errorOnNumberInfo: this.validateNumberInfo(value)
+            }
+        })
+    } 
+
+    handleChangeTextInfo = async (e) => {
+        var value = e.target.value;
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                },
+                errorOnTextInfo: this.validateTextInfo(value)
+            }
+        })
+    }
+    
+    handleInfoDateChange = (value, code) => {
+        console.log('value', value);
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+                errorOnInfoDate: this.validateDate(value),
+                // infoDate: value,
+            }
+        });
+    }
+
+    handleSetOfValueChange = async (value, code) => {
+        console.log('value', value);
+
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    handleInfoBooleanChange  = (event) => {
+        var {name, value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                }
+                // errorOnInfoBoolean: this.validateInfoBoolean(value)
+            }
+        });
+    }
+
+    
+    validateInfoBoolean = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.indexOf("") !== -1) {
+            msg = "Giá trị bắt buộc phải chọn";
+        }
+        
+        return msg;
+    }
+    
+    validateTextInfo = (value) =>{
+        let msg = undefined;
+        if(value === ""){
+            msg = "Giá trị không được để trống"
+        }
+        return msg;
+    }
+
+    validateNumberInfo = (value) => {
+        var { translate } = this.props;
+        let msg = undefined;
+        
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        return msg;
+    }
+    
+    // ==============================END HANDLE TASK INFORMATION===================================
+
+    handleKpiChange =(value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                kpi: value
+            }
+        });
+    }
+
+    validatePoint = (value) => {
+        var { translate } = this.props;
+        let msg = undefined;
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
+        }
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        return msg;
+    }
+
+    validateDate = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.trim() === "") {
+            msg = "Ngày đánh giá bắt buộc phải chọn";
+        }
+        
+        return msg;
     }
 
     handleTaskNameChange = event => {
@@ -71,38 +221,38 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskProgressChange = event => {
-        let value = event.target.value;
-        this.validateTaskProgress(value, true);
-    }
+    // handleTaskProgressChange = event => {
+    //     let value = event.target.value;
+    //     this.validateTaskProgress(value, true);
+    // }
 
-    validateTaskProgress = (value, willUpdateState) => {
-        let errorMessage = undefined;
-        if (value === "") {
-            errorMessage = "Hãy nhập mức độ hoàn thành công việc";
-        }
-        if (value !== undefined && isNaN(value)) {
-            errorMessage = "Mức độ hoàn thành phải có định dạng number";
-        }
-        if (value < 0 || value > 100) {
-            errorMessage = "Mức độ hoàn thành phải trong khoảng 0 - 100";
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    taskProgress: value,
-                    errorTaskProgress: errorMessage,
-                }
-            })
-        }
-        return errorMessage === undefined;
-    }
+    // validateTaskProgress = (value, willUpdateState) => {
+    //     let errorMessage = undefined;
+    //     if (value === "") {
+    //         errorMessage = "Hãy nhập mức độ hoàn thành công việc";
+    //     }
+    //     if (value !== undefined && isNaN(value)) {
+    //         errorMessage = "Mức độ hoàn thành phải có định dạng number";
+    //     }
+    //     if (value < 0 || value > 100) {
+    //         errorMessage = "Mức độ hoàn thành phải trong khoảng 0 - 100";
+    //     }
+    //     if (willUpdateState) {
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 taskProgress: value,
+    //                 errorTaskProgress: errorMessage,
+    //             }
+    //         })
+    //     }
+    //     return errorMessage === undefined;
+    // }
 
     isFormValidated = () => {
         return this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
-            && this.validateTaskProgress(this.state.taskProgress, false);
+            // && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
     save = () => {
@@ -111,12 +261,37 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     componentDidMount() {
         this.props.getTaskById(this.props.id);
+        this.props.getKPIMemberById(this.state.userId);
+        this.props.getAllKPIPersonalByUserID(this.state.userId);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        console.log('PARENT nextProps, prevState', nextProps, prevState);
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                // TODO: ve sau can sửa
+                id: nextProps.id,
+                // kpi: nextProps.kpi,
+                // date: nextProps.date,
+                // point: nextProps.point,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined
+            } 
+        } else {
+            return null;
+        }
     }
 
     render() {
-        const {task, taskInformation } = this.state;
-        const { errorTaskName, errorTaskDescription, errorTaskProgress } = this.state;
-
+        const { kpimembers, KPIPersonalManager } = this.props
+        const {task, taskName, taskDescription, kpi} = this.state;
+        const { errorTaskName, errorTaskDescription } = this.state;
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
+        // console.log('listKPI', listKpi);
         return (
             <div>
                 <React.Fragment>
@@ -137,28 +312,63 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     {/*Input for task name*/}
                                     <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
                                         <label>Tên công việc<span className="text-red">*</span></label>
-                                        <input type="text"
-                                               value={this.state.taskName !== undefined ? this.state.taskName : task && task.name}
-                                               className="form-control" onChange={this.handleTaskNameChange}/>
+                                        <input 
+                                            type="text"
+                                            value={this.state.taskName !== undefined ? this.state.taskName : task && task.name}
+                                            className="form-control" 
+                                            onChange={this.handleTaskNameChange}
+                                        />
                                         <ErrorLabel content={errorTaskName}/>
                                     </div>
                                     {/*Input for task description*/}
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>Mô tả công việc<span className="text-red">*</span></label>
-                                        <input type="text"
-                                               value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
-                                               className="form-control" onChange={this.handleTaskDescriptionChange}/>
+                                        <input 
+                                            type="text"
+                                            value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
+                                            className="form-control" onChange={this.handleTaskDescriptionChange}
+                                        />
                                         <ErrorLabel content={errorTaskDescription}/>
                                     </div>
                                 </div>
-                            </fieldset>
+                            
+                                {/*KPI related*/}
 
-                            {/*Thông tin chi tiết*/}
+                                <div className="form-group">
+                                    <label>Liên kết KPI:</label>
+                                    {
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id={`select-kpi-personal-edit-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
+                                            onChange={this.handleKpiChange}
+                                            multiple={true}
+                                            value={kpi}
+                                        />
+                                    }
+                                </div>
+                            </fieldset>
+                            <TaskInformationForm
+                                task = { task && task }
+
+                                handleChangeProgress={this.handleChangeProgress}
+                                handleInfoBooleanChange={this.handleInfoBooleanChange}
+                                handleInfoDateChange={this.handleInfoDateChange}
+                                handleSetOfValueChange={this.handleSetOfValueChange}
+                                handleChangeNumberInfo={this.handleChangeNumberInfo}
+                                handleChangeTextInfo={this.handleChangeTextInfo}
+
+                                value={this.state}
+                            
+                            />
+
+                            {/* Thông tin chi tiết
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin chi tiết</legend>
                                 <div>
-                                    {/*Mức độ hoàn thành*/}
+                                    Mức độ hoàn thành
                                     <div className={`form-group ${errorTaskProgress === undefined ? "" : "has-error"}`}>
                                         <label>Mức độ hoàn thành</label>
                                         <input type="text"
@@ -167,7 +377,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                         <ErrorLabel content={errorTaskProgress}/>
                                     </div>
 
-                                    {/*Task information*/}
+                                    Task information
                                     {
                                         (taskInformation != null && taskInformation.length !== 0) && taskInformation.map((info, index) => {
                                             return <div
@@ -182,25 +392,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     }
 
 
-                                </div>
-
-                                {/*KPI related*/}
-                                <div className="form-group">
-                                    <label>Liên kết KPI</label>
-                                    {
-                                        <SelectBox
-                                            id={`select-kpi-personal`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items = {[]}
-                                            onChange=""
-                                            multiple={true}
-                                            value=""
-                                        />
-                                    }
-                                </div>
-                            </fieldset>
-
+                                </div> */}
+                            
+                                
+                            {/* </fieldset> */}
+                            <div style={{display: 'none'}}>
+                                <span id='autoPoint'></span>
+                            </div>
 
                         </form>
                     </DialogModal>
@@ -211,12 +409,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks } = state;
-    return { tasks };
+    const { tasks, kpimembers, KPIPersonalManager } = state;
+    return { tasks, kpimembers, KPIPersonalManager };
 }
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
+    getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));

@@ -103,7 +103,7 @@ class EvaluateByConsultedEmployee extends Component {
                             {/* TODO: sửa lấy theo tháng đúng tháng đánh giá hiện tại theo Date */}
 
                             {
-                                (task.evaluations.length !== 0 ) ?
+                                (task.evaluations.length !== 0 ) &&
                                 <div >
                                     {
                                          (task.evaluations[task.evaluations.length-1].taskInformations.length !== 0) &&
@@ -120,17 +120,17 @@ class EvaluateByConsultedEmployee extends Component {
                                             {
                                                 task.evaluations[task.evaluations.length-1].taskInformations.map(info => {
                                                     return <div>
-                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value}</p>
+                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
                                                         {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
                                             }
                                         </div> 
                                         }
-                                        {
+                                        {/* {
                                             (task.evaluations[task.evaluations.length-1].taskInformations.length === 0) &&
-                                            <div><i style={{ /*color: "red", fontWeight: "bold" */}}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
-                                        }
+                                            <div><i style={{ color: "red", fontWeight: "bold" }}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
+                                        } */}
                                     
                                     <br/>
                                     {
@@ -149,7 +149,8 @@ class EvaluateByConsultedEmployee extends Component {
                                         </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá </p></div>
                                     }
                                     
-                                </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
+                                </div> 
+                                // : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
                             }
                         </fieldset>
                     </form>
