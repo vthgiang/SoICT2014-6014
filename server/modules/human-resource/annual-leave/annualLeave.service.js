@@ -6,18 +6,19 @@ const { Employee, AnnualLeave} = require('../../../models').schema;
  * @data: dữ liệu key tìm kiếm
  * @company: id công ty người dùng
  */ 
-exports.searchAnnualLeaves = async (data, company) => {
+exports.searchAnnualLeaves = async (params, company) => {
     let keySearchEmployee, keySearch = {company: company};
+    console.log(params);
 
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
-    if (data.organizationalUnit !== null) {
-        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
+    if (params.organizationalUnit !== undefined) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
 
     //Bắt sựu kiện MSNV tìm kiếm khác ""
-    if (data.employeeNumber !== "") {
-        keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
+    if (params.employeeNumber !== undefined && params.employeeNumber.length !==0) {
+        keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: params.employeeNumber, $options: "i"}}
     }
     if (keySearchEmployee !== undefined) {
         var employeeinfo = await Employee.find(keySearchEmployee);
@@ -26,20 +27,20 @@ exports.searchAnnualLeaves = async (data, company) => {
     }
 
     //Bắt sựu kiện trạng thái tìm kiếm khác null
-    if (data.status !== null) {
-        keySearch = {...keySearch, status: {$in: data.status}}
+    if (params.status !== undefined) {
+        keySearch = {...keySearch, status: {$in: params.status}}
     };
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "" && data.month !==null) {
-        var date = new Date(data.month);
+    if (params.month !== undefined && params.month.length !== 0) {
+        var date = new Date(params.month);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         keySearch = {...keySearch,"$or": [{startDate: {"$gt": firstDay, "$lte": lastDay}}, {endDate: {"$gt": firstDay, "$lte": lastDay}}]}
     };
     var totalList = await AnnualLeave.count(keySearch);
     var listAnnualLeaves = await AnnualLeave.find(keySearch).populate({ path: 'employee', model: Employee })
-        .sort({ 'createdAt': 'desc' }).skip(data.page).limit(data.limit);
+        .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
     for (let n in listAnnualLeaves) {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listAnnualLeaves[n].employee.emailInCompany);
         listAnnualLeaves[n] = {...listAnnualLeaves[n]._doc, ...value }
@@ -57,16 +58,12 @@ exports.createAnnualLeave = async (data, company) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
     var employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company }, { _id: 1, emailInCompany: 1 });
     if(employeeInfo!==null){
-        var partStart = data.startDate.split('-');
-        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-        var partEnd = data.endDate.split('-');
-        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         // Tạo mới thông tin nghỉ phép vào database
         var createAnnualLeave = await AnnualLeave.create({
             employee: employeeInfo._id,
             company: company,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: data.startDate,
+            endDate: data.endDate,
             status: data.status,
             reason: data.reason,
         });
@@ -98,17 +95,13 @@ exports.updateAnnualLeave = async (id, data) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
     var employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber }, { _id: 1, emailInCompany: 1 });
     if(employeeInfo!==null){
-        var partStart = data.startDate.split('-');
-        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-        var partEnd = data.endDate.split('-');
-        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         var AnnualLeaveChange = {
-            employee: employeeInfo._id,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: data.startDate,
+            endDate: data.endDate,
             status: data.status,
             reason: data.reason,
         };
+
         // Cập nhật thông tin nghỉ phép vào database
         await AnnualLeave.findOneAndUpdate({ _id: id }, { $set: AnnualLeaveChange });
         

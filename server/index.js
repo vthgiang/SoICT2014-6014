@@ -15,7 +15,7 @@ const auth = require('./modules/auth/auth.route');
 
 const documents = require('./modules/document/document.route');
 
-const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
+const annualLeaves = require('./modules/human-resource/annual-leave/annualLeave.route');
 const commendation = require('./modules/human-resource/commendation/commendation.route');
 const discipline = require('./modules/human-resource/discipline/discipline.route');
 const holiday = require('./modules/human-resource/holiday/holiday.route');
@@ -116,7 +116,7 @@ app.use("/auth", auth);
 
 app.use("/documents", documents);
 
-app.use("/sabbatical", annualLeave);
+app.use("/annualLeaves", annualLeaves);
 app.use("/praise", commendation);
 app.use("/discipline", discipline);
 app.use("/holiday",holiday);

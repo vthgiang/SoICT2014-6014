@@ -115,7 +115,7 @@ class AnnualLeaveManagement extends Component {
         } else if (this.state.month === "-") {
             await this.setState({
                 ...this.state,
-                month: null
+                month: ""
             })
         }
         this.props.searchAnnualLeaves(this.state);
@@ -277,7 +277,7 @@ class AnnualLeaveManagement extends Component {
                                                 content={translate('human_resource.annual_leave.delete_annual_leave')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")
+                                                    info: this.formatDate(x.startDate).replace(/-/gi, "/") + " - " + this.formatDate(x.startDate).replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteAnnualLeave}
                                             />

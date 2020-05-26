@@ -108,7 +108,7 @@ class SalaryManagement extends Component {
         } else if (this.state.month === "-") {
             await this.setState({
                 ...this.state,
-                month: null
+                month: ""
             })
         }
         this.props.searchSalary(this.state);
