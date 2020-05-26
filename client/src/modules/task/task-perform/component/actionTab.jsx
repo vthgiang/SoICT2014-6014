@@ -611,7 +611,7 @@ class ActionTab extends Component {
                                             <div>{item.files.length>0?item.files[0].url:null}</div>
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
                                                 {(item.creator === undefined && this.props.role ==="responsible") &&
                                                 <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
@@ -625,15 +625,19 @@ class ActionTab extends Component {
                                                             {item.evaluations.some(checkUserId)=== true ?
                                                                 <React.Fragment>
                                                                     {item.evaluations.map(element => {
-                                                                        if(task){
-                                                                            if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
-                                                                                return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
-                                                                            }else{
-                                                                                return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
-                                                                            }
+                                                                    if(task){
+                                                                        if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                            return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
                                                                         }
-
-                                                                    })}
+                                                                    }
+                                                                })}
+                                                                {item.evaluations.map(element => {
+                                                                    if(task){
+                                                                        if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)){
+                                                                            return <div> {element.creator.name} đánh giá {element.rating}/10 </div>
+                                                                        }
+                                                                    }
+                                                                })}
                                                                 </React.Fragment>:
                                                                 <React.Fragment>
                                                                     <Rating
@@ -752,7 +756,6 @@ class ActionTab extends Component {
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
                                                                 <div className="tool-level2">
-                                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
                                                                 </div>
                                                             </div>
                                                         }
@@ -770,7 +773,7 @@ class ActionTab extends Component {
                                                     </div>
                                                     <div className="tool-level2">
                                                         <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitComment(e, item._id, item._id, task._id)}>Gửi bình luận</a>
-                                                        <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -851,7 +854,6 @@ class ActionTab extends Component {
                                             <p className="content-level1">
                                                 <a href="#">{item.creator.name} </a>
                                                 {item.content}
-
                                                 {item.creator._id === currentUser && 
                                                 <div className="btn-group dropleft pull-right">
                                                     <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
@@ -872,7 +874,7 @@ class ActionTab extends Component {
 
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
                                             </ul>
                                         </React.Fragment>
