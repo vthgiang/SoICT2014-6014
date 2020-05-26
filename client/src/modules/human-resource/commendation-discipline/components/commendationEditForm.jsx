@@ -97,7 +97,7 @@ class PraiseEditForm extends Component {
      * Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
      */
     isFormValidated = () => {
-        let result = this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validateType(this.state.reason, false) &&
+        let result = this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validateType(this.state.type, false) &&
             this.validateReason(this.state.reason, false) && this.validateStartDate(this.state.startDate, false);
         return result;
     }

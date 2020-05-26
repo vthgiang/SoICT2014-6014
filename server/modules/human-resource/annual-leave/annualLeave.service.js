@@ -10,13 +10,13 @@ exports.searchAnnualLeaves = async (params, company) => {
     let keySearchEmployee, keySearch = {company: company};
     console.log(params);
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác null 
+    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
     if (params.organizationalUnit !== undefined) {
         let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
 
-    //Bắt sựu kiện MSNV tìm kiếm khác ""
+    //Bắt sựu kiện MSNV tìm kiếm khác "", undefined
     if (params.employeeNumber !== undefined && params.employeeNumber.length !==0) {
         keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: params.employeeNumber, $options: "i"}}
     }
@@ -26,12 +26,12 @@ exports.searchAnnualLeaves = async (params, company) => {
         keySearch = {...keySearch, employee: {$in: employee}}
     }
 
-    //Bắt sựu kiện trạng thái tìm kiếm khác null
+    //Bắt sựu kiện trạng thái tìm kiếm khác undefined
     if (params.status !== undefined) {
         keySearch = {...keySearch, status: {$in: params.status}}
     };
 
-    //Bắt sựu kiện tháng tìm kiếm khác ""
+    //Bắt sựu kiện tháng tìm kiếm khác "", undefined
     if (params.month !== undefined && params.month.length !== 0) {
         var date = new Date(params.month);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
