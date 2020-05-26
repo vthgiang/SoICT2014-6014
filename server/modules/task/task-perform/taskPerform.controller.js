@@ -64,7 +64,6 @@ exports.startTimesheetLog = async (req, res) => {
 
 // Kết thúc bấm giờ
 exports.stopTimesheetLog = async (req, res) => {
-    console.log("hihihi")
     try {
         console.log(req.body)
         var timer = await PerformTaskService.stopTimesheetLog(req.body);
@@ -210,9 +209,13 @@ exports.getTaskActions = async (req, res) => {
 }
 
 exports.createTaskAction = async (req,res) => {
-    
     try {
-        var taskAction = await PerformTaskService.createTaskAction(req.body);
+        var files;
+        console.log(req.files)
+        // if(req.files !== undefined){
+        //     var path = req.files.destination +'/'+ req.files.filename;
+        //     files = path.substr(1, path.length)}
+        var taskAction = await PerformTaskService.createTaskAction(req.body,files);
         await LogInfo(req.user.email, ` create task action  `,req.user.company)
         res.status(200).json({
             success: true,

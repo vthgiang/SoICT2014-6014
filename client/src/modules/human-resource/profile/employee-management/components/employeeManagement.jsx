@@ -13,7 +13,7 @@ class EmployeeManagement extends Component {
         this.state = {
             position: null,
             gender: null,
-            employeeNumber: "",
+            employeeNumber: null,
             organizationalUnit: null,
             status: null,
             page: 0,

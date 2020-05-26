@@ -13,9 +13,17 @@ export const EmployeeService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/paginate`,
-        method: 'POST',
-        data: data,
+        url: `${ LOCAL_SERVER_API }/employees`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            gender: data.gender,
+            status: data.status,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.profile.employee_management');
 }
 
@@ -33,14 +41,12 @@ function addNewEmployee(data) {
 
 /**
  * Cập nhật thông tin nhân viên theo id
- * @param {*} id 
- * @param {*} data 
+ * @param {*} id : id thông tin nhân viên cần chỉnh sửa
+ * @param {*} data :dữ liệu chỉnh sửa thông tin nhân viên
  */
 function updateInformationEmployee(id, data) {
-    console.log(data);
-    console.log(id);
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/update/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'PUT',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');

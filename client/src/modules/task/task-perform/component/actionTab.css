@@ -1,0 +1,148 @@
+.post.clearfix{
+    border: none;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.user-img-level1{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.content-level1{
+    background-color: #e2e0ff;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    margin-left: 50px;
+    margin-top: -40px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
+}
+
+.tool-level1{
+    margin-left: 55px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.text-input-level1{
+    margin-left: 50px;
+    margin-top: -40px;
+    margin-right: 20px;
+}
+
+.text-input-level1 textarea{
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    background-color: #e2e0ff;
+    padding: 5px 10px;
+
+    width: 100%;
+    height: auto;
+    font-size: 13px;
+
+    border: 1px solid #989da5;
+}
+
+
+
+
+
+
+
+.user-img-level2{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 50px;
+}
+
+.content-level2{
+    background-color: #f2f3f5;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    margin-left: 90px;
+    margin-top: -30px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
+}
+
+.tool-level2{
+    margin-left: 100px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.text-input-level2{
+    margin-left: 90px;
+    margin-top: -30px;
+    margin-right: 20px;
+}
+
+.text-input-level2 textarea{
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    background-color: #f2f3f5;
+    padding: 5px 10px;
+
+    width: 100%;
+    height: auto;
+    font-size: 13px;
+
+    border: 1px solid #ccd0d5;
+}
+
+
+
+
+
+
+
+.content-level1 .btn-group, .content-level2 .btn-group{
+    position: absolute;
+    margin: 0;
+    top: calc(50% - 15px);
+    right: -35px;
+}
+
+.btn-group.open .dropdown-toggle, .btn-group .dropdown-toggle{
+    background-color: transparent;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.dropdown-item {
+    background-color: none;
+    border: none;
+    width: 100%;
+    right: 5px;
+}
+
+.content-level1 .dropdown-menu, .content-level2 .dropdown-menu{
+    right: 10px;
+
+    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+}

@@ -150,11 +150,12 @@ class CertificateTab extends Component {
                                             <td>{x.year}</td>
                                             <td>{translate(`manage_employee.${x.degreeType}`)}</td>
                                             <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
-                                                <a className='intable' href="/images/myw3schoolsimage.jpg" download={x.name}>
-                                                   <i className="fa fa-download"> &nbsp;Download!</i>
+                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
+                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
-                                            }
-                                            </td>
+                                            }</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_diploma')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
@@ -189,8 +190,13 @@ class CertificateTab extends Component {
                                             <td>{x.issuedBy}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
+                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                             <td>
                                                 <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_certificate')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCertificate(index)}><i className="material-icons"></i></a>

@@ -1,0 +1,14 @@
+.timer.info-box {
+    margin: 0;
+    border: 3px solid #fff;
+    width: 250px;
+    height: 96px;
+
+    -webkit-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+    -moz-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+    box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+}
+
+.timer.info-box-icon {
+    background-color: #605ca8;
+}

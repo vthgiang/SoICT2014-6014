@@ -62,9 +62,13 @@ class CertificateTab extends Component {
                                             <td>{x.issuedBy}</td>
                                             <td>{x.year}</td>
                                             <td>{translate(`manage_employee.${x.degreeType}`)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
-                                                <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}
-                                            </td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable'
+                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                         </tr>
                                     ))
                                 }
@@ -89,15 +93,19 @@ class CertificateTab extends Component {
                             <tbody>
                                 {
                                     (typeof certificates === 'undefined' || certificates.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                    certificates.map((x, index) => (
+                                        certificates.map((x, index) => (
                                             <tr key={index}>
                                                 <td>{x.name}</td>
                                                 <td>{x.issuedBy}</td>
                                                 <td>{this.formatDate(x.startDate)}</td>
                                                 <td>{this.formatDate(x.endDate)}</td>
-                                                <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
-                                                    <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}
-                                                </td>
+                                                <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                    <a className='intable'
+                                                        href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                        download={x.name}>
+                                                        <i className="fa fa-download"> &nbsp;Download!</i>
+                                                    </a>
+                                                }</td>
                                             </tr>
                                         ))
                                 }
