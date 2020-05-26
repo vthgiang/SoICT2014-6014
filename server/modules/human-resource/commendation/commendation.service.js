@@ -102,8 +102,6 @@ exports.updateCommendation = async (id, data, company) => {
         var partStart = data.startDate.split('-');
         var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         var commendationChange = {
-            employee: employeeInfo._id,
-            decisionNumber: data.decisionNumber,
             organizationalUnit: data.organizationalUnit,
             startDate: startDate,
             type: data.type,

@@ -105,8 +105,6 @@ exports.updateDiscipline = async (id, data, company) => {
         var partEnd = data.endDate.split('-');
         var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         let DisciplineChange = {
-            employee: employeeInfo._id,
-            decisionNumber: data.decisionNumber,
             organizationalUnit: data.organizationalUnit,
             startDate: startDate,
             endDate: endDate,

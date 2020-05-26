@@ -17,9 +17,14 @@ export const CourseService = {
  */
 function getListCourse(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/paginate`,
-        method: 'POST',
-        data: data,
+        url: `${ LOCAL_SERVER_API }/courses`,
+        method: 'GET',
+        params: {
+            courseId: data.courseId,
+            type: data.type,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'training.course');
 }
 
@@ -29,7 +34,7 @@ function getListCourse(data) {
  */
 function createNewCourse(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/`,
+        url: `${ LOCAL_SERVER_API }/courses/`,
         method: 'POST',
         data: data,
     }, true, true, 'training.course');
@@ -42,7 +47,7 @@ function createNewCourse(data) {
 // 
 function deleteCourse(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/${id}`,
+        url: `${ LOCAL_SERVER_API }/courses/${id}`,
         method: 'DELETE',
     }, true, true, 'training.course');
 }
@@ -54,8 +59,8 @@ function deleteCourse(id) {
  */
 function updateCourse(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/course/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/courses/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'training.course');
 }

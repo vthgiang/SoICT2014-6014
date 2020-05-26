@@ -19,7 +19,7 @@ exports.searchCourses = async (data, company) => {
         }
     }
     // Bắt sựu kiện mã khoá đào tạo khác ""
-    if (data.courseId !== "") {
+    if (data.courseId !== undefined && data.courseId.length !==0) {
         keySearch = {
             ...keySearch,
             courseId: {
@@ -29,7 +29,7 @@ exports.searchCourses = async (data, company) => {
         }
     }
     // Bắt sựu kiện loại đào tạo khác null
-    if (data.type !== null) {
+    if (data.type !== undefined) {
         keySearch = {
             ...keySearch,
             type: data.type

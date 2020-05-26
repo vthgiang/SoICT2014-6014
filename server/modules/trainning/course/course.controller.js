@@ -9,7 +9,13 @@ const {
  */
 exports.searchCourses = async (req, res) => {
     try {
-        var listCourses = await CourseService.searchCourses(req.body, req.user.company._id);
+        params = {
+            courseId: req.query.courseId,
+            type: req.query.type,
+            page: req.query.page !==undefined ? Number(req.query.page) : 0,
+            limit: req.query.limit !==undefined ? Number(req.query.limit) :100,
+        }
+        var listCourses = await CourseService.searchCourses(params, req.user.company._id);
         await LogInfo(req.user.email, 'GET_LIST_COURSE', req.user.company);
         res.status(200).json({ success: true, messages:["get_list_course_success"], content: listCourses});
     } catch (error) {
