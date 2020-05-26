@@ -13,9 +13,17 @@ export const EmployeeService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/paginate`,
-        method: 'POST',
-        data: data,
+        url: `${ LOCAL_SERVER_API }/employees`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            gender: data.gender,
+            status: data.status,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.profile.employee_management');
 }
 
@@ -40,7 +48,7 @@ function updateInformationEmployee(id, data) {
     console.log(data);
     console.log(id);
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/update/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'PUT',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
