@@ -117,6 +117,11 @@
 
 
 
+.content-level1 > a, .content-level2 > a{
+    font-weight: 700;
+}
+
+
 
 
 .content-level1 .btn-group, .content-level2 .btn-group{
@@ -132,7 +137,7 @@
     -webkit-box-shadow: none;
 }
 
-.dropdown-item {
+.content-level1 .dropdown-item, .content-level2 .dropdown-item{
     background-color: none;
     border: none;
     width: 100%;
