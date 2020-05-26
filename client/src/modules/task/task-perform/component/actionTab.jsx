@@ -939,18 +939,27 @@ class ActionTab extends Component {
                                     )
                                 }) : null
                             }
+
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="User Image" />
                             <div className="text-input-level1">
-                                <textarea placeholder="Hãy nhập nội dung hoạt động" ref={input => this.contentTaskComment[0] = input} />
+                                <textarea placeholder="Hãy nhập nội dung trao đổi" ref={input => this.contentTaskComment[0] = input} />
+                            </div>
+                            <div className="tool-level2">
+                                <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm trao đổi</a>
+                                <input type="file" name="file" onChange={this.onHandleChangeFile} />
                             </div>
                         </div>
+
+
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
                             {/* <div id="content"> */}
                             <input type="file" name="files[]" id="filer_input2" multiple="multiple" />
                             {/* </div> */}
                         </div>
+
+                        
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
 
