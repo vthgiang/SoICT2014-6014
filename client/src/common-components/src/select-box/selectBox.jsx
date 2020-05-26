@@ -9,7 +9,7 @@ class SelectBox extends Component {
     
 
     componentDidMount(){
-        const { id, onChange, options={} } = this.props;
+        const { id, onChange, options={minimumResultsForSearch: 15} } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
