@@ -90,9 +90,9 @@ exports.createCommentOfTaskAction = async (body) => {
             }
         )
         var task = await Task.findOne({"taskActions._id": body.taskActionId}).populate([
-            { path: "taskActions.creator", model: User,select: 'name email' },
-            { path: "taskActions.comments.creator", model: User, select: 'name email'},
-            { path: "taskActions.evaluations.creator", model: User, select: 'name email '}
+            { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
         ]).select("taskActions");
         return task.taskActions ;
 }
@@ -132,9 +132,9 @@ exports.editCommentOfTaskAction = async (params,body) => {
     //     },
     // ])
     var task = await Task.findOne({"taskActions.comments._id": params.id}).populate([
-        { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
     ]).select("taskActions")
     return task.taskActions;
 }
@@ -149,9 +149,9 @@ exports.deleteCommentOfTaskAction = async (params) => {
         { safe: true })
     
     var task = await Task.findOne({_id: params.task}).populate([
-        { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
         ]).select("taskActions");
     return task.taskActions ;    
 }
@@ -161,9 +161,9 @@ exports.deleteCommentOfTaskAction = async (params) => {
 exports.getTaskActions = async (taskId) => {
     //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
     var task = await Task.findOne({ _id: taskId }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email'},
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar'},
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
     
     return task.taskActions
  };
@@ -207,9 +207,9 @@ exports.createTaskAction = async (body,files) => {
     // ])
 
     var task = await Task.findOne({ _id: body.task }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
 
     return task.taskActions ;
 }
@@ -226,9 +226,9 @@ exports.editTaskAction = async (id,body) => {
         }
     )
     var task = await Task.findOne({ "taskActions._id": id }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}]) 
     return task.taskActions ;
 }
 
@@ -243,9 +243,9 @@ exports.deleteTaskAction = async (params) => {
         { $pull: { taskActions: { _id: params.id } } },
         { safe: true })  
     var task = await Task.findOne({ _id: params.task }).populate([
-    { path: "taskActions.creator", model: User,select: 'name email' },
-    { path: "taskActions.comments.creator", model: User, select: 'name email'},
-    { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])
+    { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
+    { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
+    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
 
     return task.taskActions ;
 }
@@ -399,9 +399,9 @@ exports.createTaskComment = async (body) => {
     var taskComment1 = await Task.findByIdAndUpdate(body.task,
         { $push: { taskComments: commentInformation } }, { new: true });
     var task = await Task.findOne({_id: body.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}]) 
     
      return task.taskComments;
 }
@@ -410,9 +410,9 @@ exports.createTaskComment = async (body) => {
 */
 exports.getTaskComments = async (params) => {
     var task = await Task.findOne({_id:params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])   
+        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])   
     return task.taskComments;
 }
 /**
@@ -429,9 +429,9 @@ exports.editTaskComment = async (params,body) => {
     )
 
     var task = await Task.findOne({"taskComments._id": params.id}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])    
+        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])    
     return task.taskComments;
 }
 /**
@@ -443,9 +443,9 @@ exports.deleteTaskComment = async (params) => {
         { $pull: { taskComments: { _id: params.id } } },
         { safe: true })   
     var task = await Task.findOne({_id: params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])  
+        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])  
     return task.taskComments;    
 }        
 /**
@@ -468,9 +468,9 @@ exports.createCommentOfTaskComment = async (body) => {
 
     
     var taskComment = await Task.findOne({"taskComments._id": body.id}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
     .select("taskComments");
 
     return taskComment.taskComments;
@@ -499,9 +499,9 @@ exports.editCommentOfTaskComment = async (params,body) => {
     )
     
     var taskComment = await Task.findOne({"taskComments.comments._id": body.id}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
     .select("taskComments");
     return taskComment.taskComments;
 }
@@ -516,9 +516,9 @@ exports.deleteCommentOfTaskComment = async (params) => {
         { safe: true })
 
      var taskComment = await Task.findOne({_id: params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
         .select("taskComments");
 
     return taskComment.taskComments;
@@ -563,9 +563,9 @@ exports.evaluationAction = async (id,body) => {
             }
     })
     var task = await Task.findOne({ "taskActions._id": id }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email ' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])
+        { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
     return task.taskActions;
 }
 /**
@@ -579,9 +579,9 @@ exports.confirmAction = async (id,idUser) => {
         }
     )  
     var task = await Task.findOne({ "taskActions._id": id }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email ' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email '}]) 
+        { path: "taskActions.creator", model: User,select: 'name email avatar ' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
     
     return task.taskActions;   
 }
