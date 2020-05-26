@@ -302,12 +302,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         const { errorTaskName, errorTaskDescription } = this.state;
         var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         // console.log('listKPI', listKpi);
+        console.log('this.props.perform',this.props.perform);
         return (
             <div>
                 <React.Fragment>
                     <DialogModal
                         size={75}
                         maxWidth={750}
+                        // modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
                         modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
                         formID={`form-edit-task-${this.props.role}-${this.props.id}`}
                         title={this.props.title}

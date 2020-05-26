@@ -92,7 +92,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
+        document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
     
     handleChangeNumberInfo = async (e) => {
@@ -257,7 +257,10 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined
             } 
         } else {
             return null;
@@ -266,7 +269,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
+        const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
 
@@ -276,7 +279,8 @@ class EvaluateByResponsibleEmployee extends Component {
         return (
             <React.Fragment>
             <DialogModal
-                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
+                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID={`form-evaluate-task-by-${this.props.role}`}
                 title={this.props.title}
                 func={this.save}
@@ -330,7 +334,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
                         <br/>
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>

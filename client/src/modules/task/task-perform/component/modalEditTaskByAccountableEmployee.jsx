@@ -41,7 +41,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
+        document.getElementById(`autoPoint`).innerHTML = value;
     } 
 
     handleChangeNumberInfo = async (e) => {
@@ -349,7 +349,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorTaskName: undefined,
+                errorTaskDescription: undefined 
+            
             } 
         } else {
             return null;
@@ -377,6 +380,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     <DialogModal
                         size={75}
                         maxWidth={750}
+                        // modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
                         modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
                         formID={`form-edit-task-${this.props.role}-${this.props.id}`}
                         title={this.props.title}

@@ -115,7 +115,7 @@ class DetailTaskTab extends Component {
                 showEndTask: id
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}`).modal('show');
+        window.$(`#modal-evaluate-task-by-${role}-${id}-stop`).modal('show');
 
     }
     
@@ -127,7 +127,7 @@ class DetailTaskTab extends Component {
                 showEvaluate: id
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}`).modal('show');
+        window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
     
@@ -144,13 +144,19 @@ class DetailTaskTab extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
+        var priority="";
+        if(task && task.priority === 3) priority ="Cao";
+        if(task && task.priority === 2) priority ="Trung bình";
+        if(task && task.priority === 1) priority ="Thấp";
+
+        // console.log(`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-evaluate`);
 
         return (
       
             <div>
                 <div style={{ marginLeft: "-10px" }}>
                     { (this.props.role === "responsible" || this.props.role === "accountable") && 
-                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
+                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                         </a>
                     }
@@ -162,11 +168,13 @@ class DetailTaskTab extends Component {
                     }
                     { (this.props.role === "consulted" || this.props.role === "responsible" || this.props.role === "accountable") &&
                         <React.Fragment>
-                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Kết thúc công việc">
+                            {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target={`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-stop`} data-backdrop="static" data-keyboard="false" title="Kết thúc công việc"> */}
+                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} title="Kết thúc công việc">
                                 <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
                             </a>
 
-                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
+                            {/* <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target={`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-evaluate`} data-backdrop="static" data-keyboard="false" title="Đánh giá công việc"> */}
+                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} title="Đánh giá công việc">
                                 <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
                             </a>
                         </React.Fragment>
@@ -187,7 +195,8 @@ class DetailTaskTab extends Component {
                 <div>
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
-                        <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p>
+                        {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
+                        <p><strong>Độ ưu tiên công việc:</strong> {priority}</p>
                         <p><strong>Trạng thái công việc:</strong> {task && task.status}</p>
                         <p><strong>Thời gian thực hiện:</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         {/* </div>
