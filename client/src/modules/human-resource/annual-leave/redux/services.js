@@ -13,9 +13,17 @@ export const AnnualLeaveService = {
  */ 
 function searchAnnualLeaves(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/sabbatical/paginate`,
-        method: 'POST',
-        data: data
+        url: `${ LOCAL_SERVER_API }/annualLeaves`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            month: data.month,
+            page: data.page,
+            status: data.status,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.annual_leave');
 }
 
@@ -25,7 +33,7 @@ function searchAnnualLeaves(data) {
  */
 function createAnnualLeave(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/sabbatical/create`,
+        url: `${ LOCAL_SERVER_API }/annualLeaves`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.annual_leave');
@@ -37,7 +45,7 @@ function createAnnualLeave(data) {
  */
 function deleteAnnualLeave(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
+        url: `${ LOCAL_SERVER_API }/annualLeaves/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.annual_leave');
 }
@@ -48,8 +56,8 @@ function deleteAnnualLeave(id) {
  */
 function updateAnnualLeave(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/annualLeaves/${id}`,
+        method: 'PATCH',
         data: data
     }, true, true, 'human_resource.annual_leave');
 }

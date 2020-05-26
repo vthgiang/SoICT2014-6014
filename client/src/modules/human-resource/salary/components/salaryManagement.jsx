@@ -97,6 +97,7 @@ class SalaryManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
+        console.log(this.state);
         if (this.state.month === null) {
             let partMonth = this.formatDate(Date.now(), true).split('-');
             let month = [partMonth[1], partMonth[0]].join('-');
@@ -104,9 +105,15 @@ class SalaryManagement extends Component {
                 ...this.state,
                 month: month
             })
+        } else if (this.state.month === "-") {
+            await this.setState({
+                ...this.state,
+                month: ""
+            })
         }
         this.props.searchSalary(this.state);
     }
+    
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number) => {
         await this.setState({
@@ -124,6 +131,7 @@ class SalaryManagement extends Component {
         this.props.searchSalary(this.state);
     }
     render() {
+        console.log(this.state);
         const { list } = this.props.department;
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();
@@ -156,7 +164,7 @@ class SalaryManagement extends Component {
                     <div className="form-inline">
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop:0 }}>
+                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: 0 }}>
                                 <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('human_resource.salary.add_import')}</a></li>
                                 <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>

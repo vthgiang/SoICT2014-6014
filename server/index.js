@@ -15,12 +15,12 @@ const auth = require('./modules/auth/auth.route');
 
 const documents = require('./modules/document/document.route');
 
-const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
+const annualLeaves = require('./modules/human-resource/annual-leave/annualLeave.route');
 const commendation = require('./modules/human-resource/commendation/commendation.route');
 const discipline = require('./modules/human-resource/discipline/discipline.route');
 const holiday = require('./modules/human-resource/holiday/holiday.route');
 const profile = require('./modules/human-resource/profile/profile.route');
-const salary = require('./modules/human-resource/salary/salary.route');
+const salaries = require('./modules/human-resource/salary/salary.route');
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -116,12 +116,12 @@ app.use("/auth", auth);
 
 app.use("/documents", documents);
 
-app.use("/sabbatical", annualLeave);
+app.use("/annualLeaves", annualLeaves);
 app.use("/praise", commendation);
 app.use("/discipline", discipline);
 app.use("/holiday",holiday);
 app.use("/employees", profile);
-app.use("/salary", salary);
+app.use("/salaries", salaries);
 
 app.use("/kpipersonals", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);
