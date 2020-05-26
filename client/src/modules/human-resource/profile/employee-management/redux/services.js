@@ -41,12 +41,10 @@ function addNewEmployee(data) {
 
 /**
  * Cập nhật thông tin nhân viên theo id
- * @param {*} id 
- * @param {*} data 
+ * @param {*} id : id thông tin nhân viên cần chỉnh sửa
+ * @param {*} data :dữ liệu chỉnh sửa thông tin nhân viên
  */
 function updateInformationEmployee(id, data) {
-    console.log(data);
-    console.log(id);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'PUT',

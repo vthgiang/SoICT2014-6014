@@ -556,148 +556,164 @@ class ActionTab extends Component {
                                 // Hiển thị hoạt động của công việc
                                 taskActions.map(item => {
                                     // if (item.parent === null)
-                                    return <div className="post clearfix"  key={item._id}>
+                                    return (
+                                    <div className="post clearfix"  key={item._id}>
                                         <img className="user-img-level1" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
-                                        <p className="content-level1">
-                                            <a href="#">{item.creator? item.creator.name : ""} </a>
-                                            {item.description}
-                                        </p>
-                                        <div>{item.files.length>0?item.files[0].url:null}</div>
-                                        <ul className="list-inline tool-level1">
-                                            {this.props.role === 'responsible' && <div className="btn-group dropleft pull-right">
-                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
-                                                    <div className="dropdown-divider"></div>
-                                                    <button className="dropdown-item btn-primary-outline" type="button"  onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</button>
-                                                    <div className="dropdown-divider"></div>
-                                                </div>
-                                            </div>}
-                                            <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                            <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
-                                            <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
-                                            {(item.creator === undefined && this.props.role ==="responsible") &&
-                                            <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
-                                            {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
-                                            <React.Fragment>
-                                            <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                            <li style={{display:"inline-table"}}>
-                                                {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
-                                                    <React.Fragment>
-                                                        
-                                                        {item.evaluations.some(checkUserId)=== true ?
-                                                            <React.Fragment>
-                                                                {item.evaluations.map(element => {
-                                                                    if(task){
-                                                                        if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
-                                                                            return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
-                                                                        }else{
-                                                                            return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
-                                                                        }
-                                                                    }
+                                        
+                                        {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
+                                        <React.Fragment>
+                                            <p className="content-level1">
+                                                <a href="#">{item.creator? item.creator.name : ""} </a>
+                                                {item.description}
 
-                                                                })}
-                                                            </React.Fragment>:
-                                                            <React.Fragment>
-                                                                <Rating
-                                                                    fractions = {2}
-                                                                    emptySymbol="fa fa-star-o fa-2x"
-                                                                    fullSymbol="fa fa-star fa-2x"
-                                                                    initialRating = {0}
-                                                                    onClick={(value) => {
-                                                                    this.setValueRating(item._id,value);
-                                                                    }}
-                                                                    
-                                                                />
-                                                            </React.Fragment>
-                                                        }
-                                                    </React.Fragment>:
-                                                    <React.Fragment>
-                                                        <Rating
-                                                            fractions = {2}
-                                                            emptySymbol="fa fa-star-o fa-2x"
-                                                            fullSymbol="fa fa-star fa-2x"
-                                                            initialRating = {0}
-                                                            onClick={(value) => {
-                                                            this.setValueRating(item._id,value);
-                                                            }}
+                                                {this.props.role === 'responsible' && <div className="btn-group dropleft pull-right">
+                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
+                                                        <div className="dropdown-divider"></div>
+                                                        <button className="dropdown-item btn-primary-outline" type="button"  onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</button>
+                                                        <div className="dropdown-divider"></div>
+                                                    </div>
+                                                </div>}
+                                            </p>
+                                            <div>{item.files.length>0?item.files[0].url:null}</div>
+                                            <ul className="list-inline tool-level1">
+                                                <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
+                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
+                                                {(item.creator === undefined && this.props.role ==="responsible") &&
+                                                <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
+                                                {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                                <React.Fragment>
+                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
+                                                <li style={{display:"inline-table"}}>
+                                                    {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
+                                                        <React.Fragment>
                                                             
-                                                        />
-                                                    </React.Fragment>}
-                                            </li></React.Fragment>}
-                                        </ul>
+                                                            {item.evaluations.some(checkUserId)=== true ?
+                                                                <React.Fragment>
+                                                                    {item.evaluations.map(element => {
+                                                                        if(task){
+                                                                            if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                                return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
+                                                                            }else{
+                                                                                return <div> {element.creator.name} đánh giá {element.rating}/10  </div>
+                                                                            }
+                                                                        }
+
+                                                                    })}
+                                                                </React.Fragment>:
+                                                                <React.Fragment>
+                                                                    <Rating
+                                                                        fractions = {2}
+                                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                                        fullSymbol="fa fa-star fa-2x"
+                                                                        initialRating = {0}
+                                                                        onClick={(value) => {
+                                                                        this.setValueRating(item._id,value);
+                                                                        }}
+                                                                        
+                                                                    />
+                                                                </React.Fragment>
+                                                            }
+                                                        </React.Fragment>:
+                                                        <React.Fragment>
+                                                            <Rating
+                                                                fractions = {2}
+                                                                emptySymbol="fa fa-star-o fa-2x"
+                                                                fullSymbol="fa fa-star fa-2x"
+                                                                initialRating = {0}
+                                                                onClick={(value) => {
+                                                                this.setValueRating(item._id,value);
+                                                                }}
+                                                                
+                                                            />
+                                                        </React.Fragment>}
+                                                </li></React.Fragment>}
+                                            </ul>
+                                        </React.Fragment>
+                                        }
                                             
                                         
                                         {/*Chỉnh sửa nội dung hoạt động của công việc */}
                                         {editAction === item._id &&
-                                            <React.Fragment>
-                                                <div style={{ marginTop: "3%", marginLeft: "10%", width: "82%" }}>
+                                            <div>
+                                                <div className="text-input-level1">
                                                     <textarea
-                                                        style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', borderRadius: "18px" }}
                                                         defaultValue={item.description}
                                                         ref={input => this.newContentAction[item._id] = input}
                                                     />
-                                                    <div className="row action-post">
-                                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</button>
-                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</button>
-                                                    </div>
                                                 </div>
-                                            </React.Fragment>}
+                                                <ul className="list-inline tool-level1 pull-right">
+                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
+                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
+                                                </ul>
+                                                <div className="tool-level1">
+                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                </div>
+                                            </div>}
+                                        
+
                                         {/* Hiển thị bình luận cho hoạt động */}
                                         {showChildComment === item._id &&
                                             <div>
                                                 {item.comments.map(child => {
                                                     return <div  key={child._id}>
                                                         <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
-                                                        <p className="content-level2">
-                                                            <a href="#">{child.creator.name} </a>
-                                                            {child.content}
-                                                        </p>
-                                                        <div className="tool-level2">
-                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
-
-                                                            {child.creator._id === currentUser && 
-                                                            <div className="btn-group dropleft pull-right">
-                                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                    </svg>
-                                                                </button>
-                                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
-                                                                    <div className="dropdown-divider"></div>
-                                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                    <div className="dropdown-divider"></div>
-                                                                    
-                                                                </div>
-                                                            </div>}
-                                                        </div>
                                                         
+                                                        {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
+                                                        <div>
+                                                            <p className="content-level2">
+                                                                <a href="#">{child.creator.name} </a>
+                                                                {child.content}
+
+                                                                {child.creator._id === currentUser && 
+                                                                <div className="btn-group dropleft pull-right">
+                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
+                                                                        <div className="dropdown-divider"></div>
+                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
+                                                                        <div className="dropdown-divider"></div>
+                                                                        
+                                                                    </div>
+                                                                </div>}
+                                                            </p>
+                                                            <div className="tool-level2">
+                                                                <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
+                                                            </div>
+                                                        </div>
+                                                        }
+                                                        
+                                                        {/*Chỉnh sửa nội dung bình luận của hoạt động */}
                                                         {editComment === child._id &&
-                                                            <React.Fragment>
-                                                                <div style={{ width: "83%", marginLeft: "8.2%" }}>
+                                                            <div>
+                                                                <div className="text-input-level2">
                                                                     <textarea
                                                                         rows={this.state.rows}
-                                                                        value={this.state.value}
                                                                         placeholder={'Enter your text here...'}
                                                                         className={'textarea'}
                                                                         onChange={this.handleChange}
-                                                                        style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius: "18px"  }}
                                                                         defaultValue={child.content}
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                     />
-                                                                    <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
-                                                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
-                                                                    </div>
                                                                 </div>
-                                                            </React.Fragment>
+                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
+                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
+                                                                </ul>
+                                                                <div className="tool-level2">
+                                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                </div>
+                                                            </div>
                                                         }
                                                     </div>;
                                                     return true;
@@ -718,8 +734,7 @@ class ActionTab extends Component {
                                                 </div>
                                             </div>
                                         }
-                                    </div>;
-                                    return true;
+                                    </div>)
                                 }) : null
                             }
                             {/* Thêm hoạt động cho công việc*/}
@@ -734,8 +749,10 @@ class ActionTab extends Component {
                                         minRows={3}
                                         maxRows={20}
                                         ref={input => this.contentAction[0] = input} />
-                                </div> 
-                                <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
+                                </div>
+                                
+                                <div className="tool-level2">
+                                    <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
                                         {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
                                             rows={this.state.rows}
                                             value={this.state.value}
@@ -746,8 +763,8 @@ class ActionTab extends Component {
                                             ref={input => this.contentAction[0] = input} />  */}
                                     
                                 
-                                <div className="row action-post" style={{width:"110%" }}>
-                                {this.state.files.length > 0 ?
+                                
+                                    {this.state.files.length > 0 ?
                                     <div className='files-list'>
                                         <ul style={{listStyle: 'none',marginLeft:'25px'}}>{this.state.files.map((file) =>
                                             <li className='files-list-item' key={file.id}>
@@ -788,96 +805,118 @@ class ActionTab extends Component {
                                 </div>
                             </React.Fragment>}
                         </div>
+
+
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map(item => {
                                     // if (item.parent === null)
-                                    return <div className="post clearfix"  key={item._id}>
+                                    return (
+                                    <div className="post clearfix"  key={item._id}>
                                         <img className="user-img-level1" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
-                                        <p className="content-level1">
-                                            <a href="#">{item.creator.name} </a>
-                                            {item.content}
-                                        </p>
-                                        <ul className="list-inline tool-level1">
-                                            {item.creator._id === currentUser && 
-                                            <div className="btn-group dropleft pull-right">
-                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
-                                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
-                                                    <button className="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
-                                                    <div className="dropdown-divider"></div>
-                                                    <button className="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
-                                                    <div className="dropdown-divider"></div>
-                            
-                                                </div>
-                                            </div>}
+                                        
+                                        { editTaskComment !== item._id && // Khi đang edit thì ẩn đi
+                                        <React.Fragment>
+                                            <p className="content-level1">
+                                                <a href="#">{item.creator.name} </a>
+                                                {item.content}
 
-                                            <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                            <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
-                                            <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
-                                        </ul>
-                                        {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                {item.creator._id === currentUser && 
+                                                <div className="btn-group dropleft pull-right">
+                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
+                                                        <div className="dropdown-divider"></div>
+                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
+                                                        <div className="dropdown-divider"></div>
+                                
+                                                    </div>
+                                                </div>}
+                                            </p>
+
+
+                                            <ul className="list-inline tool-level1">
+                                                <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
+                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
+                                                <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
+                                            </ul>
+                                        </React.Fragment>
+                                        }
+
+                                        {/*Chỉnh sửa nội dung trao đổi của công việc */}
                                         {editTaskComment === item._id &&
-                                            <React.Fragment>
-                                                <div style={{ marginTop: "3%", marginLeft: "10%", width: "82%" }}>
+                                            <div>
+                                                <div className="text-input-level1">
                                                     <textarea
-                                                        style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', borderRadius: "18px" }}
                                                         defaultValue={item.content}
                                                         ref={input => this.newContentTaskComment[item._id] = input}
                                                     />
-                                                    <div className="row action-post">
-                                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</button>
-                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</button>
-                                                    </div>
                                                 </div>
-                                            </React.Fragment>}
+                                                <ul className="list-inline tool-level1 pull-right">
+                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</a></li>
+                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
+                                                </ul>
+                                                <div className="tool-level1">
+                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                </div>
+                                            </div>}
+                                        
                                         {/* Hiển thị bình luận cho bình luận */}
                                         {showChildTaskComment === item._id &&
                                             <div className="comment-content-child">
                                                 {item.comments.map(child => {
                                                     return <div key={child._id}>
                                                         <img className="user-img-level2" src="https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/67683193_1564884113669140_2021053726499799040_o.jpg?_nc_cat=101&_nc_sid=110474&_nc_ohc=8bb8KMlozUIAX_zBgVb&_nc_ht=scontent.fhan2-1.fna&oh=1222d67f501934703ccc77c6e5d8fd99&oe=5EEA69F8" alt="User Image" />
-                                                        <p className="content-level2">
-                                                            <a href="#">{child.creator.name} </a>
-                                                            {child.content}
-                                                        </p>
-                                                        <div className="tool-level2">
-                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
-                                                            {child.creator._id === currentUser &&
-                                                            <div className="btn-group dropleft pull-right">
-                                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
-                                                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                    </svg>
-                                                                </button>
-                                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
-                                                                    <div className="dropdown-divider"></div>
-                                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                    <div className="dropdown-divider"></div>
-                                                                </div>
-                                                            </div>}
-                                                        </div>
                                                         
+                                                        {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
+                                                        <div>
+                                                            <p className="content-level2">
+                                                                <a href="#">{child.creator.name} </a>
+                                                                {child.content}
+
+                                                                {child.creator._id === currentUser &&
+                                                                <div className="btn-group dropleft pull-right">
+                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
+                                                                        <div className="dropdown-divider"></div>
+                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</button>
+                                                                        <div className="dropdown-divider"></div>
+                                                                    </div>
+                                                                </div>}
+                                                            </p>
+                                                            <div className="tool-level2">
+                                                                <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
+                                                            </div>
+                                                        </div>
+                                                        }
+
+                                                        {/* Sửa bình luận của bình luận */}
                                                         {editCommentOfTaskComment === child._id &&
-                                                            <React.Fragment>
-                                                                <div>
+                                                            <div>
+                                                                <div className="text-input-level2">
                                                                     <textarea
                                                                         defaultValue={child.content}
                                                                         ref={input => this.newContentCommentOfTaskComment[child._id] = input}
                                                                     />
-                                                                    <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
-                                                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</button>
-                                                                    </div>
                                                                 </div>
-                                                            </React.Fragment>
+                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa </a></li>
+                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
+                                                                </ul>
+                                                                <div className="tool-level2">
+                                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                </div>
+                                                            </div>
                                                         }
                                                     </div>;
                                                     return true;
@@ -896,22 +935,31 @@ class ActionTab extends Component {
                                                 </div>
                                             </div>
                                         }
-                                    </div>;
-                                    return true;
+                                    </div>
+                                    )
                                 }) : null
                             }
+
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src="https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-1/c342.0.1365.1365a/95803940_1693154607513079_1901501950311006208_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=2PAqz2ywXeEAX_he0l0&_nc_ht=scontent.fhan2-4.fna&oh=38c1fe7039904f0854258d1c99a1a123&oe=5EEB1B63" alt="User Image" />
                             <div className="text-input-level1">
-                                <textarea placeholder="Hãy nhập nội dung hoạt động" ref={input => this.contentTaskComment[0] = input} />
+                                <textarea placeholder="Hãy nhập nội dung trao đổi" ref={input => this.contentTaskComment[0] = input} />
+                            </div>
+                            <div className="tool-level2">
+                                <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm trao đổi</a>
+                                <input type="file" name="file" onChange={this.onHandleChangeFile} />
                             </div>
                         </div>
+
+
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
                             {/* <div id="content"> */}
                             <input type="file" name="files[]" id="filer_input2" multiple="multiple" />
                             {/* </div> */}
                         </div>
+
+                        
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
 
