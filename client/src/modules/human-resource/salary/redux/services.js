@@ -16,9 +16,16 @@ export const SalaryService = {
  */ 
 function searchSalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/paginate`,
-        method: 'POST',
-        data: data
+        url: `${ LOCAL_SERVER_API }/salaries`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            month: data.month,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.salary');
 }
 
@@ -28,7 +35,7 @@ function searchSalary(data) {
  */
 function createSalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/create`,
+        url: `${ LOCAL_SERVER_API }/salaries`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.salary');
@@ -40,7 +47,7 @@ function createSalary(data) {
  */
 function deleteSalary(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/${id}`,
+        url: `${ LOCAL_SERVER_API }/salaries/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.salary');
 }
@@ -52,8 +59,8 @@ function deleteSalary(id) {
  */
 function updateSalary(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/salaries/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.salary');
 }
@@ -61,7 +68,7 @@ function updateSalary(id, data) {
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
 function checkSalary(employeeNumber, month) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/checkSalary/${employeeNumber}/${month}`,
+        url: `${ LOCAL_SERVER_API }/salaries/checkSalary/${employeeNumber}/${month}`,
         method: 'GET',
     }, false, true, 'human_resource.salary');
 }
@@ -69,7 +76,7 @@ function checkSalary(employeeNumber, month) {
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
 function checkArraySalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/checkArraySalary`,
+        url: `${ LOCAL_SERVER_API }/salaries/checkArraySalary`,
         method: 'POST',
         data: data,
     }, false, true, 'human_resource.salary');
@@ -78,7 +85,7 @@ function checkArraySalary(data) {
 // Import lương nhân viên
 function importSalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/import`,
+        url: `${ LOCAL_SERVER_API }/salaries/import`,
         method: 'POST',
         data: data,
     }, false, true, 'human_resource.salary');

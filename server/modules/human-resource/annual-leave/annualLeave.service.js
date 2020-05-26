@@ -35,8 +35,6 @@ exports.searchAnnualLeaves = async (data, company) => {
         var date = new Date(data.month);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        console.log(firstDay);
-        console.log(lastDay);
         keySearch = {...keySearch,"$or": [{startDate: {"$gt": firstDay, "$lte": lastDay}}, {endDate: {"$gt": firstDay, "$lte": lastDay}}]}
     };
     var totalList = await AnnualLeave.count(keySearch);

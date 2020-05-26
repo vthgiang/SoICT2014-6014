@@ -12,9 +12,9 @@ export const EmployeeService = {
  * Lấy thông tin cá nhân
  */ 
 async function getEmployeeProfile() {
-    var id = getStorage("userId");
+    var userId = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/personals/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${userId}`,
         method: 'GET',
     }, false, true, 'human_resource.profile.employee_info');
 }
@@ -24,9 +24,9 @@ async function getEmployeeProfile() {
  * @data : dữ liệu cập nhật thông tin cá nhân
  */
 async function updatePersonalInformation(data) {
-    var id = getStorage("userId");
+    var userId = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/personals/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${userId}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.profile.employee_info');
