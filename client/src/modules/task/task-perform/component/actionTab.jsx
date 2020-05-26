@@ -561,9 +561,7 @@ class ActionTab extends Component {
                                         <p className="content-level1">
                                             <a href="#">{item.creator? item.creator.name : ""} </a>
                                             {item.description}
-                                        </p>
-                                        <div>{item.files.length>0?item.files[0].url:null}</div>
-                                        <ul className="list-inline tool-level1">
+
                                             {this.props.role === 'responsible' && <div className="btn-group dropleft pull-right">
                                                 <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
                                                     <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -577,6 +575,9 @@ class ActionTab extends Component {
                                                     <div className="dropdown-divider"></div>
                                                 </div>
                                             </div>}
+                                        </p>
+                                        <div>{item.files.length>0?item.files[0].url:null}</div>
+                                        <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                             <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
@@ -657,9 +658,6 @@ class ActionTab extends Component {
                                                         <p className="content-level2">
                                                             <a href="#">{child.creator.name} </a>
                                                             {child.content}
-                                                        </p>
-                                                        <div className="tool-level2">
-                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
 
                                                             {child.creator._id === currentUser && 
                                                             <div className="btn-group dropleft pull-right">
@@ -676,6 +674,9 @@ class ActionTab extends Component {
                                                                     
                                                                 </div>
                                                             </div>}
+                                                        </p>
+                                                        <div className="tool-level2">
+                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
                                                         </div>
                                                         
                                                         {editComment === child._id &&
@@ -734,8 +735,10 @@ class ActionTab extends Component {
                                         minRows={3}
                                         maxRows={20}
                                         ref={input => this.contentAction[0] = input} />
-                                </div> 
-                                <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
+                                </div>
+                                
+                                <div className="tool-level2">
+                                    <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
                                         {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
                                             rows={this.state.rows}
                                             value={this.state.value}
@@ -746,8 +749,8 @@ class ActionTab extends Component {
                                             ref={input => this.contentAction[0] = input} />  */}
                                     
                                 
-                                <div className="row action-post" style={{width:"110%" }}>
-                                {this.state.files.length > 0 ?
+                                
+                                    {this.state.files.length > 0 ?
                                     <div className='files-list'>
                                         <ul style={{listStyle: 'none',marginLeft:'25px'}}>{this.state.files.map((file) =>
                                             <li className='files-list-item' key={file.id}>
@@ -798,24 +801,24 @@ class ActionTab extends Component {
                                         <p className="content-level1">
                                             <a href="#">{item.creator.name} </a>
                                             {item.content}
-                                        </p>
-                                        <ul className="list-inline tool-level1">
+
                                             {item.creator._id === currentUser && 
                                             <div className="btn-group dropleft pull-right">
-                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
+                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
                                                     <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                     </svg>
                                                 </button>
-                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton" style={{ borderRadius: "6px" }}>
-                                                    <button className="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
+                                                <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
                                                     <div className="dropdown-divider"></div>
-                                                    <button className="dropdown-item btn-primary-outline" type="button" style={{ background: "none", border: "none" }} onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
+                                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
                                                     <div className="dropdown-divider"></div>
                             
                                                 </div>
                                             </div>}
-
+                                        </p>
+                                        <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                             <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>
                                             <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
@@ -845,12 +848,10 @@ class ActionTab extends Component {
                                                         <p className="content-level2">
                                                             <a href="#">{child.creator.name} </a>
                                                             {child.content}
-                                                        </p>
-                                                        <div className="tool-level2">
-                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
+
                                                             {child.creator._id === currentUser &&
                                                             <div className="btn-group dropleft pull-right">
-                                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
+                                                                <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
                                                                     <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                                         <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
                                                                     </svg>
@@ -862,6 +863,9 @@ class ActionTab extends Component {
                                                                     <div className="dropdown-divider"></div>
                                                                 </div>
                                                             </div>}
+                                                        </p>
+                                                        <div className="tool-level2">
+                                                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
                                                         </div>
                                                         
                                                         {editCommentOfTaskComment === child._id &&
