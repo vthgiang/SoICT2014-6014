@@ -513,9 +513,9 @@ class ActionTab extends Component {
     console.log('error code ' + error.code + ': ' + error.message)
     }
 
-    filesRemoveOne = (file) => {
-    this.refs.files.removeFile(file)
-    }
+    // filesRemoveOne = (file) => {
+    // this.refs.files.removeFile(file)
+    // }
     // filesRemoveAll = () => {
     // this.refs.files.removeFiles()
     // }
@@ -751,56 +751,45 @@ class ActionTab extends Component {
                                         ref={input => this.contentAction[0] = input} />
                                 </div>
                                 
-                                <div className="tool-level2">
-                                    <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
-                                        {/* <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                            rows={this.state.rows}
-                                            value={this.state.value}
-                                            
-                                            className={'textarea'}
-                                            onChange={this.handleChange}
-                                            style={{ width: '100%', height: "auto", fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px",padding:"10px 0px 0px 5px",borderRadius:"15px" }}
-                                            ref={input => this.contentAction[0] = input} />  */}
+                                <div className="tool-level1">
+                                    <div className="pull-right">
+                                        <a href="#" className="link-black text-sm" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
+                                    </div>
                                     
-                                
-                                
-                                    {this.state.files.length > 0 ?
-                                    <div className='files-list'>
-                                        <ul style={{listStyle: 'none',marginLeft:'25px'}}>{this.state.files.map((file) =>
-                                            <li className='files-list-item' key={file.id}>
-                                                <div className='files-list-item-preview' style={{width:"92%"}}>
-                                                {file.preview.type === 'image' ?  
-                                                <React.Fragment>
-                                                    <img className='files-list-item-preview-image' style={{width:"20%"}} src={file.preview.url} />
-                                                </React.Fragment>    
-                                                : 
-                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                    <a href="#" className="pull-right btn-box-tool" onClick={this.filesRemoveOne.bind(this, file)}><i className="fa fa-times"></i></a>
-                                                </div>
-                                                <div className='files-list-item-content'>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
-                                                </div>
-                                            </li>
-                                        )}
-                                        </ul>
-                                    </div>:null} 
-                                    <div className="files col-xs-1" style={{}}>
-                                        <Files
-                                        ref='files'
+                                    <Files
+                                        ref='filesAddAction'
                                         className='files-dropzone-list'
-                                        style={{ height: '20px' }}
                                         onChange={this.onFilesChange}
                                         onError={this.onFilesError}
                                         multiple
                                         maxFiles={10}
                                         maxFileSize={10000000}
                                         minFileSize={0}
-                                        clickable
-                                        >
-                                        <button className="btn btn-primary" style={{marginLeft:"50px"}}>Upload file</button>
-                                        </Files>
-                                    </div>   
+                                        clickable={false}>
+
+                                        <a href="#" className="link-black text-sm" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>Chọn file</a>
+                                        <div className='files-list'>
+                                            <span>Drop files here</span>
+                                            <ul>{this.state.files.map((file) =>
+                                                <li className='files-list-item' key={file.id}>
+                                                    <div className='files-list-item-preview'>
+                                                    {file.preview.type === 'image' ?  
+                                                    <React.Fragment>
+                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
+                                                    </React.Fragment>    
+                                                    : 
+                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddAction.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                    </div>
+                                                    <div className='files-list-item-content'>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
+                                                    </div>
+                                                </li>
+                                            )}
+                                            </ul>
+                                        </div>
+                                    </Files>
                                     
                                 </div>
                             </React.Fragment>}
@@ -959,7 +948,7 @@ class ActionTab extends Component {
                             {/* </div> */}
                         </div>
 
-                        
+
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
 
