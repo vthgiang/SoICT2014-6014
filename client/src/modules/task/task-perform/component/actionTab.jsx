@@ -28,6 +28,7 @@ class ActionTab extends Component {
             editComment: "",
             valueRating:2.5,
             files: [],
+            hover: {},
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
@@ -68,6 +69,7 @@ class ActionTab extends Component {
 			minRows: 3,
 			maxRows: 25,
         };
+        this.hover =[];
         this.contentTaskComment= [];
         this.contentCommentOfAction= [];
         this.newContentCommentOfAction = [];
@@ -159,8 +161,23 @@ class ActionTab extends Component {
           
         }
     }
-    setValueRating = async (id,newValue) => {
+    setHover = async (id,value) =>{
+        if(isNaN(value)){
+            this.hover[id] = 0;
+        }else this.hover[id] = value*2;
         
+        await this.setState(state => {
+            return {
+                ...state,
+                hover : {
+                    ...state.hover,
+                    id:value
+                }
+            }
+        })
+        console.log(this.hover[id])
+    }
+    setValueRating = async (id,newValue) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -534,7 +551,18 @@ class ActionTab extends Component {
         const { tasks, performtasks, user,auth } = this.props; 
         var actionComments, taskActions,taskComments, actions,logTimer;
         const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
-        
+        const labels = {
+            0.5: 'Useless',
+            1: 'Useless+',
+            1.5: 'Poor',
+            2: 'Poor+',
+            2.5: 'Ok',
+            3: 'Ok+',
+            3.5: 'Good',
+            4: 'Good+',
+            4.5: 'Excellent',
+            5: 'Excellent+',
+          };
         const checkUserId = obj =>  obj.creator._id === currentUser;
         if(typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
@@ -590,7 +618,7 @@ class ActionTab extends Component {
                                                 {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                 <React.Fragment>
                                                 <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                                <li style={{display:"inline-table"}}>
+                                                <li style={{display:"inline-table"}} className="list-inline">
                                                     {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
                                                         <React.Fragment>
                                                             
@@ -609,6 +637,7 @@ class ActionTab extends Component {
                                                                 </React.Fragment>:
                                                                 <React.Fragment>
                                                                     <Rating
+                                                                        
                                                                         fractions = {2}
                                                                         emptySymbol="fa fa-star-o fa-2x"
                                                                         fullSymbol="fa fa-star fa-2x"
@@ -616,13 +645,18 @@ class ActionTab extends Component {
                                                                         onClick={(value) => {
                                                                         this.setValueRating(item._id,value);
                                                                         }}
-                                                                        
+                                                                        onHover={(value)=> {                                                                                                                                                   
+                                                                            this.setHover(item._id,value)
+                                                                        }}
                                                                     />
+                                                                    <div style={{display:"inline",marginLeft:"5px"}}>{this.hover[item._id]*2}</div> 
                                                                 </React.Fragment>
                                                             }
                                                         </React.Fragment>:
                                                         <React.Fragment>
+                                                           
                                                             <Rating
+                                                                
                                                                 fractions = {2}
                                                                 emptySymbol="fa fa-star-o fa-2x"
                                                                 fullSymbol="fa fa-star fa-2x"
@@ -630,10 +664,17 @@ class ActionTab extends Component {
                                                                 onClick={(value) => {
                                                                 this.setValueRating(item._id,value);
                                                                 }}
-                                                                
+                                                                onHover={(value)=> {
+                                                                    this.setHover(item._id,value)
+                                                                }}
                                                             />
+                                                            <div style={{display:"inline",marginLeft:"5px"}}>{this.hover && this.hover[item._id]}</div> 
+                                                            
                                                         </React.Fragment>}
-                                                </li></React.Fragment>}
+                                                
+                                                </li>
+                                                
+                                                </React.Fragment>}
                                             </ul>
                                         </React.Fragment>
                                         }
