@@ -50,7 +50,7 @@ const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
 
-const educationProgram = require('./modules/trainning/education-program/educationProgram.route');
+const educationPrograms = require('./modules/trainning/education-program/educationProgram.route');
 const courses = require('./modules/trainning/course/course.route');
 
 //asset
@@ -151,7 +151,7 @@ app.use("/tasks", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/tasktemplates", tasktemplate);
 
-app.use("/educationProgram", educationProgram);
+app.use("/educationPrograms", educationPrograms);
 app.use("/courses", courses);
 
 //asset

@@ -23,7 +23,7 @@ class TrainingPlan extends Component {
 
     componentDidMount() {
         this.props.getListCourse(this.state);
-        this.props.getAllEducation();
+        this.props.getListEducation();
         this.props.getUser();
     }
 
@@ -245,7 +245,7 @@ function mapState(state) {
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
     deleteCourse: CourseActions.deleteCourse,
-    getAllEducation: EducationActions.getAll,
+    getListEducation: EducationActions.getListEducation,
     getUser: UserActions.get,
 };
 

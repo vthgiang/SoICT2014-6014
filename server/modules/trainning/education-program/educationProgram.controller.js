@@ -2,29 +2,26 @@ const EducationProgramService = require('./educationProgram.service');
 const { LogInfo, LogError } = require('../../../logs');
 
 /**
- * Lấy danh sách tất cả các chương trình đào tạo
- */
-exports.getAllEducationPrograms = async (req, res) => {
-    try {
-        var allLists = await EducationProgramService.getAllEducationPrograms(req.user.company._id);
-        await LogInfo(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
-        res.status(200).json({ success: true, messages:["get_all_education_program_success"], content: allLists});
-    } catch (error) {
-        await LogError(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
-        res.status(400).json({success: false, messages:["get_all_education_program_faile"], content: {error: error}});
-    }
-}
-
-/**
- * Lấy danh sách chương trình đào tạo theo key
+ * Lấy danh sách chương trình đào tạo
  */
 exports.searchEducationPrograms = async (req, res) => {
     try {
-        var educationPrograms = await EducationProgramService.searchEducationPrograms(req.body,req.user.company._id);
-        await LogInfo(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company);
-        res.status(200).json({ success: true, messages:["get_education_program_success"], content: educationPrograms});
+        var data;
+        if(req.query.limit!==undefined && req.query.page !==undefined){
+            params = {
+                organizationalUnit: req.query.organizationalUnit,
+                position: req.query.position,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            data = await EducationProgramService.searchEducationPrograms(params, req.user.company._id);
+        } else {
+            data = await EducationProgramService.getAllEducationPrograms(req.user.company._id);
+        }
+        await LogInfo(req.user.email, 'GET_EDUCATION_PROGRAM', req.user.company);
+        res.status(200).json({ success: true, messages:["get_education_program_success"], content: data});
     } catch (error) {
-        await LogError(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company);
+        await LogError(req.user.email, 'GET_EDUCATION_PROGRAM', req.user.company);
         res.status(400).json({success: false, messages:["get_education_program_faile"], content: {error: error}});
     }
 }

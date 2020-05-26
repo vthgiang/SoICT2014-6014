@@ -211,8 +211,8 @@ exports.updatePersonalInformation = async (userId, data, avatar) => {
 
 /**
  * Lấy danh sách nhân viên
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
  */
 exports.searchEmployeeProfiles = async (params, company) => {
     var keySearch = {

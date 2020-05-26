@@ -3,8 +3,8 @@ const { Employee, AnnualLeave} = require('../../../models').schema;
 
 /**
  * Lấy danh sách thông tin nghỉ phép
- * @data: dữ liệu key tìm kiếm
- * @company: id công ty người dùng
+ * @params : dữ liệu key tìm kiếm
+ * @company : id công ty người dùng
  */ 
 exports.searchAnnualLeaves = async (params, company) => {
     let keySearchEmployee, keySearch = {company: company};

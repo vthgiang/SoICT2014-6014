@@ -11,7 +11,6 @@ const initState = {
 
 export function education(state = initState, action) {
     switch (action.type) {
-        case EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST:
         case EducationConstants.GET_LISTEDUCATION_REQUEST:
         case EducationConstants.CREATE_EDUCATION_REQUEST:
         case EducationConstants.DELETE_EDUCATION_REQUEST:
@@ -20,18 +19,20 @@ export function education(state = initState, action) {
                 ...state,
                 isLoading: true
             };
-        case EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS:
-            return {
-                ...state,
-                listAll: action.payload,
-                    isLoading: false,
-            };
         case EducationConstants.GET_LISTEDUCATION_SUCCESS:
-            return {
-                ...state,
-                listEducations: action.payload.listEducations,
+            if (action.payload.totalList !== undefined) {
+                return {
+                    ...state,
+                    listEducations: action.payload.listEducations,
                     totalList: action.payload.totalList,
                     isLoading: false,
+                };
+            } else {
+                return {
+                    ...state,
+                    listAll: action.payload,
+                    isLoading: false,
+                };
             };
         case EducationConstants.CREATE_EDUCATION_SUCCESS:
             return {
@@ -58,7 +59,6 @@ export function education(state = initState, action) {
                     ),
                     isLoading: false,
             };
-        case EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE:
         case EducationConstants.GET_LISTEDUCATION_FAILURE:
         case EducationConstants.CREATE_EDUCATION_FAILURE:
         case EducationConstants.DELETE_EDUCATION_FAILURE:

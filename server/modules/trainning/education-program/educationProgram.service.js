@@ -13,29 +13,29 @@ exports.getAllEducationPrograms = async (company) => {
 
 /**
  * Lấy danh sách chương trinh đào tạo theo key
- * @data : Dữ liệu key tìm kiếm
+ * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty
  */
-exports.searchEducationPrograms = async (data, company) => {
+exports.searchEducationPrograms = async (params, company) => {
     var keySearch = {
         company: company
     }
     // Bắt sựu kiện đơn vị tìm kiếm khác null
-    if (data.organizationalUnit !== null) {
+    if (params.organizationalUnit !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForOrganizationalUnits: {$in: data.organizationalUnit} 
+            applyForOrganizationalUnits: {$in: params.organizationalUnit} 
         }
     }
-    if (data.position !== null) {
+    if (params.position !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForPositions: {$in: data.position}
+            applyForPositions: {$in: params.position}
         }
     }
     var totalList = await EducationProgram.count(keySearch);
     var educations = await EducationProgram.find(keySearch)
-        .skip(data.page).limit(data.limit)
+        .skip(params.page).limit(params.limit)
         .populate([{
             path: 'applyForOrganizationalUnits',
             model: OrganizationalUnit

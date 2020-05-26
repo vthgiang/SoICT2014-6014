@@ -3,8 +3,8 @@ const { Employee, Commendation } = require('../../../models').schema;
 
 /**
  * Lấy danh sách khen thưởng của nhân viên
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
  */ 
 exports.searchCommendations = async (params, company) => {
     console.log(params);

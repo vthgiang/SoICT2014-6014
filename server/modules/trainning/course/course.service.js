@@ -5,39 +5,39 @@ const {
 
 /**
  * Lấy danh sách khoá học theo key
- * @data : dữ liệu key tìm kiếm
+ * @params : dữ liệu key tìm kiếm
  * @company : Id công ty
  */
-exports.searchCourses = async (data, company) => {
+exports.searchCourses = async (params, company) => {
     var keySearch = {
         company: company
     }
-    if(data._id!==undefined){
+    if(params._id!==undefined){
         keySearch={
             ...keySearch,
-            educationProgram: data._id
+            educationProgram: params._id
         }
     }
     // Bắt sựu kiện mã khoá đào tạo khác ""
-    if (data.courseId !== undefined && data.courseId.length !==0) {
+    if (params.courseId !== undefined && params.courseId.length !==0) {
         keySearch = {
             ...keySearch,
             courseId: {
-                $regex: data.courseId,
+                $regex: params.courseId,
                 $options: "i"
             }
         }
     }
     // Bắt sựu kiện loại đào tạo khác null
-    if (data.type !== undefined) {
+    if (params.type !== undefined) {
         keySearch = {
             ...keySearch,
-            type: data.type
+            type: params.type
         }
     }
     var totalList = await Course.count(keySearch);
     var listCourses = await Course.find(keySearch)
-        .skip(data.page).limit(data.limit)
+        .skip(params.page).limit(params.limit)
         .populate({
             path: 'educationProgram',
             model: EducationProgram

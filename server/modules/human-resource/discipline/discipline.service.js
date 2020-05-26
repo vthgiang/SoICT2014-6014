@@ -4,8 +4,8 @@ const EmployeeService = require('../profile/profile.service');
 
 /**
  * Lấy danh sách kỷ luật của nhân viên
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
  */ 
 exports.searchDisciplines = async (params, company) => {
     var keySearchEmployee, keySearch = { company: company};
