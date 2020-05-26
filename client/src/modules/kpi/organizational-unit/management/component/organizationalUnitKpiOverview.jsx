@@ -4,7 +4,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
-import {PaginateBar, DataTableSetting,DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import {PaginateBar, DataTableSetting,DialogModal, ErrorLabel, DatePicker, SelectBox, ToolTip } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
 class KPIUnitManager extends Component {
@@ -238,13 +238,14 @@ class KPIUnitManager extends Component {
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
-                                <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
+                                <th title="Kết quả đánh giá (Điểm phê duyệt - Điểm hệ thống- Điểm tự đánh giá)">Kết quả đánh giá</th>
+                                {/* <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
                                     {}}>Xem chi tiết</th>
                                 <th tittle="Tạo KPI tháng mới" style={this.checkPermisson(currentUnit && currentUnit[0].dean)?
                                     {} : {}}>Tạo KPI tháng mới</th>
                                 <th tittle="Cập nhật" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} : {}}>
-                                    Cập nhật</th>
+                                    Cập nhật</th> */}
+                                <th title="Hành động">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -255,21 +256,19 @@ class KPIUnitManager extends Component {
                                 <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
-                                <td>{item.result=== null ? "Chưa đánh giá" : item.result}</td>
+                                <td>{item.approvedPoint}-{item.automaticPoint}-{item.employeePoint}{item.approvedPoint=== null ? "Chưa đánh giá" : item.result}</td>
                                 <td>
                                     <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
                                             className="material-icons">view_list</i></a>
                                     <ModalDetailKPI date={item.date} kpiunit={item} />
-                                </td>
-                                <td>{this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
+                                {this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"
                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}
                                     {this.state.showModalCopy === item._id ?
                                     <ModalCopyKPIUnit kpiunit={item} /> : null}
-                                </td>
-                                <td>
+                               
                                     {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a
                                         style={{ color: "navy" }} href="#abc" onClick={()=> this.props.refreshData(item._id)}
                                         title="Cập nhật kết quả mới nhất của KPI này" ><i
