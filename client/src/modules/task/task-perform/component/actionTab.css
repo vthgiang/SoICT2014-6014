@@ -110,7 +110,7 @@
     height: auto;
     font-size: 13px;
 
-    border: 1px solid #c4c8cf;
+    border: 1px solid #ccd0d5;
 }
 
 
@@ -141,7 +141,7 @@
 
 .content-level1 .dropdown-menu, .content-level2 .dropdown-menu{
     right: 10px;
-    
+
     -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
     -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
     box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
