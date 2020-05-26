@@ -348,40 +348,40 @@ class EvaluateByAccountableEmployee extends Component {
                         {/* <strong>Điểm tự động: &nbsp;<span id='autoPoint'></span> </strong>
                         <br/> */}
                         {
-                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) &&
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Đánh giá cá nhân người phê duyệt</legend>
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className={`form-group ${errorOnAccountableContribution===undefined?"":"has-error"}`}>
-                                            <label>% đóng góp (<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="number" 
-                                                name="accountableContribution"
-                                                placeholder={85}
-                                                onChange={this.handleChangeAccountableContribution}
-                                                value={accountableContribution}
-                                            />
-                                            <ErrorLabel content={errorOnAccountableContribution}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className={`form-group ${errorOnMyPoint===undefined?"":"has-error"}`}>
-                                            <label>Điểm tự đánh giá-phê duyệt (<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="number" 
-                                                name="myPoint"
-                                                placeholder={85}
-                                                onChange={this.handleChangeMyPoint}
-                                                value={myPoint}
-                                            />
-                                            <ErrorLabel content={errorOnMyPoint}/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
+                            // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) &&
+                            // <fieldset className="scheduler-border">
+                            //     <legend className="scheduler-border">Đánh giá cá nhân người phê duyệt</legend>
+                            //     <div className="row">
+                            //         <div className="col-sm-6">
+                            //             <div className={`form-group ${errorOnAccountableContribution===undefined?"":"has-error"}`}>
+                            //                 <label>% đóng góp (<span style={{color:"red"}}>*</span>)</label>
+                            //                 <input 
+                            //                     className="form-control"
+                            //                     type="number" 
+                            //                     name="accountableContribution"
+                            //                     placeholder={85}
+                            //                     onChange={this.handleChangeAccountableContribution}
+                            //                     value={accountableContribution}
+                            //                 />
+                            //                 <ErrorLabel content={errorOnAccountableContribution}/>
+                            //             </div>
+                            //         </div>
+                            //         <div className="col-sm-6">
+                            //             <div className={`form-group ${errorOnMyPoint===undefined?"":"has-error"}`}>
+                            //                 <label>Điểm tự đánh giá-phê duyệt (<span style={{color:"red"}}>*</span>)</label>
+                            //                 <input 
+                            //                     className="form-control"
+                            //                     type="number" 
+                            //                     name="myPoint"
+                            //                     placeholder={85}
+                            //                     onChange={this.handleChangeMyPoint}
+                            //                     value={myPoint}
+                            //                 />
+                            //                 <ErrorLabel content={errorOnMyPoint}/>
+                            //             </div>
+                            //         </div>
+                            //     </div>
+                            // </fieldset>
                         }
                         
                         <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>
@@ -391,7 +391,7 @@ class EvaluateByAccountableEmployee extends Component {
                         <br/>
                         <br/>
                         {
-                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) ?
+                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
                             <table className="table table-striped table-bordered table-hover">
                                 <tr>
                                     <th>Tên</th>
@@ -405,7 +405,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     // (task && task.evaluations.length !== 0) &&
                                     task.evaluations[task.evaluations.length-1].results.map((res,index) => 
                                         (
-                                            (res.role !== "accountable")&&
+                                            // (res.role !== "accountable")&&
                                             <tr>
                                                 <td>{res.employee.name}</td>
                                                 <td>{res.role}</td>

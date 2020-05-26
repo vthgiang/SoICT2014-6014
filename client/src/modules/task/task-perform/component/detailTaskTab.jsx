@@ -148,31 +148,29 @@ class DetailTaskTab extends Component {
         return (
       
             <div>
-                {/* ------------TODO: code here--------------- */}
-                {/* <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
-                    <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
-                </a>
-                <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} /> */}
                 <div style={{ marginLeft: "-10px" }}>
-                    <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
-                        <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
-                    </a>
-
-                    {/* TODO: modal edit task */}
-
-                    {/* <i class="material-icons">add</i> */}
-                    <a className="btn btn-app" onClick={() => this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc">
-                        <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" data-toggle="modal" href="#myModal"></i>Bấm giờ
-                    </a>
+                    { (this.props.role === "responsible" || this.props.role === "accountable") && 
+                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
+                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
+                        </a>
+                    }
                     
-                    <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Kết thúc công việc">
-                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
-                    </a>
+                    { (this.props.role === "responsible") &&
+                        <a className="btn btn-app" onClick={() => this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc">
+                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" data-toggle="modal" href="#myModal"></i>Bấm giờ
+                        </a>
+                    }
+                    { (this.props.role === "consulted" || this.props.role === "responsible" || this.props.role === "accountable") &&
+                        <React.Fragment>
+                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Kết thúc công việc">
+                                <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
+                            </a>
 
-                    <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
-                        <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
-                    </a>
-
+                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
+                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
+                            </a>
+                        </React.Fragment>
+                    }
                     {
                         (this.state.collapseInfo === false) ?
                         <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
@@ -292,7 +290,7 @@ class DetailTaskTab extends Component {
                                                 (task && task.taskInformations.length !== 0) &&
                                                 task.taskInformations.map(info => {
                                                     return <div>
-                                                        <p>-&nbsp;{info.name}</p>
+                                                        <p>-&nbsp;{info.name}&nbsp;-&nbsp;Giá trị: {info.value?info.value:"Chưa có thông tin"}</p>
                                                         {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
@@ -317,7 +315,7 @@ class DetailTaskTab extends Component {
                                                 </div> */}
 
                                         {
-                                            (task && task.evaluations.length !== 0) ?
+                                            (task && task.evaluations.length !== 0 ) &&
 
                                             ( task.evaluations.map(eva => {
                                                 if (eva.results.length !== 0) {
@@ -354,7 +352,7 @@ class DetailTaskTab extends Component {
                                                         <br />
                                                         <div style={{ marginLeft: "10px" }}>
                                                             {/* KPI */}
-                                                            {(eva.kpis.length !== 0) &&
+                                                            {(eva.kpis.length !== 0) ?
                                                                 (
                                                                     eva.kpis.map(item => {
                                                                         return <div>
@@ -373,15 +371,17 @@ class DetailTaskTab extends Component {
                                                                             }
                                                                         </div>
                                                                     })
-                                                                )
+                                                                ): <p>Chưa ai liên kết công việc với KPI</p>
                                                             }
                                                         </div>
                                                     </div>
                                                 }
                                                 else {
                                                     return <div style={{ marginLeft: "10px" }}>
+                                                        <div><p style={{color: "red", fontWeight: "bold"}}>Chưa đánh giá công việc tháng nào</p></div>
+                                                        <br/>
                                                         {/* KPI */}
-                                                        {(eva.kpis.length !== 0) &&
+                                                        {(eva.kpis.length !== 0) ?
                                                             (
                                                                 eva.kpis.map(item => {
                                                                     return <div>
@@ -400,14 +400,14 @@ class DetailTaskTab extends Component {
                                                                         }
                                                                     </div>
                                                                 })
-                                                            )
+                                                            ) : <p>Chưa ai liên kết công việc với KPI</p>
                                                         }
                                                     </div>
                                                 }
                                             })) 
-                                            : <div>
-                                                <p>Chưa đánh giá công viêc</p>
-                                            </div> 
+                                            // : <div>
+                                            //     <p>Chưa đánh giá công viêc</p>
+                                            // </div> 
                                         }
                                     </div>
                                 </fieldset>
@@ -441,6 +441,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Đánh giá công việc với vai trò người thực hiện'
+                        perform='evaluate'
                     />
                 }
                 {
@@ -449,6 +450,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Đánh giá công việc với vai trò người phê duyệt'
+                        perform='evaluate'
                     />
                 }
                 {
@@ -457,6 +459,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Đánh giá công việc với vai trò người hỗ trợ'
+                        perform='evaluate'
                     />
                 }
 
@@ -467,6 +470,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Kết thúc công việc với vai trò người thực hiện'
+                        perform='stop'
                     />
                 }
                 {
@@ -475,6 +479,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Kết thúc công việc với vai trò người phê duyệt'
+                        perform='stop'
                     />
                 }
                 {
@@ -483,6 +488,7 @@ class DetailTaskTab extends Component {
                         id={this.props.id}
                         role={this.props.role}
                         title='Kết thúc công việc với vai trò người hỗ trợ'
+                        perform='stop'
                     />
                 }
             </div>

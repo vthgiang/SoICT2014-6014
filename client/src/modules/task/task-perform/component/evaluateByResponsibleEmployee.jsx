@@ -285,7 +285,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         <label>Liên kết KPI:</label>
                         {
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-kpi-personal`}
+                                id={`select-kpi-personal-evaluate-${this.props.perform}-${this.props.role}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {listKpi.map(x => { return { value: x._id, text: x.name } })}

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
+import { TaskInformationForm } from './taskInformationForm';
 
 
 class ModalEditTaskByAccountableEmployee extends Component {
@@ -18,14 +19,163 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let { tasks } = this.props;
 
         let task = (tasks && tasks.task) && tasks.task.info;
-        let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
+        // let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
         // let taskInformation = task && task.taskInformations;
 
         this.state = {
             userId: userId,
             task: task,
-            taskInformation: taskInformation,
+            // taskInformation: taskInformation,
         }
+    }
+
+    // ==============================BEGIN HANDLE TASK INFORMATION===================================
+
+    handleChangeProgress = async (e) => {
+        var value = parseInt(e.target.value);
+        await this.setState(state =>{
+            return {
+                ...state,
+                progress: value,
+                errorOnProgress: this.validatePoint(value)
+            }
+        })
+        document.getElementById("autoPoint").innerHTML = value;
+    } 
+
+    handleChangeNumberInfo = async (e) => {
+        var value = parseInt(e.target.value);
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                },
+                errorOnNumberInfo: this.validateNumberInfo(value)
+            }
+        })
+    } 
+
+    handleChangeTextInfo = async (e) => {
+        var value = e.target.value;
+        var name = e.target.name;
+        await this.setState(state =>{
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                },
+                errorOnTextInfo: this.validateTextInfo(value)
+            }
+        })
+    }
+
+    handleInfoDateChange = (value, code) => {
+        console.log('value', value);
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+                errorOnInfoDate: this.validateDate(value),
+                // infoDate: value,
+            }
+        });
+    }
+
+    handleSetOfValueChange = async (value, code) => {
+        console.log('value', value);
+
+        this.setState(state => {
+            state[`${code}`] = {
+                value: value,
+                code: code
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    handleInfoBooleanChange  = (event) => {
+        var {name, value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                [name]: {
+                    value: value,
+                    code: name
+                }
+                // errorOnInfoBoolean: this.validateInfoBoolean(value)
+            }
+        });
+    }
+
+
+    validateInfoBoolean = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.indexOf("") !== -1) {
+            msg = "Giá trị bắt buộc phải chọn";
+        }
+        
+        return msg;
+    }
+
+    validateTextInfo = (value) =>{
+        let msg = undefined;
+        if(value === ""){
+            msg = "Giá trị không được để trống"
+        }
+        return msg;
+    }
+
+    validateNumberInfo = (value) => {
+        var { translate } = this.props;
+        let msg = undefined;
+        
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        return msg;
+    }
+
+    // ==============================END HANDLE TASK INFORMATION===================================
+
+
+    validateDate = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (value.trim() === "") {
+            msg = "Ngày đánh giá bắt buộc phải chọn";
+        }
+        
+        return msg;
+    }
+
+    validatePoint = (value) => {
+        var { translate } = this.props;
+        let msg = undefined;
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
+        }
+        if (isNaN(value)) {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        return msg;
+    }
+
+    handleChangeActiveEmployees = (e) =>{
+        var {name, value} = e.target;
+        this.setState(state=>{
+            return {
+                ...state,
+                activeEmployees : e.target.checked
+            }
+        })
     }
 
     handleTaskNameChange = event => {
@@ -106,16 +256,61 @@ class ModalEditTaskByAccountableEmployee extends Component {
             && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
-    handleSelectedPriority = () => {
-        console.log("selected priority")
+    handleSelectedPriority = (value) => {
+        // console.log("selected priority"),
+        this.setState(state=>{
+            return {
+                ...state,
+                priorityOptions: value
+            }
+        });
     }
 
-    handleSelectedStatus = () => {
-        console.log("selected status")
+    handleSelectedStatus = (value) => {
+        // console.log("selected status")
+        this.setState(state=> {
+            return {
+                ...state,
+                statusOptions: value
+            }
+        })
     }
 
-    handleSelectedResponsibleEmployee = () => {
-        console.log('selected responsible employee');
+    handleSelectedResponsibleEmployee = (value) => {
+        // console.log('selected responsible employee');
+        this.setState(state=>{
+            return {
+                ...state,
+                responsibleEmployees: value
+            }
+        });
+    }
+    handleSelectedAccountableEmployee = (value) => {
+        // console.log('selected responsible employee');
+        this.setState(state=>{
+            return {
+                ...state,
+                accountableEmployees: value
+            }
+        });
+    }
+    handleSelectedConsultedEmployee = (value) => {
+        // console.log('selected responsible employee');
+        this.setState(state=>{
+            return {
+                ...state,
+                consultedEmployees: value
+            }
+        });
+    }
+    handleSelectedInformEmployee = (value) => {
+        // console.log('selected responsible employee');
+        this.setState(state=>{
+            return {
+                ...state,
+                informEmployees: value
+            }
+        });
     }
 
     save = () => {
@@ -127,9 +322,32 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
+    static getDerivedStateFromProps(nextProps, prevState){
+        console.log('PARENT nextProps, prevState',nextProps, prevState);
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                // TODO: ve sau can sửa
+                id: nextProps.id,
+                // kpi: nextProps.kpi,
+                // date: nextProps.date,
+                // point: nextProps.point,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined
+            } 
+        } else {
+            return null;
+        }
+    }
+
     render() {
-        const {task, taskInformation } = this.state;
-        const { errorTaskName, errorTaskDescription, errorTaskProgress } = this.state;
+        const { task } = this.state;
+        const { errorTaskName, errorTaskDescription, errorTaskProgress, 
+            responsibleEmployees, accountableEmployees, consultedEmployees, informEmployees 
+        } = this.state;
 
         const { user } = this.props;
         var departmentUsers = [];
@@ -137,6 +355,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let priorityOptions = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
         let statusOptions = [{value: 1, text: "Inprocess"}, {value: 2, text:"WaitForApproval"}, {value: 3, text:"Finished"}, {value: 4, text:"Delayed"}, {value: 5, text:"Canceled"}];
+        
+        // console.log('task', task);
 
         return (
             <div>
@@ -185,7 +405,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <label>Mức ưu tiên</label>
                                         {
                                             <SelectBox
-                                                id={`select-status`}
+                                                id={`select-status-${this.props.perform}-${this.props.role}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items = {statusOptions}
@@ -201,7 +421,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <label>Mức ưu tiên</label>
                                         {
                                             <SelectBox
-                                                id={`select-priority`}
+                                                id={`select-priority-${this.props.perform}-${this.props.role}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items = {priorityOptions}
@@ -213,16 +433,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     </div>
 
                                     {/*Mức độ hoàn thành*/}
-                                    <div className={`form-group ${errorTaskProgress === undefined ? "" : "has-error"}`}>
+                                    {/* <div className={`form-group ${errorTaskProgress === undefined ? "" : "has-error"}`}>
                                         <label>Mức độ hoàn thành</label>
-                                        <input type="text"
-                                               value={this.state.taskProgress !== undefined ? this.state.taskProgress : task && task.progress}
-                                               className="form-control" onChange={this.handleTaskProgressChange}/>
+                                        <input 
+                                            type="text"
+                                            value={this.state.taskProgress !== undefined ? this.state.taskProgress : task && task.progress}
+                                            className="form-control" onChange={this.handleTaskProgressChange}/>
                                         <ErrorLabel content={errorTaskProgress}/>
-                                    </div>
+                                    </div> */}
 
                                     {/*Task information*/}
-                                    {
+                                    {/* {
                                         (taskInformation != null && taskInformation.length !== 0) && taskInformation.map((info, index) => {
                                             return <div
                                                 className={`form-group`}>
@@ -233,74 +454,115 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                        onChange=""/>
                                             </div>
                                         })
+                                    } */}
+                                    
+                                </div>
+                                
+                            </fieldset>
+
+                            <TaskInformationForm
+                                task= {task && task} 
+
+                                handleChangeProgress={this.handleChangeProgress}
+                                handleInfoBooleanChange={this.handleInfoBooleanChange}
+                                handleInfoDateChange={this.handleInfoDateChange}
+                                handleSetOfValueChange={this.handleSetOfValueChange}
+                                handleChangeNumberInfo={this.handleChangeNumberInfo}
+                                handleChangeTextInfo={this.handleChangeTextInfo}
+
+                                value={this.state}
+                            />
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Thông tin chi tiết</legend>
+                                
+                                {/*Người thực hiện*/}
+                                <div className="form-group">
+                                    <label>Người thực hiện</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-responsible-employee-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            onChange={this.handleSelectedResponsibleEmployee}
+                                            multiple={true}
+                                            value={responsibleEmployees}
+                                        />
+                                    }
+                                </div>
+
+                                {/*Người phê duyệt*/}
+                                <div className="form-group">
+                                    <label>Người phê duyệt</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-accountable-employee-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            onChange={this.handleSelectedAccountableEmployee}
+                                            multiple={true}
+                                            value={accountableEmployees}
+                                        />
+                                    }
+                                </div>
+
+                                {/*Người hỗ trợ*/}
+                                <div className="form-group">
+                                    <label>Người hỗ trợ</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-consulted-employee-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            onChange={this.handleSelectedConsultedEmployee}
+                                            multiple={true}
+                                            value={consultedEmployees}
+                                        />
+                                    }
+                                </div>
+
+                                {/*Người giám sát*/}
+                                <div className="form-group">
+                                    <label>Người giám sát</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-informed-employee-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            onChange={this.handleSelectedInformEmployee}
+                                            multiple={true}
+                                            value={informEmployees}
+                                        />
                                     }
                                 </div>
                             </fieldset>
-
-                            {/*Người thực hiện*/}
-                            <div className="form-group">
-                                <label>Người thực hiện</label>
-                                {
-                                    <SelectBox
-                                        id={`select-responsible-employee`}
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
-                                        onChange={this.handleSelectedResponsibleEmployee}
-                                        multiple={true}
-                                        value=""
-                                    />
-                                }
+                            <div style={{display: 'none'}}>
+                                <span id='autoPoint'></span>
                             </div>
 
-                            {/*Người phê duyệt*/}
-                            <div className="form-group">
-                                <label>Người phê duyệt</label>
-                                {
-                                    <SelectBox
-                                        id={`select-accountable-employee`}
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
-                                        onChange={this.handleSelectedResponsibleEmployee}
-                                        multiple={true}
-                                        value=""
-                                    />
-                                }
-                            </div>
-
-                            {/*Người hỗ trợ*/}
-                            <div className="form-group">
-                                <label>Người hỗ trợ</label>
-                                {
-                                    <SelectBox
-                                        id={`select-consulted-employee`}
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
-                                        onChange={this.handleSelectedResponsibleEmployee}
-                                        multiple={true}
-                                        value=""
-                                    />
-                                }
-                            </div>
-
-                            {/*Người giám sát*/}
-                            <div className="form-group">
-                                <label>Người giám sát</label>
-                                {
-                                    <SelectBox
-                                        id={`select-informed-employee`}
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
-                                        onChange={this.handleSelectedResponsibleEmployee}
-                                        multiple={true}
-                                        value=""
-                                    />
-                                }
-                            </div>
-
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Chọn nhân viên không làm việc nữa</legend>
+                                <div className="checkbox">
+                                    {
+                                        task && task.responsibleEmployees.map(r=>{
+                                            return <div>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            value={r._id}
+                                                            onChange={this.handleChangeActiveEmployees}
+                                                        /> {r.name}
+                                                    </label>
+                                                    <br/>
+                                                </div>
+                                        })
+                                    } 
+                                    
+                                </div>
+                            </fieldset>
                         </form>
                     </DialogModal>
                 </React.Fragment>

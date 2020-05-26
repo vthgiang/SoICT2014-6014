@@ -98,7 +98,7 @@ class TaskInformationForm extends Component {
                                             <DatePicker
                                                 id={`info_date_${index}`}
                                                 value={value[`${info.code}`] && value[`${info.code}`].value}
-                                                onChange={(e)=>this.props.handleInfoDateChange(e, info.code)}
+                                                onChange={(value)=>this.props.handleInfoDateChange(value, info.code)}
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
                                         </div>
@@ -136,7 +136,7 @@ class TaskInformationForm extends Component {
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
-                                                onChange={(e)=>this.props.handleSetOfValueChange(e, info.code)}
+                                                onChange={(value)=>this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
                                                 value={value[`${info.code}`] && value[`${info.code}`].value}
                                             />
