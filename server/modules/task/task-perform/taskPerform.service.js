@@ -530,7 +530,6 @@ exports.evaluationAction = async (id,body) => {
     var task1 = await Task.findOne({ "taskActions._id": id })
     task1.accountableEmployees.forEach(async elem => {  
         if(body.creator == elem){
-            
             var evaluationAction = await Task.update(
                 {"taskActions._id":id},
                 {
@@ -550,7 +549,7 @@ exports.evaluationAction = async (id,body) => {
                 }
             )   
             }else {
-                var evaluationAction =  Task.update(
+                var evaluationAction1 = await Task.update(
                     {"taskActions._id":id},
                     {
                         "$push": {
@@ -560,14 +559,13 @@ exports.evaluationAction = async (id,body) => {
                                 rating: body.rating,
                             }
                         }
-                    })
+                    })   
             }
     })
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email '}])
-        
     return task.taskActions;
 }
 /**
