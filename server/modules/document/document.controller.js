@@ -36,7 +36,7 @@ exports.createDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        
+        console.log(error)
         await LogError(req.user.email, 'CREATE_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -125,7 +125,7 @@ exports.getDocumentDomains = async (req, res) => {
             content: domains
         });
     } catch (error) {
-        console.log("error: ", error)
+        
         await LogError(req.user.email, 'GET_DOCUMENT_DOMAINS', req.user.company);
         res.status(400).json({
             success: false,

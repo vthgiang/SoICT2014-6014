@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import moment from 'moment';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -29,7 +30,66 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const {value} = e.target;
-        this.setState({documentDescriptipn: value});
+        this.setState({documentDescription: value});
+    }
+
+    handleVersionName = (e) => {
+        const {value} = e.target;
+        this.setState({ documentVersionName: value });
+    }
+
+    handleIssuingBody = (e) => {
+        const {value} = e.target;
+        this.setState({ documentIssuingBody: value }); 
+    }
+
+    handleOfficialNumber = e => {
+        const {value} = e.target;
+        this.setState({documentOfficialNumber: value})
+    }
+
+    handleSigner = e => {
+        const {value} = e.target;
+        this.setState({ documentSigner: value })
+    }
+
+    handleIssuingDate = value => {
+        this.setState({ documentIssuingDate: value });
+    }
+
+    handleEffectiveDate = value => {
+        this.setState({ documentEffectiveDate: value});
+    }
+
+    handleExpiredDate = value => {
+        this.setState({ documentExpiredDate: value});
+    }
+
+    handleRelationshipDescription = e => {
+        const {value} = e.target;
+        this.setState({ documentRelationshipDescription: value });
+    }
+
+    handleRelationshipDocuments = value => {
+        this.setState({ documentRelationshipDocuments: value });
+    }
+
+    handleRoles = value => {
+        this.setState({ documentRoles: value });
+    }
+
+    handleArchivedRecordPlaceInfo = e => {
+        const {value} = e.target;
+        this.setState({documentArchivedRecordPlaceInfo: value});
+    }
+
+    handleArchivedRecordPlaceOrganizationalUnit = value => {
+        this.setState({documentArchivedRecordPlaceOrganizationalUnit: value});
+    }
+
+    handleArchivedRecordPlaceManager = e => {
+        const {value} = e.target;
+        this.setState({documentArchivedRecordPlaceManager: value});
     }
 
     save = () => {
@@ -37,13 +97,40 @@ class CreateForm extends Component {
             documentName, 
             documentCategory,
             documentDomains,
-            documentDescription
+            documentDescription,
+            documentVersionName,
+            documentIssuingBody,
+            documentOfficialNumber,
+            documentIssuingDate,
+            documentEffectiveDate,
+            documentExpiredDate,
+            documentSigner,
+            documentRelationshipDescription,
+            documentRelationshipDocuments,
+            documentRoles,
+            documentArchivedRecordPlaceInfo,
+            documentArchivedRecordPlaceOrganizationalUnit,
+            documentArchivedRecordPlaceManager,
         } = this.state;
         this.props.createDocument({
             name: documentName,
             category: documentCategory,
             domains: documentDomains,
-            description: documentDescription
+            description: documentDescription,
+            versionName: documentVersionName,
+            issuingBody: documentIssuingBody,
+            officialNumber: documentOfficialNumber,
+            issuingDate: moment(documentIssuingDate, "DD-MM-YYYY"),
+            effectiveDate: moment(documentEffectiveDate, "DD-MM-YYYY"),
+            expiredDate: moment(documentExpiredDate, "DD-MM-YYYY"),
+            signer: documentSigner,
+            relationshipDescription: documentRelationshipDescription,
+            relationshipDocuments: documentRelationshipDocuments,
+            roles: documentRoles,
+            
+            archivedRecordPlaceInfo: documentArchivedRecordPlaceInfo,
+            archivedRecordPlaceOrganizationalUnit: documentArchivedRecordPlaceOrganizationalUnit,
+            archivedRecordPlaceManager: documentArchivedRecordPlaceManager
         });
     }
 
@@ -54,6 +141,8 @@ class CreateForm extends Component {
         const documentRoles = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
+
+        console.log("document: ", this.state)
 
         return ( 
             <React.Fragment>
@@ -112,7 +201,7 @@ class CreateForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName}/>
+                                        <input type="text" className="form-control" onChange={this.handleVersionName}/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
@@ -131,7 +220,7 @@ class CreateForm extends Component {
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id="document-version-issuing-date"
+                                            id="create-document-version-issuing-date"
                                             value={this.state.documentIssuingDate}
                                             onChange={this.handleIssuingDate}
                                         />
@@ -139,7 +228,7 @@ class CreateForm extends Component {
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id="document-version-effective-date"
+                                            id="create-document-version-effective-date"
                                             value={this.state.documentEffectiveDate}
                                             onChange={this.handleEffectiveDate}
                                         />
@@ -147,7 +236,7 @@ class CreateForm extends Component {
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id="document-version-expired-date"
+                                            id="create-document-version-expired-date"
                                             value={this.state.documentExpiredDate}
                                             onChange={this.handleExpiredDate}
                                         />
@@ -167,7 +256,7 @@ class CreateForm extends Component {
                             <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
                             <div className="form-group">
                                 <label>{ translate('document.relationship.description') }<span className="text-red">*</span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleName}/>
+                                <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription}/>
                             </div>
                             <div className="form-group">
                                 <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
@@ -176,18 +265,19 @@ class CreateForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {relationshipDocs}
+                                    onChange={this.handleRelationshipDocuments}
                                     multiple={true}
                                 />
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.users') }</legend>
+                            <legend className="scheduler-border">{ translate('document.roles') }</legend>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                 id="select-document-users-see-permission"
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {documentRoles}
-                                onChange={this.handleRolesChange}
+                                onChange={this.handleRoles}
                                 multiple={true}
                             />
                         </fieldset>
@@ -196,7 +286,7 @@ class CreateForm extends Component {
                             <legend className="scheduler-border">{ translate('document.store.title') }</legend>
                             <div className="form-group">
                                 <label>{ translate('document.store.information') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" onChange={this.handleName}/>
+                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo}/>
                             </div>
                             <div className="form-group">
                                 <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
@@ -205,7 +295,7 @@ class CreateForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
-                                    onChange={this.handleOrganizationalUnit}
+                                    onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
                                     options={{placeholder: translate('document.store.select_organizational')}}
                                     multiple={false}
                                 />
@@ -217,7 +307,7 @@ class CreateForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {userManage}
-                                    onChange={this.handleRolesChange}
+                                    onChange={this.handleArchivedRecordPlaceManager}
                                     options={{placeholder: translate('document.store.select_user')}}
                                     multiple={false}
                                 />

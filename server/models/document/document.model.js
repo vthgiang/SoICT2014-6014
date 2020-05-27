@@ -106,15 +106,13 @@ const DocumentSchema = new Schema({
     
 
     /**Liên kết văn bản */
-    relationship: { //liên kết với những văn bản nào
-        description: { //mô tả
-            type: String
-        }, 
-        documents: [{ //các tài liệu được liên kết
-            type: Schema.Types.ObjectId,
-            refs: 'documents'
-        }]
-    },
+    relationshipDescription: { //mô tả
+        type: String
+    }, 
+    relationshipDocuments: [{ //các tài liệu được liên kết
+        type: Schema.Types.ObjectId,
+        refs: 'documents'
+    }],
 
     /** Những vị trí có quyền xem mẫu này */
     roles: [{
@@ -123,19 +121,17 @@ const DocumentSchema = new Schema({
     }],
 
     /**Hồ sơ lưu trữ bản cứng */
-    archivedRecordPlace: { //nơi lưu trữ hồ sơ bản cứng
-        information: {
-            type: String
-        },
-        organizationalUnit: {
-            type: Schema.Types.ObjectId,
-            ref: 'organizational_units'
-        },
-        manager: {
-            type: Schema.Types.ObjectId,
-            ref: 'users'
-        }
+    archivedRecordPlaceInfo: {
+        type: String
     },
+    archivedRecordPlaceOrganizationalUnit: {
+        type: Schema.Types.ObjectId,
+        ref: 'organizational_units'
+    },
+    archivedRecordPlaceManager: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+    }
 },{
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }

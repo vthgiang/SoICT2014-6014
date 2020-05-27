@@ -22,7 +22,7 @@ function createDocument(data) {
         url: `${ LOCAL_SERVER_API }/documents`,
         method: 'POST',
         data,
-    }, false, true, 'document');
+    }, true, true, 'document');
 }
 
 function getDocumentCategories() {
@@ -37,7 +37,7 @@ function createDocumentCategory(data) {
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'POST',
         data,
-    }, false, true, 'document');
+    }, true, true, 'document');
 }
 
 // Danh mục văn bản - domain
@@ -53,5 +53,5 @@ function createDocumentDomain(data) {
         url: `${ LOCAL_SERVER_API }/documents/domains`,
         method: 'POST',
         data,
-    }, false, true, 'document');
+    }, true, true, 'document');
 }

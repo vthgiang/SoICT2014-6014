@@ -22,7 +22,7 @@ exports.createDocument = async (company, data) => {
         category: data.category,
         description: data.description,
 
-        versionName: data.name,
+        versionName: data.versionName,
         issuingBody: data.issuingBody,
         officialNumber: data.officialNumber,
         issuingDate: data.issuingDate,
@@ -32,16 +32,14 @@ exports.createDocument = async (company, data) => {
         file: data.file,
         scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
 
-        relationship: {
-            description: data.relationship !== undefined ? data.relationship.description : undefined,
-            documents: data.relationship !== undefined ? data.relationship.documents : undefined
-        },
+        relationshipDescription: data.relationshipDescription ,
+        relationshipDocuments: data.relationshipDocuments,
+
         roles: data.roles,
-        archivedRecordPlace: {
-            information: data.archivedRecordPlace !== undefined ? data.archivedRecordPlace.information : undefined,
-            organizationalUnit: data.archivedRecordPlace !== undefined ? data.archivedRecordPlace.organizationalUnit: undefined,
-            manager: data.archivedRecordPlace !== undefined ? data.archivedRecordPlace.manager : undefined
-        }
+
+        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo ,
+        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
+        archivedRecordPlaceManager: data.archivedRecordPlaceManager 
     });
 }
 
