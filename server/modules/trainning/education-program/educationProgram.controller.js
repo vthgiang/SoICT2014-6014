@@ -8,7 +8,7 @@ exports.searchEducationPrograms = async (req, res) => {
     try {
         var data;
         if(req.query.limit!==undefined && req.query.page !==undefined){
-            params = {
+            let params = {
                 organizationalUnit: req.query.organizationalUnit,
                 position: req.query.position,
                 page: Number(req.query.page),
