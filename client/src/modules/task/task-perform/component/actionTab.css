@@ -161,10 +161,7 @@
     min-height: 100px;
     border: 1px dashed #D3D3D3;
     margin-top: 10px;
-}
-.files-list span{
     padding: 10px;
-    display: inline-block;
 }
 .files-list ul {
     list-style: none;

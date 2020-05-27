@@ -796,7 +796,7 @@ class ActionTab extends Component {
                                 </div>
                                 
                                 <div className="tool-level1">
-                                    <div className="pull-right">
+                                    <div style={{textAlign: "right"}}>
                                         <a href="#" className="link-black text-sm" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
                                     </div>
                                     
@@ -811,8 +811,11 @@ class ActionTab extends Component {
                                         minFileSize={0}
                                         clickable={false}>
 
-                                        <a href="#" className="link-black text-sm" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>Chọn file</a>
+                                        
                                         <div className='files-list'>
+                                            <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>
+                                                <i class="material-icons">attach_file</i>
+                                            </a>
                                             <span>Drop files here</span>
                                             <ul>{this.state.files.map((file) =>
                                                 <li className='files-list-item' key={file.id}>
