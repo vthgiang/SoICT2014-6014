@@ -18,6 +18,7 @@ class EvaluateByResponsibleEmployee extends Component {
         super(props);
         this.state={
             idUser: idUser ,
+            info: {}
             // progress:89,
             // "p1" : {
             //     value: ['SSD'],
@@ -91,19 +92,23 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
+        document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
     
     handleChangeNumberInfo = async (e) => {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -113,12 +118,16 @@ class EvaluateByResponsibleEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -127,7 +136,7 @@ class EvaluateByResponsibleEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -143,7 +152,7 @@ class EvaluateByResponsibleEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -156,12 +165,16 @@ class EvaluateByResponsibleEmployee extends Component {
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -244,7 +257,10 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined
             } 
         } else {
             return null;
@@ -253,7 +269,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
+        const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
 
@@ -263,7 +279,8 @@ class EvaluateByResponsibleEmployee extends Component {
         return (
             <React.Fragment>
             <DialogModal
-                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
+                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID={`form-evaluate-task-by-${this.props.role}`}
                 title={this.props.title}
                 func={this.save}
@@ -285,7 +302,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         <label>Liên kết KPI:</label>
                         {
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-kpi-personal`}
+                                id={`select-kpi-personal-evaluate-${this.props.perform}-${this.props.role}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
@@ -311,13 +328,13 @@ class EvaluateByResponsibleEmployee extends Component {
                             // errorOnInfoDate={errorOnInfoDate}
                             // errorOnTextInfo={errorOnTextInfo}
                             // errorOnNumberInfo={errorOnNumberInfo}
-
+                            perform={this.props.perform}
                             value={this.state}
                         />
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
                         <br/>
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>

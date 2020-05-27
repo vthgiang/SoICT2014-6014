@@ -113,6 +113,7 @@ exports.changeInformation = async (req, res) => {
         if(req.file !== undefined){
             var path = req.file.destination +'/'+ req.file.filename;
             avatar = path.substr(1, path.length)
+            console.log("file: ", req.file)
         }
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 

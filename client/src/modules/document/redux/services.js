@@ -2,11 +2,28 @@ import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const DocumentServices = {
+    getDocuments,
+    createDocument,
     getDocumentCategories,
     createDocumentCategory,
     getDocumentDomains,
     createDocumentDomain
 };
+
+function getDocuments() {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents`,
+        method: 'GET',
+    }, false, true, 'document');
+}
+
+function createDocument(data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
+}
 
 function getDocumentCategories() {
     return sendRequest({
@@ -20,7 +37,7 @@ function createDocumentCategory(data) {
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'POST',
         data,
-    }, false, true, 'document');
+    }, true, true, 'document');
 }
 
 // Danh mục văn bản - domain
@@ -36,5 +53,5 @@ function createDocumentDomain(data) {
         url: `${ LOCAL_SERVER_API }/documents/domains`,
         method: 'POST',
         data,
-    }, false, true, 'document');
+    }, true, true, 'document');
 }

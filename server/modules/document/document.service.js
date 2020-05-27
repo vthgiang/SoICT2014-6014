@@ -1,6 +1,51 @@
 const {DocumentCategory, DocumentDomain} = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 
+/**
+ * Lấy danh sách tất cả các tài liệu văn bản
+ * @company id của công ty
+ */
+exports.getDocuments = async (company) => {
+    var list = await Document.find({ company });
+    var paginate;
+    return {list, paginate};
+}
+
+/**
+ * Tạo một tài liệu văn bản mới
+ */
+exports.createDocument = async (company, data) => {
+    return await Document.create({
+        company,
+        name: data.name,
+        domains: data.domains,
+        category: data.category,
+        description: data.description,
+
+        versionName: data.versionName,
+        issuingBody: data.issuingBody,
+        officialNumber: data.officialNumber,
+        issuingDate: data.issuingDate,
+        effectiveDate: data.effectiveDate,
+        expiredDate: data.expiredDate,
+        signer: data.signer,
+        file: data.file,
+        scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
+
+        relationshipDescription: data.relationshipDescription ,
+        relationshipDocuments: data.relationshipDocuments,
+
+        roles: data.roles,
+
+        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo ,
+        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
+        archivedRecordPlaceManager: data.archivedRecordPlaceManager 
+    });
+}
+
+/**
+ * Lấy tất cả các loại văn bản
+ */
 exports.getDocumentCategories = async (company) => {
     return await DocumentCategory.find({ company });
 }
@@ -21,7 +66,9 @@ exports.delete = async(id) => {
     //code here
 }
 
-// Danh mục văn bản - domain
+/**
+ * Danh mục văn bản
+ */
 exports.getDocumentDomains = async (company) => {
     const list = await DocumentDomain.find({ company });
     const dataConverted = list.map( domain => {

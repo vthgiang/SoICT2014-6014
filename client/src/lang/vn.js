@@ -386,16 +386,17 @@ export default {
         },
 
         document: {
-            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản',
-            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', users: 'Những vị trí có quyền xem mẫu này',
-            created_at: 'Ngày tạo', apply_at: 'Ngày áp dụng', views: 'Số lần xem', downloads: 'Số lần download',
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',
+            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', roles: 'Những vị trí có quyền xem mẫu này',
+            issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn', views: 'Số lần xem', downloads: 'Số lần download',
             add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản',
             upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
             doc_version: {
                 title: 'Phiên bản',
-                name: 'Tên phiên bản', description: 'Mô tả',
-                apply_at: 'Ngày áp dụng',
-                upload_file: 'Upload File', upload_file_scan: 'Upload File scan',
+                name: 'Tên phiên bản', description: 'Mô tả', issuing_body: 'Cơ quan ban hành', official_number: 'Số hiệu',
+                issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn',
+                signer: 'Người ký', number_view: 'Số lần xem', number_download: 'Số lần tải', 
+                file: 'File upload', scanned_file_of_signed_document: 'File scan',
             },
             relationship: {
                 title: 'Liên kết văn bản',

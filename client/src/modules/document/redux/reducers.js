@@ -32,7 +32,7 @@ const initState = {
             tree: []
         },
 
-        listData: {
+        data: {
             list: [], paginate: [],
             totalDocs: 0,
             limit: 0,
@@ -44,9 +44,7 @@ const initState = {
             prevPage: 0,
             nextPage: 0,
 
-            create: {
-                user_manage: []
-            }
+            user_manage: []
         },
     },
     user: {
@@ -58,6 +56,8 @@ export function documents(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
+        case DocumentConstants.GET_DOCUMENTS_REQUEST:
+        case DocumentConstants.CREATE_DOCUMENT_REQUEST:  
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
@@ -67,6 +67,8 @@ export function documents(state = initState, action) {
                 isLoading: true,
             }
 
+        case DocumentConstants.GET_DOCUMENTS_FAILE:
+        case DocumentConstants.CREATE_DOCUMENT_FAILE:  
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_FAILE:
@@ -76,8 +78,42 @@ export function documents(state = initState, action) {
                 isLoading: false,
             }
 
-        case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:
+        case DocumentConstants.GET_DOCUMENTS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: action.payload.list,
+                        paginate: action.payload.list
+                    }
+                }
+            };
 
+        case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
+            
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: [
+                            action.payload,
+                            ...state.administration.data.list
+                        ],
+                        paginate: [
+                            ...state.administration.data.paginate,
+                            action.payload
+                        ]
+                    }
+                }
+            };
+
+        case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -91,6 +127,7 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
+
             return {
                 ...state,
                 isLoading: false,
