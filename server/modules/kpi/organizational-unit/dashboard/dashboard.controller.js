@@ -21,7 +21,7 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (req, res) => {
     }
 }
 
-/** Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại) */
+/** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
         var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.id);

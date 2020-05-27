@@ -13,8 +13,10 @@ import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrgani
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 
 class OrganizationalUnitKpiDashboard extends Component {
+
     constructor(props) {
         super(props);
+        
         this.state = {
             date: new Date().getMonth() + 1,
             currentRole: localStorage.getItem("currentRole")
@@ -194,7 +196,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
                             {managerKpiUnit.kpis ?
                                 <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
-                                    <h1>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h1>
+                                    <h2>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h2>
                                     <TrendsInOrganizationalUnitKpiChart/>
                                 </div>
                                 : <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
@@ -205,7 +207,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             
                             <div className="col-xs-6">
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h1>Kết quả KPI đơn vị năm 2019</h1>
+                                    <h2>Kết quả KPI đơn vị năm 2019</h2>
                                     <ResultsOfOrganizationalUnitKpiChart/>
                                 </div>
                             </div>
@@ -213,7 +215,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             {managerKpiUnit.kpis ?
                                 <div className="col-xs-6">
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h1>Phân bố KPI đơn vị tháng {this.state.date}</h1>
+                                        <h2>Phân bố KPI đơn vị tháng {this.state.date}</h2>
                                         <DistributionOfOrganizationalUnitKpiChart/>
                                     </div>
                                 </div>
