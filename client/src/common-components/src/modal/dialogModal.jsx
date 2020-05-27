@@ -56,7 +56,7 @@ class DialogModal extends Component {
                                     }
                                     );
                                 }}>&times;</button>
-                                <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
+                                <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left" style={bodyStyle}>
                                 {this.props.children}

@@ -96,9 +96,9 @@ class TaskInformationForm extends Component {
                                      return <div className={`form-group ${value.errorOnInfoDate === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <DatePicker
-                                                id={`info_date_${index}`}
+                                                id={`info_date_${this.props.perform}_${index}_${info.code}`}
                                                 value={value[`${info.code}`] && value[`${info.code}`].value}
-                                                onChange={(e)=>this.props.handleInfoDateChange(e, info.code)}
+                                                onChange={(value)=>this.props.handleInfoDateChange(value, info.code)}
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
                                         </div>
@@ -132,11 +132,11 @@ class TaskInformationForm extends Component {
                                     return <div className={`form-group `}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                id={`select-set-of-value-${index}`}
+                                                id={`select-set-of-value-${index}-${this.props.perform}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
-                                                onChange={(e)=>this.props.handleSetOfValueChange(e, info.code)}
+                                                onChange={(value)=>this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
                                                 value={value[`${info.code}`] && value[`${info.code}`].value}
                                             />

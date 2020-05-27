@@ -8,7 +8,9 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            info: {}
+        }
     }
     
     componentWillMount() {
@@ -47,7 +49,13 @@ class EvaluateByConsultedEmployee extends Component {
                 // TODO: Ve sau can sua
                 // point: nextProps.point,
 
-                errorOnPoint: undefined
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined
             }
         }else{
             return null;
@@ -74,7 +82,8 @@ class EvaluateByConsultedEmployee extends Component {
         return (
             <React.Fragment>
             <DialogModal
-                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
+                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID="form-evaluate-task-by-consulted"
                 title={this.props.title}
                 func={this.save}
@@ -103,7 +112,7 @@ class EvaluateByConsultedEmployee extends Component {
                             {/* TODO: sửa lấy theo tháng đúng tháng đánh giá hiện tại theo Date */}
 
                             {
-                                (task.evaluations.length !== 0 ) ?
+                                (task.evaluations.length !== 0 ) &&
                                 <div >
                                     {
                                          (task.evaluations[task.evaluations.length-1].taskInformations.length !== 0) &&
@@ -120,17 +129,17 @@ class EvaluateByConsultedEmployee extends Component {
                                             {
                                                 task.evaluations[task.evaluations.length-1].taskInformations.map(info => {
                                                     return <div>
-                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value}</p>
+                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
                                                         {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
                                             }
                                         </div> 
                                         }
-                                        {
+                                        {/* {
                                             (task.evaluations[task.evaluations.length-1].taskInformations.length === 0) &&
-                                            <div><i style={{ /*color: "red", fontWeight: "bold" */}}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
-                                        }
+                                            <div><i style={{ color: "red", fontWeight: "bold" }}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
+                                        } */}
                                     
                                     <br/>
                                     {
@@ -149,7 +158,8 @@ class EvaluateByConsultedEmployee extends Component {
                                         </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá </p></div>
                                     }
                                     
-                                </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
+                                </div> 
+                                // : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
                             }
                         </fieldset>
                     </form>

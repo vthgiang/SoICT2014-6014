@@ -209,25 +209,20 @@ legend.scheduler-border {
     box-shadow: 0 0 0;
     height: 100%;
     margin: 0;
-    background-color: #eae9f5;
-
-    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
-    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
-    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    border: 1px solid #eae9f5;
 }
 .box.box-solid.description > .box-header {
     font-size: 1.2em;
     font-weight: 900;
     padding: 10px 10px 10px 15px;
-    border-bottom: 1px solid #fff;
-    background-color: #7b73d8;
-    color: #fff;
+    border-bottom: 1px solid #eae9f5;
 }
 .box.box-solid.description > .box-body{
     padding: 0;
 }
 .box.box-solid.description > .box-body dt{
     padding: 10px 5px 10px 15px;
+    color: #605ca8;
 }
 .box.box-solid.description > .box-body dd{
     padding: 0px 5px 5px 15px;

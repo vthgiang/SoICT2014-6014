@@ -65,10 +65,10 @@ class ModalViewTaskTemplate extends Component {
                                         
                                         <dt>Tham số</dt>
                                         <dd>
-                                            <dd>D: Tổng số ngày thực hiện công việc (trừ CN)</dd>
-                                            <dd>D0: Số ngày quá hạn</dd>
-                                            <dd>A: Tổng số hoạt động</dd>
-                                            <dd>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</dd>
+                                            <div>D: Tổng số ngày thực hiện công việc (trừ CN)</div>
+                                            <div>D0: Số ngày quá hạn</div>
+                                            <div>A: Tổng số hoạt động</div>
+                                            <div>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</div>
                                         </dd>
                                     </div>
                                 </div>
