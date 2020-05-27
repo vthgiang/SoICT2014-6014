@@ -178,21 +178,7 @@ class ModalAddTask extends Component {
 
     handleChangeTaskTemplate =  async (event) => {
         let value = event.target.value;
-        //this.state.newTask.taskTemplate = value;
-        await this.setState(state =>{
-            return{ 
-                ...state,
-                newTask: {
-                    ...this.state.newTask,
-                    taskTemplate: value,
-                    
-                }
-            };
-        });
-        this.handleRACI(value,event);
-    }
-    handleRACI = async (value,event) => {
-        //event.preventDefault();
+        
         if(value ===""){
             this.setState(state =>{
                 return{
@@ -205,17 +191,16 @@ class ModalAddTask extends Component {
                         accountableEmployees: [],
                         consultedEmployees: [],
                         informedEmployees: [],
+                        taskTemplate: "",
                     }
                 };
             });
         }
         else{
-            let taskTemplate;
-            this.props.getTaskTemplate(value);
-            taskTemplate = this.props.tasktemplates.items.find(function(taskTemplate) {                
+            let taskTemplate = this.props.tasktemplates.items.find(function(taskTemplate) {                
                 return taskTemplate._id === value; 
             });
-            console.log("\n\n\n\n\n\n\n\n\n",taskTemplate)
+
             this.setState(state =>{
                 return{
                     ...state,
@@ -227,11 +212,10 @@ class ModalAddTask extends Component {
                         accountableEmployees: taskTemplate.accountableEmployees,
                         consultedEmployees: taskTemplate.consultedEmployees,
                         informedEmployees: taskTemplate.informedEmployees,
+                        taskTemplate: taskTemplate._id,
                     }
                 };
             });
-            
-        this.forceUpdate(); 
         } 
     }
 
@@ -354,7 +338,7 @@ class ModalAddTask extends Component {
             responsibleEmployees =taskTemplate.responsibleEmployees.map(item=>item.id);
             
         }
-        console.log("\n\n\n\n\n\n\n\n\n\n\n\n",responsibleEmployees);
+        
         if (tasktemplates.items && newTask.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function(taskTemplate) {    
           
@@ -439,7 +423,7 @@ class ModalAddTask extends Component {
                                     <div className={`col-sm-10 ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
                                         {userdepartments &&
                                         <SelectBox
-                                            id={`responsible-select-box`}
+                                            id={`responsible-select-box${newTask.taskTemplate}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={[
@@ -453,7 +437,7 @@ class ModalAddTask extends Component {
                                                 },
                                             ]}
                                             onChange={this.handleChangeTaskResponsibleEmployees}                                            
-                                            value ={responsibleEmployees}
+                                            value ={newTask.responsibleEmployees}
                                             multiple={true}
                                             options={{placeholder: "Chọn người thực hiện"}}
                                         />
@@ -466,7 +450,7 @@ class ModalAddTask extends Component {
                                     <div className={`col-sm-10 ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
                                         {userdepartments &&
                                             <SelectBox
-                                                id={`accounatable-select-box`}
+                                                id={`accounatable-select-box${newTask.taskTemplate}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items={[
@@ -493,7 +477,7 @@ class ModalAddTask extends Component {
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
                                             <SelectBox
-                                                id={`consulted-select-box`}
+                                                id={`consulted-select-box${newTask.taskTemplate}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items={
@@ -514,7 +498,7 @@ class ModalAddTask extends Component {
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
                                             <SelectBox
-                                                id={`informed-select-box`}
+                                                id={`informed-select-box${newTask.taskTemplate}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
                                                 items={
