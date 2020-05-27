@@ -5,9 +5,20 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.searchDisciplines = async (req, res) => {
     try {
-        var listDisciplines = await DisciplineService.searchDisciplines(req.body, req.user.company._id);
+        let  data = {};
+        if(req.query.page !== undefined && req.query.limit !== undefined ){
+            let params = {
+                organizationalUnit: req.query.organizationalUnit,
+                position: req.query.position,
+                employeeNumber: req.query.employeeNumber,
+                decisionNumber: req.query.decisionNumber,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            data = await DisciplineService.searchDisciplines(params, req.user.company._id);
+        }
         await LogInfo(req.user.email, 'GET_DISCIPLINE', req.user.company);
-        res.status(200).json({ success: true, messages:["get_discipline_success"], content: listDisciplines});
+        res.status(200).json({ success: true, messages:["get_discipline_success"], content: data});
     } catch (error) {
         await LogError(req.user.email, 'GET_DISCIPLINE', req.user.company);
         res.status(400).json({success: false, messages:["get_discipline_faile"], content: {error: error} });

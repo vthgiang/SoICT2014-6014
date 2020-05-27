@@ -9,7 +9,9 @@ import { TaskInformationForm } from './taskInformationForm';
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            info: {}
+        }
     }
     
     componentWillMount() {
@@ -36,7 +38,7 @@ class EvaluateByAccountableEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
+        document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
 
     handleChangeAccountablePoint = async (e) => {
@@ -99,12 +101,16 @@ class EvaluateByAccountableEmployee extends Component {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -114,12 +120,16 @@ class EvaluateByAccountableEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -140,7 +150,7 @@ class EvaluateByAccountableEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -156,12 +166,16 @@ class EvaluateByAccountableEmployee extends Component {
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -222,7 +236,7 @@ class EvaluateByAccountableEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -246,6 +260,16 @@ class EvaluateByAccountableEmployee extends Component {
     //     return msg;
     // }
     
+    
+    handlePriorityChange =(value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                priority: value
+            }
+        });
+    }
+
     handleDateChange = (value) => {
         // var value = e.target.value;
         this.setState(state => {
@@ -288,7 +312,16 @@ class EvaluateByAccountableEmployee extends Component {
                 id: nextProps.id,
                 // point: nextProps.point,
 
-                errorOnPoint: undefined
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined,
+                errorOnAccountablePoint: undefined,
+                errorOnAccountableContribution: undefined, 
+                errorOnMyPoint: undefined
             } 
         } else {
             return null;
@@ -297,7 +330,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks } = this.props;
-        const { date, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
+        const { date, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
                 errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
         var task = (tasks && tasks.task)&& tasks.task.info;
@@ -305,7 +338,8 @@ class EvaluateByAccountableEmployee extends Component {
         return (
             <React.Fragment>
             <DialogModal
-                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
+                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID="form-evaluate-task-by-accountable"
                 title={this.props.title}
                 func={this.save}
@@ -323,6 +357,24 @@ class EvaluateByAccountableEmployee extends Component {
                         />
                         <ErrorLabel content={errorOnDate} />
                     </div>
+                    { 
+                    (this.props.perform === "stop") &&
+                        <div className="form-group">
+                            <label>Trạng thái công việc:</label>
+                            {
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id={`select-priority-task-${this.props.perform}-${this.props.role}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {[{ value: 1, text: 'Thấp' }, { value: 2, text: 'Trung bình' }, { value: 3, text: 'Cao' }]}
+                                    onChange={this.handlePriorityChange}
+                                    multiple={false}
+                                    value={priority}
+                                />
+                            }
+                        </div>
+                    }
+                    
                     <div>
                         <TaskInformationForm 
                             task= {task && task} 
@@ -340,6 +392,7 @@ class EvaluateByAccountableEmployee extends Component {
                             // errorOnTextInfo={errorOnTextInfo}
                             // errorOnNumberInfo={errorOnNumberInfo}
                             
+                            perform={this.props.perform}
                             value={this.state}
                         />
                         
@@ -348,50 +401,50 @@ class EvaluateByAccountableEmployee extends Component {
                         {/* <strong>Điểm tự động: &nbsp;<span id='autoPoint'></span> </strong>
                         <br/> */}
                         {
-                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) &&
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Đánh giá cá nhân người phê duyệt</legend>
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className={`form-group ${errorOnAccountableContribution===undefined?"":"has-error"}`}>
-                                            <label>% đóng góp (<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="number" 
-                                                name="accountableContribution"
-                                                placeholder={85}
-                                                onChange={this.handleChangeAccountableContribution}
-                                                value={accountableContribution}
-                                            />
-                                            <ErrorLabel content={errorOnAccountableContribution}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className={`form-group ${errorOnMyPoint===undefined?"":"has-error"}`}>
-                                            <label>Điểm tự đánh giá-phê duyệt (<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="number" 
-                                                name="myPoint"
-                                                placeholder={85}
-                                                onChange={this.handleChangeMyPoint}
-                                                value={myPoint}
-                                            />
-                                            <ErrorLabel content={errorOnMyPoint}/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
+                            // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) &&
+                            // <fieldset className="scheduler-border">
+                            //     <legend className="scheduler-border">Đánh giá cá nhân người phê duyệt</legend>
+                            //     <div className="row">
+                            //         <div className="col-sm-6">
+                            //             <div className={`form-group ${errorOnAccountableContribution===undefined?"":"has-error"}`}>
+                            //                 <label>% đóng góp (<span style={{color:"red"}}>*</span>)</label>
+                            //                 <input 
+                            //                     className="form-control"
+                            //                     type="number" 
+                            //                     name="accountableContribution"
+                            //                     placeholder={85}
+                            //                     onChange={this.handleChangeAccountableContribution}
+                            //                     value={accountableContribution}
+                            //                 />
+                            //                 <ErrorLabel content={errorOnAccountableContribution}/>
+                            //             </div>
+                            //         </div>
+                            //         <div className="col-sm-6">
+                            //             <div className={`form-group ${errorOnMyPoint===undefined?"":"has-error"}`}>
+                            //                 <label>Điểm tự đánh giá-phê duyệt (<span style={{color:"red"}}>*</span>)</label>
+                            //                 <input 
+                            //                     className="form-control"
+                            //                     type="number" 
+                            //                     name="myPoint"
+                            //                     placeholder={85}
+                            //                     onChange={this.handleChangeMyPoint}
+                            //                     value={myPoint}
+                            //                 />
+                            //                 <ErrorLabel content={errorOnMyPoint}/>
+                            //             </div>
+                            //         </div>
+                            //     </div>
+                            // </fieldset>
                         }
                         
-                        <strong>Điểm tự động: &nbsp;<span id='autoPoint'>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
                         <br/>
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>
                         <br/>
                         <br/>
                         {
-                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) ?
+                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
                             <table className="table table-striped table-bordered table-hover">
                                 <tr>
                                     <th>Tên</th>
@@ -405,7 +458,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     // (task && task.evaluations.length !== 0) &&
                                     task.evaluations[task.evaluations.length-1].results.map((res,index) => 
                                         (
-                                            (res.role !== "accountable")&&
+                                            // (res.role !== "accountable")&&
                                             <tr>
                                                 <td>{res.employee.name}</td>
                                                 <td>{res.role}</td>

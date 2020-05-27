@@ -23,16 +23,21 @@
     margin-left: 50px;
     margin-top: -40px;
     margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
 }
 
 .tool-level1{
     margin-left: 55px;
     margin-bottom: 20px;
+    margin-right: 20px;
 }
 
 .text-input-level1{
     margin-left: 50px;
     margin-top: -40px;
+    margin-right: 20px;
 }
 
 .text-input-level1 textarea{
@@ -49,6 +54,12 @@
 
     border: 1px solid #989da5;
 }
+
+
+
+
+
+
 
 .user-img-level2{
     width: 30px;
@@ -70,16 +81,21 @@
     margin-left: 90px;
     margin-top: -30px;
     margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
 }
 
 .tool-level2{
     margin-left: 100px;
     margin-bottom: 20px;
+    margin-right: 20px;
 }
 
 .text-input-level2{
     margin-left: 90px;
     margin-top: -30px;
+    margin-right: 20px;
 }
 
 .text-input-level2 textarea{
@@ -94,11 +110,26 @@
     height: auto;
     font-size: 13px;
 
-    border: 1px solid #c4c8cf;
+    border: 1px solid #ccd0d5;
 }
 
 
 
+
+
+.content-level1 > a, .content-level2 > a{
+    font-weight: 700;
+}
+
+
+
+
+.content-level1 .btn-group, .content-level2 .btn-group{
+    position: absolute;
+    margin: 0;
+    top: calc(50% - 15px);
+    right: -35px;
+}
 
 .btn-group.open .dropdown-toggle, .btn-group .dropdown-toggle{
     background-color: transparent;
@@ -106,63 +137,88 @@
     -webkit-box-shadow: none;
 }
 
+.content-level1 .dropdown-item, .content-level2 .dropdown-item{
+    background-color: none;
+    border: none;
+    width: 100%;
+    right: 5px;
+}
 
-/* .task-action {
-    background-color: #e2e0ff;
+.content-level1 .dropdown-menu, .content-level2 .dropdown-menu{
+    right: 10px;
+
+    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+}
+
+
+
+
+
+
+.files-list{
+    min-height: 100px;
+    border: 1px dashed #D3D3D3;
+    margin-top: 10px;
     padding: 10px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-
-    margin-left: 50px;
-    margin-top: -50px;
 }
-
-.task-action-sub {
-    background-color: #f2f3f5;
-    padding: 10px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-
-    margin-left: 90px;
-    margin-top: -30px;
+.files-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
-
-.task-action .dropdown-toggle{
-    background-color: transparent;
+.files-list-item {
+    padding: 10px 0px 10px 10px;
 }
-.btn-group.open .dropdown-toggle, .btn-group .dropdown-toggle{
-    background-color: transparent;
-    box-shadow: none;
-    -webkit-box-shadow: none;
+.files-list-item-content {
+    width: calc(100% - 130px);
+    float: right;
+
+    padding-top: 25px;
 }
-
-
-.post.clearfix ul{
-    margin-left: 50px;
+.files-list-item-content-item {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
-
-.chat-level2-action {
-    margin-left: 90px;   
+.files-list-item-content-item-1 {
+    font-size: 20px;
+    line-height: 30px;
 }
-
-.user-block-action {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+.files-list-item-content-item-2 {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 800;
 }
+.files-list-item-preview {
+    width: 130px;
+    display: inline-block;
+}
+.files-list-item-preview-image {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    border: 1px solid #000;
+}
+.files-list-item-preview-extension {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    border: 1px solid #000;
+    color: white;
+    background-color: #605ca8;
 
-
-.user-block-sub {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-left: 50px;
-} */
+    text-align: center;
+    line-height: 90px;
+    font-size: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+.files-list-item-preview a{
+    font-size: 1.2em;
+    margin-top: -10px;
+    margin-right: -20px;
+}

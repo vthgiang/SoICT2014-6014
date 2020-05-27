@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import CanvasJSReact from '../../../../chart/canvasjs.react';
-// import CanvasJSReact from '../../../../components/Content/TaskManagement/Chart/canvasjs.react';
+import CanvasJSReact from '../../../../../chart/canvasjs.react';
+
+import { TaskStatusChart } from './taskStatusChart';
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -313,34 +314,7 @@ class TaskDashboard extends Component {
                 dataPoints: this.generateDataPoints(500)
             }]
         }
-        const options4 = {
-            theme: "light2", // "light1", "light2", "dark1", "dark2"
-            exportEnabled: true,
-            animationEnabled: true,
-            title: {
-                text: "Trạng thái công việc tháng 11",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            data: [{
-                type: "pie",
-                startAngle: 25,
-                toolTipContent: "<b>{label}</b>: {y}%",
-                showInLegend: "true",
-                legendText: "{label}",
-                indexLabelFontSize: 16,
-                indexLabel: "{label} - {y}%",
-                dataPoints: [
-                    { y: 51.08, label: "Đang chờ" },
-                    { y: 27.34, label: "Đang thực hiện" },
-                    { y: 5.02, label: "Bị hủy" },
-                    { y: 10.62, label: "Đã hoàn thành" },
-                    { y: 4.07, label: "Chờ phê duyệt" },
-                    { y: 1.66, label: "Tạm dừng" }
-                ]
-            }]
-        }
+        
         const options5 = {
             exportEnabled: true,
             title: {
@@ -438,8 +412,9 @@ class TaskDashboard extends Component {
                                 </div>
                             </div>
                             <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options4} />
+                                <div className="box box-primary" style={ {textAlign: 'center'}}>
+                                    <h2>Trạng thái công việc</h2>
+                                    <TaskStatusChart/>
                                 </div>
                             </div>
                             <div className="col-xs-6">

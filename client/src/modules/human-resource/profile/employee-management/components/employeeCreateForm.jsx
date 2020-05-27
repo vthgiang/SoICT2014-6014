@@ -221,14 +221,14 @@ class EmployeeCreateForm extends Component {
             <React.Fragment>
                 <ButtonModal modalID="modal-add-employee" button_name="Thêm mới nhân viên" title="Thêm mới nhân viên" />
                 <DialogModal
-                    size='100' modalID="modal-add-employee" isLoading={false}
+                    size='75' modalID="modal-add-employee" isLoading={employeesManager.isLoading}
                     formID="form-add-employee"
                     title="Thêm mới nhân viên"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-addAA-employee"> */}
-                    <div className="nav-tabs-custom" style={{ marginTop: '-15px' }} >
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#general">{translate('manage_employee.menu_general_infor')}</a></li>
                             <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#contact">{translate('manage_employee.menu_contact_infor')}</a></li>

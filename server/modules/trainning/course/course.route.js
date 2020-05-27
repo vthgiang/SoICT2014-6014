@@ -9,7 +9,7 @@ const CourseController = require("./course.controller");
 /**
  * Lấy danh sách khoá đào tạo
  */
-router.post('/paginate', auth, CourseController.searchCourses);
+router.get('/', auth, CourseController.searchCourses);
 
 /**
  * Thêm mới kháo đào tạo
@@ -24,7 +24,7 @@ router.delete('/:id', auth, CourseController.deleteCourse);
 /**
  * Cập nhật thông tin khoá học
  */
-router.put('/:id', auth, CourseController.updateCourse);
+router.patch('/:id', auth, CourseController.updateCourse);
 
 
 module.exports = router;

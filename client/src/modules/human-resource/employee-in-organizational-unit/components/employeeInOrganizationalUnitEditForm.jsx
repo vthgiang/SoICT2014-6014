@@ -57,8 +57,6 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean }
         let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean }
         let roleEmployee = { id: infoRoleEmployee._id, name: infoRoleEmployee.name, parents: infoRoleEmployee.parents, users: userRoleEmployee }
-        console.log(roleDean);
-        console.log(roleViceDean);
         // Lưu chỉnh sửa các role của đơn vị
         this.props.edit(roleDean);
         this.props.edit(roleViceDean);

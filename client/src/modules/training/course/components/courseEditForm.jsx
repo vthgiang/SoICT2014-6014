@@ -4,13 +4,17 @@ import { withTranslate } from 'react-redux-multilingual';
 import { CourseFormValidator } from './combinedContent';
 
 import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
-
+import { EmployeeManagerActions } from '../../../human-resource/profile/employee-management/redux/actions';
 import { CourseActions } from '../redux/actions';
 
 class CourseEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+    componentDidMount() {
+        let educationInfo = this.props.education.listAll.filter(x => x._id === this.state.educationProgram);
+        this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
     }
 
     // Bắt sự kiện thay đổi tên kháo đào tạo
@@ -118,6 +122,10 @@ class CourseEditForm extends Component {
 
     // Bắt sự kiện thay đổi thuộc chương trình đào tạo
     handleEducationProgramChange = (value) => {
+        if (value[0] !== '') {
+            let educationInfo = this.props.education.listAll.filter(x => x._id === value[0]);
+            this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+        }
         this.validateEducationProgram(value[0], true);
     }
     validateEducationProgram = (value, willUpdateState = true) => {
@@ -177,6 +185,13 @@ class CourseEditForm extends Component {
         })
     }
 
+    // Bắt sự kiện xoá nhân viên thêm gia
+    handleDelete = (id) => {
+        this.setState({
+            listEmployees: this.state.listEmployees.filter(x => x !== id)
+        })
+    }
+
     // Bắt sự kiện click buttom thêm nhân viên tham gia
     handleAdd = (e) => {
         e.preventDefault();
@@ -197,8 +212,9 @@ class CourseEditForm extends Component {
     }
 
     save = () => {
+        let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
         if (this.isFormValidated()) {
-            this.props.updateCourse(this.state._id, this.state);
+            this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees });
         }
     }
 
@@ -236,28 +252,44 @@ class CourseEditForm extends Component {
         }
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        console.log(nextProps.educationProgram._id);
+        if (nextProps._id !== this.state._id) {
+            let educationInfo = this.props.education.listAll.filter(x => x._id === nextProps.educationProgram._id);
+            this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+        }
+        return true;
+    }
+
+
     render() {
         console.log(this.state);
-        const { education, translate, user } = this.props;
-        const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
+        var userlist = [];
+        const { education, translate, course, employeesManager } = this.props;
+        const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
-        var listEducations = this.props.education.listAll;
-        var userlist = user.list;
-        for (let n in listEmployees) {
-            userlist = userlist.filter(x => x._id !== listEmployees[n])
+        var listEducations = education.listAll;
+        if (employeesManager.listAllEmployees.length !== 0) {
+            userlist = employeesManager.listAllEmployees;
+        }
+        let employeeInfor = [];
+        if (listEmployees.length !== 0) {
+            for (let n in listEmployees) {
+                userlist = userlist.filter(x => x._id !== listEmployees[n]);
+                employeeInfor = employeesManager.listAllEmployees.filter(x => x._id === listEmployees[n]).concat(employeeInfor);
+            }
         }
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-course" isLoading={education.isLoading}
+                    modalID="modal-edit-course" isLoading={course.isLoading}
                     formID="form-edit-course"
                     title="Chỉnh sửa khoá đào tạo"
                     func={this.save}
-                    disableSubmit={false}
                     size={75}
                     maxWidth={850}
-                // disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-edit-course" >
                         <div className="row">
@@ -275,7 +307,7 @@ class CourseEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_start_date"
+                                    id={`edit_start_date${_id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -284,7 +316,7 @@ class CourseEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_end_date"
+                                    id={`edit_end_date${_id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
@@ -320,12 +352,13 @@ class CourseEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram === undefined ? "" : "has-error"}`}>
                                 <label>Thuộc chương trình đào tạo<span className="text-red">*</span></label>
                                 <SelectBox
-                                    id={`edit-educationProgram`}
+                                    id={`edit-educationProgram${_id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={educationProgram}
                                     items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: "", text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
+                                    disabled={listEmployees.length !== 0 ? true : false}
                                 />
                                 <ErrorLabel content={errorOnEducationProgram} />
                             </div>
@@ -353,10 +386,10 @@ class CourseEditForm extends Component {
                             <div>
                                 <div className="employeeBox2">
                                     <SelectBox
-                                        id={`edit-employee`}
+                                        id={`edit-employee${_id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={userlist.map(x => { return { value: x._id, text: x.name } })}
+                                        items={userlist.map(x => { return { value: x._id, text: `${x.fullName} - ${x.employeeNumber}` } })}
                                         onChange={this.handleEmployeeChange}
                                         multiple={true}
                                     />
@@ -374,11 +407,24 @@ class CourseEditForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
+                                {
+                                    (employeeInfor.length !== 0 && employeeInfor !== undefined) &&
+                                    employeeInfor.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.employeeNumber}</td>
+                                            <td>{x.fullName}</td>
+                                            <td></td>
+                                            <td>
+                                                <a className="delete" title="Delete" onClick={() => this.handleDelete(x._id)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
-                        {user.isLoading ?
+                        {employeesManager.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof listEmployees === 'undefined' || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof employeeInfor === 'undefined' || employeeInfor.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </form>
                 </DialogModal>
@@ -388,12 +434,13 @@ class CourseEditForm extends Component {
 };
 
 function mapState(state) {
-    const { course, education, user } = state;
-    return { course, education, user };
+    const { course, education, employeesManager } = state;
+    return { course, education, employeesManager };
 };
 
 const actionCreators = {
     updateCourse: CourseActions.updateCourse,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
 };
 
 const editForm = connect(mapState, actionCreators)(withTranslate(CourseEditForm));

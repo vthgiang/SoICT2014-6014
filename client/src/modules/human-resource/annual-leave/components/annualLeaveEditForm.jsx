@@ -81,8 +81,12 @@ class AnnualLeaveEditForm extends Component {
     }
 
     save = () => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        var partEnd = this.state.endDate.split('-');
+        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.updateAnnualLeave(this.state._id, this.state);
+            return this.props.updateAnnualLeave(this.state._id, { ...this.state, startDate: startDate, endDate: endDate });
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -106,7 +110,7 @@ class AnnualLeaveEditForm extends Component {
 
     render() {
         const { translate, annualLeave } = this.props;
-        const {_id, employeeNumber, startDate, endDate, reason, status,
+        const { _id, employeeNumber, startDate, endDate, reason, status,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
