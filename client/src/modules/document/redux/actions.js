@@ -17,7 +17,23 @@ export const DocumentActions = {
     createDocumentDomain
 };
 
-function getDocuments(){
+function getDocuments(data=undefined){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_REQUEST});
+            DocumentServices.getDocuments(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_FAILE});
+                
+            })
+        }
+    }
     return dispatch => {
         dispatch({ type: DocumentConstants.GET_DOCUMENTS_REQUEST});
         DocumentServices.getDocuments()

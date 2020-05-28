@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
 import EditForm from './editForm';
@@ -12,11 +12,12 @@ import {DepartmentActions} from '../../../../super-admin/organizational-unit/red
 class Table extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { limit: 5, page: 1 }
     }
 
     componentDidMount(){
         this.props.getAllDocuments();
+        this.props.getAllDocuments({page: 1, limit: 5});
         this.props.getAllRoles();
         this.props.getAllDepartments();
     }
@@ -38,7 +39,8 @@ class Table extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {list} = this.props.documents.administration.data;
+        const docs = this.props.documents.administration.data;
+        const {list, paginate} = docs;
         const {isLoading} = this.props.documents;
         const {currentRow} = this.state;
 
@@ -68,6 +70,15 @@ class Table extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
+                <SearchBar 
+                    columns={[
+                        { title: translate('document.name'), value: 'name' },
+                        { title: translate('document.description'), value: 'description' }
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>
@@ -104,8 +115,8 @@ class Table extends Component {
                     </thead>
                     <tbody>
                         {
-                            list.length > 0 ?
-                            list.map(doc => 
+                            paginate.length > 0 ?
+                            paginate.map(doc => 
                             <tr key={doc._id}>
                                 <td>{doc.name}</td>
                                 <td>{doc.description}</td>
@@ -127,8 +138,23 @@ class Table extends Component {
                         
                     </tbody>
                 </table>
+                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage}/> 
             </React.Fragment>
          );
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+        const data = { limit: this.state.limit, page };
+        this.props.getAllDocuments(data);
+    }
+
+    setLimit = (number) => {
+        if (this.state.limit !== number){
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            this.props.getAllDocuments(data);
+        }
     }
 }
  

@@ -6,7 +6,7 @@ const { LogInfo, LogError } = require('../../logs');
  */
 exports.getDocuments = async (req, res) => {
     try {
-        const documents = await DocumentServices.getDocuments(req.user.company._id);
+        const documents = await DocumentServices.getDocuments(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(200).json({

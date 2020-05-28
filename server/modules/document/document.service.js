@@ -5,13 +5,25 @@ const arrayToTree = require('array-to-tree');
  * Lấy danh sách tất cả các tài liệu văn bản
  * @company id của công ty
  */
-exports.getDocuments = async (company) => {
-    var list = await Document.find({ company }).populate([
-        { path: 'category', model: DocumentCategory},
-        { path: 'domains', model: DocumentDomain},
-    ]);
-    var paginate;
-    return {list, paginate};
+exports.getDocuments = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    var data = query.data;
+    if(page === undefined && limit === undefined){
+        return await Document.find({company}).populate([
+            { path: 'category', model: DocumentCategory},
+            { path: 'domains', model: DocumentDomain},
+        ]);
+    }else{
+        return await Document.paginate( {company} , { 
+            page, 
+            limit,
+            populate: [
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]
+        });
+    }
 }
 
 /**
