@@ -6,16 +6,22 @@ const arrayToTree = require('array-to-tree');
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
+    console.log("query: ", query)
     var page = query.page;
     var limit = query.limit;
-    var data = query.data;
-    if(page === undefined && limit === undefined){
+    
+    if(page === undefined && limit === undefined ){
+        
         return await Document.find({company}).populate([
             { path: 'category', model: DocumentCategory},
             { path: 'domains', model: DocumentDomain},
         ]);
     }else{
-        return await Document.paginate( {company} , { 
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        console.log("option: ", option);
+        return await Document.paginate( option , { 
             page, 
             limit,
             populate: [
