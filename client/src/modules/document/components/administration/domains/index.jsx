@@ -37,10 +37,9 @@ class AdministrationDocumentDomains extends Component {
         if(dataTree.length > 0){
             return dataTree.map(node => {
                         if(node.children === undefined)
-                            return <li className="domain-tree" key={node.id}><b> {node.title} </b></li>
-                        return <li className="domain-tree" key={node.id}>
-                            <i className="fa fa-plus" onClick={()=>this.slideTreeElement(node.id)}></i>
-                            <b> {node.title} </b>
+                            return <li className="domain-tree" key={node.id} style={{paddingLeft: '0px', marginLeft: '0px'}}><b className="domain-tree-content"> <i className="fa fa-file-text text-gray"></i> {node.title} </b></li>
+                        return <li className="domain-tree" key={node.id} style={{paddingLeft: '0px', marginLeft: '0px'}}>
+                            <b className="domain-tree-content"> <i className="fa fa-plus-square text-yellow" onClick={()=>this.slideTreeElement(node.id)}></i> {node.title} </b>
                             <ul className="domain-tree" id={`tree-element-${node.id}`} style={{display: 'none'}}>
                                 {this.drawDomainTree(node.children)}
                             </ul>

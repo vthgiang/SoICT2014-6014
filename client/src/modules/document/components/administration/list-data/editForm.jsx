@@ -341,7 +341,6 @@ class EditForm extends Component {
                                         <thead>
                                             <tr>
                                                 <th>{translate('document.version')}</th>
-                                                <th>{translate('document.description')}</th>
                                                 <th>{translate('document.issuing_date')}</th>
                                                 <th>{translate('document.effective_date')}</th>
                                                 <th>{translate('document.expired_date')}</th>
@@ -355,7 +354,6 @@ class EditForm extends Component {
                                                 documentVersions.map((version, i) => 
                                                     <tr key={i}>
                                                         <td>{version.versionName}</td>
-                                                        <td>{version.description}</td>
                                                         <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>

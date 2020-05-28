@@ -27,5 +27,6 @@ router.delete("/:id", auth, DocumentController.deleteDocument);
 
 router.get("/download-file/:id/:numberVersion", auth, DocumentController.downloadDocumentFile);
 router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.downloadDocumentFileScan);
+router.patch("/:id/increase-number-view", auth, DocumentController.increaseNumberView);
 
 module.exports = router;

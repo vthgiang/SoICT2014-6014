@@ -27,6 +27,7 @@ class Table extends Component {
             currentRow: data
         });
         window.$('#modal-edit-document').modal('show');
+        this.props.increaseNumberView(data._id)
     }
 
     requestDownloadDocumentFile = (id, fileName, numberVersion) => {
@@ -181,7 +182,8 @@ const mapDispatchToProps = {
     getAllRoles: RoleActions.get,
     getAllDepartments: DepartmentActions.get,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
-    downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
+    downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
+    increaseNumberView: DocumentActions.increaseNumberView
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

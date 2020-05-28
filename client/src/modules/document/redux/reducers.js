@@ -66,6 +66,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.EDIT_DOCUMENT_REQUEST:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST:
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -81,6 +82,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE:
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -88,6 +90,7 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS:    
             return {
                 ...state,
                 isLoading: false
