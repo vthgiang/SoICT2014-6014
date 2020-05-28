@@ -62,6 +62,8 @@ export function documents(state = initState, action) {
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
+        case DocumentConstants.EDIT_DOCUMENT_REQUEST:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -69,14 +71,22 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.GET_DOCUMENTS_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_FAILE:  
+        case DocumentConstants.EDIT_DOCUMENT_FAILE: 
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE:
             return {
                 ...state,
                 isLoading: false,
             }
+
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            };
 
         case DocumentConstants.GET_DOCUMENTS_SUCCESS:
             return {
@@ -111,6 +121,14 @@ export function documents(state = initState, action) {
                         ]
                     }
                 }
+            };
+
+        case DocumentConstants.EDIT_DOCUMENT_SUCCESS:
+            index = findIndex(state.administration.data.list, action.payload._id);
+            if(index !== -1) state.administration.data.list[index] = action.payload;
+            return {
+                ...state,
+                isLoading: false
             };
 
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:

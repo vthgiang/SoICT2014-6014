@@ -105,8 +105,8 @@ class Table extends Component {
                                 <td><DateTimeConverter dateTime={doc.issuingDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.effectiveDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.expiredDate} type="DD-MM-YYYY"/></td>
-                                <td>123</td>
-                                <td>123</td>
+                                <td>{doc.numberOfView}</td>
+                                <td>{doc.numberOfDownload}</td>
                                 <td>
                                     <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
                                     <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>

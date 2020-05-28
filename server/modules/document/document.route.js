@@ -25,4 +25,7 @@ router.post("/", auth, DocumentController.createDocument);
 router.patch("/:id", auth, DocumentController.editDocument);
 router.delete("/:id", auth, DocumentController.deleteDocument);
 
+router.get("/download-file/:id", DocumentController.downloadDocumentFile);
+router.get("/download-file-scan/:id", DocumentController.downloadDocumentFileScan);
+
 module.exports = router;

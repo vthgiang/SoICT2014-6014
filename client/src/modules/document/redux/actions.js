@@ -1,10 +1,13 @@
 import { DocumentServices } from "./services";
 import { DocumentConstants } from "./constants";
+const FileDownload = require('js-file-download');
 
 export const DocumentActions = {
 
     getDocuments,
     createDocument,
+    editDocument,
+    downloadDocumentFile,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -43,6 +46,43 @@ function createDocument(data){
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_FAILE});
             })
+    }
+}
+
+function editDocument(id, data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_REQUEST});
+        DocumentServices.editDocument(id, data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.EDIT_DOCUMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
+            })
+    }
+}
+
+
+function downloadDocumentFile(id, fileName){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST});
+        DocumentServices.downloadDocumentFile(id)
+            .then(res => { 
+                dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS });
+                // res.blob().then(blob => {
+                //     let url = window.URL.createObjectURL(blob);
+                //     let a = document.createElement('a');
+                //     a.href = url;
+                //     a.download = fileName;
+                //     a.click();
+                // });
+                const content = res.headers['content-type'];
+                FileDownload(res.data, fileName, content)
+            })
+            .catch(err => { dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE})})
     }
 }
 

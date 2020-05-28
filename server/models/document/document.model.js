@@ -70,6 +70,9 @@ const DocumentSchema = new Schema({
         versionName: { // tên phiên bản
             type: String
         },
+        description: {
+            type: String
+        },
         issuingBody: { // Cơ quan ban hành
             type: String
         },

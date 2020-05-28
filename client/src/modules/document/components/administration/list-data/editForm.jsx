@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import moment from 'moment';
+import { LOCAL_SERVER_API } from '../../../../../env';
 
 class EditForm extends Component {
     constructor(props) {
@@ -25,6 +27,11 @@ class EditForm extends Component {
 
     handleDomains = value => {
         this.setState({ documentDomains: value });
+    }
+
+    handleDescription = (e) => {
+        const {value} = e.target;
+        this.setState({documentDescription: value});
     }
 
     handleVersionName = (e) => {
@@ -64,13 +71,13 @@ class EditForm extends Component {
         this.setState({ documentRelationshipDescription: value });
     }
 
-    handleRelationshipList = e => {
+    handleRelationshipDocuments = e => {
         const {value} = e.target;
-        this.setState({ documentRelationshipList: value });
+        this.setState({ documentRelationshipDocuments: value });
     }
 
-    handleRolesCanSee = value => {
-        this.setState({ documentUsers: value });
+    handleRoles= value => {
+        this.setState({ documentRoles: value });
     }
 
     handleArchivedRecordPlaceInformation = e => {
@@ -113,10 +120,45 @@ class EditForm extends Component {
     }
 
     save = () => {
-        const {documentTypeName, documentTypeDescription} = this.state;
-        this.props.createDocumentCategory({
-            name: documentTypeName,
-            description: documentTypeDescription
+        const {
+            documentId,
+            documentName, 
+            documentCategory,
+            documentDomains,
+            documentDescription,
+            documentVersionName,
+            documentIssuingBody,
+            documentOfficialNumber,
+            documentIssuingDate,
+            documentEffectiveDate,
+            documentExpiredDate,
+            documentSigner,
+            documentRelationshipDescription,
+            documentRelationshipDocuments,
+            documentRoles,
+            documentArchivedRecordPlaceInfo,
+            documentArchivedRecordPlaceOrganizationalUnit,
+            documentArchivedRecordPlaceManager,
+        } = this.state;
+        this.props.editDocument(documentId, {
+            name: documentName,
+            category: documentCategory,
+            domains: documentDomains,
+            description: documentDescription,
+            versionName: documentVersionName,
+            issuingBody: documentIssuingBody,
+            officialNumber: documentOfficialNumber,
+            issuingDate: moment(documentIssuingDate, "DD-MM-YYYY"),
+            effectiveDate: moment(documentEffectiveDate, "DD-MM-YYYY"),
+            expiredDate: moment(documentExpiredDate, "DD-MM-YYYY"),
+            signer: documentSigner,
+            relationshipDescription: documentRelationshipDescription,
+            relationshipDocuments: documentRelationshipDocuments,
+            roles: documentRoles,
+            
+            archivedRecordPlaceInfo: documentArchivedRecordPlaceInfo,
+            archivedRecordPlaceOrganizationalUnit: documentArchivedRecordPlaceOrganizationalUnit,
+            archivedRecordPlaceManager: documentArchivedRecordPlaceManager
         });
     }
 
@@ -149,9 +191,19 @@ class EditForm extends Component {
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
             } 
+        }else if(nextProps.documentVersions.length > prevState.documentVersions.length){
+            return {
+                ...prevState,
+                documentId: nextProps.documentId,
+                documentVersions: nextProps.documentVersions,
+            } 
         } else {
             return null;
         }
+    }
+
+    requestDownloadDocumentFile = (id, fileName) => {
+        this.props.downloadDocumentFile(id, fileName);
     }
 
     render() {
@@ -190,7 +242,7 @@ class EditForm extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <textarea type="text" className="form-control" onChange={this.handleName} value={documentDescription}/>
+                                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -286,56 +338,31 @@ class EditForm extends Component {
                                                 <tr>
                                                     <th>{translate('document.version')}</th>
                                                     <th>{translate('document.description')}</th>
-                                                    <th>{translate('document.created_at')}</th>
-                                                    <th>{translate('document.apply_at')}</th>
-                                                    <th style={{ width: '120px', textAlign: 'center' }}>
-                                                        {translate('general.action')}
-                                                        <DataTableSetting
-                                                            columnArr={[
-                                                                translate('document.name'), 
-                                                                translate('document.description'), 
-                                                                translate('document.created_at'), 
-                                                                translate('document.apply_at')
-                                                            ]}
-                                                            limit={this.state.limit}
-                                                            setLimit={this.setLimit}
-                                                            hideColumnOption = {true}
-                                                            tableId="table-document-version"
-                                                        />
-                                                    </th>
+                                                    <th>{translate('document.issuing_date')}</th>
+                                                    <th>{translate('document.effective_date')}</th>
+                                                    <th>{translate('document.expired_date')}</th>
+                                                    <th>{translate('document.doc_version.file')}</th>
+                                                    <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                                    <th>{translate('document.views')}</th>
+                                                    <th>{translate('document.downloads')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1.0</td>
-                                                    <td>Mô tả phiên bản 1.0</td>
-                                                    <td>10/5/2020</td>
-                                                    <td>17/5/2020</td>
-                                                    <td>
-                                                        <a className="text-yellow" title={translate('document.edit')}><i className="material-icons">edit</i></a>
-                                                        <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.0</td>
-                                                    <td>Mô tả phiên bản 2.0</td>
-                                                    <td>11/5/2020</td>
-                                                    <td>17/5/2020</td>
-                                                    <td>
-                                                        <a className="text-yellow" title={translate('document.edit')}><i className="material-icons">edit</i></a>
-                                                        <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3.0</td>
-                                                    <td>Mô tả phiên bản 3.0</td>
-                                                    <td>17/5/2020</td>
-                                                    <td>18/5/2020</td>
-                                                    <td>
-                                                        <a className="text-yellow" title={translate('document.edit')}><i className="material-icons">edit</i></a>
-                                                        <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
-                                                    </td>
-                                                </tr>
+                                                {
+                                                    documentVersions.map((version, i) => 
+                                                        <tr key={i}>
+                                                            <td>{version.versionName}</td>
+                                                            <td>{version.description}</td>
+                                                            <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
+                                                            <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
+                                                            <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
+                                                            <td><a href="#"><u>Tải xuống</u></a></td>
+                                                            <td><a href="#" onClick={()=>this.requestDownloadDocumentFile('123456', documentName+"đasadsa")}><u>Tải xuống</u></a></td>
+                                                            <td>{version.numberOfView}</td>
+                                                            <td>{version.numberOfDownload}</td>
+                                                        </tr>
+                                                    )
+                                                }
                                             </tbody>
                                         </table>
                                     </div>
@@ -356,7 +383,7 @@ class EditForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {relationshipDocs}
-                                    onChange={this.handleRelationshipList}
+                                    onChange={this.handleRelationshipDocuments}
                                     value={documentRelationshipDocuments}
                                     multiple={true}
                                 />
@@ -370,7 +397,7 @@ class EditForm extends Component {
                                 style={{width: "100%"}}
                                 items = {roleList}
                                 value={documentRoles}
-                                onChange={this.handleRolesCanSee}
+                                onChange={this.handleRoles}
                                 multiple={true}
                             />
                         </fieldset>
@@ -412,27 +439,13 @@ class EditForm extends Component {
             </React.Fragment>
          );
     }
-
-    handleRolesChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentRoles: value
-            }
-        });
-    }
-
-    handleOrganizationalUnit = value => {
-        this.setState({
-            documentOrganizationalUnit: value[0]
-        })
-    }
 }
  
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createDocumentCategory: DocumentActions.createDocumentCategory
+    editDocument: DocumentActions.editDocument,
+    downloadDocumentFile: DocumentActions.downloadDocumentFile
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );

@@ -44,6 +44,50 @@ exports.createDocument = async (company, data) => {
 }
 
 /**
+ * Chỉnh sửa thông tin tài liệu văn bản
+ */
+exports.editDocument = async (id, data) => {
+    const doc = await Document.findById(id);
+    if(doc.versionName !== data.versionName) // ghi nhận là thay thành một phiên bản mới khác
+    doc.versions.push(doc);
+
+    doc.name = data.name
+    doc.domains = data.domains
+    doc.category = data.category
+    doc.description = data.description
+
+    doc.versionName = data.versionName
+    doc.issuingBody = data.issuingBody
+    doc.officialNumber = data.officialNumber
+    doc.issuingDate = data.issuingDate
+    doc.effectiveDate = data.effectiveDate
+    doc.expiredDate = data.expiredDate
+    doc.signer = data.signer
+    doc.file = data.file
+    doc.scannedFileOfSignedDocument = data.scannedFileOfSignedDocument
+
+    doc.relationshipDescription = data.relationshipDescription 
+    doc.relationshipDocuments = data.relationshipDocuments
+
+    doc.roles = data.roles
+
+    doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo 
+    doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
+    doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager 
+
+    await doc.save();
+
+    return doc;
+}
+
+exports.downloadDocumentFile = async (id) => {
+    return {
+        path: `/upload/project_description.docx`,
+        name: 'project_description.docx'
+    };
+}
+
+/**
  * Lấy tất cả các loại văn bản
  */
 exports.getDocumentCategories = async (company) => {

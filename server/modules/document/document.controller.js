@@ -50,10 +50,37 @@ exports.showDocument = (req, res) => {
 
 };
 
-exports.editDocument = (req, res) => {
+exports.editDocument = async (req, res) => {
+    try {
+        const document = await DocumentServices.editDocument(req.params.id, req.body);
+        
+        await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_document_success'],
+            content: document
+        });
+    } catch (error) {
+        console.log(error)
+        await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_document_faile'],
+            content: error
+        });
+    }
 };
 
 exports.deleteDocument = (req, res) => {
+};
+
+exports.downloadDocumentFile = async (req, res) => {
+    console.log("download file")
+    const file = await DocumentServices.downloadDocumentFile(req.params.id);
+    res.download('./upload/project_description.docx', 'tailieu.docx');
+};
+
+exports.downloadDocumentFileScan = (req, res) => {
 };
 
 /**

@@ -4,6 +4,9 @@ import { sendRequest } from '../../../helpers/requestHelper';
 export const DocumentServices = {
     getDocuments,
     createDocument,
+    editDocument,
+    downloadDocumentFile,
+
     getDocumentCategories,
     createDocumentCategory,
     getDocumentDomains,
@@ -23,6 +26,24 @@ function createDocument(data) {
         method: 'POST',
         data,
     }, true, true, 'document');
+}
+
+function editDocument(id, data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/${id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'document');
+}
+
+function downloadDocumentFile(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+    }, true, true, 'document');
+
+    // return fetch(`${ LOCAL_SERVER_API }/documents/download-file/${id}`);
 }
 
 function getDocumentCategories() {
