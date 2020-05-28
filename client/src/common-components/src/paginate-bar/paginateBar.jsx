@@ -73,19 +73,21 @@ class PaginateBar extends Component {
             <React.Fragment>
                 {
                     pageTotal !== 0 &&
-                    <div className="pull-right">
-                        <ul className="pagination" style={{ marginTop: '20px' }}>
-                            {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
-                            {items}
-                            {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
-                        </ul>
-                        <div id="search-page" className="form-group collapse">
-                            <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
-                            <button
-                                type="button"
-                                className="pull-right btn btn-success"
-                                onClick={this.setPaginate}
-                            >{translate('form.search')}</button>
+                    <div className="row" style={{paddingRight: '15px'}}>
+                        <div className="pull-right">
+                            <ul className="pagination" style={{ marginTop: '20px' }}>
+                                {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
+                                {items}
+                                {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
+                            </ul>
+                            <div id="search-page" className="form-group collapse">
+                                <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
+                                <button
+                                    type="button"
+                                    className="pull-right btn btn-success"
+                                    onClick={this.setPaginate}
+                                >{translate('form.search')}</button>
+                            </div>
                         </div>
                     </div>
                 }

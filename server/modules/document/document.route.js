@@ -22,10 +22,10 @@ router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory
 router.get("/", auth, DocumentController.getDocuments);
 router.get("/:id", auth, DocumentController.showDocument);
 router.post("/", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
-router.patch("/:id", auth, DocumentController.editDocument);
+router.patch("/:id", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.editDocument);
 router.delete("/:id", auth, DocumentController.deleteDocument);
 
-router.get("/download-file/:id", auth, DocumentController.downloadDocumentFile);
-router.get("/download-file-scan/:id", auth, DocumentController.downloadDocumentFileScan);
+router.get("/download-file/:id/:numberVersion", auth, DocumentController.downloadDocumentFile);
+router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.downloadDocumentFileScan);
 
 module.exports = router;
