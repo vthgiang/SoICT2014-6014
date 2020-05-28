@@ -25,7 +25,7 @@ router.post("/", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan
 router.patch("/:id", auth, DocumentController.editDocument);
 router.delete("/:id", auth, DocumentController.deleteDocument);
 
-router.get("/download-file/:id", DocumentController.downloadDocumentFile);
-router.get("/download-file-scan/:id", DocumentController.downloadDocumentFileScan);
+router.get("/download-file/:id", auth, DocumentController.downloadDocumentFile);
+router.get("/download-file-scan/:id", auth, DocumentController.downloadDocumentFileScan);
 
 module.exports = router;
