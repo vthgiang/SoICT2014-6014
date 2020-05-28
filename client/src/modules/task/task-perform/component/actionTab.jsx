@@ -15,7 +15,7 @@ import Files from 'react-files'
 import TextareaAutosize from 'react-textarea-autosize';
 import { LOCAL_SERVER_API } from '../../../../env';
 import './actionTab.css';
-
+import { DocumentActions } from '../../../document/redux/actions'
 class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -326,12 +326,15 @@ class ActionTab extends Component {
             data.append("files", x);
         })
         //Xóa file đã được chọn mỗi khi gửi hoạt động
-        this.state.files.forEach(item=>{
-            this.refs.files.removeFile(item)
-        })
+        
         if(newAction.creator && newAction.content){
             
             this.props.addTaskAction(data);
+            if(this.state.files){
+                this.state.files.forEach(item=>{
+                    this.refs.filesAddAction.removeFile(item)
+                })
+            }
         }
         
         this.contentAction[index].value = "";
@@ -530,19 +533,15 @@ class ActionTab extends Component {
     console.log('error code ' + error.code + ': ' + error.message)
     }
 
-    // filesRemoveOne = (file) => {
-    // this.refs.files.removeFile(file)
-    // }
-    // filesRemoveAll = () => {
-    // this.refs.files.removeFiles()
-    // }
-
-    // filesUpload = () => {
-    // const formData = new FormData()
-    // Object.keys(this.state.files).forEach((key) => {
-    //     const file = this.state.files[key]
-    //     formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
-    // })}
+    filesRemoveOne = (file) => {
+    this.refs.filesAddAction.removeFile(file)
+    }
+    filesRemoveAll = () => {
+    this.refs.filesAddAction.removeFiles()
+    }
+    requestDownloadFile = (id, fileName) => {
+        this.props.downloadFile(id, fileName);
+    }
     
     render() {
         const { translate } = this.props;
@@ -586,15 +585,16 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return (
                                     <div className="post clearfix"  key={item._id}>
-                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
-                                        
+                                        {item.creator ?
+                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" /> :
+                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+"/upload/avatars/user.png")} alt="User Image" />
+                                        }
                                         {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
                                         <React.Fragment>
                                             <p className="content-level1">
                                                 <a href="#">{item.creator? item.creator.name : ""} </a>
                                                 {item.description}
-
-                                                {this.props.role === 'responsible' && <div className="btn-group dropleft pull-right">
+                                                {(this.props.role === 'responsible' && item.creator) && <div className="btn-group dropleft pull-right">
                                                     <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
                                                         <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                             <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
@@ -607,12 +607,18 @@ class ActionTab extends Component {
                                                         <div className="dropdown-divider"></div>
                                                     </div>
                                                 </div>}
+                                                
                                             </p>
-                                            <div>{item.files.length>0?item.files[0].url:null}</div>
+                                            
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận({item.comments.length}) &nbsp;</a></li>
+                                                {item.files.length> 0 &&
+                                                <li style={{display:"inline-table"}}>
+                                                <div><b>File đính kèm:</b> {item.files.map(elem => {
+                                                    return <div><a href="#" onClick={()=>this.requestDownloadFile('123456', "a")}> {elem.name} </a></div>
+                                                })} </div></li>
+                                                }
                                                 {(item.creator === undefined && this.props.role ==="responsible") &&
                                                 <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
                                                 {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
@@ -621,7 +627,6 @@ class ActionTab extends Component {
                                                 <li style={{display:"inline-table"}} className="list-inline">
                                                     {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
                                                         <React.Fragment>
-                                                            
                                                             {item.evaluations.some(checkUserId)=== true ?
                                                                 <React.Fragment>
                                                                     {item.evaluations.map(element => {
@@ -660,7 +665,6 @@ class ActionTab extends Component {
                                                         <React.Fragment>
                                                            
                                                             <Rating
-                                                                
                                                                 fractions = {2}
                                                                 emptySymbol="fa fa-star-o fa-2x"
                                                                 fullSymbol="fa fa-star fa-2x"
@@ -811,7 +815,6 @@ class ActionTab extends Component {
                                         minFileSize={0}
                                         clickable={false}>
 
-                                        
                                         <div className='files-list'>
                                             <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>
                                                 <i class="material-icons">attach_file</i>
@@ -897,7 +900,7 @@ class ActionTab extends Component {
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
                                                 </ul>
                                                 <div className="tool-level1">
-                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                   
                                                 </div>
                                             </div>}
                                         
@@ -949,7 +952,7 @@ class ActionTab extends Component {
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
                                                                 <div className="tool-level2">
-                                                                    <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                    
                                                                 </div>
                                                             </div>
                                                         }
@@ -965,7 +968,7 @@ class ActionTab extends Component {
                                                     </div>
                                                     <div className="tool-level2">
                                                         <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitCommentOfTaskComment(e, item._id, item._id, task._id)}>Gửi bình luận  </a>
-                                                        <input type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -982,7 +985,6 @@ class ActionTab extends Component {
                             </div>
                             <div className="tool-level2">
                                 <a href="#" className="link-black text-sm pull-right" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm trao đổi</a>
-                                <input type="file" name="file" onChange={this.onHandleChangeFile} />
                             </div>
                         </div>
 
@@ -1047,7 +1049,8 @@ const actionCreators = {
     editCommentOfTaskComment: performTaskAction.editCommentOfTaskComment,
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
-    confirmAction: performTaskAction.confirmAction
+    confirmAction: performTaskAction.confirmAction,
+    downloadFile: performTaskAction.downloadFile
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

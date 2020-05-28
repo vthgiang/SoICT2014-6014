@@ -210,11 +210,15 @@ exports.getTaskActions = async (req, res) => {
 
 exports.createTaskAction = async (req,res) => {
     try {
-        var files;
-        console.log(req.files)
-        // if(req.files !== undefined){
-        //     var path = req.files.destination +'/'+ req.files.filename;
-        //     files = path.substr(1, path.length)}
+        var files=[] ;
+        
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
         var taskAction = await PerformTaskService.createTaskAction(req.body,files);
         await LogInfo(req.user.email, ` create task action  `,req.user.company)
         res.status(200).json({

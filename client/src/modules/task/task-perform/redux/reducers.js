@@ -316,7 +316,10 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 error: action.error
-            }                                                                                              
+            }  
+        case performTaskConstants.DOWNLOAD_FILE_REQUEST:      
+        case performTaskConstants.DOWNLOAD_FILE_FAILURE:
+        case performTaskConstants.DOWNLOAD_FILE_SUCCESS:                                                                                          
         default:
             return state
     }

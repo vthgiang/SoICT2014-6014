@@ -196,8 +196,8 @@
     display: inline-block;
 }
 .files-list-item-preview-image {
-    width: 100px;
-    height: 100px;
+    width: 85%;
+    /* //height: 100px; */
     display: inline-block;
     border: 1px solid #000;
 }
