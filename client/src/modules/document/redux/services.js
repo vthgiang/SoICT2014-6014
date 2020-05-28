@@ -14,11 +14,11 @@ export const DocumentServices = {
     createDocumentDomain
 };
 
-function getDocuments(data=undefined) {
+function getDocuments(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents`,
         method: 'GET',
-        params: data !== undefined ? {page: data.page, limit: data.limit, query: data.query} : undefined,
+        params,
     }, false, true, 'document');
 }
 

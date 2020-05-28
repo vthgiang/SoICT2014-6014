@@ -12,7 +12,7 @@ import {DepartmentActions} from '../../../../super-admin/organizational-unit/red
 class Table extends Component {
     constructor(props) {
         super(props);
-        this.state = { limit: 5, page: 1 }
+        this.state = { option: 'name', value: '', limit: 5, page: 1 }
     }
 
     componentDidMount(){
@@ -155,6 +155,22 @@ class Table extends Component {
             const data = { limit: number, page: this.state.page };
             this.props.getAllDocuments(data);
         }
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+    
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getAllDocuments(data);
     }
 }
  
