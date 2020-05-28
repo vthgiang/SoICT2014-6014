@@ -22,7 +22,8 @@ const {
     RepairUpgrade,
     DistributeTransfer,
 
-    DocumentDomain
+    DocumentDomain,
+    DocumentCategory
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1500,6 +1501,25 @@ const sampleCompanyData = async () => {
         { name: "Nhà Kho 16", company: vnist, description: 'Nhà Kho 6', parent: domanins2[2]._id},
     ]); 
 
+    const categories = await DocumentCategory.insertMany([
+        {
+            company: vnist._id,
+            name: "Văn bản",
+            description: 'Văn bản'
+        },{
+            company: vnist._id,
+            name: "Biểu mẫu",
+            description: 'Biểu mẫu'
+        },{
+            company: vnist._id,
+            name: "Công văn",
+            description: 'Công văn'
+        },{
+            company: vnist._id,
+            name: "Tài liệu",
+            description: 'Tài liệu'
+        },
+    ]);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------

@@ -28,12 +28,12 @@ class Table extends Component {
         window.$('#modal-edit-document').modal('show');
     }
 
-    requestDownloadDocumentFile = (id, fileName) => {
-        this.props.downloadDocumentFile(id, fileName);
+    requestDownloadDocumentFile = (id, fileName, numberVersion) => {
+        this.props.downloadDocumentFile(id, fileName, numberVersion);
     }
 
-    requestDownloadDocumentFileScan = (id, fileName) => {
-        this.props.downloadDocumentFileScan(id, fileName);
+    requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
+        this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
 
     render() { 
@@ -51,15 +51,10 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category}
-                        documentDomains={currentRow.domains}
-
-                        documentVersionName={currentRow.versionName}
+                        documentCategory={currentRow.category._id}
+                        documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
-                        documentIssuingDate={moment(currentRow.issuingDate).format("DD-MM-YYYY")}
-                        documentExpiredDate={moment(currentRow.expiredDate).format("DD-MM-YYYY")}
-                        documentEffectiveDate={moment(currentRow.effectiveDate).format("DD-MM-YYYY")}
                         documentSigner={currentRow.signer}
                         documentVersions={currentRow.versions}
 
@@ -114,11 +109,11 @@ class Table extends Component {
                             <tr key={doc._id}>
                                 <td>{doc.name}</td>
                                 <td>{doc.description}</td>
-                                <td><DateTimeConverter dateTime={doc.issuingDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.effectiveDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.expiredDate} type="DD-MM-YYYY"/></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name)}><u>{translate('document.download')}</u></a></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name)}><u>{translate('document.download')}</u></a></td>
+                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].issuingDate} type="DD-MM-YYYY"/></td>
+                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].effectiveDate} type="DD-MM-YYYY"/></td>
+                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
+                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
                                 <td>{doc.numberOfView}</td>
                                 <td>{doc.numberOfDownload}</td>
                                 <td>

@@ -54,8 +54,25 @@ exports.createDocument = async (req, res) => {
     }
 };
 
-exports.showDocument = (req, res) => {
-
+exports.showDocument = async (req, res) => {
+    try {
+        const doc = await DocumentServices.showDocument(req.params.id);
+        
+        await LogInfo(req.user.email, 'SHOW_DOCUMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['show_document_success'],
+            content: doc
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'SHOW_DOCUMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['show_document_faile'],
+            content: error
+        });
+    }
 };
 
 exports.editDocument = async (req, res) => {
@@ -84,7 +101,7 @@ exports.deleteDocument = (req, res) => {
 
 exports.downloadDocumentFile = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFile(req.params.id);
+        const file = await DocumentServices.downloadDocumentFile(req.params.id, req.params.numberVersion);
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {
@@ -99,7 +116,7 @@ exports.downloadDocumentFile = async (req, res) => {
 
 exports.downloadDocumentFileScan = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFileScan(req.params.id);
+        const file = await DocumentServices.downloadDocumentFileScan(req.params.id, req.params.numberVersion);
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {

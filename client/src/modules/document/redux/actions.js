@@ -66,10 +66,10 @@ function editDocument(id, data){
     }
 }
 
-function downloadDocumentFile(id, fileName){
+function downloadDocumentFile(id, fileName, numberVersion){
     return dispatch => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST});
-        DocumentServices.downloadDocumentFile(id)
+        DocumentServices.downloadDocumentFile(id, numberVersion)
             .then(res => { 
                 dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS });
                 const content = res.headers['content-type'];
@@ -79,10 +79,10 @@ function downloadDocumentFile(id, fileName){
     }
 }
 
-function downloadDocumentFileScan(id, fileName){
+function downloadDocumentFileScan(id, fileName, numberVersion){
     return dispatch => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST});
-        DocumentServices.downloadDocumentFileScan(id)
+        DocumentServices.downloadDocumentFileScan(id, numberVersion)
             .then(res => { 
                 dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_SUCCESS });
                 const content = res.headers['content-type'];

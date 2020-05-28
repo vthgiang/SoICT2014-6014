@@ -34,11 +34,6 @@ class EditForm extends Component {
         this.setState({documentDescription: value});
     }
 
-    handleVersionName = (e) => {
-        const {value} = e.target;
-        this.setState({ documentVersionName: value });
-    }
-
     handleIssuingBody = (e) => {
         const {value} = e.target;
         this.setState({ documentIssuingBody: value }); 
@@ -52,18 +47,6 @@ class EditForm extends Component {
     handleSigner = e => {
         const {value} = e.target;
         this.setState({ documentSigner: value })
-    }
-
-    handleIssuingDate = value => {
-        this.setState({ documentIssuingDate: value });
-    }
-
-    handleEffectiveDate = value => {
-        this.setState({ documentEffectiveDate: value});
-    }
-
-    handleExpiredDate = value => {
-        this.setState({ documentExpiredDate: value});
     }
 
     handleRelationshipDescription = e => {
@@ -126,40 +109,64 @@ class EditForm extends Component {
             documentCategory,
             documentDomains,
             documentDescription,
-            documentVersionName,
             documentIssuingBody,
             documentOfficialNumber,
-            documentIssuingDate,
-            documentEffectiveDate,
-            documentExpiredDate,
             documentSigner,
+
             documentRelationshipDescription,
             documentRelationshipDocuments,
+
             documentRoles,
+
             documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        this.props.editDocument(documentId, {
-            name: documentName,
-            category: documentCategory,
-            domains: documentDomains,
-            description: documentDescription,
-            versionName: documentVersionName,
-            issuingBody: documentIssuingBody,
-            officialNumber: documentOfficialNumber,
-            issuingDate: moment(documentIssuingDate, "DD-MM-YYYY"),
-            effectiveDate: moment(documentEffectiveDate, "DD-MM-YYYY"),
-            expiredDate: moment(documentExpiredDate, "DD-MM-YYYY"),
-            signer: documentSigner,
-            relationshipDescription: documentRelationshipDescription,
-            relationshipDocuments: documentRelationshipDocuments,
-            roles: documentRoles,
+
+        console.log('dataFFFFFFF:', {
+            documentId,
+            documentName, 
+            documentCategory,
+            documentDomains,
+            documentDescription,
+            documentIssuingBody,
+            documentOfficialNumber,
+            documentSigner,
             
-            archivedRecordPlaceInfo: documentArchivedRecordPlaceInfo,
-            archivedRecordPlaceOrganizationalUnit: documentArchivedRecordPlaceOrganizationalUnit,
-            archivedRecordPlaceManager: documentArchivedRecordPlaceManager
+            documentRelationshipDescription,
+            documentRelationshipDocuments,
+
+            documentRoles,
+            
+            documentArchivedRecordPlaceInfo,
+            documentArchivedRecordPlaceOrganizationalUnit,
+            documentArchivedRecordPlaceManager,
         });
+
+        const formData = new FormData(); 
+        formData.append('name', documentName);
+        formData.append('category', documentCategory);
+        if(documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
+            formData.append('domains[]', documentDomains[i]);
+        }
+        formData.append('description', documentDescription); 
+        formData.append('issuingBody', documentIssuingBody);
+        formData.append('officialNumber', documentOfficialNumber);
+        formData.append('signer', documentSigner);
+
+        formData.append('relationshipDescription', documentRelationshipDescription);
+        if(documentRelationshipDocuments !== undefined)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+            formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
+        }
+        if(documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
+            formData.append('roles[]', documentRoles[i]);
+        }
+
+        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
+        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
+        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+
+        this.props.editDocument(documentId, formData);
     }
 
     
@@ -172,14 +179,10 @@ class EditForm extends Component {
                 documentDescription: nextProps.documentDescription,
                 documentCategory: nextProps.documentCategory,
                 documentDomains: nextProps.documentDomains,
-
-                documentVersionName: nextProps.documentVersionName,
                 documentIssuingBody: nextProps.documentIssuingBody,
                 documentOfficialNumber: nextProps.documentOfficialNumber,
-                documentIssuingDate: nextProps.documentIssuingDate,
-                documentExpiredDate: nextProps.documentExpiredDate,
-                documentEffectiveDate: nextProps.documentEffectiveDate,
                 documentSigner: nextProps.documentSigner,
+
                 documentVersions: nextProps.documentVersions,
 
                 documentRelationshipDescription: nextProps.documentRelationshipDescription,
@@ -202,14 +205,18 @@ class EditForm extends Component {
         }
     }
 
-    requestDownloadDocumentFile = (id, fileName) => {
-        this.props.downloadDocumentFile(id, fileName);
+    requestDownloadDocumentFile = (id, fileName, numberVersion) => {
+        this.props.downloadDocumentFile(id, fileName, numberVersion);
+    }
+
+    requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
+        this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
 
     render() {
         const {
             documentId, documentName, documentDescription, documentCategory, documentDomains, 
-            documentVersionName, documentIssuingBody, documentOfficialNumber, documentIssuingDate, documentExpiredDate, documentEffectiveDate, documentSigner, documentVersions, 
+            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions, 
             documentRelationshipDescription, documentRelationshipDocuments,
             documentRoles, 
             documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
@@ -288,7 +295,7 @@ class EditForm extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
                             <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" onChange={this.handleVersionName} value={documentVersionName}/>
@@ -301,8 +308,8 @@ class EditForm extends Component {
                                         <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
                                         <input type="file"/>
                                     </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                </div> */}
+                                {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
                                         <DatePicker
@@ -327,7 +334,7 @@ class EditForm extends Component {
                                             onChange={this.handleExpiredDate}
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <button type="button" className="btn btn-success pull-right" onClick={()=>this.addNewDocumentVersion(documentId)}>Thêm</button>
                                     <table className="table table-hover table-striped table-bordered" id="table-document-version">
@@ -352,8 +359,8 @@ class EditForm extends Component {
                                                         <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
-                                                        <td><a href="#"><u>Tải xuống</u></a></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile('123456', documentName+"đasadsa")}><u>Tải xuống</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName+"_"+version.versionName, i)}><u>{translate('document.download')}</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName+"_"+version.versionName, i)}><u>{translate('document.download')}</u></a></td>
                                                     </tr>
                                                 ) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                             }
@@ -437,7 +444,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     editDocument: DocumentActions.editDocument,
-    downloadDocumentFile: DocumentActions.downloadDocumentFile
+    downloadDocumentFile: DocumentActions.downloadDocumentFile,
+    downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );

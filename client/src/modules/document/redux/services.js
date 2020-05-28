@@ -37,17 +37,17 @@ function editDocument(id, data) {
     }, true, true, 'document');
 }
 
-function downloadDocumentFile(id) {  
+function downloadDocumentFile(id, numberVersion) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/download-file/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/download-file/${id}/${numberVersion}`,
         method: 'GET',
         responseType: 'blob',
     }, false, true, 'document');
 }
 
-function downloadDocumentFileScan(id) {  
+function downloadDocumentFileScan(id, numberVersion) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/download-file-scan/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/download-file-scan/${id}/${numberVersion}`,
         method: 'GET',
         responseType: 'blob',
     }, false, true, 'document');
