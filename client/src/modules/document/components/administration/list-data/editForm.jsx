@@ -221,12 +221,10 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
 
-        console.log("state doc: ", this.state);
-
         return ( 
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-document" size="75"
+                    modalID="modal-edit-document" size="100"
                     formID="form-edit-document"
                     title={translate('document.add')}
                     func={this.save}
@@ -241,8 +239,16 @@ class EditForm extends Component {
                                         <input type="text" className="form-control" value={documentName} onChange={this.handleName}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
+                                        <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner}/>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -272,6 +278,10 @@ class EditForm extends Component {
                                             options={{placeholder: translate('document.administration.domains.select')}}
                                         />
                                     </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
+                                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -284,16 +294,12 @@ class EditForm extends Component {
                                         <input type="text" className="form-control" onChange={this.handleVersionName} value={documentVersionName}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody}/>
+                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                        <input type="file"/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner}/>
+                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                        <input type="file"/>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -321,53 +327,39 @@ class EditForm extends Component {
                                             onChange={this.handleExpiredDate}
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                        <input type="file"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                        <input type="file"/>
-                                    </div>
                                 </div>
-                                {
-                                    documentVersions !== undefined && documentVersions.length > 0 &&
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <table className="table table-hover table-striped table-bordered" id="table-document-version">
-                                            <thead>
-                                                <tr>
-                                                    <th>{translate('document.version')}</th>
-                                                    <th>{translate('document.description')}</th>
-                                                    <th>{translate('document.issuing_date')}</th>
-                                                    <th>{translate('document.effective_date')}</th>
-                                                    <th>{translate('document.expired_date')}</th>
-                                                    <th>{translate('document.doc_version.file')}</th>
-                                                    <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
-                                                    <th>{translate('document.views')}</th>
-                                                    <th>{translate('document.downloads')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    documentVersions.map((version, i) => 
-                                                        <tr key={i}>
-                                                            <td>{version.versionName}</td>
-                                                            <td>{version.description}</td>
-                                                            <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
-                                                            <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
-                                                            <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
-                                                            <td><a href="#"><u>Tải xuống</u></a></td>
-                                                            <td><a href="#" onClick={()=>this.requestDownloadDocumentFile('123456', documentName+"đasadsa")}><u>Tải xuống</u></a></td>
-                                                            <td>{version.numberOfView}</td>
-                                                            <td>{version.numberOfDownload}</td>
-                                                        </tr>
-                                                    )
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
-                                
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <button type="button" className="btn btn-success pull-right" onClick={()=>this.addNewDocumentVersion(documentId)}>Thêm</button>
+                                    <table className="table table-hover table-striped table-bordered" id="table-document-version">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('document.version')}</th>
+                                                <th>{translate('document.description')}</th>
+                                                <th>{translate('document.issuing_date')}</th>
+                                                <th>{translate('document.effective_date')}</th>
+                                                <th>{translate('document.expired_date')}</th>
+                                                <th>{translate('document.doc_version.file')}</th>
+                                                <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                documentVersions !== undefined && documentVersions.length > 0 ?
+                                                documentVersions.map((version, i) => 
+                                                    <tr key={i}>
+                                                        <td>{version.versionName}</td>
+                                                        <td>{version.description}</td>
+                                                        <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
+                                                        <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
+                                                        <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
+                                                        <td><a href="#"><u>Tải xuống</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile('123456', documentName+"đasadsa")}><u>Tải xuống</u></a></td>
+                                                    </tr>
+                                                ) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">

@@ -27,6 +27,14 @@ exports.getDocuments = async (req, res) => {
 
 exports.createDocument = async (req, res) => {
     try {
+        if(req.files !== undefined){
+            var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
+            var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
+
+            req.body.file = pathFile;
+            req.body.scannedFileOfSignedDocument = pathFileScan;
+            console.log("document create: ", req.body);
+        }
         const document = await DocumentServices.createDocument(req.user.company._id, req.body);
         
         await LogInfo(req.user.email, 'CREATE_DOCUMENT', req.user.company);
@@ -75,9 +83,9 @@ exports.deleteDocument = (req, res) => {
 };
 
 exports.downloadDocumentFile = async (req, res) => {
-    console.log("download file")
     const file = await DocumentServices.downloadDocumentFile(req.params.id);
-    res.download('./upload/project_description.docx', 'tailieu.docx');
+    console.log('file ', file)
+    res.download(file.path, file.name);
 };
 
 exports.downloadDocumentFileScan = (req, res) => {

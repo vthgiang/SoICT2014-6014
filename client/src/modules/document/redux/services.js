@@ -41,9 +41,7 @@ function downloadDocumentFile(id) {
         url: `${ LOCAL_SERVER_API }/documents/download-file/${id}`,
         method: 'GET',
         responseType: 'blob',
-    }, true, true, 'document');
-
-    // return fetch(`${ LOCAL_SERVER_API }/documents/download-file/${id}`);
+    }, false, true, 'document');
 }
 
 function getDocumentCategories() {

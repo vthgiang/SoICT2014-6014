@@ -32,14 +32,14 @@ exports.createDocument = async (company, data) => {
         file: data.file,
         scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
 
-        relationshipDescription: data.relationshipDescription ,
-        relationshipDocuments: data.relationshipDocuments,
+        relationshipDescription: data.relationshipDescription !== 'undefined' ? data.relationshipDescription : undefined ,
+        relationshipDocuments: data.relationshipDocuments !== 'undefined' ? data.relationshipDocuments : undefined,
 
         roles: data.roles,
 
-        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo ,
+        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo !== 'undefined'?data.archivedRecordPlaceInfo:undefined ,
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
-        archivedRecordPlaceManager: data.archivedRecordPlaceManager 
+        archivedRecordPlaceManager: data.archivedRecordPlaceManager !== 'undefined' ? data.archivedRecordPlaceManager : undefined
     });
 }
 
@@ -81,9 +81,12 @@ exports.editDocument = async (id, data) => {
 }
 
 exports.downloadDocumentFile = async (id) => {
+    const file = await Document.findById(id);
+    file.numberOfDownload += 1;
+    await file.save();
     return {
-        path: `/upload/project_description.docx`,
-        name: 'project_description.docx'
+        path: file.file,
+        name: file.name
     };
 }
 

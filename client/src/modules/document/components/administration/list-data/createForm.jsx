@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
+import {convertJsonObjectToFormData} from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -92,6 +93,14 @@ class CreateForm extends Component {
         this.setState({documentArchivedRecordPlaceManager: value});
     }
 
+    handleUploadFile = (e) => {
+        this.setState({ documentFile: e.target.files[0] });
+    }
+
+    handleUploadFileScan = (e) => {
+        this.setState({ documentFileScan: e.target.files[0] });
+    }
+
     save = () => {
         const {
             documentName, 
@@ -105,6 +114,8 @@ class CreateForm extends Component {
             documentEffectiveDate,
             documentExpiredDate,
             documentSigner,
+            documentFile,
+            documentFileScan,
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
@@ -112,26 +123,38 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        this.props.createDocument({
-            name: documentName,
-            category: documentCategory,
-            domains: documentDomains,
-            description: documentDescription,
-            versionName: documentVersionName,
-            issuingBody: documentIssuingBody,
-            officialNumber: documentOfficialNumber,
-            issuingDate: moment(documentIssuingDate, "DD-MM-YYYY"),
-            effectiveDate: moment(documentEffectiveDate, "DD-MM-YYYY"),
-            expiredDate: moment(documentExpiredDate, "DD-MM-YYYY"),
-            signer: documentSigner,
-            relationshipDescription: documentRelationshipDescription,
-            relationshipDocuments: documentRelationshipDocuments,
-            roles: documentRoles,
-            
-            archivedRecordPlaceInfo: documentArchivedRecordPlaceInfo,
-            archivedRecordPlaceOrganizationalUnit: documentArchivedRecordPlaceOrganizationalUnit,
-            archivedRecordPlaceManager: documentArchivedRecordPlaceManager
-        });
+
+        const formData = new FormData(); 
+        formData.append('name', documentName);
+        formData.append('category', documentCategory);
+        if(documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
+            formData.append('domains[]', documentDomains[i]);
+        }
+        formData.append('description', documentDescription); 
+        formData.append('issuingBody', documentIssuingBody);
+        formData.append('officialNumber', documentOfficialNumber);
+        formData.append('signer', documentSigner);
+
+        formData.append('versionName', documentVersionName);
+        formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
+        formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
+        formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
+        formData.append('file', documentFile);
+        formData.append('fileScan', documentFileScan);
+
+        formData.append('relationshipDescription', documentRelationshipDescription);
+        if(documentRelationshipDocuments !== undefined)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+            formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
+        }
+        if(documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
+            formData.append('roles[]', documentRoles[i]);
+        }
+
+        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
+        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
+        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+
+        this.props.createDocument(formData);
     }
 
     render() {
@@ -148,7 +171,7 @@ class CreateForm extends Component {
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
                 <DialogModal
-                    modalID="modal-create-document" size="75"
+                    modalID="modal-create-document" size="100"
                     formID="form-create-document"
                     title={translate('document.add')}
                     func={this.save}
@@ -162,6 +185,20 @@ class CreateForm extends Component {
                                         <label>{ translate('document.name') }<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" onChange={this.handleName}/>
                                     </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleIssuingBody}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" onChange={this.handleSigner}/>
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{ translate('document.category') }<span className="text-red">*</span></label>
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -186,11 +223,9 @@ class CreateForm extends Component {
                                             options={{placeholder: translate('document.administration.domains.select')}}
                                         />
                                     </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <textarea style={{height: '180px'}} type="text" className="form-control" onChange={this.handleDescription}/>
+                                        <textarea type="text" className="form-control" onChange={this.handleDescription}/>
                                     </div>
                                 </div>
                             </div>
@@ -204,17 +239,13 @@ class CreateForm extends Component {
                                         <input type="text" className="form-control" onChange={this.handleVersionName}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleIssuingBody}/>
+                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                        <input type="file" onChange={this.handleUploadFile}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleSigner}/>
-                                    </div>
+                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                        <input type="file" onChange={this.handleUploadFileScan}/>
+                                    </div>  
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
@@ -240,14 +271,6 @@ class CreateForm extends Component {
                                             value={this.state.documentExpiredDate}
                                             onChange={this.handleExpiredDate}
                                         />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                        <input type="file"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                        <input type="file"/>
                                     </div>
                                 </div>
                             </div>

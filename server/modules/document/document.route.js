@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth } = require('../../middleware');
+const { auth, uploadFile } = require('../../middleware');
 
 // Danh mục văn bản - domain
 router.get("/domains", auth, DocumentController.getDocumentDomains);
@@ -21,7 +21,7 @@ router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory
 // Văn bản tài liệu
 router.get("/", auth, DocumentController.getDocuments);
 router.get("/:id", auth, DocumentController.showDocument);
-router.post("/", auth, DocumentController.createDocument);
+router.post("/", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
 router.patch("/:id", auth, DocumentController.editDocument);
 router.delete("/:id", auth, DocumentController.deleteDocument);
 

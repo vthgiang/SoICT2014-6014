@@ -28,6 +28,10 @@ class Table extends Component {
         window.$('#modal-edit-document').modal('show');
     }
 
+    requestDownloadDocumentFile = (id, fileName) => {
+        this.props.downloadDocumentFile(id, fileName);
+    }
+
     render() { 
         const {translate} = this.props;
         const {list} = this.props.documents.administration.data;
@@ -73,6 +77,8 @@ class Table extends Component {
                             <th>{translate('document.issuing_date')}</th>
                             <th>{translate('document.effective_date')}</th>
                             <th>{translate('document.expired_date')}</th>
+                            <th>{translate('document.upload_file')}</th>
+                            <th>{translate('document.upload_file_scan')}</th>
                             <th>{translate('document.views')}</th>
                             <th>{translate('document.downloads')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
@@ -84,6 +90,8 @@ class Table extends Component {
                                         translate('document.issuing_date'), 
                                         translate('document.effective_date'), 
                                         translate('document.expired_date'), 
+                                        translate('document.upload_file'), 
+                                        translate('document.upload_file_scan'),
                                         translate('document.views'), 
                                         translate('document.downloads')
                                     ]}
@@ -105,6 +113,8 @@ class Table extends Component {
                                 <td><DateTimeConverter dateTime={doc.issuingDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.effectiveDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.expiredDate} type="DD-MM-YYYY"/></td>
+                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name)}><u>{translate('document.download')}</u></a></td>
+                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name)}><u>{translate('document.download')}</u></a></td>
                                 <td>{doc.numberOfView}</td>
                                 <td>{doc.numberOfDownload}</td>
                                 <td>
@@ -113,7 +123,7 @@ class Table extends Component {
                                 </td>
                             </tr>):
                             isLoading ? 
-                            <tr><td colSpan={7}>{translate('general.loading')}</td></tr>:<tr><td colSpan={7}>{translate('general.no_data')}</td></tr>
+                            <tr><td colSpan={10}>{translate('general.loading')}</td></tr>:<tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
                         }
                         
                     </tbody>
@@ -129,6 +139,7 @@ const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
     getAllRoles: RoleActions.get,
     getAllDepartments: DepartmentActions.get,
+    downloadDocumentFile: DocumentActions.downloadDocumentFile
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );
