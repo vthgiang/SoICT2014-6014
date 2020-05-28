@@ -60,7 +60,7 @@ import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
-import { TaskDashboard } from "../modules/task/task-management/component/taskDashboard";
+import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
 //asset

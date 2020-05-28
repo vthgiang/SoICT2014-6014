@@ -17,8 +17,6 @@ class ListEducation extends Component {
             organizationalUnit: null,
             page: 0,
             limit: 5,
-            hideColumn: []
-
         };
         this.handleChange = this.handleChange.bind(this);
     }

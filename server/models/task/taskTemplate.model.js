@@ -21,6 +21,10 @@ const TaskTemplateSchema = new Schema({
         ref: User,
         required: true
     },
+    priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
+        type: Number,
+        required: true
+    },
     taskActions: [{
         name: {
             type: String,

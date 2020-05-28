@@ -144,14 +144,6 @@ exports.getEmployeeProfile = async (userId) => {
 }
 
 /**
- * Lấy thông tin nhân viên theo id
- * @id : id thông tin nhân viên cần lấy
- */
-exports.getEmployeeInforById = async(id)=>{
-    return await Employee.findById(id);
-}
-
-/**
  * Cập nhật thông tin cá nhân của nhân viên
  * @userId : id người dùng
  * @data : dữ liệu chỉnh sửa thông tin của nhân viên
@@ -210,17 +202,62 @@ exports.updatePersonalInformation = async (userId, data, avatar) => {
 }
 
 /**
- * Lấy danh sách nhân viên
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * Lấy thông tin nhân viên theo id
+ * @id : id thông tin nhân viên cần lấy
+ */
+exports.getEmployeeInforById = async(id)=> {
+    return await Employee.findById(id);
+}
+
+/**
+ * Lấy tất cả danh sách nhân viên 
+ * @company : id công ty
+ * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
+ */
+exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
+    var keySearch = {
+        company: company
+    };
+    if (allInfor === true) {
+        if(organizationalUnits !== undefined){
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
+            keySearch = {
+                ...keySearch,
+                emailInCompany: {
+                    $in: emailInCompany
+                }
+            }
+        }
+        let totalEmployee = await Employee.countDocuments(keySearch);
+        let listAllEmployees = await Employee.find(keySearch);
+        return {totalEmployee, listAllEmployees}
+    } else {
+        if(organizationalUnits !== undefined){
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
+            keySearch = {
+                ...keySearch,
+                emailInCompany: {
+                    $in: emailInCompany
+                }
+            }
+        }
+        let totalEmployee = await Employee.countDocuments(keySearch);
+        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1});
+        return {totalEmployee, listAllEmployees}
+    }
+}
+
+/**
+ * Lấy danh sách nhân viên theo key tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
  */
 exports.searchEmployeeProfiles = async (params, company) => {
     var keySearch = {
         company: company
     };
-    
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
-    if (params.organizationalUnit !== undefined) {
+    if (params.organizationalUnits !== undefined) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearch = {
             ...keySearch,
@@ -305,6 +342,8 @@ exports.searchEmployeeProfiles = async (params, company) => {
 
 /**
  * Function merge urlFile upload với object
+ * @arrayFile : mảng chứa các file
+ * @arrayObject :mảng chứa các object
  */
 exports.mergeUrlFileToObject = (arrayFile, arrayObject)=>{
     if (arrayFile !== undefined) {

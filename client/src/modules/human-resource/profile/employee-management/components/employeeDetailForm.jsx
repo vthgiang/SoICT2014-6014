@@ -32,7 +32,7 @@ class EmployeeDetailForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-view-employee" isLoading={employeesManager}
+                    size='75' modalID="modal-view-employee" isLoading={employeesManager.isLoading}
                     formID="form-view-employee"
                     title="Thông tin nhân viên"
                     hasSaveButton={false}
@@ -40,7 +40,7 @@ class EmployeeDetailForm extends Component {
                     <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>
                         {(typeof employees !== 'undefined' && employees.length !== 0) &&
                             employees.map((x, index) => (
-                                <div className="nav-tabs-custom" key={index}>
+                                <div className="nav-tabs-custom row" key={index}>
                                     <ul className="nav nav-tabs">
                                         <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('manage_employee.menu_general_infor')}</a></li>
                                         <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href={`#view_contact${_id}`}>{translate('manage_employee.menu_contact_infor')}</a></li>
@@ -109,6 +109,10 @@ class EmployeeDetailForm extends Component {
         );
     };
 }
+function mapState(state) {
+    const { employeesManager } = state;
+    return { employeesManager };
+};
 
-const detailEmployee = connect(null, null)(withTranslate(EmployeeDetailForm));
+const detailEmployee = connect(mapState, null)(withTranslate(EmployeeDetailForm));
 export { detailEmployee as EmployeeDetailForm };

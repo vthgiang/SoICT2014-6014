@@ -3,11 +3,21 @@ import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+import moment from 'moment'
 
+import {
+    getStorage
+} from '../../../../../config';
+// import Files from 'react-files'
+// import TextareaAutosize from 'react-textarea-autosize';
+
+// import '../../../../task/task-perform/component/actionTab';
 class ModalMemberApprove extends Component {
     constructor(props) {
+        var idUser = getStorage("userId");
         super(props);
         this.state = {
+            currentUser: idUser,
             date : this.formatDateBack(Date.now()),
             editing: false,
             edit: "",
@@ -192,12 +202,14 @@ class ModalMemberApprove extends Component {
             this.props.getKPIMemberByMonth(id, this.state.date);
         }
     }
+
     handleEditStatusTarget = (event, id, status) => {
         event.preventDefault();
         if(id){
             this.props.editStatusTarget(id, status);
         }
     }
+
     handleApproveKPI = async (id, listTarget) => {
         
         var totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
@@ -215,12 +227,17 @@ class ModalMemberApprove extends Component {
         }
     }
     render() {
+        // console.log('approve id'+this.props.id);
         var kpimember;
         var kpimembercmp ;
         const { kpimembers } = this.props;
-        const { errorOnDate, date} = this.state;
+        const { errorOnDate, date,currentUser} = this.state;
 
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
+        console.log('currentUser================'+ this.state.currentUser);
+        
+        // var comment = kpimembers.currentKPI.kpis;
+        // console.log('comments: ========'+ comment);
         if (kpimembers.kpimembers){
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
@@ -234,22 +251,27 @@ class ModalMemberApprove extends Component {
         if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
         console.log('kpimembercmp'+ kpimember);
         return (
-            // <React.Fragment>
-            //     <DialogModal
-            //     modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
-            //     formID={`form-evaluate-task-by-${this.props.role}`}
-            //     title={this.props.title}
-            //     >
-            <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                    <div className="modal-header">
+            <React.Fragment>
+                <DialogModal
+                modalID={`modal-approve-KPI-member-${this.props.id}`}
+                // formID={`form-evaluate-task-by-${this.props.role}`}
+                title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
+                // func={this.save}
+                hasSaveButton ={false}
+                // disableSubmit={!this.isFormValidated()}
+                size={100}
+                >
+            {/* <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> */}
+                {/* <div className="modal-dialog-full"> */}
+                    {/* <div className="modal-content"> */}
+                    {/* <form action=""></form> */}
+                    {/* <div className="modal-header">
                         <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
                             <span aria-hidden="true">×</span>
                             <span className="sr-only">Close</span>
                         </button>
                         <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                    </div>
+                    </div> */}
                         <div className="box" >
                             <div className="box-body qlcv">
                             
@@ -336,7 +358,7 @@ class ModalMemberApprove extends Component {
                                             </tr>
                                         </thead>
                                     <tbody>
-                                        {typeof kpimember !== "undefined" ?
+                                        {kpimember &&
                                             kpimember.kpis.map((item, index) =>
                                                 <tr >
                                                         <td>{index+1}</td>
@@ -354,18 +376,82 @@ class ModalMemberApprove extends Component {
                                                         <a href="#abc" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">cancel</i></a>
                                                     </td>
                                                     </tr>
-                                                ) : <tr><td colSpan={7}>Không có dữ liệu phù hợp</td></tr>
+                                                ) 
                                             }
                                     </tbody>
                                 </table>
                             </div>
                             </div>
+                            
+                        
+                    
+            
+                { kpimember && 
+                kpimember.comments.map(child => {
+                    return <div  key={child._id}>
+                        <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
+                        <p className="content-level2">
+                            <a href="#">{child.creator.name} </a>
+                            {child.content}
+                        </p>
+                        <div className="tool-level2">
+                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
                         </div>
+                            {kpimember.comments && kpimember.comments[0].comments.map(item => {
+                             return <div  className="btn-group dropleft pull-right">
+                                        <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
+                                        <p className="content-level2">
+                                        <a href="#">{item.creator.name} </a>
+                                        {item.content}
+                                    </p>
+                                    <div className="tool-level2">
+                            <span className="text-sm">{moment(item.createdAt).fromNow()}</span>
+                        </div>
+                                    </div>
+
+                                })} 
+                                  
+                                {/* <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                    </svg>
+                                </button> */}
+                                {/* <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
+                                    <div className="dropdown-divider"></div>
+                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
+                                    <div className="dropdown-divider"></div>
+                                    
+                                </div> */}
+                           
+                           
+                            }
+                        {/* {child._id &&
+                                <div style={{ width: "83%", marginLeft: "8.2%" }}>
+                                    <textarea
+                                        rows={this.state.rows}
+                                        value={this.state.value}
+                                        placeholder={'Enter your text here...'}
+                                        className={'textarea'}
+                                        onChange={this.handleChange}
+                                        style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius: "18px"  }}
+                                        defaultValue={child.content}
+                                        ref={input => this.newContentCommentOfAction[child._id] = input}
+                                    />
+                                    <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
+                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
+                                    </div>
+                                </div>
+                            
+                        }  */}
+                    
                     </div>
+                })}  
                 </div>
-            </div >
-        //     </DialogModal>
-        // </React.Fragment>
+            </DialogModal>
+        </React.Fragment>
         );
         
     }

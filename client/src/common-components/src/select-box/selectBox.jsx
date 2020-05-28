@@ -4,9 +4,8 @@ import './selectBox.css';
 class SelectBox extends Component {
     constructor(props) {
         super(props);
-        this.state = { }
+        this.state = {}
     }
-    
 
     componentDidMount(){
         const { id, onChange, options={minimumResultsForSearch: 15} } = this.props;
@@ -20,7 +19,7 @@ class SelectBox extends Component {
                     value
                 }
             });
-            if (onChange!==undefined && onChange!==null){
+            if (onChange !== undefined && onChange !== null) {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
         });
@@ -31,21 +30,21 @@ class SelectBox extends Component {
     }
 
     componentDidUpdate() {
-        const { id, options={} } = this.props;
+        const { id, options = {} } = this.props;
         window.$("#" + id).select2(options);
     }
 
     static isEqual = (items1, items2) => {
-        if(!items1 || !items2){
+        if (!items1 || !items2) {
             return false;
         }
-        if (items1.length !== items2.length){
+        if (items1.length !== items2.length) {
             return false;
         }
-        for (let i=0; i<items1.length; ++i){
-            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value){ // Kiểu bình thường
+        for (let i = 0; i < items1.length; ++i) {
+            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
                 return false;
-            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)){ // Kiểu group
+            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
                 return false;
             }
         }
@@ -53,7 +52,7 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items)){
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items)) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
@@ -71,13 +70,13 @@ class SelectBox extends Component {
         return false;
     }
 
-    render() { 
-        const { id, items, className, style, multiple=false, options={} } = this.props;
-        return ( 
+    render() {
+        const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+        return (
             <React.Fragment>
                 <div className="select2">
-                    <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
-                        {options.placeholder !== undefined  && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
+                    <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
+                        {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {
                             if (!(item.value instanceof Array)) { // Dạng bình thường
                                 return <option key={item.value} value={item.value}>{item.text}</option>
@@ -94,8 +93,8 @@ class SelectBox extends Component {
                     </select>
                 </div>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 export { SelectBox };

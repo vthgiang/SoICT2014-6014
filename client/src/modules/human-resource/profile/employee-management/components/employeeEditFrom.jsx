@@ -501,20 +501,19 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-edit-employee" isLoading={false}
+                    size='75' modalID="modal-edit-employee" isLoading={employeesManager.isLoading}
                     formID="form-edit-employee"
                     title={translate('manage_employee.edit_diploma')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-edit-employee"> */}
-                    <div className="nav-tabs-custom" style={{ marginTop: '-15px' }} >
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('manage_employee.menu_general_infor')}</a></li>
                             <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('manage_employee.menu_contact_infor')}</a></li>

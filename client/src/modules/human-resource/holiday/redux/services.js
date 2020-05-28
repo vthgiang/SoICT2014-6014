@@ -11,7 +11,7 @@ export const HolidayService = {
  */
 function getListHoliday() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/`,
+        url: `${ LOCAL_SERVER_API }/holidays`,
         method: 'GET',
     }, false, true, 'human_resource.holiday');
 }
@@ -22,7 +22,7 @@ function getListHoliday() {
  */
 function createNewHoliday(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/create`,
+        url: `${ LOCAL_SERVER_API }/holidays`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.holiday');
@@ -34,7 +34,7 @@ function createNewHoliday(data) {
  */
 function deleteHoliday(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/${id}`,
+        url: `${ LOCAL_SERVER_API }/holidays/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.holiday');
 }
@@ -46,7 +46,7 @@ function deleteHoliday(id) {
  */
 function updateHoliday(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/${id}`,
+        url: `${ LOCAL_SERVER_API }/holidays/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'human_resource.holiday');
