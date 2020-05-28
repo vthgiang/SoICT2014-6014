@@ -74,7 +74,7 @@ function increaseNumberView(id){
             .then(res => {
                 dispatch({
                     type: DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS,
-                    payload: res.data.content
+                    payload: id
                 })
             })
             .catch(err => {

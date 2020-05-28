@@ -89,8 +89,15 @@ export function documents(state = initState, action) {
             }
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
-        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:  
+            return {
+                ...state,
+                isLoading: false
+            };
+
         case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS:    
+            indexPaginate = findIndex(state.administration.data.paginate, action.payload);
+            if(indexPaginate !== -1) state.administration.data.paginate[indexPaginate].numberOfView += 1;
             return {
                 ...state,
                 isLoading: false
