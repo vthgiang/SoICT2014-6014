@@ -90,6 +90,16 @@ exports.downloadDocumentFile = async (id) => {
     };
 }
 
+exports.downloadDocumentFileScan = async (id) => {
+    const file = await Document.findById(id);
+    file.numberOfDownload += 1;
+    await file.save();
+    return {
+        path: file.file,
+        name: file.scannedFileOfSignedDocument
+    };
+}
+
 /**
  * Lấy tất cả các loại văn bản
  */

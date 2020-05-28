@@ -8,6 +8,7 @@ export const DocumentActions = {
     createDocument,
     editDocument,
     downloadDocumentFile,
+    downloadDocumentFileScan,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -65,24 +66,29 @@ function editDocument(id, data){
     }
 }
 
-
 function downloadDocumentFile(id, fileName){
     return dispatch => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST});
         DocumentServices.downloadDocumentFile(id)
             .then(res => { 
                 dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS });
-                // res.blob().then(blob => {
-                //     let url = window.URL.createObjectURL(blob);
-                //     let a = document.createElement('a');
-                //     a.href = url;
-                //     a.download = fileName;
-                //     a.click();
-                // });
                 const content = res.headers['content-type'];
                 FileDownload(res.data, fileName, content)
             })
             .catch(err => { dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE})})
+    }
+}
+
+function downloadDocumentFileScan(id, fileName){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST});
+        DocumentServices.downloadDocumentFileScan(id)
+            .then(res => { 
+                dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_SUCCESS });
+                const content = res.headers['content-type'];
+                FileDownload(res.data, fileName, content)
+            })
+            .catch(err => { dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE})})
     }
 }
 

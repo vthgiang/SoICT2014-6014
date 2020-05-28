@@ -32,6 +32,10 @@ class Table extends Component {
         this.props.downloadDocumentFile(id, fileName);
     }
 
+    requestDownloadDocumentFileScan = (id, fileName) => {
+        this.props.downloadDocumentFileScan(id, fileName);
+    }
+
     render() { 
         const {translate} = this.props;
         const {list} = this.props.documents.administration.data;
@@ -114,7 +118,7 @@ class Table extends Component {
                                 <td><DateTimeConverter dateTime={doc.effectiveDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.expiredDate} type="DD-MM-YYYY"/></td>
                                 <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name)}><u>{translate('document.download')}</u></a></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name)}><u>{translate('document.download')}</u></a></td>
+                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name)}><u>{translate('document.download')}</u></a></td>
                                 <td>{doc.numberOfView}</td>
                                 <td>{doc.numberOfDownload}</td>
                                 <td>
@@ -139,7 +143,8 @@ const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
     getAllRoles: RoleActions.get,
     getAllDepartments: DepartmentActions.get,
-    downloadDocumentFile: DocumentActions.downloadDocumentFile
+    downloadDocumentFile: DocumentActions.downloadDocumentFile,
+    downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

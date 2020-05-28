@@ -83,12 +83,33 @@ exports.deleteDocument = (req, res) => {
 };
 
 exports.downloadDocumentFile = async (req, res) => {
-    const file = await DocumentServices.downloadDocumentFile(req.params.id);
-    console.log('file ', file)
-    res.download(file.path, file.name);
+    try {
+        const file = await DocumentServices.downloadDocumentFile(req.params.id);
+        await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
+        res.download(file.path, file.name);
+    } catch (error) {
+        await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
+            content: error
+        });
+    }
 };
 
-exports.downloadDocumentFileScan = (req, res) => {
+exports.downloadDocumentFileScan = async (req, res) => {
+    try {
+        const file = await DocumentServices.downloadDocumentFileScan(req.params.id);
+        await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+        res.download(file.path, file.name);
+    } catch (error) {
+        await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
+            content: error
+        });
+    }
 };
 
 /**

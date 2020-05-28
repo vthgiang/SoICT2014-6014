@@ -64,6 +64,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
         case DocumentConstants.EDIT_DOCUMENT_REQUEST:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -77,12 +78,14 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_DOMAINS_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE:
             return {
                 ...state,
                 isLoading: false,
             }
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:
             return {
                 ...state,
                 isLoading: false

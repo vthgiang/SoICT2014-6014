@@ -6,6 +6,7 @@ export const DocumentServices = {
     createDocument,
     editDocument,
     downloadDocumentFile,
+    downloadDocumentFileScan,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -39,6 +40,14 @@ function editDocument(id, data) {
 function downloadDocumentFile(id) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+    }, false, true, 'document');
+}
+
+function downloadDocumentFileScan(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/download-file-scan/${id}`,
         method: 'GET',
         responseType: 'blob',
     }, false, true, 'document');
