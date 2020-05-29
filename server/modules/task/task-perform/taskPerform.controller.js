@@ -276,30 +276,19 @@ exports.deleteTaskAction = async (req,res)=>{
         })
     }
 }
-// Lấy tất cả bình luận và hoạt động của một công việc
-exports.getCommentsOfTaskAction =async (req, res) => {
-    try {
-        var actionComments = await PerformTaskService.getCommentsOfTaskAction(req.params)
-        await LogInfo(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(200).json({
-            success: true,
-            messages : ['get_action_comments_success'],
-            content: actionComments
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(400).json({
-            success: false,
-            messages:['get_action_comments_fail'],
-            content : error
-        })
-    }
- }
- 
  // Tạo một bình luận hoặc hoạt động cho công việc
  exports.createCommentOfTaskAction = async (req, res) => {
      try {
-        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.body);
+        var files=[] ;
+        
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.body,files);
         await LogInfo(req.user.email, ` create  action comment  `,req.user.company);
         res.status(200).json({
              success: true,
@@ -361,7 +350,15 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
  */
 exports.createTaskComment = async (req,res) => {
     try {
-        var taskComment = await PerformTaskService.createTaskComment(req.body);
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var taskComment = await PerformTaskService.createTaskComment(req.body,files);
         await LogInfo(req.user.email, ` create task comment  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -445,7 +442,15 @@ exports.deleteTaskComment = async (req,res) => {
  */
 exports.createCommentOfTaskComment = async (req,res) => {
     try {
-        var comment = await PerformTaskService.createCommentOfTaskComment(req.body);
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comment = await PerformTaskService.createCommentOfTaskComment(req.body,files);
         await LogInfo(req.user.email, ` create comment of task comment  `,req.user.company);
         res.status(200).json({
             success: true,

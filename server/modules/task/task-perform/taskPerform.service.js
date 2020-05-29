@@ -75,7 +75,8 @@ exports.stopTimesheetLog = async (body) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createCommentOfTaskAction = async (body) => {
+exports.createCommentOfTaskAction = async (body,files) => {
+    console.log(files)
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
             {
@@ -84,7 +85,7 @@ exports.createCommentOfTaskAction = async (body) => {
                     {
                         creator: body.creator,
                         content: body.content,
-                        //  file: file._id
+                         files: files
                     }
                 }
             }
@@ -160,6 +161,7 @@ exports.getTaskActions = async (taskId) => {
  */
 
 exports.createTaskAction = async (body,files) => {
+    console.log(files)
     var actionInformation = {
         creator: body.creator,
         description: body.content,
@@ -353,13 +355,13 @@ exports.editTaskResult = async (listResult,taskid) => {
 /**
  * Tạo bình luận công việc
  */
-exports.createTaskComment = async (body) => {
-
+exports.createTaskComment = async (body,files) => {
+    console.log(body)
     var commentInformation = {
         creator: body.creator,
-        content: body.content
+        content: body.content,
+        files:files
     }
-
     var taskComment1 = await Task.findByIdAndUpdate(body.task,
         { $push: { taskComments: commentInformation } }, { new: true });
     var task = await Task.findOne({_id: body.task}).populate([
@@ -415,7 +417,8 @@ exports.deleteTaskComment = async (params) => {
 /**
  * Thêm bình luận của bình luận công việc
  */
-exports.createCommentOfTaskComment = async (body) => {
+exports.createCommentOfTaskComment = async (body,files) => {
+
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
@@ -424,7 +427,7 @@ exports.createCommentOfTaskComment = async (body) => {
                 {
                     creator: body.creator,  
                     content: body.content,
-                    //  file: file._id
+                    files: files
                 }
             }
         }
