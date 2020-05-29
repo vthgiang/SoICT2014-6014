@@ -384,16 +384,17 @@ class EditForm extends Component {
                                         <tbody>
                                             {
                                                 documentVersions !== undefined && documentVersions.length > 0 ?
-                                                documentVersions.map((version, i) => 
-                                                    <tr key={i}>
+                                                documentVersions.map((version, i) => {
+                                                    console.log("version-index: ", version, i)
+                                                    return <tr key={i}>
                                                         <td>{version.versionName}</td>
                                                         <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
                                                         <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName+"_"+version.versionName, i)}><u>{translate('document.download')}</u></a></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName+"_"+version.versionName, i)}><u>{translate('document.download')}</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName, i)}><u>{translate('document.download')}</u></a></td>
                                                     </tr>
-                                                ) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                             }
                                         </tbody>
                                     </table>
