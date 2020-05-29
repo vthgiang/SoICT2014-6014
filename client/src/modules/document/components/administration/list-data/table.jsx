@@ -38,6 +38,33 @@ class Table extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
+        
+    static getDerivedStateFromProps(nextProps, prevState){
+        const {data} = nextProps.documents.administration;
+        const getIndex = (array, id) => {
+            var index = -1;
+            for (let i = 0; i < array.length; i++) {
+                if(array[i]._id === id){
+                    index = i;
+                    break;
+                }
+            }
+    
+            return index;
+        }
+        
+        if(prevState.currentRow !== undefined){
+            const index = getIndex(data.list, prevState.currentRow._id);
+            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+                return {
+                    ...prevState,
+                    currentRow: data.list[index]
+                } 
+            }
+        } else {
+            return null;
+        }
+    }
 
     deleteDocument = (id, info) => {
         const {translate} = this.props;
