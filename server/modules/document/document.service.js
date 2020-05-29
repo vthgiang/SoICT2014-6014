@@ -195,8 +195,14 @@ exports.createDocumentCategory = async (company, data) => {
     });
 }
 
-exports.edit = async(id, data) => {
-    //code here}
+exports.editDocumentCategory = async(id, data) => {
+    console.log("DFDFD:", id, data)
+    const category = await DocumentCategory.findById(id);
+    category.name = data.name;
+    category.description = data.description;
+    await category.save();
+
+    return category;
 }
 
 exports.deleteDocumentCategory = async(id) => {

@@ -227,7 +227,26 @@ exports.showDocumentCategory = (req, res) => {
 
 };
 
-exports.editDocumentCategory = (req, res) => {
+exports.editDocumentCategory = async (req, res) => {
+    try {
+        console.log("DFSDFDDSFDSFSDF:", req.params.id, req.body)
+        const category = await DocumentServices.editDocumentCategory(req.params.id, req.body);
+        
+        await LogInfo(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_document_category_success'],
+            content: category
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_document_category_faile'],
+            content: error
+        });
+    }
 };
 
 exports.deleteDocumentCategory = async (req, res) => {

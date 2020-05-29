@@ -12,6 +12,7 @@ export const DocumentServices = {
 
     getDocumentCategories,
     createDocumentCategory,
+    editDocumentCategory,
     deleteDocumentCategory,
 
     getDocumentDomains,
@@ -84,6 +85,14 @@ function createDocumentCategory(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'POST',
+        data,
+    }, true, true, 'document');
+}
+
+function editDocumentCategory(id, data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        method: 'PATCH',
         data,
     }, true, true, 'document');
 }

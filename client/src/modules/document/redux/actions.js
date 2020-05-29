@@ -14,6 +14,7 @@ export const DocumentActions = {
 
     getDocumentCategories,
     createDocumentCategory,
+    editDocumentCategory,
     deleteDocumentCategory,
 
     getDocumentDomains,
@@ -188,6 +189,22 @@ function createDocumentCategory(data){
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE});
+            })
+    }
+}
+
+function editDocumentCategory(id, data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST});
+        DocumentServices.editDocumentCategory(id, data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE});
             })
     }
 }
