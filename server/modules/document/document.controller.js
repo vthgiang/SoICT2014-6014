@@ -128,7 +128,24 @@ exports.editDocument = async (req, res) => {
     }
 };
 
-exports.deleteDocument = (req, res) => {
+exports.deleteDocument = async (req, res) => {
+    try {
+        const doc = await DocumentServices.deleteDocument(req.params.id);
+
+        await LogInfo(req.user.email, 'DELETE_DOCUMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_document_success'],
+            content: doc
+        });
+    } catch (error) {
+        await LogError(req.user.email, 'DELETE_DOCUMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_document_faile'],
+            content: error
+        });
+    }
 };
 
 exports.downloadDocumentFile = async (req, res) => {

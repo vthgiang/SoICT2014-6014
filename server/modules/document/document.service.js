@@ -1,5 +1,6 @@
 const {DocumentCategory, DocumentDomain} = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
+const fs = require('fs');
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -143,8 +144,16 @@ exports.editDocument = async (id, data, query=undefined) => {
     }
 }
 
-exports.addNewVersionDocument = (id, data) => {
+exports.deleteDocument = async (id) => {
+    const doc = await Document.findById(id);
+    console.log("DOCUMENT DELETE: ", doc)
+    for (let i = 0; i < doc.versions.length; i++) {
+        if(fs.existsSync(doc.versions[i].file)) fs.unlinkSync(doc.versions[i].file);
+        if(fs.existsSync(doc.versions[i].scannedFileOfSignedDocument)) fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
+    }
+    await Document.deleteOne({_id: id});
 
+    return doc;
 }
 
 exports.downloadDocumentFile = async (id, numberVersion) => {

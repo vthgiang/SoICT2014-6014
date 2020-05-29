@@ -8,6 +8,7 @@ export const DocumentServices = {
     downloadDocumentFile,
     downloadDocumentFileScan,
     increaseNumberView,
+    deleteDocument,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -28,6 +29,13 @@ function createDocument(data) {
         url: `${ LOCAL_SERVER_API }/documents`,
         method: 'POST',
         data,
+    }, true, true, 'document');
+}
+
+function deleteDocument(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/${id}`,
+        method: 'DELETE'
     }, true, true, 'document');
 }
 

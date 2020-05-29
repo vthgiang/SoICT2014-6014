@@ -8,6 +8,7 @@ import EditForm from './editForm';
 import moment from 'moment';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
+import Swal from 'sweetalert2';
 
 class Table extends Component {
     constructor(props) {
@@ -36,6 +37,23 @@ class Table extends Component {
 
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
+    }
+
+    deleteDocument = (id, info) => {
+        const {translate} = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteDocument(id);
+            }
+        })
     }
 
     render() { 
@@ -130,7 +148,7 @@ class Table extends Component {
                                 <td>{doc.numberOfDownload}</td>
                                 <td>
                                     <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
+                                    <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>):
                             isLoading ? 
@@ -188,7 +206,8 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
-    increaseNumberView: DocumentActions.increaseNumberView
+    increaseNumberView: DocumentActions.increaseNumberView,
+    deleteDocument: DocumentActions.deleteDocument,
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

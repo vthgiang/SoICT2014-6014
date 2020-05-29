@@ -10,6 +10,7 @@ export const DocumentActions = {
     downloadDocumentFile,
     downloadDocumentFileScan,
     increaseNumberView,
+    deleteDocument,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -112,6 +113,22 @@ function editDocument(id, data, option = undefined){
                     dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
                 });
         }
+    }
+}
+
+function deleteDocument(id){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DELETE_DOCUMENT_REQUEST});
+        DocumentServices.deleteDocument(id)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.DELETE_DOCUMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.DELETE_DOCUMENT_FAILE});
+            });
     }
 }
 

@@ -67,6 +67,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST:
         case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_REQUEST:
+        case DocumentConstants.DELETE_DOCUMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -84,6 +85,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE:
         case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_FAILE:
         case DocumentConstants.ADD_VERSION_DOCUMENT_FAILE:
+        case DocumentConstants.DELETE_DOCUMENT_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -166,6 +168,16 @@ export function documents(state = initState, action) {
             if(index !== -1) state.administration.data.list[index] = action.payload;
             indexPaginate = findIndex(state.administration.data.paginate, action.payload._id);
             if(indexPaginate !== -1) state.administration.data.paginate[indexPaginate] = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.DELETE_DOCUMENT_SUCCESS:
+            index = findIndex(state.administration.data.list, action.payload._id);
+            if(index !== -1) state.administration.data.list.splice(index, 1);
+            indexPaginate = findIndex(state.administration.data.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.data.paginate.splice(indexPaginate, 1);
             return {
                 ...state,
                 isLoading: false
