@@ -183,20 +183,20 @@ exports.downloadDocumentFileScan = async (req, res) => {
  */
 exports.getDocumentCategories = async (req, res) => {
     try {
-        const types = await DocumentServices.getDocumentCategories(req.user.company._id);
+        const categories = await DocumentServices.getDocumentCategories(req.user.company._id, req.query);
         
-        await LogInfo(req.user.email, 'GET_DOCUMENT_TYPES', req.user.company);
+        await LogInfo(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['get_document_types_success'],
-            content: types
+            messages: ['get_document_categories_success'],
+            content: categories
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_DOCUMENT_TYPES', req.user.company);
+        await LogError(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_document_types_faile'],
+            messages: Array.isArray(error) ? error : ['get_document_categories_faile'],
             content: error
         });
     }
@@ -230,7 +230,25 @@ exports.showDocumentCategory = (req, res) => {
 exports.editDocumentCategory = (req, res) => {
 };
 
-exports.deleteDocumentCategory = (req, res) => {
+exports.deleteDocumentCategory = async (req, res) => {
+    try {
+        const doc = await DocumentServices.deleteDocumentCategory(req.params.id);
+        
+        await LogInfo(req.user.email, 'DELETE_DOCUMENT_CATEGORY', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_document_category_success'],
+            content: doc
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'DELETE_DOCUMENT_CATEGORY', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_document_category_faile'],
+            content: error
+        });
+    }
 };
 
 /**

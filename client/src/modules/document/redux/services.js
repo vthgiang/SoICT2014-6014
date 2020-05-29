@@ -12,6 +12,8 @@ export const DocumentServices = {
 
     getDocumentCategories,
     createDocumentCategory,
+    deleteDocumentCategory,
+
     getDocumentDomains,
     createDocumentDomain
 };
@@ -83,6 +85,13 @@ function createDocumentCategory(data) {
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'POST',
         data,
+    }, true, true, 'document');
+}
+
+function deleteDocumentCategory(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        method: 'DELETE'
     }, true, true, 'document');
 }
 

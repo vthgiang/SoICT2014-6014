@@ -199,8 +199,13 @@ exports.edit = async(id, data) => {
     //code here}
 }
 
-exports.delete = async(id) => {
-    //code here
+exports.deleteDocumentCategory = async(id) => {
+    const category = await DocumentCategory.findById(id);
+    const docs = await Document.find({category: id});
+    if(docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
+    await DocumentCategory.deleteOne({_id: id});
+
+    return category;
 }
 
 /**
