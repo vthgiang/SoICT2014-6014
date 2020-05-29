@@ -70,7 +70,7 @@ class DialogModal extends Component {
                                     </div>
                                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         {
-                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
+                                            hasSaveButton && <button type="button" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>

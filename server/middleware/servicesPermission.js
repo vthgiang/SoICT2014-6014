@@ -188,7 +188,10 @@ exports.data = [
     { path: '/documents/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
-
+    { path: '/documents/download-file/:id/:numberVersion', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/documents/download-file-scan/:id/:numberVersion', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/documents/:id/increase-number-view', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    
     { path: '/documents/categories', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/categories', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/categories/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -245,6 +248,7 @@ exports.data = [
     { path: '/detailkpi/:id', method: 'GET', roles: ['Dean']},
     { path: '/appovepoint/:id_kpi/:id_target', method: 'PUT', roles: ['Dean']},
     { path: '/kpimembers/task/:id/:employeeId/:date', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/taskImportanceLevel', method: 'PUT', roles: ['Dean']},
     // Task-management
     { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},

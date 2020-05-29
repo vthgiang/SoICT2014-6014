@@ -3,6 +3,19 @@ ul.domain-tree {
 }
 
 li.domain-tree {
-    border-left: 0.5px solid rgb(194, 194, 194);
+    border-left: 0.8px dotted rgb(194, 194, 194);
     padding: 10px;
+}
+
+a.domain-tree-content {
+    border-bottom: 0.8px dotted rgb(194, 194, 194);
+    margin: 5px;
+    border: none;
+    margin-left: -4px;
+    font-size: 14px;
+    /* padding-left: -100px; */
+}
+
+a.domain-tree-content:hover {
+    color: red;
 }

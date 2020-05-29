@@ -32,7 +32,7 @@ router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
 
 // đánh giá độ quan trọng của công việc
-router.put('/taskLevel/:id', KPIPersonalController.setTaskImportanceLevel);
+router.put('/taskImportanceLevel/:id', KPIPersonalController.setTaskImportanceLevel);
 
 // thêm comment 
 router.get('/comment/:kpi', auth, KPIPersonalController.getAllComments);

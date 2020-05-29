@@ -187,11 +187,11 @@ function getTaskById(id, employeeId, date) {
     };
 }
 
-function setPointKPI(id_kpi, id_target, newPoint) {
+function setPointKPI(employeeId, data) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.SET_POINTKPI_REQUEST});
  
-        kpiMemberServices.getTaskById(id_kpi, id_target, newPoint)
+        kpiMemberServices.setPointKPI(employeeId, data)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.SET_POINTKPI_SUCCESS,

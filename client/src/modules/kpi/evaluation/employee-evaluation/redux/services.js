@@ -87,11 +87,11 @@ function getTaskById(id, employeeId, date) {
  
 // chỉnh sửa approvepoint
  
-function setPointKPI(id_kpi, id_target, newPoint){
+function setPointKPI(employeeId, data){
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/appovepoint/${id_kpi}/${id_target}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}`,
         method: 'PUT',
-        data: newPoint
+        data: data
     }, true, true, 'kpi.evaluation')
 }
 
