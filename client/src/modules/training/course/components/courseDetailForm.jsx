@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, SelectMulti } from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 
 class CourseDetailForm extends Component {
     constructor(props) {
@@ -70,7 +70,7 @@ class CourseDetailForm extends Component {
                             <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- 4 chưa hoàn thành&nbsp;</span>
                         </div>
                         <div className="form-group">
-                            <label className="pull-left">Nhân viên tham gia</label>
+                            <label className="pull-left">Danh sách nhân viên tham gia:</label>
                         </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>

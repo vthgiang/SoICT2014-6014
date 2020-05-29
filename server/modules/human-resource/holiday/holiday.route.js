@@ -12,7 +12,7 @@ router.get('/',auth, HolidayController.getAllHolidays);
 /**
  * Thêm mới thông tin nghỉ lễ tết
  */
-router.post('/create',auth, HolidayController.createHoliday);
+router.post('/',auth, HolidayController.createHoliday);
 
 /**
  * Xoá thông tin nghỉ lễ tết

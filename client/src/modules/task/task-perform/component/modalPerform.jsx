@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, ButtonModal } from '../../../../common-components';
-import { DetailTaskTab } from './detailTaskTab';
-import Draggable from 'react-draggable';
-import { taskManagementActions } from "../../task-management/redux/actions";
-import { ActionTab } from './actionTab';
+import { DialogModal } from '../../../../common-components';
+import { TaskComponent } from './taskComponent';
 
 class ModalPerform extends Component {
     constructor(props) {
@@ -15,17 +12,11 @@ class ModalPerform extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        var task, actions, informations;
-        var statusTask;
+        var task;
         const { tasks} = this.props; 
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
-        }
+        
         return (
             <React.Fragment>
 
@@ -34,32 +25,10 @@ class ModalPerform extends Component {
                     modalID={`modelPerformTask${this.props.id}`}
                     formID="form-perform-task"
                     title={task && task.name}
-                    bodyStyle={{paddingTop: "0px", paddingBottom: "0px"}}
+                    bodyStyle={{padding: "0px"}}
                     hasSaveButton={false}
-                    // msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
-                    // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
-                    // func={this.save}
                 >
-                    <div className="row row-equal-height" style={{height: "100%"}}>
-                        <div className="col-sm-6" style={{ paddingTop: "10px",position:"relative" }}>
-                            <DetailTaskTab
-                                id={this.props.id}
-                                role={this.props.role}
-                            />
-                        </div>
-
-                        {/* end div mô tả... */}
-
-                        <div className="col-sm-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4",position:"relative"}}>
-                            <ActionTab 
-                                id = {this.props.id}
-                                role={this.props.role}
-                            />
-                        </div>
-                    </div>
-
-
-
+                    <TaskComponent id={this.props.id} role={this.props.role}/>
                 </DialogModal>
             </React.Fragment>
         );
@@ -71,11 +40,7 @@ function mapState(state) {
     return { tasks };
 }
 
-const actionCreators = {
-    getTaskById: taskManagementActions.getTaskById,
-};
-
-const modalPerform = connect(mapState, actionCreators)(withTranslate(ModalPerform));
+const modalPerform = connect(mapState, null)(withTranslate(ModalPerform));
 export { modalPerform as ModalPerform }
 
 

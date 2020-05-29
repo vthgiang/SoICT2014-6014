@@ -1,5 +1,9 @@
-import { LOCAL_SERVER_API} from '../../../../../env';
-import {sendRequest} from '../../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../../env';
+import {
+    sendRequest
+} from '../../../../../helpers/requestHelper';
 
 export const EmployeeService = {
     getAll,
@@ -16,13 +20,13 @@ function getAll(data) {
         url: `${ LOCAL_SERVER_API }/employees`,
         method: 'GET',
         params: {
-            organizationalUnit: data.organizationalUnit,
-            position: data.position,
-            employeeNumber: data.employeeNumber,
-            gender: data.gender,
-            status: data.status,
-            page: data.page,
-            limit: data.limit
+            organizationalUnit: data !== undefined ? data.organizationalUnit : data,
+            position: data !== undefined ? data.position : data,
+            employeeNumber: data !== undefined ? data.employeeNumber : data,
+            gender: data !== undefined ? data.gender : data,
+            status: data !== undefined ? data.status : data,
+            page: data !== undefined ? data.page : data,
+            limit: data !== undefined ? data.limit : data
         }
     }, false, true, 'human_resource.profile.employee_management');
 }
@@ -62,16 +66,3 @@ function deleteEmployee(id) {
         method: 'DELETE',
     }, true, true, 'human_resource.profile.employee_management');
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

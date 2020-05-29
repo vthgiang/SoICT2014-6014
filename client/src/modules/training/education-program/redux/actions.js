@@ -5,37 +5,11 @@ import {
     EducationService
 } from "./services";
 export const EducationActions = {
-    getAll,
     getListEducation,
     createNewEducation,
     deleteEducation,
     updateEducation,
 };
-
-/**
- * Lấy danh sách tất cả các chương trình đào tạo bắt buộc
- */
-function getAll() {
-    return dispatch => {
-        dispatch({
-            type: EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST
-        });
-        EducationService.getAll()
-            .then(res => {
-                dispatch({
-                    type: EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE,
-                    error: err
-                });
-            })
-    }
-}
-
 /**
  * Lấy danh sách các chương trình đào tạo theo key
  * @data : dữ liệu của Key

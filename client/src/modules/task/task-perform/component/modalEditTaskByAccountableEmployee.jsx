@@ -25,6 +25,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.state = {
             userId: userId,
             task: task,
+            info: {}
             // taskInformation: taskInformation,
         }
     }
@@ -40,19 +41,23 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
+        document.getElementById(`autoPoint`).innerHTML = value;
     } 
 
     handleChangeNumberInfo = async (e) => {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -62,12 +67,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -76,7 +85,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -92,7 +101,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -105,12 +114,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -336,7 +349,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorTaskName: undefined,
+                errorTaskDescription: undefined 
+            
             } 
         } else {
             return null;
@@ -362,7 +378,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
             <div>
                 <React.Fragment>
                     <DialogModal
-                        size="50"
+                        size={75}
+                        maxWidth={750}
+                        // modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
                         modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
                         formID={`form-edit-task-${this.props.role}-${this.props.id}`}
                         title={this.props.title}
@@ -470,6 +488,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
 
+                                perform ={this.props.perform}
                                 value={this.state}
                             />
                             <fieldset className="scheduler-border">

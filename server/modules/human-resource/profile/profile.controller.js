@@ -40,24 +40,29 @@ exports.updatePersonalInformation = async (req, res) => {
  */
 exports.searchEmployeeProfiles = async (req, res) => {
     try {
-        params = {
-            organizationalUnit: req.query.organizationalUnit,
-            position: req.query.position,
-            employeeNumber: req.query.employeeNumber,
-            gender: req.query.gender,
-            status: req.query.status,
-            page: req.query.page !==undefined ? Number(req.query.page) : 0,
-            limit: req.query.limit !==undefined ? Number(req.query.limit) :100,
+        let data;
+        if(req.query.page === undefined && req.query.limit === undefined ){
+            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnit, req.query.position, false);
+        } else{
+            let params = {
+                organizationalUnit: req.query.organizationalUnit,
+                position: req.query.position,
+                employeeNumber: req.query.employeeNumber,
+                gender: req.query.gender,
+                status: req.query.status,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            data = await EmployeeService.searchEmployeeProfiles(params, req.user.company._id);
         }
-        var allEmployees = await EmployeeService.searchEmployeeProfiles(params, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        await LogInfo(req.user.email, 'GET_EMPLOYEES', req.user.company);
         res.status(200).json({
             success: true,
             messages: ["get_list_employee_success"],
-            content: allEmployees
+            content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        await LogError(req.user.email, 'GET_EMPLOYEES', req.user.company);
         res.status(400).json({
             success: false,
             messages: ["get_list_employee_false"],

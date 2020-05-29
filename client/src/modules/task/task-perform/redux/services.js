@@ -32,7 +32,8 @@ export const performTaskService = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
     evaluationAction,
-    confirmAction
+    confirmAction,
+    downloadFile
 };
 /**
  * // example for axios
@@ -236,3 +237,10 @@ function confirmAction(id,idUser) {
         params:{confirmAction:idUser,id:id}
     }, false, true, 'task.task_perform');  
 };
+function downloadFile(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+    }, false, true, 'task.task_perform');
+}

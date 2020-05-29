@@ -60,7 +60,8 @@ import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
-import { TaskDashboard } from "../modules/task/task-management/component/taskDashboard";
+import {TaskComponent} from '../modules/task/task-perform/component/taskComponent';
+import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
 //asset
@@ -656,6 +657,21 @@ class Routes extends Component {
                         pageName={ 'task_management' }
                         layout={ Layout }
                         component={ TaskManagement }
+                    />
+                    <PrivateRoute // Trang chi tiết công việc (không có trên menu)
+                        isLoading={ this.props.tasks.isLoading }
+                        key={ 'task' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task', name: 'task', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task' }
+                        path={ '/task' }
+                        pageName={ 'task' }
+                        layout={ Layout }
+                        component={ TaskComponent }
                     />
                     <PrivateRoute 
                         isLoading={ false }

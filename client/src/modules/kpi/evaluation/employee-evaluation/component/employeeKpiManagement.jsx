@@ -13,6 +13,7 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
+import { Comments } from './employeeKpiComment';
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -20,6 +21,8 @@ class KPIMember extends Component {
         super(props);
         this.state = {
             commenting: false,
+            user:"",
+            status:"",
             startDate : this.formatDateBack(Date.now()),
             endDate : this.formatDateBack(Date.now()),
             infosearch: {
@@ -148,7 +151,7 @@ class KPIMember extends Component {
         this.setState(state => {
             return {
                 ...state,
-                employee: value
+                user: value
             }
         });
     }
@@ -179,6 +182,7 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
+        // console.log("inforsearch", infosearch);
         if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
             var startdate = new Date(startDate[1], startDate[0], 0);
@@ -203,11 +207,9 @@ class KPIMember extends Component {
                 showApproveModal: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`memberKPIApprove${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        // console.log('handle ============='+id);
+        // console.log('state=============', this.state.showApproveModal);
+        window.$(`modal-approve-KPI-member-${id}`).modal('show')
     }
     showEvaluateModal = async (id) => {
         await this.setState(state => {
@@ -223,12 +225,13 @@ class KPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
-        const {startDate, endDate} = this.state;
+        // const {startDate, endDate} = this.state;
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
-        const {status,employee} = this.state;
+        const {status,employee,startDate, endDate} = this.state;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
+        // console.log('ifo'+ this.state);
         return (
             <React.Fragment>
                 <div className="box">
@@ -252,8 +255,8 @@ class KPIMember extends Component {
                                         }
                                     ]}
                                     onChange={this.handleEmployeeChange}
-                                    multiple={true}
-                                    value={employee}
+                                    // multiple={true}
+                                    value={user}
                                 />}
                             </div>
                             <div className="form-group">
@@ -271,7 +274,7 @@ class KPIMember extends Component {
                                         {value:5, text : "Tất cả các trạng thái"},]}
                                     // items = {items}
                                     onChange={this.handleStatusChange}
-                                    multiple={true}
+                                    // multiple={true}
                                     value={status}
                                 />
                             </div>
@@ -340,11 +343,12 @@ class KPIMember extends Component {
                             <td title="">{item.kpis.length}</td>
                             <td title="">{this.checkStatusKPI(item.status)}</td>
                             <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
+                            
                             <td>
-                                <a href="#memberKPIApprove1" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                <a data-target={`#modal-approve-KPI-member-${item._id}`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                {this.state.showApproveModal === item._id ?
-                                <ModalMemberApprove id={item._id} /> : null}
+                                {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />}
+                                {/* {<ModalMemberApprove id={item._id} />} */}
                             </td>
                             <td>
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
@@ -361,6 +365,8 @@ class KPIMember extends Component {
                         </tbody>
                         </table>
                     </div>
+                    {/* {this.state.showApproveModal !== "" && <ModalMemberApprove id={"5ec9e97e0d402827b818761c"} />} */}
+                    
                 </div>
             {/* </div> */}
         </React.Fragment>

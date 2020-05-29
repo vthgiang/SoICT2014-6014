@@ -1,7 +1,8 @@
 const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
 const Department = require('../../../../models/super-admin/organizationalUnit.model');
 const Task = require('../../../../models/task/task.model');
-const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model')
+const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const User = require('../../../../models/auth/user.model')
 const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
@@ -146,26 +147,33 @@ exports.getById = async (id) => {
 }
 
 exports.getTaskById = async (data) => {
+    //data :kpis_id, emloyeeId, date
     var date = data.date.split("-");
     console.log("dateeee",date);
+    var daykpi = parseInt(date[2]);
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
+    console.log("tttttttt", yearkpi);
     console.log("rrrrrr", data);
     // tìm kiếm các công việc cần được đánh giá trong tháng
     var task = await getResultTaskByMonth(data);
-
+    var priority;
     // tính điểm taskImportanceLevel:
-    console.log(task);
-    var calcPoint = await task.map(item => {
-        var prior;
-        if (item.priority === "Cao") prior = 3;
-        else if (item.priority === "Trung bình") prior = 2;
-        else prior = 1;
-        item.taskImportanceLevel = 3 * (prior / 3) + 3 * item.contribution / 100;
-    });
+    var Task =  await task.map((element)=>{
+        console.log("qqqqqqqqqqqqqqq", element.taskImportanceLevel);
+        if(element.taskImportanceLevel === null){
+            if(element.priority ==="Cao") priority = 3;
+            else if( element.priority=== "Trung") priority = 2;
+            else priority = 1;
+            element.taskImportanceLevel = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+            
+            console.log('eeee', element);
+        }
+    })
+    
     console.log("----", task);
-
-    // update importanceLevel arr
+    
+    //update importanceLevel arr
     // for(var element of task){
     //     var setPoint = await updateTaskImportanceLevel(element.taskId, element.employee._id, element.taskImportanceLevel, data.date);
     // }
@@ -201,8 +209,9 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 };
 
 exports.setTaskImportanceLevel = async (id, data) => {
-    // data body co taskId, date, point employeeId
-  //  console.log(data);
+    // data body co taskId, date, point, employeeId
+    // id là id của employee kpi
+    console.log(data);
     var set = [];
     for (const element of data) {
 
@@ -220,7 +229,7 @@ exports.setTaskImportanceLevel = async (id, data) => {
     var autoPoint = 0;
     var approvePoint = 0;
     var employPoint = 0;
-    console.log("ttttttttttttttttt", task);
+   // console.log("ttttttttttttttttt", task);
     for(element of task){
         autoPoint += element.automaticPoint;
         approvePoint += element.approvedPoint;
@@ -235,7 +244,7 @@ exports.setTaskImportanceLevel = async (id, data) => {
         },
     }, {new: true} );
 
-    return result;
+    return {task,result};
 
 }
 
@@ -286,7 +295,8 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
 }
 
 async function getResultTaskByMonth(data) {
-    console.log("data ne", data.id);
+    // data gồm : id ( id của kpi nhân viên), date(ngày hiện tại), employeeId : id của nhân viên
+   // console.log("data ne", data.id);
     var date = await data.date.split("-");
     // var monthkpi = date[1];
     // var yearkpi = date[0];
@@ -308,7 +318,7 @@ async function getResultTaskByMonth(data) {
         { $match: { year: yearkpi } },
         { $unwind: "$results" },
         {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
         {
             $lookup: {
@@ -323,7 +333,142 @@ async function getResultTaskByMonth(data) {
         { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId)} }
 
     ]);
-    console.log("task funcccc", task);
+    //console.log("task funcccc", task);
     return task;
 }
 
+// lay tat ca binh luan
+exports.getAllComments = async(params) =>{
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpi}).populate([
+        {path:"creator", model: User,select: 'name email avatar avatar' },
+        {path: "comments.creator", model: User, select: 'name email avatar avatar'}
+    ])
+    return kpiPersonal.comments;
+}
+// thêm bình luận cho phê duyệt kpi
+
+exports.createCommentOfApproveKPI = async (body) =>{
+    var comment = await KPIPersonal.updateOne(
+        { "_id" : body.employeeKpiId },
+        {
+            "$push": {
+                "comments":{
+                    creator: body.creator,
+                    content: body.content,
+                }
+            }
+        }
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"_id": body.employeeKpiId}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar '}
+         
+    ]).select("comments");
+    // console.log(kpiPersonal.comments);
+    return kpiPersonal.comments ;
+}
+
+// sửa bình luận 
+exports.editCommentOfApproveKPI = async (params, body) =>{
+    const now = new Date();
+    var action = await KPIPersonal.updateOne(
+        {"comments._id": params.id},
+        {
+            $set:
+            {
+                "comments.$[elem].content": body.content,
+                "comments.$[elem].updateAt": now
+            }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+        
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments._id": params.id}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar'},
+       
+    ]).select("comments")
+    return kpiPersonal.comments;
+}
+
+// xoa binh luan 
+exports.deleteCommentOfApproveKPI = async (params) => {
+    var action = await KPIPersonal.update(
+        { "comments._id": params.id },
+        { $pull: { "comments" : {_id : params.id} } },
+        { safe: true })
+    
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpimember}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar'},
+        ]).select("comments");
+    return kpiPersonal.comments ;    
+}
+
+// thêm bình luận cho bình luận
+
+exports.createCommentOfComment = async (body) =>{
+    var comment = await KPIPersonal.updateOne(
+        { "comments._id" : body.commentId },
+        {
+            "$push": {
+                "comments.$.comments":{
+                    creator: body.creator,
+                    content: body.content,
+                }
+            }
+        }
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments._id": body.commentId});
+    console.log(kpiPersonal);
+    return kpiPersonal ;
+}
+
+// sửa bình luận cua binh luan 
+exports.editCommentOfComment = async (params, body) =>{
+    const now = new Date();
+    var action = await KPIPersonal.updateOne(
+        {"comments.comments._id": params.id},
+        {
+            $set:
+            {
+                "comments.$.comments.$[elem].content": body.content,
+                "comments.$.comments.$[elem].updateAt": now
+            }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+        
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments.comments._id": params.id}).populate([
+        { path: "comments.creator", model: User,select: 'name email avatar' },
+        { path: "comments.comments.creator", model: User, select: 'name email avatar'},
+       
+    ]).select("comments")
+    return kpiPersonal.comments;
+}
+
+// xoa binh luan cua binh luan
+exports.deleteCommentOfComment = async (params) => {
+    var action = await KPIPersonal.update(
+        { "comments.comments._id": params.id },
+        { $pull: { "comments.$.comments" : {_id : params.id} } },
+        { safe: true })
+    
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpimember}).populate([
+        { path: "comments.creator", model: User,select: 'name email avatar' },
+        { path: "comments.comments.creator", model: User, select: 'name email avatar'},
+        ]).select("comments");
+    return kpiPersonal.comments ;    
+}

@@ -1,9 +1,23 @@
 import axios from 'axios';
-import { AuthenticateHeader } from '../config';
+import { getStorage } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
 import getBrowserFingerprint from 'get-browser-fingerprint';
+
+const AuthenticateHeader = (name='jwt',) => {
+    const token = getStorage(name);
+    const currentRole = getStorage("currentRole");
+    const fingerprint = getBrowserFingerprint();
+    
+    return {
+        'current-page': window.location.pathname,
+        'auth-token': token,
+        'current-role': currentRole,
+        'fingerprint': fingerprint,
+        'Content-Type': 'application/json'
+    }
+}
 
 /**
  * Check có xảy ra lỗi liên quan đến xác thực người dùng hay không?
@@ -44,6 +58,7 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
         method: options.method,
         data: options.data,
         params: options.params,
+        responseType: options.responseType,
         headers: AuthenticateHeader()
     };
 

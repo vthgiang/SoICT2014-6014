@@ -22,9 +22,16 @@ export const DisciplineService = {
  */
 function getListDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/paginate`,
-        method: 'POST',
-        data: data
+        url: `${ LOCAL_SERVER_API }/disciplines`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            decisionNumber: data.decisionNumber,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.commendation_discipline.discipline');
 }
 
@@ -34,7 +41,7 @@ function getListDiscipline(data) {
  */
 function createNewDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/create`,
+        url: `${ LOCAL_SERVER_API }/disciplines`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.commendation_discipline.discipline');
@@ -46,7 +53,7 @@ function createNewDiscipline(data) {
  */
 function deleteDiscipline(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/${id}`,
+        url: `${ LOCAL_SERVER_API }/disciplines/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }
@@ -58,8 +65,8 @@ function deleteDiscipline(id) {
  */
 function updateDiscipline(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/disciplines/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }
@@ -79,9 +86,16 @@ function updateDiscipline(id, data) {
  */
 function getListPraise(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/praise/paginate`,
-        method: 'POST',
-        data: data
+        url: `${ LOCAL_SERVER_API }/commendations`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data.organizationalUnit,
+            position: data.position,
+            employeeNumber: data.employeeNumber,
+            decisionNumber: data.decisionNumber,
+            page: data.page,
+            limit: data.limit
+        }
     }, false, true, 'human_resource.commendation_discipline.commendation');
 }
 
@@ -91,7 +105,7 @@ function getListPraise(data) {
  */
 function createNewPraise(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/praise/create`,
+        url: `${ LOCAL_SERVER_API }/commendations`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.commendation_discipline.commendation');
@@ -103,7 +117,7 @@ function createNewPraise(data) {
  */
 function deletePraise(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/praise/${id}`,
+        url: `${ LOCAL_SERVER_API }/commendations/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.commendation_discipline.commendation');
 }
@@ -114,8 +128,8 @@ function deletePraise(id) {
  */
 function updatePraise(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/praise/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/commendations/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.commendation_discipline.commendation');
 }

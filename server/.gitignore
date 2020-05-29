@@ -6,5 +6,6 @@
 /upload/avatars/*
 /upload/docs/*
 /upload/excels/*
+/upload/files/*
 
 package-lock.json

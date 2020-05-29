@@ -1,12 +1,21 @@
-import { Slider, Tooltip } from '@material-ui/core';
+//import { Slider, Tooltip} from '@material-ui/core';
+//import React, { useState } from 'react';
+// import 'rc-slider/assets/index.css';
 
-import React, { Component } from 'react';
+// import 'rc-tooltip/assets/bootstrap.css';
+
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
+
+import React, { Component, useState } from 'react';
+
+import ReactSlider from 'react-slider';
 
 import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
+//const Handle = Slider.Handle;
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +25,8 @@ class ModalMemberEvaluate extends Component {
             name: "",
             description: "",
             point: 0,
-            status: 0
+            status: 0,
+            value: 0
         };
     }
     componentDidMount() {
@@ -84,24 +94,58 @@ class ModalMemberEvaluate extends Component {
     handleChangeContent = async (id, employeeId, date) => {
         console.log('====', id, employeeId, date);
         console.log('date', date.getMonth());
+        var isoDate = date.toISOString();
+        await this.props.getTaskById(id, employeeId, isoDate);
+        var kpimembers =  this.props.kpimembers;
+       if(kpimembers.tasks !== undefined){
         await this.setState(state => {
-            this.props.getTaskById(id, employeeId,date);
-            return {
-                ...state,
-                content: id
-            }
-        });
+            console.log("iiiiiiii", kpimembers);
+               kpimembers.tasks.map(async(task)=>{
+               state[`taskImportanceLevel${task._id}`] = kpimembers.taskImportanceLevel;
+               })
+   
+               return {
+                   ...state,
+                   content: id
+               }
+           });
+       }
+
+        // await this.setState(state => {
+
+        //     state[`taskImportanceLevel${id}`] = value;
+
+        //     return {
+        //         ...state,
+        //         // taskImportanceLevel: value
+        //     }
+
+        // })
 
     }
 
-    handleSetPointKPI = async (id_kpi, id_target, input) => {
+    handleSetPointKPI = async (id_kpi, data) => {
         //event.preventDefault();
-        var point = { point: input };
-        this.props.setPointKPI(id_kpi, id_target, point)
-        // await this.setState({
-        //     editing: true,
-        //     this.props.setPointKPI( id_kpi, id_target, point)
-        // })
+        var dataPoint = [];
+        var date = new Date();
+        console.log("dfdfdfd", data);
+        for (var item of data) {
+            var temp = {
+                taskId: item.taskId,
+                date: date.toISOString(),
+                point: this.state[`taskImportanceLevel${item.taskId}`],
+                employeeId: this.props.employeeId,
+            }
+            dataPoint.push(temp);
+            console.log('itemmmm', temp);
+        }
+        console.log('idddd', this.props.id);
+        console.log('arrr', dataPoint);
+        this.props.setPointKPI(id_kpi, dataPoint);
+        await this.setState({
+            editing: true,
+            //this.props.setPointKPI( id_kpi, id_target, point)
+        })
     }
 
     handleCloseModal = async (id) => {
@@ -112,30 +156,25 @@ class ModalMemberEvaluate extends Component {
         modal.style = "display: none;";
     }
 
-    // handleChangeSlider = (e)=>{
-    //     var target = e.value.target;
+    setValueSlider = async (e, id) => {
+        var value = e.target.value;
 
-    //     this.setState(state=>{
-    //         return{
-    //             ...state,
-    //             valuetext: target
-    //         }
-    //     })
-    // }
+        await this.setState(state => {
 
-    // ValueLabelComponent(props) {
-    //     const { children, open, value } = props;
+            state[`taskImportanceLevel${id}`] = value;
 
-    //     return (
-    //         <Tooltip open={open} enterTouchDelay={0} placement="top" title={value} size='large'>
-    //             {children}
-    //         </Tooltip>
-    //     );
-    // }
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     console.log("this.state.valuetext",nextProps.valuetext, prevState);
-    // }
+            return {
+                ...state,
+                // taskImportanceLevel: value
+            }
+
+        })
+        console.log("stateeeeee", this.state);
+    }
+
+
     render() {
+        var { value } = this.state
         var list;
         var myTask = [];
         const { kpimembers } = this.props;
@@ -159,11 +198,11 @@ class ModalMemberEvaluate extends Component {
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
-                            <div className="left-modal">
+                            <div className="col-sm-3">
                                 <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white" }}>
                                     <h4>Danh sách mục tiêu</h4>
                                 </div>
-                                <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
+                                <div className="content-left-modal" id="style-1" >
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
                                             <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId, new Date())} className="list-group-item" key={index}>
@@ -174,24 +213,24 @@ class ModalMemberEvaluate extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="right-modal">
+                            <div className="col-sm-9">
                                 {
                                     list && list.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="qlcv">
                                                 <h4>Thông tin mục tiêu</h4>
-                                                    <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Tiêu chí đính giá:</label>
-                                                        <label >{item.criteria}</label>
-                                                    </div>
-                                                    <div className="col-sm-12">
-                                                        <label style={{width: "150px"}}>Trọng số:</label>
-                                                        <label style={{display: "inline" }}>{item.weight}</label>
-                                                    </div>
-                                                
-                                                    <div className="form-inline">
-                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
-                                                    </div>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Tiêu chí đính giá:</label>
+                                                    <label >{item.criteria}</label>
+                                                </div>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Trọng số:</label>
+                                                    <label style={{ display: "inline" }}>{item.weight}</label>
+                                                </div>
+
+                                                <div className="form-inline">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI(this.state.content, kpimembers.tasks)}>Tính điểm KPI</button>
+                                                </div>
                                             </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
@@ -226,7 +265,7 @@ class ModalMemberEvaluate extends Component {
                                                     <tbody>
                                                         {
 
-                                                            (typeof kpimembers.tasks !== "undefined" && kpimembers.tasks) ?
+                                                            ( kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
                                                                 (kpimembers.tasks.map((itemTask, index) =>
 
                                                                     <tr key={index}>
@@ -237,25 +276,33 @@ class ModalMemberEvaluate extends Component {
                                                                         <td>{itemTask.contribution}</td>
                                                                         <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                                         <td>
-                                                                            <div class="d-flex justify-content-center my-4">
-                                                                                <Slider
-                                                                                    defaultValue={itemTask.taskImportanceLevel}
-                                                                                    getAriaValueText={this.state.valuetext}
-                                                                                    aria-labelledby="discrete-slider"
-                                                                                    valueLabelDisplay="auto"
-                                                                                    step={0.1}
-                                                                                    // marks
-                                                                                    min={0}
-                                                                                    max={10}
+                                                                                 <input type="range" 
+                                                                                min = "0"
+                                                                                max = '10'
+                                                                                name = {`taskImportanceLevel${itemTask.taskId}`}
+                                                                                value={this.state[`taskImportanceLevel${itemTask.taskId}`]}
+                                                                                defaultValue={itemTask.taskImportanceLevel}
+                                                                                onChange = {(e)=>this.setValueSlider(e,itemTask.taskId)}
                                                                                 /> 
-                                                                                {/*<Slider
+                                                                                {/* <ReactSlider
+                                                                                // className="horizontal-slider"
+                                                                                // thumbClassName="thumb-1"
+                                                                                // trackClassName="track-1"
+                                                                                // min = "0"
+                                                                                // max = '10'
+                                                                                // name = {`taskImportanceLevel${itemTask.taskId}`}
+                                                                                // value={this.state[`taskImportanceLevel${itemTask.taskId}`]}
+                                                                                // defaultValue={itemTask.taskImportanceLevel}
+                                                                                // onChange = {(e)=>this.setValueSlider(e,itemTask.taskId)}
+                                                                                // renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                                                                                // />
+                                                                            {/*<Slider
                                                                                 //     ValueLabelComponent={this.ValueLabelComponent}
                                                                                 //     aria-label="custom thumb label"
                                                                                 //     defaultValue={itemTask.taskImportanceLevel*10}
                                                                                 //     // getAriaValueText={this.state.valuetext}
                                                                                 //     // onChange={this.handleChangeSlider}
                                                                                 // />*/}
-                                                                            </div>
                                                                         </td>
                                                                         {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
                                                                     </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>

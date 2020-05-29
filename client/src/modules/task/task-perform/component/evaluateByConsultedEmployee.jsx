@@ -8,7 +8,9 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            info: {}
+        }
     }
     
     componentWillMount() {
@@ -47,7 +49,13 @@ class EvaluateByConsultedEmployee extends Component {
                 // TODO: Ve sau can sua
                 // point: nextProps.point,
 
-                errorOnPoint: undefined
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined
             }
         }else{
             return null;
@@ -74,7 +82,8 @@ class EvaluateByConsultedEmployee extends Component {
         return (
             <React.Fragment>
             <DialogModal
-                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
+                modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
+                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID="form-evaluate-task-by-consulted"
                 title={this.props.title}
                 func={this.save}

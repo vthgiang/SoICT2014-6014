@@ -26,6 +26,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.state = {
             userId: userId,
             task: task,
+            info: {}
             // taskInformation: taskInformation,
         }
     }
@@ -48,12 +49,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         var value = parseInt(e.target.value);
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -63,12 +68,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         var value = e.target.value;
         var name = e.target.name;
         await this.setState(state =>{
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                },
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -77,7 +86,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
         this.setState(state => {
-            state[`${code}`] = {
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -93,7 +102,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         console.log('value', value);
 
         this.setState(state => {
-            state[`${code}`] = {
+            
+            state.info[`${code}`] = {
                 value: value,
                 code: code
             }
@@ -105,13 +115,18 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     handleInfoBooleanChange  = (event) => {
         var {name, value} = event.target;
+
         this.setState(state => {
+            state.info[`${name}`] = {
+                value: value,
+                code: name
+            }
             return {
                 ...state,
-                [name]: {
-                    value: value,
-                    code: name
-                }
+                // [name]: {
+                //     value: value,
+                //     code: name
+                // }
                 // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
@@ -221,34 +236,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    // handleTaskProgressChange = event => {
-    //     let value = event.target.value;
-    //     this.validateTaskProgress(value, true);
-    // }
-
-    // validateTaskProgress = (value, willUpdateState) => {
-    //     let errorMessage = undefined;
-    //     if (value === "") {
-    //         errorMessage = "Hãy nhập mức độ hoàn thành công việc";
-    //     }
-    //     if (value !== undefined && isNaN(value)) {
-    //         errorMessage = "Mức độ hoàn thành phải có định dạng number";
-    //     }
-    //     if (value < 0 || value > 100) {
-    //         errorMessage = "Mức độ hoàn thành phải trong khoảng 0 - 100";
-    //     }
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 taskProgress: value,
-    //                 errorTaskProgress: errorMessage,
-    //             }
-    //         })
-    //     }
-    //     return errorMessage === undefined;
-    // }
-
+   
     isFormValidated = () => {
         return this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
@@ -267,6 +255,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         console.log('PARENT nextProps, prevState', nextProps, prevState);
+        const { tasks } = nextProps;
+        var task = tasks && tasks.task && tasks.task.info;
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -285,6 +275,26 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             return null;
         }
     }
+    // shouldComponentUpdate(nextProps, nextState){
+    //     console.log('PARENT nextProps, prevState', nextProps, this.state, nextState);
+    //     const { tasks } = nextProps;
+    //     var task = tasks && tasks.task && tasks.task.info;
+    //     // if (nextProps.id !== this.state.id) {
+
+    //     this.setState(state=>{
+    //         return {
+    //             ...state,
+
+    //             id: nextProps.id,
+
+    //             errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+    //             errorOnPoint: undefined,
+    //             errorOnInfoDate: undefined,
+    //             errorOnProgress: undefined
+    //         } 
+    //     });
+    //     // }
+    // }
 
     render() {
         const { kpimembers, KPIPersonalManager } = this.props
@@ -292,11 +302,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         const { errorTaskName, errorTaskDescription } = this.state;
         var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         // console.log('listKPI', listKpi);
+        console.log('this.props.perform',this.props.perform);
         return (
             <div>
                 <React.Fragment>
                     <DialogModal
-                        size="50"
+                        size={75}
+                        maxWidth={750}
+                        // modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
                         modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
                         formID={`form-edit-task-${this.props.role}-${this.props.id}`}
                         title={this.props.title}
@@ -360,6 +373,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
 
+                                perform={this.props.perform}
                                 value={this.state}
                             
                             />

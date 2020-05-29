@@ -3,11 +3,22 @@ import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+import moment from 'moment'
 
+import {
+    getStorage
+} from '../../../../../config';
+import { Comments } from './employeeKpiComment';
+// import Files from 'react-files'
+// import TextareaAutosize from 'react-textarea-autosize';
+
+// import '../../../../task/task-perform/component/actionTab';
 class ModalMemberApprove extends Component {
     constructor(props) {
+        var idUser = getStorage("userId");
         super(props);
         this.state = {
+            currentUser: idUser,
             date : this.formatDateBack(Date.now()),
             editing: false,
             edit: "",
@@ -55,7 +66,7 @@ class ModalMemberApprove extends Component {
     }
     handleEdit = async (id) => {
         await this.setState(state => {
-            console.log('weight 1: =================== ' + this.state.weight);
+            // console.log('weight 1: =================== ' + this.state.weight);
 
             return {
                 ...state,
@@ -79,7 +90,7 @@ class ModalMemberApprove extends Component {
             }
         })
         // console.log('weight 2 ===================' + this.state.weight);
-        console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
+        // console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
             this.props.editTarget(target._id, newTarget);
@@ -192,12 +203,14 @@ class ModalMemberApprove extends Component {
             this.props.getKPIMemberByMonth(id, this.state.date);
         }
     }
+
     handleEditStatusTarget = (event, id, status) => {
         event.preventDefault();
         if(id){
             this.props.editStatusTarget(id, status);
         }
     }
+
     handleApproveKPI = async (id, listTarget) => {
         
         var totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
@@ -215,12 +228,17 @@ class ModalMemberApprove extends Component {
         }
     }
     render() {
+        // console.log('approve id'+this.props.id);
         var kpimember;
         var kpimembercmp ;
         const { kpimembers } = this.props;
-        const { errorOnDate, date} = this.state;
+        const { errorOnDate, date,currentUser} = this.state;
 
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
+        console.log('idddddddd================'+ this.props.id);
+        
+        // var comment = kpimembers.currentKPI.kpis;
+        // console.log('comments: ========'+ comment);
         if (kpimembers.kpimembers){
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
@@ -232,24 +250,30 @@ class ModalMemberApprove extends Component {
             });
         } 
         if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
-        console.log('kpimembercmp'+ kpimember);
+        // console.log('kpimembercmp'+ kpimember);
         return (
-            // <React.Fragment>
-            //     <DialogModal
-            //     modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
-            //     formID={`form-evaluate-task-by-${this.props.role}`}
-            //     title={this.props.title}
-            //     >
-            <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                    <div className="modal-header">
+            <React.Fragment>
+                <DialogModal
+                modalID={`modal-approve-KPI-member-${this.props.id}`}
+                // formID={`form-evaluate-task-by-${this.props.role}`}
+                title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
+                // title={`Phê duyệt KPI nhân viên `}
+                // func={this.save}
+                hasSaveButton ={false}
+                // disableSubmit={!this.isFormValidated()}
+                size={100}
+                >
+            {/* <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> */}
+                {/* <div className="modal-dialog-full"> */}
+                    {/* <div className="modal-content"> */}
+                    {/* <form action=""></form> */}
+                    {/* <div className="modal-header">
                         <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
                             <span aria-hidden="true">×</span>
                             <span className="sr-only">Close</span>
                         </button>
                         <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                    </div>
+                    </div> */}
                         <div className="box" >
                             <div className="box-body qlcv">
                             
@@ -336,7 +360,7 @@ class ModalMemberApprove extends Component {
                                             </tr>
                                         </thead>
                                     <tbody>
-                                        {typeof kpimember !== "undefined" ?
+                                        {kpimember &&
                                             kpimember.kpis.map((item, index) =>
                                                 <tr >
                                                         <td>{index+1}</td>
@@ -354,18 +378,17 @@ class ModalMemberApprove extends Component {
                                                         <a href="#abc" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">cancel</i></a>
                                                     </td>
                                                     </tr>
-                                                ) : <tr><td colSpan={7}>Không có dữ liệu phù hợp</td></tr>
+                                                ) 
                                             }
                                     </tbody>
                                 </table>
                             </div>
+                            
                             </div>
-                        </div>
-                    </div>
                 </div>
-            </div >
-        //     </DialogModal>
-        // </React.Fragment>
+                <Comments id={this.props.id}></Comments>
+            </DialogModal>
+        </React.Fragment>
         );
         
     }
