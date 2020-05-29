@@ -168,6 +168,8 @@ exports.uploadFile = (arrData, type) => {
                     cb(null, `./upload${arrData[0].path}`);
                 } else if(type === 'fields'){
                     for(let n in arrData){
+                        
+                        console.log('req:', file)
                         if(file.fieldname === arrData[n].name){
                             cb(null, `./upload${arrData[n].path}`);
                             break;

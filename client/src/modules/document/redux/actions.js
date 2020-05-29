@@ -83,19 +83,35 @@ function increaseNumberView(id){
     }
 }
 
-function editDocument(id, data){
+function editDocument(id, data, option = undefined){
     return dispatch => {
         dispatch({ type: DocumentConstants.EDIT_DOCUMENT_REQUEST});
-        DocumentServices.editDocument(id, data)
-            .then(res => {
-                dispatch({
-                    type: DocumentConstants.EDIT_DOCUMENT_SUCCESS,
-                    payload: res.data.content
+        switch(option){
+            case 'ADD_VERSION':
+                DocumentServices.editDocument(id, data, option)
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.ADD_VERSION_DOCUMENT_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
-            })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.ADD_VERSION_DOCUMENT_FAILE});
+                });
+                break;
+
+            default:
+                DocumentServices.editDocument(id, data)
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.EDIT_DOCUMENT_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
+                });
+        }
     }
 }
 

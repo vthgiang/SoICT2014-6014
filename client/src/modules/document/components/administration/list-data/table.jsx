@@ -144,10 +144,15 @@ class Table extends Component {
          );
     }
 
-    setPage = (page) => {
+    setPage = async(page) => {
         this.setState({ page });
-        const data = { limit: this.state.limit, page };
-        this.props.getAllDocuments(data);
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getAllDocuments(data);
     }
 
     setLimit = (number) => {

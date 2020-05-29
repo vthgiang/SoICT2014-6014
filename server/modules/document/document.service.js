@@ -94,34 +94,53 @@ exports.createDocument = async (company, data) => {
 /**
  * Chỉnh sửa thông tin tài liệu văn bản
  */
-exports.editDocument = async (id, data) => {
-    console.log("edit doc: ", data);
+exports.editDocument = async (id, data, query=undefined) => {
     const doc = await Document.findById(id);
+    console.log("EDIT QUERY:", query)
+
+    if(query !== undefined && Object.keys(query).length > 0){
+        switch(query.option) {
+            case 'ADD_VERSION':
+                doc.versions.push(data);
+                console.log("doc version new: ", doc);
+                await doc.save();
+
+                return doc;
+
+            case 'EDIT_VERSION':
+                return doc;
+
+            case 'DELETE_VERSION':
+                return doc;
+
+            default:
+                return doc;
+        }
+    }else{
+        doc.name = data.name
+        doc.domains = data.domains
+        doc.category = data.category
+        doc.description = data.description
+        doc.issuingBody = data.issuingBody
+        doc.officialNumber = data.officialNumber
+        doc.signer = data.signer
     
-
-    doc.name = data.name
-    doc.domains = data.domains
-    doc.category = data.category
-    doc.description = data.description
-    doc.issuingBody = data.issuingBody
-    doc.officialNumber = data.officialNumber
-    doc.signer = data.signer
-
-    doc.relationshipDescription = data.relationshipDescription 
-    doc.relationshipDocuments = data.relationshipDocuments
-
-    doc.roles = data.roles
-
-    if(data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined) 
-        doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo 
-    if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined) 
-        doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
-    if(data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined) 
-        doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager 
-
-    await doc.save();
-
-    return doc;
+        doc.relationshipDescription = data.relationshipDescription 
+        doc.relationshipDocuments = data.relationshipDocuments
+    
+        doc.roles = data.roles
+    
+        if(data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined) 
+            doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo 
+        if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined) 
+            doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
+        if(data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined) 
+            doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager 
+    
+        await doc.save();
+    
+        return doc;
+    }
 }
 
 exports.addNewVersionDocument = (id, data) => {

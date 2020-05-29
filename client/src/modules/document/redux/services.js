@@ -38,11 +38,12 @@ function increaseNumberView(id) {
     }, false, false, 'document');
 }
 
-function editDocument(id, data) {  
+function editDocument(id, data, option=undefined) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/${id}`,
         method: 'PATCH',
         data,
+        params: { option },
     }, true, true, 'document');
 }
 
