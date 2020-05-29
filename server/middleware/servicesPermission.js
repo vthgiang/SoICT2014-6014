@@ -240,6 +240,7 @@ exports.data = [
     { path: '/detailkpi/:id', method: 'GET', roles: ['Dean']},
     { path: '/appovepoint/:id_kpi/:id_target', method: 'PUT', roles: ['Dean']},
     { path: '/kpimembers/task/:id/:employeeId/:date', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/taskImportanceLevel', method: 'PUT', roles: ['Dean']},
     // Task-management
     { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},

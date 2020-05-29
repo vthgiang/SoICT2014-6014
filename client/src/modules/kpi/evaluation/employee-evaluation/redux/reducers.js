@@ -170,7 +170,9 @@ export function kpimembers(state = {}, action) {
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
         return {
             ...state,
-            currentKPI : action.payload,
+            // currentKPI : action.payload,
+            tasks: action.payload.task,
+            result: action.payload.result
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
         return { 
@@ -187,6 +189,7 @@ export function kpimembers(state = {}, action) {
         return {
             ...state,
             currentKPI : action.payload,
+            
         };
       case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
         return { 
