@@ -1,7 +1,8 @@
 const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
 const Department = require('../../../../models/super-admin/organizationalUnit.model');
 const Task = require('../../../../models/task/task.model');
-const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model')
+const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const User = require('../../../../models/auth/user.model')
 const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
@@ -327,3 +328,138 @@ async function getResultTaskByMonth(data) {
     return task;
 }
 
+// lay tat ca binh luan
+exports.getAllComments = async(params) =>{
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpi}).populate([
+        {path:"creator", model: User,select: 'name email avatar avatar' },
+        {path: "comments.creator", model: User, select: 'name email avatar avatar'}
+    ])
+    return kpiPersonal.comments;
+}
+// thêm bình luận cho phê duyệt kpi
+
+exports.createCommentOfApproveKPI = async (body) =>{
+    var comment = await KPIPersonal.updateOne(
+        { "_id" : body.employeeKpiId },
+        {
+            "$push": {
+                "comments":{
+                    creator: body.creator,
+                    content: body.content,
+                }
+            }
+        }
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"_id": body.employeeKpiId}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar '}
+         
+    ]).select("comments");
+    // console.log(kpiPersonal.comments);
+    return kpiPersonal.comments ;
+}
+
+// sửa bình luận 
+exports.editCommentOfApproveKPI = async (params, body) =>{
+    const now = new Date();
+    var action = await KPIPersonal.updateOne(
+        {"comments._id": params.id},
+        {
+            $set:
+            {
+                "comments.$[elem].content": body.content,
+                "comments.$[elem].updateAt": now
+            }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+        
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments._id": params.id}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar'},
+       
+    ]).select("comments")
+    return kpiPersonal.comments;
+}
+
+// xoa binh luan 
+exports.deleteCommentOfApproveKPI = async (params) => {
+    var action = await KPIPersonal.update(
+        { "comments._id": params.id },
+        { $pull: { "comments" : {_id : params.id} } },
+        { safe: true })
+    
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpimember}).populate([
+        { path: "creator", model: User,select: 'name email avatar' },
+        { path: "comments.creator", model: User, select: 'name email avatar'},
+        ]).select("comments");
+    return kpiPersonal.comments ;    
+}
+
+// thêm bình luận cho bình luận
+
+exports.createCommentOfComment = async (body) =>{
+    var comment = await KPIPersonal.updateOne(
+        { "comments._id" : body.commentId },
+        {
+            "$push": {
+                "comments.$.comments":{
+                    creator: body.creator,
+                    content: body.content,
+                }
+            }
+        }
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments._id": body.commentId});
+    console.log(kpiPersonal);
+    return kpiPersonal ;
+}
+
+// sửa bình luận cua binh luan 
+exports.editCommentOfComment = async (params, body) =>{
+    const now = new Date();
+    var action = await KPIPersonal.updateOne(
+        {"comments.comments._id": params.id},
+        {
+            $set:
+            {
+                "comments.$.comments.$[elem].content": body.content,
+                "comments.$.comments.$[elem].updateAt": now
+            }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+        
+    )
+    var kpiPersonal = await KPIPersonal.findOne({"comments.comments._id": params.id}).populate([
+        { path: "comments.creator", model: User,select: 'name email avatar' },
+        { path: "comments.comments.creator", model: User, select: 'name email avatar'},
+       
+    ]).select("comments")
+    return kpiPersonal.comments;
+}
+
+// xoa binh luan cua binh luan
+exports.deleteCommentOfComment = async (params) => {
+    var action = await KPIPersonal.update(
+        { "comments.comments._id": params.id },
+        { $pull: { "comments.$.comments" : {_id : params.id} } },
+        { safe: true })
+    
+    var kpiPersonal = await KPIPersonal.findOne({_id: params.kpimember}).populate([
+        { path: "comments.creator", model: User,select: 'name email avatar' },
+        { path: "comments.comments.creator", model: User, select: 'name email avatar'},
+        ]).select("comments");
+    return kpiPersonal.comments ;    
+}
