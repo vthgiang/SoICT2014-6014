@@ -292,15 +292,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            // files: [{ // Các file đi kèm comments
-            //     name: {
-            //         type: String,
-            //     },
-            //     url: {
-            //         type: String,
-            //         required: true
-            //     }
-            // }],
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
         }],
     }],
     taskComments: [{ // Trao đổi trong tasks
@@ -328,15 +328,15 @@ const TaskSchema = new Schema({
             type : Date,
             default: Date.now
         },
-        // files: [{ // Các file đi kèm comments
-        //     name: {
-        //         type: String,
-        //     },
-        //     url: {
-        //         type: String,
-        //         required: true
-        //     }
-        // }],
+        files: [{ // Các file đi kèm comments
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            }
+        }],
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
@@ -354,15 +354,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            // files: [{ // Các file đi kèm comments
-            //     name: {
-            //         type: String,
-            //     },
-            //     url: {
-            //         type: String,
-            //         required: true
-            //     }
-            // }],
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
         }],
     }]
 }, {
