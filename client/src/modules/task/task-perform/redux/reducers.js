@@ -30,18 +30,18 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.GET_LOGTIMER_REQUEST:
+        case performTaskConstants.GET_TIMESHEETLOGS_REQUEST:
             return {
                 ...state,
                 loading: true
             };
-        case performTaskConstants.GET_LOGTIMER_SUCCESS:
+        case performTaskConstants.GET_TIMESHEETLOGS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 logtimer: action.payload.data.content
             };
-        case performTaskConstants.GET_LOGTIMER_FAILURE:
+        case performTaskConstants.GET_TIMESHEETLOGS_FAILURE:
             return {
                 error: action.error
             };
@@ -74,34 +74,6 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.PAUSE_TIMER_REQUEST:
-            return {
-                ...state,
-                loading: true
-            };
-        case performTaskConstants.PAUSE_TIMER_SUCCESS:
-            return {
-                ...state,
-                currentTimer: action.payload.data.content
-            };
-        case performTaskConstants.PAUSE_TIMER_FAILURE:
-            return {
-                error: action.error
-            };
-        case performTaskConstants.CONTINUE_TIMER_REQUEST:
-            return {
-                ...state,
-                loading: true
-            };
-        case performTaskConstants.CONTINUE_TIMER_SUCCESS:
-            return {
-                ...state,
-                currentTimer: action.payload.data.content
-            };
-        case performTaskConstants.CONTINUE_TIMER_FAILURE:
-            return {
-                error: action.error
-            };
         case performTaskConstants.STOP_TIMER_REQUEST:
             return {
                 ...state,
@@ -110,7 +82,8 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return {
                 ...state,
-                currentTimer: null
+                logtimer: action.payload.data.content,
+                currentTimer: null,
             };
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
@@ -343,7 +316,10 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 error: action.error
-            }                                                                                              
+            }  
+        case performTaskConstants.DOWNLOAD_FILE_REQUEST:      
+        case performTaskConstants.DOWNLOAD_FILE_FAILURE:
+        case performTaskConstants.DOWNLOAD_FILE_SUCCESS:                                                                                          
         default:
             return state
     }

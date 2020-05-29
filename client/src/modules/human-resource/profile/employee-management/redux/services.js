@@ -1,5 +1,9 @@
-import { LOCAL_SERVER_API} from '../../../../../env';
-import {sendRequest} from '../../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../../env';
+import {
+    sendRequest
+} from '../../../../../helpers/requestHelper';
 
 export const EmployeeService = {
     getAll,
@@ -13,9 +17,17 @@ export const EmployeeService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/paginate`,
-        method: 'POST',
-        data: data,
+        url: `${ LOCAL_SERVER_API }/employees`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data !== undefined ? data.organizationalUnit : data,
+            position: data !== undefined ? data.position : data,
+            employeeNumber: data !== undefined ? data.employeeNumber : data,
+            gender: data !== undefined ? data.gender : data,
+            status: data !== undefined ? data.status : data,
+            page: data !== undefined ? data.page : data,
+            limit: data !== undefined ? data.limit : data
+        }
     }, false, true, 'human_resource.profile.employee_management');
 }
 
@@ -33,14 +45,12 @@ function addNewEmployee(data) {
 
 /**
  * Cập nhật thông tin nhân viên theo id
- * @param {*} id 
- * @param {*} data 
+ * @param {*} id : id thông tin nhân viên cần chỉnh sửa
+ * @param {*} data :dữ liệu chỉnh sửa thông tin nhân viên
  */
 function updateInformationEmployee(id, data) {
-    console.log(data);
-    console.log(id);
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/update/${id}`,
+        url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'PUT',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
@@ -56,16 +66,3 @@ function deleteEmployee(id) {
         method: 'DELETE',
     }, true, true, 'human_resource.profile.employee_management');
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

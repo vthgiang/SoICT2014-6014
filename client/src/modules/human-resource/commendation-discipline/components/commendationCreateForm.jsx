@@ -164,7 +164,7 @@ class PraiseCreateForm extends Component {
         let result =
             this.validateEmployeeNumber(this.state.employeeNumber, false) && this.validateStartDate(this.state.startDate, false) &&
             this.validateDecisionNumber(this.state.decisionNumber, false) && this.validateOrganizationalUnit(this.state.organizationalUnit, false) &&
-            this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
+            this.validateType(this.state.type, false) && this.validateReason(this.state.reason, false);
         return result;
     }
     /**

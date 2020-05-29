@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { CourseFormValidator } from './combinedContent';
 
 import { DialogModal, ButtonModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
-
+import { EmployeeManagerActions } from '../../../human-resource/profile/employee-management/redux/actions';
 import { CourseActions } from '../redux/actions';
 
 import './courseManager.css';
@@ -25,7 +25,7 @@ class CourseCreateForm extends Component {
             employeeCommitmentTime: "",
             type: "internal",
             listEmployees: [],
-
+            addEmployees: [],
         };
     }
 
@@ -153,6 +153,11 @@ class CourseCreateForm extends Component {
 
     // Bắt sự kiện thay đổi thuộc chương trình đào tạo
     handleEducationProgramChange = (value) => {
+        if (value[0] !== '') {
+            let educationInfo = this.props.education.listAll.filter(x => x._id === value[0]);
+            this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+        }
+        this.setState({ check: true })
         this.validateEducationProgram(value[0], true);
     }
     validateEducationProgram = (value, willUpdateState = true) => {
@@ -208,7 +213,13 @@ class CourseCreateForm extends Component {
     // Bắt sự kiện thêm nhân viên tham gia
     handleEmployeeChange = (value) => {
         this.setState({
-            addEmployees: value
+            addEmployees: value.map(x => { return { _id: x, result: 'failed' } })
+        })
+    }
+    // Bắt sự kiện xoá nhân viên thêm gia
+    handleDelete = (id) => {
+        this.setState({
+            listEmployees: this.state.listEmployees.filter(x => x._id !== id)
         })
     }
 
@@ -221,6 +232,26 @@ class CourseCreateForm extends Component {
         })
     }
 
+    handleResultChange = (id, value) => {
+        console.log(id);
+        console.log(value);
+        // let listEmployees = this.state.listEmployees;
+        // for (let n in listEmployees) {
+        //     if (listEmployees[n]._id === id) {
+        //         if (value === 'pass') {
+        //             listEmployees[n].result = 'faile'
+        //         } else {
+        //             listEmployees[n].result = 'pass'
+        //         }
+        //     }
+        // }
+        
+        // await this.setState({
+        //     listEmployees: listEmployees
+        // })
+        // console.log(this.state);
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
@@ -230,33 +261,41 @@ class CourseCreateForm extends Component {
             this.validateEndDate(this.state.endDate, false) && this.validateOfferedBy(this.state.offeredBy, false) && this.validateStartDate(this.state.startDate, false);
         return result;
     }
-
     save = () => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        var partEnd = this.state.startDate.split('-');
+        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
         if (this.isFormValidated()) {
-            this.props.createNewCourse(this.state);
+            this.props.createNewCourse({ ...this.state, listEmployees: listEmployees, startDate: startDate, endDate: endDate });
         }
     }
 
     render() {
-        const { education, translate, user } = this.props;
+        var userlist = [];
+        const { education, translate, course, employeesManager } = this.props;
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseId, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
-        var listEducations = this.props.education.listAll;
-        var userlist = user.list, infoEmployee = [];
-        for (let n in listEmployees) {
-            userlist = userlist.filter(x => x._id !== listEmployees[n]);
-            infoEmployee = user.list.filter(x => x._id === listEmployees[n]).concat(infoEmployee)
+        var listEducations = education.listAll;
+        if (employeesManager.listAllEmployees.length !== 0 && this.state.check === true) {
+            userlist = employeesManager.listAllEmployees;
         }
-        // Lấy thông tin name và email của nhân viên đơn vị
-        for (let n in listEmployees) {
-
+        let employeeInfors = [];
+        if (listEmployees.length !== 0) {
+            for (let n in listEmployees) {
+                userlist = userlist.filter(x => x._id !== listEmployees[n]._id);
+                let employeeInfor = employeesManager.listAllEmployees.filter(x => x._id === listEmployees[n]._id);
+                employeeInfor[0] = { ...employeeInfor[0], result: listEmployees[n].result }
+                employeeInfors = employeeInfor.concat(employeeInfors);
+            }
         }
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-course" button_name="Thêm chương trình đào tạo" title="Thêm chương trình đào tạo" />
                 <DialogModal
-                    modalID="modal-create-course" isLoading={education.isLoading}
+                    modalID="modal-create-course" isLoading={course.isLoading}
                     formID="form-create-course"
                     title="Thêm khoá đào tạo"
                     func={this.save}
@@ -362,7 +401,7 @@ class CourseCreateForm extends Component {
                                         id={`add-employee`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={userlist.map(x => { return { value: x._id, text: x.name } })}
+                                        items={userlist.map(x => { return { value: x._id, text: `${x.fullName} - ${x.employeeNumber}` } })}
                                         onChange={this.handleEmployeeChange}
                                         multiple={true}
                                     />
@@ -380,11 +419,33 @@ class CourseCreateForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
+                                {
+                                    (employeeInfors.length !== 0 && employeeInfors !== undefined) &&
+                                    employeeInfors.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.employeeNumber}</td>
+                                            <td>{x.fullName}</td>
+                                            <td><div>
+                                                <div className="radio-inline">
+                                                    <label>
+                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={`${x.result === "pass" ? true : false}`} onclick={() => this.handleResultChange("adsd", "sdawdaw")} />Đạt</label>
+                                                </div>
+                                                <div className="radio-inline">
+                                                    <label>
+                                                        <input type="radio" name={`result${x._id}`} value="faile" checked={`${x.result === "faile" ? true : false}`} onclick={() => this.handleResultChange(x._id, x.result)} />Không đạt</label>
+                                                </div>
+                                            </div></td>
+                                            <td>
+                                                <a className="delete" title="Delete" onClick={() => this.handleDelete(x._id)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
-                        {user.isLoading ?
+                        {employeesManager.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof listEmployees === 'undefined' || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof employeeInfors === 'undefined' || employeeInfors.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </form>
                 </DialogModal>
@@ -394,12 +455,13 @@ class CourseCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { course, education, user } = state;
-    return { course, education, user };
+    const { course, education, employeesManager } = state;
+    return { course, education, employeesManager };
 };
 
 const actionCreators = {
     createNewCourse: CourseActions.createNewCourse,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
 
 };
 

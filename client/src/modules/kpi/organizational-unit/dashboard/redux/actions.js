@@ -28,7 +28,7 @@ function getAllChildTargetOfOrganizationalUnitKpis(id) {
     }
 }
 
-// Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại)
+// Lấy tất cả task của organizationalUnit theo tháng hiện tại
 function getAllTaskOfOrganizationalUnit(id) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });

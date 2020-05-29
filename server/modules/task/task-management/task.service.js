@@ -23,7 +23,7 @@ exports.getTask = async (id) => {
     var task = await Task.findById(id).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"}
@@ -67,6 +67,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (perpageId,numberId,
     var responsibleTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
+        
         if (unitId === "[]" && statusId === "[]") {
             responsibleTasks = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });

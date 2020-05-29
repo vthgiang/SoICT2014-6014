@@ -54,7 +54,7 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (userRoleId) => {
     return childTargets;   
 }
 
-/** Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại) */
+/** Lấy tất cả task của organizationalUnit theo tháng hiện tại*/
 exports.getAllTaskOfOrganizationalUnit = async (userRoleId) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
@@ -87,7 +87,7 @@ exports.getAllTaskOfOrganizationalUnit = async (userRoleId) => {
             ]
         }},
 
-        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1 }}
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 }}
     ])
 
     return tasks;

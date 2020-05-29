@@ -3,17 +3,28 @@ import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+import moment from 'moment'
 
+import {
+    getStorage
+} from '../../../../../config';
+// import Files from 'react-files'
+// import TextareaAutosize from 'react-textarea-autosize';
+
+// import '../../../../task/task-perform/component/actionTab';
 class ModalMemberApprove extends Component {
     constructor(props) {
+        var idUser = getStorage("userId");
         super(props);
         this.state = {
+            currentUser: idUser,
             date : this.formatDateBack(Date.now()),
             editing: false,
             edit: "",
             compare: false,
             checkInput: false,
             checkWeight: false,
+            
         };
         this.newWeight = [];
     }
@@ -54,23 +65,31 @@ class ModalMemberApprove extends Component {
     }
     handleEdit = async (id) => {
         await this.setState(state => {
+            console.log('weight 1: =================== ' + this.state.weight);
+
             return {
                 ...state,
                 editing: true,
-                edit: state.edit ===id ? "" : id
+                edit: state.edit ===id ? "" : id,
+                // weight: this.state.weight
             }
         })
     }
     handleSaveEdit = async (target) => {
+        
+
         await this.setState(state=>{
             return{
                 ...state,
                 newTarget: {
                     ...target,
-                    weight: parseInt(this.newWeight[target._id].value)
-                },
+                    weight: parseInt(this.newWeight[target._id].value)                
+                    // weight: parseInt(this.newWeight[target._id].value)                
+                },            
             }
         })
+        // console.log('weight 2 ===================' + this.state.weight);
+        console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
             this.props.editTarget(target._id, newTarget);
@@ -183,12 +202,14 @@ class ModalMemberApprove extends Component {
             this.props.getKPIMemberByMonth(id, this.state.date);
         }
     }
+
     handleEditStatusTarget = (event, id, status) => {
         event.preventDefault();
         if(id){
             this.props.editStatusTarget(id, status);
         }
     }
+
     handleApproveKPI = async (id, listTarget) => {
         
         var totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
@@ -206,12 +227,17 @@ class ModalMemberApprove extends Component {
         }
     }
     render() {
+        // console.log('approve id'+this.props.id);
         var kpimember;
         var kpimembercmp ;
         const { kpimembers } = this.props;
-        const { errorOnDate, date} = this.state;
+        const { errorOnDate, date,currentUser} = this.state;
 
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
+        console.log('currentUser================'+ this.state.currentUser);
+        
+        // var comment = kpimembers.currentKPI.kpis;
+        // console.log('comments: ========'+ comment);
         if (kpimembers.kpimembers){
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
@@ -223,17 +249,29 @@ class ModalMemberApprove extends Component {
             });
         } 
         if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
+        console.log('kpimembercmp'+ kpimember);
         return (
-            <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                    <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
-                        <span aria-hidden="true">×</span>
-                        <span className="sr-only">Close</span>
-                    </button>
+            <React.Fragment>
+                <DialogModal
+                modalID={`modal-approve-KPI-member-${this.props.id}`}
+                // formID={`form-evaluate-task-by-${this.props.role}`}
+                title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
+                // func={this.save}
+                hasSaveButton ={false}
+                // disableSubmit={!this.isFormValidated()}
+                size={100}
+                >
+            {/* <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> */}
+                {/* <div className="modal-dialog-full"> */}
+                    {/* <div className="modal-content"> */}
+                    {/* <form action=""></form> */}
+                    {/* <div className="modal-header">
+                        <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
+                            <span aria-hidden="true">×</span>
+                            <span className="sr-only">Close</span>
+                        </button>
                         <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                </div>
+                    </div> */}
                         <div className="box" >
                             <div className="box-body qlcv">
                             
@@ -250,7 +288,7 @@ class ModalMemberApprove extends Component {
                                 <div>
                                     <div className="form-inline">
                                             <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                                <label style={{width:"auto"}} >Chọn tháng so sánh:</label>
+                                                <label style={{width:"auto", fontSize:"18px"}} >Chọn tháng so sánh:</label>
                                                     <DatePicker
                                                         id="create_date"
                                                         dateFormat="month-year"
@@ -270,8 +308,8 @@ class ModalMemberApprove extends Component {
                                                 <th title="STT">STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                <th title="Mục tiêu đơn vị">Thời gian</th>
-                                                <th title="Mục tiêu đơn vị">Số mục tiêu</th>
+                                                {/* <th title="Thời gian">Thời gian</th> */}
+                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
@@ -284,14 +322,14 @@ class ModalMemberApprove extends Component {
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.parent && item.parent.name }</td>
-                                                        <td>{this.formatDate(item.date)}</td>
-                                                        <td>{item.length}</td>
+                                                        {/* <td>{this.formatDate(kpimembercmp.date)}</td> */}
+                                                        {/* <td>{kpimembercmp.kpis.length}</td> */}
                                                         <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                         <td>{item.approvedPoint}</td>
                                                         
                                                     </tr>
-                                                ) : <tr><td colSpan={8}>Không có dữ liệu phù hợp</td></tr>
+                                                ) : <tr><td colSpan={6}>Không có dữ liệu phù hợp</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -303,15 +341,15 @@ class ModalMemberApprove extends Component {
                                 {/* // } */}
                                 
                                 <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
-                                columnArr={[ 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Trạng thái' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                                columnArr={[ 'STT', 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Kết quả đánh giá' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
                                 <table id ="kpiApprove" className="table table-bordered table-striped">
                                 <thead>
                                             <tr>
                                                 <th title="STT">STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                <th title="Mục tiêu đơn vị">Thời gian</th>
-                                                <th title="Mục tiêu đơn vị">Số mục tiêu</th>
+                                                {/* <th title="Thời gian">Thời gian</th> */}
+                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
@@ -320,16 +358,16 @@ class ModalMemberApprove extends Component {
                                             </tr>
                                         </thead>
                                     <tbody>
-                                        {typeof kpimember !== "undefined" ?
+                                        {kpimember &&
                                             kpimember.kpis.map((item, index) =>
                                                 <tr >
                                                         <td>{index+1}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.parent && item.parent.name}</td>
-                                                        <td>{this.formatDate(item.date)}</td>
-                                                        <td>{item.length}</td>
+                                                        {/* <td>{this.formatDate(kpimember.date)}</td> */}
+                                                        {/* <td>{kpimember.kpis.length}</td> */}
                                                         <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref={input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                         <td>{item.approvedPoint}</td>
                                                         <td>
                                                         {this.state.edit === item._id?<a href="#edit" className="approve" title="Lưu kết quả" onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
@@ -338,17 +376,84 @@ class ModalMemberApprove extends Component {
                                                         <a href="#abc" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">cancel</i></a>
                                                     </td>
                                                     </tr>
-                                                ) : <tr><td colSpan={9}>Không có dữ liệu phù hợp</td></tr>
+                                                ) 
                                             }
                                     </tbody>
                                 </table>
                             </div>
                             </div>
+                            
+                        
+                    
+            
+                { kpimember && 
+                kpimember.comments.map(child => {
+                    return <div  key={child._id}>
+                        <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
+                        <p className="content-level2">
+                            <a href="#">{child.creator.name} </a>
+                            {child.content}
+                        </p>
+                        <div className="tool-level2">
+                            <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
                         </div>
+                            {kpimember.comments && kpimember.comments[0].comments.map(item => {
+                             return <div  className="btn-group dropleft pull-right">
+                                        <img className="user-img-level2" src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/97006891_2717126238515406_5886747261832003584_n.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=aqjZiblGPY8AX89nbir&_nc_ht=scontent.fhan2-3.fna&oh=4b186ff3ba6be7421c9494df2b81834a&oe=5EE8ECB5" alt="User Image" />
+                                        <p className="content-level2">
+                                        <a href="#">{item.creator.name} </a>
+                                        {item.content}
+                                    </p>
+                                    <div className="tool-level2">
+                            <span className="text-sm">{moment(item.createdAt).fromNow()}</span>
+                        </div>
+                                    </div>
+
+                                })} 
+                                  
+                                {/* <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
+                                    <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
+                                    </svg>
+                                </button> */}
+                                {/* <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
+                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
+                                    <div className="dropdown-divider"></div>
+                                    <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
+                                    <div className="dropdown-divider"></div>
+                                    
+                                </div> */}
+                           
+                           
+                            }
+                        {/* {child._id &&
+                                <div style={{ width: "83%", marginLeft: "8.2%" }}>
+                                    <textarea
+                                        rows={this.state.rows}
+                                        value={this.state.value}
+                                        placeholder={'Enter your text here...'}
+                                        className={'textarea'}
+                                        onChange={this.handleChange}
+                                        style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius: "18px"  }}
+                                        defaultValue={child.content}
+                                        ref={input => this.newContentCommentOfAction[child._id] = input}
+                                    />
+                                    <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
+                                        <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                        <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
+                                    </div>
+                                </div>
+                            
+                        }  */}
+                    
                     </div>
+                })}  
                 </div>
-            </div >
+            </DialogModal>
+        </React.Fragment>
         );
+        
     }
 }
 

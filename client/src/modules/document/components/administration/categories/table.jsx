@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
+import Swal from 'sweetalert2';
 
 class Table extends Component {
     constructor(props) {
@@ -13,6 +14,24 @@ class Table extends Component {
 
     componentDidMount(){
         this.props.getDocumentCategories();
+    }
+
+    
+    deleteDocumentCategory = (id, info) => {
+        const {translate} = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.administration.categories.delete')}</div> <div>"${info}" ?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteDocumentCategory(id);
+            }
+        })
     }
 
     render() { 
@@ -52,7 +71,7 @@ class Table extends Component {
                                 <td>{docType.description}</td>
                                 <td>
                                     <a className="text-yellow" title={translate('document.administration.categories.edit')}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
+                                    <a className="text-red" onClick={()=>this.deleteDocumentCategory(docType._id, docType.name)} title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>):
                             isLoading ? 
@@ -69,7 +88,8 @@ class Table extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getDocumentCategories: DocumentActions.getDocumentCategories
+    getDocumentCategories: DocumentActions.getDocumentCategories,
+    deleteDocumentCategory: DocumentActions.deleteDocumentCategory
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

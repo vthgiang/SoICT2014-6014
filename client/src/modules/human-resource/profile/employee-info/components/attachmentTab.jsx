@@ -53,8 +53,13 @@ class AttachmentTab extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={LOCAL_SERVER_API+x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable'
+                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                         </tr>
                                     ))}
                             </tbody>

@@ -22,7 +22,8 @@ const {
     RepairUpgrade,
     DistributeTransfer,
 
-    DocumentDomain
+    DocumentDomain,
+    DocumentCategory
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -566,6 +567,13 @@ const sampleCompanyData = async () => {
             description: 'Quản lý tài sản được bàn giao',
             company: vnist._id
         },
+
+
+        { //49
+            url: '/task',
+            description: 'Chi tiết công việc',
+            company: vnist._id
+        },
     ]);
 
     const updateVnist = await Company.findById(vnist._id);
@@ -889,6 +897,25 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
+
+        
+        {
+            resourceId: links[49]._id, // Chi tiết công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[49]._id, // Chi tiết công việc
+            resourceType: 'Link',
+            roleId: roles[2]._id // Vice Dean
+        },
+        {
+            resourceId: links[49]._id, // Chi tiết công việc
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+
+
         // Gán quyền dashboard kpi cá nhân
         {
             resourceId: links[34]._id, // Tổng quan KPI đơn vị
@@ -1044,7 +1071,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1052,7 +1078,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1066,7 +1091,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1136,7 +1160,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1144,7 +1167,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1158,7 +1180,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1230,7 +1251,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificates: [{
@@ -1238,7 +1258,6 @@ const sampleCompanyData = async () => {
             issuedBy: "Hà Nội",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         experiences: [{
@@ -1252,7 +1271,6 @@ const sampleCompanyData = async () => {
             contractType: "Phụ thuộc",
             startDate: new Date("2019-10-25"),
             endDate: new Date("2020-10-25"),
-            file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
@@ -1262,7 +1280,6 @@ const sampleCompanyData = async () => {
             description: "Ảnh 3x4",
             number: "1",
             status: "submitted",
-            file: "3.5.1.PNG",
             urlFile: "lib/fileEmployee/1582212624054-3.5.1.png"
         }],
     });
@@ -1510,6 +1527,25 @@ const sampleCompanyData = async () => {
         { name: "Nhà Kho 16", company: vnist, description: 'Nhà Kho 6', parent: domanins2[2]._id},
     ]); 
 
+    const categories = await DocumentCategory.insertMany([
+        {
+            company: vnist._id,
+            name: "Văn bản",
+            description: 'Văn bản'
+        },{
+            company: vnist._id,
+            name: "Biểu mẫu",
+            description: 'Biểu mẫu'
+        },{
+            company: vnist._id,
+            name: "Công văn",
+            description: 'Công văn'
+        },{
+            company: vnist._id,
+            name: "Tài liệu",
+            description: 'Tài liệu'
+        },
+    ]);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------

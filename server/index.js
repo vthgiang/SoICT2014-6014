@@ -15,12 +15,12 @@ const auth = require('./modules/auth/auth.route');
 
 const documents = require('./modules/document/document.route');
 
-const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
-const commendation = require('./modules/human-resource/commendation/commendation.route');
-const discipline = require('./modules/human-resource/discipline/discipline.route');
-const holiday = require('./modules/human-resource/holiday/holiday.route');
+const annualLeaves = require('./modules/human-resource/annual-leave/annualLeave.route');
+const commendations = require('./modules/human-resource/commendation/commendation.route');
+const disciplines = require('./modules/human-resource/discipline/discipline.route');
+const holidays = require('./modules/human-resource/holiday/holiday.route');
 const profile = require('./modules/human-resource/profile/profile.route');
-const salary = require('./modules/human-resource/salary/salary.route');
+const salaries = require('./modules/human-resource/salary/salary.route');
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -50,8 +50,8 @@ const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
 
-const educationProgram = require('./modules/trainning/education-program/educationProgram.route');
-const course = require('./modules/trainning/course/course.route');
+const educationPrograms = require('./modules/trainning/education-program/educationProgram.route');
+const courses = require('./modules/trainning/course/course.route');
 
 //asset
 const assetType = require('./modules/assets-manager/asset-type-management/asset-type.route');
@@ -77,9 +77,9 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/upload', express.static('upload'));
-
-
+// app.use('/upload', express.static('upload'));
+app.use('/upload/avatars', express.static('upload/avatars'));
+ 
 
 
 
@@ -94,6 +94,10 @@ mongoose // Connect to MongoDB
     )
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
+mongoose.set('useFindAndModify', false); // Global setting cho mongoose, không dùng useFindAndModify
+
+
+
 global.isLog = false;
 const Logger = require('./models/system-admin/log.model');
 Logger.findOne({
@@ -112,12 +116,12 @@ app.use("/auth", auth);
 
 app.use("/documents", documents);
 
-app.use("/sabbatical", annualLeave);
-app.use("/praise", commendation);
-app.use("/discipline", discipline);
-app.use("/holiday",holiday);
+app.use("/annualLeaves", annualLeaves);
+app.use("/commendations", commendations);
+app.use("/disciplines", disciplines);
+app.use("/holidays", holidays);
 app.use("/employees", profile);
-app.use("/salary", salary);
+app.use("/salaries", salaries);
 
 app.use("/kpipersonals", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);
@@ -147,8 +151,8 @@ app.use("/tasks", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/tasktemplates", tasktemplate);
 
-app.use("/educationProgram", educationProgram);
-app.use("/course",course);
+app.use("/educationPrograms", educationPrograms);
+app.use("/courses", courses);
 
 //asset
 app.use("/assettype",assetType);

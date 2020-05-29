@@ -37,7 +37,7 @@ class SearchBar extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                value: { $regex: value, $options: 'i' }
+                value
             }
         })
         await this.props.setOption("value", this.state.value); //set giá trị của nội dung muốn tìm kiếm

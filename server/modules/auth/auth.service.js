@@ -179,7 +179,7 @@ exports.changeInformation = async (id, name, email, avatar=undefined) => {
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
-    var deleteAvatar = '.'+user.avatar; console.log("file: ", deleteAvatar);
+    var deleteAvatar = '.'+user.avatar;
     user.email = email;
     user.name = name;
     if(avatar !== undefined){

@@ -107,11 +107,13 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.changeInformation = async (req, res) => {
+
     try {
         var avatar;
         if(req.file !== undefined){
             var path = req.file.destination +'/'+ req.file.filename;
             avatar = path.substr(1, path.length)
+            console.log("file: ", req.files)
         }
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 

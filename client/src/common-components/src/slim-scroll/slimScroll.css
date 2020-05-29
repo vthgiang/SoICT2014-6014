@@ -10,6 +10,7 @@
 	border-radius: 8px;
 	background-color: #eeeeee;
 	bottom: 0px;
+	z-index: 1;
 }
 
 .StyleScrollDiv:hover::-webkit-scrollbar
@@ -17,12 +18,14 @@
 	width: 8px;
 	height: 8px;
 	background-color: #ffffff;
+	z-index: 1;
 }
 
 .StyleScrollDiv:hover::-webkit-scrollbar-thumb
 {
 	border-radius: 8px;
 	background-color: #acacac;
+	z-index: 1;
 }
 
 

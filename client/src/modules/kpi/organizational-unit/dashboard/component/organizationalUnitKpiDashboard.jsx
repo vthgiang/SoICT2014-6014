@@ -13,18 +13,22 @@ import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrgani
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 
 class OrganizationalUnitKpiDashboard extends Component {
+
     constructor(props) {
         super(props);
+        
         this.state = {
             date: new Date().getMonth() + 1,
             currentRole: localStorage.getItem("currentRole")
         };
     }
+
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
         this.handleResizeColumn();
     }
+
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
@@ -136,26 +140,6 @@ class OrganizationalUnitKpiDashboard extends Component {
             };
         }
         
-        const options1 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            title: {
-                text: "Kết quả KPI đơn vị năm 2019",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            axisX: {
-                title: "Tháng"
-            },
-            axisY: {
-                title: "Điểm",
-            },
-            data: [{
-                type: "line",
-                dataPoints: datachat1
-            }]
-        }
         const options2 = {
             animationEnabled: true,
             exportEnabled: true,
@@ -212,7 +196,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
                             {managerKpiUnit.kpis ?
                                 <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
-                                    <h1>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h1>
+                                    <h2>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</h2>
                                     <TrendsInOrganizationalUnitKpiChart/>
                                 </div>
                                 : <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
@@ -223,7 +207,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             
                             <div className="col-xs-6">
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h1>Kết quả KPI đơn vị năm 2019</h1>
+                                    <h2>Kết quả KPI đơn vị năm 2019</h2>
                                     <ResultsOfOrganizationalUnitKpiChart/>
                                 </div>
                             </div>
@@ -231,13 +215,13 @@ class OrganizationalUnitKpiDashboard extends Component {
                             {managerKpiUnit.kpis ?
                                 <div className="col-xs-6">
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h1>Phân bố Kpi đơn vị tháng {this.state.date}</h1>
+                                        <h2>Phân bố KPI đơn vị tháng {this.state.date}</h2>
                                         <DistributionOfOrganizationalUnitKpiChart/>
                                     </div>
                                 </div>
                                 : <div className="col-xs-6">
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h2>Phân bố Kpi đơn vị tháng {this.state.date}</h2>
+                                        <h2>Phân bố KPI đơn vị tháng {this.state.date}</h2>
                                         <h4>Chưa khởi tạo tập Kpi đơn vị tháng {this.state.date}</h4>
                                     </div>
                                 </div>

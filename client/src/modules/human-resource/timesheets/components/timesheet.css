@@ -2,7 +2,13 @@
     height: 74px;
     max-height: 74px !important;
 }
-
+div.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 3;
+}
 .timekeeping th {
     height: 42px;
 }
@@ -19,8 +25,4 @@ table.timekeeping td i {
 td {
     width: 45px;
     border-collapse: collapse !important;
-}
-
-.timekeeping {
-    overflow-x: scroll !important;
 }

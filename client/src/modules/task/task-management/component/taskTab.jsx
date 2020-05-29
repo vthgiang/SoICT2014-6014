@@ -234,6 +234,7 @@ class TabTaskContent extends Component {
         var unit = window.$("#multiSelectUnit1").val();
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
+        
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "accountable") {

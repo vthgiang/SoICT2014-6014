@@ -429,6 +429,7 @@ export default {
             notifications: 'Notifications',
 
             tasks: 'Task management',
+            task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
@@ -1175,6 +1176,7 @@ export default {
                 department: 'Department',
                 select_department: 'Select department',
                 select_all_department: 'Selected all',
+                role: 'Role',
 
                 status: 'Status',
                 select_status: 'Select status',

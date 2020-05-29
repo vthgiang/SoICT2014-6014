@@ -9,7 +9,7 @@ import {
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const performTaskService = {
-    getLogTimerTask,
+    getTimesheetLogs,
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
@@ -32,7 +32,8 @@ export const performTaskService = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
     evaluationAction,
-    confirmAction
+    confirmAction,
+    downloadFile
 };
 /**
  * // example for axios
@@ -68,7 +69,7 @@ function editResultTask(listResult, taskid) {
 }
 
 // get all log timer task
-function getLogTimerTask(task) {
+function getTimesheetLogs(task) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/${task}`,
         method: 'GET',
@@ -76,10 +77,10 @@ function getLogTimerTask(task) {
 };
 
 // get current status task
-function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
+function getTimerStatusTask() { //function getTimerStatusTask(task, user)
     var user = getStorage("userId");
     return  sendRequest ({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${user}`,
         method: 'GET',
     }, false, true, 'task.task_perform');
 };
@@ -93,10 +94,10 @@ function startTimerTask(newTimer) {
 }
 
 // stop timer task
-function stopTimerTask(id, newTimer) {
+function stopTimerTask(newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`,
-        method : 'PUT',
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer`,
+        method : 'POST',
         data : newTimer
     }, false, true, 'task.task_perform');
 }
@@ -236,3 +237,10 @@ function confirmAction(id,idUser) {
         params:{confirmAction:idUser,id:id}
     }, false, true, 'task.task_perform');  
 };
+function downloadFile(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+    }, false, true, 'task.task_perform');
+}

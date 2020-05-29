@@ -3,12 +3,11 @@ const UserService = require('../../super-admin/user/user.service');
 const { LogInfo, LogError } = require('../../../logs');
 
 /**
- * Lấy thông tin cá nhân theo emailCompany
+ * Lấy thông tin cá nhân theo userId
  */
 exports.getEmployeeProfile = async (req, res) => {
     try {
-        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.id);
-        console.log(inforEmployee);
+        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.userId);
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["get_infor_personal_success"], content: inforEmployee});
     } catch (error) {
@@ -27,7 +26,7 @@ exports.updatePersonalInformation = async (req, res) => {
         if (req.file !== undefined) {
             avatar = `/${req.file.path}`;
         }
-        var data = await EmployeeService.updatePersonalInformation(req.params.id, req.body, avatar);
+        var data = await EmployeeService.updatePersonalInformation(req.params.userId, req.body, avatar);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({success: true, messages: ["edit_infor_personal_success"], content: data});
     } catch (error) {
@@ -41,15 +40,29 @@ exports.updatePersonalInformation = async (req, res) => {
  */
 exports.searchEmployeeProfiles = async (req, res) => {
     try {
-        var allEmployees = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        let data;
+        if(req.query.page === undefined && req.query.limit === undefined ){
+            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnit, req.query.position, false);
+        } else{
+            let params = {
+                organizationalUnit: req.query.organizationalUnit,
+                position: req.query.position,
+                employeeNumber: req.query.employeeNumber,
+                gender: req.query.gender,
+                status: req.query.status,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            data = await EmployeeService.searchEmployeeProfiles(params, req.user.company._id);
+        }
+        await LogInfo(req.user.email, 'GET_EMPLOYEES', req.user.company);
         res.status(200).json({
             success: true,
             messages: ["get_list_employee_success"],
-            content: allEmployees
+            content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        await LogError(req.user.email, 'GET_EMPLOYEES', req.user.company);
         res.status(400).json({
             success: false,
             messages: ["get_list_employee_false"],
@@ -228,7 +241,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                     res.status(400).json({ success: false, messages: ["email_in_company_have_exist"], content:{ inputData: req.body } });
                 }
             }
-            var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body, fileInfo);
+            var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body, fileInfo, req.user.company._id);
             await LogInfo(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
             res.status(200).json({success: true, messages: ["edit_employee_success"], content: data });
         }
