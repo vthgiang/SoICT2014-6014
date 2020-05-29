@@ -54,8 +54,30 @@ exports.createDocument = async (req, res) => {
     }
 };
 
+exports.increaseNumberView = async (req, res) => {
+    try {
+        const doc = await DocumentServices.increaseNumberView(req.params.id);
+        
+        await LogInfo(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['increase_number_view_of_document_success'],
+            content: doc
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['increase_number_view_of_document_faile'],
+            content: error
+        });
+    }
+};
+
 exports.showDocument = async (req, res) => {
     try {
+        await DocumentServices.increaseNumberView(req.params.id);
         const doc = await DocumentServices.showDocument(req.params.id);
         
         await LogInfo(req.user.email, 'SHOW_DOCUMENT', req.user.company);

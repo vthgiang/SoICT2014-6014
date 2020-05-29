@@ -588,6 +588,7 @@ export default {
             notifications: 'Thông báo',
 
             tasks: 'Quản lý công việc',
+            task: "Chi tiết công việc",
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
 

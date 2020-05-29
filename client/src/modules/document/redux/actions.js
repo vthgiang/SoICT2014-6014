@@ -9,6 +9,7 @@ export const DocumentActions = {
     editDocument,
     downloadDocumentFile,
     downloadDocumentFileScan,
+    increaseNumberView,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -62,6 +63,22 @@ function createDocument(data){
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_FAILE});
+            })
+    }
+}
+
+function increaseNumberView(id){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_REQUEST});
+        DocumentServices.increaseNumberView(id)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS,
+                    payload: id
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_FAILE});
             })
     }
 }

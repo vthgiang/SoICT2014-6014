@@ -42,6 +42,16 @@ exports.showDocument = async (id) => {
     ]);
 }
 
+exports.increaseNumberView = async (id) => {
+    const doc = await Document.findById(id);
+
+    doc.numberOfView += 1;
+    await doc.save();
+
+    return doc;
+}
+
+
 /**
  * Tạo một tài liệu văn bản mới
  */

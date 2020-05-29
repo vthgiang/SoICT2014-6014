@@ -7,6 +7,7 @@ export const DocumentServices = {
     editDocument,
     downloadDocumentFile,
     downloadDocumentFileScan,
+    increaseNumberView,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -28,6 +29,13 @@ function createDocument(data) {
         method: 'POST',
         data,
     }, true, true, 'document');
+}
+
+function increaseNumberView(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/${id}/increase-number-view`,
+        method: 'PATCH',
+    }, false, false, 'document');
 }
 
 function editDocument(id, data) {  
