@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
+import {
+    BarChart, XAxis, YAxis, Tooltip, Legend, Bar, CartesianGrid, Pie, PieChart, Cell
+} from 'recharts';
 
 class AdministrationStatisticsReport extends Component {
     constructor(props) {
@@ -13,51 +16,115 @@ class AdministrationStatisticsReport extends Component {
         this.props.getAllDocuments();
     }
 
+    getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    displayDocumentAnalys = (docList, categoryList) => {
+
+        const data = categoryList.map( category =>{
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name).length;
+
+            return {
+                name: category.name,
+                value: docs
+            }
+        });
+
+        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+        const RADIAN = Math.PI / 180;  
+        const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+            const x  = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy  + radius * Math.sin(-midAngle * RADIAN);
+
+            return (percent * 100).toFixed(0) > 0 ? (
+            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} 	dominantBaseline="central">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+            ): null;
+        };
+        console.log("FDFSFSDFS", data)
+        return (
+            <div className="chart-display">
+                {
+                    docList.length > 0 ?
+                    <PieChart width={1024} height={400}>
+                        <Pie
+                            data={data} 
+                            cx="50%" 
+                            cy="50%" 
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                            outerRadius={120} 
+                            fill="#8884d8"
+                            >
+                                {
+                                data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+                            }
+                        </Pie><Tooltip/><Legend/>
+                    </PieChart> : null
+                }
+            </div>
+        );
+    }
+
+    displayViewDownloadBarChart = (docList, categoryList) => {
+        const {translate} = this.props;
+        const data = categoryList.map( category =>{
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
+            let totalDownload = 0;
+            let totalView = 0;
+            for (let index = 0; index < docs.length; index++) {
+                const element = docs[index];
+                totalDownload = totalDownload + element.numberOfDownload;
+                totalView = totalView + element.numberOfView;
+            }
+            return {
+                name: category.name,
+                [translate('document.views')]: totalView,
+                [translate('document.downloads')]: totalDownload
+            }
+        });
+
+        return (
+            <div className="chart-display">
+                <BarChart width={1024} height={400} data={data} margin={{ top: 50, right: 10, bottom: 10, left: 10 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey={translate('document.views')} fill="#2F8DCA" />
+                    <Bar dataKey={translate('document.downloads')} fill="#01CD02" />
+                </BarChart>
+            </div>
+        );
+    }
+
     render() { 
         const {documents} = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
-        return ( 
-            <React.Fragment>
-                <div className="row text-center">
+        
+        return <React.Fragment>
+                
+                <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    {
-                        docList.length > 0 && categoryList.length > 0 && 
-                        categoryList.map((category, i)=>{
-                            let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
-                            let totalDownload = 0;
-                            let totalView = 0;
-                            for (let index = 0; index < docs.length; index++) {
-                                const element = docs[index];
-                                totalDownload = totalDownload + element.numberOfDownload;
-                                totalView = totalView + element.numberOfView;
-                            }
-                            console.log("tổng số download: ", totalDownload)
-                            return (
-                            <div className="col-xs-6 col-sm-3 col-md-3 col-lg-2 text-left" 
-                                style={{
-                                    border: '0.5px solid lightgray',
-                                    borderRadius: '3px',
-                                    margin: '5px',
-                                    backgroundColor: '#ECF0F5',
-                                    padding: '0px'
-                                }} 
-                                key={i}
-                            >
-                                <p style={{fontSize: '18px', textAlign: 'center'}}><strong>{category.name}</strong></p>
-                                <div style={{padding: '2px 10px 2px 10px', backgroundColor: '#FFF'}}>
-                                    <p style={{fontSize: '24px'}}><b>{docs.length}</b></p>
-                                    <p>{totalView} lượt xem</p>
-                                    <p>{totalDownload} lượt tải</p>
-                                </div>
-                            </div>
-                            )
-                        })
-                    }
+                        { this.displayDocumentAnalys(docList, categoryList) }
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        { this.displayViewDownloadBarChart(docList, categoryList) }
                     </div>
                 </div>
-            </React.Fragment>
-         );
+                
+            </React.Fragment>;
+        
     }
 }
   

@@ -10,6 +10,18 @@ import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
 import Swal from 'sweetalert2';
 
+const getIndex = (array, id) => {
+    var index = -1;
+    for (let i = 0; i < array.length; i++) {
+        if(array[i]._id === id){
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
 class Table extends Component {
     constructor(props) {
         super(props);
@@ -41,18 +53,6 @@ class Table extends Component {
         
     static getDerivedStateFromProps(nextProps, prevState){
         const {data} = nextProps.documents.administration;
-        const getIndex = (array, id) => {
-            var index = -1;
-            for (let i = 0; i < array.length; i++) {
-                if(array[i]._id === id){
-                    index = i;
-                    break;
-                }
-            }
-    
-            return index;
-        }
-        
         if(prevState.currentRow !== undefined){
             const index = getIndex(data.list, prevState.currentRow._id);
             if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
