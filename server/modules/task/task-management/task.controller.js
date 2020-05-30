@@ -73,7 +73,17 @@ exports.getAllTasksCreatedByUser = async (req, res) => {
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
-        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var task = {
+            perPage: req.params.perPage,
+            number: req.params.number,
+            user: req.params.user,
+            organizationalUnit: req.params.unit,
+            status: req.params.status,
+            priority: req.params.priority,
+            special: req.params.special,
+            name: req.params.name,
+        };
+        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
         
         await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
