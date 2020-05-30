@@ -66,7 +66,8 @@ class AdministrationStatisticsReport extends Component {
                             cy="50%" 
                             labelLine={false}
                             label={renderCustomizedLabel}
-                            outerRadius={height <= width ? height/2.8 : width/2.8} 
+                            innerRadius={height <= width ? height/10 : width/10}
+                            outerRadius={height <= width ? height/3 : width/3} 
                             fill="#8884d8"
                             >
                                 {
@@ -140,12 +141,13 @@ class AdministrationStatisticsReport extends Component {
         return <React.Fragment>
                 
                 <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
                     <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changePieWidth} value={this.state.pieWidth}/></span>
                         <span>Y <input type="number" min={100} onChange={this.changePieHeight} value={this.state.pieHeight}/></span>
                         { this.displayDocumentAnalys(docList, categoryList, this.state.pieWidth, this.state.pieHeight) }
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '50px'}}>
+                    
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right" style={{marginTop: '50px', paddingTop: '10px'}}>
                         <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changeBarWidth} value={this.state.barWidth}/></span>
                         <span>Y <input type="number" min={100} onChange={this.changeBarHeight} value={this.state.barHeight}/></span>
                         { this.displayViewDownloadBarChart(docList, categoryList, this.state.barWidth, this.state.barHeight) }
