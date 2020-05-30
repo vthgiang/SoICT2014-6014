@@ -39,16 +39,17 @@ class ToolTip extends Component {
         </React.Fragment>
     }
 
-    displayTitleContent = (title, data) => {
+    displayTitleContent = (data) => {
+        let convertData = [];
+        for (let index = data.length-1 ; index > data.length-6; index--) {
+            const element = data[index];
+            convertData.push(element);
+        }
         return <React.Fragment>
-            <span className="text-blue">{title}</span>
-            <div className="tooltip2">...
+            <div className="tooltip2">
+                <u className="text-blue" style={{marginLeft: '3px'}}>chi tiết</u>
                 <span className="tooltip2text">
-                    <ul>
-                        {
-                            data.map((content, i)=> <li key={i}>{content}</li>)
-                        }
-                    </ul>
+                    {convertData.map((content, i)=> <p key={i} className="text-left">{content}</p>)}
                 </span>
             </div>
         </React.Fragment>
@@ -56,8 +57,8 @@ class ToolTip extends Component {
  
     diplayToolTip = (data, type) => {
         switch(type){
-            case 'title-content': 
-                return this.displayTitleContent(data, type);
+            case 'latest_history': 
+                return this.displayTitleContent(data);
             default:
                 return this.displayDefault(data);
         }

@@ -56,7 +56,7 @@ exports.createDocument = async (req, res) => {
 
 exports.increaseNumberView = async (req, res) => {
     try {
-        const doc = await DocumentServices.increaseNumberView(req.params.id);
+        const doc = await DocumentServices.increaseNumberView(req.params.id, req.user.name);
         
         await LogInfo(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.user.company);
         res.status(200).json({
@@ -78,7 +78,7 @@ exports.increaseNumberView = async (req, res) => {
 exports.showDocument = async (req, res) => {
     try {
         await DocumentServices.increaseNumberView(req.params.id);
-        const doc = await DocumentServices.showDocument(req.params.id);
+        const doc = await DocumentServices.showDocument(req.params.id, req.user.name);
         
         await LogInfo(req.user.email, 'SHOW_DOCUMENT', req.user.company);
         res.status(200).json({
@@ -100,7 +100,6 @@ exports.showDocument = async (req, res) => {
 exports.editDocument = async (req, res) => {
     try {
         if(req.files !== undefined){
-            console.log("document edit: ", req.files);
             var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
             var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
 
@@ -108,7 +107,6 @@ exports.editDocument = async (req, res) => {
             req.body.scannedFileOfSignedDocument = pathFileScan;
         }
 
-        console.log("EDIT QUERY:", req.query)
         const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
         
         await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
@@ -118,7 +116,7 @@ exports.editDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        console.log(error)
+        
         await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -150,7 +148,7 @@ exports.deleteDocument = async (req, res) => {
 
 exports.downloadDocumentFile = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFile(req.params.id, req.params.numberVersion);
+        const file = await DocumentServices.downloadDocumentFile(req.params.id, req.params.numberVersion, req.user.name);
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {
@@ -165,7 +163,7 @@ exports.downloadDocumentFile = async (req, res) => {
 
 exports.downloadDocumentFileScan = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFileScan(req.params.id, req.params.numberVersion);
+        const file = await DocumentServices.downloadDocumentFileScan(req.params.id, req.params.numberVersion, req.user.name);
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {

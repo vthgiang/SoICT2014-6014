@@ -36,17 +36,22 @@ exports.getDocuments = async (company, query) => {
 /**
  * Lấy thông tin về một tài liệu văn bản
  */
-exports.showDocument = async (id) => {
-    return await Document.findById(id).populate([
+exports.showDocument = async (id, viewer) => {
+    const doc =  await Document.findById(id).populate([
         { path: 'category', model: DocumentCategory},
         { path: 'domains', model: DocumentDomain},
     ]);
+    doc.numberOfView += 1;
+    doc.views.push({viewer});
+    await doc.save();
+
+    return doc;
 }
 
-exports.increaseNumberView = async (id) => {
+exports.increaseNumberView = async (id, viewer) => {
     const doc = await Document.findById(id);
-
     doc.numberOfView += 1;
+    doc.views.push({ viewer });
     await doc.save();
 
     return doc;
@@ -97,7 +102,6 @@ exports.createDocument = async (company, data) => {
  */
 exports.editDocument = async (id, data, query=undefined) => {
     const doc = await Document.findById(id);
-    console.log("EDIT QUERY:", query)
 
     if(query !== undefined && Object.keys(query).length > 0){
         switch(query.option) {
@@ -156,22 +160,23 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
-exports.downloadDocumentFile = async (id, numberVersion) => {
+exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     doc.numberOfDownload += 1;
+    doc.downloads.push({ downloader });
     await doc.save();
-    console.log("DOC dơn:", doc)
     return {
         path: doc.versions[numberVersion].file,
         name: doc.name
     };
 }
 
-exports.downloadDocumentFileScan = async (id, numberVersion) => {
+exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     doc.numberOfDownload += 1;
+    doc.downloads.push({ downloader });
     await doc.save();
 
     return {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
 import EditForm from './editForm';
@@ -171,8 +171,16 @@ class Table extends Component {
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
                                 <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
                                 <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td>{doc.numberOfView}</td>
-                                <td>{doc.numberOfDownload}</td>
+                                <td>{doc.numberOfView}<ToolTip type="latest_history" dataTooltip={doc.views.map(view=> {return (
+                                    <React.Fragment>
+                                        {view.viewer+", "} <DateTimeConverter dateTime={view.time}/>
+                                    </React.Fragment>
+                                ) })}/></td>
+                                <td>{doc.numberOfDownload}<ToolTip type="latest_history" dataTooltip={doc.downloads.map(download=> {return (
+                                    <React.Fragment>
+                                        {download.downloader+", "} <DateTimeConverter dateTime={download.time}/>
+                                    </React.Fragment>
+                                ) })}/></td>
                                 <td>
                                     <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
                                     <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
