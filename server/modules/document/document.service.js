@@ -188,8 +188,21 @@ exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
 /**
  * Lấy tất cả các loại văn bản
  */
-exports.getDocumentCategories = async (company) => {
-    return await DocumentCategory.find({ company });
+exports.getDocumentCategories = async (company, query) => {
+    console.log("query: ", query)
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await DocumentCategory.find({company});
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        console.log("option: ", option);
+        return await DocumentCategory.paginate( option , { page, limit });
+    }
 }
 
 exports.createDocumentCategory = async (company, data) => {

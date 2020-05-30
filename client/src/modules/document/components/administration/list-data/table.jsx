@@ -30,7 +30,7 @@ class Table extends Component {
 
     componentDidMount(){
         this.props.getAllDocuments();
-        this.props.getAllDocuments({page: 1, limit: 5});
+        this.props.getAllDocuments({page: this.state.pate, limit: this.state.limit});
         this.props.getAllRoles();
         this.props.getAllDepartments();
     }
