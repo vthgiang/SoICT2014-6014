@@ -54,9 +54,9 @@ class AdministrationStatisticsReport extends Component {
             </text>
             ): null;
         };
-        console.log("FDFSFSDFS", data)
+        
         return (
-            <div className={this.state.pieWidth > 1024 && "chart-display"}>
+            <div className={this.state.pieWidth > 1024 ? "chart-display" : null}>
                 {
                     docList.length > 0 ?
                     <PieChart width={width} height={height} margin={{top: 10, right: 0, bottom: 10, left: 0}}>
@@ -69,9 +69,10 @@ class AdministrationStatisticsReport extends Component {
                             innerRadius={height <= width ? height/10 : width/10}
                             outerRadius={height <= width ? height/3 : width/3} 
                             fill="#8884d8"
+                            dataKey="value"
                             >
                                 {
-                                data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+                                data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]} key={index}/>)
                             }
                         </Pie><Tooltip/><Legend verticalAlign="bottom"/>
                     </PieChart> : null
@@ -99,7 +100,7 @@ class AdministrationStatisticsReport extends Component {
         });
 
         return (
-            <div className={this.state.barWidth > 1024 && "chart-display"}>
+            <div className={this.state.barWidth > 1024 ? "chart-display" : null}>
                 <BarChart width={width} height={height} data={data} margin={{top: 20, right: 0, bottom: 10, left: 0}}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />

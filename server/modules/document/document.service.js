@@ -101,9 +101,9 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query=undefined) => {
-    const doc = await Document.findById(id);
-
     if(query !== undefined && Object.keys(query).length > 0){
+        console.log("AAAAAAAAAAA: ",id, data, query)
+        const doc = await Document.findById(id);
         switch(query.option) {
             case 'ADD_VERSION':
                 doc.versions.push(data);
@@ -122,6 +122,8 @@ exports.editDocument = async (id, data, query=undefined) => {
                 return doc;
         }
     }else{
+        console.log("dfdfdfdfdf: ",id, data, query)
+        const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
         doc.category = data.category
@@ -150,7 +152,7 @@ exports.editDocument = async (id, data, query=undefined) => {
 
 exports.deleteDocument = async (id) => {
     const doc = await Document.findById(id);
-    console.log("DOCUMENT DELETE: ", doc)
+    
     for (let i = 0; i < doc.versions.length; i++) {
         if(fs.existsSync(doc.versions[i].file)) fs.unlinkSync(doc.versions[i].file);
         if(fs.existsSync(doc.versions[i].scannedFileOfSignedDocument)) fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
@@ -189,7 +191,7 @@ exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
  * Lấy tất cả các loại văn bản
  */
 exports.getDocumentCategories = async (company, query) => {
-    console.log("query: ", query)
+
     var page = query.page;
     var limit = query.limit;
     
@@ -214,7 +216,7 @@ exports.createDocumentCategory = async (company, data) => {
 }
 
 exports.editDocumentCategory = async(id, data) => {
-    console.log("DFDFD:", id, data)
+   
     const category = await DocumentCategory.findById(id);
     category.name = data.name;
     category.description = data.description;

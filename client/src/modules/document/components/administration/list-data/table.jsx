@@ -61,6 +61,7 @@ class Table extends Component {
                     currentRow: data.list[index]
                 } 
             }
+            else return null;
         } else {
             return null;
         }
