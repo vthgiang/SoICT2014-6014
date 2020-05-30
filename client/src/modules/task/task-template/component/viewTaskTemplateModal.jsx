@@ -32,10 +32,18 @@ class ModalViewTaskTemplate extends Component {
 
     render() {
         var taskTemplate = {};
-
+        var priority ="";
         const { tasktemplates, translate } = this.props;
-        if (tasktemplates.taskTemplate) taskTemplate = tasktemplates.taskTemplate;
-
+        if (tasktemplates.taskTemplate) {
+            taskTemplate = tasktemplates.taskTemplate;
+            switch(taskTemplate.priority)
+            {
+                case 1: priority="Thấp"; break;
+                case 2: priority="Trung bình";break;
+                case 3: priority='Cao'; break;
+            }
+        }
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -70,6 +78,9 @@ class ModalViewTaskTemplate extends Component {
                                             <div>A: Tổng số hoạt động</div>
                                             <div>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</div>
                                         </dd>
+                                        <dt>{translate('task_template.priority')}</dt>
+                                        <dd>{taskTemplate && priority }</dd>
+
                                     </div>
                                 </div>
                             </div>

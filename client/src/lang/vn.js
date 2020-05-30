@@ -1469,7 +1469,8 @@ export default {
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
-            action: 'Hành động'
+            action: 'Hành động',
+            priority: 'Độ ưu tiên'
         },
 
         task: {
