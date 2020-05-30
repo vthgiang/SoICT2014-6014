@@ -9,7 +9,12 @@ import {
 class AdministrationStatisticsReport extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {
+            pieWidth: 1024,
+            pieHeight: 400,
+            barWidth: 1024,
+            barHeight: 400
+         }
     }
 
     componentDidMount(){
@@ -25,7 +30,7 @@ class AdministrationStatisticsReport extends Component {
         return color;
     }
 
-    displayDocumentAnalys = (docList, categoryList) => {
+    displayDocumentAnalys = (docList, categoryList, width, height) => {
 
         const data = categoryList.map( category =>{
             let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name).length;
@@ -36,7 +41,7 @@ class AdministrationStatisticsReport extends Component {
             }
         });
 
-        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF0000', '#FFCC00', '#00CC00', '#CC33FF', '#FF66FF', '#660066'];
         const RADIAN = Math.PI / 180;  
         const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
             const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -51,30 +56,30 @@ class AdministrationStatisticsReport extends Component {
         };
         console.log("FDFSFSDFS", data)
         return (
-            <div className="chart-display">
+            <div className={this.state.pieWidth > 1024 && "chart-display"}>
                 {
                     docList.length > 0 ?
-                    <PieChart width={1024} height={400}>
+                    <PieChart width={width} height={height} margin={{top: 10, right: 0, bottom: 10, left: 0}}>
                         <Pie
                             data={data} 
                             cx="50%" 
                             cy="50%" 
                             labelLine={false}
                             label={renderCustomizedLabel}
-                            outerRadius={120} 
+                            outerRadius={height <= width ? height/2.8 : width/2.8} 
                             fill="#8884d8"
                             >
                                 {
                                 data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
                             }
-                        </Pie><Tooltip/><Legend/>
+                        </Pie><Tooltip/><Legend verticalAlign="bottom"/>
                     </PieChart> : null
                 }
             </div>
         );
     }
 
-    displayViewDownloadBarChart = (docList, categoryList) => {
+    displayViewDownloadBarChart = (docList, categoryList, width, height) => {
         const {translate} = this.props;
         const data = categoryList.map( category =>{
             let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
@@ -93,18 +98,38 @@ class AdministrationStatisticsReport extends Component {
         });
 
         return (
-            <div className="chart-display">
-                <BarChart width={1024} height={400} data={data} margin={{ top: 50, right: 10, bottom: 10, left: 10 }}>
+            <div className={this.state.barWidth > 1024 && "chart-display"}>
+                <BarChart width={width} height={height} data={data} margin={{top: 20, right: 0, bottom: 10, left: 0}}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
+                    <Legend verticalAlign="bottom"/>
                     <Bar dataKey={translate('document.views')} fill="#2F8DCA" />
                     <Bar dataKey={translate('document.downloads')} fill="#01CD02" />
                 </BarChart>
             </div>
         );
+    }
+
+    changeBarWidth = (e) => {
+        const {value} = e.target;
+        this.setState({barWidth: parseInt(value)})
+    }
+
+    changeBarHeight = (e) => {
+        const {value} = e.target;
+        this.setState({barHeight: parseInt(value)})
+    }
+
+    changePieWidth = (e) => {
+        const {value} = e.target;
+        this.setState({pieWidth: parseInt(value)})
+    }
+
+    changePieHeight = (e) => {
+        const {value} = e.target;
+        this.setState({pieHeight: parseInt(value)})
     }
 
     render() { 
@@ -116,10 +141,14 @@ class AdministrationStatisticsReport extends Component {
                 
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        { this.displayDocumentAnalys(docList, categoryList) }
+                    <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changePieWidth} value={this.state.pieWidth}/></span>
+                        <span>Y <input type="number" min={100} onChange={this.changePieHeight} value={this.state.pieHeight}/></span>
+                        { this.displayDocumentAnalys(docList, categoryList, this.state.pieWidth, this.state.pieHeight) }
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        { this.displayViewDownloadBarChart(docList, categoryList) }
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '50px'}}>
+                        <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changeBarWidth} value={this.state.barWidth}/></span>
+                        <span>Y <input type="number" min={100} onChange={this.changeBarHeight} value={this.state.barHeight}/></span>
+                        { this.displayViewDownloadBarChart(docList, categoryList, this.state.barWidth, this.state.barHeight) }
                     </div>
                 </div>
                 

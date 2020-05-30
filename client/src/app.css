@@ -680,8 +680,6 @@ legend.scheduler-border {
     padding-left: 18px;
 }
 
-@media (max-width: 1025px){
-    .chart-display {
-        overflow-x: scroll;
-    }
+.chart-display {
+    overflow-x: scroll;
 }
