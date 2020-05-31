@@ -1157,11 +1157,13 @@ export default {
             task_management: {
                 create_task_success: 'Create new task succesfully',
                 delete_success: 'Delete task successfully',
-                edit_status_of_task_success: 'Edit status of task successfully ',
+                edit_status_of_task_success: 'Edit status of task successfully',
+                edit_status_archived_of_task_success: 'Edit archived status of task successfully',
 
                 create_task_fail: "Can't create new task",
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
+                edit_status_archived_of_task_fail: "Can't edit archived status of task",
 
                 responsible: 'Responsible',
                 accountable: 'Acountable',

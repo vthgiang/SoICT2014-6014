@@ -16,5 +16,6 @@ router.get('/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:
 router.post('/create', auth, TaskManagementController.createTask);
 router.delete('/:id', auth, TaskManagementController.deleteTask);
 router.patch('/:id', auth, TaskManagementController.editTaskStatus);
+router.patch('/archived/:id', auth, TaskManagementController.editArchivedOfTask);
 
 module.exports = router;

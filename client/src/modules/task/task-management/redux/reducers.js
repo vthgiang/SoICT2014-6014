@@ -195,7 +195,7 @@ export function tasks(state = {}, action) {
                 ...state,
                 isLoading: false,
                 task: {
-                    info : action.payload
+                    info : action.payload     
                 }
             };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE:
@@ -203,6 +203,25 @@ export function tasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
+
+        case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                tasks: state.tasks.filter(task => task._id !== action.payload._id),
+            };
+            
+        case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+
         case taskManagementConstants.DELETE_TASK_REQUEST:
             return {
                 ...state,

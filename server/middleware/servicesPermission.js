@@ -260,6 +260,7 @@ exports.data = [
     { path: '/tasks/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles:['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/archived/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
     
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},

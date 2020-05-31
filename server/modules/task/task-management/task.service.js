@@ -73,7 +73,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     var keySearch = {
         responsibleEmployees: {
             $in: [user]
-        }
+        },
+        isArchived: false
     };
 
     if(organizationalUnit !== '[]'){
@@ -149,117 +150,335 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
 exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
-
+    
     var accountableTasks;
-        var perPage = Number(perPage);
-        var page = Number(number);
-        if (organizationalUnit === "[]" && status === "[]") {
-            accountableTasks = await Task.find({ accountableEmployees: { $in: [user] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        } else {
-            accountableTasks = await Task.find({
-                accountableEmployees: { $in: [user] },
-                $or: [
-                    { organizationalUnit: { $in: organizationalUnit.split(",") } },
-                    { status: { $in: status.split(",") } }
-                ]
-            }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        }
-        var totalCount = await Task.count({ accountableEmployees: { $in: [user] } });
-        var totalPages = Math.ceil(totalCount / perPage);
-        return {
-            "tasks": accountableTasks,
-            "totalPage": totalPages
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        accountableEmployees: {
+            $in: [user]
+        },
+        isArchived: false
+    };
+
+    if(organizationalUnit !== '[]'){
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit.split(",")
+            }
         };
+    }
+
+    if(status !== '[]'){
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status.split(",")
+            }
+        };
+    }
+
+    if(priority !== '[]'){
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority.split(",")
+            }
+        };
+    }
+
+    if(special !== '[]'){
+        special = special.split(",");
+        for(var i = 0; i < special.length; i++){
+            if(special[i] === "Lưu trong kho"){
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else{
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };                
+            }
+        }
+    }
+
+    if (name !== 'null') {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    accountableTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+
+    var totalCount = await Task.count(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": accountableTasks,
+        "totalPage": totalPages
+    };
 }
 
 /**
  * Lấy công việc hỗ trợ theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasConsultedRole = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    
     var consultedTasks;
-        var perPage = Number(perpageId);
-        var page = Number(numberId);
-        if (unitId === "[]" && statusId === "[]") {
-            consultedTasks = await Task.find({ consultedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        } else {
-            consultedTasks = await Task.find({
-                consultedEmployees: { $in: [userId] },
-                $or: [
-                    { organizationalUnit: { $in: unitId.split(",") } },
-                    { status: { $in: statusId.split(",") } }
-                ]
-            }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        }
-        var totalCount = await Task.count({ consultedEmployees: { $in: [userId] } });
-        var totalPages = Math.ceil(totalCount / perPage);
-        return {
-            "tasks": consultedTasks,
-            "totalPage": totalPages
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        consultedEmployees: {
+            $in: [user]
+        },
+        isArchived: false
+    };
+
+    if(organizationalUnit !== '[]'){
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit.split(",")
+            }
         };
+    }
+
+    if(status !== '[]'){
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status.split(",")
+            }
+        };
+    }
+
+    if(priority !== '[]'){
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority.split(",")
+            }
+        };
+    }
+
+    if(special !== '[]'){
+        special = special.split(",");
+        for(var i = 0; i < special.length; i++){
+            if(special[i] === "Lưu trong kho"){
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else{
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };                
+            }
+        }
+    }
+
+    if (name !== 'null') {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    consultedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+
+    var totalCount = await Task.count(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": consultedTasks,
+        "totalPage": totalPages
+    };
 }
 
 /**
  * Lấy công việc thiết lập theo id người dùng
  */
-exports.getPaginatedTasksCreatedByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getPaginatedTasksCreatedByUser = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
+    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    
     var creatorTasks;
-        var perPage = Number(perpageId);
-        var page = Number(numberId);
-        if (unitId === "[]" && statusId === "[]") {
-            creatorTasks = await Task.find({ creator: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        } else {
-            creatorTasks = await Task.find({
-                creator: { $in: [userId] },
-                $or: [
-                    { organizationalUnit: { $in: unitId.split(",") } },
-                    { status: { $in: statusId.split(",") } }
-                ]
-            }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        }
-        var totalCount = await Task.count({ creator: { $in: [userId] } });
-        var totalPages = Math.ceil(totalCount / perPage);
-        return {
-            "tasks": creatorTasks,
-            "totalPage": totalPages 
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        creator: {
+            $in: [user]
+        },
+        isArchived: false
+    };
+
+    if(organizationalUnit !== '[]'){
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit.split(",")
+            }
         };
+    }
+
+    if(status !== '[]'){
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status.split(",")
+            }
+        };
+    }
+
+    if(priority !== '[]'){
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority.split(",")
+            }
+        };
+    }
+
+    if(special !== '[]'){
+        special = special.split(",");
+        for(var i = 0; i < special.length; i++){
+            if(special[i] === "Lưu trong kho"){
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else{
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };                
+            }
+        }
+    }
+
+    if (name !== 'null') {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    creatorTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+    
+    var totalCount = await Task.count(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": creatorTasks,
+        "totalPage": totalPages 
+    };
 }
 
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasInformedRole = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    
     var informedTasks;
-        var perPage = Number(perpageId);
-        var page = Number(numberId);
-        if (unitId === "[]" && statusId === "[]") {
-            informedTasks = await Task.find({ informedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage)
-                .populate({ path: "organizationalUnit creator parent" });
-        } else {
-            informedTasks = await Task.find({
-                informedEmployees: { $in: [userId] },
-                $or: [
-                    { organizationalUnit: { $in: unitId.split(",") } },
-                    { status: { $in: statusId.split(",") } }
-                ]
-            }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        }
-        var totalCount = await Task.count({ informedEmployees: { $in: [userId] } });
-        var totalPages = Math.ceil(totalCount / perPage);
-        return {
-            "tasks": informedTasks,
-            "totalPage": totalPages
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        informedEmployees: {
+            $in: [user]
+        },
+        isArchived: false
+    };
+
+    if(organizationalUnit !== '[]'){
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit.split(",")
+            }
         };
+    }
+
+    if(status !== '[]'){
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status.split(",")
+            }
+        };
+    }
+
+    if(priority !== '[]'){
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority.split(",")
+            }
+        };
+    }
+
+    if(special !== '[]'){
+        special = special.split(",");
+        for(var i = 0; i < special.length; i++){
+            if(special[i] === "Lưu trong kho"){
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else{
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };                
+            }
+        }
+    }
+
+    if (name !== 'null') {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    informedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+            .skip(perPage * (page - 1)).limit(perPage)
+            .populate({ path: "organizationalUnit creator parent" });
+   
+    var totalCount = await Task.count(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": informedTasks,
+        "totalPage": totalPages
+    };
 }
 
 /**
@@ -352,5 +571,20 @@ exports.editTaskStatus = async (taskID, status) => {
         { $set: {status: status }},
         { new: true } 
     );
+    return task;
+}
+
+/**
+ * Chinh sua trang thai luu kho cua cong viec
+ */
+exports.editArchivedOfTask = async (taskID) => {
+    var t = await Task.findByIdAndUpdate(taskID);
+    var isArchived = t.isArchived;
+
+    var task = await Task.findByIdAndUpdate(taskID, 
+        { $set: {isArchived: !isArchived }},
+        { new: true } 
+    );
+
     return task;
 }
