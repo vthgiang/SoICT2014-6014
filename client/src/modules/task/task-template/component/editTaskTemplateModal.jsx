@@ -27,6 +27,7 @@ class ModalEditTaskTemplate extends Component {
                 informedEmployees: [],
                 description: '',
                 formula: '',
+                priority:3,
                 taskActions: [],
                 taskInformations: []
             },
@@ -176,6 +177,14 @@ class ModalEditTaskTemplate extends Component {
             });
         }
         return msg == undefined;
+    }
+    handleChangeTaskPriority = (event) => {
+        this.state.editingTemplate.priority = event.target.value;
+        this.setState(state =>{
+            return{
+                ...state,
+            };
+        });
     }
     handleTaskTemplateUnit = (value) => {
         let singleValue = value[0]; // SelectBox một lựa chọn
@@ -494,6 +503,16 @@ class ModalEditTaskTemplate extends Component {
                                 <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                 <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                             </div>
+                            <div className="form-group">
+                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mức độ ưu tiên</label>
+                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                        <select className="form-control" style={{ width: '100%' }} value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
+                                            <option value={3}>Cao</option>
+                                            <option value={2}>Trung bình</option>
+                                            <option value={1}>Thấp</option>
+                                        </select>
+                                    </div>
+                                </div>
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Danh sách các trường thông tin</legend>
                                 {

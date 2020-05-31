@@ -8,9 +8,13 @@ export const DocumentServices = {
     downloadDocumentFile,
     downloadDocumentFileScan,
     increaseNumberView,
+    deleteDocument,
 
     getDocumentCategories,
     createDocumentCategory,
+    editDocumentCategory,
+    deleteDocumentCategory,
+
     getDocumentDomains,
     createDocumentDomain
 };
@@ -31,6 +35,13 @@ function createDocument(data) {
     }, true, true, 'document');
 }
 
+function deleteDocument(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/${id}`,
+        method: 'DELETE'
+    }, true, true, 'document');
+}
+
 function increaseNumberView(id) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/${id}/increase-number-view`,
@@ -38,11 +49,12 @@ function increaseNumberView(id) {
     }, false, false, 'document');
 }
 
-function editDocument(id, data) {  
+function editDocument(id, data, option=undefined) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/${id}`,
         method: 'PATCH',
         data,
+        params: { option },
     }, true, true, 'document');
 }
 
@@ -62,10 +74,11 @@ function downloadDocumentFileScan(id, numberVersion) {
     }, false, true, 'document');
 }
 
-function getDocumentCategories() {
+function getDocumentCategories(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'GET',
+        params
     }, false, true, 'document');
 }
 
@@ -74,6 +87,21 @@ function createDocumentCategory(data) {
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'POST',
         data,
+    }, true, true, 'document');
+}
+
+function editDocumentCategory(id, data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'document');
+}
+
+function deleteDocumentCategory(id) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        method: 'DELETE'
     }, true, true, 'document');
 }
 
