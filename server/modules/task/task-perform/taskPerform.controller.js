@@ -1,6 +1,5 @@
 const PerformTaskService = require('./taskPerform.service');
 const {  LogInfo,  LogError } = require('../../../logs');
-
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
 exports.getTaskTimesheetLogs = async (req, res) => {
@@ -578,3 +577,20 @@ exports.uploadFile = async(req,res) => {
         })
     }
 }
+/**
+ * Download file
+ */
+exports.downloadFile = async (req, res) => {
+    try {
+        const file = await PerformTaskService.downloadFile(req.params);
+        await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+        res.download(file.url, file.name);
+    } catch (error) {
+        await LogError(req.user.email, 'DOWNLOAD FILE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
+            content: error
+        });
+    }
+};

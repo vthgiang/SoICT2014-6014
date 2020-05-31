@@ -239,6 +239,8 @@ function confirmAction(id,idUser) {
     }, false, true, 'task.task_perform');  
 };
 function downloadFile(id) {  
+
+    console.log("HIHIHIHI")
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
         method: 'GET',
@@ -247,7 +249,6 @@ function downloadFile(id) {
 }
 //getall Action task
 function uploadFile(task,data) {
-    
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/${task}`,
         method : 'POST',

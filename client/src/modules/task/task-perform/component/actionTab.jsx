@@ -571,8 +571,10 @@ class ActionTab extends Component {
     filesRemoveAll = () => {
     this.refs.filesAddAction.removeFiles()
     }
-    requestDownloadFile = (id, fileName) => {
-        this.props.downloadFile(id, fileName);
+    requestDownloadFile = (e,id,fileName) => {
+        e.preventDefault()
+        console.log("Cho tao download di")
+        this.props.downloadFile(id,fileName);
     }
     
     render() {
@@ -647,7 +649,7 @@ class ActionTab extends Component {
                                                 <li style={{display:"inline-table"}}>
                                                 <div><b>File đính kèm:</b> </div></li>
                                                 <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                    return <div><a href={(LOCAL_SERVER_API+elem.url)} download> {elem.name} </a></div>
+                                                    return <div><a href="#"onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name)}> {elem.name} </a></div>
                                                 })}</li></React.Fragment>
                                                 }
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
