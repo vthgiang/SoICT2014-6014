@@ -628,16 +628,14 @@ class ActionTab extends Component {
                                     <div className="post clearfix"  key={item._id}>
                                         {item.creator ?
                                         <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" /> :
-                                        <img className="user-img-level1" src={(LOCAL_SERVER_API+"/upload/avatars/none.jpeg")} alt="User Image" />
+                                        <div className="user-img-level1" />
                                         }
                                         {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
                                         <React.Fragment>
                                             <p className="content-level1" data-width="100%">
-                                                <ul className="list-inline" style={{marginBottom:"0px"}}>
-                                                    <li><a href="#" >{item.creator? item.creator.name : ""} </a></li>
-                                                    {item.name &&
-                                                    <li><b>Tên hoạt động: &nbsp; </b> {item.name}</li>}
-                                                </ul>
+                                                {item.creator?
+                                                <a href="#">{item.creator.name} </a>:
+                                                item.name && <b>{item.name} </b>}
                                                 
                                                 
                                                 {item.description}
