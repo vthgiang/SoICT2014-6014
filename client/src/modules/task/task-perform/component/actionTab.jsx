@@ -111,7 +111,6 @@ class ActionTab extends Component {
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getTaskById(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
-            this.props.getTaskComments(nextProps.id);
             this.props.getSubTask(nextProps.id);
             // return true;
             return true;
