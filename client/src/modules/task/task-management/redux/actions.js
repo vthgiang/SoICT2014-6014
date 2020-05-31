@@ -12,6 +12,7 @@ export const taskManagementActions = {
     addTask,
     editTask,
     editStatusOfTask,
+    editArchivedOfTask,
     _delete,
     getSubTask,
 
@@ -302,6 +303,24 @@ function editStatusOfTask(id, status) {
             });
     };
 }
+
+// Edit status of task
+function editArchivedOfTask(id) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST, id });
+        taskManagementService.editArchivedOfTask(id) //(taskid, { status: "dang thuc hien" })
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+            });
+    };
+}
+
 // Get SubTask
 function getSubTask(taskId){
     return dispatch => {

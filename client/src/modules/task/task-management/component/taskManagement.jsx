@@ -131,13 +131,36 @@ class TaskManagement extends Component {
             }
         })
     }
+
+    // Hàm xử lý trạng thái lưu kho
+    handleStore = async (id) => {
+        await this.props.editArchivedOfTask(id);
+
+        var content = this.state.currentTab;
+        var { perPage } = this.state;
+        var currentPage = this.state.currentPage;
+        var { organizationalUnit, status, priority, special, name } = this.state;
+
+        if (content === "responsible") {
+            this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        } else if (content === "accountable") {
+            this.props.getAccountableTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        } else if (content === "consulted") {
+            this.props.getConsultedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        } else if (content === "creator") {
+            this.props.getCreatorTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        } else {
+            this.props.getInformedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        }
+
+    }
+
     handleGetDataPagination = async (index) => {
-        var unit = window.$("#multiSelectUnit1").val();
-        var status = window.$("#multiSelectStatus").val();
+        var { organizationalUnit, status, priority, special, name } = this.state;
+
         var oldCurrentPage = this.state.currentPage;
         var perPage = this.state.perPage;
-        if (status.length === 0) status = "[]";
-        if (unit.length === 0) unit = "[]";
+        
         await this.setState(state => {
             return {
                 ...state,
@@ -148,21 +171,21 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== index) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name);
             } else if (content === "accountable") {
-                this.props.getAccountableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name);
             } else {
-                this.props.getInformedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name);
             }
         };
     }
     nextPage = async (pageTotal) => {
-        var unit = window.$("#multiSelectUnit1").val();
-        var status = window.$("#multiSelectStatus").val();
+        var { organizationalUnit, status, priority, special, name } = this.state;
+
         var oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
             return {
@@ -174,21 +197,21 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "accountable") {
-                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else {
-                this.props.getInformedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             }
         };
     }
     backPage = async () => {
-        var unit = window.$("#multiSelectUnit1").val();
-        var status = window.$("#multiSelectStatus").val();
+        var { organizationalUnit, status, priority, special, name } = this.state;
+
         var oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
             return {
@@ -200,36 +223,35 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "accountable") {
-                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             } else {
-                this.props.getInformedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name);
             }
         };
     }
 
     handleGetDataPerPage = (perPage) => {
         // this.props.getResponsibleTaskByUser( "[]", "1", "20", "[]", "[]", "[]", null);
-        var unit = window.$("#multiSelectUnit1").val();
-        var status = window.$("#multiSelectStatus").val();
+        var { organizationalUnit, status, priority, special, name } = this.state;
+        
         var content = this.state.currentTab;
-        if (status.length === 0) status = "[]";
-        if (unit.length === 0) unit = "[]";
+        
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "accountable") {
-            this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getConsultedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "creator") {
-            this.props.getCreatorTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getCreatorTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else {
-            this.props.getInformedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getInformedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         }
         this.setState(state => {
             return {
@@ -239,7 +261,7 @@ class TaskManagement extends Component {
         })
     }
 
-    handleUpdateData = () => {// TODO: handle search??
+    handleUpdateData = () => {
         var { organizationalUnit, status, priority, special, name } = this.state;
 
         var content = this.state.currentTab;
@@ -327,6 +349,10 @@ class TaskManagement extends Component {
     }
 
     handleSelectOrganizationalUnit = (value) => {
+        if(value.length === 0){
+            value = '[]';
+        }
+
         this.setState(state => {
             return {
                 ...state,
@@ -336,6 +362,10 @@ class TaskManagement extends Component {
     }
 
     handleSelectStatus = (value) => {
+        if(value.length === 0){
+            value = '[]';
+        }
+        
         this.setState(state => {
             return {
                 ...state,
@@ -345,6 +375,10 @@ class TaskManagement extends Component {
     }
 
     handleSelectPriority = (value) => {
+        if(value.length === 0){
+            value = '[]';
+        }
+        
         this.setState(state => {
             return {
                 ...state,
@@ -354,6 +388,10 @@ class TaskManagement extends Component {
     }
 
     handleSelectSpecial = (value) => {
+        if(value.length === 0){
+            value = '[]';
+        }
+        
         this.setState(state => {
             return {
                 ...state,
@@ -363,7 +401,11 @@ class TaskManagement extends Component {
     }
 
     handleChangeName = (e) => {
-        const name = e.target.value;
+        var name = e.target.value;
+        if(name === ''){
+            name = null;
+        }
+        
         this.setState(state => {
             return {
                 ...state,
@@ -574,7 +616,7 @@ class TaskManagement extends Component {
                             funcEdit={this.handleShowModal}
                             funcAdd={this.handleCheckClickAddSubTask}
                             funcStartTimer={this.handleCountTime}
-                            // funcStore={this.handleStore}
+                            funcStore={this.handleStore}
                             // funcDelete={this.handleDelete}
                         />
 
@@ -651,6 +693,7 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
+    editArchivedOfTask: taskManagementActions.editArchivedOfTask,
     getDepartment: UserActions.getDepartmentOfUser,
     getSubTask: taskManagementActions.getSubTask
 };

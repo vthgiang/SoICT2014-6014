@@ -1478,10 +1478,12 @@ export default {
                 create_task_success: 'Tạo công việc mới thành công',
                 delete_success: 'Xóa công việc thành công',
                 edit_status_of_task_success: 'Chỉnh sửa trạng thái công việc thành công',
+                edit_status_archived_of_task_success: 'Chỉnh sửa trạng thái lưu kho của công việc thành công',
 
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
+                edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
 
                 responsible: 'Thực hiện chính',
                 accountable: 'Phê duyệt',
