@@ -33,7 +33,8 @@ export const performTaskService = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFile
+    downloadFile,
+    uploadFile
 };
 /**
  * // example for axios
@@ -244,3 +245,12 @@ function downloadFile(id) {
         responseType: 'blob',
     }, false, true, 'task.task_perform');
 }
+//getall Action task
+function uploadFile(task,data) {
+    
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/${task}`,
+        method : 'POST',
+        data : data
+    }, false, true, 'task.task_perform');  
+};

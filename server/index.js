@@ -77,9 +77,9 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/upload', express.static('upload'));
-
-
+// app.use('/upload', express.static('upload'));
+app.use('/upload/avatars', express.static('upload/avatars'));
+ 
 
 
 

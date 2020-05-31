@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
 import EditForm from './editForm';
 import moment from 'moment';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
+import Swal from 'sweetalert2';
+
+const getIndex = (array, id) => {
+    var index = -1;
+    for (let i = 0; i < array.length; i++) {
+        if(array[i]._id === id){
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
 
 class Table extends Component {
     constructor(props) {
@@ -17,7 +30,7 @@ class Table extends Component {
 
     componentDidMount(){
         this.props.getAllDocuments();
-        this.props.getAllDocuments({page: 1, limit: 5});
+        this.props.getAllDocuments({page: this.state.pate, limit: this.state.limit});
         this.props.getAllRoles();
         this.props.getAllDepartments();
     }
@@ -36,6 +49,39 @@ class Table extends Component {
 
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
+    }
+        
+    static getDerivedStateFromProps(nextProps, prevState){
+        const {data} = nextProps.documents.administration;
+        if(prevState.currentRow !== undefined){
+            const index = getIndex(data.list, prevState.currentRow._id);
+            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+                return {
+                    ...prevState,
+                    currentRow: data.list[index]
+                } 
+            }
+            else return null;
+        } else {
+            return null;
+        }
+    }
+
+    deleteDocument = (id, info) => {
+        const {translate} = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteDocument(id);
+            }
+        })
     }
 
     render() { 
@@ -126,11 +172,19 @@ class Table extends Component {
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
                                 <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
                                 <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td>{doc.numberOfView}</td>
-                                <td>{doc.numberOfDownload}</td>
+                                <td>{doc.numberOfView}<ToolTip type="latest_history" dataTooltip={doc.views.map(view=> {return (
+                                    <React.Fragment>
+                                        {view.viewer+", "} <DateTimeConverter dateTime={view.time}/>
+                                    </React.Fragment>
+                                ) })}/></td>
+                                <td>{doc.numberOfDownload}<ToolTip type="latest_history" dataTooltip={doc.downloads.map(download=> {return (
+                                    <React.Fragment>
+                                        {download.downloader+", "} <DateTimeConverter dateTime={download.time}/>
+                                    </React.Fragment>
+                                ) })}/></td>
                                 <td>
                                     <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.delete')}><i className="material-icons">delete</i></a>
+                                    <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>):
                             isLoading ? 
@@ -144,10 +198,15 @@ class Table extends Component {
          );
     }
 
-    setPage = (page) => {
+    setPage = async(page) => {
         this.setState({ page });
-        const data = { limit: this.state.limit, page };
-        this.props.getAllDocuments(data);
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getAllDocuments(data);
     }
 
     setLimit = (number) => {
@@ -183,7 +242,8 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
-    increaseNumberView: DocumentActions.increaseNumberView
+    increaseNumberView: DocumentActions.increaseNumberView,
+    deleteDocument: DocumentActions.deleteDocument,
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );

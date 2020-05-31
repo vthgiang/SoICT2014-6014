@@ -10,9 +10,12 @@ export const DocumentActions = {
     downloadDocumentFile,
     downloadDocumentFileScan,
     increaseNumberView,
+    deleteDocument,
 
     getDocumentCategories,
     createDocumentCategory,
+    editDocumentCategory,
+    deleteDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain
@@ -83,19 +86,51 @@ function increaseNumberView(id){
     }
 }
 
-function editDocument(id, data){
+function editDocument(id, data, option = undefined){
     return dispatch => {
         dispatch({ type: DocumentConstants.EDIT_DOCUMENT_REQUEST});
-        DocumentServices.editDocument(id, data)
+        switch(option){
+            case 'ADD_VERSION':
+                DocumentServices.editDocument(id, data, option)
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.ADD_VERSION_DOCUMENT_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.ADD_VERSION_DOCUMENT_FAILE});
+                });
+                break;
+
+            default:
+                DocumentServices.editDocument(id, data)
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.EDIT_DOCUMENT_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
+                });
+        }
+    }
+}
+
+function deleteDocument(id){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DELETE_DOCUMENT_REQUEST});
+        DocumentServices.deleteDocument(id)
             .then(res => {
                 dispatch({
-                    type: DocumentConstants.EDIT_DOCUMENT_SUCCESS,
+                    type: DocumentConstants.DELETE_DOCUMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
-                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_FAILE});
-            })
+                dispatch({ type: DocumentConstants.DELETE_DOCUMENT_FAILE});
+            });
     }
 }
 
@@ -125,7 +160,22 @@ function downloadDocumentFileScan(id, fileName, numberVersion){
     }
 }
 
-function getDocumentCategories(){
+function getDocumentCategories(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST});
+            DocumentServices.getDocumentCategories(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE});
+            })
+        }
+    }
     return dispatch => {
         dispatch({ type: DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST});
         DocumentServices.getDocumentCategories()
@@ -154,6 +204,38 @@ function createDocumentCategory(data){
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE});
+            })
+    }
+}
+
+function editDocumentCategory(id, data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST});
+        DocumentServices.editDocumentCategory(id, data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE});
+            })
+    }
+}
+
+function deleteDocumentCategory(id){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DELETE_DOCUMENT_CATEGORY_REQUEST});
+        DocumentServices.deleteDocumentCategory(id)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.DELETE_DOCUMENT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE});
             })
     }
 }

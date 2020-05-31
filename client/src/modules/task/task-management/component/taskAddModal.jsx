@@ -187,6 +187,7 @@ class ModalAddTask extends Component {
                         ...this.state.newTask,
                         name:"",
                         description: "",
+                        priority: 3,
                         responsibleEmployees: [],
                         accountableEmployees: [],
                         consultedEmployees: [],
@@ -208,6 +209,7 @@ class ModalAddTask extends Component {
                         ...this.state.newTask,
                         name: taskTemplate.name,
                         description: taskTemplate.description,
+                        priority: taskTemplate.priority,
                         responsibleEmployees: taskTemplate.responsibleEmployees,
                         accountableEmployees: taskTemplate.accountableEmployees,
                         consultedEmployees: taskTemplate.consultedEmployees,
@@ -335,7 +337,6 @@ class ModalAddTask extends Component {
         if(tasktemplates.taskTemplate) 
         { 
             taskTemplate =tasktemplates.taskTemplate;
-            responsibleEmployees =taskTemplate.responsibleEmployees.map(item=>item.id);
             
         }
         

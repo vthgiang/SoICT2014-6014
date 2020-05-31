@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const TimesheetLog = require('../../../models/task/timesheetLog.model');
 const Task = require('../../../models/task/task.model');
-const TaskAction = require('../../../models/task/taskAction.model');
 const TaskTemplateInformation = require('../../../models/task/taskResultInformation.model');
 //const TaskFile = require('../../../models/taskFile.model');
 const TaskResultInformation = require('../../../models/task/taskResultInformation.model');
@@ -84,7 +83,7 @@ exports.createCommentOfTaskAction = async (body,files) => {
                     "taskActions.$.comments":
                     {
                         creator: body.creator,
-                        content: body.content,
+                        description: body.description,
                          files: files
                     }
                 }
@@ -107,7 +106,7 @@ exports.editCommentOfTaskAction = async (params,body) => {
         {
             $set:
             {
-                "taskActions.$.comments.$[elem].content": body.content,
+                "taskActions.$.comments.$[elem].description": body.description,
                 "taskActions.$.comments.$[elem].updatedAt": now
             }
         },
@@ -164,7 +163,7 @@ exports.createTaskAction = async (body,files) => {
     console.log(files)
     var actionInformation = {
         creator: body.creator,
-        description: body.content,
+        description: body.description,
         files: files
     }
     // var actionTaskabc = await Task.findById(req.body.task)
@@ -187,7 +186,7 @@ exports.editTaskAction = async (id,body) => {
         { "taskActions._id": id },
         {
             $set: {
-                "taskActions.$.description": body.content
+                "taskActions.$.description": body.description
             }
         }
     )
@@ -356,10 +355,9 @@ exports.editTaskResult = async (listResult,taskid) => {
  * Tạo bình luận công việc
  */
 exports.createTaskComment = async (body,files) => {
-    console.log(body)
     var commentInformation = {
         creator: body.creator,
-        content: body.content,
+        description: body.description,
         files:files
     }
     var taskComment1 = await Task.findByIdAndUpdate(body.task,
@@ -389,7 +387,7 @@ exports.editTaskComment = async (params,body) => {
         { "taskComments._id": params.id },
         {
             $set: {
-                "taskComments.$.content": body.content
+                "taskComments.$.description": body.description
             }
         }
     )
@@ -426,7 +424,7 @@ exports.createCommentOfTaskComment = async (body,files) => {
                 "taskComments.$.comments":
                 {
                     creator: body.creator,  
-                    content: body.content,
+                    description: body.description,
                     files: files
                 }
             }
@@ -452,7 +450,7 @@ exports.editCommentOfTaskComment = async (params,body) => {
         {
             $set:
             {
-                "taskComments.$.comments.$[elem].content": body.content,
+                "taskComments.$.comments.$[elem].description": body.description,
                 "taskComments.$.comments.$[elem].updatedAt": now
             }
         },
@@ -552,5 +550,18 @@ exports.confirmAction = async (id,idUser) => {
     
     return task.taskActions;   
 }
+/**
+ * Upload tài liệu cho cộng việc
+ */
+exports.uploadFile = async (params,files) => {
 
+    var evaluationActionRating = await Task.updateOne(
+        {_id:params.task},
+        {
+            $push: {files:  files}
+        }
+    )  
+    var task = await Task.findOne({ _id: params.task })
+    return task.files
+}
 

@@ -130,7 +130,7 @@ const TaskSchema = new Schema({
             },
             taskImportanceLevel: { // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
                 type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
-                default: 5,
+                default: -1
             },
         }],
         taskInformations: [{ // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -281,7 +281,7 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {
@@ -309,7 +309,7 @@ const TaskSchema = new Schema({
             ref: User,
             required: true
         },
-        content: {
+        description: {
             type: String,
         },
         createdAt: {
@@ -343,7 +343,7 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {

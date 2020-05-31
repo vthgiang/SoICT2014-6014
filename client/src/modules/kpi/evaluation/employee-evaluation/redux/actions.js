@@ -10,7 +10,8 @@ export const kpiMemberActions = {
     editStatusTarget,
     getTaskById,
     setPointKPI,
-    setkpiImportantLevel
+    setkpiImportantLevel,
+    getAllComments
 };
  
 // Lấy tất cả KPI cá nhân
@@ -186,11 +187,11 @@ function getTaskById(id, employeeId, date) {
     };
 }
 
-function setPointKPI(id_kpi, id_target, newPoint) {
+function setPointKPI(employeeId, data) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.SET_POINTKPI_REQUEST});
  
-        kpiMemberServices.getTaskById(id_kpi, id_target, newPoint)
+        kpiMemberServices.setPointKPI(employeeId, data)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.SET_POINTKPI_SUCCESS,
@@ -220,6 +221,25 @@ function setkpiImportantLevel(id_kpi,date) {
             .catch(error => {
                 dispatch({
                     type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function getAllComments(id_kpi) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.GETALL_COMMENTS_REQUEST});
+ 
+        kpiMemberServices.getAllComments(id_kpi)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.GETALL_COMMENTS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.GETALL_COMMENTS_FAILURE,
                     payload: error
                 })
             })

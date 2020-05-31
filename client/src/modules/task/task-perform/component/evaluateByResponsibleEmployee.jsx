@@ -18,7 +18,8 @@ class EvaluateByResponsibleEmployee extends Component {
         super(props);
         this.state={
             idUser: idUser ,
-            info: {}
+            info: {},
+            autoPoint: 0,
             // progress:89,
             // "p1" : {
             //     value: ['SSD'],
@@ -101,7 +102,8 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Number'
             }
             return {
                 ...state,
@@ -120,7 +122,8 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Text'
             }
             return {
                 ...state,
@@ -138,7 +141,8 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'Date'
             }
             return {
                 ...state,
@@ -154,7 +158,8 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'SetOfValues'
             }
             return {
                 ...state,
@@ -167,7 +172,8 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Boolean'
             }
             return {
                 ...state,
@@ -240,7 +246,27 @@ class EvaluateByResponsibleEmployee extends Component {
     }
     
     save = () => {
+        var {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
 
+        var evaluations, taskId;
+        taskId = this.props.id;
+        evaluations = task.evaluations[task.evaluations.length-1]
+        var data = {
+            evaluateId: evaluations._id,
+            user: getStorage("userId"),
+            progress: this.state.progress,
+            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
+            employeePoint: this.state.point,
+            role: "Responsible",
+            
+            kpi: this.state.kpi,
+            date: this.state.date,
+            info: this.state.info
+        }
+
+        console.log('data', data, taskId);
+        this.props.evaluateTaskByResponsibleEmployees(data,taskId);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -292,7 +318,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
                         <label>Ngày đánh giá:<span className="text-red">*</span></label>
                         <DatePicker
-                            id="create_date"
+                            id={`create_date_${this.props.perform}`}
                             value={date}
                             onChange={this.handleDateChange}
                         />
@@ -367,7 +393,8 @@ const getState = {
     editResultTask: performTaskAction.editResultTask,
     editStatusOfTask: taskManagementActions.editStatusOfTask,
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
 }
 
 const evaluateByResponsibleEmployee = connect(mapState, getState)(withTranslate(EvaluateByResponsibleEmployee));

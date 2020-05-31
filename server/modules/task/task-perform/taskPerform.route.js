@@ -12,6 +12,7 @@ router.post('/add-result/create',auth,  PerformTaskController.createResultInfoTa
 router.post('/information-task-template/create',auth,  PerformTaskController.createTaskInformation);
 router.put('/information-task-template',auth,  PerformTaskController.editTaskInformation);
 //result task
+router.post('/:task',auth,uploadFile([{name:'files', path:'/files'}], 'array'),PerformTaskController.uploadFile)
 router.post('/result-task/create',auth, PerformTaskController.createTaskResult);
 router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
 //task action

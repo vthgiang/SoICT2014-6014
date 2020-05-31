@@ -73,7 +73,17 @@ exports.getAllTasksCreatedByUser = async (req, res) => {
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
-        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var task = {
+            perPage: req.params.perPage,
+            number: req.params.number,
+            user: req.params.user,
+            organizationalUnit: req.params.unit,
+            status: req.params.status,
+            priority: req.params.priority,
+            special: req.params.special,
+            name: req.params.name,
+        };
+        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
         
         await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
@@ -259,6 +269,112 @@ exports.getSubTask = async( req,res) =>{
         res.status(400).json({
             success: false,
             messages: ['get_subtask_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByResponsibleEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.editTaskByAccountableEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by consulted employee
+ */
+exports.evaluateTaskByConsultedEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByConsultedEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by responsible employee
+ */
+exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByResponsibleEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by accountable employee
+ */
+exports.evaluateTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByAccountableEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
             content: error
         });
     }

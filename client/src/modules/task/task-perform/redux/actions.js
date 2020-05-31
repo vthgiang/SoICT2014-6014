@@ -27,7 +27,8 @@ export const performTaskAction = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFile
+    downloadFile,
+    uploadFile
 };
 
 // Create result task
@@ -325,5 +326,15 @@ function downloadFile(id, fileName){
                 FileDownload(res.data, fileName, content)
             })
             .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
+    }
+}
+function uploadFile(task,data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.UPLOAD_FILE_REQUEST });
+        performTaskService.uploadFile(task,data)
+        .then(
+            payload => dispatch({ type: performTaskConstants.UPLOAD_FILE_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.UPLOAD_FILE_FAILURE, error })
+        );
     }
 }

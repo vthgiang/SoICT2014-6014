@@ -17,5 +17,11 @@ router.post('/create', auth, TaskManagementController.createTask);
 router.delete('/:id', auth, TaskManagementController.deleteTask);
 router.patch('/:id', auth, TaskManagementController.editTaskStatus);
 router.get('/sub-task/:id', auth, TaskManagementController.getSubTask);
+router.patch('/edit/task-responsible/:id', TaskManagementController.editTaskByResponsibleEmployees);
+router.patch('/edit/task-accountable/:id', TaskManagementController.editTaskByAccountableEmployees);
+
+router.patch('/evaluate/task-consulted/:id', TaskManagementController.evaluateTaskByConsultedEmployees);
+router.patch('/evaluate/task-responsible/:id', TaskManagementController.evaluateTaskByResponsibleEmployees);
+router.patch('/evaluate/task-accountable/:id', TaskManagementController.evaluateTaskByAccountableEmployees);
 
 module.exports = router;
