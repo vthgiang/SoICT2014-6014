@@ -179,7 +179,7 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
  * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
  * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
  */
-exports.dowloadFile = (req, res) => {
+exports.dowloadFile = async (req, res) => {
     try {
         const {path} = req.query;
         await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
