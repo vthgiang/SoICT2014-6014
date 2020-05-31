@@ -12,7 +12,8 @@ export const taskManagementActions = {
     addTask,
     editTask,
     editStatusOfTask,
-    _delete
+    _delete,
+    getSubTask
 };
 
 // Get all task
@@ -289,4 +290,20 @@ function editStatusOfTask(id, status) {
                 dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
             });
     };
+}
+// Get SubTask
+function getSubTask(taskId){
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_SUBTASK_REQUEST, taskId });
+        taskManagementService.getSubTask(taskId)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_SUBTASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_SUBTASK_FAILURE, error });
+            });
+    }; 
 }

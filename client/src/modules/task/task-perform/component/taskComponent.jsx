@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
+import { SubTaskTab } from './subTaskTab';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { performTaskAction } from '../redux/actions';
 
@@ -22,7 +23,8 @@ class TaskComponent extends Component {
             if (taskId){
                 this.props.getTaskById(taskId);
                 this.props.getTaskActions(taskId);
-                this.props.getTaskComments(taskId)
+                this.props.getTaskComments(taskId);
+                this.props.getSubTask(taskId)
             }
         }
     }
@@ -45,6 +47,13 @@ class TaskComponent extends Component {
                         role={this.props.role}
                     />
                 </div>
+
+                {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4"}}>
+                    <SubTaskTab 
+                        id = {this.props.id}
+                        role={this.props.role}
+                    />
+                </div> */}
             </div>
         );
     }
@@ -58,6 +67,7 @@ const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
     getTaskActions: performTaskAction.getTaskActions,
     getTaskComments: performTaskAction.getTaskComments,
+    getSubTask: taskManagementActions.getSubTask
 };
 
 const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));

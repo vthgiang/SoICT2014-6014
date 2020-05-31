@@ -150,7 +150,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         totalCount = tasktemplate[0].totalCount[0].count;
     }
     var totalPages = Math.ceil(totalCount / noResultsPerPage);
-    console.log(tasktemplates);
     return { taskTemplates: tasktemplates, pageTotal: totalPages };
 }
 

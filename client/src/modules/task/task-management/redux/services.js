@@ -18,7 +18,8 @@ export const taskManagementService = {
     addNewTask,
     editTask,
     deleteTaskById,
-    editStatusOfTask
+    editStatusOfTask,
+    getSubTask
 };
 
 // get all task
@@ -123,4 +124,11 @@ function editStatusOfTask(id, status) {
         method: 'PATCH',
         data: status,
     }, false, true, 'task.task_management');
+}
+
+function getSubTask(taskId){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/sub-task/${taskId}`,
+        method: 'GET'
+    },false,true,'task.task_management');
 }

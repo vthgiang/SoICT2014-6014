@@ -298,3 +298,14 @@ exports.editTaskStatus = async (taskID, status) => {
     );
     return task;
 }
+/**
+ * get subtask
+ */
+exports.getSubTask = async(taskId) => {
+    console.log("id :"+taskId);
+    var task = await Task.find({
+        parent: taskId
+    })
+    console.log("task: "+task);
+    return task;
+}
