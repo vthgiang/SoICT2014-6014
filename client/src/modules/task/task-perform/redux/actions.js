@@ -316,14 +316,15 @@ function confirmAction(id,idUser) {
         );
     }
 }
-function downloadFile(id, fileName){
+function downloadFile(id,fileName){
+    console.log("hihhihihihi")
     return dispatch => {
         dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
         performTaskService.downloadFile(id)
             .then(res => { 
                 dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
                 const content = res.headers['content-type'];
-                FileDownload(res.data, fileName, content)
+                FileDownload(res.data ,fileName, content)
             })
             .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
     }

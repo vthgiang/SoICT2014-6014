@@ -564,4 +564,17 @@ exports.uploadFile = async (params,files) => {
     var task = await Task.findOne({ _id: params.task })
     return task.files
 }
-
+/**
+ * Download tài liệu
+ */
+exports.downloadFile = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskActions"},
+        {$replaceRoot:{newRoot:"$taskActions"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}},
+    ])
+    return file[0];
+}
