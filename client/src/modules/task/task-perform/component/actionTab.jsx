@@ -572,8 +572,7 @@ class ActionTab extends Component {
     this.refs.filesAddAction.removeFiles()
     }
     requestDownloadFile = (e,id,fileName) => {
-        e.preventDefault()
-        console.log("Cho tao download di")
+        e.preventDefault();
         this.props.downloadFile(id,fileName);
     }
     
