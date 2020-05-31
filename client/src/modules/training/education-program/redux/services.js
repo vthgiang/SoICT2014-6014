@@ -1,21 +1,15 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 
 export const EducationService = {
-    getAll,
     getListEducation,
     createNewEducation,
     deleteEducation,
     updateEducation,
-}
-/**
- * Lấy danh sách tất cả các chương trình đào tạo 
- */
-function getAll() {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationProgram/`,
-        method: 'GET',
-    }, false, true, 'training.education_program');
 }
 
 /**
@@ -24,9 +18,14 @@ function getAll() {
  */
 function getListEducation(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationProgram/paginate`,
-        method: 'POST',
-        data: data,
+        url: `${ LOCAL_SERVER_API }/educationPrograms`,
+        method: 'GET',
+        params: {
+            organizationalUnit: data !== undefined ? data.organizationalUnit : data,
+            position: data !== undefined ? data.position : data,
+            page: data !== undefined ? data.page : data,
+            limit: data !== undefined ? data.limit : data
+        }
     }, false, true, 'training.education_program');
 }
 
@@ -36,7 +35,7 @@ function getListEducation(data) {
  */
 function createNewEducation(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationProgram/`,
+        url: `${ LOCAL_SERVER_API }/educationPrograms/`,
         method: 'POST',
         data: data,
     }, true, true, 'training.education_program');
@@ -48,7 +47,7 @@ function createNewEducation(data) {
  */
 function deleteEducation(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationProgram/${id}`,
+        url: `${ LOCAL_SERVER_API }/educationPrograms/${id}`,
         method: 'DELETE',
     }, true, true, 'training.education_program');
 }
@@ -60,8 +59,8 @@ function deleteEducation(id) {
  */
 function updateEducation(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationProgram/${id}`,
-        method: 'PUT',
+        url: `${ LOCAL_SERVER_API }/educationPrograms/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'training.education_program');
 }

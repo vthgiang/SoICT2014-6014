@@ -3,7 +3,7 @@ import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
 // import { alertActions } from "../../../../redux-actions/AlertActions";
 import { performTaskService } from "./services";
-
+const FileDownload = require('js-file-download');
 export const performTaskAction = {
     getTimesheetLogs,
     getTimerStatusTask,
@@ -26,7 +26,9 @@ export const performTaskAction = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
     evaluationAction,
-    confirmAction
+    confirmAction,
+    downloadFile,
+    uploadFile
 };
 
 // Create result task
@@ -311,6 +313,28 @@ function confirmAction(id,idUser) {
         .then(
             payload => dispatch({ type: performTaskConstants.CONFIRM_ACTION_SUCCESS, payload }),
             error => dispatch({ type: performTaskConstants.CONFIRM_ACTION_FAILURE, error })
+        );
+    }
+}
+function downloadFile(id, fileName){
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
+        performTaskService.downloadFile(id)
+            .then(res => { 
+                dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
+                const content = res.headers['content-type'];
+                FileDownload(res.data, fileName, content)
+            })
+            .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
+    }
+}
+function uploadFile(task,data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.UPLOAD_FILE_REQUEST });
+        performTaskService.uploadFile(task,data)
+        .then(
+            payload => dispatch({ type: performTaskConstants.UPLOAD_FILE_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.UPLOAD_FILE_FAILURE, error })
         );
     }
 }

@@ -3,8 +3,8 @@ const { Employee, Salary } = require('../../../models').schema;
 
 /**
  * Lấy danh sách các bảng lương của nhân viên
- * @data: dữ liệu các key tìm kiếm
- * @company: id công ty người tìm kiếm
+ * @params : dữ liệu các key tìm kiếm
+ * @company : id công ty người tìm kiếm
  */
 exports.searchSalaries = async (params, company) => {
     var keySearchEmployee, keySearch = { company: company};

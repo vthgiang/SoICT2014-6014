@@ -6,7 +6,6 @@ import { CourseCreateForm, CourseDetailForm, CourseEditForm } from './combinedCo
 
 import { DeleteNotification, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 
-import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../education-program/redux/actions';
 class TrainingPlan extends Component {
@@ -23,8 +22,7 @@ class TrainingPlan extends Component {
 
     componentDidMount() {
         this.props.getListCourse(this.state);
-        this.props.getAllEducation();
-        this.props.getUser();
+        this.props.getListEducation();
     }
 
     // Function format dữ liệu Date thành string
@@ -209,6 +207,7 @@ class TrainingPlan extends Component {
                         educationProgram={this.state.currentEditRow.educationProgram}
                         employeeCommitmentTime={this.state.currentEditRow.employeeCommitmentTime}
                         type={this.state.currentEditRow.type}
+                        listEmployees={["5ecc8a6ede9c0a42c8d44f40"]}
                         unit={this.state.currentEditRow.cost.unit}
                     />
                 }
@@ -227,7 +226,7 @@ class TrainingPlan extends Component {
                         educationProgram={this.state.currentViewRow.educationProgram}
                         employeeCommitmentTime={this.state.currentViewRow.employeeCommitmentTime}
                         type={this.state.currentViewRow.type}
-                        // listEmployees=""
+                        listEmployees={[]}
                         unit={this.state.currentViewRow.cost.unit}
                     />
                 }
@@ -238,15 +237,14 @@ class TrainingPlan extends Component {
 };
 
 function mapState(state) {
-    const { course, education, user } = state;
-    return { course, education, user };
+    const { course, education, } = state;
+    return { course, education, };
 };
 
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
     deleteCourse: CourseActions.deleteCourse,
-    getAllEducation: EducationActions.getAll,
-    getUser: UserActions.get,
+    getListEducation: EducationActions.getListEducation,
 };
 
 const connectedListCourse = connect(mapState, actionCreators)(withTranslate(TrainingPlan));

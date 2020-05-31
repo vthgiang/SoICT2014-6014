@@ -62,55 +62,111 @@ exports.getTasksCreatedByUser = async (id) => {
 /**
  * Lấy công việc thực hiện chính theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasResponsibleRole = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    
     var responsibleTasks;
-        var perPage = Number(perpageId);
-        var page = Number(numberId);
-        
-        if (unitId === "[]" && statusId === "[]") {
-            responsibleTasks = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-        } else {
-            responsibleTasks = await Task.find({
-                responsibleEmployees: { $in: [userId] },
-                $or: [
-                    { organizationalUnit: { $in: unitId.split(",") } },
-                    { status: { $in: statusId.split(",") } }
-                ]
-            }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        responsibleEmployees: {
+            $in: [user]
         }
-        var totalCount = await Task.count({ responsibleEmployees: { $in: [userId] } });
-        var totalPages = Math.ceil(totalCount / perPage);
-        return {
-            "tasks": responsibleTasks,
-            "totalPage": totalPages
+    };
+
+    if(organizationalUnit !== '[]'){
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit.split(",")
+            }
         };
+    }
+
+    if(status !== '[]'){
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status.split(",")
+            }
+        };
+    }
+
+    if(priority !== '[]'){
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority.split(",")
+            }
+        };
+    }
+
+    if(special !== '[]'){
+        special = special.split(",");
+        for(var i = 0; i < special.length; i++){
+            if(special[i] === "Lưu trong kho"){
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else{
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };                
+            }
+        }
+    }
+
+    if (name !== 'null') {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+    
+    responsibleTasks = await Task.find( keySearch ).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+    
+    var totalCount = await Task.count(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+
+    return {
+        "tasks": responsibleTasks,
+        "totalPage": totalPages
+    };
 }
 
 /**
  * Lấy công việc phê duyệt theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasAccountableRole = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
+    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+
     var accountableTasks;
-        var perPage = Number(perpageId);
-        var page = Number(numberId);
-        if (unitId === "[]" && statusId === "[]") {
-            accountableTasks = await Task.find({ accountableEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+        var perPage = Number(perPage);
+        var page = Number(number);
+        if (organizationalUnit === "[]" && status === "[]") {
+            accountableTasks = await Task.find({ accountableEmployees: { $in: [user] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
             accountableTasks = await Task.find({
-                accountableEmployees: { $in: [userId] },
+                accountableEmployees: { $in: [user] },
                 $or: [
-                    { organizationalUnit: { $in: unitId.split(",") } },
-                    { status: { $in: statusId.split(",") } }
+                    { organizationalUnit: { $in: organizationalUnit.split(",") } },
+                    { status: { $in: status.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
-        var totalCount = await Task.count({ accountableEmployees: { $in: [userId] } });
+        var totalCount = await Task.count({ accountableEmployees: { $in: [user] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
             "tasks": accountableTasks,

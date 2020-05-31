@@ -3,21 +3,22 @@ const { Employee, Commendation } = require('../../../models').schema;
 
 /**
  * Lấy danh sách khen thưởng của nhân viên
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
  */ 
-exports.searchCommendations = async (data, company) => {
+exports.searchCommendations = async (params, company) => {
+    console.log(params);
     var keySearchEmployee, keySearch = { company: company};
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác null 
-    if (data.organizationalUnit !== null) {
-        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
+    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    if (params.organizationalUnit !== undefined) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
 
-    // Bắt sựu kiện MSNV tìm kiếm khác ""
-    if (data.employeeNumber !== "") {
-        keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
+    // Bắt sựu kiện MSNV tìm kiếm khác "", undefined
+    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
+        keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: params.employeeNumber, $options: "i"}}
     }
     if (keySearchEmployee !== undefined) {
         var employeeinfo = await Employee.find(keySearchEmployee);
@@ -25,15 +26,15 @@ exports.searchCommendations = async (data, company) => {
             keySearch = {...keySearch, employee: { $in: employee}}
     }
 
-    // Bắt sựu kiện số quyết định tìm kiếm khác ""
-    if (data.decisionNumber !== "") {
-        keySearch = {...keySearch, decisionNumber: {$regex: data.decisionNumber, $options: "i"}}
+    // Bắt sựu kiện số quyết định tìm kiếm khác "", undefined
+    if (params.decisionNumber !== undefined && params.decisionNumber !== 0) {
+        keySearch = {...keySearch, decisionNumber: {$regex: params.decisionNumber, $options: "i"}}
     };
 
     // Lấy danh sách khen thưởng
     var totalList = await Commendation.count(keySearch);
     var listCommendations = await Commendation.find(keySearch).populate({path: 'employee', model: Employee})
-        .sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
+        .sort({'createDate': 'desc'}).skip(params.page).limit(params.limit);
     for (let n in listCommendations) {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listCommendations[n].employee.emailInCompany);
         listCommendations[n] = {...listCommendations[n]._doc, ...value}
@@ -101,8 +102,6 @@ exports.updateCommendation = async (id, data, company) => {
         var partStart = data.startDate.split('-');
         var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         var commendationChange = {
-            employee: employeeInfo._id,
-            decisionNumber: data.decisionNumber,
             organizationalUnit: data.organizationalUnit,
             startDate: startDate,
             type: data.type,

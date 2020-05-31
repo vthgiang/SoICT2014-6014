@@ -56,7 +56,7 @@ class DialogModal extends Component {
                                     }
                                     );
                                 }}>&times;</button>
-                                <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
+                                <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left" style={bodyStyle}>
                                 {this.props.children}
@@ -70,7 +70,7 @@ class DialogModal extends Component {
                                     </div>
                                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         {
-                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
+                                            hasSaveButton && <button type="button" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>

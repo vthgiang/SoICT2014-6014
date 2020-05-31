@@ -15,14 +15,19 @@ class TaskManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentTab: "responsible",
-
             perPage: 20,
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
             // showModal: "",
             // showAddSubTask: ""
+
+            currentTab: "responsible",
+            organizationalUnit: '[]',
+            status: '[]',
+            priority: '[]',
+            special: '[]',
+            name: null,
         };
     }
 
@@ -235,23 +240,21 @@ class TaskManagement extends Component {
     }
 
     handleUpdateData = () => {// TODO: handle search??
-        var unit = window.$("#multiSelectUnit1").val();
-        var status = window.$("#multiSelectStatus").val();
-        var content = this.state.currentTab;
+        var { organizationalUnit, status, priority, special, name } = this.state;
 
-        if(status.length === 0) status = '[]';
-        if(unit.length === 0) unit = '[]';
-        
+        var content = this.state.currentTab;
+        var { perPage } = this.state;
+
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "accountable") {
-            this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getConsultedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else if (content === "creator") {
-            this.props.getCreatorTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getCreatorTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         } else {
-            this.props.getInformedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getInformedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name);
         }
         this.setState(state => {
             return {
@@ -321,6 +324,52 @@ class TaskManagement extends Component {
                 currentTab: value[0]
             }
         });
+    }
+
+    handleSelectOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationalUnit: value
+            }
+        });
+    }
+
+    handleSelectStatus = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                status: value
+            }
+        });
+    }
+
+    handleSelectPriority = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                priority: value
+            }
+        });
+    }
+
+    handleSelectSpecial = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                special: value
+            }
+        });
+    }
+
+    handleChangeName = (e) => {
+        const name = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                name: name
+            }
+        });        
     }
 
     render() {
@@ -401,15 +450,17 @@ class TaskManagement extends Component {
                                 <SelectMulti id="multiSelectUnit1"
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    onChange={this.handleSelectOrganizationalUnit}
                                     options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                 </SelectMulti>
                             }
                         </div>
                         <div className="form-group">
                             <label>{translate('task.task_management.status')}</label>
-                            <SelectMulti id="multiSelectStatus" defaultValue={[
-                                translate('task.task_management.inprocess')
-                            ]}
+                            <SelectMulti id="multiSelectStatus" 
+                                defaultValue={[
+                                    translate('task.task_management.inprocess')
+                                ]}
                                 items={[
                                     { value: "Inprocess", text: translate('task.task_management.inprocess') },
                                     { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
@@ -417,6 +468,7 @@ class TaskManagement extends Component {
                                     { value: "Delayed", text: translate('task.task_management.delayed') },
                                     { value: "Canceled", text: translate('task.task_management.canceled') }
                                 ]}
+                                onChange={this.handleSelectStatus}
                                 options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
                             </SelectMulti>
                         </div>
@@ -435,6 +487,7 @@ class TaskManagement extends Component {
                                     { value: "2", text: translate('task.task_management.normal') },
                                     { value: "1", text: translate('task.task_management.low') }
                                 ]}
+                                onChange={this.handleSelectPriority}
                                 options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
                             </SelectMulti>
                         </div>
@@ -448,6 +501,7 @@ class TaskManagement extends Component {
                                     { value: "Lưu trong kho", text: translate('task.task_management.stored') },
                                     { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
                                 ]}
+                                onChange={this.handleSelectSpecial}
                                 options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
                             </SelectMulti>
                         </div>
@@ -456,7 +510,7 @@ class TaskManagement extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('task.task_management.name')}</label>
-                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} />
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange = {(e) => this.handleChangeName(e)} />
                         </div>
 
                         <div className="form-group">

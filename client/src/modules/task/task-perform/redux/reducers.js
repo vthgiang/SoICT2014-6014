@@ -1,7 +1,25 @@
 import { performTaskConstants } from "./constants";
-
+import {taskManagementConstants} from "../../task-management/redux/constants"
 export function performtasks(state = {}, action) {
     switch (action.type) {
+        case taskManagementConstants.GETTASK_BYID_REQUEST:
+            return {
+                ...state,
+                task: null,
+                loading: true,
+                isLoading: true
+            };
+        case taskManagementConstants.GETTASK_BYID_SUCCESS:
+            return {
+                ...state,
+                task: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GETTASK_BYID_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case performTaskConstants.CREATE_RESULT_TASK_REQUEST:
             return {
                 ...state,
@@ -316,7 +334,22 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 error: action.error
-            }                                                                                              
+            }  
+        case performTaskConstants.DOWNLOAD_FILE_REQUEST:      
+        case performTaskConstants.DOWNLOAD_FILE_FAILURE:
+        case performTaskConstants.DOWNLOAD_FILE_SUCCESS:
+        case performTaskConstants.UPLOAD_FILE_REQUEST:
+            return {
+                ...state,
+                abc : true
+            }
+        case performTaskConstants.UPLOAD_FILE_SUCCESS:
+            console.log(action)
+            return {
+                ...state,
+                files : action.payload.data.content
+            }
+        case performTaskConstants.UPLOAD_FILE_FAILURE:                                                                                                  
         default:
             return state
     }

@@ -45,6 +45,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             {
                 _id: user._id, 
                 email: user.email, 
+                name: user.name,
                 company: user.company, 
                 fingerprint: fingerprint
             }, 
@@ -71,6 +72,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             {
                 _id: user._id, 
                 email: user.email,  
+                name: user.name,
                 fingerprint: fingerprint
             }, 
             process.env.TOKEN_SECRET
@@ -179,7 +181,7 @@ exports.changeInformation = async (id, name, email, avatar=undefined) => {
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
-    var deleteAvatar = '.'+user.avatar; console.log("file: ", deleteAvatar);
+    var deleteAvatar = '.'+user.avatar;
     user.email = email;
     user.name = name;
     if(avatar !== undefined){

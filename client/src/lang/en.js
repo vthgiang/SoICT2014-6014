@@ -429,6 +429,7 @@ export default {
             notifications: 'Notifications',
 
             tasks: 'Task management',
+            task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
@@ -1139,6 +1140,7 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action',
+            priority: 'Priority'
 
            
         },

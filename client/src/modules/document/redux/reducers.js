@@ -32,7 +32,7 @@ const initState = {
             tree: []
         },
 
-        listData: {
+        data: {
             list: [], paginate: [],
             totalDocs: 0,
             limit: 0,
@@ -44,9 +44,7 @@ const initState = {
             prevPage: 0,
             nextPage: 0,
 
-            create: {
-                user_manage: []
-            }
+            user_manage: []
         },
     },
     user: {
@@ -58,26 +56,162 @@ export function documents(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
+        case DocumentConstants.GET_DOCUMENTS_REQUEST:
+        case DocumentConstants.PAGINATE_DOCUMENTS_REQUEST:
+        case DocumentConstants.CREATE_DOCUMENT_REQUEST:  
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
+        case DocumentConstants.EDIT_DOCUMENT_REQUEST:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_REQUEST:
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_REQUEST:
+        case DocumentConstants.DELETE_DOCUMENT_REQUEST:
+        case DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.DELETE_DOCUMENT_CATEGORY_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             }
 
+        case DocumentConstants.GET_DOCUMENTS_FAILE:
+        case DocumentConstants.PAGINATE_DOCUMENTS_FAILE:
+        case DocumentConstants.CREATE_DOCUMENT_FAILE:  
+        case DocumentConstants.EDIT_DOCUMENT_FAILE: 
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_FAILE:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_FAILE:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE:
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_FAILE:
+        case DocumentConstants.ADD_VERSION_DOCUMENT_FAILE:
+        case DocumentConstants.DELETE_DOCUMENT_FAILE:
+        case DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE:
             return {
                 ...state,
                 isLoading: false,
             }
 
-        case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:  
+            return {
+                ...state,
+                isLoading: false
+            };
 
+        case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS:    
+            indexPaginate = findIndex(state.administration.data.paginate, action.payload);
+            if(indexPaginate !== -1) state.administration.data.paginate[indexPaginate].numberOfView += 1;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.GET_DOCUMENTS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: action.payload
+                    }
+                }
+            };
+
+        case DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
+            };
+
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    categories: {
+                        ...state.administration.categories,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
+            };
+
+        case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
+            
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: [
+                            action.payload,
+                            ...state.administration.data.list
+                        ],
+                        paginate: [
+                            ...state.administration.data.paginate,
+                            action.payload
+                        ]
+                    }
+                }
+            };
+
+        case DocumentConstants.EDIT_DOCUMENT_SUCCESS:
+        case DocumentConstants.ADD_VERSION_DOCUMENT_SUCCESS:
+            index = findIndex(state.administration.data.list, action.payload._id);
+            if(index !== -1) state.administration.data.list[index] = action.payload;
+            indexPaginate = findIndex(state.administration.data.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.data.paginate[indexPaginate] = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.DELETE_DOCUMENT_SUCCESS:
+            index = findIndex(state.administration.data.list, action.payload._id);
+            if(index !== -1) state.administration.data.list.splice(index, 1);
+            indexPaginate = findIndex(state.administration.data.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.data.paginate.splice(indexPaginate, 1);
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.GET_DOCUMENT_CATEGORIES_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -91,6 +225,7 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
+
             return {
                 ...state,
                 isLoading: false,
@@ -104,6 +239,26 @@ export function documents(state = initState, action) {
                         ]
                     }
                 }
+            };
+
+        case DocumentConstants.EDIT_DOCUMENT_CATEGORY_SUCCESS:
+            index = findIndex(state.administration.categories.list, action.payload._id);
+            if(index !== -1) state.administration.categories.list[index] = action.payload;
+            indexPaginate = findIndex(state.administration.categories.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.categories.paginate[indexPaginate] = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.DELETE_DOCUMENT_CATEGORY_SUCCESS:
+            index = findIndex(state.administration.categories.list, action.payload._id);
+            if(index !== -1) state.administration.categories.list.splice(index, 1);
+            indexPaginate = findIndex(state.administration.categories.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.categories.paginate.splice(indexPaginate, 1);
+            return {
+                ...state,
+                isLoading: false
             };
 
         case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:

@@ -16,9 +16,9 @@ const auth = require('./modules/auth/auth.route');
 const documents = require('./modules/document/document.route');
 
 const annualLeaves = require('./modules/human-resource/annual-leave/annualLeave.route');
-const commendation = require('./modules/human-resource/commendation/commendation.route');
-const discipline = require('./modules/human-resource/discipline/discipline.route');
-const holiday = require('./modules/human-resource/holiday/holiday.route');
+const commendations = require('./modules/human-resource/commendation/commendation.route');
+const disciplines = require('./modules/human-resource/discipline/discipline.route');
+const holidays = require('./modules/human-resource/holiday/holiday.route');
 const profile = require('./modules/human-resource/profile/profile.route');
 const salaries = require('./modules/human-resource/salary/salary.route');
 
@@ -50,8 +50,8 @@ const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
 
-const educationProgram = require('./modules/trainning/education-program/educationProgram.route');
-const course = require('./modules/trainning/course/course.route');
+const educationPrograms = require('./modules/trainning/education-program/educationProgram.route');
+const courses = require('./modules/trainning/course/course.route');
 
 //asset
 const assetType = require('./modules/assets-manager/asset-type-management/asset-type.route');
@@ -77,9 +77,9 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/upload', express.static('upload'));
-
-
+// app.use('/upload', express.static('upload'));
+app.use('/upload/avatars', express.static('upload/avatars'));
+ 
 
 
 
@@ -117,9 +117,9 @@ app.use("/auth", auth);
 app.use("/documents", documents);
 
 app.use("/annualLeaves", annualLeaves);
-app.use("/praise", commendation);
-app.use("/discipline", discipline);
-app.use("/holiday",holiday);
+app.use("/commendations", commendations);
+app.use("/disciplines", disciplines);
+app.use("/holidays", holidays);
 app.use("/employees", profile);
 app.use("/salaries", salaries);
 
@@ -151,8 +151,8 @@ app.use("/tasks", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/tasktemplates", tasktemplate);
 
-app.use("/educationProgram", educationProgram);
-app.use("/course",course);
+app.use("/educationPrograms", educationPrograms);
+app.use("/courses", courses);
 
 //asset
 app.use("/assettype",assetType);
