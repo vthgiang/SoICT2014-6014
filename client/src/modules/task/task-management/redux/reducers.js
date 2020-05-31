@@ -224,6 +224,113 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case taskManagementConstants.GET_SUBTASK_REQUEST:
+            return {
+                ...state,
+                subtasks: null,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_SUBTASK_SUCCESS:
+            return {
+                ...state,
+                subtasks: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_SUBTASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            }
+        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.payload
+                }
+            };
+        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.payload
+                }
+            };
+        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.payload
+                }
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.payload
+                }
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.payload
+                }
+            };
+        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
         default:
             return state
     }
