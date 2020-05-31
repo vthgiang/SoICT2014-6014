@@ -267,93 +267,91 @@ class InformationForm extends Component{
         var information  =this.state.information;
         return(
             <fieldset className="scheduler-border">
-                <legend className="scheduler-border">Danh sách các thông tin yêu cầu của công việc</legend>
-                <div className="control-group">
-                    <div className={'form-group'}>
-                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên thông tin</label>
-                        <div className={`col-sm-10 form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                            <input type="text" className="form-control" placeholder="Tên thông tin" value={information.name} onChange={this.handleChangeInfoName} />
-                            <ErrorLabel content={this.state.information.errorOnName}/>
-                        </div>
+                <legend className="scheduler-border">Danh sách các trường thông tin của công việc</legend>
+                
+                <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                    <label className="control-label">Tên thông tin</label>
+                    <div>
+                        <input type="text" className="form-control" placeholder="Tên thông tin" value={information.name} onChange={this.handleChangeInfoName} />
+                        <ErrorLabel content={this.state.information.errorOnName}/>
                     </div>
-                    <div className={'form-group'}>
-                        <label className="col-sm-4 control-label" htmlFor="inputDescriptionInfo" style={{ width: '100%', textAlign: 'left' }}>Mô tả thông tin</label>
-                        <div className={`col-sm-10 form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                            <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder="Mô tả thông tin" value={information.description} onChange={this.handleChangeInfoDesc} />
-                            <ErrorLabel content={this.state.information.errorOnDescription}/>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
-                        <div className="col-sm-10" style={{ width: '100%' }}>
-                            <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                                <option value={this.INFO_TYPE.TEXT}>Văn bản</option>
-                                <option value={this.INFO_TYPE.NUMBER}>Số</option>
-                                <option value={this.INFO_TYPE.DATE}>Ngày tháng</option>
-                                <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
-                                <option value={this.INFO_TYPE.SET}>Tập giá trị</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    { this.state.information.type === this.INFO_TYPE.SET?
-                        <div className={'form-group has-feedback' + (!information.type ? ' has-error' : '')}>
-                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập tập giá trị:`}</label>
-                            <div className={`col-sm-10 form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
-                                <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
-                            </div>
-                        </div>
-                        : null
-                    }
-
-                    <div className="form-group">
-                        <label className="col-sm-2 control-label">
-                            Chỉ quản lý được điền? &nbsp;
-                            <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
-                        </label>
-                    </div>
-                    <div className="pull-right" style={{marginBottom: "10px"}}>
-                        {this.state.editInfo ?
-                            <React.Fragment>
-                                <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>Hủy chỉnh sửa</button>
-                                <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
-                            </React.Fragment>:
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>Thêm</button>
-                        }
-                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>Xóa trắng</button>
-                    </div>
-                    <table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '10%' }}>Stt</th>
-                                <th title="Tên trường thông tin">Tên trường thông tin</th>
-                                <th title="Mô tả">Mô tả</th>
-                                <th title="Kiểu dữ liệu">Kiểu dữ liệu</th>
-                                <th title="Chỉ quản lý được điền?">Chỉ quản lý được điền?</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody id="informations">
-                            {
-                                (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
-                                    taskInformations.map((item, index) =>
-                                        <tr key={`${this.state.keyPrefix}_${index}`}>
-                                            <td>{index + 1}</td>
-                                            <td>{item.name}</td>
-                                            <td>{item.description}</td>
-                                            <td>{item.type}</td>
-                                            <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
-                                            <td>
-                                                <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                                <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                            }
-                        </tbody>
-                    </table>
                 </div>
+                <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                    <label className="control-label" htmlFor="inputDescriptionInfo">Mô tả thông tin</label>
+                    <div>
+                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder="Mô tả thông tin" value={information.description} onChange={this.handleChangeInfoDesc} />
+                        <ErrorLabel content={this.state.information.errorOnDescription}/>
+                    </div>
+                </div>
+                <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
+                    <label className=" control-label">Kiểu dữ liệu:</label>
+                    <div style={{ width: '100%' }}>
+                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                            <option value={this.INFO_TYPE.TEXT}>Văn bản</option>
+                            <option value={this.INFO_TYPE.NUMBER}>Số</option>
+                            <option value={this.INFO_TYPE.DATE}>Ngày tháng</option>
+                            <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
+                            <option value={this.INFO_TYPE.SET}>Tập giá trị</option>
+                        </select>
+                    </div>
+                </div>
+
+                { this.state.information.type === this.INFO_TYPE.SET?
+                    <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                        <label className="control-label">{`Nhập tập giá trị:`}</label>
+                        
+                        <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
+                        <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
+                    </div>
+                    : null
+                }
+
+                <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
+                    <label className="control-label">
+                        Chỉ quản lý được điền? &nbsp;
+                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
+                    </label>
+                </div>
+                <div className="pull-right" style={{marginBottom: "10px"}}>
+                    {this.state.editInfo ?
+                        <React.Fragment>
+                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>Hủy chỉnh sửa</button>
+                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
+                        </React.Fragment>:
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>Thêm</button>
+                    }
+                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>Xóa trắng</button>
+                </div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '10%' }}>STT</th>
+                            <th title="Tên trường thông tin">Tên trường thông tin</th>
+                            <th title="Mô tả">Mô tả</th>
+                            <th title="Kiểu dữ liệu">Kiểu dữ liệu</th>
+                            <th title="Chỉ quản lý được điền?">Chỉ quản lý được điền?</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="informations">
+                        {
+                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
+                                taskInformations.map((item, index) =>
+                                    <tr key={`${this.state.keyPrefix}_${index}`}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.description}</td>
+                                        <td>{item.type}</td>
+                                        <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                )
+                        }
+                    </tbody>
+                </table>
             </fieldset>
         )
     }

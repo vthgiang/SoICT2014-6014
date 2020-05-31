@@ -335,24 +335,22 @@ class ModalAddTaskTemplate extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                                     <label className="control-label">Những người được phép xem*</label>
-                                    <div>
-                                        {listRole &&
-                                            <SelectBox
-                                                id={`read-select-box`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items={[
-                                                    {value: listRole.dean._id, text: listRole.dean.name},
-                                                    {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                                    {value: listRole.employee._id, text: listRole.employee.name},
-                                                ]}
-                                                onChange={this.handleTaskTemplateRead}
-                                                multiple={true}
-                                                options={{placeholder: "Chọn người được phép xem mẫu"}}
-                                            />
-                                        }
-                                        <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
-                                    </div>
+                                    {listRole &&
+                                        <SelectBox
+                                            id={`read-select-box`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items={[
+                                                {value: listRole.dean._id, text: listRole.dean.name},
+                                                {value: listRole.viceDean._id, text: listRole.viceDean.name},
+                                                {value: listRole.employee._id, text: listRole.employee.name},
+                                            ]}
+                                            onChange={this.handleTaskTemplateRead}
+                                            multiple={true}
+                                            options={{placeholder: "Chọn người được phép xem mẫu"}}
+                                        />
+                                    }
+                                    <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
                                 </div>
                             </div>
                         </div>
@@ -361,10 +359,8 @@ class ModalAddTaskTemplate extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                                     <label className="control-label">Tên mẫu*</label>
-                                    <div>
-                                        <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
-                                        <ErrorLabel content={this.state.newTemplate.errorOnName}/>
-                                    </div>
+                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
+                                    <ErrorLabel content={this.state.newTemplate.errorOnName}/>
                                 </div>
 
                                 <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
@@ -380,10 +376,8 @@ class ModalAddTaskTemplate extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                                     <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
-                                    <div>
-                                        <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                                        <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
-                                    </div>
+                                    <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                    <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
                                 </div>
                             </div>
                         </div>
@@ -478,10 +472,8 @@ class ModalAddTaskTemplate extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                                     <label className="control-label" htmlFor="inputFormula">Công thức tính điểm KPI công việc*</label>
-                                    <div>
-                                        <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                        <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
-                                    </div>
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
                                     
                                     <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
                                     <label className="col-xs-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
