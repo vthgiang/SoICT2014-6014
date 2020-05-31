@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
+import { getStorage } from '../../../../config';
 
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
@@ -69,7 +70,22 @@ class EvaluateByConsultedEmployee extends Component {
     }
     
     save = () => {
+        var {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
 
+        var evaluations, taskId;
+        taskId = this.props.id;
+        evaluations = task.evaluations[task.evaluations.length-1]
+        var data = {
+            evaluateId: evaluations._id,
+            user: getStorage("userId"),
+            role: "Consulted",
+            employeePoint: this.state.point,
+            automaticPoint: task.evaluations[task.evaluations.length-1].results.length !== 0 ? task.evaluations[task.evaluations.length-1].results[0].automaticPoint : 0 
+        }
+
+        console.log('data', data, taskId);
+        this.props.evaluateTaskByConsultedEmployee(data,taskId);
     }
 
 
@@ -148,7 +164,7 @@ class EvaluateByConsultedEmployee extends Component {
                                             <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{task.evaluations[task.evaluations.length-1].results[0].automaticPoint}</p>
                                             {
                                                 task.evaluations[task.evaluations.length-1].results.map((res) => {
-                                                    if(res.role === "responsible"){
+                                                    if(res.role === "Responsible"){
                                                         return <div >
                                                             <p><span style={{fontWeight: "bold"}}>Người thực hiện-{res.employee.name}</span>-Điểm tự đánh giá:{res.employeePoint}</p>
                                                         </div>
@@ -178,7 +194,8 @@ const getState = {
     getTaskById: taskManagementActions.getTaskById,
     createResult: performTaskAction.createResultTask,
     editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask
+    editStatusOfTask: taskManagementActions.editStatusOfTask,
+    evaluateTaskByConsultedEmployees: taskManagementActions.evaluateTaskByConsultedEmployees, 
 }
 
 const evaluateByConsultedEmployee = connect(mapState, getState)(withTranslate(EvaluateByConsultedEmployee));
