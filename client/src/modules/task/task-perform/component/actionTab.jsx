@@ -1261,6 +1261,7 @@ const actionCreators = {
     downloadFileTaskComments: performTaskAction.downloadFileTaskComments,
     downloadFileCommentOfTaskComments: performTaskAction.downloadFileCommentOfTaskComments,
     getSubTask: taskManagementActions.getSubTask,
+    getTaskComments: performTaskAction.getTaskComments,
     uploadFile: performTaskAction.uploadFile
 };
 
