@@ -210,7 +210,7 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 exports.setTaskImportanceLevel = async (id, data) => {
     // data body co taskId, date, point, employeeId
     // id là id của employee kpi
-    console.log(data);
+   // console.log(data);
     var set = [];
     for (const element of data) {
 
@@ -228,18 +228,24 @@ exports.setTaskImportanceLevel = async (id, data) => {
     var autoPoint = 0;
     var approvePoint = 0;
     var employPoint = 0;
-   // console.log("ttttttttttttttttt", task);
+    var sumTaskImportance = 0;
+    console.log("ttttttttttttttttt", task);
+    // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*5 + B*6 + C*7)/18
+
     for(element of task){
-        autoPoint += element.automaticPoint;
-        approvePoint += element.approvedPoint;
-        employPoint += element.contribution;
+        autoPoint += element.automaticPoint  * element.taskImportanceLevel/10;
+        approvePoint += element.approvedPoint * element. taskImportanceLevel/10;
+        employPoint += element.contribution * element.taskImportanceLevel/10;
+        sumTaskImportance += element.taskImportanceLevel;
     }
     var n = task.length;
+    console.log("sssss", sumTaskImportance);
+    console.log("auuu", autoPoint);
     var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
         $set :{
-            "automaticPoint" : autoPoint/n,
-            "employeePoint" : employPoint/n,
-            "approvedPoint" : approvePoint/n,
+            "automaticPoint" : Math.round(autoPoint/n),
+            "employeePoint" : Math.round(employPoint/n),
+            "approvedPoint" : Math.round(approvePoint/n),
         },
     }, {new: true} );
 
@@ -251,9 +257,11 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     // id la _id tháng trong evaluation trong task
     // trong data có điểm taskImportanceLevel và id của nhân viên cần chỉnh sửa
     // find task
-    console.log("ID ++++++++", taskId);
-    var date = await date.split("-");
-    console.log("---------", date);
+    //console.log("ID ++++++++", taskId);
+    var arrDate = await date.split("-");
+    var month = parseInt(arrDate[1]);
+    var year = parseInt(arrDate[0]);
+   // console.log("---------", date);
 
     // find task
     var task = await Task.aggregate([
@@ -267,12 +275,12 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: 5 } },
-        { $match: { year: 2020 } },
+        { $match: { month:  month} },
+        { $match: { year: year} },
 
     ])
     // ket qua tra ve la mang 1 phan tu
-    console.log("taskkkkk", task[0]._id);
+   // console.log("taskkkkk", task[0]._id);
 
     // update
     var setPoint = await Task.findOneAndUpdate(
@@ -290,6 +298,15 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
                 }
             ]
         });
+
+        // var updateDate = await Task.findOneAndUpdate(
+        //     {
+        //         "evaluations._id": task[0]._id,
+        //     },
+        //     {
+        //         $set:{"evaluation.$.date": ISODate("2020-05-30T17:00:00.000Z")}
+        //     }
+      //  )
     return setPoint;
 }
 
