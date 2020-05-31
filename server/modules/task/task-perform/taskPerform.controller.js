@@ -65,7 +65,6 @@ exports.startTimesheetLog = async (req, res) => {
 // Kết thúc bấm giờ
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        console.log(req.body)
         var timer = await PerformTaskService.stopTimesheetLog(req.body);
         //await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
@@ -546,6 +545,35 @@ confirmAction = async(req,res) =>{
         res.status(400).json({
             success: false,
             messages: ['confirm_action_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Upload tài liệu công việc
+ */
+exports.uploadFile = async(req,res) => {
+    try {
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comment = await PerformTaskService.uploadFile(req.params,files);
+        await LogInfo(req.user.email, ` upload file of task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['upload_file_success'],
+            content: comment
+        })
+    } catch (error) {
+        await LogError(req.user.email, `upload file of task  `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['upload_file_fail'],
             content: error
         })
     }

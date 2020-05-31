@@ -552,5 +552,18 @@ exports.confirmAction = async (id,idUser) => {
     
     return task.taskActions;   
 }
+/**
+ * Upload tài liệu cho cộng việc
+ */
+exports.uploadFile = async (params,files) => {
 
+    var evaluationActionRating = await Task.updateOne(
+        {_id:params.task},
+        {
+            $push: {files:  files}
+        }
+    )  
+    var task = await Task.findOne({ _id: params.task })
+    return task.files
+}
 

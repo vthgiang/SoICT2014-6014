@@ -29,6 +29,7 @@ class ActionTab extends Component {
             valueRating:2.5,
             files: [],
             hover: {},
+            filestask:[],
             commentfiles:[],
             taskcommentfiles: [],
             cmtoftaskcmtfiles: [],
@@ -557,33 +558,41 @@ class ActionTab extends Component {
     onFilesChange = (files) => {
         this.setState({
           files
-        }, () => {
-          console.log(this.state.files)
         })
       }
     onTaskCommentFilesChange = (files) => {
         this.setState({
           taskcommentfiles: files
-        }, () => {
-          console.log(this.state.taskcommentfiles)
         })
       }  
     onCommentFilesChange = (commentfiles) => {
         this.setState({
             commentfiles
-        }, () => {
-          console.log(this.state.commentfiles)
         })
       }
-      onCommentOfTaskCommentFilesChange = (cmtoftaskcmtfiles) => {
+    onCommentOfTaskCommentFilesChange = (cmtoftaskcmtfiles) => {
         this.setState({
             cmtoftaskcmtfiles
-        }, () => {
-          console.log(this.state.cmtoftaskcmtfiles)
         })
       }  
+    handleUploadFile   = (task) => {
+        const data  = new FormData();
+        this.state.filestask.forEach(x => {
+            data.append("files",x)
+        })
+        this.props.uploadFile(task,data);
+        if(this.state.filestask){
+            this.state.filestask.forEach(item=>{
+                this.refs.filesAddTask.removeFile(item)
+            })
+        }
+    }
+    onFilesTaskChange  = (filestask) => {
+        this.setState({
+            filestask
+        })
+    }
     onFilesError = (error, file) => {
-    console.log('error code ' + error.code + ': ' + error.message)
     }
 
     filesRemoveOne = (file) => {
@@ -599,7 +608,7 @@ class ActionTab extends Component {
     render() {
         const { translate } = this.props;
         var task, actions, informations;
-        var statusTask;
+        var statusTask,files;
         const { tasks, performtasks, user,auth } = this.props; 
         var actionComments, taskActions,taskComments, actions,logTimer;
         const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
@@ -608,8 +617,7 @@ class ActionTab extends Component {
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
-
-        console.log(task)
+        if(performtasks.files) files = performtasks.files
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
@@ -1156,9 +1164,46 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                            {/* <div id="content"> */}
-                            <input type="file" name="files[]" id="filer_input2" multiple="multiple" />
-                            {/* </div> */}
+                        {/* {files && 
+                            
+                        } */}
+                        
+                        <Files
+                            ref='filesAddTask'
+                            className='files-dropzone-list'
+                            onChange={this.onFilesTaskChange}
+                            onError={this.onFilesError}
+                            multiple
+                            maxFiles={10}
+                            maxFileSize={10000000}
+                            minFileSize={0}
+                            clickable={false}>  
+                            <div className='files-list'>
+                                <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
+                                    <i class="material-icons">attach_file</i>
+                                </a>
+                                <span>Drop files here</span>
+                                <ul>{this.state.filestask.map((file) =>
+                                    <li className='files-list-item' key={file.id}>
+                                        <div className='files-list-item-preview'>
+                                        {file.preview.type === 'image' ?  
+                                        <React.Fragment>
+                                            <img className='files-list-item-preview-image'src={file.preview.url} />
+                                        </React.Fragment>    
+                                        : 
+                                        <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                            <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        </div>
+                                        <div className='files-list-item-content'>
+                                            <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                            <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
+                                        </div>
+                                    </li>
+                                )}
+                                </ul>
+                            </div> 
+                        </Files>
+                        <button type="button" className="pull-right btn btn-primary" style={{marginTop:"10px"}} onClick={(e) => this.handleUploadFile(task._id)}>Upload</button>
                         </div>
 
 
@@ -1215,7 +1260,8 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
-    downloadFile: performTaskAction.downloadFile
+    downloadFile: performTaskAction.downloadFile,
+    uploadFile: performTaskAction.uploadFile
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));
