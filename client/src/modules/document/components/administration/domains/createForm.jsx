@@ -54,7 +54,6 @@ class CreateForm extends Component {
         const domains = documents.administration.domains.tree;
         const {documentParent} = this.state;
 
-        console.log("this.state: ", this.state)
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>

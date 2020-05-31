@@ -18,7 +18,7 @@ router.post("/categories", auth, DocumentController.createDocumentCategory);
 router.patch("/categories/:id", auth, DocumentController.editDocumentCategory);
 router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory);
 
-// Văn bản tài liệu
+// Văn bản tài liệu - sử dụng với truy cập của quản trị viên
 router.get("/", auth, DocumentController.getDocuments);
 router.get("/:id", auth, DocumentController.showDocument);
 router.post("/", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
@@ -28,5 +28,7 @@ router.delete("/:id", auth, DocumentController.deleteDocument);
 router.get("/download-file/:id/:numberVersion", auth, DocumentController.downloadDocumentFile);
 router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.downloadDocumentFileScan);
 router.patch("/:id/increase-number-view", auth, DocumentController.increaseNumberView);
+
+router.get("/permission-view/:id", auth, DocumentController.getDocumentsThatRoleCanView);
 
 module.exports = router;

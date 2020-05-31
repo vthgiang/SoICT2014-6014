@@ -92,7 +92,7 @@ const DocumentSchema = new Schema({
     }, 
     relationshipDocuments: [{ //các tài liệu được liên kết
         type: Schema.Types.ObjectId,
-        refs: 'documents'
+        replies: this
     }],
 
     /** Những vị trí có quyền xem mẫu này */

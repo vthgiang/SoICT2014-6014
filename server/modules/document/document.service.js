@@ -263,3 +263,35 @@ exports.createDocumentDomain = async (company, data) => {
 
     return await this.getDocumentDomains(company);
 }
+
+exports.getDocumentsThatRoleCanView = async(company, id, query) => {
+    console.log("query: ", query)
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Document.find({
+            company,
+            roles: id
+        }).populate([
+            { path: 'category', model: DocumentCategory},
+            { path: 'domains', model: DocumentDomain},
+            { path: 'relationshipDocuments', model: Document},
+        ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company, roles: id}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        console.log("option: ", option);
+        return await Document.paginate( option , { 
+            page, 
+            limit,
+            populate: [
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+                { path: 'relationshipDocuments', model: Document},
+            ]
+        });
+    }
+}

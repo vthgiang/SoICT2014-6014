@@ -321,3 +321,24 @@ exports.editDocumentDomain = (req, res) => {
 
 exports.deleteDocumentDomain = (req, res) => {
 };
+
+exports.getDocumentsThatRoleCanView = async(req, res) => {
+    try {
+        const docs = await DocumentServices.getDocumentsThatRoleCanView(req.user.company._id, req.params.id, req.query);
+        
+        await LogInfo(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_documents_success'],
+            content: docs
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_documents_faile'],
+            content: error
+        });
+    }
+}
