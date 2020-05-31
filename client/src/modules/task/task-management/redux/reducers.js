@@ -224,6 +224,23 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case taskManagementConstants.GET_SUBTASK_REQUEST:
+            return {
+                ...state,
+                subtasks: null,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_SUBTASK_SUCCESS:
+            return {
+                ...state,
+                subtasks: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_SUBTASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            }
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,

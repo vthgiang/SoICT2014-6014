@@ -150,7 +150,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         totalCount = tasktemplate[0].totalCount[0].count;
     }
     var totalPages = Math.ceil(totalCount / noResultsPerPage);
-
     return { taskTemplates: tasktemplates, pageTotal: totalPages };
 }
 
@@ -163,6 +162,7 @@ exports.createTaskTemplate = async (body) => {
         organizationalUnit: body.organizationalUnit,
         name: body.name,
         creator: body.creator, //id của người tạo
+        priority: '1',
         readByEmployees: body.readByEmployees, //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,

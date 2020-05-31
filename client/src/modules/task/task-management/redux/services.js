@@ -19,6 +19,7 @@ export const taskManagementService = {
     editTask,
     deleteTaskById,
     editStatusOfTask,
+    getSubTask,
 
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
@@ -137,6 +138,12 @@ function editStatusOfTask(id, status) {
     }, false, true, 'task.task_management');
 }
 
+function getSubTask(taskId){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/sub-task/${taskId}`,
+        method: 'GET'
+    },false,true,'task.task_management');
+}
 
 /**
  * edit Task By Responsible Employees

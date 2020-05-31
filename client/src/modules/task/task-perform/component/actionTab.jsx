@@ -16,6 +16,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { LOCAL_SERVER_API } from '../../../../env';
 import './actionTab.css';
 import { DocumentActions } from '../../../document/redux/actions'
+import { SubTaskTab } from './subTaskTab';
 class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -110,6 +111,9 @@ class ActionTab extends Component {
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getTaskById(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
+            this.props.getTaskComments(nextProps.id);
+            this.props.getSubTask(nextProps.id);
+            // return true;
             return true;
         }
         if(nextProps.performtasks.taskActions !== this.props.performtasks.taskActions){      
@@ -1188,7 +1192,9 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-
+                            <SubTaskTab 
+                                id = {this.props.id}
+                            />
                         </div>
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
@@ -1238,6 +1244,7 @@ const actionCreators = {
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
     downloadFile: performTaskAction.downloadFile,
+    getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile
 };
 

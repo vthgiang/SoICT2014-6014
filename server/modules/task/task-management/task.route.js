@@ -16,6 +16,7 @@ router.get('/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:
 router.post('/create', auth, TaskManagementController.createTask);
 router.delete('/:id', auth, TaskManagementController.deleteTask);
 router.patch('/:id', auth, TaskManagementController.editTaskStatus);
+router.get('/sub-task/:id', auth, TaskManagementController.getSubTask);
 router.patch('/edit/task-responsible/:id', TaskManagementController.editTaskByResponsibleEmployees);
 router.patch('/edit/task-accountable/:id', TaskManagementController.editTaskByAccountableEmployees);
 

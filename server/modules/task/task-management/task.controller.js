@@ -252,6 +252,27 @@ exports.editTaskStatus = async (req, res) => {
         });
     }
 }
+/**
+ * Lay ra cong viec con
+ */
+exports.getSubTask = async( req,res) =>{
+    try {
+        var task = await TaskManagementService.getSubTask(req.params.id);
+        await LogInfo(req.user.email, ` get subtask  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_subtask_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` get subtask `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_subtask_fail'],
+            content: error
+        })
+    }
+}
 
 /**
  * edit task by responsible employee
