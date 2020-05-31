@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ModalPerformTask } from '../../task-perform/component/modalPerformTask';
+import { ModalPerformTask } from '../../task-perform/component/';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { ModalAddTask } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -267,6 +267,7 @@ class TabTaskContent extends Component {
         return hours + ":" + minutes + ":" + seconds;
     }
     handleShowModal = async (id) => {
+        this.props.getSubTask(id);
         await this.setState(state => {
             return {
                 ...state,
@@ -560,7 +561,8 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getDepartment: UserActions.getDepartmentOfUser
+    getDepartment: UserActions.getDepartmentOfUser,
+    getSubTask: taskManagementActions.getSubTask
 };
 const connectedTabTaskContent = connect(mapState, actionCreators)(withTranslate(TabTaskContent))
 export { connectedTabTaskContent as TabTaskContent };

@@ -150,7 +150,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         totalCount = tasktemplate[0].totalCount[0].count;
     }
     var totalPages = Math.ceil(totalCount / noResultsPerPage);
-
     return { taskTemplates: tasktemplates, pageTotal: totalPages };
 }
 
@@ -159,10 +158,11 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (body) => {
-    var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
+    var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc       
         organizationalUnit: body.organizationalUnit,
         name: body.name,
         creator: body.creator, //id của người tạo
+        priority: '1',
         readByEmployees: body.readByEmployees, //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
@@ -170,6 +170,7 @@ exports.createTaskTemplate = async (body) => {
         informedEmployees: body.informedEmployees,
         description: body.description,
         formula: body.formula,
+        priority:body.priority,
         taskActions: body.taskActions.map(item => {
             return {
                 name: item.name,
@@ -226,6 +227,7 @@ exports.editTaskTemplate = async (data, id) => {
                 name: data.name,
                 description: data.description,
                 formula: data.formula,
+                priority:data.priority,
                 accountableEmployees: data.accountableEmployees,
                 readByEmployees: data.readByEmployees,
                 informedEmployees: data.informedEmployees,

@@ -317,3 +317,130 @@ exports.editArchivedOfTask = async (req, res) => {
         });
     }
 }
+/**
+ * Lay ra cong viec con
+ */
+exports.getSubTask = async( req,res) =>{
+    try {
+        var task = await TaskManagementService.getSubTask(req.params.id);
+        await LogInfo(req.user.email, ` get subtask  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_subtask_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` get subtask `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_subtask_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByResponsibleEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.editTaskByAccountableEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by consulted employee
+ */
+exports.evaluateTaskByConsultedEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByConsultedEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by responsible employee
+ */
+exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByResponsibleEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by accountable employee
+ */
+exports.evaluateTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await TaskManagementService.evaluateTaskByAccountableEmployees(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}

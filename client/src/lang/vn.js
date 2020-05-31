@@ -421,11 +421,11 @@ export default {
             administration: {
                 categories: {
                     add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
-                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản',
+                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản', not_select: 'Chưa thuộc loại văn bản',
                 },
                 domains: {
                     add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
-                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục',
+                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục', not_select: 'Không thuộc về danh mục nào',
                 }
             },
             user: {
@@ -1469,7 +1469,8 @@ export default {
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
-            action: 'Hành động'
+            action: 'Hành động',
+            priority: 'Độ ưu tiên'
         },
 
         task: {

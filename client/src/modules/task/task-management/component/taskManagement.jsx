@@ -694,7 +694,8 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     editArchivedOfTask: taskManagementActions.editArchivedOfTask,
-    getDepartment: UserActions.getDepartmentOfUser
+    getDepartment: UserActions.getDepartmentOfUser,
+    getSubTask: taskManagementActions.getSubTask
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export {translateTaskManagement as TaskManagement} ;

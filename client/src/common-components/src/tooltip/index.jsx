@@ -40,19 +40,29 @@ class ToolTip extends Component {
     }
 
     displayTitleContent = (data) => {
-        let convertData = [];
-        for (let index = data.length-1 ; index > data.length-6; index--) {
+        var convertData = [];
+        var min = data.length > 5 ? data.length-5 : 0;
+        for (let index = data.length-1 ; index >= min; index--) {
             const element = data[index];
             convertData.push(element);
         }
-        return <React.Fragment>
+        if(data.length <= 0)
+            return null;
+        else return <React.Fragment>
             <div className="tooltip2">
                 <u className="text-blue" style={{marginLeft: '3px'}}>chi tiết</u>
                 <span className="tooltip2text">
-                    {convertData.map((content, i)=> <p key={i} className="text-left">{content}</p>)}
+                    {convertData.map((content, i)=> {
+                        return <p key={i} className="text-left" style={{
+                            border: '0.2px solid gray',
+                            borderRadius: '1px',
+                            padding: '3px'
+                        }}>{content}</p>
+                    })}
                 </span>
             </div>
         </React.Fragment>
+        
     }
  
     diplayToolTip = (data, type) => {

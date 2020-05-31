@@ -5,12 +5,14 @@ import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
+import { getStorage } from '../../../../config';
 
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
         this.state={
-            info: {}
+            info: {},
+            results: {}
         }
     }
     
@@ -41,29 +43,120 @@ class EvaluateByAccountableEmployee extends Component {
         document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
 
-    handleChangeAccountablePoint = async (e) => {
+// ====================================================================
+
+    handleChangeAccountablePoint = async (e, id) => {
         var value = parseInt(e.target.value);
+        var name = e.target.name
         await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Accountable",
+                target: "Point"
+            }
             return {
                 ...state,
-                accountablePoint: value,
+                // accountablePoint: value,
                 errorOnAccountablePoint: this.validatePoint(value)
             }
         })
-        document.getElementById("accountablePoint").innerHTML = value;
+        document.getElementById(`accountablePoint${id}`).innerHTML = value;
     }
 
-    handleChangeAccountableContribution = async(e)=>{
+    handleChangeAccountableContribution = async(e, id)=>{
         var value = parseInt(e.target.value);
+        var name = e.target.name;
         await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Accountable",
+                target: "Contribution"
+            }
             return {
                 ...state,
-                accountableContribution: value,
+                // accountableContribution: value,
                 errorOnAccountableContribution: this.validatePoint(value)
             }
         })
     }
 
+    handleChangeApprovedPointForResponsible = async (e, id) => {
+        var value = parseInt(e.target.value);
+        var name = e.target.name
+        await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Responsible",
+                target: "Point"
+            }
+            return {
+                ...state,
+                // accountablePoint: value,
+                errorOnAccountablePoint: this.validatePoint(value)
+            }
+        })
+    }
+
+    handleChangeResponsibleContribution = async(e, id)=>{
+        var value = parseInt(e.target.value);
+        var name = e.target.name;
+        await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Responsible",
+                target: "Contribution"
+            }
+            return {
+                ...state,
+                // accountableContribution: value,
+                errorOnAccountableContribution: this.validatePoint(value)
+            }
+        })
+    }
+
+    handleChangeApprovedPointForConsulted = async (e, id) => {
+        var value = parseInt(e.target.value);
+        var name = e.target.name
+        await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Consulted",
+                target: "Point"
+            }
+            return {
+                ...state,
+                // accountablePoint: value,
+                errorOnAccountablePoint: this.validatePoint(value)
+            }
+        })
+        // document.getElementById(`accountablePoint${id}`).innerHTML = value;
+    }
+
+    handleChangeConsultedContribution = async(e, id)=>{
+        var value = parseInt(e.target.value);
+        var name = e.target.name;
+        await this.setState(state =>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+                role: "Consulted",
+                target: "Contribution"
+            }
+            return {
+                ...state,
+                // accountableContribution: value,
+                errorOnAccountableContribution: this.validatePoint(value)
+            }
+        })
+    }
+
+// ==============================================================
+    
     handleChangeMyPoint = async(e)=>{
         var value = parseInt(e.target.value);
         await this.setState(state =>{
@@ -75,24 +168,33 @@ class EvaluateByAccountableEmployee extends Component {
         })
     }
 
-    onContributeChange = async (e)=>{
+    onContributeChange = async (e, id)=>{
         var {name, value} = e.target;
         await this.setState(state=>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+            }
             return {
                 ...state,
-                [name]: value
+                // [name]: value
             }
         });
     }
 
-    onApprovedPointChange = async (e)=>{
+    onApprovedPointChange = async (e, id)=>{
         var {name, value} = e.target;
         await this.setState(state=>{
+            state.results[`${name}`] = {
+                value: value,
+                employee: id,
+            }
             return {
                 ...state,
-                [name]: value
+                // [name]: value
             }
         });
+        // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     }
 
 // ==========================BEGIN HANDLE INFORMATION TASK=========================================
@@ -103,7 +205,8 @@ class EvaluateByAccountableEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Number'
             }
             return {
                 ...state,
@@ -122,7 +225,8 @@ class EvaluateByAccountableEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Text'
             }
             return {
                 ...state,
@@ -152,7 +256,8 @@ class EvaluateByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'Date'
             }
             return {
                 ...state,
@@ -168,7 +273,8 @@ class EvaluateByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Boolean'
             }
             return {
                 ...state,
@@ -238,7 +344,8 @@ class EvaluateByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'SetOfValues'
             }
             return {
                 ...state,
@@ -261,11 +368,11 @@ class EvaluateByAccountableEmployee extends Component {
     // }
     
     
-    handlePriorityChange =(value) => {
+    handleStatusChange =(value) => {
         this.setState(state => {
             return {
                 ...state,
-                priority: value
+                status: value
             }
         });
     }
@@ -300,7 +407,28 @@ class EvaluateByAccountableEmployee extends Component {
     }
     
     save = () => {
+        var {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
 
+        var evaluations, taskId;
+        taskId = this.props.id;
+        evaluations = task.evaluations[task.evaluations.length-1]
+        var data = {
+            evaluateId: evaluations._id,
+            user: getStorage("userId"),
+            progress: this.state.progress,
+            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
+            role: "Responsible",
+            status: this.state.status !== undefined ? this.state.status : ['Inprocess'],
+
+            date: this.state.date,
+            
+            info: this.state.info,
+            results: this.state.results
+        }
+
+        console.log('data', data, taskId);
+        this.props.evaluateTaskByAccountableEmployees(data, taskId);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -330,7 +458,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks } = this.props;
-        const { date, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
+        const { date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
                 errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
         var task = (tasks && tasks.task)&& tasks.task.info;
@@ -351,7 +479,7 @@ class EvaluateByAccountableEmployee extends Component {
                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
                         <label>Ngày đánh giá:<span className="text-red">*</span></label>
                         <DatePicker
-                            id="create_start_date"
+                            id={`create_date_${this.props.perform}`}
                             value={date}
                             onChange={this.handleDateChange}
                         />
@@ -366,10 +494,10 @@ class EvaluateByAccountableEmployee extends Component {
                                     id={`select-priority-task-${this.props.perform}-${this.props.role}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items = {[{ value: 1, text: 'Thấp' }, { value: 2, text: 'Trung bình' }, { value: 3, text: 'Cao' }]}
-                                    onChange={this.handlePriorityChange}
+                                    items = {[{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}]}
+                                    onChange={this.handleStatusChange}
                                     multiple={false}
-                                    value={priority}
+                                    value={status}
                                 />
                             }
                         </div>
@@ -444,7 +572,7 @@ class EvaluateByAccountableEmployee extends Component {
                         <br/>
                         <br/>
                         {
-                            (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
+                            // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
                             <table className="table table-striped table-bordered table-hover">
                                 <tr>
                                     <th>Tên</th>
@@ -454,22 +582,69 @@ class EvaluateByAccountableEmployee extends Component {
                                     <th>Đánh giá của người phê duyệt</th>
                                 </tr>
                             
-                                {
+                                {/* {
                                     // (task && task.evaluations.length !== 0) &&
                                     task.evaluations[task.evaluations.length-1].results.map((res,index) => 
                                         (
-                                            // (res.role !== "accountable")&&
+                                            (res.role !== "accountable")&&
                                             <tr>
                                                 <td>{res.employee.name}</td>
                                                 <td>{res.role}</td>
                                                 <td>{res.employeePoint}</td>
-                                                <td><input className="form-control" type="number" name={`contribute${index}`} placeholder={50} onChange={this.onContributeChange}/></td>
-                                                <td><input className="form-control" type="number" name={`approvedPoint${index}`} placeholder={85} onChange={this.onApprovedPointChange}/></td>
+                                                <td><input className="form-control" type="number" name={`contribute${index}`} placeholder={50} onChange={(e)=>this.onContributeChange(e,res.employee._id)}/></td>
+                                                <td><input className="form-control" type="number" name={`approvedPoint${index}`} placeholder={85} onChange={(e)=>this.onApprovedPointChange(e,res.employee._id)}/></td>
+                                            </tr>  
+                                        )
+                                          
+                                    )
+                                } */}
+
+                                {
+                                    // (task && task.evaluations.length !== 0) &&
+                                    task.responsibleEmployees.map((item,index) => 
+                                        (
+                                            <tr>
+                                                <td>{item.name}</td>
+                                                <td>{'Consulted'}</td>
+                                                <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td>
+                                                <td><input className="form-control" type="number" name={`contributeConsulted${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}/></td>
+                                                <td><input className="form-control" type="number" name={`approvedPointConsulted${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
                                     )
                                 }
+                                {
+                                    // (task && task.evaluations.length !== 0) &&
+                                    task.consultedEmployees.map((item,index) => 
+                                        (
+                                            <tr>
+                                                <td>{item.name}</td>
+                                                <td>{'Responsible'}</td>
+                                                <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td>
+                                                <td><input className="form-control" type="number" name={`contributeResponsible${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}/></td>
+                                                <td><input className="form-control" type="number" name={`approvedPointResponsible${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}/></td>
+                                            </tr>  
+                                        )
+                                          
+                                    )
+                                }
+                                {
+                                    // (task && task.evaluations.length !== 0) &&
+                                    task.accountableEmployees.map((item,index) => 
+                                        (
+                                            <tr>
+                                                <td>{item.name}</td>
+                                                <td>{'Accountable'}</td>
+                                                <td><p id={`accountablePoint${item._id}`}>{this.state.results[`accountable${item._id}`]?this.state.results[`accountable${item._id}`]:0}</p></td>
+                                                <td><input className="form-control" type="number" name={`contributeAccountable${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}/></td>
+                                                <td><input className="form-control" type="number" name={`approvedPoint${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}/></td>
+                                            </tr>  
+                                        )
+                                          
+                                    )
+                                }
+
                                 {/* <tr>
                                     <td>{res.employee.name}</td>
                                     <td>{res.role}</td>
@@ -477,7 +652,8 @@ class EvaluateByAccountableEmployee extends Component {
                                     <td><input className="form-control" type="number" placeholder={50}/></td>
                                     <td><input className="form-control" type="number" placeholder={85} value={accountablePoint} onChange={this.handleChangeAccountablePoint}/></td>
                                 </tr> */}
-                            </table> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá - Chờ người thực hiện đánh giá</p></div>
+                            </table> 
+                            // : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá - Chờ người thực hiện đánh giá</p></div>
                         }
                     </div>
                 </form>
@@ -495,7 +671,8 @@ const getState = {
     getTaskById: taskManagementActions.getTaskById,
     createResult: performTaskAction.createResultTask,
     editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask
+    editStatusOfTask: taskManagementActions.editStatusOfTask,
+    evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees
 }
 
 const evaluateByAccountableEmployee = connect(mapState, getState)(withTranslate(EvaluateByAccountableEmployee));

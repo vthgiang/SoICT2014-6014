@@ -33,7 +33,11 @@ export const performTaskService = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFile
+    downloadFileActions,
+    downloadFileCommentOfActions,
+    downloadFileCommentOfTaskComments,
+    downloadFileTaskComments,
+    uploadFile
 };
 /**
  * // example for axios
@@ -237,10 +241,42 @@ function confirmAction(id,idUser) {
         params:{confirmAction:idUser,id:id}
     }, false, true, 'task.task_perform');  
 };
-function downloadFile(id) {  
+function downloadFileActions(id,type) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
         method: 'GET',
         responseType: 'blob',
+        params:{type:type}
     }, false, true, 'task.task_perform');
 }
+function downloadFileCommentOfActions(id,type) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+        params:{type:type}
+    }, false, true, 'task.task_perform');
+}
+function downloadFileTaskComments(id,type) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+        params:{type:type}
+    }, false, true, 'task.task_perform');
+}function downloadFileCommentOfTaskComments(id,type) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+        params:{type:type}
+    }, false, true, 'task.task_perform');
+}
+//getall Action task
+function uploadFile(task,data) {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/${task}`,
+        method : 'POST',
+        data : data
+    }, false, true, 'task.task_perform');  
+};

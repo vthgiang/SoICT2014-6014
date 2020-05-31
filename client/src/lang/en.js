@@ -1140,6 +1140,7 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action',
+            priority: 'Priority'
 
            
         },

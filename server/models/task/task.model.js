@@ -281,7 +281,7 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {
@@ -309,7 +309,7 @@ const TaskSchema = new Schema({
             ref: User,
             required: true
         },
-        content: {
+        description: {
             type: String,
         },
         createdAt: {
@@ -343,7 +343,7 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {

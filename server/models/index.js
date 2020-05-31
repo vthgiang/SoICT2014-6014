@@ -35,7 +35,6 @@ const SystemLink = require('./system-admin/systemLink.model');
 const RootRole = require('./system-admin/rootRole.model');
 
 const Task = require('./task/task.model');
-const TaskAction = require('./task/taskAction.model');
 const TaskComment = require('./task/taskComment.model');
 const TaskFile = require('./task/taskFile.model');
 const TaskHistory = require('./task/taskHistory.model');
@@ -95,7 +94,6 @@ exports.schema = {
     RootRole,
 
     Task,
-    TaskAction,
     TaskComment,
     TaskFile,
     TaskHistory,

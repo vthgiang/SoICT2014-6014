@@ -191,7 +191,8 @@ exports.data = [
     { path: '/documents/download-file/:id/:numberVersion', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/download-file-scan/:id/:numberVersion', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/:id/increase-number-view', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
-    
+    { path: '/documents/permission-view/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+
     { path: '/documents/categories', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/categories', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/documents/categories/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -262,6 +263,7 @@ exports.data = [
     { path: '/tasks/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/archived/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
     
+    { path: '/tasks/sub-task/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/currentTimer/:user', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -269,6 +271,7 @@ exports.data = [
     { path: '/performtask/log-timer/pause-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/:task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     //comment of task action
     { path: '/performtask/action-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/action-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
