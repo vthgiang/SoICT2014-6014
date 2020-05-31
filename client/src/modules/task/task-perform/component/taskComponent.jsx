@@ -48,12 +48,6 @@ class TaskComponent extends Component {
                     />
                 </div>
 
-                {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4"}}>
-                    <SubTaskTab 
-                        id = {this.props.id}
-                        role={this.props.role}
-                    />
-                </div> */}
             </div>
         );
     }

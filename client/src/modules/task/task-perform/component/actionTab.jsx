@@ -1244,6 +1244,7 @@ const actionCreators = {
     confirmAction: performTaskAction.confirmAction,
     downloadFile: performTaskAction.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
+    getTaskComments: performTaskAction.getTaskComments,
     uploadFile: performTaskAction.uploadFile
 };
 

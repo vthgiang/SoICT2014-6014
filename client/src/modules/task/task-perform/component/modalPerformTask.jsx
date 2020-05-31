@@ -147,7 +147,8 @@ class ModalPerformTask extends Component {
             this.props.getTaskById(nextProps.id);
             this.props.getTaskActions(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
-            this.props.getTaskComments(nextProps.id)
+            this.props.getTaskComments(nextProps.id);
+            this.props.getSubtask(nextProps.id)
             // return true;
         }
         return true;
@@ -812,7 +813,7 @@ class ModalPerformTask extends Component {
     render() {
         // console.log('props--->', this.props);
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
-        var statusTask;
+        var statusTask,subtasks;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment } = this.state;
         const { time } = this.state.timer;
@@ -823,6 +824,7 @@ class ModalPerformTask extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
+        if (tasks.subtasks !==[]) subtasks=tasks.subtasks;
         if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
@@ -1632,7 +1634,7 @@ class ModalPerformTask extends Component {
                                     </div>
                                     {/* Chuyển qua tab công việc con */}
                                     <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-
+                                    
                                     </div>
                                     {/* Chuyển qua tab Bấm giờ */}
                                     <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
@@ -1686,7 +1688,8 @@ const actionCreators = {
     createTaskComment: performTaskAction.createTaskComment,
     createCommentOfTaskComment: performTaskAction.createCommentOfTaskComment,
     editCommentOfTaskComment: performTaskAction.editCommentOfTaskComment,
-    deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment
+    deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
+    getSubTask: taskManagementActions.getSubTask
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };

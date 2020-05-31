@@ -361,7 +361,7 @@ exports.getSubTask = async(taskId) => {
     console.log("id :"+taskId);
     var task = await Task.find({
         parent: taskId
-    })
+    }).sort("createdAt")
     console.log("task: "+task);
     return task;
 }
