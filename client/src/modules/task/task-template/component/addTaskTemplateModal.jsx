@@ -309,190 +309,188 @@ class ModalAddTaskTemplate extends Component {
                     disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
-                    <form className="form-horizontal">
-                        <div className="row">
-                            <div className="col-sm-6">
-                                <div className={`form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`}  style={{marginLeft: 0, marginRight: 0}}>
-                                    <label className="control-label">Đơn vị*:</label>
-                                    {departmentsThatUserIsDean !== undefined && newTemplate.organizationalUnit !== "" &&
-                                        <SelectBox
-                                            id={`unit-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                departmentsThatUserIsDean.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateUnit}
-                                            multiple={false}
-                                            value={newTemplate.organizationalUnit}
-                                        />
-                                    }
-                                    <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
-                                </div>
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className={`form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`}  style={{marginLeft: 0, marginRight: 0}}>
+                                <label className="control-label">Đơn vị*:</label>
+                                {departmentsThatUserIsDean !== undefined && newTemplate.organizationalUnit !== "" &&
+                                    <SelectBox
+                                        id={`unit-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            departmentsThatUserIsDean.map(x => {
+                                                return {value: x._id, text: x.name};
+                                            })
+                                        }
+                                        onChange={this.handleTaskTemplateUnit}
+                                        multiple={false}
+                                        value={newTemplate.organizationalUnit}
+                                    />
+                                }
+                                <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
                             </div>
-                            <div className="col-sm-6">
-                                <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Những người được phép xem*</label>
-                                    {listRole &&
-                                        <SelectBox
-                                            id={`read-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {value: listRole.dean._id, text: listRole.dean.name},
-                                                {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                                {value: listRole.employee._id, text: listRole.employee.name},
-                                            ]}
-                                            onChange={this.handleTaskTemplateRead}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người được phép xem mẫu"}}
-                                        />
-                                    }
-                                    <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
-                                </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
+                                <label className="control-label">Những người được phép xem*</label>
+                                {listRole &&
+                                    <SelectBox
+                                        id={`read-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={[
+                                            {value: listRole.dean._id, text: listRole.dean.name},
+                                            {value: listRole.viceDean._id, text: listRole.viceDean.name},
+                                            {value: listRole.employee._id, text: listRole.employee.name},
+                                        ]}
+                                        onChange={this.handleTaskTemplateRead}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người được phép xem mẫu"}}
+                                    />
+                                }
+                                <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className={`form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} >
+                                <label className="control-label">Tên mẫu*</label>
+                                <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
+                                <ErrorLabel content={this.state.newTemplate.errorOnName}/>
+                            </div>
+
+                            <div className="form-group" >
+                                <label className="control-label">Mức độ ưu tiên</label>
+                                <select className="form-control" value={newTemplate.priority} onChange={this.handleChangeTaskPriority}>
+                                    <option value={3}>Cao</option>
+                                    <option value={2}>Trung bình</option>
+                                    <option value={1}>Thấp</option>
+                                </select>
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-sm-6">
-                                <div className={`form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Tên mẫu*</label>
-                                    <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
-                                    <ErrorLabel content={this.state.newTemplate.errorOnName}/>
-                                </div>
-
-                                <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Mức độ ưu tiên</label>
-                                    <select className="form-control" value={newTemplate.priority} onChange={this.handleChangeTaskPriority}>
-                                        <option value={3}>Cao</option>
-                                        <option value={2}>Trung bình</option>
-                                        <option value={1}>Thấp</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="col-sm-6">
-                                <div className={`form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
-                                    <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                                    <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
-                                </div>
+                        <div className="col-sm-6">
+                            <div className={`form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} >
+                                <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
+                                <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
                             </div>
                         </div>
-                        
-                        <div className="row">
-                            <div className="col-sm-6">
-                                <div className='form-group' style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Người thực hiện</label>
-                                    
-                                    {userdepartments &&
-                                        <SelectBox
-                                            id={`responsible-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {
-                                                    text: userdepartments[1].roleId.name,
-                                                    value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                },
-                                                {
-                                                    text: userdepartments[2].roleId.name,
-                                                    value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                                },
-                                            ]}
-                                            onChange={this.handleTaskTemplateResponsible}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người thực hiện"}}
-                                        />
-                                    }
-                                </div>
-                                <div className='form-group' style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Người phê duyệt</label>
-                                    {userdepartments &&
-                                        <SelectBox
-                                            id={`accounatable-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {
-                                                    text: userdepartments[0].roleId.name,
-                                                    value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                                },
-                                                {
-                                                    text: userdepartments[1].roleId.name,
-                                                    value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                },
-                                            ]}
-                                            onChange={this.handleTaskTemplateAccountable}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người phê duyệt"}}
-                                        />
-                                    }
-                                </div>
-                                <div className='form-group' style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="ontrol-label">Người hỗ trợ</label>
-                                    {usercompanys &&
-                                        <SelectBox
-                                            id={`consulted-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateConsult}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người hỗ trợ"}}
-                                        />
-                                    }
-                                </div>
-                                <div className='form-group' style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label">Người quan sát</label>
-                                    {usercompanys &&
-                                        <SelectBox
-                                            id={`informed-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateInform}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người quan sát"}}
-                                        />
-                                    }
-                                </div>
+                    </div>
+                    
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className='form-group' >
+                                <label className="control-label">Người thực hiện</label>
+                                
+                                {userdepartments &&
+                                    <SelectBox
+                                        id={`responsible-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={[
+                                            {
+                                                text: userdepartments[1].roleId.name,
+                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                            },
+                                            {
+                                                text: userdepartments[2].roleId.name,
+                                                value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
+                                            },
+                                        ]}
+                                        onChange={this.handleTaskTemplateResponsible}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người thực hiện"}}
+                                    />
+                                }
                             </div>
-
-                            <div className="col-sm-6">
-                                <div className={`form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                                    <label className="control-label" htmlFor="inputFormula">Công thức tính điểm KPI công việc*</label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                    <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
-                                    
-                                    <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
-                                    <label className="col-xs-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
-                                    <label className="col-xs-12"  style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
-                                    <label className="col-xs-12"  style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
-                                    <label className="col-xs-12"  style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
-                                </div>
+                            <div className='form-group' >
+                                <label className="control-label">Người phê duyệt</label>
+                                {userdepartments &&
+                                    <SelectBox
+                                        id={`accounatable-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={[
+                                            {
+                                                text: userdepartments[0].roleId.name,
+                                                value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
+                                            },
+                                            {
+                                                text: userdepartments[1].roleId.name,
+                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                            },
+                                        ]}
+                                        onChange={this.handleTaskTemplateAccountable}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người phê duyệt"}}
+                                    />
+                                }
+                            </div>
+                            <div className='form-group' >
+                                <label className="ontrol-label">Người hỗ trợ</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`consulted-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return {value: x._id, text: x.name};
+                                            })
+                                        }
+                                        onChange={this.handleTaskTemplateConsult}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người hỗ trợ"}}
+                                    />
+                                }
+                            </div>
+                            <div className='form-group' >
+                                <label className="control-label">Người quan sát</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`informed-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return {value: x._id, text: x.name};
+                                            })
+                                        }
+                                        onChange={this.handleTaskTemplateInform}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người quan sát"}}
+                                    />
+                                }
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-sm-6">
-                                <ActionForm  initialData ={taskActions} onDataChange={this.handleTaskActionsChange} />
-                            </div>
-                            <div className="col-sm-6">
-                                <InformationForm initialData ={taskInformations} onDataChange={this.handleTaskInformationsChange}/>
+                        <div className="col-sm-6">
+                            <div className={`form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} >
+                                <label className="control-label" htmlFor="inputFormula">Công thức tính điểm KPI công việc*</label>
+                                <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
+                                
+                                <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
+                                <label className="col-xs-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
+                                <label className="col-xs-12"  style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
+                                <label className="col-xs-12"  style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
+                                <label className="col-xs-12"  style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                             </div>
                         </div>
-                    </form>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <ActionForm  initialData ={taskActions} onDataChange={this.handleTaskActionsChange} />
+                        </div>
+                        <div className="col-sm-6">
+                            <InformationForm initialData ={taskInformations} onDataChange={this.handleTaskInformationsChange}/>
+                        </div>
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );

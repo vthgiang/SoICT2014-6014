@@ -269,21 +269,21 @@ class InformationForm extends Component{
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">Danh sách các trường thông tin của công việc</legend>
                 
-                <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} >
                     <label className="control-label">Tên thông tin</label>
                     <div>
                         <input type="text" className="form-control" placeholder="Tên thông tin" value={information.name} onChange={this.handleChangeInfoName} />
                         <ErrorLabel content={this.state.information.errorOnName}/>
                     </div>
                 </div>
-                <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">Mô tả thông tin</label>
                     <div>
                         <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder="Mô tả thông tin" value={information.description} onChange={this.handleChangeInfoDesc} />
                         <ErrorLabel content={this.state.information.errorOnDescription}/>
                     </div>
                 </div>
-                <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
+                <div className="form-group" >
                     <label className=" control-label">Kiểu dữ liệu:</label>
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
@@ -297,7 +297,7 @@ class InformationForm extends Component{
                 </div>
 
                 { this.state.information.type === this.INFO_TYPE.SET?
-                    <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                    <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} >
                         <label className="control-label">{`Nhập tập giá trị:`}</label>
                         
                         <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
@@ -306,7 +306,7 @@ class InformationForm extends Component{
                     : null
                 }
 
-                <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
+                <div className="form-group" >
                     <label className="control-label">
                         Chỉ quản lý được điền? &nbsp;
                         <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />

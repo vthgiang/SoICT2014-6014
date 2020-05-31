@@ -229,21 +229,21 @@ handleDeleteAction = async (index) => {
             <fieldset className="scheduler-border">
             <legend className="scheduler-border">Danh sách các hoạt động của công việc*</legend>
 
-            <div className={`form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+            <div className={`form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} >
                 <label className="control-label">Tên hoạt động*</label>
                 <div>
                     <input type="text" className="form-control" placeholder="Tên hoạt động" value={action.name} onChange={this.handleChangeActionName} />
                     <ErrorLabel content={this.state.action.errorOnName}/>
                 </div>
             </div>
-            <div className={`form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+            <div className={`form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} >
                 <label className="control-label">Mô tả hoạt động*</label>
                 <div>
                     <textarea type="text" className="form-control" name="description" placeholder="Mô tả hoạt động" value={action.description} onChange={this.handleChangeActionDesc} />
                     <ErrorLabel content={this.state.action.errorOnDescription}/>
                 </div>
             </div>
-            <div className="form-group" style={{ marginLeft: 0, marginRight: 0 }}>
+            <div className="form-group" >
                 <label className="control-label">
                     Bắt buộc &nbsp;
                     <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
