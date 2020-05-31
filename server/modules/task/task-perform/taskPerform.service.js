@@ -75,7 +75,6 @@ exports.stopTimesheetLog = async (body) => {
  * Thêm bình luận của hoạt động
  */
 exports.createCommentOfTaskAction = async (body,files) => {
-    console.log(files)
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
             {
@@ -160,7 +159,6 @@ exports.getTaskActions = async (taskId) => {
  */
 
 exports.createTaskAction = async (body,files) => {
-    console.log(files)
     var actionInformation = {
         creator: body.creator,
         description: body.description,
@@ -565,9 +563,9 @@ exports.uploadFile = async (params,files) => {
     return task.files
 }
 /**
- * Download tài liệu
+ * Download tài liệu của hoạt động
  */
-exports.downloadFile = async (params) => {
+exports.downloadFilePOfAction = async (params) => {
     
     var file = await Task.aggregate([
         {$match:{"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
@@ -576,5 +574,52 @@ exports.downloadFile = async (params) => {
         {$unwind:"$files"},
         {$replaceRoot:{newRoot:"$files"}},
     ])
+    return file[0];
+}
+/**
+ * Download tài liệu của bình luận hoạt động
+ */
+exports.downloadFileOfActionComment = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskActions.comments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskActions"},
+        {$replaceRoot:{newRoot:"$taskActions"}},
+        {$unwind:"$comments"},
+        {$replaceRoot:{newRoot:"$comments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}}
+    ])
+    return file[0];
+}
+/**
+ * Download tài liệu của bình luận công việc
+ */
+exports.downloadFilePOfTaskComment = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskComments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskComments"},
+        {$replaceRoot:{newRoot:"$taskComments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}},
+    ])
+    return file[0];
+}
+/**
+ * Download tài liệu bình luận của bình luận công việc
+ */
+exports.downloadFileCommentOfTaskComment = async (params) => {
+    console.log("hihihihihi")
+    var file = await Task.aggregate([
+        {$match:{"taskComments.comments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskComments"},
+        {$replaceRoot:{newRoot:"$taskComments"}},
+        {$unwind:"$comments"},
+        {$replaceRoot:{newRoot:"$comments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}}
+    ])
+    console.log(file)
     return file[0];
 }

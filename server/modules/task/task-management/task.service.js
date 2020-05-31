@@ -29,7 +29,9 @@ exports.getTask = async (id) => {
         {path: "evaluations.kpis.kpis"},
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '},
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ])
     
     if(task.taskTemplate === null){

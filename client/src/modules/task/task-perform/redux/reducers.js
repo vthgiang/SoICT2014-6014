@@ -344,7 +344,6 @@ export function performtasks(state = {}, action) {
                 abc : true
             }
         case performTaskConstants.UPLOAD_FILE_SUCCESS:
-            console.log(action)
             return {
                 ...state,
                 files : action.payload.data.content
