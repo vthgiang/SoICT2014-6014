@@ -26,7 +26,10 @@ exports.getTask = async (id) => {
         {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
-        {path: "evaluations.kpis.kpis"}
+        {path: "evaluations.kpis.kpis"},
+        { path: "taskActions.creator", model: User,select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
     ])
     
     if(task.taskTemplate === null){
@@ -291,9 +294,6 @@ exports.createTask = async (task) => {
                 mandatory: taskActions[i].mandatory,
                 name:  taskActions[i].name,
                 description:  taskActions[i].description,
-                //creator: task.creator, // TODO: Bỏ. khi nào người thực hiện tích đã làm xong action thì người tạo action sẽ là người thực hiện
-                // createdAt:  taskActions[i].createdAt,
-                // updatedAt:  taskActions[i].updatedAt
             }
         }
     }
