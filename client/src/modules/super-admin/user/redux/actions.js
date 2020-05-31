@@ -3,7 +3,6 @@ import { UserConstants } from "./constants";
 
 export const UserActions = {
     get,
-    getPaginate,
     edit,
     create,
     destroy,
@@ -14,7 +13,22 @@ export const UserActions = {
     getDepartmentOfUser,
 };
 
-function get(){
+function get(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: UserConstants.GET_USERS_PAGINATE_REQUEST});
+            UserServices.get(data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
+            })
+        }
+    }
     return dispatch => {
         dispatch({ type: UserConstants.GET_USERS_REQUEST});
         UserServices.get()
@@ -28,23 +42,6 @@ function get(){
             dispatch({ type: UserConstants.GET_USERS_FAILE});
             
         })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: UserConstants.GET_USERS_PAGINATE_REQUEST});
-        UserServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
-                
-            })
     }
 }
 
