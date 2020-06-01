@@ -457,20 +457,26 @@ class TaskManagement extends Component {
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
             }
+
+            var archived = "store";
+            if(dataTemp[0].isArchived === true){
+                archived = "restore";
+            }
+            
             if (this.state.currentTab === "creator" || this.state.currentTab === "informed") {
                 for (let i in data) {
-                    data[i] = { ...data[i], action: ["edit", ["add", "store"]] }
+                    data[i] = { ...data[i], action: ["edit", ["add", archived]] }
                 }
             }
             if (this.state.currentTab === "responsible" || this.state.currentTab === "consulted") {
                 for (let i in data) {
-                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store"]] }
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", archived]] }
                 }
             }
 
             if (this.state.currentTab === "accountable") {
                 for (let i in data) {
-                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store", "delete"]] }
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", archived, "delete"]] }
                 }
             }
         }
@@ -610,6 +616,7 @@ class TaskManagement extends Component {
                                 edit: translate('task.task_management.action_edit'),
                                 delete: translate('task.task_management.action_delete'),
                                 store: translate('task.task_management.action_store'),
+                                restore: translate('task.task_management.action_restore'),
                                 add: translate('task.task_management.action_add'),
                                 startTimer: translate('task.task_management.action_start_timer'),
                             }}

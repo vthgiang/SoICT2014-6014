@@ -1538,6 +1538,7 @@ export default {
                 action_edit: 'Băt đầu công việc',
                 action_delete: 'Xóa công việc',
                 action_store: 'Lưu vào kho',
+                action_restore: 'Lấy ra khỏi kho',
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ'
 
