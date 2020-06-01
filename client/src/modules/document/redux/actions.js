@@ -21,6 +21,7 @@ export const DocumentActions = {
     createDocumentDomain,
 
     getDocumentsUserCanView,
+    getUserDocumentStatistics,
 };
 
 function getDocuments(data=undefined){
@@ -304,4 +305,55 @@ function getDocumentsUserCanView(roleId, data=undefined){
                 dispatch({ type: DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_FAILE});
             })
     }
+}
+
+function getUserDocumentStatistics(option){
+    switch(option){
+        case 'downloaded':
+            return dispatch => {
+                dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_REQUEST});
+                DocumentServices.getUserDocumentStatistics({option})
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_FAILE});
+                    
+                })
+            }
+        case 'common':
+            return dispatch => {
+                dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_REQUEST});
+                DocumentServices.getUserDocumentStatistics({option})
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_FAILE});
+                    
+                })
+            }
+        case 'latest':
+            return dispatch => {
+                dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_REQUEST});
+                DocumentServices.getUserDocumentStatistics({option})
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_FAILE});
+                    
+                })
+            }
+    }
+
 }

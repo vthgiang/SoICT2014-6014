@@ -38,7 +38,8 @@ const DocumentSchema = new Schema({
     },
     views: [{
         viewer: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'users'
         },
         time: {
             type: Date,
@@ -47,7 +48,8 @@ const DocumentSchema = new Schema({
     }],
     downloads: [{
         downloader: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'users'
         },
         time: {
             type: Date,

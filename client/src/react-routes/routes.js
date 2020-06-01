@@ -12,7 +12,8 @@ import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
 
-import ManageFormDocument from '../modules/document/components';
+import ManageDocument from '../modules/document/components/administration';
+import Document from '../modules/document/components/user';
 
 import Home from '../modules/home/components';
 
@@ -259,7 +260,22 @@ class Routes extends Component {
                         path={ '/documents-management' }
                         pageName={ 'manage_document' }
                         layout={ Layout }
-                        component={ ManageFormDocument }
+                        component={ ManageDocument }
+                    />
+                    <PrivateRoute
+                        isLoading={ false }
+                        key={ 'documents' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/documents', name: 'documents', icon:'fa fa-file-text' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/documents' }
+                        path={ '/documents' }
+                        pageName={ 'documents' }
+                        layout={ Layout }
+                        component={ Document }
                     />
                     {/* Quan ly nhan su */}
                     <PrivateRoute 
