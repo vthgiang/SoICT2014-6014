@@ -3,7 +3,7 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getAllUsers = async (req, res) => {
     try {
-        var users = await UserService.getAllUsers(req.user.company._id);
+        var users = await UserService.getAllUsers(req.user.company._id, req.query);
 
         LogInfo(req.user.email, 'GET_USERS', req.user.company);
         res.status(200).json({
@@ -19,30 +19,6 @@ exports.getAllUsers = async (req, res) => {
             messages: Array.isArray(error) ? error : ['get_users_faile'],
             content: error
         })
-    }
-};
-
-exports.getPaginatedUsers = async (req, res) => {
-    try {
-        var { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        var users = await UserService.getPaginatedUsers(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
-
-        LogInfo(req.user.email, 'PAGINATE_USERS', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_users_success'],
-            content: users
-        });
-    } catch (error) {
-        
-        LogError(req.user.email, 'PAGINATE_USERS', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['paginate_users_faile'],
-            content: error
-        });
     }
 };
 
@@ -192,6 +168,28 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
+            content: error
+        });
+    }
+}
+
+/**
+ * Người dùng download 1 file từ server
+ * @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
+ * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
+ * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
+ */
+exports.dowloadFile = async (req, res) => {
+    try {
+        const {path} = req.query;
+        await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        res.download(path, "file");
+    } catch (error) {
+
+        await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_file_faile'],
             content: error
         });
     }

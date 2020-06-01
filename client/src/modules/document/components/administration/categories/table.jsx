@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SearchBar, DataTableSetting, PaginateBar } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
 import Swal from 'sweetalert2';
@@ -10,11 +10,12 @@ import EditForm from './editForm';
 class Table extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { option: 'name', value: '', limit: 5, page: 1 }
     }
 
     componentDidMount(){
         this.props.getDocumentCategories();
+        this.props.getDocumentCategories({page: this.state.page, limit: this.state.limit});
     }
 
     
@@ -42,7 +43,8 @@ class Table extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {list} = this.props.documents.administration.categories;
+        const {categories} = this.props.documents.administration;
+        const {paginate} = categories;
         const {isLoading} = this.props.documents;
         const {currentRow} = this.state;
 
@@ -57,7 +59,16 @@ class Table extends Component {
                         categoryDescription={currentRow.description}
                     />
                 }
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-types">
+                <SearchBar 
+                    columns={[
+                        { title: translate('document.administration.categories.name'), value: 'name' },
+                        { title: translate('document.administration.categories.description'), value: 'description' }
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document-categories">
                     <thead>
                         <tr>
                             <th>{translate('document.administration.categories.name')}</th>
@@ -79,8 +90,8 @@ class Table extends Component {
                     </thead>
                     <tbody>
                         {
-                            list.length > 0 ?
-                            list.map(docType => 
+                            paginate.length > 0 ?
+                            paginate.map(docType => 
                             <tr key={docType._id}>
                                 <td>{docType.name}</td>
                                 <td>{docType.description}</td>
@@ -92,11 +103,47 @@ class Table extends Component {
                             isLoading ? 
                             <tr><td colSpan={3}>{translate('general.loading')}</td></tr>:<tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
                         }
-                        
                     </tbody>
                 </table>
+                <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={this.setPage}/> 
             </React.Fragment>
          );
+    }
+
+    
+    setPage = async(page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getDocumentCategories(data);
+    }
+
+    setLimit = (number) => {
+        if (this.state.limit !== number){
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            this.props.getDocumentCategories(data);
+        }
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+    
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getDocumentCategories(data);
     }
 }
  

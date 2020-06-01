@@ -18,7 +18,9 @@ export const DocumentActions = {
     deleteDocumentCategory,
 
     getDocumentDomains,
-    createDocumentDomain
+    createDocumentDomain,
+
+    getDocumentsUserCanView,
 };
 
 function getDocuments(data=undefined){
@@ -160,7 +162,22 @@ function downloadDocumentFileScan(id, fileName, numberVersion){
     }
 }
 
-function getDocumentCategories(){
+function getDocumentCategories(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST});
+            DocumentServices.getDocumentCategories(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE});
+            })
+        }
+    }
     return dispatch => {
         dispatch({ type: DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST});
         DocumentServices.getDocumentCategories()
@@ -254,6 +271,37 @@ function createDocumentDomain(data){
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE});
+            })
+    }
+}
+
+function getDocumentsUserCanView(roleId, data=undefined){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_REQUEST});
+            DocumentServices.getDocumentsUserCanView(roleId, data)
+                .then(res => {
+                    dispatch({
+                        type: DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_FAILE});
+                })
+        }
+    }
+    return dispatch => {
+        dispatch({ type: DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_REQUEST});
+        DocumentServices.getDocumentsUserCanView(roleId)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_FAILE});
             })
     }
 }

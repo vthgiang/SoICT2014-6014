@@ -165,13 +165,11 @@ class CreateForm extends Component {
         const relationshipDocs = documents.administration.data.list.map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
 
-        console.log("document: ", this.state)
-
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
                 <DialogModal
-                    modalID="modal-create-document" size="100"
+                    modalID="modal-create-document"
                     formID="form-create-document"
                     title={translate('document.add')}
                     func={this.save}
@@ -323,7 +321,7 @@ class CreateForm extends Component {
                                     multiple={false}
                                 />
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id="select-documents-user-manage"
@@ -334,7 +332,7 @@ class CreateForm extends Component {
                                     options={{placeholder: translate('document.store.select_user')}}
                                     multiple={false}
                                 />
-                            </div>
+                            </div> */}
                         </fieldset>
                     </form>
                 </DialogModal>

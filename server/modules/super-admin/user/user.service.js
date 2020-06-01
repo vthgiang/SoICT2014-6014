@@ -7,29 +7,25 @@ const generator = require("generate-password");
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getAllUsers = async (company) => {
-    const users = await User
-        .find({ company })
-        .select('-password -status -deleteSoft -tokens')
-        .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-            { path: 'company' }
-        ]);
-
-    return users;
-}
-
-/**
- * Phân trang danh sách user muốn lấy
- * @company id công ty
- * @limit giới hạn hiển thị trên 1 bảng
- * @page trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedUsers = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await User
-        .paginate( newData , { 
+exports.getAllUsers = async (company, query) => {
+    console.log("query: ", query)
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await User.find({ company })
+            .select('-password -status -deleteSoft -tokens')
+            .populate([
+                { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+                { path: 'company' }
+            ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        console.log("option: ", option);
+        return await User.paginate( option , { 
             page, 
             limit,
             select: '-tokens -status -password -deleteSoft',
@@ -38,6 +34,7 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
                 { path: 'company' }
             ]
         });
+    }
 }
 
 /**

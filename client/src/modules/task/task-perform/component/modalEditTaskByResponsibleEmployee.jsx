@@ -7,7 +7,7 @@ import { getStorage } from "../../../../config";
 import { TaskInformationForm } from './taskInformationForm';
 import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-
+// import { taskManagementActions } from "../../task-management/redux/actions";
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
@@ -51,7 +51,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Number'
             }
             return {
                 ...state,
@@ -70,7 +71,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Text'
             }
             return {
                 ...state,
@@ -88,7 +90,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'Date'
             }
             return {
                 ...state,
@@ -99,13 +102,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('value', value);
+        // console.log('value', value);
 
         this.setState(state => {
             
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'SetOfValues'
             }
             return {
                 ...state,
@@ -119,7 +123,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Boolean'
             }
             return {
                 ...state,
@@ -243,8 +248,24 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             // && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
-    save = () => {
-        console.log('submitted form edit task');
+    save = () => {        
+        // var {tasks} = this.props;
+        var evaluations, taskId;
+        taskId = this.props.id;
+        evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        var data = {
+            name: this.state.taskName,
+            description: this.state.taskDescription,
+            evaluateId: evaluations._id,
+            user: this.state.userId,
+            progress: this.state.progress,
+            kpi: this.state.kpi,
+            info: this.state.info,
+        }
+
+        console.log('data', data, taskId);
+        this.props.editTaskByResponsibleEmployees(data, taskId);
+
     }
 
     componentDidMount() {
@@ -430,7 +451,9 @@ function mapStateToProps(state) {
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));

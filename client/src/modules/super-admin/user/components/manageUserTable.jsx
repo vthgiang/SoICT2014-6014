@@ -13,7 +13,7 @@ class ManageUserTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: { $regex: '', $options: 'i' }
+            value: ''
         }
     }
 
@@ -131,44 +131,44 @@ class ManageUserTable extends Component {
         return result;
     }
 
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
+    setPage = async(page) => {
+        this.setState({ page });
         const data = {
             limit: this.state.limit,
-            page: 1
+            page: page,
+            key: this.state.option,
+            value: this.state.value
         };
-        data[this.state.option] = this.state.value;
-        await this.props.getPaginate(data);
-    }
-
-    setPage = (pageNumber) => {
-       this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
+        await this.props.getUser(data);
     }
 
     setLimit = (number) => {
         if (this.state.limit !== number){
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
-            if(this.state.value !== null){
-                data[this.state.option] = this.state.value;
-            }
-            this.props.getPaginate(data);
+            this.props.getUser(data);
         }
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+    
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getUser(data);
     }
 
     componentDidMount(){
         this.props.getUser();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        this.props.getUser({limit: this.state.limit, page: this.state.page});
     }
 
 }
@@ -177,7 +177,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getUser: UserActions.get,
-    getPaginate: UserActions.getPaginate,
     edit: UserActions.edit,
     destroy: UserActions.destroy
 }

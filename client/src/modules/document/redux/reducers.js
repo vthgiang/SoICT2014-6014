@@ -48,7 +48,20 @@ const initState = {
         },
     },
     user: {
+        data: {
+            list: [], paginate: [],
+            totalDocs: 0,
+            limit: 0,
+            totalPages: 0,
+            page: 0,
+            pagingCounter: 0,
+            hasPrevPage: false,
+            hasNextPage: false,
+            prevPage: 0,
+            nextPage: 0,
 
+            user_manage: []
+        },
     }
 }
 
@@ -60,6 +73,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.PAGINATE_DOCUMENTS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_REQUEST:  
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
@@ -70,6 +84,8 @@ export function documents(state = initState, action) {
         case DocumentConstants.DELETE_DOCUMENT_REQUEST:
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST:
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_REQUEST:
+        case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -90,6 +106,9 @@ export function documents(state = initState, action) {
         case DocumentConstants.DELETE_DOCUMENT_FAILE:
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE:
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE:
+        case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_FAILE:
+        case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -123,7 +142,43 @@ export function documents(state = initState, action) {
                 }
             };
 
+        case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                user: {
+                    ...state.user,
+                    data: {
+                        ...state.user.data,
+                        list: action.payload
+                    }
+                }
+            };
+
+        case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                user: {
+                    ...state.user,
+                    data: {
+                        ...state.user.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
+            };
+
         case DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS:
+            
             return {
                 ...state,
                 isLoading: false,
@@ -131,6 +186,28 @@ export function documents(state = initState, action) {
                     ...state.administration,
                     data: {
                         ...state.administration.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
+            };
+
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    categories: {
+                        ...state.administration.categories,
                         paginate: action.payload.docs,
                         totalDocs: action.payload.totalDocs,
                         limit: action.payload.limit,

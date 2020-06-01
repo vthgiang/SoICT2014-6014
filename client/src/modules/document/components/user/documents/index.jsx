@@ -2,43 +2,30 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
-import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
-import EditForm from './editForm';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
-import Swal from 'sweetalert2';
+import DocumentInformation from './DocumentInformation';
+import { getStorage } from '../../../../../config';
 
-const getIndex = (array, id) => {
-    var index = -1;
-    for (let i = 0; i < array.length; i++) {
-        if(array[i]._id === id){
-            index = i;
-            break;
-        }
-    }
-
-    return index;
-}
-
-class Table extends Component {
+class UserDocumentsData extends Component {
     constructor(props) {
         super(props);
         this.state = { option: 'name', value: '', limit: 5, page: 1 }
     }
 
     componentDidMount(){
-        this.props.getAllDocuments();
-        this.props.getAllDocuments({page: this.state.page, limit: this.state.limit});
         this.props.getAllRoles();
         this.props.getAllDepartments();
+        this.props.getAllDocuments(getStorage('currentRole'));
+        this.props.getAllDocuments(getStorage('currentRole'), {page: this.state.page, limit: this.state.limit});
     }
 
-    toggleEditDocument = async (data) => {
+    toggleDocumentInformation = async (data) => {
         await this.setState({
             currentRow: data
         });
-        window.$('#modal-edit-document').modal('show');
+        window.$('#modal-information-user-document').modal('show');
         this.props.increaseNumberView(data._id)
     }
 
@@ -49,53 +36,19 @@ class Table extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-        
-    static getDerivedStateFromProps(nextProps, prevState){
-        const {data} = nextProps.documents.administration;
-        if(prevState.currentRow !== undefined){
-            const index = getIndex(data.list, prevState.currentRow._id);
-            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
-                return {
-                    ...prevState,
-                    currentRow: data.list[index]
-                } 
-            }
-            else return null;
-        } else {
-            return null;
-        }
-    }
-
-    deleteDocument = (id, info) => {
-        const {translate} = this.props;
-        Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: translate('general.no'),
-            confirmButtonText: translate('general.yes'),
-        }).then((result) => {
-            if (result.value) {
-                this.props.deleteDocument(id);
-            }
-        })
-    }
 
     render() { 
         const {translate} = this.props;
-        const docs = this.props.documents.administration.data;
-        const {paginate} = docs;
+        const docs = this.props.documents.user.data;
+        const {list, paginate} = docs;
         const {isLoading} = this.props.documents;
         const {currentRow} = this.state;
 
         return ( 
             <React.Fragment>
-                <CreateForm/>
                 {
                     currentRow !== undefined &&
-                    <EditForm
+                    <DocumentInformation
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
@@ -125,7 +78,7 @@ class Table extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>
@@ -154,7 +107,7 @@ class Table extends Component {
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
                                     hideColumnOption = {true}
-                                    tableId="table-manage-document"
+                                    tableId="table-manage-user-document"
                                 />
                             </th>
                         </tr>
@@ -182,8 +135,8 @@ class Table extends Component {
                                     </React.Fragment>
                                 ) })}/></td>
                                 <td>
-                                    <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
+                                    <a className="text-green" title={translate('document.edit')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                    
                                 </td>
                             </tr>):
                             isLoading ? 
@@ -205,14 +158,14 @@ class Table extends Component {
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getAllDocuments(data);
+        await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
 
     setLimit = (number) => {
         if (this.state.limit !== number){
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
-            this.props.getAllDocuments(data);
+            this.props.getAllDocuments(getStorage('currentRole'), data);
         }
     }
 
@@ -229,20 +182,19 @@ class Table extends Component {
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getAllDocuments(data);
+        await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
 }
  
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getAllDocuments: DocumentActions.getDocuments,
-    getAllRoles: RoleActions.get,
     getAllDepartments: DepartmentActions.get,
+    getAllRoles: RoleActions.get,
+    getAllDocuments: DocumentActions.getDocumentsUserCanView,
+    increaseNumberView: DocumentActions.increaseNumberView,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
-    increaseNumberView: DocumentActions.increaseNumberView,
-    deleteDocument: DocumentActions.deleteDocument,
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );
+export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(UserDocumentsData) );
