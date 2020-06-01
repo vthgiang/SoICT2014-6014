@@ -78,7 +78,7 @@ exports.increaseNumberView = async (req, res) => {
 exports.showDocument = async (req, res) => {
     try {
         await DocumentServices.increaseNumberView(req.params.id);
-        const doc = await DocumentServices.showDocument(req.params.id, req.user.name);
+        const doc = await DocumentServices.showDocument(req.params.id, req.user._id);
         
         await LogInfo(req.user.email, 'SHOW_DOCUMENT', req.user.company);
         res.status(200).json({
@@ -151,6 +151,7 @@ exports.downloadDocumentFile = async (req, res) => {
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {
+        console.log("ERROR: ", error)
         await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.status(400).json({
             success: false,
@@ -343,11 +344,11 @@ exports.getDocumentsThatRoleCanView = async(req, res) => {
     }
 }
 
-exports.getDocumentsThatUserDownloaded = async(req, res) => {
+exports.getDocumentsUserStatistical = async(req, res) => {
     try {
-        const docs = await DocumentServices.getDocumentsThatUserDownloaded(req.user._id);
+        const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query);
         
-        await LogInfo(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
+        await LogInfo(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_documents_success'],
@@ -355,7 +356,7 @@ exports.getDocumentsThatUserDownloaded = async(req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
+        await LogError(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_documents_faile'],

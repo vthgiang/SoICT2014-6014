@@ -3,6 +3,8 @@ const router = express.Router();
 const DocumentController = require('./document.controller');
 const { auth, uploadFile } = require('../../middleware');
 
+router.get("/permission-view/:id", auth, DocumentController.getDocumentsThatRoleCanView);
+router.get("/user-statistical", auth, DocumentController.getDocumentsUserStatistical);
 // Danh mục văn bản - domain
 router.get("/domains", auth, DocumentController.getDocumentDomains);
 router.get("/domains/:id", auth, DocumentController.showDocumentDomain);
@@ -28,8 +30,5 @@ router.delete("/:id", auth, DocumentController.deleteDocument);
 router.get("/download-file/:id/:numberVersion", auth, DocumentController.downloadDocumentFile);
 router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.downloadDocumentFileScan);
 router.patch("/:id/increase-number-view", auth, DocumentController.increaseNumberView);
-
-router.get("/permission-view/:id", auth, DocumentController.getDocumentsThatRoleCanView);
-router.get("/user-downloaded", auth, DocumentController.getDocumentsThatUserDownloaded);
 
 module.exports = router;
