@@ -667,68 +667,57 @@ class ActionTab extends Component {
                                                 })}</li></React.Fragment>
                                                 }
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
-                                                <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoạt động</a></li>}
-                                                {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                                <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
+                                                
+
+                                                {/* Đánh giá hoạt động */}
+                                                {item.creator &&
                                                 <React.Fragment>
-                                                <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                                <li style={{display:"inline-table"}} className="list-inline">
-                                                    {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 ?
+                                                    <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
+                                                    <li style={{display:"inline-table"}} className="list-inline">
+                                                        {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0?
                                                         <React.Fragment>
-                                                            {item.evaluations.some(checkUserId)=== true ?
-                                                                <React.Fragment>
-                                                                    {item.evaluations.map(element => {
-                                                                    if(task){
-                                                                        if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
-                                                                            return <div> <b><u> {element.creator.name} đánh giá {element.rating}/10 </u></b> </div>
-                                                                        }
+                                                            {item.evaluations.map(element => {
+                                                                if(task){
+                                                                    if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                        return <div className="text-sm"> <b>{element.creator.name} - {element.rating}/10 </b> </div>
+                                                                    } else {
+                                                                        return <div className="text-sm"> {element.creator.name} - {element.rating}/10 </div>
                                                                     }
-                                                                })}
-                                                                {item.evaluations.map(element => {
-                                                                    if(task){
-                                                                        if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)){
-                                                                            return <div> {element.creator.name} đánh giá {element.rating}/10 </div>
-                                                                        }
-                                                                    }
-                                                                })}
-                                                                </React.Fragment>:
-                                                                <React.Fragment>
-                                                                    <Rating
-                                                                        
-                                                                        fractions = {2}
-                                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                                        fullSymbol="fa fa-star fa-2x"
-                                                                        initialRating = {0}
-                                                                        onClick={(value) => {
-                                                                        this.setValueRating(item._id,value);
-                                                                        }}
-                                                                        onHover={(value)=> {                                                                                                                                                   
-                                                                            this.setHover(item._id,value)
-                                                                        }}
-                                                                    />
-                                                                    <div style={{display:"inline",marginLeft:"5px"}}>{this.hover[item._id]*2}</div> 
-                                                                </React.Fragment>
-                                                            }
+                                                                }
+                                                            })}
                                                         </React.Fragment>:
-                                                        <React.Fragment>
-                                                           
-                                                            <Rating
-                                                                fractions = {2}
-                                                                emptySymbol="fa fa-star-o fa-2x"
-                                                                fullSymbol="fa fa-star fa-2x"
-                                                                initialRating = {0}
-                                                                onClick={(value) => {
-                                                                this.setValueRating(item._id,value);
-                                                                }}
-                                                                onHover={(value)=> {
-                                                                    this.setHover(item._id,value)
-                                                                }}
-                                                            />
-                                                            <div style={{display:"inline",marginLeft:"5px"}}>{this.hover && this.hover[item._id]}</div> 
-                                                        </React.Fragment>}
-                                                
-                                                </li>
-                                                
-                                                </React.Fragment>}
+                                                        <div className="text-sm">Chưa có</div>
+                                                        }
+                                                    </li>
+                                                    
+                                                    {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
+                                                    <li style={{display:"inline-table"}} className="list-inline">
+                                                        {(
+                                                            (item.evaluations && item.evaluations.length !== 0 && !item.evaluations.some(checkUserId)) ||
+                                                            (!item.evaluations || item.evaluations.length === 0)
+                                                        ) &&
+                                                            <React.Fragment>
+                                                                <Rating
+                                                                    
+                                                                    fractions = {2}
+                                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                                    fullSymbol="fa fa-star fa-2x"
+                                                                    initialRating = {0}
+                                                                    onClick={(value) => {
+                                                                    this.setValueRating(item._id,value);
+                                                                    }}
+                                                                    onHover={(value)=> {                                                                                                                                                   
+                                                                        this.setHover(item._id,value)
+                                                                    }}
+                                                                />
+                                                                <div style={{display:"inline",marginLeft:"5px"}}>{this.hover[item._id]}</div> 
+                                                            </React.Fragment>
+                                                        }
+                                                    </li>
+                                                    }
+                                                </React.Fragment>
+                                                }
                                             </ul>
                                         </React.Fragment>
                                         }
@@ -762,7 +751,7 @@ class ActionTab extends Component {
                                                         <div>
                                                             <p className="content-level2">
                                                                 <a href="#">{child.creator.name} </a>
-                                                                {child.content}
+                                                                {child.description}
 
                                                                 {child.creator._id === currentUser && 
                                                                 <div className="btn-group dropleft pull-right">
@@ -807,7 +796,7 @@ class ActionTab extends Component {
                                                                         placeholder={'Enter your text here...'}
                                                                         className={'textarea'}
                                                                         onChange={this.handleChange}
-                                                                        defaultValue={child.content}
+                                                                        defaultValue={child.description}
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                     />
                                                                 </div>
