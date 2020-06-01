@@ -547,6 +547,7 @@ export default {
             manage_link: 'Quản lý trang',
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
+            documents: 'Tài liệu văn bản',
 
             task_template: 'Mẫu Công Việc',
             cocautochuc: 'Cơ Cấu Tổ Chức',
