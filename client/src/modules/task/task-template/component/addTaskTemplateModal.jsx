@@ -5,7 +5,6 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-
 import {InformationForm} from '../component/informationsTemplate';
 import {ActionForm} from '../component/actionsTemplate';
 
@@ -304,7 +303,7 @@ class ModalAddTaskTemplate extends Component {
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"
-                    title={"Thêm mẫu công việc"}
+                    title={translate('task_template.add_tasktemplate')}
                     func={this.handleSubmit}
                     disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
@@ -313,7 +312,7 @@ class ModalAddTaskTemplate extends Component {
                         <div className="row">
                             <div className="col-sm-6">
                                 <div className={'form-group has-feedback'}>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.unit')}*:</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                         {departmentsThatUserIsDean !== undefined && newTemplate.organizationalUnit !== "" &&
                                             <SelectBox
@@ -334,14 +333,14 @@ class ModalAddTaskTemplate extends Component {
                                     </div>
                                 </div>
                                 <div className={'form-group has-feedback'}>
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên mẫu*</label>
+                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.name')}*</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                        <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value={newTemplate.name} onChange={this.handleTaskTemplateName} />
+                                        <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
                                         <ErrorLabel content={this.state.newTemplate.errorOnName}/>
                                     </div>
                                 </div>
                                 <div className={'form-group has-feedback'}>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.permission_view')}*</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                         {listRole &&
                                             <SelectBox
@@ -355,14 +354,14 @@ class ModalAddTaskTemplate extends Component {
                                                 ]}
                                                 onChange={this.handleTaskTemplateRead}
                                                 multiple={true}
-                                                options={{placeholder: "Chọn người được phép xem mẫu"}}
+                                                options={{placeholder: `${translate('task_template.permission_view')}`}}
                                             />
                                         }
                                         <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
                                     </div>
                                 </div>
                                 <div className='form-group has-feedback'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.performer')}</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {userdepartments &&
                                             <SelectBox
@@ -381,13 +380,13 @@ class ModalAddTaskTemplate extends Component {
                                                 ]}
                                                 onChange={this.handleTaskTemplateResponsible}
                                                 multiple={true}
-                                                options={{placeholder: "Chọn người thực hiện"}}
+                                                options={{placeholder: `${translate('task_template.performer')}`}}
                                             />
                                         }
                                     </div>
                                 </div>
                                 <div className='form-group has-feedback'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.approver')}</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {userdepartments &&
                                             <SelectBox
@@ -406,13 +405,13 @@ class ModalAddTaskTemplate extends Component {
                                                 ]}
                                                 onChange={this.handleTaskTemplateAccountable}
                                                 multiple={true}
-                                                options={{placeholder: "Chọn người phê duyệt"}}
+                                                options={{placeholder: `${translate('task_template.approver')}`}}
                                             />
                                         }
                                     </div>
                                 </div>
                                 <div className='form-group has-feedback'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.supporter')}</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
                                             <SelectBox
@@ -426,13 +425,13 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                                 onChange={this.handleTaskTemplateConsult}
                                                 multiple={true}
-                                                options={{placeholder: "Chọn người hỗ trợ"}}
+                                                options={{placeholder: `${translate('task_template.supporter')}`}}
                                             />
                                         }
                                     </div>
                                 </div>
                                 <div className='form-group has-feedback'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
+                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.observer')}</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         {usercompanys &&
                                             <SelectBox
@@ -446,7 +445,7 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                                 onChange={this.handleTaskTemplateInform}
                                                 multiple={true}
-                                                options={{placeholder: "Chọn người quan sát"}}
+                                                options={{placeholder: `${translate('task_template.observer')}`}}
                                             />
                                         }
                                     </div>
@@ -455,32 +454,32 @@ class ModalAddTaskTemplate extends Component {
                             </div>
                             <div className="col-sm-6">
                                 <div className={'form-group has-feedback'}>
-                                    <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*</label>
+                                    <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                        <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                                        <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
                                         <ErrorLabel content={this.state.newTemplate.errorOnDescription}/>
                                     </div>
                                 </div>
                                 <div className={'form-group has-feedback'}>
-                                    <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc*</label>
+                                    <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.formula')}*</label>
                                     <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                         <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                         <ErrorLabel content={this.state.newTemplate.errorOnFormula}/>
                                     </div>
                                     
-                                    <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
+                                    <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.parameters')}:</label>
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                                 </div>
                                 <div className="form-group">
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mức độ ưu tiên</label>
+                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('priority')}</label>
                                     <div className="col-sm-10" style={{ width: '100%' }}>
                                         <select className="form-control" style={{ width: '100%' }} value={newTemplate.priority} onChange={this.handleChangeTaskPriority}>
-                                            <option value={3}>Cao</option>
-                                            <option value={2}>Trung bình</option>
-                                            <option value={1}>Thấp</option>
+                                            <option value={3}>{translate('task_template.high')}</option>
+                                            <option value={2}>{translate('task_template.medium')}</option>
+                                            <option value={1}>{translate('task_template.low')}</option>
                                         </select>
                                     </div>
                                 </div>

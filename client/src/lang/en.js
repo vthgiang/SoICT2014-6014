@@ -1140,9 +1140,26 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action',
-            priority: 'Priority'
-
-           
+            priority: 'Priority',
+            general_information: 'General information',
+            parameters: 'Parameters',
+            roles: 'Roles',
+            edit_tasktemplate: 'Edit tasktemplate',
+            action_name: 'Action name',
+            delete: 'Delete',
+            cancel_editing: 'Cancel editing',
+            obligatory: 'Obligatory',
+            add_tasktemplate: 'Add tasktemplate',
+            infor_name: 'Information name',
+            datatypes: 'Datatypes',
+            manager_fill: 'Only manager fill',
+            high: 'High',
+            low: 'Low',
+            medium: 'Medium',
+            text: 'Text',
+            number: 'Number',
+            date: 'Date',
+            value_set: 'Value set'
         },
 
         notification: {

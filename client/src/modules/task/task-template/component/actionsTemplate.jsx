@@ -6,6 +6,7 @@ import Sortable from 'sortablejs';
 
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
+import { withTranslate } from 'react-redux-multilingual';
 
 class ActionForm extends Component{
 
@@ -223,55 +224,56 @@ handleDeleteAction = async (index) => {
 }
 
     render(){
+        const { translate } = this.props;
         var action =this.state.action;
         var taskActions =this.state.taskActions;
         return(
             <fieldset className="scheduler-border">
-            <legend className="scheduler-border">Danh sách các hoạt động của công việc*</legend>
+            <legend className="scheduler-border">{translate('task_template.activity_list')}*</legend>
             <div className="control-group">
                 <div className='form-group'>
-                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên hoạt động*</label>
+                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.action_name')}*</label>
                     <div className={`col-sm-10 form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                        <input type="text" className="form-control" placeholder="Tên hoạt động" value={action.name} onChange={this.handleChangeActionName} />
+                        <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
                         <ErrorLabel content={this.state.action.errorOnName}/>
                     </div>
                 </div>
                 <div className='form-group'>
-                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả hoạt động*</label>
+                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
                     <div className={`col-sm-10 form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                        <textarea type="text" className="form-control"name="description" placeholder="Mô tả hoạt động" value={action.description} onChange={this.handleChangeActionDesc} />
+                        <textarea type="text" className="form-control"name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
                     </div>
                 </div>
                 <div className="form-group">
-                    <label className="col-sm-2 control-label">
-                        Bắt buộc &nbsp;
+                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                        {translate('task_template.obligatory')} &nbsp;
                         <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
                     </label>
                 </div>
                 <div className="pull-right" style={{ marginBottom: '10px' }}>
                     {this.state.editAction ?
                         <React.Fragment>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>Hủy chỉnh sửa</button>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>Lưu</button>
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
                         </React.Fragment>:
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>Thêm</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>Xóa trắng</button>
+                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
                 </div>
                 <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th style={{ width: '10%' }}>STT</th>
-                            <th title="Tên hoạt động">Tên hoạt động</th>
-                            <th title="Mô tả">Mô tả</th>
-                            <th title="Bắt buộc">Bắt buộc</th>
-                            <th title="Hành động">Hành động</th>
+                            <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
+                            <th title="Mô tả">{translate('task_template.description')}</th>
+                            <th title="Bắt buộc">{translate('task_template.obligatory')}</th>
+                            <th title="Hành động">{translate('task_template.action')}</th>
                         </tr>
                     </thead>
                     <tbody id="actions">
                         {
-                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
+                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 taskActions.map((item, index) =>
                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                         <td>{index + 1}</td>
@@ -296,4 +298,7 @@ handleDeleteAction = async (index) => {
     
 
 }
-export { ActionForm as ActionForm };
+
+const actionForm = connect()(withTranslate(ActionForm));
+export { actionForm as ActionForm }
+// export { ActionForm as ActionForm };
