@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
+import {  DateTimeConverter, ToolTip } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
 import { getStorage } from '../../../../../config';
+import DocumentInformation from './DocumentInformation';
 
 class DocumentUserHistoryStatistics extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class DocumentUserHistoryStatistics extends Component {
         await this.setState({
             currentRow: data
         });
-        window.$('#modal-information-user-document').modal('show');
+        window.$('#modal-document-information-statistics').modal('show');
         this.props.increaseNumberView(data._id)
     }
 
@@ -50,27 +51,27 @@ class DocumentUserHistoryStatistics extends Component {
         return ( 
             <React.Fragment>
                 {
-                    // currentRow !== undefined &&
-                    // <DocumentInformation
-                    //     documentId={currentRow._id}
-                    //     documentName={currentRow.name}
-                    //     documentDescription={currentRow.description}
-                    //     documentCategory={currentRow.category._id}
-                    //     documentDomains={currentRow.domains.map(domain => domain._id)}
-                    //     documentIssuingBody={currentRow.issuingBody}
-                    //     documentOfficialNumber={currentRow.officialNumber}
-                    //     documentSigner={currentRow.signer}
-                    //     documentVersions={currentRow.versions}
+                    currentRow !== undefined &&
+                    <DocumentInformation
+                        documentId={currentRow._id}
+                        documentName={currentRow.name}
+                        documentDescription={currentRow.description}
+                        documentCategory={currentRow.category._id}
+                        documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentIssuingBody={currentRow.issuingBody}
+                        documentOfficialNumber={currentRow.officialNumber}
+                        documentSigner={currentRow.signer}
+                        documentVersions={currentRow.versions}
 
-                    //     documentRelationshipDescription={currentRow.relationshipDescription}
-                    //     documentRelationshipDocuments={currentRow.relationshipDocuments}
+                        documentRelationshipDescription={currentRow.relationshipDescription}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments}
 
-                    //     documentRoles={currentRow.roles}
+                        documentRoles={currentRow.roles}
 
-                    //     documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                    //     documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
-                    //     documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
-                    // />
+                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                    />
                 }
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Những tài liệu văn bản đã download</legend> 
