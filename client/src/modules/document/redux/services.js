@@ -19,6 +19,7 @@ export const DocumentServices = {
     createDocumentDomain,
 
     getDocumentsUserCanView,
+    getUserDocumentStatistics,
 };
 
 function getDocuments(params) {
@@ -130,3 +131,12 @@ function getDocumentsUserCanView(roleId, params) {
         params,
     }, false, true, 'document');
 }
+
+function getUserDocumentStatistics(params) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/user-statistical`,
+        method: 'GET',
+        params,
+    }, false, true, 'document');
+}
+

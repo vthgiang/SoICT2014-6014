@@ -6,6 +6,7 @@ import AdministrationDocumentDomains from './administration/domains';
 import AdministrationDocumentListData from './administration/list-data';
 import AdministrationStatisticsReport from './administration/statistics-report';
 import UserDocumentsData from './user/documents';
+import DocumentUserHistoryStatistics from './user/history-statistics';
 
 class Document extends Component {
     constructor(props) {
@@ -55,7 +56,7 @@ class Document extends Component {
                                 <UserDocumentsData/>
                             </div>
                             <div className="tab-pane" id="user-document-history-statistics">
-                                <UserDocumentsData/>
+                                <DocumentUserHistoryStatistics/>
                             </div>
                         </React.Fragment>
                     }
