@@ -30,5 +30,6 @@ router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.do
 router.patch("/:id/increase-number-view", auth, DocumentController.increaseNumberView);
 
 router.get("/permission-view/:id", auth, DocumentController.getDocumentsThatRoleCanView);
+router.get("/user-downloaded", auth, DocumentController.getDocumentsThatUserDownloaded);
 
 module.exports = router;

@@ -162,11 +162,11 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
-exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
+exports.downloadDocumentFile = async (id, numberVersion, downloaderId) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     doc.numberOfDownload += 1;
-    doc.downloads.push({ downloader });
+    doc.downloads.push({ downloader: downloaderId });
     await doc.save();
     return {
         path: doc.versions[numberVersion].file,
@@ -174,11 +174,11 @@ exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
     };
 }
 
-exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
+exports.downloadDocumentFileScan = async (id, numberVersion, downloaderId) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     doc.numberOfDownload += 1;
-    doc.downloads.push({ downloader });
+    doc.downloads.push({ downloader: downloaderId });
     await doc.save();
 
     return {
@@ -294,4 +294,8 @@ exports.getDocumentsThatRoleCanView = async(company, id, query) => {
             ]
         });
     }
+}
+
+exports.getDocumentsThatUserDownloaded = async (userId) => {
+    return await Document.find();
 }
