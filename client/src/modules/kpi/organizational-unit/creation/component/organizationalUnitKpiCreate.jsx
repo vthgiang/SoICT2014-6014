@@ -232,7 +232,7 @@ class OrganizationalUnitKpiCreate extends Component {
         let parentKpi = this.props.createKpiUnit.parent;
         if(parentKpi == null){
             Swal.fire({
-                title: 'Bạn chưa khởi tạo KPI đơn vị cha',
+                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -240,7 +240,7 @@ class OrganizationalUnitKpiCreate extends Component {
         }
         else{
             Swal.fire({
-                title: 'Bạn chưa kích hoạt KPI đơn vị cha',
+                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'

@@ -130,7 +130,7 @@ const TaskSchema = new Schema({
             },
             taskImportanceLevel: { // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
                 type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
-                default: 5,
+                default: -1
             },
         }],
         taskInformations: [{ // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -163,7 +163,14 @@ const TaskSchema = new Schema({
         url: {
             type: String,
             required: true
-        }
+        },
+        description: {
+            type: String,
+        },
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: User,
+        },
     }],
     timesheetLogs:[{
         creator: { // Người thực hiện nào tiến hành bấm giờ
@@ -281,7 +288,7 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {
@@ -292,15 +299,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            // files: [{ // Các file đi kèm comments
-            //     name: {
-            //         type: String,
-            //     },
-            //     url: {
-            //         type: String,
-            //         required: true
-            //     }
-            // }],
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
         }],
     }],
     taskComments: [{ // Trao đổi trong tasks
@@ -309,7 +316,7 @@ const TaskSchema = new Schema({
             ref: User,
             required: true
         },
-        content: {
+        description: {
             type: String,
         },
         createdAt: {
@@ -328,22 +335,22 @@ const TaskSchema = new Schema({
             type : Date,
             default: Date.now
         },
-        // files: [{ // Các file đi kèm comments
-        //     name: {
-        //         type: String,
-        //     },
-        //     url: {
-        //         type: String,
-        //         required: true
-        //     }
-        // }],
+        files: [{ // Các file đi kèm comments
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            }
+        }],
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {
@@ -354,15 +361,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            // files: [{ // Các file đi kèm comments
-            //     name: {
-            //         type: String,
-            //     },
-            //     url: {
-            //         type: String,
-            //         required: true
-            //     }
-            // }],
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
         }],
     }]
 }, {

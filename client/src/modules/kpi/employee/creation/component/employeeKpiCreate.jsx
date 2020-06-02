@@ -27,14 +27,6 @@ class CreateEmployeeKpiSet extends Component {
         this.handleResizeColumn();
     }
 
-    componentDidUpdate() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
     constructor(props) {
         super(props);
         translate = this.props.translate;
@@ -104,7 +96,7 @@ class CreateEmployeeKpiSet extends Component {
 
     handleNotInitializeOrganizationalUnitKpi = async () => {
             Swal.fire({
-                title: 'Chưa khởi tạo KPI đơn vị',
+                title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -113,7 +105,7 @@ class CreateEmployeeKpiSet extends Component {
 
     handleNotActivatedOrganizationalUnitKpi = async () => {
         Swal.fire({
-            title: 'Chưa kích hoạt KPI đơn vị',
+            title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
             type: 'warning',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'Xác nhận'

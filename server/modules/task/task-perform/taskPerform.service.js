@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const TimesheetLog = require('../../../models/task/timesheetLog.model');
 const Task = require('../../../models/task/task.model');
-const TaskAction = require('../../../models/task/taskAction.model');
 const TaskTemplateInformation = require('../../../models/task/taskResultInformation.model');
 //const TaskFile = require('../../../models/taskFile.model');
 const TaskResultInformation = require('../../../models/task/taskResultInformation.model');
@@ -75,7 +74,7 @@ exports.stopTimesheetLog = async (body) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createCommentOfTaskAction = async (body) => {
+exports.createCommentOfTaskAction = async (body,files) => {
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
             {
@@ -83,16 +82,16 @@ exports.createCommentOfTaskAction = async (body) => {
                     "taskActions.$.comments":
                     {
                         creator: body.creator,
-                        content: body.content,
-                        //  file: file._id
+                        description: body.description,
+                         files: files
                     }
                 }
             }
         )
         var task = await Task.findOne({"taskActions._id": body.taskActionId}).populate([
-            { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-            { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
+            { path: "taskActions.creator", model: User,select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}
         ]).select("taskActions");
         return task.taskActions ;
 }
@@ -106,7 +105,7 @@ exports.editCommentOfTaskAction = async (params,body) => {
         {
             $set:
             {
-                "taskActions.$.comments.$[elem].content": body.content,
+                "taskActions.$.comments.$[elem].description": body.description,
                 "taskActions.$.comments.$[elem].updatedAt": now
             }
         },
@@ -118,23 +117,10 @@ exports.editCommentOfTaskAction = async (params,body) => {
             ]
         }
     )
-    // var commentAction = await Task.aggregate([
-    //     { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.id) } },
-    //     { $unwind: "$taskActions" },
-    //     { $replaceRoot: { newRoot: "$taskActions" } },
-    //     {
-    //         $lookup: {
-    //             from: "users",
-    //             localField: "creator",
-    //             foreignField: "_id",
-    //             as: "creator"
-    //         }
-    //     },
-    // ])
     var task = await Task.findOne({"taskActions.comments._id": params.id}).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
+        { path: "taskActions.creator", model: User,select: 'name email avatar ' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar '},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
     ]).select("taskActions")
     return task.taskActions;
 }
@@ -149,9 +135,9 @@ exports.deleteCommentOfTaskAction = async (params) => {
         { safe: true })
     
     var task = await Task.findOne({_id: params.task}).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}
+        { path: "taskActions.creator", model: User,select: 'name email avatar ' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar '},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}
         ]).select("taskActions");
     return task.taskActions ;    
 }
@@ -161,9 +147,9 @@ exports.deleteCommentOfTaskAction = async (params) => {
 exports.getTaskActions = async (taskId) => {
     //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
     var task = await Task.findOne({ _id: taskId }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar avatar'},
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
+        { path: "taskActions.creator", model: User,select: 'name email avatar '},
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
     
     return task.taskActions
  };
@@ -175,41 +161,18 @@ exports.getTaskActions = async (taskId) => {
 exports.createTaskAction = async (body,files) => {
     var actionInformation = {
         creator: body.creator,
-        description: body.content,
+        description: body.description,
         files: files
     }
     // var actionTaskabc = await Task.findById(req.body.task)
     var taskAction1 = await Task.findByIdAndUpdate(body.task,
         { $push: { taskActions: actionInformation } }, { new: true }
     )
-    //aggregate trả về 1 mảng có 1 phần tử => taskAction[0]
-    // var taskAction = await Task.aggregate([
-    //     { $match: { _id: mongoose.Types.ObjectId(body.task) } },
-    //     { $unwind: "$taskActions" },
-    //     { $sort: { "taskActions.createdAt": -1 } },
-    //     { $replaceRoot: { newRoot: "$taskActions" } },
-    //     {
-    //         $group: {
-    //             _id: null,
-    //             first: { $first: "$$ROOT" }
-    //         }
-    //     },
-    //     { $replaceRoot: { newRoot: "$first" } },
-    //     {
-    //         $lookup: {
-    //             from: "users",
-    //             localField: "creator",
-    //             foreignField: "_id",
-    //             as: "creator"
-    //         }
-    //     },
-    //     { $unwind: "$creator" }
-    // ])
-
+   
     var task = await Task.findOne({ _id: body.task }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
+        { path: "taskActions.creator", model: User,select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
 
     return task.taskActions ;
 }
@@ -221,14 +184,14 @@ exports.editTaskAction = async (id,body) => {
         { "taskActions._id": id },
         {
             $set: {
-                "taskActions.$.description": body.content
+                "taskActions.$.description": body.description
             }
         }
     )
     var task = await Task.findOne({ "taskActions._id": id }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}]) 
+        { path: "taskActions.creator", model: User,select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
     return task.taskActions ;
 }
 
@@ -243,9 +206,9 @@ exports.deleteTaskAction = async (params) => {
         { $pull: { taskActions: { _id: params.id } } },
         { safe: true })  
     var task = await Task.findOne({ _id: params.task }).populate([
-    { path: "taskActions.creator", model: User,select: 'name email avatar avatar' },
-    { path: "taskActions.comments.creator", model: User, select: 'name email avatar avatar'},
-    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])
+    { path: "taskActions.creator", model: User,select: 'name email avatar' },
+    { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
 
     return task.taskActions ;
 }
@@ -389,19 +352,18 @@ exports.editTaskResult = async (listResult,taskid) => {
 /**
  * Tạo bình luận công việc
  */
-exports.createTaskComment = async (body) => {
-
+exports.createTaskComment = async (body,files) => {
     var commentInformation = {
         creator: body.creator,
-        content: body.content
+        description: body.description,
+        files:files
     }
-
     var taskComment1 = await Task.findByIdAndUpdate(body.task,
         { $push: { taskComments: commentInformation } }, { new: true });
     var task = await Task.findOne({_id: body.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}]) 
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}]) 
     
      return task.taskComments;
 }
@@ -410,9 +372,9 @@ exports.createTaskComment = async (body) => {
 */
 exports.getTaskComments = async (params) => {
     var task = await Task.findOne({_id:params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])   
+        { path: "taskComments.creator", model: User,select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])   
     return task.taskComments;
 }
 /**
@@ -423,15 +385,15 @@ exports.editTaskComment = async (params,body) => {
         { "taskComments._id": params.id },
         {
             $set: {
-                "taskComments.$.content": body.content
+                "taskComments.$.description": body.description
             }
         }
     )
 
     var task = await Task.findOne({"taskComments._id": params.id}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])    
+        { path: "taskComments.creator", model: User,select: 'name email avatar ' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])    
     return task.taskComments;
 }
 /**
@@ -443,15 +405,16 @@ exports.deleteTaskComment = async (params) => {
         { $pull: { taskComments: { _id: params.id } } },
         { safe: true })   
     var task = await Task.findOne({_id: params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email avatar avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar avatar '}])  
+        { path: "taskComments.creator", model: User,select: 'name email avatar ' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar '},
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])  
     return task.taskComments;    
 }        
 /**
  * Thêm bình luận của bình luận công việc
  */
-exports.createCommentOfTaskComment = async (body) => {
+exports.createCommentOfTaskComment = async (body,files) => {
+
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
@@ -459,8 +422,8 @@ exports.createCommentOfTaskComment = async (body) => {
                 "taskComments.$.comments":
                 {
                     creator: body.creator,  
-                    content: body.content,
-                    //  file: file._id
+                    description: body.description,
+                    files: files
                 }
             }
         }
@@ -485,7 +448,7 @@ exports.editCommentOfTaskComment = async (params,body) => {
         {
             $set:
             {
-                "taskComments.$.comments.$[elem].content": body.content,
+                "taskComments.$.comments.$[elem].description": body.description,
                 "taskComments.$.comments.$[elem].updatedAt": now
             }
         },
@@ -585,5 +548,78 @@ exports.confirmAction = async (id,idUser) => {
     
     return task.taskActions;   
 }
+/**
+ * Upload tài liệu cho cộng việc
+ */
+exports.uploadFile = async (params,files) => {
 
-
+    var evaluationActionRating = await Task.updateOne(
+        {_id:params.task},
+        {
+            $push: {files:  files}
+        }
+    )  
+    var task = await Task.findOne({ _id: params.task })
+    return task.files
+}
+/**
+ * Download tài liệu của hoạt động
+ */
+exports.downloadFilePOfAction = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskActions"},
+        {$replaceRoot:{newRoot:"$taskActions"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}},
+    ])
+    return file[0];
+}
+/**
+ * Download tài liệu của bình luận hoạt động
+ */
+exports.downloadFileOfActionComment = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskActions.comments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskActions"},
+        {$replaceRoot:{newRoot:"$taskActions"}},
+        {$unwind:"$comments"},
+        {$replaceRoot:{newRoot:"$comments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}}
+    ])
+    return file[0];
+}
+/**
+ * Download tài liệu của bình luận công việc
+ */
+exports.downloadFilePOfTaskComment = async (params) => {
+    
+    var file = await Task.aggregate([
+        {$match:{"taskComments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskComments"},
+        {$replaceRoot:{newRoot:"$taskComments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}},
+    ])
+    return file[0];
+}
+/**
+ * Download tài liệu bình luận của bình luận công việc
+ */
+exports.downloadFileCommentOfTaskComment = async (params) => {
+    console.log("hihihihihi")
+    var file = await Task.aggregate([
+        {$match:{"taskComments.comments.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskComments"},
+        {$replaceRoot:{newRoot:"$taskComments"}},
+        {$unwind:"$comments"},
+        {$replaceRoot:{newRoot:"$comments"}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}}
+    ])
+    console.log(file)
+    return file[0];
+}

@@ -12,7 +12,8 @@ import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
 
-import ManageFormDocument from '../modules/document/components';
+import ManageDocument from '../modules/document/components/administration';
+import Document from '../modules/document/components/user';
 
 import Home from '../modules/home/components';
 
@@ -60,6 +61,7 @@ import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
+import {TaskComponent} from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
@@ -258,7 +260,22 @@ class Routes extends Component {
                         path={ '/documents-management' }
                         pageName={ 'manage_document' }
                         layout={ Layout }
-                        component={ ManageFormDocument }
+                        component={ ManageDocument }
+                    />
+                    <PrivateRoute
+                        isLoading={ false }
+                        key={ 'documents' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/documents', name: 'documents', icon:'fa fa-file-text' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/documents' }
+                        path={ '/documents' }
+                        pageName={ 'documents' }
+                        layout={ Layout }
+                        component={ Document }
                     />
                     {/* Quan ly nhan su */}
                     <PrivateRoute 
@@ -656,6 +673,21 @@ class Routes extends Component {
                         pageName={ 'task_management' }
                         layout={ Layout }
                         component={ TaskManagement }
+                    />
+                    <PrivateRoute // Trang chi tiết công việc (không có trên menu)
+                        isLoading={ this.props.tasks.isLoading }
+                        key={ 'task' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task', name: 'task', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task' }
+                        path={ '/task' }
+                        pageName={ 'task' }
+                        layout={ Layout }
+                        component={ TaskComponent }
                     />
                     <PrivateRoute 
                         isLoading={ false }

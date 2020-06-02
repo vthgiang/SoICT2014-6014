@@ -1,9 +1,24 @@
 import axios from 'axios';
-import { AuthenticateHeader } from '../config';
+import { getStorage } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
 import getBrowserFingerprint from 'get-browser-fingerprint';
+
+const AuthenticateHeader = (name='jwt',) => {
+    const token = getStorage(name);
+    const currentRole = getStorage("currentRole");
+    const fingerprint = getBrowserFingerprint();
+    console.log("FGPRT:", fingerprint)
+    
+    return {
+        'current-page': window.location.pathname,
+        'auth-token': token,
+        'current-role': currentRole,
+        'fingerprint': fingerprint,
+        'Content-Type': 'application/json'
+    }
+}
 
 /**
  * Check có xảy ra lỗi liên quan đến xác thực người dùng hay không?
@@ -44,12 +59,12 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
         method: options.method,
         data: options.data,
         params: options.params,
+        responseType: options.responseType,
         headers: AuthenticateHeader()
     };
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
-        console.log("message: ", messages)
 
         showSuccessAlert && toast.success(
             <ServerResponseAlert
@@ -62,7 +77,7 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
-        console.log("message error: ", messages)
+
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();

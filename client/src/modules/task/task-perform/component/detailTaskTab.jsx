@@ -161,9 +161,9 @@ class DetailTaskTab extends Component {
                         </a>
                     }
                     
-                    { (this.props.role !== "informed") &&
+                    { (this.props.role !== "informed" && this.props.role !== "consulted") &&
                         <a className="btn btn-app" onClick={() => this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc">
-                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" data-toggle="modal" href="#myModal"></i>Bấm giờ
+                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
                     { (this.props.role === "consulted" || this.props.role === "responsible" || this.props.role === "accountable") &&

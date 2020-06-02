@@ -429,6 +429,7 @@ export default {
             notifications: 'Notifications',
 
             tasks: 'Task management',
+            task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
@@ -1139,6 +1140,7 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action',
+            priority: 'Priority'
 
            
         },
@@ -1156,11 +1158,13 @@ export default {
             task_management: {
                 create_task_success: 'Create new task succesfully',
                 delete_success: 'Delete task successfully',
-                edit_status_of_task_success: 'Edit status of task successfully ',
+                edit_status_of_task_success: 'Edit status of task successfully',
+                edit_status_archived_of_task_success: 'Edit archived status of task successfully',
 
                 create_task_fail: "Can't create new task",
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
+                edit_status_archived_of_task_fail: "Can't edit archived status of task",
 
                 responsible: 'Responsible',
                 accountable: 'Acountable',
@@ -1215,6 +1219,7 @@ export default {
                 action_edit: 'Start working',
                 action_delete: 'Delete task',
                 action_store: 'Store task',
+                action_restore: 'Restore task',
                 action_add: 'Add new subtask',
                 action_start_timer: 'Start timer'
             },

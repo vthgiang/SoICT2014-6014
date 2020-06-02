@@ -11,7 +11,7 @@ const DocumentSchema = new Schema({
         required: true
     },
 
-    /**Thông tin cơ bản */
+    /**Thông tin cơ bản về tài liệu*/
     name: { //tên 
         type: String,
         required: true
@@ -27,30 +27,35 @@ const DocumentSchema = new Schema({
     description: { //mô tả
         type: String
     },
-
-    //**Thông tin về phiên bản hiện tại và các phiên bản khác nếu có */
-    versionName: { // tên phiên bản
-        type: String,
-        required: true
-    },
     issuingBody: { // Cơ quan ban hành
+        type: String
+    },
+    signer: {  // Người ký
         type: String
     },
     officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
         type: String
     },
-    issuingDate: { // Ngày ban hành
-        type: Date
-    },
-    effectiveDate: { // ngày áp dụng
-        type: Date
-    },
-    expiredDate: { // Ngày hết hạn
-        type: Date
-    },
-    signer: {  // Người ký
-        type: String
-    },
+    views: [{
+        viewer: {
+            type: Schema.Types.ObjectId,
+            ref: 'users'
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        }
+    }],
+    downloads: [{
+        downloader: {
+            type: Schema.Types.ObjectId,
+            ref: 'users'
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        },
+    }],
     numberOfView: { //số lần xem
         type: Number,
         default: 0
@@ -59,21 +64,10 @@ const DocumentSchema = new Schema({
         type: Number,
         default: 0
     },
-    file: {
-        type: String // vị trí lưu file upload (file doc) được tải lên
-    },
-    scannedFileOfSignedDocument: {
-        type: String // vị trí file scan (file có chữ ký) được tải lên
-    },
 
-    versions: [{ // Các phiên bản khác
+    //**Thông tin về các phiên bản của tài liệu này*/
+    versions: [{
         versionName: { // tên phiên bản
-            type: String
-        },
-        issuingBody: { // Cơ quan ban hành
-            type: String
-        },
-        officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
             type: String
         },
         issuingDate: { // Ngày ban hành
@@ -84,17 +78,6 @@ const DocumentSchema = new Schema({
         },
         expiredDate: { // Ngày hết hạn
             type: Date
-        },
-        signer: {  // Người ký
-            type: String
-        },
-        numberOfView: { //số lần xem
-            type: Number,
-            default: 0
-        },
-        numberOfDownload: { //số lần download
-            type: Number,
-            default: 0
         },
         file: {
             type: String // vị trí lưu file upload (file doc) được tải lên
@@ -111,7 +94,7 @@ const DocumentSchema = new Schema({
     }, 
     relationshipDocuments: [{ //các tài liệu được liên kết
         type: Schema.Types.ObjectId,
-        refs: 'documents'
+        replies: this
     }],
 
     /** Những vị trí có quyền xem mẫu này */

@@ -32,6 +32,27 @@ router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
 
 // đánh giá độ quan trọng của công việc
-router.put('/taskLevel/:id', KPIPersonalController.setTaskImportanceLevel);
+router.put('/taskImportanceLevel/:id', KPIPersonalController.setTaskImportanceLevel);
+
+// thêm comment 
+router.get('/comment/:kpi', auth, KPIPersonalController.getAllComments);
+
+// thêm comment 
+router.post('/comment/create', auth, KPIPersonalController.createCommentOfApproveKPI);
+
+// chinh sua comment 
+router.put('/comment/:id', auth, KPIPersonalController.editCommentOfApproveKPI);
+
+// xoa comment 
+router.delete('/comment/:kpimember/:id', auth, KPIPersonalController.deleteCommentOfApproveKPI);
+
+// thêm comment cho comment
+router.post('/sub-comment/create', auth, KPIPersonalController.createCommentOfComment);
+
+// chinh sua comment 
+router.put('/sub-comment/:id', auth, KPIPersonalController.editCommentOfComment);
+
+// xoa comment 
+router.delete('/sub-comment/:kpimember/:id', auth, KPIPersonalController.deleteCommentOfComment);
 
 module.exports = router;

@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth } = require('../../middleware');
+const { auth, uploadFile } = require('../../middleware');
 
+router.get("/permission-view/:id", auth, DocumentController.getDocumentsThatRoleCanView);
+router.get("/user-statistical", auth, DocumentController.getDocumentsUserStatistical);
 // Danh mục văn bản - domain
 router.get("/domains", auth, DocumentController.getDocumentDomains);
 router.get("/domains/:id", auth, DocumentController.showDocumentDomain);
@@ -18,11 +20,15 @@ router.post("/categories", auth, DocumentController.createDocumentCategory);
 router.patch("/categories/:id", auth, DocumentController.editDocumentCategory);
 router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory);
 
-// Văn bản tài liệu
+// Văn bản tài liệu - sử dụng với truy cập của quản trị viên
 router.get("/", auth, DocumentController.getDocuments);
 router.get("/:id", auth, DocumentController.showDocument);
-router.post("/", auth, DocumentController.createDocument);
-router.patch("/:id", auth, DocumentController.editDocument);
+router.post("/", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
+router.patch("/:id", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.editDocument);
 router.delete("/:id", auth, DocumentController.deleteDocument);
+
+router.get("/download-file/:id/:numberVersion", auth, DocumentController.downloadDocumentFile);
+router.get("/download-file-scan/:id/:numberVersion", auth, DocumentController.downloadDocumentFileScan);
+router.patch("/:id/increase-number-view", auth, DocumentController.increaseNumberView);
 
 module.exports = router;

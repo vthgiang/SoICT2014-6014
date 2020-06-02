@@ -240,9 +240,18 @@ legend.scheduler-border {
 
 /* Bootstrap 3 khi cần cho các phần tử trong row có height bằng nhau. Bootstrap 4 đã có luôn*/
 .row-equal-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
+.row-equal-height [class*=col-]{
+    margin:0 -.3px;
+}
+
 
 /* Css cho phần tree - select */
 * {
@@ -678,4 +687,8 @@ legend.scheduler-border {
 .rc-tree-select-tree-indent-unit {
     display: inline-block;
     padding-left: 18px;
+}
+
+.chart-display {
+    overflow-x: scroll;
 }

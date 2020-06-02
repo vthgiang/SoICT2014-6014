@@ -1,6 +1,5 @@
 const PerformTaskService = require('./taskPerform.service');
 const {  LogInfo,  LogError } = require('../../../logs');
-
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
 exports.getTaskTimesheetLogs = async (req, res) => {
@@ -65,7 +64,6 @@ exports.startTimesheetLog = async (req, res) => {
 // Kết thúc bấm giờ
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        console.log(req.body)
         var timer = await PerformTaskService.stopTimesheetLog(req.body);
         //await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
@@ -210,11 +208,15 @@ exports.getTaskActions = async (req, res) => {
 
 exports.createTaskAction = async (req,res) => {
     try {
-        var files;
-        console.log(req.files)
-        // if(req.files !== undefined){
-        //     var path = req.files.destination +'/'+ req.files.filename;
-        //     files = path.substr(1, path.length)}
+        var files=[] ;
+        
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
         var taskAction = await PerformTaskService.createTaskAction(req.body,files);
         await LogInfo(req.user.email, ` create task action  `,req.user.company)
         res.status(200).json({
@@ -272,30 +274,19 @@ exports.deleteTaskAction = async (req,res)=>{
         })
     }
 }
-// Lấy tất cả bình luận và hoạt động của một công việc
-exports.getCommentsOfTaskAction =async (req, res) => {
-    try {
-        var actionComments = await PerformTaskService.getCommentsOfTaskAction(req.params)
-        await LogInfo(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(200).json({
-            success: true,
-            messages : ['get_action_comments_success'],
-            content: actionComments
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(400).json({
-            success: false,
-            messages:['get_action_comments_fail'],
-            content : error
-        })
-    }
- }
- 
  // Tạo một bình luận hoặc hoạt động cho công việc
  exports.createCommentOfTaskAction = async (req, res) => {
      try {
-        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.body);
+        var files=[] ;
+        
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.body,files);
         await LogInfo(req.user.email, ` create  action comment  `,req.user.company);
         res.status(200).json({
              success: true,
@@ -357,7 +348,15 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
  */
 exports.createTaskComment = async (req,res) => {
     try {
-        var taskComment = await PerformTaskService.createTaskComment(req.body);
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var taskComment = await PerformTaskService.createTaskComment(req.body,files);
         await LogInfo(req.user.email, ` create task comment  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -441,7 +440,15 @@ exports.deleteTaskComment = async (req,res) => {
  */
 exports.createCommentOfTaskComment = async (req,res) => {
     try {
-        var comment = await PerformTaskService.createCommentOfTaskComment(req.body);
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comment = await PerformTaskService.createCommentOfTaskComment(req.body,files);
         await LogInfo(req.user.email, ` create comment of task comment  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -541,3 +548,67 @@ confirmAction = async(req,res) =>{
         })
     }
 }
+/**
+ * Upload tài liệu công việc
+ */
+exports.uploadFile = async(req,res) => {
+    try {
+        var files = [];
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comment = await PerformTaskService.uploadFile(req.params,files);
+        await LogInfo(req.user.email, ` upload file of task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['upload_file_success'],
+            content: comment
+        })
+    } catch (error) {
+        await LogError(req.user.email, `upload file of task  `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['upload_file_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Download file
+ */
+exports.downloadFile = async (req, res) => {
+    console.log(req.query)
+    try {
+        if(req.query.type === "actions"){
+            console.log("hihihihi")
+            const file = await PerformTaskService.downloadFilePOfAction(req.params);
+            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+            res.download(file.url, file.name);
+        }else if(req.query.type === "commentofactions"){
+            const file = await PerformTaskService.downloadFileOfActionComment(req.params);
+            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+            res.download(file.url, file.name);
+        }else if(req.query.type === "taskcomments"){
+            const file = await PerformTaskService.downloadFilePOfTaskComment(req.params);
+            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+            res.download(file.url, file.name);
+        }else if(req.query.type === "commentoftaskcomments"){
+            const file = await PerformTaskService.downloadFileCommentOfTaskComment(req.params);
+            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+            res.download(file.url, file.name);
+        }     
+        await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+        res.download(file.url, file.name);
+    } catch (error) {
+        await LogError(req.user.email, 'DOWNLOAD FILE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
+            content: error
+        });
+    }
+};

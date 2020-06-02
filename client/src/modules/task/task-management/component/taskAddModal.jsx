@@ -10,6 +10,7 @@ import { taskManagementActions } from '../redux/actions';
 import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
 
 import { TaskFormValidator} from './taskFormValidator';
+import { taskTemplateConstants } from '../../task-template/redux/constants';
 
 class ModalAddTask extends Component {
 
@@ -43,8 +44,8 @@ class ModalAddTask extends Component {
             currentRole: getStorage('currentRole'),
         };
     }
-
     
+   
     handleSubmit = async (event) => {
         const { newTask } = this.state;
         this.props.addTask(newTask);
@@ -166,8 +167,10 @@ class ModalAddTask extends Component {
                         organizationalUnit: value,
                         responsibleEmployees: [],
                         accountableEmployees: [],
-                        consultedEmployees: [],
-                        informedEmployees: [],
+                        errorOnName: undefined,
+                        errorOnDescription: undefined,
+                        errorOnResponsibleEmployees: undefined,
+                        errorOnAccountableEmployees: undefined,
                     }
                 };
             });
@@ -175,18 +178,53 @@ class ModalAddTask extends Component {
     }
 
 
-    handleChangeTaskTemplate = async (event) => {
+    handleChangeTaskTemplate =  async (event) => {
         let value = event.target.value;
-        this.state.newTask.taskTemplate = value;
-        this.setState(state =>{
-            return{
-                ...state,
-            };
-        });
-        this.handleRACI();
-    }
-    handleRACI = () => {
-        // TODO: Gọi service, thiết lập đơn vị, lấy dữ liệu và điền vào các trường RACI
+        
+        if(value ===""){
+            this.setState(state =>{
+                return{
+                    ...state,
+                    newTask: { // update lại name,description và reset các selection phía sau
+                        ...this.state.newTask,
+                        name:"",
+                        description: "",
+                        priority: 3,
+                        responsibleEmployees: [],
+                        accountableEmployees: [],
+                        consultedEmployees: [],
+                        informedEmployees: [],
+                        taskTemplate: "",
+                        errorOnName: undefined,
+                        errorOnDescription: undefined,
+                        errorOnResponsibleEmployees: undefined,
+                        errorOnAccountableEmployees: undefined,
+                    }
+                };
+            });
+        }
+        else{
+            let taskTemplate = this.props.tasktemplates.items.find(function(taskTemplate) {                
+                return taskTemplate._id === value; 
+            });
+
+            this.setState(state =>{
+                return{
+                    ...state,
+                    newTask: { // update lại name,description và reset các selection phía sau
+                        ...this.state.newTask,
+                        name: taskTemplate.name,
+                        description: taskTemplate.description,
+                        priority: taskTemplate.priority,
+                        responsibleEmployees: taskTemplate.responsibleEmployees,
+                        accountableEmployees: taskTemplate.accountableEmployees,
+                        consultedEmployees: taskTemplate.consultedEmployees,
+                        informedEmployees: taskTemplate.informedEmployees,
+                        taskTemplate: taskTemplate._id,
+                    }
+                };
+            });
+        } 
     }
 
 
@@ -268,31 +306,51 @@ class ModalAddTask extends Component {
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
+            
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
-            
+
             this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
                 return{
                     ...state,
                     newTask: {
                         ...this.state.newTask,
-                        organizationalUnit: defaultUnit._id
+                        organizationalUnit: defaultUnit._id,
+                       
                     }
                 };
             });
             return false; // Sẽ cập nhật lại state nên không cần render
         }
+        
+        if(newTask.taskTemplate !== nextState.newTask.taskTemplate){
+            
+           return true;
+        }
+      
         return true;
     }
 
+   
     render() {
         var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
-        if (tasktemplates.items) {
-            listTaskTemplate = tasktemplates.items;
+        
+        var taskTemplate,responsibleEmployees;
+        if(tasktemplates.taskTemplate) 
+        { 
+            taskTemplate =tasktemplates.taskTemplate;
+            
+        }
+        
+        if (tasktemplates.items && newTask.organizationalUnit) {
+            listTaskTemplate = tasktemplates.items.filter(function(taskTemplate) {    
+          
+                return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
+            });
         }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
@@ -302,7 +360,7 @@ class ModalAddTask extends Component {
 
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
-
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -312,204 +370,186 @@ class ModalAddTask extends Component {
                     func={this.handleSubmit}
                     title="Thêm công việc mới"
                 >
-                    <form className="form-horizontal">
-                        <div className="col-sm-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Thông tin công việc</legend>
-                                <div className={`${newTask.errorOnName===undefined?"":"has-error"}`}>
-                                    <label>Tên công việc*</label>
-                                    <input type="Name" className="form-control" placeholder="Tên công việc" value={newTask.name} onChange={this.handleChangeTaskName} />
-                                    <ErrorLabel content={newTask.errorOnName}/>
-                                </div>
-                                <div className={'form-group'}>
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc</label>
-                                    <div className={`col-sm-10 ${newTask.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%' }}>
-                                        <textarea type="Description" className="form-control" name="Mô tả công việc" placeholder="Mô tả công việc" value={newTask.description} onChange={this.handleChangeTaskDescription}/>
-                                        <ErrorLabel content={newTask.errorOnDescription}/>
-                                    </div>
-                                </div>
-                                <div className="row form-group">
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
-                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày bắt đầu*:</label>
-                                        <DatePicker 
-                                            id="datepicker1"
-                                            dateFormat="day-month-year"
-                                            value={newTask.startDate}
-                                            onChange={this.handleChangeTaskStartDate}
-                                        />
-                                        <ErrorLabel content={newTask.errorOnStartDate}/>
-                                    </div>
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
-                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left', marginLeft: "-14px" }}>Ngày kết thúc*:</label>
-                                        <DatePicker 
-                                            id="datepicker2"
-                                            value={newTask.endDate}
-                                            onChange={this.handleChangeTaskEndDate}
-                                        />
-                                        <ErrorLabel content={newTask.errorOnEndDate}/>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mức độ ưu tiên</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        <select className="form-control" style={{ width: '100%' }} value={newTask.priority} onChange={this.handleChangeTaskPriority}>
-                                            <option value={3}>Cao</option>
-                                            <option value={2}>Trung bình</option>
-                                            <option value={1}>Thấp</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div className="col-sm-6">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Phân định trách nhiệm (RACI)</legend>
-                                <div className={'form-group'}>
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện*</label>
-                                    <div className={`col-sm-10 ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
-                                        {userdepartments &&
-                                        <SelectBox
-                                            id={`responsible-select-box`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {
-                                                    text: userdepartments[1].roleId.name,
-                                                    value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                },
-                                                {
-                                                    text: userdepartments[2].roleId.name,
-                                                    value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                                },
-                                            ]}
-                                            onChange={this.handleChangeTaskResponsibleEmployees}
-                                            multiple={true}
-                                            options={{placeholder: "Chọn người thực hiện"}}
-                                        />
-                                        }
-                                        <ErrorLabel content={newTask.errorOnResponsibleEmployees}/>
-                                    </div>
-                                </div>
-                                <div className={'form-group'}>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt*</label>
-                                    <div className={`col-sm-10 ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`} style={{ width: '100%' }}>
-                                        {userdepartments &&
-                                            <SelectBox
-                                                id={`accounatable-select-box`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items={[
-                                                    {
-                                                        text: userdepartments[0].roleId.name,
-                                                        value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                                    },
-                                                    {
-                                                        text: userdepartments[1].roleId.name,
-                                                        value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                    },
-                                                ]}
-                                                onChange={this.handleChangeTaskAccountableEmployees}
-                                                multiple={true}
-                                                options={{placeholder: "Chọn người phê duyệt"}}
-                                            />
-                                        }
-                                        <ErrorLabel content={newTask.errorOnAccountableEmployees}/>
-                                    </div>
-                                </div>
-                                <div className='form-group'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        {usercompanys &&
-                                            <SelectBox
-                                                id={`consulted-select-box`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items={
-                                                    usercompanys.map(x => {
-                                                        return {value: x._id, text: x.name};
-                                                    })
-                                                }
-                                                onChange={this.handleChangeTaskConsultedEmployees}
-                                                multiple={true}
-                                                options={{placeholder: "Chọn người hỗ trợ"}}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                                <div className='form-group'>
-                                    <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        {usercompanys &&
-                                            <SelectBox
-                                                id={`informed-select-box`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items={
-                                                    usercompanys.map(x => {
-                                                        return {value: x._id, text: x.name};
-                                                    })
-                                                }
-                                                onChange={this.handleChangeTaskInformedEmployees}
-                                                multiple={true}
-                                                options={{placeholder: "Chọn người quan sát"}}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
 
-                        <div className="col-sm-6">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Liên kết công việc</legend>
-                                <div className={'form-group'}>
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        {units &&
-                                            <select value={newTask.organizationalUnit} className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskOrganizationalUnit}>
-                                                {units.map(x => {
-                                                    return <option key={x._id} value={x._id}>{x.name}</option>
-                                                })}
-                                            </select>}
-                                    </div>
-                                </div>
+                    <div className="col-sm-6">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Thông tin công việc</legend>
+                            <div className={'form-group'}>
+                                <label className="control-label">Đơn vị*</label>
                                 
-                                <div className="form-group ">
+                                {units &&
+                                <select value={newTask.organizationalUnit} className="form-control"onChange={this.handleChangeTaskOrganizationalUnit}>
+                                    {units.map(x => {
+                                        return <option key={x._id} value={x._id}>{x.name}</option>
+                                    })}
+                                </select>
+                                }
+                            </div>
+                            
+                            { (listTaskTemplate && listTaskTemplate.length !== 0) &&
+                            <div className="form-group ">
+                                <label className="control-label">Mẫu công việc</label>
+                                
+                                <select className="form-control" value={newTask.taskTemplate} onChange={this.handleChangeTaskTemplate}>
+                                    <option value="">--Hãy chọn mẫu công việc--</option>
                                     {
-                                        (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
-                                            <div>
-                                                <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
-                                                <div className="col-sm-10" style={{ width: '100%' }}>
-                                                    {
-                                                        (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
-                                                        <select className="form-control" style={{ width: '100%' }} value={newTask.taskTemplate} onChange={this.handleChangeTaskTemplate}>
-                                                            <option value="">--Hãy chọn mẫu công việc--</option>
-                                                            {
-                                                                listTaskTemplate.map(item => {
-                                                                    return <option key={item._id} value={item._id}>{item.name}</option>
-                                                                })
-                                                            }
-                                                        </select>
-                                                    }
-                                                </div>
-                                            </div> : null
+                                        listTaskTemplate.map(item => {
+                                            return <option key={item._id} value={item._id}>{item.name}</option>
+                                        })
                                     }
+                                </select>
+                            </div>
+                            }
+
+
+                            <div className={`form-group ${newTask.errorOnName===undefined?"":"has-error"}`}>
+                                <label>Tên công việc*</label>
+                                <input type="Name" className="form-control" placeholder="Tên công việc" value={(newTask.name)} onChange={this.handleChangeTaskName} />
+                                <ErrorLabel content={newTask.errorOnName}/>
+                            </div>
+                            <div className={`form-group ${newTask.errorOnDescription===undefined?"":"has-error"}`}>
+                                <label className="control-label">Mô tả công việc</label>
+                                <textarea type="Description" className="form-control" name="Mô tả công việc" placeholder="Mô tả công việc" value={newTask.description} onChange={this.handleChangeTaskDescription}/>
+                                <ErrorLabel content={newTask.errorOnDescription}/>
+                            </div>
+                            <div className="row form-group">
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
+                                    <label className="control-label">Ngày bắt đầu*:</label>
+                                    <DatePicker 
+                                        id="datepicker1"
+                                        dateFormat="day-month-year"
+                                        value={newTask.startDate}
+                                        onChange={this.handleChangeTaskStartDate}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnStartDate}/>
                                 </div>
-                                <div className="form-group">
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        <select className="form-control" style={{ width: '100%' }} value={newTask.parent} onChange={this.handleChangeTaskParent}>
-                                            <option value="">--Hãy chọn công việc cha--</option>
-                                            {this.props.currentTasks &&
-                                                this.props.currentTasks.map(item => {
-                                                    return <option key={item._id} value={item._id}>{item.name}</option>
-                                                })}
-                                        </select>
-                                    </div>
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
+                                    <label className="control-label">Ngày kết thúc*:</label>
+                                    <DatePicker 
+                                        id="datepicker2"
+                                        value={newTask.endDate}
+                                        onChange={this.handleChangeTaskEndDate}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnEndDate}/>
                                 </div>
-                            </fieldset>
-                        </div>
-                    </form>
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">Mức độ ưu tiên</label>
+                                <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
+                                    <option value={3}>Cao</option>
+                                    <option value={2}>Trung bình</option>
+                                    <option value={1}>Thấp</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="control-label">Công việc cha</label>
+                                <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
+                                    <option value="">--Hãy chọn công việc cha--</option>
+                                    {this.props.currentTasks &&
+                                        this.props.currentTasks.map(item => {
+                                            return <option key={item._id} value={item._id}>{item.name}</option>
+                                        })}
+                                </select>
+                            </div>
+                        </fieldset>
+                    </div>
+                    
+                    <div className="col-sm-6">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Phân định trách nhiệm (RACI)</legend>
+                            <div className={`form-group ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`}>
+                                <label className="control-label">Người thực hiện*</label>
+                                {userdepartments &&
+                                <SelectBox
+                                    id={`responsible-select-box${newTask.taskTemplate}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={[
+                                        {
+                                            text: userdepartments[1].roleId.name,
+                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                        },
+                                        {
+                                            text: userdepartments[2].roleId.name,
+                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
+                                        },
+                                    ]}
+                                    onChange={this.handleChangeTaskResponsibleEmployees}                                            
+                                    value ={newTask.responsibleEmployees}
+                                    multiple={true}
+                                    options={{placeholder: "Chọn người thực hiện"}}
+                                />
+                                }
+                                <ErrorLabel content={newTask.errorOnResponsibleEmployees}/>
+                            </div>
+
+                            <div className={`form-group ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`}>
+                                <label className="control-label">Người phê duyệt*</label>
+                                {userdepartments &&
+                                    <SelectBox
+                                        id={`accounatable-select-box${newTask.taskTemplate}`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={[
+                                            {
+                                                text: userdepartments[0].roleId.name,
+                                                value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
+                                            },
+                                            {
+                                                text: userdepartments[1].roleId.name,
+                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
+                                            },
+                                        ]}
+                                        onChange={this.handleChangeTaskAccountableEmployees}
+                                        value ={newTask.accountableEmployees}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người phê duyệt"}}
+                                    />
+                                }
+                                <ErrorLabel content={newTask.errorOnAccountableEmployees}/>
+                            </div>
+
+                            <div className='form-group'>
+                                <label className="control-label">Người hỗ trợ</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`consulted-select-box${newTask.taskTemplate}`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return {value: x._id, text: x.name};
+                                            })
+                                        }
+                                        onChange={this.handleChangeTaskConsultedEmployees}
+                                        value ={newTask.consultedEmployees}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người hỗ trợ"}}
+                                    />
+                                }
+                            </div>
+                            <div className='form-group'>
+                                <label className="control-label">Người quan sát</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`informed-select-box${newTask.taskTemplate}`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return {value: x._id, text: x.name};
+                                            })
+                                        }
+                                        onChange={this.handleChangeTaskInformedEmployees}
+                                        value ={newTask.informedEmployees}
+                                        multiple={true}
+                                        options={{placeholder: "Chọn người quan sát"}}
+                                    />
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );
@@ -522,6 +562,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     addTask: taskManagementActions.addTask,
     getDepartment: UserActions.getDepartmentOfUser,//có r
