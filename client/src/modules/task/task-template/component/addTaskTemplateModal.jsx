@@ -298,6 +298,24 @@ class ModalAddTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/>
@@ -386,21 +404,12 @@ class ModalAddTaskTemplate extends Component {
                             <div className='form-group' >
                                 <label className="control-label">Người thực hiện</label>
                                 
-                                {userdepartments &&
+                                {unitMembers &&
                                     <SelectBox
                                         id={`responsible-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={[
-                                            {
-                                                text: userdepartments[1].roleId.name,
-                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                            },
-                                            {
-                                                text: userdepartments[2].roleId.name,
-                                                value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                            },
-                                        ]}
+                                        items={unitMembers}
                                         onChange={this.handleTaskTemplateResponsible}
                                         multiple={true}
                                         options={{placeholder: "Chọn người thực hiện"}}
@@ -409,21 +418,12 @@ class ModalAddTaskTemplate extends Component {
                             </div>
                             <div className='form-group' >
                                 <label className="control-label">Người phê duyệt</label>
-                                {userdepartments &&
+                                {unitMembers &&
                                     <SelectBox
                                         id={`accounatable-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={[
-                                            {
-                                                text: userdepartments[0].roleId.name,
-                                                value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                            },
-                                            {
-                                                text: userdepartments[1].roleId.name,
-                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                            },
-                                        ]}
+                                        items={unitMembers}
                                         onChange={this.handleTaskTemplateAccountable}
                                         multiple={true}
                                         options={{placeholder: "Chọn người phê duyệt"}}
