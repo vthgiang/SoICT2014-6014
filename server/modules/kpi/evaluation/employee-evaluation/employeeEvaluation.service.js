@@ -161,12 +161,19 @@ exports.getTaskById = async (data) => {
     // tính điểm taskImportanceLevel:
     var Task =  await task.map((element)=>{
         console.log("qqqqqqqqqqqqqqq", element.taskImportanceLevel);
-        if(element.taskImportanceLevel === null){
+        if(element.taskImportanceLevel === -1){
             if(element.priority ==="Cao") priority = 3;
             else if( element.priority=== "Trung") priority = 2;
             else priority = 1;
             element.taskImportanceLevel = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+            element.taskImportanceLevelCal = element.taskImportanceLevel; // taskImportanceLevelCal là kết quả đọ qtr công việc do máy tính toán
             
+            console.log('eeee', element);
+        }else{
+            if(element.priority ==="Cao") priority = 3;
+            else if( element.priority=== "Trung") priority = 2;
+            else priority = 1;
+            element.taskImportanceLevelCal = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
             console.log('eeee', element);
         }
     })

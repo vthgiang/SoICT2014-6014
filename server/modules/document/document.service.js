@@ -1,4 +1,4 @@
-const {DocumentCategory, DocumentDomain} = require('../../models').schema;
+const {DocumentCategory, DocumentDomain, Role, User, UserRole} = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 
@@ -20,7 +20,7 @@ exports.getDocuments = async (company, query) => {
     }else{
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {};
+            : {company};
         console.log("option: ", option);
         return await Document.paginate( option , { 
             page, 
@@ -42,6 +42,19 @@ exports.showDocument = async (id, viewer) => {
         { path: 'domains', model: DocumentDomain},
     ]);
     doc.numberOfView += 1;
+    const getIndex = (array, value) => {
+        var res = -1;
+        for (let i = 0; i < array.length; i++) {
+            if(array[i].viewer.toString() === value.toString()){
+                res = i;
+                break;
+            }
+        }
+
+        return res;
+    }
+    var index = getIndex(doc.views, viewer);
+    if(index !== -1) doc.views.splice(index, 1);
     doc.views.push({viewer});
     await doc.save();
 
@@ -51,6 +64,19 @@ exports.showDocument = async (id, viewer) => {
 exports.increaseNumberView = async (id, viewer) => {
     const doc = await Document.findById(id);
     doc.numberOfView += 1;
+    const getIndex = (array, value) => {
+        var res = -1;
+        for (let i = 0; i < array.length; i++) {
+            if(array[i].viewer.toString() === value.toString()){
+                res = i;
+                break;
+            }
+        }
+
+        return res;
+    }
+    var index = getIndex(doc.views, viewer);
+    if(index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
 
@@ -102,12 +128,11 @@ exports.createDocument = async (company, data) => {
  */
 exports.editDocument = async (id, data, query=undefined) => {
     if(query !== undefined && Object.keys(query).length > 0){
-        console.log("AAAAAAAAAAA: ",id, data, query)
+        
         const doc = await Document.findById(id);
         switch(query.option) {
             case 'ADD_VERSION':
                 doc.versions.push(data);
-                console.log("doc version new: ", doc);
                 await doc.save();
 
                 return doc;
@@ -122,7 +147,6 @@ exports.editDocument = async (id, data, query=undefined) => {
                 return doc;
         }
     }else{
-        console.log("dfdfdfdfdf: ",id, data, query)
         const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
@@ -162,11 +186,24 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
-exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
+exports.downloadDocumentFile = async (id, numberVersion, downloaderId) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     doc.numberOfDownload += 1;
-    doc.downloads.push({ downloader });
+    const getIndex = (array, value) => {
+        var res = -1;
+        for (let i = 0; i < array.length; i++) {
+            if(array[i].downloader.toString() === value.toString()){
+                res = i;
+                break;
+            }
+        }
+
+        return res;
+    }
+    var index = getIndex(doc.downloads, downloaderId);
+    if(index !== -1) doc.downloads.splice(index, 1);
+    doc.downloads.push({ downloader: downloaderId });
     await doc.save();
     return {
         path: doc.versions[numberVersion].file,
@@ -174,11 +211,24 @@ exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
     };
 }
 
-exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
+exports.downloadDocumentFileScan = async (id, numberVersion, downloaderId) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     doc.numberOfDownload += 1;
-    doc.downloads.push({ downloader });
+    const getIndex = (array, value) => {
+        var res = -1;
+        for (let i = 0; i < array.length; i++) {
+            if(array[i].downloader.toString() === value.toString()){
+                res = i;
+                break;
+            }
+        }
+
+        return res;
+    }
+    var index = getIndex(doc.downloads, downloaderId);
+    if(index !== -1) doc.downloads.splice(index, 1);
+    doc.downloads.push({ downloader: downloaderId });
     await doc.save();
 
     return {
@@ -201,8 +251,7 @@ exports.getDocumentCategories = async (company, query) => {
     }else{
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {};
-        console.log("option: ", option);
+            : {company};
         return await DocumentCategory.paginate( option , { page, limit });
     }
 }
@@ -262,4 +311,69 @@ exports.createDocumentDomain = async (company, data) => {
     });
 
     return await this.getDocumentDomains(company);
+}
+
+exports.getDocumentsThatRoleCanView = async(company, id, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    var role = await Role.findById(id);
+    var roleArr = [role._id].concat(role.parents);
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Document.find({
+            company,
+            roles: { $in: roleArr}
+        }).populate([
+            { path: 'category', model: DocumentCategory},
+            { path: 'domains', model: DocumentDomain},
+            { path: 'relationshipDocuments', model: Document},
+        ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company, roles: { $in: roleArr}}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company, roles: { $in: roleArr}};
+        
+        return await Document.paginate( option , { 
+            page, 
+            limit,
+            populate: [
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+                { path: 'relationshipDocuments', model: Document},
+            ]
+        });
+    }
+}
+
+exports.getDocumentsUserStatistical = async (userId, query) => {
+    const user = await User.findById(userId).populate({
+        path: 'roles', model: UserRole
+    });
+    var {option} = query;
+    switch(option){
+        case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
+            return await Document.find({ "downloads.downloader": userId }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]).limit(10);
+        case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
+            return await Document.find({
+                roles: {$in: user.roles.map(res=>res.roleId)}
+            }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]).sort({numberOfView: -1}).limit(10);
+        case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
+            return await Document.find({
+                roles: {$in: user.roles.map(res=>res.roleId)},
+                "views.viewer": { "$ne": userId}
+            }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]);
+        default:
+            return null;
+    }
+    
 }

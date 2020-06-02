@@ -180,6 +180,10 @@ class TreeTable extends Component {
                 return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
                     <i className="material-icons">all_inbox</i>
                 </a>
+            case "restore":
+                return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
+                    <i className="material-icons">restore_page</i>
+                </a>
             case "startTimer":
                 return <a href="#abc" onClick={() => this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer}>
                     <i className="material-icons">timer</i>

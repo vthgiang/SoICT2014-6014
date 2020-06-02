@@ -305,6 +305,9 @@ class ModalMemberEvaluate extends Component {
                                                                                 defaultValue={itemTask.taskImportanceLevel}
                                                                                 onChange={(e) => this.setValueSlider(e, itemTask.taskId)}
                                                                             /> 
+                                                                            <div>
+                                                                            Điểm tự động : {itemTask.taskImportanceLevelCal}
+                                                                            </div>
                                                                             {/*<ReactSlider
                                                                                 className="horizontal-slider"
                                                                                 thumbClassName="thumb-1"

@@ -9,6 +9,7 @@ const AuthenticateHeader = (name='jwt',) => {
     const token = getStorage(name);
     const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
+    console.log("FGPRT:", fingerprint)
     
     return {
         'current-page': window.location.pathname,
@@ -64,7 +65,6 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
-        console.log("message: ", messages)
 
         showSuccessAlert && toast.success(
             <ServerResponseAlert
@@ -77,7 +77,7 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
-        console.log("message error: ", messages)
+
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
