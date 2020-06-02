@@ -121,35 +121,24 @@ class TreeTable extends Component {
             items.filter(item => item[link] === parent_id).map(item => ({ ...item, children: listToTree(items, item._id) }));
 
         // Chuyển đổi dữ liệu truyền vào thành dạng tree trước khi gọi đệ quy
-        var list1 = data;
+        //var list1 = data;
         data = listToTree(data);
-        
-        console.log("*11", data);
-        
-        //Thêm các công việc không tìm được cha vào data
-        var concatArray = [];
-        for(let i in list1){
-            var flag = true;
-            for(let j in data){
-                if(list1[i]._id === data[j]._id){
-                    flag = false;
-                    break;
-                }
 
-                for(let k in data[j].children){
-                    if(list1[i]._id === data[j].children[k]._id){
-                        flag = false;
-                        break;
-                    }
-                }
-            }
-            if(flag){
-                concatArray.push(list1[i]);
-            }
-        }
-        data = data.concat(concatArray);
-
-        console.log("*22", data);
+        // //Thêm các công việc không tìm được cha vào data
+        // var concatArray = [];
+        // for(let i in list1){
+        //     var flag = true;
+        //     for(let j in data){
+        //         if(list1[i]._id === data[j]._id){
+        //             flag = false;
+        //             break;
+        //         }
+        //     }
+        //     if(flag){
+        //         concatArray.push(list1[i]);
+        //     }
+        // }
+        // data = data.concat(concatArray);
 
         // function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
         // trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
