@@ -48,7 +48,6 @@ class ModalAddTask extends Component {
    
     handleSubmit = async (event) => {
         const { newTask } = this.state;
-        
         this.props.addTask(newTask);
     }
 
@@ -359,6 +358,24 @@ class ModalAddTask extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
 
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
         
@@ -461,21 +478,12 @@ class ModalAddTask extends Component {
                             <legend className="scheduler-border">Phân định trách nhiệm (RACI)</legend>
                             <div className={`form-group ${newTask.errorOnResponsibleEmployees===undefined?"":"has-error"}`}>
                                 <label className="control-label">Người thực hiện*</label>
-                                {userdepartments &&
+                                {unitMembers &&
                                 <SelectBox
                                     id={`responsible-select-box${newTask.taskTemplate}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[2].roleId.name,
-                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                        },
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleChangeTaskResponsibleEmployees}                                            
                                     value ={newTask.responsibleEmployees}
                                     multiple={true}
@@ -487,21 +495,12 @@ class ModalAddTask extends Component {
 
                             <div className={`form-group ${newTask.errorOnAccountableEmployees===undefined?"":"has-error"}`}>
                                 <label className="control-label">Người phê duyệt*</label>
-                                {userdepartments &&
+                                {unitMembers &&
                                     <SelectBox
                                         id={`accounatable-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={[
-                                            {
-                                                text: userdepartments[0].roleId.name,
-                                                value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                            },
-                                            {
-                                                text: userdepartments[1].roleId.name,
-                                                value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                            },
-                                        ]}
+                                        items={unitMembers}
                                         onChange={this.handleChangeTaskAccountableEmployees}
                                         value ={newTask.accountableEmployees}
                                         multiple={true}

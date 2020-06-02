@@ -396,13 +396,30 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } = this.state;
 
         const { user } = this.props;
-        var departmentUsers = [];
+        var departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
+        if (user.usercompanys) usercompanys = user.usercompanys;
 
         let priorityOptions = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
         let statusOptions = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
-        // console.log('task', task);
+        let unitMembers;
+        if (departmentUsers) {
+            unitMembers = [
+                {
+                    text: departmentUsers.roles.dean.name,
+                    value: departmentUsers.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: departmentUsers.roles.viceDean.name,
+                    value: departmentUsers.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: departmentUsers.roles.employee.name,
+                    value: departmentUsers.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
 
         return (
             <div>
@@ -527,12 +544,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người thực hiện*/}
                                 <div className="form-group">
                                     <label>Người thực hiện</label>
-                                    {
+                                    {unitMembers &&
                                         <SelectBox
                                             id={`select-responsible-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {unitMembers}
                                             onChange={this.handleSelectedResponsibleEmployee}
                                             multiple={true}
                                             value={responsibleEmployees}
@@ -543,12 +560,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người phê duyệt*/}
                                 <div className="form-group">
                                     <label>Người phê duyệt</label>
-                                    {
+                                    {unitMembers &&
                                         <SelectBox
                                             id={`select-accountable-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {unitMembers}
                                             onChange={this.handleSelectedAccountableEmployee}
                                             multiple={true}
                                             value={accountableEmployees}
@@ -559,12 +576,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người hỗ trợ*/}
                                 <div className="form-group">
                                     <label>Người hỗ trợ</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-consulted-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             onChange={this.handleSelectedConsultedEmployee}
                                             multiple={true}
                                             value={consultedEmployees}
@@ -575,12 +596,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người giám sát*/}
                                 <div className="form-group">
                                     <label>Người giám sát</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-informed-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             onChange={this.handleSelectedInformEmployee}
                                             multiple={true}
                                             value={informedEmployees}
@@ -596,13 +621,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 <legend className="scheduler-border">Nhân viên không làm việc nữa</legend>
                                 <div className="form-group">
                                     <label>Chọn người không làm việc nữa</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-inactive-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             // items = {task && task.responsibleEmployees.map(employee => { return { value: employee._id, text: employee.name } })}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             // items = {[{value:1, text: "n1" }, {value:2, text: "n2" }, {value:3, text: "n3" }, {value:4, text: "n4" }, {value:5, text: "n5" }, {value:5, text: "n5" }, ]}
                                             onChange={this.handleChangeActiveEmployees}
                                             multiple={true}
