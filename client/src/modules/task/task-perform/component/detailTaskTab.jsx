@@ -252,7 +252,7 @@ class DetailTaskTab extends Component {
                                         {
                                             (task && task.consultedEmployees.length !== 0) &&
                                             <React-Fragment>
-                                                <dt>Người phê duyệt:</dt>
+                                                <dt>Người hỗ trợ</dt>
                                                 <dd>
                                                     <ul>
                                                         {
@@ -272,7 +272,7 @@ class DetailTaskTab extends Component {
                                         {
                                             (task && task.informedEmployees.length !== 0) &&
                                             <React-Fragment>
-                                            <dt>Người phê duyệt:</dt>
+                                            <dt>Người quan sát</dt>
                                             <dd>
                                                 <ul>
                                                     {
@@ -296,11 +296,11 @@ class DetailTaskTab extends Component {
                                         <dt>Thông tin công việc</dt>
                                         <dd>
                                             <ul>
-                                                <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                <li>Mức độ hoàn thành: &nbsp;&nbsp; {task && task.progress}%</li>
                                                 {
                                                     (task && task.taskInformations.length !== 0) &&
                                                     task.taskInformations.map(info => {
-                                                        return <li>{info.name}&nbsp;&nbsp;{info.value? info.value: "Chưa có thông tin"}</li>
+                                                        return <li>{info.name}: &nbsp;&nbsp;{info.value? info.value: "Chưa có thông tin"}</li>
                                                     })
                                                 }
                                             </ul>
@@ -383,7 +383,7 @@ class DetailTaskTab extends Component {
                                                 </div>);
                                             })
                                         }
-                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa tháng nào được đánh giá</dt>}
+                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa được đánh giá lần nào</dt>}
                                     </div>
                                 </fieldset>
                             </div>
