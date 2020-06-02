@@ -48,6 +48,7 @@ class ModalAddTask extends Component {
    
     handleSubmit = async (event) => {
         const { newTask } = this.state;
+        
         this.props.addTask(newTask);
     }
 

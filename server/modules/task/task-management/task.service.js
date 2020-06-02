@@ -549,7 +549,8 @@ exports.createTask = async (task) => {
         );
     }
 
-    task = await task.populate({path: "organizationalUnit creator parent"},)
+    task = await task.populate("organizationalUnit creator parent").execPopulate();
+    
     return task;
 }
 
