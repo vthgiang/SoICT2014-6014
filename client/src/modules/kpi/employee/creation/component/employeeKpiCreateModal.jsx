@@ -9,11 +9,6 @@ var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 
     constructor(props) {
@@ -154,7 +149,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                     <form className="form-group" id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success'))}>
                         <div className="form-group">
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
-                            <lable style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</lable>
+                            <label style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
 
                         <div className="row">
@@ -187,8 +182,8 @@ class ModalCreateEmployeeKpiSet extends Component {
                         <div className="form-group" >
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.default_target')}</label>
                             <ul>
-                                <li>Hỗ trợ đồng nghiệp các vấn đề chuyên môn (Vai trò C)</li>
-                                <li>Hoàn thành nhiệm vụ phê duyệt (Vai trò A)</li>
+                                <li>Hỗ trợ thực hiện công việc</li>
+                                <li>Phê duyệt công việc</li>
                             </ul>
                         </div>
                     </form>
