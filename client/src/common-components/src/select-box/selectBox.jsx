@@ -7,8 +7,8 @@ class SelectBox extends Component {
         this.state = {}
     }
 
-    componentDidMount(){
-        const { id, onChange, options={minimumResultsForSearch: 15} } = this.props;
+    componentDidMount() {
+        const { id, onChange, options = { minimumResultsForSearch: 15 } } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -52,11 +52,12 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items)) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
+                disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
             return null;
@@ -64,8 +65,8 @@ class SelectBox extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items))
+        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
         return false;
     }
