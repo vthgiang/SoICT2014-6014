@@ -679,3 +679,7 @@ legend.scheduler-border {
     display: inline-block;
     padding-left: 18px;
 }
+
+.chart-display {
+    overflow-x: scroll;
+}

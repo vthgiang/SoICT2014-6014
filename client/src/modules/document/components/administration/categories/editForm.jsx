@@ -13,42 +13,56 @@ class EditForm extends Component {
     handleName = (e) => {
         const value = e.target.value;
         this.setState({
-            documentTypeName: value
+            categoryName: value
         })
     }
 
     handleDescription = (e) => {
         const value = e.target.value;
         this.setState({
-            documentTypeDescription: value
+            categoryDescription: value
         })
     }
 
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.categoryId !== prevState.categoryId) {
+            return {
+                ...prevState,
+                categoryId: nextProps.categoryId,
+                categoryName: nextProps.categoryName,
+                categoryDescription: nextProps.categoryDescription,
+            } 
+        } else {
+            return null;
+        }
+    }
+
     save = () => {
-        const {documentTypeName, documentTypeDescription} = this.state;
-        this.props.createDocumentCategory({
-            name: documentTypeName,
-            description: documentTypeDescription
+        const {categoryId, categoryName, categoryDescription} = this.state;
+        this.props.editDocumentCategory(categoryId, {
+            name: categoryName,
+            description: categoryDescription
         });
     }
 
     render() {
         const {translate}=this.props;
+        const {categoryName, categoryDescription} = this.state;
         return ( 
             <DialogModal
-                modalID="modal-create-document-type"
-                formID="form-create-document-type"
-                title={translate('document.administration.categories.add')}
+                modalID="modal-edit-document-category"
+                formID="form-edit-document-category"
+                title={translate('document.administration.categories.edit')}
                 func={this.save}
             >
-                <form id="form-create-document-type">
+                <form id="form-edit-document-category">
                     <div className="form-group">
                         <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" onChange={this.handleName}/>
+                        <input type="text" className="form-control" onChange={this.handleName} value={categoryName}/>
                     </div>
                     <div className="form-group">
                         <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
-                        <textarea type="text" className="form-control" onChange={this.handleDescription}/>
+                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={categoryDescription}/>
                     </div>
                 </form>
             </DialogModal>
@@ -59,7 +73,7 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createDocumentCategory: DocumentActions.createDocumentCategory
+    editDocumentCategory: DocumentActions.editDocumentCategory
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );

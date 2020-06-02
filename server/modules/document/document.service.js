@@ -36,17 +36,22 @@ exports.getDocuments = async (company, query) => {
 /**
  * Lấy thông tin về một tài liệu văn bản
  */
-exports.showDocument = async (id) => {
-    return await Document.findById(id).populate([
+exports.showDocument = async (id, viewer) => {
+    const doc =  await Document.findById(id).populate([
         { path: 'category', model: DocumentCategory},
         { path: 'domains', model: DocumentDomain},
     ]);
+    doc.numberOfView += 1;
+    doc.views.push({viewer});
+    await doc.save();
+
+    return doc;
 }
 
-exports.increaseNumberView = async (id) => {
+exports.increaseNumberView = async (id, viewer) => {
     const doc = await Document.findById(id);
-
     doc.numberOfView += 1;
+    doc.views.push({ viewer });
     await doc.save();
 
     return doc;
@@ -96,10 +101,9 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query=undefined) => {
-    const doc = await Document.findById(id);
-    console.log("EDIT QUERY:", query)
-
     if(query !== undefined && Object.keys(query).length > 0){
+        console.log("AAAAAAAAAAA: ",id, data, query)
+        const doc = await Document.findById(id);
         switch(query.option) {
             case 'ADD_VERSION':
                 doc.versions.push(data);
@@ -118,6 +122,8 @@ exports.editDocument = async (id, data, query=undefined) => {
                 return doc;
         }
     }else{
+        console.log("dfdfdfdfdf: ",id, data, query)
+        const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
         doc.category = data.category
@@ -146,7 +152,7 @@ exports.editDocument = async (id, data, query=undefined) => {
 
 exports.deleteDocument = async (id) => {
     const doc = await Document.findById(id);
-    console.log("DOCUMENT DELETE: ", doc)
+    
     for (let i = 0; i < doc.versions.length; i++) {
         if(fs.existsSync(doc.versions[i].file)) fs.unlinkSync(doc.versions[i].file);
         if(fs.existsSync(doc.versions[i].scannedFileOfSignedDocument)) fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
@@ -156,22 +162,23 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
-exports.downloadDocumentFile = async (id, numberVersion) => {
+exports.downloadDocumentFile = async (id, numberVersion, downloader) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     doc.numberOfDownload += 1;
+    doc.downloads.push({ downloader });
     await doc.save();
-    console.log("DOC dơn:", doc)
     return {
         path: doc.versions[numberVersion].file,
         name: doc.name
     };
 }
 
-exports.downloadDocumentFileScan = async (id, numberVersion) => {
+exports.downloadDocumentFileScan = async (id, numberVersion, downloader) => {
     const doc = await Document.findById(id);
     if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     doc.numberOfDownload += 1;
+    doc.downloads.push({ downloader });
     await doc.save();
 
     return {
@@ -183,8 +190,21 @@ exports.downloadDocumentFileScan = async (id, numberVersion) => {
 /**
  * Lấy tất cả các loại văn bản
  */
-exports.getDocumentCategories = async (company) => {
-    return await DocumentCategory.find({ company });
+exports.getDocumentCategories = async (company, query) => {
+
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await DocumentCategory.find({company});
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        console.log("option: ", option);
+        return await DocumentCategory.paginate( option , { page, limit });
+    }
 }
 
 exports.createDocumentCategory = async (company, data) => {
@@ -195,7 +215,8 @@ exports.createDocumentCategory = async (company, data) => {
     });
 }
 
-exports.edit = async(id, data) => {
+exports.editDocumentCategory = async(id, data) => {
+   
     const category = await DocumentCategory.findById(id);
     category.name = data.name;
     category.description = data.description;

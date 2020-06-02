@@ -16,6 +16,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { LOCAL_SERVER_API } from '../../../../env';
 import './actionTab.css';
 import { DocumentActions } from '../../../document/redux/actions'
+import { SubTaskTab } from './subTaskTab';
 class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -29,6 +30,7 @@ class ActionTab extends Component {
             valueRating:2.5,
             files: [],
             hover: {},
+            filestask:[],
             commentfiles:[],
             taskcommentfiles: [],
             cmtoftaskcmtfiles: [],
@@ -40,22 +42,22 @@ class ActionTab extends Component {
             showChildTaskComment: "",
             newCommentOfAction: {
                 creator: idUser,
-                content: "",
+                description: "",
                 files: null,
                 taskActionId: null
             },
             newAction: {
                 creator: idUser,
-                content: "",
+                description: "",
                 files: null
             },
             newTaskComment: {
                 creator: idUser,
-                content: "",
+                description: "",
             },
             newCommentOfTaskComment: {
                 creator: idUser,
-                content: "",
+                description: "",
             },
             showEdit: false,
             timer: {
@@ -83,39 +85,6 @@ class ActionTab extends Component {
         this.newContentCommentOfTaskComment= [];
 
     }
-    componentDidUpdate() {
-        if (this.props.id !== undefined) {
-            const { performtasks } = this.props;
-            var currentTimer;
-            if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-            if (currentTimer && this.state.timer.startTimer === "") {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        timer: {
-                            ...currentTimer,
-                            startTimer: currentTimer.startTimer - currentTimer.time
-                        },
-                        startTimer: true,
-                        pauseTimer: currentTimer.pause,
-                    }
-                })
-                // Setup thời thời gian chạy
-                if (currentTimer.pause === false) {
-                    this.timer = setInterval(() => this.setState(state => {
-                        return {
-                            ...state,
-                            timer: {
-                                ...state.timer,
-                                time: Date.now() - this.state.timer.startTimer,
-                            },
-                        }
-                    }), 1000);
-                }
-            }
-        }
-
-    }
     componentDidMount() {
         let script2 = document.createElement('script');
         script2.src = '../lib/main/js/uploadfile/custom.js';
@@ -123,7 +92,7 @@ class ActionTab extends Component {
         script2.defer = true;
         document.body.appendChild(script2);
     }
-
+    
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -132,17 +101,26 @@ class ActionTab extends Component {
             }
         }
     }
-
+    componentDidUpdate(oldProps) {
+        if(oldProps.performtasks.taskactions !== this.props.performtasks.taskactions ){
+            this.props.getTaskById(oldProps.id);
+        }
+        if(oldProps.performtasks.taskcomments !== this.props.performtasks.taskcomments ){
+            this.props.getTaskById(oldProps.id);
+        }
+    }
     shouldComponentUpdate = (nextProps, nextState) => {
-
         if (nextProps.id !== this.state.id) {
-            
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getTaskById(nextProps.id);
-            this.props.getTaskActions(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
-            this.props.getTaskComments(nextProps.id)
+            this.props.getSubTask(nextProps.id);
             // return true;
+            return true;
+        }
+        if(nextProps.performtasks.taskActions !== this.props.performtasks.taskActions){      
+            this.props.getTaskById(nextProps.id);
+            return true;
         }
         return true;
     }
@@ -177,7 +155,6 @@ class ActionTab extends Component {
                 }
             }
         })
-        console.log(this.hover[id])
     }
     setValueRating = async (id,newValue) => {
         await this.setState(state => {
@@ -191,7 +168,6 @@ class ActionTab extends Component {
             }
         })
         var {evaluations} = this.state;
-        console.log(evaluations)
         if(evaluations.rating){
             
             this.props.evaluationAction(id,evaluations);
@@ -282,7 +258,7 @@ class ActionTab extends Component {
                 ...state,
                 newCommentOfAction: {
                     ...state.newCommentOfAction,
-                    content: this.contentCommentOfAction[index].value,
+                    description: this.contentCommentOfAction[index].value,
                     taskActionId: id,
                     task: taskId,
                     commentfiles : this.state.commentfiles
@@ -294,12 +270,12 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("task", newCommentOfAction.task);
         data.append("creator", newCommentOfAction.creator);
-        data.append("content", newCommentOfAction.content);
+        data.append("description", newCommentOfAction.description);
         data.append("taskActionId",newCommentOfAction.taskActionId )
         newCommentOfAction.commentfiles.forEach(x=>{
             data.append("files", x);
         })
-        if (newCommentOfAction.task && newCommentOfAction.content && newCommentOfAction.creator) {
+        if (newCommentOfAction.task && newCommentOfAction.description && newCommentOfAction.creator) {
 
             this.props.addActionComment(data);
             if(this.state.commentfiles){
@@ -318,7 +294,7 @@ class ActionTab extends Component {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    content: this.contentAction[index].value,
+                    description: this.contentAction[index].value,
                     task: taskId,
                     files: this.state.files
                 }
@@ -328,13 +304,13 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("task", newAction.task);
         data.append("creator", newAction.creator);
-        data.append("content", newAction.content);
+        data.append("description", newAction.description);
         newAction.files.forEach(x=>{
             data.append("files", x);
         })
         //Xóa file đã được chọn mỗi khi gửi hoạt động
         
-        if(newAction.creator && newAction.content){
+        if(newAction.creator && newAction.description){
             
             this.props.addTaskAction(data);
             if(this.state.files){
@@ -354,7 +330,7 @@ class ActionTab extends Component {
                 ...state,
                 newTaskComment: {
                     ...state.newTaskComment,
-                    content: this.contentTaskComment[index].value,
+                    description: this.contentTaskComment[index].value,
                     task: taskId,
                     files: this.state.taskcommentfiles
                 }
@@ -365,11 +341,11 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("task", newTaskComment.task);
         data.append("creator", newTaskComment.creator);
-        data.append("content", newTaskComment.content);
+        data.append("description", newTaskComment.description);
         newTaskComment.files.forEach(x=>{
             data.append("files", x);
         })
-        if (newTaskComment.content && newTaskComment.creator) {
+        if (newTaskComment.description && newTaskComment.creator) {
             this.props.createTaskComment(data);
             if(this.state.taskcommentfiles){
                 this.state.taskcommentfiles.forEach(item=>{
@@ -386,7 +362,7 @@ class ActionTab extends Component {
                 ...state,
                 newCommentOfTaskComment: {
                     ...state.newCommentOfTaskComment,
-                    content: this.contentCommentOfTaskComment[index].value,
+                    description: this.contentCommentOfTaskComment[index].value,
                     task: taskId,
                     id: id,
                     files : this.state.cmtoftaskcmtfiles
@@ -397,12 +373,12 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("task", newCommentOfTaskComment.task);
         data.append("creator", newCommentOfTaskComment.creator);
-        data.append("content", newCommentOfTaskComment.content);
+        data.append("description", newCommentOfTaskComment.description);
         data.append("id", newCommentOfTaskComment.id);
         newCommentOfTaskComment.files.forEach(x=>{
             data.append("files", x);
         })
-        if (newCommentOfTaskComment.content && newCommentOfTaskComment.creator) {
+        if (newCommentOfTaskComment.description && newCommentOfTaskComment.creator) {
             this.props.createCommentOfTaskComment(data);
             if(this.state.cmtoftaskcmtfiles){
                 this.state.cmtoftaskcmtfiles.forEach(item=>{
@@ -446,14 +422,14 @@ class ActionTab extends Component {
                 ...state,
                 newCommentOfAction: {
                     ...state.newCommentOfAction,
-                    content: this.newContentCommentOfAction[index].value,
+                    description: this.newContentCommentOfAction[index].value,
                     // file:
                 },
                 editComment: ""
             }
         })
         var { newCommentOfAction } = this.state;
-        if (newCommentOfAction.content) {
+        if (newCommentOfAction.description) {
             this.props.editActionComment(index, newCommentOfAction);
         }
     }
@@ -557,33 +533,41 @@ class ActionTab extends Component {
     onFilesChange = (files) => {
         this.setState({
           files
-        }, () => {
-          console.log(this.state.files)
         })
       }
     onTaskCommentFilesChange = (files) => {
         this.setState({
           taskcommentfiles: files
-        }, () => {
-          console.log(this.state.taskcommentfiles)
         })
       }  
     onCommentFilesChange = (commentfiles) => {
         this.setState({
             commentfiles
-        }, () => {
-          console.log(this.state.commentfiles)
         })
       }
-      onCommentOfTaskCommentFilesChange = (cmtoftaskcmtfiles) => {
+    onCommentOfTaskCommentFilesChange = (cmtoftaskcmtfiles) => {
         this.setState({
             cmtoftaskcmtfiles
-        }, () => {
-          console.log(this.state.cmtoftaskcmtfiles)
         })
       }  
+    handleUploadFile   = (task) => {
+        const data  = new FormData();
+        this.state.filestask.forEach(x => {
+            data.append("files",x)
+        })
+        this.props.uploadFile(task,data);
+        if(this.state.filestask){
+            this.state.filestask.forEach(item=>{
+                this.refs.filesAddTask.removeFile(item)
+            })
+        }
+    }
+    onFilesTaskChange  = (filestask) => {
+        this.setState({
+            filestask
+        })
+    }
     onFilesError = (error, file) => {
-    console.log('error code ' + error.code + ': ' + error.message)
     }
 
     filesRemoveOne = (file) => {
@@ -592,24 +576,38 @@ class ActionTab extends Component {
     filesRemoveAll = () => {
     this.refs.filesAddAction.removeFiles()
     }
-    requestDownloadFile = (id, fileName) => {
-        this.props.downloadFile(id, fileName);
+    requestDownloadFile = (e,id,fileName,type) => {
+        console.log(type)
+        e.preventDefault();
+        if(type ==="actions"){
+            this.props.downloadFileActions(id,fileName,type);
+        }else if (type ==="commentofactions"){
+            this.props.downloadFileCommentOfActions(id,fileName,type);
+        }else if (type === "taskcomments"){
+            this.props.downloadFileTaskComments(id,fileName,type);
+        }else if (type === "commentoftaskcomments"){
+            this.props.downloadFileCommentOfTaskComments(id,fileName,type);
+        }
+
+        
     }
     
     render() {
         const { translate } = this.props;
+        var type = ["actions","commentofactions","taskcomments","commentoftaskcomments"]
         var task, actions, informations;
-        var statusTask;
+        var statusTask,files;
         const { tasks, performtasks, user,auth } = this.props; 
         var actionComments, taskActions,taskComments, actions,logTimer;
         const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const checkUserId = obj =>  obj.creator._id === currentUser;
-        if(typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
-        if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
+        if(typeof tasks.task !== 'undefined' && tasks.task !== null) {
+            task = tasks.task.info;
+            taskComments = task.taskComments;
+            taskActions = task.taskActions;
+        }
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
-
-        console.log(task)
+        if(performtasks.files) files = performtasks.files
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
@@ -635,7 +633,13 @@ class ActionTab extends Component {
                                         {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
                                         <React.Fragment>
                                             <p className="content-level1" data-width="100%">
-                                                <a href="#">{item.creator? item.creator.name : ""} </a>
+                                                <ul className="list-inline" style={{marginBottom:"0px"}}>
+                                                    <li><a href="#" >{item.creator? item.creator.name : ""} </a></li>
+                                                    {item.name &&
+                                                    <li><b>Tên hoạt động: &nbsp; </b> {item.name}</li>}
+                                                </ul>
+                                                
+                                                
                                                 {item.description}
                                                 {(this.props.role === 'responsible' && item.creator) && <div className="btn-group dropleft pull-right">
                                                     <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
@@ -661,7 +665,7 @@ class ActionTab extends Component {
                                                 <li style={{display:"inline-table"}}>
                                                 <div><b>File đính kèm:</b> </div></li>
                                                 <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                    return <div><a href="#" onClick={()=>this.requestDownloadFile('123456', "a")}> {elem.name} </a></div>
+                                                    return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[0])}> {elem.name} </a></div>
                                                 })}</li></React.Fragment>
                                                 }
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
@@ -789,7 +793,7 @@ class ActionTab extends Component {
                                                                     <div><b>File đính kèm:</b></div></li>
                                                                     <li style={{display:"inline-table"}}>
                                                                     {child.files.map(elem => {
-                                                                        return <div><a href="#" onClick={()=>this.requestDownloadFile('123456', "a")}> {elem.name} </a></div>
+                                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[1])}> {elem.name} </a></div>
                                                                     })}
                                                                     </li></React.Fragment>}
                                                             </ul>
@@ -845,7 +849,7 @@ class ActionTab extends Component {
                                                         </Files>
                                                     </div>
                                                     <ul>{this.state.commentfiles.map((file) =>
-                                                        <li className='files-list-item' key={file.id}>
+                                                        <li className='files-list-item' style={{marginLeft: "40px"}} key={file.id}>
                                                             <div className='files-list-item-preview'>
                                                             {file.preview.type === 'image' ?  
                                                             <React.Fragment>
@@ -940,7 +944,7 @@ class ActionTab extends Component {
                                         <React.Fragment>
                                             <p className="content-level1">
                                                 <a href="#">{item.creator.name} </a>
-                                                {item.content}
+                                                {item.description}
                                                 {item.creator._id === currentUser && 
                                                 <div className="btn-group dropleft pull-right">
                                                     <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
@@ -968,7 +972,7 @@ class ActionTab extends Component {
                                                 <li style={{display:"inline-table"}}>
                                                 <div><b>File đính kèm:</b> </div></li>
                                                 <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                    return <div><a href="#" onClick={()=>this.requestDownloadFile('123456', "a")}> {elem.name} </a></div>
+                                                    return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[2])}> {elem.name} </a></div>
                                                 })}</li></React.Fragment>
                                                 }
                                             </ul>
@@ -980,7 +984,7 @@ class ActionTab extends Component {
                                             <div>
                                                 <div className="text-input-level1">
                                                     <textarea
-                                                        defaultValue={item.content}
+                                                        defaultValue={item.description}
                                                         ref={input => this.newContentTaskComment[item._id] = input}
                                                     />
                                                 </div>
@@ -1004,7 +1008,7 @@ class ActionTab extends Component {
                                                         <div>
                                                             <p className="content-level2">
                                                                 <a href="#">{child.creator.name} </a>
-                                                                {child.content}
+                                                                {child.description}
 
                                                                 {child.creator._id === currentUser &&
                                                                 <div className="btn-group dropleft pull-right">
@@ -1029,7 +1033,7 @@ class ActionTab extends Component {
                                                                     <div><b>File đính kèm:</b></div></li>
                                                                     <li style={{display:"inline-table"}}>
                                                                     {child.files.map(elem => {
-                                                                        return <div><a href="#" onClick={()=>this.requestDownloadFile('123456', "a")}> {elem.name} </a></div>
+                                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[3])}> {elem.name} </a></div>
                                                                     })}
                                                                     </li></React.Fragment>}
                                                             </ul>
@@ -1041,7 +1045,7 @@ class ActionTab extends Component {
                                                             <div>
                                                                 <div className="text-input-level2">
                                                                     <textarea
-                                                                        defaultValue={child.content}
+                                                                        defaultValue={child.description}
                                                                         ref={input => this.newContentCommentOfTaskComment[child._id] = input}
                                                                     />
                                                                 </div>
@@ -1156,15 +1160,54 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                            {/* <div id="content"> */}
-                            <input type="file" name="files[]" id="filer_input2" multiple="multiple" />
-                            {/* </div> */}
+                        {/* {files && 
+                            
+                        } */}
+                        
+                        <Files
+                            ref='filesAddTask'
+                            className='files-dropzone-list'
+                            onChange={this.onFilesTaskChange}
+                            onError={this.onFilesError}
+                            multiple
+                            maxFiles={10}
+                            maxFileSize={10000000}
+                            minFileSize={0}
+                            clickable={false}>  
+                            <div className='files-list'>
+                                <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
+                                    <i class="material-icons">attach_file</i>
+                                </a>
+                                <span>Drop files here</span>
+                                <ul>{this.state.filestask.map((file) =>
+                                    <li className='files-list-item' key={file.id}>
+                                        <div className='files-list-item-preview'>
+                                        {file.preview.type === 'image' ?  
+                                        <React.Fragment>
+                                            <img className='files-list-item-preview-image'src={file.preview.url} />
+                                        </React.Fragment>    
+                                        : 
+                                        <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                            <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        </div>
+                                        <div className='files-list-item-content'>
+                                            <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                            <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
+                                        </div>
+                                    </li>
+                                )}
+                                </ul>
+                            </div> 
+                        </Files>
+                        <button type="button" className="pull-right btn btn-primary" style={{marginTop:"10px"}} onClick={(e) => this.handleUploadFile(task._id)}>Upload</button>
                         </div>
 
 
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-
+                            <SubTaskTab 
+                                id = {this.props.id}
+                            />
                         </div>
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
@@ -1196,7 +1239,6 @@ const actionCreators = {
     addActionComment: performTaskAction.addActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,
-    getTaskActions: performTaskAction.getTaskActions,
     addTaskAction: performTaskAction.addTaskAction,
     editTaskAction: performTaskAction.editTaskAction,
     deleteTaskAction: performTaskAction.deleteTaskAction,
@@ -1206,7 +1248,6 @@ const actionCreators = {
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,
-    getTaskComments: performTaskAction.getTaskComments,
     editTaskComment: performTaskAction.editTaskComment,
     deleteTaskComment: performTaskAction.deleteTaskComment,
     createTaskComment: performTaskAction.createTaskComment,
@@ -1215,7 +1256,13 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
-    downloadFile: performTaskAction.downloadFile
+    downloadFileActions: performTaskAction.downloadFileActions,
+    downloadFileCommentOfActions: performTaskAction.downloadFileCommentOfActions,
+    downloadFileTaskComments: performTaskAction.downloadFileTaskComments,
+    downloadFileCommentOfTaskComments: performTaskAction.downloadFileCommentOfTaskComments,
+    getSubTask: taskManagementActions.getSubTask,
+    getTaskComments: performTaskAction.getTaskComments,
+    uploadFile: performTaskAction.uploadFile
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

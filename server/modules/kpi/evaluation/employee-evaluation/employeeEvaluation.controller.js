@@ -189,19 +189,142 @@ exports.setPointKPI = async (req, res) => {
 
 // cập nhật điểm level
 exports.setTaskImportanceLevel = async (req, res) => {
-   try {
+    try {
         const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.body);
-     //  await LogInfo(req.user.email, `Set task importance level`, req.user.company);
+        //  await LogInfo(req.user.email, `Set task importance level`, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['set_task_importance_level_success'],
             content: kpimembers
         });
-    } catch (error) {
-     //      await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(400).json({
-            messages: ['set_task_importance_level_fail'],
-            message: error
-        });
+        } catch (error) {
+            //   await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
+            res.status(400).json({
+                messages: ['set_task_importance_level_fail'],
+                message: error
+            });
+        }
     }
-}
+
+
+exports.getAllComments = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.getAllComments( req.params);
+          await LogInfo(req.user.email, `Get all comments`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['get_all_comments_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `Get all comments`, req.user.company);
+           res.status(400).json({
+               messages: ['get_all_comments_fail'],
+               message: error
+           });
+       }
+    }
+exports.createCommentOfApproveKPI = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.createCommentOfApproveKPI( req.body);
+          await LogInfo(req.user.email, `Create new comment`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['create_new_comment_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `Create new comment`, req.user.company);
+           res.status(400).json({
+               messages: ['create_new_comment_fail'],
+               message: error
+           });
+       }
+   }
+exports.editCommentOfApproveKPI = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.editCommentOfApproveKPI( req.params,req.body);
+          await LogInfo(req.user.email, `edit comment`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['edit_comment_of_approve_kpi_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `edit comment`, req.user.company);
+           res.status(400).json({
+               messages: ['edit_comment_of_approve_kpi_fail'],
+               message: error
+           });
+       }
+   }
+exports.deleteCommentOfApproveKPI = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.deleteCommentOfApproveKPI( req.params);
+          await LogInfo(req.user.email, `Set task importance level`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['delete_comment_of_approve_kpi_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `Delete comment`, req.user.company);
+           res.status(400).json({
+               messages: ['delete_comment_of_approve_kpi_fail'],
+               message: error
+           });
+       }
+   }
+
+   exports.createCommentOfComment = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.createCommentOfComment( req.body);
+          await LogInfo(req.user.email, `Create new comment of comment`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['create_new_comment_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `Create new comment of comment`, req.user.company);
+           res.status(400).json({
+               messages: ['create_new_comment_fail'],
+               message: error
+           });
+       }
+   }
+
+   exports.editCommentOfComment = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.editCommentOfComment( req.params,req.body);
+          await LogInfo(req.user.email, `edit comment`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['edit_comment_of_comment_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `edit comment`, req.user.company);
+           res.status(400).json({
+               messages: ['edit_comment_of_comment_fail'],
+               message: error
+           });
+       }
+   }
+exports.deleteCommentOfComment = async (req, res) => {
+      try {
+           const kpimembers = await KPIMemberService.deleteCommentOfComment( req.params);
+          await LogInfo(req.user.email, `Delete comment`, req.user.company);
+           res.status(200).json({
+               success: true,
+               messages: ['delete_comment_of_comment_success'],
+               content: kpimembers
+           });
+       } catch (error) {
+             await LogInfo(req.user.email, `Delete comment`, req.user.company);
+           res.status(400).json({
+               messages: ['delete_comment_of_comment_fail'],
+               message: error
+           });
+       }
+   }

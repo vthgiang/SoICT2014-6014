@@ -74,10 +74,11 @@ function downloadDocumentFileScan(id, numberVersion) {
     }, false, true, 'document');
 }
 
-function getDocumentCategories() {
+function getDocumentCategories(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'GET',
+        params
     }, false, true, 'document');
 }
 

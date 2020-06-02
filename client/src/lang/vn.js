@@ -386,7 +386,7 @@ export default {
         },
 
         document: {
-            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',different_versions: 'Phiên bản khác',
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',different_versions: 'Phiên bản khác', amount: 'Số lượng',
             name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn', views: 'Số lần xem', downloads: 'Số lần download',
             add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản', add_version: 'Thêm phiên bản mới',
@@ -1469,7 +1469,8 @@ export default {
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
-            action: 'Hành động'
+            action: 'Hành động',
+            priority: 'Độ ưu tiên'
         },
 
         task: {

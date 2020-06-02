@@ -36,6 +36,24 @@ const DocumentSchema = new Schema({
     officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
         type: String
     },
+    views: [{
+        viewer: {
+            type: String
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        }
+    }],
+    downloads: [{
+        downloader: {
+            type: String
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        },
+    }],
     numberOfView: { //số lần xem
         type: Number,
         default: 0

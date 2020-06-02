@@ -160,7 +160,22 @@ function downloadDocumentFileScan(id, fileName, numberVersion){
     }
 }
 
-function getDocumentCategories(){
+function getDocumentCategories(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST});
+            DocumentServices.getDocumentCategories(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE});
+            })
+        }
+    }
     return dispatch => {
         dispatch({ type: DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST});
         DocumentServices.getDocumentCategories()
@@ -193,10 +208,10 @@ function createDocumentCategory(data){
     }
 }
 
-function editDocumentCategory(data){
+function editDocumentCategory(id, data){
     return dispatch => {
         dispatch({ type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST});
-        DocumentServices.editDocumentCategory(data)
+        DocumentServices.editDocumentCategory(id, data)
             .then(res => {
                 dispatch({
                     type: DocumentConstants.EDIT_DOCUMENT_CATEGORY_SUCCESS,

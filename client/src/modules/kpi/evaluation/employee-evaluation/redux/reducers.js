@@ -195,7 +195,20 @@ export function kpimembers(state = {}, action) {
         };
     //----------------------------------------------------------------
 
-
+    case kpiMemberConstants.GETALL_COMMENTS_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.GETALL_COMMENTS_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
+        return { 
+          error: action.payload
+        };
 
     default:
       return state

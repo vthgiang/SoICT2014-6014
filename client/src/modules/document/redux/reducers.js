@@ -60,6 +60,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.PAGINATE_DOCUMENTS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_REQUEST:  
         case DocumentConstants.GET_DOCUMENT_CATEGORIES_REQUEST:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_REQUEST:        
         case DocumentConstants.GET_DOCUMENT_DOMAINS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
@@ -90,6 +91,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.DELETE_DOCUMENT_FAILE:
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE:
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -131,6 +133,28 @@ export function documents(state = initState, action) {
                     ...state.administration,
                     data: {
                         ...state.administration.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
+            };
+
+        case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    categories: {
+                        ...state.administration.categories,
                         paginate: action.payload.docs,
                         totalDocs: action.payload.totalDocs,
                         limit: action.payload.limit,
@@ -219,9 +243,9 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_SUCCESS:
             index = findIndex(state.administration.categories.list, action.payload._id);
-            if(index !== -1) state.administration.categories.list.splice(index, 1);
+            if(index !== -1) state.administration.categories.list[index] = action.payload;
             indexPaginate = findIndex(state.administration.categories.paginate, action.payload._id);
-            if(indexPaginate !== -1) state.administration.categories.paginate.splice(indexPaginate, 1);
+            if(indexPaginate !== -1) state.administration.categories.paginate[indexPaginate] = action.payload;
             return {
                 ...state,
                 isLoading: false

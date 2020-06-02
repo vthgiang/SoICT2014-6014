@@ -24,6 +24,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         this.state = {
             userId: userId,
+            inactiveEmployees: [],
             task: task,
             info: {}
             // taskInformation: taskInformation,
@@ -50,7 +51,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Number'
             }
             return {
                 ...state,
@@ -69,7 +71,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Text'
             }
             return {
                 ...state,
@@ -87,7 +90,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'Date'
             }
             return {
                 ...state,
@@ -103,7 +107,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
-                code: code
+                code: code,
+                type: 'SetOfValues'
             }
             return {
                 ...state,
@@ -116,7 +121,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
-                code: name
+                code: name,
+                type: 'Boolean'
             }
             return {
                 ...state,
@@ -181,12 +187,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    handleChangeActiveEmployees = (e) =>{
-        var {name, value} = e.target;
-        this.setState(state=>{
+    handleChangeActiveEmployees = async (value) =>{
+        // var {name, value} = e.target;
+        // console.log('e===========================================', e.target, e.target.value);
+        await this.setState(state=>{
             return {
                 ...state,
-                activeEmployees : e.target.checked
+                inactiveEmployees : value
             }
         })
     }
@@ -321,13 +328,36 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.setState(state=>{
             return {
                 ...state,
-                informEmployees: value
+                informedEmployees: value
             }
         });
     }
 
     save = () => {
-        console.log('submitted form edit task');
+
+        var evaluations, taskId;
+        taskId = this.props.id;
+        evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        var data = {
+            name: this.state.taskName,
+            description: this.state.taskDescription,
+            status: this.state.statusOptions,
+            priority: this.state.priorityOptions,
+            evaluateId: evaluations._id,
+            user: this.state.userId,
+            progress: this.state.progress,
+
+            accountableEmployees: this.state.accountableEmployees,
+            consultedEmployees: this.state.consultedEmployees,
+            responsibleEmployees: this.state.responsibleEmployees,
+            informedEmployees: this.state.informedEmployees,
+            inactiveEmployees: this.state.inactiveEmployees,
+
+            info: this.state.info,
+        }
+
+        console.log('data', data, taskId);
+        this.props.editTaskByAccountableEmployees(data, taskId);
     }
 
     componentDidMount() {
@@ -362,7 +392,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     render() {
         const { task } = this.state;
         const { errorTaskName, errorTaskDescription, errorTaskProgress, 
-            responsibleEmployees, accountableEmployees, consultedEmployees, informEmployees 
+            responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
         const { user } = this.props;
@@ -370,7 +400,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (user.userdepartments) departmentUsers = user.userdepartments;
 
         let priorityOptions = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
-        let statusOptions = [{value: 1, text: "Inprocess"}, {value: 2, text:"WaitForApproval"}, {value: 3, text:"Finished"}, {value: 4, text:"Delayed"}, {value: 5, text:"Canceled"}];
+        let statusOptions = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
         // console.log('task', task);
 
@@ -420,7 +450,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                                     {/*Trạng thái*/}
                                     <div className="form-group">
-                                        <label>Mức ưu tiên</label>
+                                        <label>Trạng thái</label>
                                         {
                                             <SelectBox
                                                 id={`select-status-${this.props.perform}-${this.props.role}`}
@@ -553,7 +583,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
                                             onChange={this.handleSelectedInformEmployee}
                                             multiple={true}
-                                            value={informEmployees}
+                                            value={informedEmployees}
                                         />
                                     }
                                 </div>
@@ -563,8 +593,26 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             </div>
 
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Chọn nhân viên không làm việc nữa</legend>
-                                <div className="checkbox">
+                                <legend className="scheduler-border">Nhân viên không làm việc nữa</legend>
+                                <div className="form-group">
+                                    <label>Chọn người không làm việc nữa</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-inactive-employee-${this.props.perform}-${this.props.role}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            // items = {task && task.responsibleEmployees.map(employee => { return { value: employee._id, text: employee.name } })}
+                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            // items = {[{value:1, text: "n1" }, {value:2, text: "n2" }, {value:3, text: "n3" }, {value:4, text: "n4" }, {value:5, text: "n5" }, {value:5, text: "n5" }, ]}
+                                            onChange={this.handleChangeActiveEmployees}
+                                            multiple={true}
+                                            value={inactiveEmployees}
+                                        />
+                                    }
+                                    {/* về sau nếu muốn xóa nhân viên trong mảng nhân viên phía client thì dùng splice(index,1) server thì dùng $pull */}
+                                </div>
+
+                                {/* <div className="checkbox">
                                     {
                                         task && task.responsibleEmployees.map(r=>{
                                             return <div>
@@ -576,11 +624,35 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                         /> {r.name}
                                                     </label>
                                                     <br/>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            value="cb1"
+                                                            onChange={this.handleChangeActiveEmployees}
+                                                        /> cb1
+                                                    </label>
+                                                    <br/>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            value="cb2"
+                                                            onChange={this.handleChangeActiveEmployees}
+                                                        /> cb2
+                                                    </label>
+                                                    <br/>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            value="cb3"
+                                                            onChange={this.handleChangeActiveEmployees}
+                                                        /> cb3
+                                                    </label>
+                                                    <br/>
                                                 </div>
                                         })
                                     } 
                                     
-                                </div>
+                                </div> */}
                             </fieldset>
                         </form>
                     </DialogModal>
@@ -597,7 +669,8 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
 }
 
 const modalEditTaskByAccountableEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByAccountableEmployee));
