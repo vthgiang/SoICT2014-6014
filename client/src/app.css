@@ -218,20 +218,21 @@ legend.scheduler-border {
     border-bottom: 1px solid #eae9f5;
 }
 .box.box-solid.description > .box-body{
-    padding: 0;
+    padding: 10px 0 0 15px;
 }
-.box.box-solid.description > .box-body dt{
-    padding: 10px 5px 10px 15px;
+dt{
+    padding: 0px 5px 10px 0px;
     color: #605ca8;
 }
-.box.box-solid.description > .box-body dd{
-    padding: 0px 5px 5px 15px;
+dd{
+    padding: 0px 5px 5px 0px;
     margin-bottom: 5px;
+    line-height: 2;
 }
-.box.box-solid.description > .box-body dd > ul{
+dd > ul{
     margin: 0px;
 }
-.box.box-solid.description > .box-body dd > ul > li{
+dd > ul > li{
     padding: 0px 5px 5px 5px;
 }
 

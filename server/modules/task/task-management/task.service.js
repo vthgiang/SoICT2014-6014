@@ -505,10 +505,10 @@ exports.createTask = async (task) => {
     splitter = task.endDate.split("-");
     var endDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     
+    let taskTemplate, cloneActions=[];
     if(task.taskTemplate !== ""){
-        var taskTemplate = await TaskTemplate.findById(task.taskTemplate);
+        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
-        var cloneActions = [];
 
         for (let i in taskActions) {
             cloneActions[i] = {
@@ -518,10 +518,6 @@ exports.createTask = async (task) => {
             }
         }
     }
-    var evaluations = [{
-        results : [],
-        taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-    }]
 
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
@@ -532,11 +528,10 @@ exports.createTask = async (task) => {
         endDate: endDate,
         priority: task.priority,
         taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: (taskTemplate)? taskTemplate.taskInformations: [],
+        taskInformations: taskTemplate? taskTemplate.taskInformations: [],
         taskActions: taskTemplate? cloneActions: [],
         parent: (task.parent==="")? null : task.parent,
         level: level,
-        evaluations: evaluations,
         responsibleEmployees: task.responsibleEmployees,
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
@@ -544,7 +539,7 @@ exports.createTask = async (task) => {
     });
 
     if(task.taskTemplate !== null){
-        var taskTemplate = await TaskTemplate.findByIdAndUpdate(
+        await TaskTemplate.findByIdAndUpdate(
             task.taskTemplate, { $inc: { 'numberOfUse': 1} }, { new: true }
         );
     }

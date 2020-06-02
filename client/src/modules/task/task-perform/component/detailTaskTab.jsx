@@ -149,8 +149,6 @@ class DetailTaskTab extends Component {
         if(task && task.priority === 2) priority ="Trung bình";
         if(task && task.priority === 1) priority ="Thấp";
 
-        // console.log(`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-evaluate`);
-
         return (
       
             <div>
@@ -196,9 +194,9 @@ class DetailTaskTab extends Component {
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
-                        <p><strong>Độ ưu tiên công việc:</strong> {priority}</p>
-                        <p><strong>Trạng thái công việc:</strong> {task && task.status}</p>
-                        <p><strong>Thời gian thực hiện:</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
+                        <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {priority}</p>
+                        <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && task.status}</p>
+                        <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         {/* </div>
                                 <hr />
                             </div>
@@ -212,17 +210,15 @@ class DetailTaskTab extends Component {
 
                                     {/* Description */}
                                     <div>
-                                        <strong>Mô tả</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>{task && task.description}</p>
-                                        </div>
+                                        <dt>Mô tả</dt>
+                                        <dd>
+                                            {task && task.description}
+                                        </dd>
                                     </div>
 
-                                    <br />
                                     <div>
-                                        <strong>Vai trò</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>Người thực hiện:</p>
+                                        <dt>Người thực hiện</dt>
+                                        <dd>
                                             <ul>
                                                 {
                                                     (task && task.responsibleEmployees.length !== 0) &&
@@ -236,7 +232,9 @@ class DetailTaskTab extends Component {
                                                     })
                                                 }
                                             </ul>
-                                            <p>Người phê duyệt:</p>
+                                        </dd>
+                                        <dt>Người phê duyệt</dt>
+                                        <dd>
                                             <ul>
                                                 {
                                                     (task && task.accountableEmployees.length !== 0) &&
@@ -249,11 +247,13 @@ class DetailTaskTab extends Component {
                                                     })
                                                 }
                                             </ul>
+                                        </dd>
 
-                                            {
-                                                (task && task.consultedEmployees.length !== 0) &&
-                                                <React-Fragment>
-                                                    <p>Người phê duyệt:</p>
+                                        {
+                                            (task && task.consultedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                                <dt>Người phê duyệt:</dt>
+                                                <dd>
                                                     <ul>
                                                         {
                                                             (task && task.consultedEmployees.length !== 0) &&
@@ -266,45 +266,45 @@ class DetailTaskTab extends Component {
                                                             })
                                                         }
                                                     </ul>
-                                                </React-Fragment>
-                                            }
-                                            {
-                                                (task && task.informedEmployees.length !== 0) &&
-                                                <React-Fragment>
-                                                    <p>Người phê duyệt:</p>
-                                                    <ul>
-                                                        {
-                                                            (task && task.informedEmployees.length !== 0) &&
-                                                            task.informedEmployees.map(item => {
-                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) {
-                                                                    return <li><u>{item.name}</u></li>
-                                                                } else {
-                                                                    return <li>{item.name}</li>
-                                                                }
-                                                            })
-                                                        }
-                                                    </ul>
-                                                </React-Fragment>
-                                            }
-                                        </div>
+                                                </dd>
+                                            </React-Fragment>
+                                        }
+                                        {
+                                            (task && task.informedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                            <dt>Người phê duyệt:</dt>
+                                            <dd>
+                                                <ul>
+                                                    {
+                                                        (task && task.informedEmployees.length !== 0) &&
+                                                        task.informedEmployees.map(item => {
+                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                                return <li><u>{item.name}</u></li>
+                                                            } else {
+                                                                return <li>{item.name}</li>
+                                                            }
+                                                        })
+                                                    }
+                                                </ul>
+                                            </dd>
+                                            </React-Fragment>
+                                        }
                                     </div>
 
-                                    <br />
                                     <div>
                                         {/* Task information*/}
-                                        <strong>Thông tin công việc</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>-&nbsp;Mức độ hoàn thành: {task && task.progress}%</p>
-                                            {
-                                                (task && task.taskInformations.length !== 0) &&
-                                                task.taskInformations.map(info => {
-                                                    return <div>
-                                                        <p>-&nbsp;{info.name}&nbsp;-&nbsp;Giá trị: {info.value?info.value:"Chưa có thông tin"}</p>
-                                                        {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
-                                                    </div>
-                                                })
-                                            }
-                                        </div>
+                                        <dt>Thông tin công việc</dt>
+                                        <dd>
+                                            <ul>
+                                                <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                {
+                                                    (task && task.taskInformations.length !== 0) &&
+                                                    task.taskInformations.map(info => {
+                                                        return <li>{info.name}&nbsp;&nbsp;{info.value? info.value: "Chưa có thông tin"}</li>
+                                                    })
+                                                }
+                                            </ul>
+                                        </dd>
                                     </div>
                                 </fieldset>
                             </div>
@@ -324,100 +324,66 @@ class DetailTaskTab extends Component {
                                                 </div> */}
 
                                         {
-                                            (task && task.evaluations.length !== 0 ) &&
+                                            (task && task.evaluations && task.evaluations.length !== 0 ) &&
+                                            task.evaluations.map(eva => {
+                                                return (
+                                                <div style={{paddingBottom: 10}}>
+                                                    <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
+                                                    <dd>
+                                                        <div><strong>Điểm các thành viên</strong> (Tự động - Tự đánh giá - Người phê duyệt đánh giá)</div>
+                                                        <ul>
+                                                        {
+                                                            eva.results.map((res) => {
+                                                                return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                            })
+                                                        }
+                                                        </ul>
 
-                                            ( task.evaluations.map(eva => {
-                                                if (eva.results.length !== 0) {
-                                                    return <div>
-                                                        <strong>Đánh giá ngày: <span>( {this.formatDate(eva.date)} )</span></strong>
-
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            {
-                                                                eva.results.map((res) => {
-                                                                    return <div >
-                                                                        <p>{res.employee.name}&nbsp;-&nbsp;{res.role}&nbsp;-&nbsp;{res.automaticPoint}-{res.employeePoint}-{res.approvedPoint}</p>
-                                                                    </div>
-                                                                })
-                                                            }
-                                                        </div>
-                                                        <br />
 
                                                         {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            <p>Mức độ hoàn thành: {task && task.progress}%</p>
-                                                            {(task && task.point && task.point !== -1) ?
-                                                                <p>Điểm công việc: {task && task.point}%</p> :
-                                                                <p>Điểm công việc: Chưa được tính</p>
-                                                            }
+                                                        <div><strong>Thông tin công việc</strong></div>
+                                                        <ul>
+                                                        <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                        {(task && task.point && task.point !== -1) ?
+                                                            <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
+                                                            <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
+                                                        }
 
-                                                            {
-                                                                eva.taskInformations.map(info => {
-                                                                    return <div>
-                                                                        <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
-                                                                    </div>
-                                                                })
-                                                            }
-                                                        </div>
-                                                        <br />
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            {/* KPI */}
-                                                            {(eva.kpis.length !== 0) ?
-                                                                (
-                                                                    eva.kpis.map(item => {
-                                                                        return <div>
-                                                                            <p>KPI &nbsp; {item.employee.name}: &nbsp;</p>
-                                                                            {(item.kpis.length !== 0) ?
-                                                                                <ol>
-                                                                                    {
-                                                                                        item.kpis.map(kpi => {
-                                                                                            return <div>
-                                                                                                <li>{kpi.name}</li>
-                                                                                            </div>
-                                                                                        })
-                                                                                    }
-                                                                                </ol>
-                                                                                : <p>Chưa liên kết công việc với KPI</p>
-                                                                            }
-                                                                        </div>
-                                                                    })
-                                                                ): <p>Chưa ai liên kết công việc với KPI</p>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else {
-                                                    return <div style={{ marginLeft: "10px" }}>
-                                                        <div><p style={{color: "red", fontWeight: "bold"}}>Chưa đánh giá công việc tháng nào</p></div>
-                                                        <br/>
+                                                        {
+                                                            eva.taskInformations.map(info => {
+                                                                return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</li>
+                                                            })
+                                                        }
+                                                        </ul>
+
+
                                                         {/* KPI */}
+                                                        <div><strong>Liên kết KPI</strong></div>
+                                                        <ul>
                                                         {(eva.kpis.length !== 0) ?
                                                             (
                                                                 eva.kpis.map(item => {
-                                                                    return <div>
-                                                                        <p>KPI &nbsp; {item.employee.name}: &nbsp;</p>
+                                                                    return (<li>KPI {item.employee.name}
                                                                         {(item.kpis.length !== 0) ?
                                                                             <ol>
                                                                                 {
                                                                                     item.kpis.map(kpi => {
-                                                                                        return <div>
-                                                                                            <li>{kpi.name}</li>
-                                                                                        </div>
+                                                                                        return <li>{kpi.name}</li>
                                                                                     })
                                                                                 }
                                                                             </ol>
-                                                                            : <p>Chưa liên kết công việc với KPI</p>
+                                                                            : <span>&nbsp;&nbsp; Chưa liên kết công việc với KPI</span>
                                                                         }
-                                                                    </div>
+                                                                    </li>)
                                                                 })
-                                                            ) : <p>Chưa ai liên kết công việc với KPI</p>
+                                                            ): <li>Chưa ai liên kết công việc với KPI</li>
                                                         }
-                                                    </div>
-                                                }
-                                            })) 
-                                            // : <div>
-                                            //     <p>Chưa đánh giá công viêc</p>
-                                            // </div> 
+                                                        </ul>
+                                                    </dd>
+                                                </div>);
+                                            })
                                         }
+                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa tháng nào được đánh giá</dt>}
                                     </div>
                                 </fieldset>
                             </div>
