@@ -15,11 +15,9 @@ export const performTaskAction = {
     createResultTask,
     editResultTask,
     addTaskAction,
-    getTaskActions,
     editTaskAction,
     deleteTaskAction,
     createTaskComment,
-    getTaskComments,
     editTaskComment,
     deleteTaskComment,
     createCommentOfTaskComment,
@@ -33,7 +31,6 @@ export const performTaskAction = {
     downloadFileTaskComments,
     uploadFile
 };
-
 // Create result task
 function createResultTask(result) {
     return dispatch => {
@@ -125,18 +122,6 @@ function stopTimerTask(newTimer) {
                     dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
                 }
             );
-    };
-}
-//get Action task
-function getTaskActions(task) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.GET_TASKACTION_REQUEST });
-
-        performTaskService.getTaskAction(task)
-            .then(
-                payload => dispatch({ type: performTaskConstants.GET_TASKACTION_SUCCESS, payload }),
-                error => dispatch({ type: performTaskConstants.GET_TASKACTION_FAILURE, error })
-            )
     };
 }
 
@@ -233,17 +218,6 @@ function createTaskComment(newComment) {
                 error => dispatch({ type: performTaskConstants.CREATE_TASKCOMMENT_FAILURE, error })
             );
     }
-}
-function getTaskComments(task) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_REQUEST });
-
-        performTaskService.getTaskComments(task)
-            .then(
-                payload => dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_SUCCESS, payload }),
-                error => dispatch( { type: performTaskConstants.GET_TASKCOMMENTS_FAILURE, error })
-            )
-    };
 }
 function editTaskComment(id, newComment) {
     return dispatch => {

@@ -112,25 +112,15 @@ export function performtasks(state = {}, action) {
                 ...state,
                 loading: true
             };
-        case performTaskConstants.GET_TASKACTION_SUCCESS:
-            return {
-                ...state,
-                taskactions: action.payload.data.content
-            };
-        case performTaskConstants.GET_TASKACTION_FAILURE:
-            return {
-                error: action.error
-            };    
-        case performTaskConstants.ADDNEW_ACTIONCOMMENT_REQUEST:
-            return {
-                ...state,
-                adding: true
-            };
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions : action.payload.data.content
-            };
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE:
             return {
                 error: action.error
@@ -141,9 +131,13 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
                 ...state,
-                taskactions : action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
             }
         case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
             return {
@@ -155,10 +149,14 @@ export function performtasks(state = {}, action) {
                 editing : true
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions : action.payload.data.content
-            };
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
         case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:
             return {
                 error: action.error
@@ -169,10 +167,14 @@ export function performtasks(state = {}, action) {
                 editing :true
             };
         case performTaskConstants.EDIT_TASKACTION_SUCCESS:
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions : action.payload.data.content
-            };
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
         case performTaskConstants.EDIT_TASKACTION_FAILURE:
             return {
                 error: action.error
@@ -183,21 +185,27 @@ export function performtasks(state = {}, action) {
                 deleting : true
             };
         case performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS:
-            
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions : action.payload.data.content
-            };
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
         case performTaskConstants.DELETE_TASKACTION_REQUEST:
             return {
                 ...state,
                 deleting : true
             }
         case performTaskConstants.DELETE_TASKACTION_SUCCESS:
-            
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions : action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
             }
         case performTaskConstants.DELETE_TASKACTION_FAILURE:
             return {
@@ -209,25 +217,15 @@ export function performtasks(state = {}, action) {
                 adding: true
             }
         case performTaskConstants.CREATE_TASKCOMMENT_SUCCESS:
-            return {
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
+             return {
                 ...state,
-                taskcomments: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskcomments
+                }
             }
         case performTaskConstants.CREATE_TASKCOMMENT_FAILURE:
-            return {
-                error: action.error
-            }
-        case performTaskConstants.GET_TASKCOMMENTS_REQUEST:
-            return {
-                ...state,
-                loading: true
-            }
-        case performTaskConstants.GET_TASKCOMMENTS_SUCCESS:
-            return {
-                ...state,
-                taskcomments: action.payload.data.content
-            }
-        case performTaskConstants.GET_TASKCOMMENTS_FAILURE:
             return {
                 error: action.error
             }
@@ -237,9 +235,13 @@ export function performtasks(state = {}, action) {
                 editing: true
             }
         case performTaskConstants.EDIT_TASKCOMMENT_SUCCESS:
-            return {
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
+             return {
                 ...state,
-                taskcomments: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskcomments
+                }
             }
         case performTaskConstants.EDIT_TASKCOMMENT_FAILURE:
             return {
@@ -251,11 +253,14 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }                 
         case performTaskConstants.DELETE_TASKCOMMENT_SUCCESS:
-
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
             return {
-                ...state,
-                taskcomments: action.payload.data.content
-            } 
+               ...state,
+               task : {
+                   ...state.task,
+                   info : taskcomments
+               }
+           }
         case performTaskConstants.DELETE_TASKCOMMENT_FAILURE:
             return {
                 error: action.error
@@ -266,9 +271,13 @@ export function performtasks(state = {}, action) {
                 adding: true
             }
         case performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_SUCCESS:
-            return {
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
+             return {
                 ...state,
-                taskcomments: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskcomments
+                }
             }
         case performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_FAILURE:
             return {
@@ -281,9 +290,13 @@ export function performtasks(state = {}, action) {
                 editing: true
             }
         case performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_SUCCESS:
-            return {
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
+             return {
                 ...state,
-                taskcomments: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskcomments
+                }
             }
         case performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE:
             return {
@@ -296,9 +309,13 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS:
-            return {
+            var taskcomments = {...state.task.info,taskComments:action.payload.data.content}
+             return {
                 ...state,
-                taskcomments: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskcomments
+                }
             }
         case performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE:
             return {
@@ -311,10 +328,14 @@ export function performtasks(state = {}, action) {
                 evaluating: true
             }
         case performTaskConstants.EVALUATION_ACTION_SUCCESS:
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions: action.payload.data.content
-            } 
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
         case performTaskConstants.EVALUATION_ACTION_FAILURE:
             return {
                 ...state,
@@ -326,9 +347,13 @@ export function performtasks(state = {}, action) {
                 abc : true
             }
         case performTaskConstants.CONFIRM_ACTION_SUCCESS:
-            return {
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
                 ...state,
-                taskactions: action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
             }
         case performTaskConstants.CONFIRM_ACTION_FAILURE:
             return {
