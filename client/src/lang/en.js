@@ -1219,6 +1219,7 @@ export default {
                 action_edit: 'Start working',
                 action_delete: 'Delete task',
                 action_store: 'Store task',
+                action_restore: 'Restore task',
                 action_add: 'Add new subtask',
                 action_start_timer: 'Start timer'
             },

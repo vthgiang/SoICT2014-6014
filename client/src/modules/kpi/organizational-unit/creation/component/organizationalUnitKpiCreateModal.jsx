@@ -130,8 +130,8 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         <div className="form-group">
                             <label className="col-sm-12">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>
-                                <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
-                                <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
+                                <li>Hỗ trợ thực hiện công việc</li>
+                                <li>Phê duyệt công việc</li>
                             </ul>
                         </div>
 

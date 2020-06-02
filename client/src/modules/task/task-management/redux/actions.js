@@ -316,7 +316,7 @@ function editArchivedOfTask(id) {
                 });
             })
             .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+                dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE, error });
             });
     };
 }

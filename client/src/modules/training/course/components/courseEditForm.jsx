@@ -181,7 +181,7 @@ class CourseEditForm extends Component {
     // Bắt sự kiện thêm nhân viên tham gia
     handleEmployeeChange = (value) => {
         this.setState({
-            addEmployees: value
+            addEmployees: value.map(x => { return { _id: x, result: 'failed' } })
         })
     }
 
@@ -201,6 +201,22 @@ class CourseEditForm extends Component {
         })
     }
 
+    handleResultChange = async (id, value) => {
+        let listEmployees = this.state.listEmployees;
+        for (let n in listEmployees) {
+            if (listEmployees[n]._id === id) {
+                if (value === 'pass') {
+                    listEmployees[n].result = 'failed'
+                } else if (value === 'failed') {
+                    listEmployees[n].result = 'pass'
+                }
+            }
+        }
+        await this.setState({
+            listEmployees: listEmployees
+        })
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
@@ -212,9 +228,13 @@ class CourseEditForm extends Component {
     }
 
     save = () => {
+        var partStart = this.state.startDate.split('-');
+        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        var partEnd = this.state.startDate.split('-');
+        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
         if (this.isFormValidated()) {
-            this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees });
+            this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees, startDate: startDate, endDate: endDate });
         }
     }
 
@@ -253,15 +273,12 @@ class CourseEditForm extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        console.log(nextProps.educationProgram._id);
         if (nextProps._id !== this.state._id) {
             let educationInfo = this.props.education.listAll.filter(x => x._id === nextProps.educationProgram._id);
             this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
         }
         return true;
     }
-
-
     render() {
         console.log(this.state);
         var userlist = [];
@@ -273,13 +290,17 @@ class CourseEditForm extends Component {
         if (employeesManager.listAllEmployees.length !== 0) {
             userlist = employeesManager.listAllEmployees;
         }
-        let employeeInfor = [];
+        let employeeInfors = [];
         if (listEmployees.length !== 0) {
             for (let n in listEmployees) {
-                userlist = userlist.filter(x => x._id !== listEmployees[n]);
-                employeeInfor = employeesManager.listAllEmployees.filter(x => x._id === listEmployees[n]).concat(employeeInfor);
+                userlist = userlist.filter(x => x._id !== listEmployees[n]._id);
+                let employeeInfor = employeesManager.listAllEmployees.filter(x => x._id === listEmployees[n]._id);
+                
+                employeeInfor[0] = { ...employeeInfor[0], result: listEmployees[n].result }
+                employeeInfors = employeeInfor.concat(employeeInfors);
             }
         }
+        console.log(employeeInfors);
         return (
             <React.Fragment>
                 <DialogModal
@@ -408,12 +429,25 @@ class CourseEditForm extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (employeeInfor.length !== 0 && employeeInfor !== undefined) &&
-                                    employeeInfor.map((x, index) => (
+                                    (employeeInfors.length !== 0 && employeeInfors !== undefined) &&
+                                    employeeInfors.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.employeeNumber}</td>
                                             <td>{x.fullName}</td>
-                                            <td></td>
+                                            <td>
+                                                <div>
+                                                    <div className="radio-inline">
+                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={x.result === 'pass'}
+                                                            onChange={() => this.handleResultChange(x._id, x.result)} />
+                                                        <label>Đạt</label>
+                                                    </div>
+                                                    <div className="radio-inline">
+                                                        <input type="radio" name={`result${x._id}`} value="failed" checked={x.result === "failed"}
+                                                            onChange={() => this.handleResultChange(x._id, x.result)} />
+                                                        <label>Không đạt</label>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <a className="delete" title="Delete" onClick={() => this.handleDelete(x._id)}><i className="material-icons"></i></a>
                                             </td>
@@ -424,7 +458,7 @@ class CourseEditForm extends Component {
                         </table>
                         {employeesManager.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof employeeInfor === 'undefined' || employeeInfor.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof employeeInfors === 'undefined' || employeeInfors.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </form>
                 </DialogModal>
