@@ -5,8 +5,7 @@ const {  LogInfo,  LogError } = require('../../../../logs');
 /** Lấy tập KPI cá hiện hiện tại */  
 exports.getEmployeeKpiSet = async (req, res) => {
     try {
-
-       var employeeKpiSet= await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id);
+        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id);
         await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
         res.status(200).json({
             success: true,
@@ -23,10 +22,30 @@ exports.getEmployeeKpiSet = async (req, res) => {
     }
 }
 
+/** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
+exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
+    try {
+        var employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.params.id, req.params.startDate, req.params.endDate);
+        await LogInfo(req.user.email, ` get all employee kpi set by month `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['Get all employee kpi set by month successfully'],
+            content: employeeKpiSetByMonth
+        });
+    } catch (error) {
+        await LogError(req.user.email, ` get all employee kpi set by month `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['Get all employee kpi set by month unsuccessfully'],
+            content: error
+        });
+    }
+}
+
 /** Khởi tạo KPI cá nhân */ 
 exports.createEmployeeKpiSet =async (req, res) => {
     try {
-        var employeeKpiSet= await EmployeeKpiSetService.createEmployeeKpiSet(req.body.creator,req.body.approver,req.body.organizationalUnit,req.body.date);
+        var employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body.creator,req.body.approver,req.body.organizationalUnit,req.body.date);
 
         await LogInfo(req.user.email, ` create employee kpi set `, req.user.company)
         res.status(200).json({
@@ -48,7 +67,7 @@ exports.createEmployeeKpiSet =async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */ 
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpi= await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.employeeKpiSet);
+        var employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.employeeKpiSet);
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
