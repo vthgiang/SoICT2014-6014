@@ -7,6 +7,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const createKpiSetService = {
     getEmployeeKpiSet,
+    getAllEmployeeKpiSetByMonth,
     editEmployeeKpiSet,
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
@@ -26,6 +27,14 @@ function getEmployeeKpiSet() {
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
         method: 'GET'
     }, false, true);
+}
+
+/** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
+function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/kpi-set-by-month/${userId}/${startDate}/${endDate}`,
+        method: 'GET'
+    }, false, false)
 }
 
 /** Khởi tạo KPI cá nhân */  
