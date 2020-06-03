@@ -301,17 +301,26 @@ class DashBoardKPIMember extends Component {
         }        
         
 
-        var userdepartments, kpimember, items;
+        var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
 
         if (user.userdepartments) userdepartments = user.userdepartments;
-        if(userdepartments === undefined) {
-            items = [];
-        } 
-        else {
-            items = userdepartments.map(x => {
-                return { value: x.userId._id, text: x.userId.name }
-            });
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
         }
 
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
@@ -493,17 +502,17 @@ class DashBoardKPIMember extends Component {
                                         </div>
                                     </div>
                                     <div className="form-inline">
-                                        {userdepartments && (items.length !== 0) &&
+                                        {unitMembers &&
                                             <div className="col-sm-6 col-xs-12 form-group"> 
                                                 <label>Nhân viên</label>
                                                 <SelectBox
                                                     id={`createEmployeeKpiSet`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
-                                                    items={items}
+                                                    items={unitMembers}
                                                     multiple={false}
                                                     onChange={this.handleSelectEmployee}
-                                                    value={items[0]}
+                                                    value={unitMembers[2].value[0].value}
                                                 />
                                             </div>
                                         }
