@@ -231,6 +231,25 @@ class KPIMember extends Component {
         const {status,employee,startDate, endDate} = this.state;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
+
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         // console.log('ifo'+ this.state);
         return (
             <React.Fragment>
@@ -239,21 +258,12 @@ class KPIMember extends Component {
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>Nhân viên:</label>
-                                {userdepartments &&
+                                {unitMembers &&
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id={`employee-kpi-manage`}
                                     className="form-control"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[2].roleId.name,
-                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                        }
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleEmployeeChange}
                                     // multiple={true}
                                     value={user}

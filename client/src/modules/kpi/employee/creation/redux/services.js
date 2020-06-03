@@ -51,9 +51,6 @@ function createEmployeeKpi(newTarget) {
 
 /** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
 function editEmployeeKpiSet(id, newTarget) {
-    var id = getStorage("userId");
-    newTarget = {...newTarget, creater: id};
-
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'PUT',

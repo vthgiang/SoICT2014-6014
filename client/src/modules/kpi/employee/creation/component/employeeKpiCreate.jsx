@@ -24,7 +24,6 @@ class CreateEmployeeKpiSet extends Component {
         this.props.getEmployeeKpiSet()//localStorage.getItem('id');
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.handleResizeColumn();
     }
 
     constructor(props) {
@@ -45,10 +44,26 @@ class CreateEmployeeKpiSet extends Component {
             currentRole: localStorage.getItem("currentRole"),
             fixTableWidth: false
         };
+    }
 
-        window.addEventListener("resize", () => {
-            this.adjustSize(window.innerWidth);
-        }, {passive: true});
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { user } = this.props;
+
+        // Khi truy vấn API đã có kết quả
+        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans.length>0) {
+            this.setState(state =>{
+                return{
+                    ...state,
+                    employeeKpiSet: {
+                        ...this.state.employeeKpiSet,
+                        approver: user.userdepartments.deans[0]
+                    }
+                };
+            });
+            return false; // Sẽ cập nhật lại state nên không cần render
+        }
+
+        return true;
     }
 
     adjustSize = async (innerWidth) => {
@@ -157,26 +172,6 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     handleSaveEditEmployeeKpiSet = async (id, organizationUnit) => {
-        let userdepartments=null, items;
-        const { user } = this.props;
-        let approver = null;
-        if (user.userdepartments) userdepartments = user.userdepartments;
-
-        if(this.state.employeeKpiSet.approver === null){
-            if(userdepartments === null){
-                approver = null;
-            }
-            else{    
-                items = userdepartments.map(x => {
-                    return { value: x.userId._id, text: x.userId.name } 
-                });
-                approver = items[0].value;
-            }    
-        }
-        else{
-            approver = this.state.employeeKpiSet.approver
-        }
-
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -204,7 +199,6 @@ class CreateEmployeeKpiSet extends Component {
                 editing: !state.editing,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    approver: approver
                 }
             }
         })
@@ -221,35 +215,6 @@ class CreateEmployeeKpiSet extends Component {
                 editing: !state.editing
             }
         })
-    }
-
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
 
     formatDate = (date) => {
@@ -406,20 +371,12 @@ class CreateEmployeeKpiSet extends Component {
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item => (
-                item.dean === this.state.currentRole
-                || item.employee === this.state.currentRole
-                || item.viceDean === this.state.currentRole));
+                item.dean._id === this.state.currentRole
+                || item.employee._id === this.state.currentRole
+                || item.viceDean._id === this.state.currentRole));
         }
         if (createEmployeeKpiSet.currentKPI) currentKPI = createEmployeeKpiSet.currentKPI;
         if (user.userdepartments) userdepartments = user.userdepartments;
-        if(userdepartments === undefined) {
-            items = [];
-        } 
-        else {
-            items = userdepartments.map(x => {
-                return { value: x.userId._id, text: x.userId.name }
-            });
-        }
 
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
@@ -477,17 +434,19 @@ class CreateEmployeeKpiSet extends Component {
                                     <span style={{ float: "right" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
                                 </div>
                                 
-                                {editing ? userdepartments && (items.length !== 0) &&
+                                {editing ? userdepartments && userdepartments.deans &&
                                     <div className="col-sm-6 col-xs-12 form-group">
                                         <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                         <SelectBox
                                             id={`createEmployeeKpiSet`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={items}
+                                            items={userdepartments.deans.map(
+                                                item =>{return {text: item.name, value: item._id}}
+                                            )}
                                             multiple={false}
                                             onChange={this.handleApproverChange}
-                                            value={items[0]}
+                                            value={this.state.employeeKpiSet.approver}
                                         />
                                     </div> 
                                     : <div className="form-group">
