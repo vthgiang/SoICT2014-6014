@@ -19,6 +19,7 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react';
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.state = {
             organizationalUnit: "",
             content: "",
@@ -27,7 +28,8 @@ class ModalMemberEvaluate extends Component {
             point: 0,
             status: 0,
             value: 0,
-            valueNow : 0
+            valueNow : 0,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
     componentDidMount() {
@@ -36,7 +38,7 @@ class ModalMemberEvaluate extends Component {
 
 
     componentDidUpdate() {
-        this.handleResizeColumn();
+        // this.handleResizeColumn();
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -92,60 +94,44 @@ class ModalMemberEvaluate extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = async (id, employeeId, date) => {
+    handleChangeContent =(id, employeeId, date) => {
         console.log('====', id, employeeId, date);
         console.log('date', date.getMonth());
         var isoDate = date.toISOString();
-        await this.props.getTaskById(id, employeeId, isoDate);
-        var kpimembers =  this.props.kpimembers;
-       if(kpimembers.tasks !== undefined){
-        await this.setState(state => {
-            console.log("iiiiiiii", kpimembers);
-               kpimembers.tasks.map(async(task)=>{
-               state[`taskImportanceLevel${task._id}`] = kpimembers.taskImportanceLevel;
-               })
+        this.props.getTaskById(id, employeeId, isoDate);
+        //var kpimembers =  this.props.kpimembers;
+       //if(kpimembers.tasks !== undefined){
+        this.setState(state => {
+            // console.log("iiiiiiii", kpimembers);
+            //    kpimembers.tasks.map(async(task)=>{
+            //    state[`taskImportanceLevel${task._id}`] = kpimembers.taskImportanceLevel;
+            //    })
    
                return {
                    ...state,
-                   content: id
+                   content: id,
+                   //dataStatus : this.DATA_STATUS.QUERYING
                }
            });
-       }
-
-        // await this.setState(state => {
-
-        //     state[`taskImportanceLevel${id}`] = value;
-
-        //     return {
-        //         ...state,
-        //         // taskImportanceLevel: value
-        //     }
-
-        // })
+       //}
 
     }
 
-    handleSetPointKPI = async (id_kpi, data) => {
-        //event.preventDefault();
-        var dataPoint = [];
+    handleSetPointKPI = () => {
         var date = new Date();
-        console.log("dfdfdfd", data);
-        for (var item of data) {
-            var temp = {
-                taskId: item.taskId,
+        let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
+        for (let n in data) {
+            data[n]={
+                taskId: data[n].taskId,
                 date: date.toISOString(),
-                point: this.state[`taskImportanceLevel${item.taskId}`],
+                point: data[n].taskImportanceLevel,
                 employeeId: this.props.employeeId,
             }
-            dataPoint.push(temp);
-            console.log('itemmmm', temp);
         }
-        console.log('idddd', this.props.id);
-        console.log('arrr', dataPoint);
-        this.props.setPointKPI(id_kpi, dataPoint);
-        await this.setState({
+        console.log(data);
+        this.props.setPointKPI(this.state.content, data);
+        this.setState({
             editing: true,
-            //this.props.setPointKPI( id_kpi, id_target, point)
         })
     }
 
@@ -157,30 +143,26 @@ class ModalMemberEvaluate extends Component {
         modal.style = "display: none;";
     }
 
-    setValueSlider = async (e, id) => {
+    setValueSlider = (e, id) => {
         var value = e.target.value;
-      //  console.log('qqqqqqqq', this.state.valueNow,);
-        await this.setState(state => {
-
-            state[`taskImportanceLevel${id}`] = value;
-
+        let tasks = this.props.kpimembers.tasks;
+        console.log(tasks);
+        tasks.map(x=>{
+            if(x.taskId===id){
+                x.taskImportanceLevel = value
+            }
+        })
+        this.setState(state => {
             return {
                 ...state,
-                // taskImportanceLevel: value
+                tasks: tasks
             }
-
         })
-        console.log("stateeeeee", this.state);
     }
-
-
     render() {
-        var { value } = this.state
-        var list;
-        var myTask = [];
-        var thisKPI = null;
+        var list, myTask = [], thisKPI = null;
         const { kpimembers } = this.props;
-        if (typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+        if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
 
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
@@ -188,7 +170,7 @@ class ModalMemberEvaluate extends Component {
         if(kpimembers.result){
             thisKPI = kpimembers.result;
         }
-        console.log('-------------', this.props);
+        console.log('-------------', this.state);
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -250,7 +232,7 @@ class ModalMemberEvaluate extends Component {
                                                 </div>
                                                }
                                                 <div className="form-inline">
-                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI(this.state.content, kpimembers.tasks)}>Tính điểm KPI</button>
+                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
                                                 </div>
                                             </div>
                                             <div className="body-content-right">
