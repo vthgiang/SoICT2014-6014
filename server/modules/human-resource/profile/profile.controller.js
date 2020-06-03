@@ -45,7 +45,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
             data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnit, req.query.position, false);
         } else{
             let params = {
-                organizationalUnit: req.query.organizationalUnit,
+                organizationalUnits: req.query.organizationalUnits,
                 position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
