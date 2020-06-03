@@ -201,10 +201,11 @@ class KPIMember extends Component {
         }
     }
     handleShowApproveModal = async (id) => {
+        console.log('da goi den showApprove');
         await this.setState(state => {
             return {
                 ...state,
-                showApproveModal: id
+                kpiId: id
             }
         })
         // console.log('handle ============='+id);
@@ -236,6 +237,7 @@ class KPIMember extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
+                    {<ModalMemberApprove id={this.state.currentViewRow} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>Nhân viên:</label>
@@ -347,7 +349,7 @@ class KPIMember extends Component {
                             <td>
                                 <a data-target={`#modal-approve-KPI-member-${item._id}`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />}
+                                {/* {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />} */}
                                 {/* {<ModalMemberApprove id={item._id} />} */}
                             </td>
                             <td>

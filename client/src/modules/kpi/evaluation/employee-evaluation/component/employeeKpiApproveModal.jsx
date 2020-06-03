@@ -29,9 +29,27 @@ class ModalMemberApprove extends Component {
         };
         this.newWeight = [];
     }
-    componentDidMount() {
-        // console.log('id : ====='+this.props.id);
-        this.props.getKPIMemberById(this.props.id);
+    // componentDidMount() {
+    //     // console.log('id : ====='+this.props.id);
+    //     this.props.getKPIMemberById(this.props.id);
+    // }
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+            } 
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.id !== this.state.id) {
+            this.props.getKPIMemberById(nextProps.id);
+            return false;
+        }
+        return true;
     }
     componentDidUpdate() {
         this.handleResizeColumn();
@@ -386,7 +404,9 @@ class ModalMemberApprove extends Component {
                             
                             </div>
                 </div>
+                
                 <Comments id={this.props.id}></Comments>
+                
             </DialogModal>
         </React.Fragment>
         );
