@@ -19,8 +19,13 @@ export const kpiMemberServices = {
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
-    getAllComments
-
+    getAllComments,
+    createCommentOfApproveKPI,
+    editCommentOfApproveKPI,
+    deleteCommentOfApproveKPI,
+    createCommentOfComment,
+    editCommentOfComment,
+    deleteCommentOfComment
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
@@ -110,4 +115,50 @@ function getAllComments(id_kpi){
         url:`${LOCAL_SERVER_API}/kpimembers/comment/${id_kpi}`,
         method: 'GET'
     }, false, true, 'kpi.evaluation')
+}
+
+function createCommentOfApproveKPI(newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/comment/create`,
+        method: 'POST',
+        data: newComment
+    },true, true, 'kpi.evaluation')
+}
+
+function editCommentOfApproveKPI(id,newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}`,
+        method : 'PUT',
+        data: newComment
+    },true, true, 'kpi.evaluation')
+}
+
+function deleteCommentOfApproveKPI(id,kpi){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}/${kpi}`,
+        method : 'DELETE',
+    },true, true, 'kpi.evaluation')
+}
+
+function createCommentOfComment(newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/sub-comment/create`,
+        method: 'POST',
+        data: newComment
+    },true, true, 'kpi.evaluation')
+}
+
+function editCommentOfComment(id,newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}`,
+        method : 'PUT',
+        data: newComment
+    },true, true, 'kpi.evaluation')
+}
+
+function deleteCommentOfComment(id,kpi){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}/${kpi}`,
+        method : 'DELETE',
+    },true, true, 'kpi.evaluation')
 }

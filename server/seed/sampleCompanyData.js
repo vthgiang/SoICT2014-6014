@@ -573,7 +573,11 @@ const sampleCompanyData = async () => {
             url: '/task',
             description: 'Chi tiết công việc',
             company: vnist._id
-        },
+        },{ // 50 tài liệu văn bản
+            url: '/documents',
+            description: 'Tài liệu',
+            company: vnist._id
+        }
     ]);
 
     const updateVnist = await Company.findById(vnist._id);
@@ -995,6 +999,20 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[48]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+
+        {
+            resourceId: links[50]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Employee
+        },{
+            resourceId: links[50]._id,
+            resourceType: 'Link',
+            roleId: roles[2]._id // Employee
+        },{
+            resourceId: links[50]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },

@@ -59,7 +59,7 @@ class AdministrationStatisticsReport extends Component {
             <div className={this.state.pieWidth > 1024 ? "chart-display" : null}>
                 {
                     docList.length > 0 ?
-                    <PieChart width={width} height={height} margin={{top: 10, right: 0, bottom: 10, left: 0}}>
+                    <PieChart width={width} height={height}>
                         <Pie
                             data={data} 
                             cx="50%" 
@@ -101,7 +101,7 @@ class AdministrationStatisticsReport extends Component {
 
         return (
             <div className={this.state.barWidth > 1024 ? "chart-display" : null}>
-                <BarChart width={width} height={height} data={data} margin={{top: 20, right: 0, bottom: 10, left: 0}}>
+                <BarChart width={width} height={height} data={data}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -142,16 +142,26 @@ class AdministrationStatisticsReport extends Component {
         return <React.Fragment>
                 
                 <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-                    <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changePieWidth} value={this.state.pieWidth}/></span>
-                        <span>Y <input type="number" min={100} onChange={this.changePieHeight} value={this.state.pieHeight}/></span>
-                        { this.displayDocumentAnalys(docList, categoryList, this.state.pieWidth, this.state.pieHeight) }
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <b className="text-left" style={{fontSize: '20px'}}>Thống kê các loại văn bản tài liệu</b>
+                        <div className="text-right">
+                            <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changePieWidth} value={this.state.pieWidth}/></span>
+                            <span>Y <input type="number" min={100} onChange={this.changePieHeight} value={this.state.pieHeight}/></span>
+                        </div>
+                        <div>
+                            { this.displayDocumentAnalys(docList, categoryList, this.state.pieWidth, this.state.pieHeight) }
+                        </div>
                     </div>
                     
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right" style={{marginTop: '50px', paddingTop: '10px'}}>
-                        <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changeBarWidth} value={this.state.barWidth}/></span>
-                        <span>Y <input type="number" min={100} onChange={this.changeBarHeight} value={this.state.barHeight}/></span>
-                        { this.displayViewDownloadBarChart(docList, categoryList, this.state.barWidth, this.state.barHeight) }
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '50px', paddingTop: '10px'}}>
+                        <b className="text-left" style={{fontSize: '20px'}}>Thống kê số lượng xem và download các loại tài liệu</b>
+                        <div className="text-right">
+                            <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changeBarWidth} value={this.state.barWidth}/></span>
+                            <span>Y <input type="number" min={100} onChange={this.changeBarHeight} value={this.state.barHeight}/></span>
+                        </div>
+                        <div>
+                            { this.displayViewDownloadBarChart(docList, categoryList, this.state.barWidth, this.state.barHeight) }
+                        </div>
                     </div>
                 </div>
                 

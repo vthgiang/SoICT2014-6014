@@ -230,66 +230,66 @@ handleDeleteAction = async (index) => {
         return(
             <fieldset className="scheduler-border">
             <legend className="scheduler-border">{translate('task_template.activity_list')}*</legend>
-            <div className="control-group">
-                <div className='form-group'>
-                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.action_name')}*</label>
-                    <div className={`col-sm-10 form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                        <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
-                        <ErrorLabel content={this.state.action.errorOnName}/>
-                    </div>
+
+            <div className={`form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} >
+                <label className="control-label">{translate('task_template.action_name')}*</label>
+                <div>
+                    <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
+                    <ErrorLabel content={this.state.action.errorOnName}/>
                 </div>
-                <div className='form-group'>
-                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
-                    <div className={`col-sm-10 form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                        <textarea type="text" className="form-control"name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
-                        <ErrorLabel content={this.state.action.errorOnDescription}/>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                        {translate('task_template.obligatory')} &nbsp;
-                        <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
-                    </label>
-                </div>
-                <div className="pull-right" style={{ marginBottom: '10px' }}>
-                    {this.state.editAction ?
-                        <React.Fragment>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
-                        </React.Fragment>:
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
-                    }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
-                </div>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th style={{ width: '10%' }}>STT</th>
-                            <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
-                            <th title="Mô tả">{translate('task_template.description')}</th>
-                            <th title="Bắt buộc">{translate('task_template.obligatory')}</th>
-                            <th title="Hành động">{translate('task_template.action')}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="actions">
-                        {
-                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                taskActions.map((item, index) =>
-                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.description}</td>
-                                        <td>{item.mandatory ? "Có" : "Không"}</td>
-                                        <td>
-                                            <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => this.handleEditAction(item, index)}><i className="material-icons"></i></a>
-                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAction(index)}><i className="material-icons"></i></a>
-                                        </td>
-                                    </tr>
-                                )
-                        }
-                    </tbody>
-                </table>
             </div>
+            <div className={`form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} >
+                <label className="control-label">{translate('task_template.description')}*</label>
+                <div>
+                    <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
+                    <ErrorLabel content={this.state.action.errorOnDescription}/>
+                </div>
+            </div>
+            <div className="form-group" >
+                <label className="control-label">
+                {translate('task_template.obligatory')} &nbsp;
+                    <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
+                </label>
+            </div>
+            
+            <div className="pull-right" style={{ marginBottom: '10px' }}>
+                {this.state.editAction ?
+                    <React.Fragment>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>Lưu</button>
+                    </React.Fragment>:
+                    <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
+                }
+                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
+            </div>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style={{ width: '10%' }}>STT</th>
+                        <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
+                        <th title="Mô tả">{translate('task_template.description')}</th>
+                        <th title="Bắt buộc">{translate('task_template.obligation')}</th>
+                        <th title="Hành động">{translate('task_template.action')}</th>
+                    </tr>
+                </thead>
+                <tbody id="actions">
+                    {
+                        (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
+                            taskActions.map((item, index) =>
+                                <tr key={`${this.state.keyPrefix}_${index}`}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.description}</td>
+                                    <td>{item.mandatory ? "Có" : "Không"}</td>
+                                    <td>
+                                        <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => this.handleEditAction(item, index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAction(index)}><i className="material-icons"></i></a>
+                                    </td>
+                                </tr>
+                            )
+                    }
+                </tbody>
+            </table>
         </fieldset>
         
             )

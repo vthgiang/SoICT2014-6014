@@ -138,7 +138,7 @@
 }
 
 .content-level1 .dropdown-item, .content-level2 .dropdown-item{
-    background-color: none;
+    background-color: #fff;
     border: none;
     width: 100%;
     right: 5px;
@@ -221,9 +221,6 @@
     font-size: 1.2em;
     margin-top: -10px;
     margin-right: -20px;
-}
-ul {
-    list-style: none;
 }
 .files-list-item-content-item-comment-1 {
     font-size: 14px;

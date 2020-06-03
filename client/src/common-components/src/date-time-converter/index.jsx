@@ -19,7 +19,7 @@ class DateTimeConverter extends Component {
             if(diff < 24) // cách biệt không quá 24 giờ
                 return moment(time).fromNow();
             else    
-                return moment(time).format('LLLL');
+                return moment(time).format('LLL');
         }
     }
 

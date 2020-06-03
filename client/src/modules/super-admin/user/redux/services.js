@@ -4,7 +4,6 @@ import { getStorage } from '../../../../config';
 
 export const UserServices = {
     get,
-    getPaginate,
     edit,
     create,
     destroy,
@@ -17,18 +16,11 @@ export const UserServices = {
     getDepartmentOfUser,
 };
 
-function get() {
+function get(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
-    }, false, true, 'super_admin.user');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/paginate`,
-        method: 'POST',
-        data,
+        params,
     }, false, true, 'super_admin.user');
 }
 

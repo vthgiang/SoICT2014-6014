@@ -269,92 +269,90 @@ class InformationForm extends Component{
         return(
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
-                <div className="control-group">
-                    <div className={'form-group'}>
-                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.infor_name')}</label>
-                        <div className={`col-sm-10 form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                            <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={this.handleChangeInfoName} />
-                            <ErrorLabel content={this.state.information.errorOnName}/>
-                        </div>
+                
+                <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} >
+                    <label className="control-label">{translate('task_template.infor_name')}</label>
+                    <div>
+                        <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={this.handleChangeInfoName} />
+                        <ErrorLabel content={this.state.information.errorOnName}/>
                     </div>
-                    <div className={'form-group'}>
-                        <label className="col-sm-4 control-label" htmlFor="inputDescriptionInfo" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}</label>
-                        <div className={`col-sm-10 form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                            <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder={translate('task_template.description')} value={information.description} onChange={this.handleChangeInfoDesc} />
-                            <ErrorLabel content={this.state.information.errorOnDescription}/>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.datatypes')}:</label>
-                        <div className="col-sm-10" style={{ width: '100%' }}>
-                            <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                                <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
-                                <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
-                                <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>
-                                <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
-                                <option value={this.INFO_TYPE.SET}>{translate('task_template.value_set')}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    { this.state.information.type === this.INFO_TYPE.SET?
-                        <div className={'form-group has-feedback' + (!information.type ? ' has-error' : '')}>
-                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập tập giá trị:`}</label>
-                            <div className={`col-sm-10 form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
-                                <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
-                            </div>
-                        </div>
-                        : null
-                    }
-
-                    <div className="form-group">
-                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>
-                            {translate('task_template.manager_fill')}? &nbsp;
-                            <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
-                        </label>
-                    </div>
-                    <div className="pull-right" style={{marginBottom: "10px"}}>
-                        {this.state.editInfo ?
-                            <React.Fragment>
-                                <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                            </React.Fragment>:
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
-                        }
-                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
-                    </div>
-                    <table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '10%' }}>STT</th>
-                                <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
-                                <th title="Mô tả">{translate('task_template.description')}</th>
-                                <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
-                                <th title="Chỉ quản lý được điền?">{translate('task_template.manager_fill')}?</th>
-                                <th>{translate('task_template.action')}</th>
-                            </tr>
-                        </thead>
-                        <tbody id="informations">
-                            {
-                                (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                    taskInformations.map((item, index) =>
-                                        <tr key={`${this.state.keyPrefix}_${index}`}>
-                                            <td>{index + 1}</td>
-                                            <td>{item.name}</td>
-                                            <td>{item.description}</td>
-                                            <td>{item.type}</td>
-                                            <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
-                                            <td>
-                                                <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                                <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                            }
-                        </tbody>
-                    </table>
                 </div>
+                <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
+                    <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
+                    <div>
+                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder={translate('task_template.description')} value={information.description} onChange={this.handleChangeInfoDesc} />
+                        <ErrorLabel content={this.state.information.errorOnDescription}/>
+                    </div>
+                </div>
+                <div className="form-group" >
+                    <label className=" control-label">{translate('task_template.datatypes')}:</label>
+                    <div style={{ width: '100%' }}>
+                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                            <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
+                            <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
+                            <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>
+                            <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
+                            <option value={this.INFO_TYPE.SET}>{translate('task_template.value_set')}</option>
+                        </select>
+                    </div>
+                </div>
+
+                { this.state.information.type === this.INFO_TYPE.SET?
+                    <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} >
+                        <label className="control-label">{translate('task_template.value_set')}</label>
+                        
+                        <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
+                        <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
+                    </div>
+                    : null
+                }
+
+                <div className="form-group" >
+                    <label className="control-label">
+                    {translate('task_template.manager_fill')} &nbsp;
+                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
+                    </label>
+                </div>
+                <div className="pull-right" style={{marginBottom: "10px"}}>
+                    {this.state.editInfo ?
+                        <React.Fragment>
+                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                        </React.Fragment>:
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
+                    }
+                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.dalete')}</button>
+                </div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '10%' }}>STT</th>
+                            <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
+                            <th title="Mô tả">{translate('task_template.description')}</th>
+                            <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
+                            <th title="Chỉ quản lý được điền?">{translate('task_template.manager_fill')}?</th>
+                            <th>{translate('task_template.action')}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="informations">
+                        {
+                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                taskInformations.map((item, index) =>
+                                    <tr key={`${this.state.keyPrefix}_${index}`}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.description}</td>
+                                        <td>{item.type}</td>
+                                        <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                )
+                        }
+                    </tbody>
+                </table>
             </fieldset>
         )
     }

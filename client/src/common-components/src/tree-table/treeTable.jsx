@@ -121,16 +121,42 @@ class TreeTable extends Component {
             items.filter(item => item[link] === parent_id).map(item => ({ ...item, children: listToTree(items, item._id) }));
 
         // Chuyển đổi dữ liệu truyền vào thành dạng tree trước khi gọi đệ quy
+        var list1 = data;
         data = listToTree(data);
+
+        //Thêm các công việc không tìm được cha vào mảng data
+        var concatArray = [];
+        for(let i in list1){
+            var flag = true;
+            for(let j in data){
+                if(list1[i]._id === data[j]._id){
+                    flag = false;
+                    break;
+                }
+                for(let k in data[j].children){
+                    if(list1[i]._id === data[j].children[k]._id){
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if(flag){
+                concatArray.push(list1[i]);
+            }
+        }
+        data = data.concat(concatArray);        
 
         // function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
         // trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
         let convertData = (arr, level = 1) => {
-            arr.map(item => {
-                newarr.push({ ...item, "level": level });
-                convertData(item.children, level + 1);
-                return true;
-            });
+            if(arr !== undefined){
+                arr.map(item => {
+                    newarr.push({ ...item, "level": level });
+                    convertData(item.children, level + 1);
+                    return true;
+                });
+            }
+            
             return newarr;
         }
         // Gọi đệ quy để thêm level cho dữ liệu truyền vào
@@ -180,6 +206,10 @@ class TreeTable extends Component {
                 return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
                     <i className="material-icons">all_inbox</i>
                 </a>
+            case "restore":
+                return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
+                    <i className="material-icons">restore_page</i>
+                </a>
             case "startTimer":
                 return <a href="#abc" onClick={() => this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer}>
                     <i className="material-icons">timer</i>
@@ -191,6 +221,7 @@ class TreeTable extends Component {
 
     render() {
         var { translate, column, data } = this.props;
+        
         return (
             <table id="tree-table" className="table table-striped table-hover table-bordered">
                 <thead>

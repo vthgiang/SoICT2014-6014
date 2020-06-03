@@ -259,7 +259,7 @@ class EditForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-document" size="100"
+                    modalID="modal-edit-document"
                     formID="form-edit-document"
                     title={translate('document.add')}
                     func={this.save}
@@ -451,7 +451,7 @@ class EditForm extends Component {
                                     multiple={false}
                                 />
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id="select-edit-documents-user-manage"
@@ -463,7 +463,7 @@ class EditForm extends Component {
                                     options={{placeholder: translate('document.store.select_user')}}
                                     multiple={false}
                                 />
-                            </div>
+                            </div> */}
                         </fieldset>
                     </form>
                 </DialogModal>

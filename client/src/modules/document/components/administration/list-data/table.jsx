@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
 import CreateForm from './createForm';
 import { DocumentActions } from '../../../redux/actions';
 import EditForm from './editForm';
-import moment from 'moment';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
 import Swal from 'sweetalert2';
@@ -30,7 +29,7 @@ class Table extends Component {
 
     componentDidMount(){
         this.props.getAllDocuments();
-        this.props.getAllDocuments({page: this.state.pate, limit: this.state.limit});
+        this.props.getAllDocuments({page: this.state.page, limit: this.state.limit});
         this.props.getAllRoles();
         this.props.getAllDepartments();
     }
@@ -87,7 +86,7 @@ class Table extends Component {
     render() { 
         const {translate} = this.props;
         const docs = this.props.documents.administration.data;
-        const {list, paginate} = docs;
+        const {paginate} = docs;
         const {isLoading} = this.props.documents;
         const {currentRow} = this.state;
 
@@ -126,7 +125,7 @@ class Table extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>

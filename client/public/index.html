@@ -19,6 +19,14 @@
 
   <link rel="stylesheet" href="%PUBLIC_URL%/library/bootstrap/css/bootstrap.min.css">
   <script src="%PUBLIC_URL%/library/bootstrap/bootstrap.min.js"></script><!-- Bootstrap 3.3.7 -->
+  <script type="text/javascript">
+    // Code fix bug bootstrap: khi mở nhiều modal và đóng 1 modal, body sẽ bị mất class modal-open và có scroll y, xấu và bất tiện
+    $(document).on('hidden.bs.modal', function () {
+      if($('.modal.in').length) {
+        $('body').addClass('modal-open');
+      }
+    });
+  </script>
   
   
   <link rel="stylesheet" href="%PUBLIC_URL%/library/adminLTE/AdminLTE.min.css">

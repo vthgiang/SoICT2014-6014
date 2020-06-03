@@ -218,21 +218,18 @@ legend.scheduler-border {
     border-bottom: 1px solid #eae9f5;
 }
 .box.box-solid.description > .box-body{
-    padding: 0;
+    padding: 10px 0 0 15px;
 }
-.box.box-solid.description > .box-body dt{
-    padding: 10px 5px 10px 15px;
+dt{
     color: #605ca8;
+    line-height: 2.2;
 }
-.box.box-solid.description > .box-body dd{
-    padding: 0px 5px 5px 15px;
-    margin-bottom: 5px;
+dd{
+    line-height: 2.2;
 }
-.box.box-solid.description > .box-body dd > ul{
-    margin: 0px;
-}
-.box.box-solid.description > .box-body dd > ul > li{
-    padding: 0px 5px 5px 5px;
+dd ul, dd ol{
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 
@@ -240,9 +237,18 @@ legend.scheduler-border {
 
 /* Bootstrap 3 khi cần cho các phần tử trong row có height bằng nhau. Bootstrap 4 đã có luôn*/
 .row-equal-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
+.row-equal-height [class*=col-]{
+    margin:0 -.3px;
+}
+
 
 /* Css cho phần tree - select */
 * {

@@ -488,12 +488,21 @@ class DashBoardKPIMember extends Component {
                                         <div className="form-inline">
                                     <div className='form-group'>
                                         <label>Nhân viên:</label>
-                                        {userdepartments && <select defaultValue={userdepartments[1].userId._id} className="form-control" ref={input => this.user = input}>
-                                            <optgroup label={userdepartments[1].roleId.name}>
-                                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
+                                        {userdepartments && <select defaultValue={userdepartments.employees[0]._id} className="form-control" ref={input => this.user = input}>
+                                            <optgroup label={userdepartments.roles.dean.name}>
+                                                {userdepartments.deans.map(item => {
+                                                    return <option key={item._id} value ={item._id}>{item.name}</option>
+                                                })}
                                             </optgroup>
-                                            <optgroup label={userdepartments[2].roleId.name}>
-                                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>{userdepartments[2].userId.name}</option>
+                                            <optgroup label={userdepartments.roles.viceDean.name}>
+                                                {userdepartments.viceDeans.map(item => {
+                                                    return <option key={item._id} value ={item._id}>{item.name}</option>
+                                                })}
+                                            </optgroup>
+                                            <optgroup label={userdepartments.roles.employee.name}>
+                                                {userdepartments.employees.map(item => {
+                                                    return <option key={item._id} value ={item._id}>{item.name}</option>
+                                                })}
                                             </optgroup>
                                         </select>}
                                     </div>

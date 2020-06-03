@@ -17,6 +17,7 @@ export const taskManagementService = {
     getCreatorTaskByUser,
     addNewTask,
     editTask,
+    editArchivedOfTask,
     deleteTaskById,
     editStatusOfTask,
     getSubTask,
@@ -135,6 +136,14 @@ function editStatusOfTask(id, status) {
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'PATCH',
         data: status,
+    }, false, true, 'task.task_management');
+}
+
+// Chỉnh sửa lưu kho của công việc
+function editArchivedOfTask(id) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/archived/${id}`,
+        method: 'PATCH',
     }, false, true, 'task.task_management');
 }
 

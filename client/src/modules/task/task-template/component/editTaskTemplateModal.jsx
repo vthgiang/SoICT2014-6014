@@ -320,6 +320,24 @@ class ModalEditTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}
@@ -329,209 +347,193 @@ class ModalEditTaskTemplate extends Component {
                 disableSubmit={!this.isTaskTemplateFormValidated()}
                 size={100}
             >
-                <form className="form-horizontal">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <div className={'form-group has-feedback'}>
-                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.unit')}*:</label>
-                                <div className={`col-sm-10 form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
-                                        <SelectBox
-                                            id={`edit-unit-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                departmentsThatUserIsDean.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateUnit}
-                                            value = {editingTemplate.organizationalUnit}
-                                            multiple={false}
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className={`form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} >
+                            <label className="control-label">{translate('task_template.unit')}*:</label>
+                            {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
+                                <SelectBox
+                                    id={`edit-unit-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={
+                                        departmentsThatUserIsDean.map(x => {
+                                            return {value: x._id, text: x.name};
+                                        })
+                                    }
+                                    onChange={this.handleTaskTemplateUnit}
+                                    value = {editingTemplate.organizationalUnit}
+                                    multiple={false}
 
-                                        />
-                                    }
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnUnit}/>
-                                </div>
-                            </div>
-                            <div className={'form-group has-feedback'}>
-                                <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.name')}*</label>
-                                <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="Name" className="form-control" placeholder={translate('task_template.name')} value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
-                                </div>
-                            </div>
-                            <div className={'form-group has-feedback'}>
-                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.permission_view')}*</label>
-                                <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    {listRole && editingTemplate.readByEmployees &&
-                                        <SelectBox
-                                            id={`edit-read-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {value: listRole.dean._id, text: listRole.dean.name},
-                                                {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                                {value: listRole.employee._id, text: listRole.employee.name},
-                                            ]}
-                                            onChange={this.handleTaskTemplateRead}
-                                            value={editingTemplate.readByEmployees}
-                                            multiple={true}
-                                            options={{placeholder: `${translate('task_template.permission_view')}`}}
-                                        />
-                                    }
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnRead}/>
-                                </div>
-                            </div>
-                            <div className='form-group has-feedback'>
-                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.performer')}</label>
-                                <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {userdepartments && editingTemplate.responsibleEmployees &&
-                                        <SelectBox
-                                            id={`edit-responsible-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {
-                                                    text: userdepartments[1].roleId.name,
-                                                    value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                },
-                                                {
-                                                    text: userdepartments[2].roleId.name,
-                                                    value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                                },
-                                            ]}
-                                            onChange={this.handleTaskTemplateResponsible}
-                                            value={editingTemplate.responsibleEmployees}
-                                            multiple={true}
-                                            options={{placeholder: `${translate('task_template.performer')}`}}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                            <div className='form-group has-feedback'>
-                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.approver')}</label>
-                                <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {userdepartments && editingTemplate.accountableEmployees &&
-                                        <SelectBox
-                                            id={`edit-accounatable-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={[
-                                                {
-                                                    text: userdepartments[0].roleId.name,
-                                                    value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                                },
-                                                {
-                                                    text: userdepartments[1].roleId.name,
-                                                    value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                                },
-                                            ]}
-                                            onChange={this.handleTaskTemplateAccountable}
-                                            value ={editingTemplate.accountableEmployees}
-                                            multiple={true}
-                                            options={{placeholder: `${translate('task_template.approver')}`}}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                            <div className='form-group has-feedback'>
-                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.supporter')}</label>
-                                <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {usercompanys && editingTemplate.consultedEmployees &&
-                                        <SelectBox
-                                            id={`edit-consulted-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateConsult}
-                                            value ={editingTemplate.consultedEmployees}
-                                            multiple={true}
-                                            options={{placeholder: `${translate('task_template.supporter')}`}}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                            <div className='form-group has-feedback'>
-                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.observer')}</label>
-                                <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {usercompanys && editingTemplate.informedEmployees &&
-                                        <SelectBox
-                                            id={`edit-informed-select-box-${editingTemplate._id}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            onChange={this.handleTaskTemplateInform}
-                                            multiple={true}
-                                            value = {editingTemplate.informedEmployees}
-                                            options={{placeholder: `${translate('task_template.observer')}`}}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                            {   this.state.showActionForm &&                        
-                            <ActionForm  initialData ={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} /> 
-                            }                           
-                        </div>
-
-                        <div className="col-sm-6">
-                            <div className={'form-group has-feedback'}>
-                                <label className="col-sm-4 control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
-                                <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <textarea type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
-                                </div>
-                            </div>
-                            <div className={'form-group has-feedback'}>
-                                <label className="col-sm-4 control-label" htmlFor="inputFormula" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.formula')}*</label>
-                                <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
-                                </div>
-                                
-                                <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.parameters')}:</label>
-                                <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
-                                <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
-                                <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
-                                <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
-                            </div>
-                            <div className="form-group">
-                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.priority')}</label>
-                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                        <select className="form-control" style={{ width: '100%' }} value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
-                                            <option value={3}>{translate('task_template.high')}</option>
-                                            <option value={2}>{translate('task_template.medium')}</option>
-                                            <option value={1}>{translate('task_template.low')}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
-                                {
-                                    (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
-                                        <span>{translate('task_template.no_data')}</span>:
-                                        editingTemplate.taskInformations.map((item, index) => 
-                                            <div style={{paddingBottom: "20px"}} key={index}>
-                                                <div>
-                                                    <label>{item.name} - {translate('task_template.datatypes')} {item.type}</label>
-                                                    {item.filledByAccountableEmployeesOnly ? `${translate('task_template.manager_fill')}` : ""}
-                                                </div>
-                                                {item.description}
-                                            </div>
-                                    )
-                                }
-                            </fieldset>
+                                />
+                            }
+                            <ErrorLabel content={this.state.editingTemplate.errorOnUnit}/>
                         </div>
                     </div>
-                </form>
+                    <div className="col-sm-6">
+                        <div className={`form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} >
+                            <label className="control-label">{translate('task_template.permission_view')}*</label>
+                            {listRole && editingTemplate.readByEmployees &&
+                                <SelectBox
+                                    id={`edit-read-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={[
+                                        {value: listRole.dean._id, text: listRole.dean.name},
+                                        {value: listRole.viceDean._id, text: listRole.viceDean.name},
+                                        {value: listRole.employee._id, text: listRole.employee.name},
+                                    ]}
+                                    onChange={this.handleTaskTemplateRead}
+                                    value={editingTemplate.readByEmployees}
+                                    multiple={true}
+                                    options={{placeholder: `${translate('task_template.permission_view')}`}}
+                                />
+                            }
+                            <ErrorLabel content={this.state.editingTemplate.errorOnRead}/>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className={`form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} >
+                            <label className="control-label">{translate('task_template.tasktemplate_name')}*</label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
+                        </div>
+
+                        <div className="form-group" >
+                            <label className="control-label">{translate('task_template.priority')}</label>
+                            <select className="form-control" value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
+                                <option value={3}>{translate('task_template.high')}</option>
+                                <option value={2}>{translate('task_template.medium')}</option>
+                                <option value={1}>{translate('task_template.low')}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="col-sm-6">
+                        <div className={`form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} >
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')}*</label>
+                            <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className='form-group' >
+                            <label className="control-label" >{translate('task_template.performer')}</label>
+                            {unitMembers && editingTemplate.responsibleEmployees &&
+                                <SelectBox
+                                    id={`edit-responsible-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={unitMembers}
+                                    onChange={this.handleTaskTemplateResponsible}
+                                    value={editingTemplate.responsibleEmployees}
+                                    multiple={true}
+                                    options={{placeholder: `${translate('task_template.performer')}`}}
+                                />
+                            }
+                        </div>
+                        <div className='form-group' >
+                            <label className="control-label">{translate('task_template.approver')}</label>
+                            {unitMembers && editingTemplate.accountableEmployees &&
+                                <SelectBox
+                                    id={`edit-accounatable-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={unitMembers}
+                                    onChange={this.handleTaskTemplateAccountable}
+                                    value ={editingTemplate.accountableEmployees}
+                                    multiple={true}
+                                    options={{placeholder:`${translate('task_template.approver')}`}}
+                                />
+                            }
+                        </div>
+                        <div className='form-group' >
+                            <label className="control-label">{translate('task_template.supporter')}</label>
+                            {usercompanys && editingTemplate.consultedEmployees &&
+                                <SelectBox
+                                    id={`edit-consulted-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={
+                                        usercompanys.map(x => {
+                                            return {value: x._id, text: x.name};
+                                        })
+                                    }
+                                    onChange={this.handleTaskTemplateConsult}
+                                    value ={editingTemplate.consultedEmployees}
+                                    multiple={true}
+                                    options={{placeholder: `${translate('task_template.supporter')}`}}
+                                />
+                            }
+                        </div>
+                        <div className='form-group' >
+                            <label className="control-label">{translate('task_template.observer')}</label>
+                            {usercompanys && editingTemplate.informedEmployees &&
+                                <SelectBox
+                                    id={`edit-informed-select-box-${editingTemplate._id}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items={
+                                        usercompanys.map(x => {
+                                            return {value: x._id, text: x.name};
+                                        })
+                                    }
+                                    onChange={this.handleTaskTemplateInform}
+                                    multiple={true}
+                                    value = {editingTemplate.informedEmployees}
+                                    options={{placeholder: `${translate('task_template.observer')}`}}
+                                />
+                            }
+                        </div>                       
+                    </div>
+
+                    <div className="col-sm-6">
+                        <div className={`form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} >
+                            <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                            <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
+                            
+                            <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.parameters')}:</label>
+                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
+                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
+                            <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
+                            <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div className="row">
+                    <div className="col-sm-6">
+                        { this.state.showActionForm &&                        
+                            <ActionForm initialData ={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} /> 
+                        }    
+                    </div>
+                    <div className="col-sm-6">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
+                            {
+                                (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
+                                    <span>{translate('task_template.no_data')}</span>:
+                                    editingTemplate.taskInformations.map((item, index) => 
+                                        <div style={{paddingBottom: "20px"}} key={index}>
+                                            <div>
+                                                <label>{item.name} - Kiểu {item.type}</label>
+                                                {item.filledByAccountableEmployeesOnly ? `- ${translate('task_template.manager_fill')}` : ""}
+                                            </div>
+                                            {item.description}
+                                        </div>
+                                )
+                            }
+                        </fieldset>
+                    </div>
+                </div>
 
             </DialogModal>
         );

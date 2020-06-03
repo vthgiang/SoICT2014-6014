@@ -37,7 +37,7 @@ export function course(state = initState, action) {
                     isLoading: false,
             };
         case CourseConstants.DELETE_COURSE_SUCCESS:
-            console.log(action.payload._id);
+            console.log(action.payload);
             console.log(state.listCourses);
             return {
                 ...state,
