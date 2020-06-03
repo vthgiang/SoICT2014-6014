@@ -321,7 +321,7 @@ class InformationForm extends Component{
                         </React.Fragment>:
                         <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.dalete')}</button>
+                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
                 </div>
                 <table className="table table-bordered">
                     <thead>

@@ -256,7 +256,7 @@ handleDeleteAction = async (index) => {
                 {this.state.editAction ?
                     <React.Fragment>
                         <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>Lưu</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
                     </React.Fragment>:
                     <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
                 }
