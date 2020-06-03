@@ -220,9 +220,8 @@ function evaluationAction(id,evaluation){
 //getall Action task
 function confirmAction(id,idUser) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}/${idUser}`,
         method : 'GET',
-        params:{confirmAction:idUser,id:id}
     }, false, true, 'task.task_perform');  
 };
 function downloadFileActions(id,type) {  
