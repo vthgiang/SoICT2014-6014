@@ -20,7 +20,7 @@ function getAll(data) {
         url: `${ LOCAL_SERVER_API }/employees`,
         method: 'GET',
         params: {
-            organizationalUnit: data !== undefined ? data.organizationalUnit : data,
+            organizationalUnits: data !== undefined ? data.organizationalUnits : data,
             position: data !== undefined ? data.position : data,
             employeeNumber: data !== undefined ? data.employeeNumber : data,
             gender: data !== undefined ? data.gender : data,

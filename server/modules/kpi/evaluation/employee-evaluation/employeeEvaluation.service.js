@@ -153,25 +153,31 @@ exports.getTaskById = async (data) => {
     var daykpi = parseInt(date[2]);
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
-    console.log("tttttttt", yearkpi);
-    console.log("rrrrrr", data);
+   
     // tìm kiếm các công việc cần được đánh giá trong tháng
     var task = await getResultTaskByMonth(data);
     var priority;
     // tính điểm taskImportanceLevel:
     var Task =  await task.map((element)=>{
         console.log("qqqqqqqqqqqqqqq", element.taskImportanceLevel);
-        if(element.taskImportanceLevel === null){
+        if(element.taskImportanceLevel === -1){
             if(element.priority ==="Cao") priority = 3;
             else if( element.priority=== "Trung") priority = 2;
             else priority = 1;
             element.taskImportanceLevel = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+            element.taskImportanceLevelCal = element.taskImportanceLevel; // taskImportanceLevelCal là kết quả đọ qtr công việc do máy tính toán
             
+            console.log('eeee', element);
+        }else{
+            if(element.priority ==="Cao") priority = 3;
+            else if( element.priority=== "Trung") priority = 2;
+            else priority = 1;
+            element.taskImportanceLevelCal = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
             console.log('eeee', element);
         }
     })
     
-    console.log("----", task);
+   // console.log("----", task);
     
     //update importanceLevel arr
     // for(var element of task){
@@ -209,9 +215,10 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 };
 
 exports.setTaskImportanceLevel = async (id, data) => {
+    console.log("tytytyt",data);
     // data body co taskId, date, point, employeeId
     // id là id của employee kpi
-    console.log(data);
+   // console.log(data);
     var set = [];
     for (const element of data) {
 
@@ -229,18 +236,26 @@ exports.setTaskImportanceLevel = async (id, data) => {
     var autoPoint = 0;
     var approvePoint = 0;
     var employPoint = 0;
-   // console.log("ttttttttttttttttt", task);
+    var sumTaskImportance = 0;
+    console.log("ttttttttttttttttt", task);
+
+    // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
+
     for(element of task){
-        autoPoint += element.automaticPoint;
-        approvePoint += element.approvedPoint;
-        employPoint += element.contribution;
+        autoPoint += element.automaticPoint  * element.taskImportanceLevel/10;
+        approvePoint += element.approvedPoint * element. taskImportanceLevel/10;
+        employPoint += element.contribution * element.taskImportanceLevel/10;
+        sumTaskImportance += element.taskImportanceLevel;
     }
     var n = task.length;
+    console.log("sssss", sumTaskImportance);
+    console.log("auuu", autoPoint);
+    
     var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
         $set :{
-            "automaticPoint" : autoPoint/n,
-            "employeePoint" : employPoint/n,
-            "approvedPoint" : approvePoint/n,
+            "automaticPoint" : Math.round(autoPoint/n),
+            "employeePoint" : Math.round(employPoint/n),
+            "approvedPoint" : Math.round(approvePoint/n),
         },
     }, {new: true} );
 
@@ -252,8 +267,9 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     // id la _id tháng trong evaluation trong task
     // trong data có điểm taskImportanceLevel và id của nhân viên cần chỉnh sửa
     // find task
-    console.log("ID ++++++++", taskId);
-    var date = await date.split("-");
+    //console.log("ID ++++++++", taskId);
+   
+    var date = new Date(date);
     console.log("---------", date);
 
     // find task
@@ -265,17 +281,20 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
             $unwind: "$evaluations"
         },
         {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" },{ startDate: "$startDate" },  { endDate: "$endDate" }, { status: "$status" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: 5 } },
-        { $match: { year: 2020 } },
+        {$project:{
+            "_id": 1,
+        
+            "compStartDate": { "$lte":["$startDate",date]},
+            "compEndDate": {"$gte":["$endDate",date]}
+            }},
+            { $match: { 'compStartDate': true } },
+            { $match: { "compEndDate": true } },
 
     ])
-    // ket qua tra ve la mang 1 phan tu
-    console.log("taskkkkk", task[0]._id);
-
-    // update
+    console.log('taskkkk daayyy', task);
     var setPoint = await Task.findOneAndUpdate(
         {
             "evaluations._id": task[0]._id,
@@ -301,6 +320,7 @@ async function getResultTaskByMonth(data) {
     // var monthkpi = date[1];
     // var yearkpi = date[0];
     var date = new Date(data.date);
+    console.log("tetete",date);
     var monthkpi = date.getMonth()+1;
     var yearkpi = date.getFullYear();
     var task = await Task.aggregate([
@@ -314,26 +334,33 @@ async function getResultTaskByMonth(data) {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: monthkpi } },
-        { $match: { year: yearkpi } },
         { $unwind: "$results" },
         {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
-        {
-            $lookup: {
-                from: "users",
-                localField: "employee",
-                foreignField: "_id",
-                as: "employee"
-
-            }
-        },
-        { $unwind: "$employee" },
-        { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId)} }
+        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} },  
+        {$project:{
+            "name": 1,
+            "startDate":1,
+            "endDate": 1,
+            "taskId" : 1,
+            "priority": 1,
+            "status" : 1,
+            "role": 1,
+            "automaticPoint" : 1,
+             "employeePoint" : 1,
+             "approvedPoint" : 1,
+            "contribution": 1,
+            "taskImportanceLevel": 1,
+            "compStartDate": { "$lte":["$startDate",date]},
+            "compEndDate": {"$gte":["$endDate",date]}
+            }},
+          { $match: { 'compStartDate': true } },
+          { $match: { "compEndDate": true } },
 
     ]);
-    //console.log("task funcccc", task);
+    
+    console.log("task funcccc", task);
     return task;
 }
 

@@ -138,7 +138,7 @@
 }
 
 .content-level1 .dropdown-item, .content-level2 .dropdown-item{
-    background-color: none;
+    background-color: #fff;
     border: none;
     width: 100%;
     right: 5px;

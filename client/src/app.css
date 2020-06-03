@@ -221,19 +221,15 @@ legend.scheduler-border {
     padding: 10px 0 0 15px;
 }
 dt{
-    padding: 0px 5px 10px 0px;
     color: #605ca8;
+    line-height: 2.2;
 }
 dd{
-    padding: 0px 5px 5px 0px;
-    margin-bottom: 5px;
-    line-height: 2;
+    line-height: 2.2;
 }
-dd > ul{
-    margin: 0px;
-}
-dd > ul > li{
-    padding: 0px 5px 5px 5px;
+dd ul, dd ol{
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 

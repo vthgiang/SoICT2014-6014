@@ -12,8 +12,8 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { ModalMemberApprove } from './employeeKpiApproveModal';
-import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
 import { Comments } from './employeeKpiComment';
+import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -182,7 +182,7 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-        // console.log("inforsearch", infosearch);
+         console.log("inforsearch", infosearch);
         if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
             var startdate = new Date(startDate[1], startDate[0], 0);
