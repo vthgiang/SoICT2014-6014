@@ -31,8 +31,9 @@ class StatisticsEmployeeKpiSetChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextProps.userId !== this.state.userId || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+            // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
             await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
-
+       
             this.setState(state => {
                 return {
                     ...state,
@@ -40,7 +41,7 @@ class StatisticsEmployeeKpiSetChart extends Component {
                 }
             });
 
-            return true;
+            return false;
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
