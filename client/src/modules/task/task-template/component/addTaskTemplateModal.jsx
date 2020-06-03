@@ -265,16 +265,18 @@ class ModalAddTaskTemplate extends Component {
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
             
-            this.setState(state =>{
-                return{
-                    ...state,
-                    newTemplate: {
-                        ...this.state.newTemplate,
-                        organizationalUnit: defaultUnit._id
-                    }
-                };
-            });
-            return false; // Sẽ cập nhật lại state nên không cần render
+            if (defaultUnit){
+                this.setState(state =>{
+                    return{
+                        ...state,
+                        newTemplate: {
+                            ...this.state.newTemplate,
+                            organizationalUnit: defaultUnit._id
+                        }
+                    };
+                });
+                return false; // Sẽ cập nhật lại state nên không cần render
+            }
         }
 
         return true;
