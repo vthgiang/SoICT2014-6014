@@ -4,8 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { LineAndBarChart } from './lineAndBarChart';
-import { ThreeBarChart } from './threeBarChart';
 import { AgePyramidChart, BarAndLineChart, MultipleBarChart } from './combinedContent';
 import './employeeDashBoard.css';
 
