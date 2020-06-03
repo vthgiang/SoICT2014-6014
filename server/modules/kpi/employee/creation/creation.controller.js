@@ -68,7 +68,7 @@ exports.createEmployeeKpi = async (req, res) => {
 /** Chỉnh sửa thông tin chung của KPI cá nhân */ 
 exports.editEmployeeKpiSet = async (req, res) => {
     try {
-        var employeeKpiSet= await EmployeeKpiSetService.editEmployeeKpiSet(req.body.time,req.params.id);
+        var employeeKpiSet= await EmployeeKpiSetService.editEmployeeKpiSet(req.body.date,req.params.id);
         await LogInfo(req.user.email, ` edit employee kpi set `, req.user.company)
         res.status(200).json({
             success: true,

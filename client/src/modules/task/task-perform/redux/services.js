@@ -21,11 +21,9 @@ export const performTaskService = {
     createResultTask,
     editResultTask,
     addTaskAction,
-    getTaskAction,
     editTaskAction,
     deleteTaskAction,
     createTaskComment,
-    getTaskComments,
     editTaskComment,
     deleteTaskComment,
     createCommentOfTaskComment,
@@ -124,14 +122,6 @@ function continueTimerTask(id, newTimer) {
     }, false, true, 'task.task_perform')
 }
 
-//getall Action task
-function getTaskAction(task) {
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action`,
-        method : 'GET',
-        params:{task:task}
-    }, false, true, 'task.task_perform');  
-};
 // add comment task
 function addActionComment(newComment) {
     return sendRequest({
@@ -184,12 +174,6 @@ function createTaskComment(newComment){
         method : 'POST',
         data: newComment
     },true, true, 'task.task_perform')
-}
-function getTaskComments(id){
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/task-comment/${id}`,
-        method: 'GET',
-    },false,true,'task.task_perform')
 }
 function editTaskComment(id,newComment){
     return sendRequest({

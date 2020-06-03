@@ -573,7 +573,7 @@ class EvaluateByAccountableEmployee extends Component {
                         <br/>
                         {
                             // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
-                            <table className="table table-striped table-bordered table-hover">
+                            <table className="table table-striped table-hover">
                                 <tr>
                                     <th>Tên</th>
                                     <th>Vai trò</th>
@@ -605,10 +605,10 @@ class EvaluateByAccountableEmployee extends Component {
                                         (
                                             <tr>
                                                 <td>{item.name}</td>
-                                                <td>{'Consulted'}</td>
+                                                <td>{'Responsible'}</td>
                                                 <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td>
-                                                <td><input className="form-control" type="number" name={`contributeConsulted${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}/></td>
-                                                <td><input className="form-control" type="number" name={`approvedPointConsulted${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeConsulted${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointConsulted${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
@@ -620,10 +620,10 @@ class EvaluateByAccountableEmployee extends Component {
                                         (
                                             <tr>
                                                 <td>{item.name}</td>
-                                                <td>{'Responsible'}</td>
+                                                <td>{'Consulted'}</td>
                                                 <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td>
-                                                <td><input className="form-control" type="number" name={`contributeResponsible${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}/></td>
-                                                <td><input className="form-control" type="number" name={`approvedPointResponsible${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeResponsible${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointResponsible${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
@@ -637,8 +637,8 @@ class EvaluateByAccountableEmployee extends Component {
                                                 <td>{item.name}</td>
                                                 <td>{'Accountable'}</td>
                                                 <td><p id={`accountablePoint${item._id}`}>{this.state.results[`accountable${item._id}`]?this.state.results[`accountable${item._id}`]:0}</p></td>
-                                                <td><input className="form-control" type="number" name={`contributeAccountable${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}/></td>
-                                                <td><input className="form-control" type="number" name={`approvedPoint${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeAccountable${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPoint${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           

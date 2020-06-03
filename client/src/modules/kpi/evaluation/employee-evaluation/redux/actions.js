@@ -16,6 +16,7 @@ export const kpiMemberActions = {
  
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberOfUnit(infosearch) {
+    console.log('inforsearch action', infosearch);
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
  
@@ -36,6 +37,7 @@ function getAllKPIMemberOfUnit(infosearch) {
 }
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberByMember(member) { //member
+    console.log('mmmm',member);
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
  

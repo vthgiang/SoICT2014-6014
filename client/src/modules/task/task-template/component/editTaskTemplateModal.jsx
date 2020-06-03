@@ -320,6 +320,24 @@ class ModalEditTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}
@@ -407,21 +425,12 @@ class ModalEditTaskTemplate extends Component {
                     <div className="col-sm-6">
                         <div className='form-group' >
                             <label className="control-label" >Người thực hiện</label>
-                            {userdepartments && editingTemplate.responsibleEmployees &&
+                            {unitMembers && editingTemplate.responsibleEmployees &&
                                 <SelectBox
                                     id={`edit-responsible-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[2].roleId.name,
-                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                        },
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleTaskTemplateResponsible}
                                     value={editingTemplate.responsibleEmployees}
                                     multiple={true}
@@ -431,21 +440,12 @@ class ModalEditTaskTemplate extends Component {
                         </div>
                         <div className='form-group' >
                             <label className="control-label">Người phê duyệt</label>
-                            {userdepartments && editingTemplate.accountableEmployees &&
+                            {unitMembers && editingTemplate.accountableEmployees &&
                                 <SelectBox
                                     id={`edit-accounatable-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[0].roleId.name,
-                                            value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleTaskTemplateAccountable}
                                     value ={editingTemplate.accountableEmployees}
                                     multiple={true}
