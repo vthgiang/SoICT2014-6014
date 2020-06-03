@@ -233,7 +233,7 @@ dd ul, dd ol{
 }
 
 
-.modal{ overflow-y: auto; }
+
 
 /* Bootstrap 3 khi cần cho các phần tử trong row có height bằng nhau. Bootstrap 4 đã có luôn*/
 .row-equal-height {
