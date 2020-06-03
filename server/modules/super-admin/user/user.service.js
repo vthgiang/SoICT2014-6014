@@ -1,4 +1,4 @@
-const { OrganizationalUnit, User, UserRole } = require('../../../models').schema;
+const { OrganizationalUnit, User, UserRole, Role } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -7,29 +7,24 @@ const generator = require("generate-password");
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getAllUsers = async (company) => {
-    const users = await User
-        .find({ company })
-        .select('-password -status -deleteSoft -tokens')
-        .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-            { path: 'company' }
-        ]);
-
-    return users;
-}
-
-/**
- * Phân trang danh sách user muốn lấy
- * @company id công ty
- * @limit giới hạn hiển thị trên 1 bảng
- * @page trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedUsers = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await User
-        .paginate( newData , { 
+exports.getAllUsers = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await User.find({ company })
+            .select('-password -status -deleteSoft -tokens')
+            .populate([
+                { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+                { path: 'company' }
+            ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {};
+        
+        return await User.paginate( option , { 
             page, 
             limit,
             select: '-tokens -status -password -deleteSoft',
@@ -38,6 +33,7 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
                 { path: 'company' }
             ]
         });
+    }
 }
 
 /**
@@ -234,16 +230,15 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 //     return users.map(user => user.userId); //mảng id của các users trong phòng ban này
 // }
 
-//lấy user trong một phòng ban
+
+
+/**
+ * Lấy user trong một phòng ban
+ */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
     var department = await OrganizationalUnit.findById(departmentId);
-    var dean = await UserRole.findOne({ roleId: department.dean }).populate('userId roleId');
-    var viceDean = await UserRole.findOne({ roleId: department.viceDean }).populate('userId roleId');
-    var employee = await UserRole.findOne({ roleId: department.employee }).populate('userId roleId');
-    var users = [];
-    users = users.concat(dean, viceDean, employee);
 
-    return users;
+    return _getAllUsersInOrganizationalUnit(department);
 }
 
 /* lấy tất cả các user cùng phòng ban với user hiện tại
@@ -257,15 +252,46 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
             {'employee': id_role}
         ]  
     });
-    if(department === null) throw['department_not_found'];
-    var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
-    var viceDean = await UserRole.findOne({ roleId: department.viceDean}).populate('userId roleId');
-    var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
-    var users = [];
-    users = users.concat(dean, viceDean, employee);
+    return _getAllUsersInOrganizationalUnit(department);
+}
+
+/**
+ * Hàm tiện ích dùng trong 2 service ở trên
+ */
+_getAllUsersInOrganizationalUnit = async (department) => {
+    var userRoles = await UserRole
+    .find({ roleId: {$in: [department.dean, department.viceDean, department.employee]}})
+    .populate({path: 'userId', select: 'name'})
+    
+    var tmp = await Role.find({_id: {$in: [department.dean, department.viceDean, department.employee]}}, {name: 1});
+    var roles = {};
+    tmp.forEach(item => {
+        if (item._id.equals(department.dean))
+            roles.dean = item;
+        else if (item._id.equals(department.viceDean))
+            roles.viceDean = item;
+        else if (item._id.equals(department.employee))
+            roles.employee = item;
+    })
+
+    let deans=[], viceDeans=[], employees=[];
+    userRoles.forEach((item) => {
+        if (item.roleId.equals(department.dean)){
+            deans.push(item.userId);
+        } else if (item.roleId.equals(department.viceDean)){
+            viceDeans.push(item.userId);
+        } else if (item.roleId.equals(department.employee)){
+            employees.push(item.userId);
+        }
+    });
+
+    var users = {deans: deans, viceDeans: viceDeans, employees: employees, roles: roles};
 
     return users;
 }
+
+
+
 
 /**
  * Kiểm tra sự tồn tại của tài khoản

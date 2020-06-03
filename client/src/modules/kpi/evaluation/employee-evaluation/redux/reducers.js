@@ -150,7 +150,8 @@ export function kpimembers(state = {}, action) {
     case  kpiMemberConstants.GET_TASK_BYID_REQUEST: 
       return {
         ...state,
-        loading: true 
+        loading: true,
+        tasks: null
         };
     case  kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {

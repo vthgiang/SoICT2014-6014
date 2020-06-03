@@ -386,7 +386,7 @@ export default {
         },
 
         document: {
-            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',different_versions: 'Phiên bản khác',
+            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',different_versions: 'Phiên bản khác', amount: 'Số lượng',
             name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn', views: 'Số lần xem', downloads: 'Số lần download',
             add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản', add_version: 'Thêm phiên bản mới',
@@ -421,11 +421,11 @@ export default {
             administration: {
                 categories: {
                     add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
-                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản',
+                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản', not_select: 'Chưa thuộc loại văn bản',
                 },
                 domains: {
                     add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
-                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục',
+                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục', not_select: 'Không thuộc về danh mục nào',
                 }
             },
             user: {
@@ -547,6 +547,7 @@ export default {
             manage_link: 'Quản lý trang',
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
+            documents: 'Tài liệu văn bản',
 
             task_template: 'Mẫu Công Việc',
             cocautochuc: 'Cơ Cấu Tổ Chức',
@@ -1469,7 +1470,8 @@ export default {
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
-            action: 'Hành động'
+            action: 'Hành động',
+            priority: 'Độ ưu tiên'
         },
 
         task: {
@@ -1477,10 +1479,12 @@ export default {
                 create_task_success: 'Tạo công việc mới thành công',
                 delete_success: 'Xóa công việc thành công',
                 edit_status_of_task_success: 'Chỉnh sửa trạng thái công việc thành công',
+                edit_status_archived_of_task_success: 'Chỉnh sửa trạng thái lưu kho của công việc thành công',
 
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
+                edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
 
                 responsible: 'Thực hiện chính',
                 accountable: 'Phê duyệt',
@@ -1535,6 +1539,7 @@ export default {
                 action_edit: 'Băt đầu công việc',
                 action_delete: 'Xóa công việc',
                 action_store: 'Lưu vào kho',
+                action_restore: 'Lấy ra khỏi kho',
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ'
 

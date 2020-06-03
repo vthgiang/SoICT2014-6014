@@ -232,24 +232,20 @@ class CourseCreateForm extends Component {
         })
     }
 
-    handleResultChange = (id, value) => {
-        console.log(id);
-        console.log(value);
-        // let listEmployees = this.state.listEmployees;
-        // for (let n in listEmployees) {
-        //     if (listEmployees[n]._id === id) {
-        //         if (value === 'pass') {
-        //             listEmployees[n].result = 'faile'
-        //         } else {
-        //             listEmployees[n].result = 'pass'
-        //         }
-        //     }
-        // }
-        
-        // await this.setState({
-        //     listEmployees: listEmployees
-        // })
-        // console.log(this.state);
+    handleResultChange = async (id, value) => {
+        let listEmployees = this.state.listEmployees;
+        for (let n in listEmployees) {
+            if (listEmployees[n]._id === id) {
+                if (value === 'pass') {
+                    listEmployees[n].result = 'failed'
+                } else if (value === 'failed') {
+                    listEmployees[n].result = 'pass'
+                }
+            }
+        }
+        await this.setState({
+            listEmployees: listEmployees
+        })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
@@ -371,6 +367,7 @@ class CourseCreateForm extends Component {
                                     value={educationProgram}
                                     items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: '', text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
+                                    disabled={listEmployees.length !== 0 ? true : false}
                                 />
                                 <ErrorLabel content={errorOnEducationProgram} />
                             </div>
@@ -425,16 +422,20 @@ class CourseCreateForm extends Component {
                                         <tr key={index}>
                                             <td>{x.employeeNumber}</td>
                                             <td>{x.fullName}</td>
-                                            <td><div>
-                                                <div className="radio-inline">
-                                                    <label>
-                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={`${x.result === "pass" ? true : false}`} onclick={() => this.handleResultChange("adsd", "sdawdaw")} />Đạt</label>
+                                            <td>
+                                                <div>
+                                                    <div className="radio-inline">
+                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={x.result==='pass'}
+                                                            onChange={() => this.handleResultChange(x._id, x.result)} />
+                                                        <label>Đạt</label>
+                                                    </div>
+                                                    <div className="radio-inline">
+                                                        <input type="radio" name={`result${x._id}`} value="failed" checked={x.result === "failed"}
+                                                            onChange={() => this.handleResultChange(x._id, x.result)} />
+                                                        <label>Không đạt</label>
+                                                    </div>
                                                 </div>
-                                                <div className="radio-inline">
-                                                    <label>
-                                                        <input type="radio" name={`result${x._id}`} value="faile" checked={`${x.result === "faile" ? true : false}`} onclick={() => this.handleResultChange(x._id, x.result)} />Không đạt</label>
-                                                </div>
-                                            </div></td>
+                                            </td>
                                             <td>
                                                 <a className="delete" title="Delete" onClick={() => this.handleDelete(x._id)}><i className="material-icons"></i></a>
                                             </td>

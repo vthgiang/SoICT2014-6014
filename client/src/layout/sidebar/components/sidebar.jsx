@@ -188,14 +188,21 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/documents-management', links) === true &&
                                 <Item
-                                    pending={true}
                                     key='manage_document'
                                     name='manage_document'
                                     path='/documents-management'
                                     icon='fa fa-folder-open'
                                 />
                             }
-
+                            {
+                                this.checkURL('/documents', links) === true &&
+                                <Item
+                                    key='documents'
+                                    name='documents'
+                                    path='/documents'   
+                                    icon='fa fa-file-text'
+                                />
+                            }
                             {/* Quan ly tai san */}
                             {
                                 (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || this.checkURL(url1.path3, links) === true ||

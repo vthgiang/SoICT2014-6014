@@ -102,12 +102,11 @@ exports.updateEmployeeKpiSetStatus = async (id,statusId) => {
 }
 
 /** Chỉnh sửa thông tin chung của KPI cá nhân */ 
-exports.editEmployeeKpiSet = async (dateId,id) => {
-    //req.body.date,req.params.id
-    var date = dateId.split("-");
-        var date = new Date(time[1], time[0], 0)
-        var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-        employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+exports.editEmployeeKpiSet = async (strDate,id) => {
+    var arr = strDate.split("-");
+    var date = new Date(arr[1], arr[0], 0)
+    var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
+    employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return employeeKpiSet;
 }
 

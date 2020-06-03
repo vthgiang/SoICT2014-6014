@@ -36,6 +36,26 @@ const DocumentSchema = new Schema({
     officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
         type: String
     },
+    views: [{
+        viewer: {
+            type: Schema.Types.ObjectId,
+            ref: 'users'
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        }
+    }],
+    downloads: [{
+        downloader: {
+            type: Schema.Types.ObjectId,
+            ref: 'users'
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        },
+    }],
     numberOfView: { //số lần xem
         type: Number,
         default: 0
@@ -74,7 +94,7 @@ const DocumentSchema = new Schema({
     }, 
     relationshipDocuments: [{ //các tài liệu được liên kết
         type: Schema.Types.ObjectId,
-        refs: 'documents'
+        replies: this
     }],
 
     /** Những vị trí có quyền xem mẫu này */

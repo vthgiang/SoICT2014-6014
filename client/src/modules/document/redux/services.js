@@ -16,7 +16,10 @@ export const DocumentServices = {
     deleteDocumentCategory,
 
     getDocumentDomains,
-    createDocumentDomain
+    createDocumentDomain,
+
+    getDocumentsUserCanView,
+    getUserDocumentStatistics,
 };
 
 function getDocuments(params) {
@@ -74,10 +77,11 @@ function downloadDocumentFileScan(id, numberVersion) {
     }, false, true, 'document');
 }
 
-function getDocumentCategories() {
+function getDocumentCategories(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/categories`,
         method: 'GET',
+        params
     }, false, true, 'document');
 }
 
@@ -119,3 +123,20 @@ function createDocumentDomain(data) {
         data,
     }, true, true, 'document');
 }
+
+function getDocumentsUserCanView(roleId, params) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/permission-view/${roleId}`,
+        method: 'GET',
+        params,
+    }, false, true, 'document');
+}
+
+function getUserDocumentStatistics(params) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/user-statistical`,
+        method: 'GET',
+        params,
+    }, false, true, 'document');
+}
+

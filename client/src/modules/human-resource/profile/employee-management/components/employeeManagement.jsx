@@ -10,12 +10,26 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 class EmployeeManagement extends Component {
     constructor(props) {
         super(props);
+        let search = window.location.search.split('?')
+        let keySearch = 'organizationalUnits';
+        let organizationalUnits = null;
+        for (let n in search) {
+            let index = search[n].lastIndexOf('organizationalUnits');
+            if (index !== -1) {
+                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                console.log(organizationalUnits);
+                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
+                    organizationalUnits = organizationalUnits.split(',')
+                } else organizationalUnits = null
+                break;
+            }
+        }
         this.state = {
             position: null,
             gender: null,
             employeeNumber: null,
-            organizationalUnit: null,
-            status: null,
+            organizationalUnits: organizationalUnits,
+            status: 'active',
             page: 0,
             limit: 5,
         }
@@ -68,7 +82,7 @@ class EmployeeManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -134,9 +148,9 @@ class EmployeeManagement extends Component {
         const { list } = this.props.department;
         var { employeesManager, translate } = this.props;
         var lists, listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (this.state.organizationalUnits !== null) {
+            let organizationalUnits = this.state.organizationalUnits;
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -157,6 +171,7 @@ class EmployeeManagement extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
+        console.log(this.state);
         return (
             <div className="box">
                 <div className="box-body qlcv">
