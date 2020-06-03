@@ -13,45 +13,40 @@ class StatisticsEmployeeKpiSetChart extends Component {
     constructor(props) {
         super(props);
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        var currentDate = new Date();
-        var currentYear = currentDate.getFullYear();
-        var currentMonth = currentDate.getMonth();
         this.state = {
-            dataStatus: this.DATA_STATUS.QUERYING,
-            userId: localStorage.getItem("userId"),
-            startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 1)
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         };
-        
-        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    componentDidMount = () => {
+        this.props.getAllEmployeeKpiSetByMonth(this.props.userId, this.props.startMonth, this.props.endMonth);
+
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.QUERYING,
+            }
+        });
+    }
+
+    shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextProps.userId !== this.state.userId || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+            await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
+
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+                    dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            return false;
+
+            return true;
         }
 
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
-            // Lấy Kpi của đơn vị hiện tại
-            this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING
-                };
-            });
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
                 return false;
-            console.log("000", nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
+
             this.setState(state => {
                 return {
                     ...state,
@@ -60,6 +55,7 @@ class StatisticsEmployeeKpiSetChart extends Component {
             });
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+
             this.multiLineChart();
             this.setState(state => {
                 return {
@@ -78,7 +74,7 @@ class StatisticsEmployeeKpiSetChart extends Component {
                 ...prevState,
                 userId: nextProps.userId,
                 startMonth: nextProps.startMonth,
-                endMonth: nextProps.endMonth
+                endMonth: nextProps.endMonth,
             }
         } else{
             return null;
@@ -88,7 +84,6 @@ class StatisticsEmployeeKpiSetChart extends Component {
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
         var listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
-        console.log("000", this.props.createEmployeeKpiSet.employeeKpiSetByMonth)
         if(createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
