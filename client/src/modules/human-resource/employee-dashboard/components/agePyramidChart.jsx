@@ -32,7 +32,6 @@ class AgePyramidChart extends Component {
 
     renderChart = (data) => {
         this.removePreviousChart();
-        console.log("**********")
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
 
