@@ -43,11 +43,11 @@ const RepairUpgradeSchema = new Schema({
     status: {//trạng thái, tình trạng: chưa thực hiện || đang thực hiện || đã thực hiện
         type: String
     },
-    createDate: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updateDate: {
+    updatedAt: {
         type: Date,
         default: Date.now
     }

@@ -37,6 +37,9 @@ class AssetTypeCreateForm extends Component {
         }
         return msg === undefined;
     }
+    validateExitsTypeNumber = (value) => {
+        return this.props.assetType.listAssetTypes.some(item => item.typeNumber === value);
+    }
 
     /**
      * Bắt sự kiện thay đổi tên loại tài sản
@@ -59,9 +62,7 @@ class AssetTypeCreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateExitsTypeNumber = (value) => {
-        return this.props.assetType.listAssetTypes.some(item => item.typeNumber === value);
-    }
+    
     /**
      * Bắt sự kiện thay đổi thời gian trích khấu hao
      */
@@ -128,8 +129,6 @@ class AssetTypeCreateForm extends Component {
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
                     title="Thêm mới loại tài sản"
-                    msg_success="{translate('modal.add_success')}"
-                    msg_faile={translate('modal.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated() || this.validateExitsTypeNumber(typeNumber)}
                 >

@@ -1,5 +1,4 @@
-import {RepairUpgradeConstants} from './constants';
-
+import { RepairUpgradeConstants } from './constants';
 const initState = {
     isLoading: false,
     listRepairUpgrades: [],

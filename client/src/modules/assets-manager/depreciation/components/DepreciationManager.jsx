@@ -2,35 +2,38 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { AssetActions } from '../redux/actions';
-
+import { AssetManagerActions } from '../../asset-manager/redux/actions';
+import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { AssetDetailForm } from '../../asset-manager/components/AssetDetailForm';
 class DepreciationManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assetNumber: "",
+            code: "",
             assetName: "",
             assetType: null,
             month: "",
-            // status: null,
             page: 0,
             limit: 5,
+            typeNumber: "",
+            typeName: "",
         }
-        // this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListAsset(this.state);
+        this.props.getAllAsset(this.state);
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
     }
-    // // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    // handleEdit = async (value) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             currentRow: value
-    //         }
-    //     });
-    //     window.$('#modal-edit-asset').modal('show');
-    // }
+
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
+    }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
@@ -48,7 +51,7 @@ class DepreciationManager extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (event) => {
+    handleCodeChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
@@ -84,55 +87,47 @@ class DepreciationManager extends Component {
         })
     }
 
-    // // Function lưu giá trị status vào state khi thay đổi
-    // handleStatusChange = (value) => {
-    //     if (value.length === 0) {
-    //         value = null
-    //     };
-    //     this.setState({
-    //         ...this.state,
-    //         status: value
-    //     })
-    // }
+    // Function bắt sự kiện tìm kiếm
+    handleSubmitSearch = async () => {
+        // if (this.state.month === null) {
+        await this.setState({
+            ...this.state,
+            // ,
+            // month: this.formatDate(Date.now())
+        })
+        // }
+        this.props.getAllAsset(this.state);
+    }
 
-    // // Function bắt sự kiện tìm kiếm 
-    // handleSunmitSearch = async () => {
-    //     if (this.state.month === "") {
-    //         await this.setState({
-    //             month: this.formatDate(Date.now())
-    //         })
-    //     }
-    //     // this.props.getListAsset(this.state);
-    // }
-
-    // // Bắt sự kiện setting số dòng hiện thị trên một trang
-    // setLimit = async (number) => {
-    //     await this.setState({
-    //         limit: parseInt(number),
-    //     });
-    //     // this.props.getListAsset(this.state);
-    // }
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+        });
+        this.props.getAllAsset(this.state);
+    }
 
     // Bắt sự kiện chuyển trang
-    // setPage = async (pageNumber) => {
-    //     var page = (pageNumber - 1) * this.state.limit;
-    //     await this.setState({
-    //         page: parseInt(page),
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
 
-    //     });
-    //     this.props.getListAsset(this.state);
-    // }
+        });
+        this.props.getAllAsset(this.state);
+    }
 
     render() {
-        const { translate, asset } = this.props;
-        var listDepreciation = "";
-
-        if (this.props.assetsManager.isLoading === false) {
-            listDepreciation = this.props.assetsManager.listDepreciaton;
+        const { translate, assetsManager } = this.props;
+        var lists = "";
+        var formater = new Intl.NumberFormat();
+        if (assetsManager.allAsset) {
+            lists = this.props.assetsManager.allAsset;
         }
-        var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.assetsManager.totalList / this.state.limit) :
-            parseInt((this.props.assetsManager.totalList / this.state.limit) + 1);
+
+        var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
+            parseInt(assetsManager.totalList / this.state.limit) :
+            parseInt((assetsManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box" >
@@ -143,11 +138,11 @@ class DepreciationManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleAssetNumberChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleRepairNumberChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -157,7 +152,7 @@ class DepreciationManager extends Component {
                                 options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    
+
                                 ]}
                             >
                             </SelectMulti>
@@ -173,7 +168,7 @@ class DepreciationManager extends Component {
                         </div>
                         <div className="form-group">
                             {/* <label></label> */}
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()} >Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()} >Tìm kiếm</button>
                         </div>
                     </div>
                     <table id="depreciation-table" className="table table-striped table-bordered table-hover">
@@ -182,11 +177,12 @@ class DepreciationManager extends Component {
                                 <th style={{ width: "8%" }}>Mã tài sản</th>
                                 <th style={{ width: "10%" }}>Tên tài sản</th>
                                 <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Ngày nhập</th>
+                                <th style={{ width: "10%" }}>Thời gian bắt đầu trích khấu hao</th>
                                 <th style={{ width: "10%" }}>Nguyên giá</th>
+                                <th style={{ width: "10%" }}>Thời gian trích khấu hao</th>
                                 <th style={{ width: "10%" }}>Mức độ KH trung bình năm</th>
                                 <th style={{ width: "10%" }}>Mức độ KH  trung bình tháng</th>
-                                <th style={{ width: "10%" }}>Khấu hao lũy kế</th>
+                                <th style={{ width: "10%" }}>Giá trị hao mòn lũy kế</th>
                                 <th style={{ width: "10%" }}>Giá trị còn lại</th>
                                 <th style={{ width: "10%" }}>Thời gian kết thúc trích khấu hao</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
@@ -196,13 +192,14 @@ class DepreciationManager extends Component {
                                             "Mã tài sản",
                                             "Tên tài sản",
                                             "Loại tài sản",
-                                            "Ngày nhập",
+                                            "Thời gian bắt đầu trích khấu hao",
                                             "Nguyên giá",
+                                            "Thời gian trích khấu hao",
                                             "Mức độ KH trung bình năm",
                                             "Mức độ KH trung bình tháng",
-                                            "Khấu hao lũy kế",
+                                            "Giá trị hao mòn lũy kế",
                                             "Giá trị còn lại",
-                                            "Thời gian kết thúc trích khấu hao",
+                                            "Thời gian kết thúc trích khấu hao"
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -212,56 +209,46 @@ class DepreciationManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDepreciation !== 'undefined' && listDepreciation.length !== 0) &&
-                                listDepreciation.map((x, index) => (
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                                lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
-                                        <td>{x.assetType}</td>
-                                        <td>{x.datePurchase}</td>
-                                        <td>{x.nguyengia}</td>
-                                        <td>{x.nam}</td>
-                                        <td>{x.thang}</td>
-                                        <td>{x.luyke}</td>
-                                        <td>{x.conlai}</td>
-                                        <td>{x.hetKH}</td>
+                                        <td>{x.asset.code}</td>
+                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.asset.assetType.typeName}</td>
+                                        <td>{x.asset.startDepreciation}</td>
+                                        <td>{formater.format(parseInt(x.asset.cost))} VNĐ</td>
+                                        <td>{x.asset.timeDepreciation} Tháng</td>
+                                        <td>{x.annualDepreciationValue} VNĐ/Năm</td>
+                                        <td>{x.monthlyDepreciationValue} VNĐ/Tháng</td>
+                                        <td>{x.accumulatedDepreciation} VNĐ</td>
+                                        <td>{x.residuaValue} VNĐ</td>
+                                        <td>{x.endDepreciation}</td>
                                         <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
                                             {/* <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content="Xóa thông tin tài sản"
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.assetNumber + " - " + x.assetName
-                                                }}
-                                                func={this.props.deleteAsset}
-                                            /> */}
+                 
+                                            */}
                                         </td>
                                     </tr>))
                             }
                         </tbody>
                     </table>
-                    {/* {asset.isLoading ?
+                    {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listAsset === 'undefined' || listAsset.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} /> */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                
-                {/* {
-                    this.state.currentRow !== undefined &&
-                    <AssetEditForm
-                        _id={this.state.currentRow._id}
-                        repairNumber={this.state.currentRow.repairNumber}
-                        createDate={this.state.currentRow.createDate}
-                        type={this.state.currentRow.type}
-                        assetNumber={this.state.currentRow.assetNumber}
-                        assetName={this.state.currentRow.assetName}
-                        repairDate={this.state.currentRow.repairDate}
-                        completeDate={this.state.currentRow.completeDate}
-                        cost={this.state.currentRow.cost}
-                        status={this.state.currentRow.status}
+
+                {
+                    this.state.currentRowView !== undefined &&
+                    <AssetDetailForm
+                        _id={this.state.currentRowView.asset._id}
+                        asset={this.state.currentRowView.asset}
+                        repairUpgrade={this.state.currentRowView.repairUpgrade}
+                        distributeTransfer={this.state.currentRowView.distributeTransfer}
                     />
-                } */}
+                }
             </div >
         );
     }
@@ -273,7 +260,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListAsset: AssetActions.getListAsset,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
 };
 
 const connectedListDepreciation = connect(mapState, actionCreators)(withTranslate(DepreciationManager));

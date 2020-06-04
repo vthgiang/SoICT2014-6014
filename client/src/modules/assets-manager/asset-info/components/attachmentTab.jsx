@@ -24,6 +24,7 @@ class AttachmentTab extends Component {
     render() {
         const { id, translate } = this.props;
         const { file, numberFile } = this.state;
+        console.log('this.state', this.state);
         return (
             <div id={id} className="tab-pane">
                 <div className=" row box-body">
@@ -51,8 +52,8 @@ class AttachmentTab extends Component {
                                             <td>{x.nameFile}</td>
                                             <td>{x.discFile}</td>
                                             <td>{x.number}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile.length === 0) ? translate('manage_employee.no_files') :
+                                                <a href={x.urlFile} target="_blank"><u>{x.urlFile}</u></a>}</td>
                                         </tr>
                                     ))}
                             </tbody>

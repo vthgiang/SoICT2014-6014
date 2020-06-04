@@ -596,6 +596,7 @@ export default {
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
+            dashboard_asset: 'DashBoard quản lý tài sản',
             manage_asset: 'Quản lý tài sản',
             manage_type_asset: 'Quản lý loại tài sản',
             add_asset: 'Thêm tài sản',
@@ -1355,8 +1356,8 @@ export default {
                 create_repair_upgrade_faile: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thất bại',
                 delete_repair_upgrade_success: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thành công',
                 delete_repair_upgrade_faile: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thất bại',
-                edit_repair_upgrade_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                edit_repair_upgrade_success: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thành công',
+                edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thất bại',
             },
 
             // Quản lý cấp phát, điều chuyển, thu hồi
@@ -1369,8 +1370,8 @@ export default {
                 create_distribute_transfer_faile: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thất bại',
                 delete_distribute_transfer_success: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thành công',
                 delete_distribute_transfer_faile: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thất bại',
-                edit_distribute_transfer_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_distribute_transfer_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                edit_distribute_transfer_success: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thành công',
+                edit_distribute_transfer_faile: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thất bại',
             },
 
             // Quản lý đề nghị mua sắm thiết bị
@@ -1434,11 +1435,20 @@ export default {
             manage_assigned: {
 
                 //Thông điệp trả về từ server
-                
+
+            },
+
+            asset_crash: {
+                //Thông điệp trả về từ server
+                get_asset_crash_success: 'Lấy thông tin sự cố tài sản thành công',
+                get_asset_crash_faile: 'Lấy thông tin sự cố tài sản thất bại',
+                create_asset_crash_success: 'Thêm thông tin sự cố tài sản thành công',
+                create_asset_crash_faile: 'Thêm thông tin sự cố tài sản thất bại',
+                delete_asset_crash_success: 'Xóa thông tin sự cố tài sản thành công',
+                delete_asset_crash_faile: 'Xóa thông tin sự cố tài sản thất bại',
+                edit_asset_crash_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
+                edit_asset_crash_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
             }
-
-
-
         },
 
 
