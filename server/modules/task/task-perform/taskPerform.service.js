@@ -512,29 +512,33 @@ exports.evaluationAction = async (id,body) => {
 /**
  * Xác nhận hành động
  */
-exports.confirmAction = async (id,idUser) => {
+exports.confirmAction = async (params) => {
+    
     var evaluationActionRating = await Task.updateOne(
-        {"taskActions._id":id},
+        {"taskActions._id":params.id},
         {
-            $set: {"taskActions.$.creator": idUser}
+            $set: {"taskActions.$.creator": params.idUser}
         }
     )  
-    var task = await Task.findOne({ "taskActions._id": id }).populate([
+    
+    var task = await Task.findOne({ "taskActions._id": params.id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
-    
     return task.taskActions;   
 }
 /**
  * Upload tài liệu cho cộng việc
  */
-exports.uploadFile = async (params,files) => {
-
+exports.uploadFile = async (params,files,body) => {
+    console.log(body)
     var evaluationActionRating = await Task.updateOne(
         {_id:params.task},
         {
             $push: {files:  files}
+        },
+        {
+            $set : {"files.description": body.description, "files.creator":body.creator }
         }
     )  
     var task = await Task.findOne({ _id: params.task })

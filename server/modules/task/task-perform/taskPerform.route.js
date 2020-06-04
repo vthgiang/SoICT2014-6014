@@ -16,6 +16,7 @@ router.post('/:task',auth,uploadFile([{name:'files', path:'/files'}], 'array'),P
 router.post('/result-task/create',auth, PerformTaskController.createTaskResult);
 router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
 //task action
+router.get('/task-action/:id/:idUser',auth,PerformTaskController.confirmAction)
 router.post('/task-action/create',auth, uploadFile([{name:'files', path:'/files/actions'}], 'array'), PerformTaskController.createTaskAction)
 router.put('/task-action',auth, PerformTaskController.editTaskAction);
 router.delete('/task-action/:task/:id',auth, PerformTaskController.deleteTaskAction);
