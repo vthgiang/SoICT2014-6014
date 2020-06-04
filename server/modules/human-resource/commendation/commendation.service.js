@@ -8,7 +8,6 @@ const { Employee, Commendation } = require('../../../models').schema;
  * @month : tháng tìm kiếm
  */
 exports.getTotalCommendation = async (company, organizationalUnits, month)=>{
-    console.log()
     let keySearchEmployee, keySearch = {company: company};
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
@@ -30,7 +29,6 @@ exports.getTotalCommendation = async (company, organizationalUnits, month)=>{
         keySearch = {...keySearch, startDate: {"$gt": firstDay, "$lte": lastDay}}
     };
     var totalList = await Commendation.count(keySearch);
-    console.log(totalList);
     return {totalList};
 }
 

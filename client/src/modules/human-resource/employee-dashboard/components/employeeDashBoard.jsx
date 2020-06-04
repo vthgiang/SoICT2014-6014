@@ -48,7 +48,8 @@ class DashBoardEmployees extends Component {
         this.props.getDepartment();
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
         this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
+        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
     }
 
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
@@ -92,7 +93,8 @@ class DashBoardEmployees extends Component {
         }
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
         this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
+        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
     }
 
 
@@ -154,7 +156,7 @@ class DashBoardEmployees extends Component {
 
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">Số kỷ luật</span>
-                                <span className="info-box-number">180</span>
+                                <span className="info-box-number">{discipline.totalListDiscipline}</span>
                                 <a href="/hr-list-employee" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -300,6 +302,7 @@ const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
+    getListDiscipline: DisciplineActions.getListDiscipline,
 };
 
 const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
