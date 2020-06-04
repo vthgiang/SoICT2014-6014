@@ -6,12 +6,12 @@ const { Employee, AnnualLeave} = require('../../../models').schema;
  * Lấy tổng số thông tin nghỉ phép theo đơn vị (phòng ban) và tháng 
  * 
  */
-exports.getTotalAnnualLeave = async (company, organizationalUnit, month)=>{
+exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
     let keySearchEmployee, keySearch = {company: company};
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (organizationalUnit !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnit, undefined);
+    if (organizationalUnits !== undefined) {
+        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
     if (keySearchEmployee !== undefined) {
@@ -40,8 +40,8 @@ exports.searchAnnualLeaves = async (params, company) => {
     let keySearchEmployee, keySearch = {company: company};
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit !== undefined) {
-        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
+    if (params.organizationalUnits !== undefined) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
 

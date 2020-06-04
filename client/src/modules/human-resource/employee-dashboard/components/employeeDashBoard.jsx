@@ -46,7 +46,7 @@ class DashBoardEmployees extends Component {
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnit: this.state.organizationalUnits, month: this.state.month })
+        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
     }
 
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
@@ -89,7 +89,7 @@ class DashBoardEmployees extends Component {
             })
         }
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnit: this.state.organizationalUnits, month: this.state.month })
+        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
     }
 
     
