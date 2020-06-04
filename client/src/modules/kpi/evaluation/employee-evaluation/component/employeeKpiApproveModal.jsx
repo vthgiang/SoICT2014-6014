@@ -272,7 +272,7 @@ class ModalMemberApprove extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                modalID={`modal-approve-KPI-member-${this.props.id}`}
+                modalID={`modal-approve-KPI-member`}
                 // formID={`form-evaluate-task-by-${this.props.role}`}
                 title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
                 // title={`Phê duyệt KPI nhân viên `}
