@@ -125,6 +125,7 @@ class EmployeeManagement extends Component {
     }
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
+        console.log(this.state);
         this.props.getAllEmployee(this.state);
     }
 

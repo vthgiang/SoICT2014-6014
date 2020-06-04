@@ -7,7 +7,9 @@ const {LogInfo, LogError} = require('../../../logs');
 exports.searchAnnualLeaves = async (req, res) => {
     try {
         let data = {};
-        if(req.query.page !== undefined && req.query.limit !== undefined ){
+        if(req.query.page === undefined && req.query.limit === undefined){
+            data = await AnnualLeaveService.getTotalAnnualLeave(req.user.company._id, req.query.organizationalUnit, req.query.month)
+        } else {
             let params = {
                 organizationalUnit: req.query.organizationalUnit,
                 position: req.query.position,
@@ -19,6 +21,7 @@ exports.searchAnnualLeaves = async (req, res) => {
             }
             data = await AnnualLeaveService.searchAnnualLeaves(params, req.user.company._id);
         }
+        
         await LogInfo(req.user.email, 'GET_ANNUALLEAVE', req.user.company);
             res.status(200).json({ success: true, messages: ["get_annual_leave_success"], content: data });
     } catch (error) {

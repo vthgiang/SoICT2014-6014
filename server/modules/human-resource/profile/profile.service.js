@@ -143,12 +143,12 @@ exports.getEmployeeInforById = async(id)=> {
 }
 
 /**
- * Lấy tất cả danh sách nhân viên 
+ * Lấy tất cả danh sách nhân viên đang làm việc của công ty
  * @company : id công ty
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
 exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    let keySearch = {company: company};
+    let keySearch = {company: company, status: 'active'};
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
@@ -163,7 +163,7 @@ exports.getEmployees = async(company, organizationalUnits, positions, allInfor=t
             keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
         }
         let totalEmployee = await Employee.countDocuments(keySearch);
-        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1});
+        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
         return {totalEmployee, listAllEmployees}
     }
 }
