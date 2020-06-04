@@ -4,7 +4,9 @@ const { Employee, AnnualLeave} = require('../../../models').schema;
 
 /**
  * Lấy tổng số thông tin nghỉ phép theo đơn vị (phòng ban) và tháng 
- * 
+ * @company : id công ty
+ * @organizationalUnits : array id đơn vị tìm kiếm
+ * @month : tháng tìm kiếm
  */
 exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
     let keySearchEmployee, keySearch = {company: company};

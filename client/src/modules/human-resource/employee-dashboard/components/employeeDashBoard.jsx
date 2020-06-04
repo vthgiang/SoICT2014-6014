@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
+import { DisciplineActions } from '../../commendation-discipline/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
@@ -46,7 +47,8 @@ class DashBoardEmployees extends Component {
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
+        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
     }
 
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
@@ -89,13 +91,14 @@ class DashBoardEmployees extends Component {
             })
         }
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
+        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month })
     }
 
-    
+
     render() {
-        console.log(this.state);
-        const { employeesManager, department, annualLeave, translate } = this.props;
+        console.log(this.props.discipline);
+        const { employeesManager, department, discipline, annualLeave, translate } = this.props;
         const { organizationalUnits, month, barAndLineChartSalary, barAndLineChartSX, barAndLineChartKD, barAndLineChartQT, multipleBarChart } = this.state;
         return (
             <div className="qlcv">
@@ -140,7 +143,7 @@ class DashBoardEmployees extends Component {
 
                             <div className="info-box-content" >
                                 <span className="info-box-text">Số khen thưởng</span>
-                                <span className="info-box-number">23</span>
+                                <span className="info-box-number">{discipline.totalListCommendation}</span>
                                 <a href="/hr-list-employee?organizationalUnits=5ecc8a6dde9c0a42c8d44ebd" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -288,14 +291,15 @@ class DashBoardEmployees extends Component {
     }
 };
 function mapState(state) {
-    const { employeesManager, annualLeave, department } = state;
-    return { employeesManager, annualLeave, department };
+    const { employeesManager, annualLeave, discipline, department } = state;
+    return { employeesManager, annualLeave, discipline, department };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
+    getListPraise: DisciplineActions.getListPraise,
 };
 
 const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
