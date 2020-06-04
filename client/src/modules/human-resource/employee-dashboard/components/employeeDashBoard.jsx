@@ -11,22 +11,13 @@ class DashBoardEmployees extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            barAndLineSalary: true,
+            barAndLineChartSalary: true,
+            barAndLineChartSX: true,
+            barAndLineChartKD: true,
+            barAndLineChartQT: true,
+            multipleBarChart: true,
             organizationalUnits: null,
-            dataset: [
-                ['01-2020', 13.50, 12.33],
-                ['02-2020', 13.50, 12.33],
-                ['03-2020', 13.50, 11.33],
-                ['04-2020', 13.50, 15.33],
-                ['05-2020', 13.50, 12.33],
-                ['06-2020', 13.50, 11.33],
-                ['07-2020', 13.50, 12.33],
-                ['08-2020', 13.50, 12.33],
-                ['09-2020', 13.50, 11.33],
-                ['10-2020', 13.50, 15.33],
-                ['11-2020', 13.50, 12.33],
-                ['12-2020', 13.50, 11.33],
-            ]
+            month: null
         }
     }
     componentDidMount() {
@@ -34,12 +25,11 @@ class DashBoardEmployees extends Component {
     }
 
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
-    handleChangeViewChart = () => {
-        console.log('dădadad');
-        // this.setState({
-        //     ...this.state,
-        //     [name]: value
-        // })
+    handleChangeViewChart = (name, value) => {
+        this.setState({
+            ...this.state,
+            [name]: value
+        })
     }
 
     // function bắt sự kiện thay đổi unit
@@ -73,7 +63,7 @@ class DashBoardEmployees extends Component {
     render() {
         const { list } = this.props.department;
         const { translate } = this.props;
-        const { organizationalUnits, month } = this.state;
+        const { organizationalUnits, month, barAndLineChartSalary, barAndLineChartSX, barAndLineChartKD, barAndLineChartQT, multipleBarChart } = this.state;
         return (
             <div className="qlcv">
                 <div className="form-inline">
@@ -182,12 +172,12 @@ class DashBoardEmployees extends Component {
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                                 <div className="box-tools pull-right">
-                                    <div className="btn-group pull-rigth" id="" data-toggle="btn-toggle">
-                                        <button type="button" className="btn btn-default btn-xs active" data-toggle="on">Bar and line</button>
-                                        <button type="button" className="btn btn-default btn-xs" data-toggle="off">Two line</button>
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartSalary === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartSalary', true)}>Bar and line chart</button>
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartSalary === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartSalary', false)}>Line chart</button>
                                     </div>
                                 </div>
-                                <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' lineBar={true} />
+                                <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' lineBar={barAndLineChartSalary} />
                             </div>
                         </div>
                     </div>
@@ -199,12 +189,12 @@ class DashBoardEmployees extends Component {
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                                 <div className="box-tools pull-right">
-                                    <div className="btn-group pull-rigth" id="" data-toggle="btn-toggle">
-                                        <button type="button" className="btn btn-default btn-xs active" data-toggle="on">Bar and line</button>
-                                        <button type="button" className="btn btn-default btn-xs" data-toggle="off">Two line</button>
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartKD === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartKD', true)}>Bar and line chart</button>
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartKD === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartKD', false)}>Line chart</button>
                                     </div>
                                 </div>
-                                <BarAndLineChart nameData1='% Kinh doanh' nameData2='% Mục tiêu' lineBar={true} />
+                                <BarAndLineChart nameData1='% Kinh doanh' nameData2='% Mục tiêu' lineBar={barAndLineChartKD} />
                             </div>
                         </div>
                     </div>
@@ -216,12 +206,12 @@ class DashBoardEmployees extends Component {
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                                 <div className="box-tools pull-right">
-                                    <div className="btn-group pull-rigth" id="" data-toggle="btn-toggle">
-                                        <button type="button" className="btn btn-default btn-xs active" data-toggle="on">Bar and line</button>
-                                        <button type="button" className="btn btn-default btn-xs" data-toggle="off">Two line</button>
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartQT === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartQT', true)}>Bar and line chart</button>
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartQT === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartQT', false)}>Line chart</button>
                                     </div>
                                 </div>
-                                <BarAndLineChart nameData1='% Quản trị' nameData2='% Mục tiêu' lineBar={true} />
+                                <BarAndLineChart nameData1='% Quản trị' nameData2='% Mục tiêu' lineBar={barAndLineChartQT} />
                             </div>
                         </div>
                     </div>
@@ -233,12 +223,12 @@ class DashBoardEmployees extends Component {
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                                 <div className="box-tools pull-right">
-                                    <div className="btn-group pull-rigth" id="" data-toggle="btn-toggle">
-                                        <button type="button" className="btn btn-default btn-xs active" data-toggle="on">Bar and line</button>
-                                        <button type="button" className="btn btn-default btn-xs" data-toggle="off">Two line</button>
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartSX === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartSX', true)}>Bar and line chart</button>
+                                        <button type="button" className={`btn btn-default btn-xs ${barAndLineChartSX === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart('barAndLineChartSX', false)}> Line chart</button>
                                     </div>
                                 </div>
-                                <BarAndLineChart nameData1='% Sản xuất' nameData2='% Mục tiêu' lineBar={true} />
+                                <BarAndLineChart nameData1='% Sản xuất' nameData2='% Mục tiêu' lineBar={barAndLineChartSX} />
                             </div>
                         </div>
                     </div>
@@ -250,12 +240,12 @@ class DashBoardEmployees extends Component {
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                                 <div className="box-tools pull-right">
-                                    <div className="btn-group pull-rigth" id="" data-toggle="btn-toggle">
-                                        <button type="button" className="btn btn-default btn-xs active" data-toggle="on">Bar and line</button>
-                                        <button type="button" className="btn btn-default btn-xs" data-toggle="off">Two line</button>
+                                    <div className="btn-group pull-rigth" >
+                                        <button type="button" className={`btn btn-default btn-xs ${multipleBarChart === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart('multipleBarChart', true)}>Bar chart</button>
+                                        <button type="button" className={`btn btn-default btn-xs ${multipleBarChart === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart('multipleBarChart', false)}>Line chart</button>
                                     </div>
                                 </div>
-                                <MultipleBarChart nameData1='% Kinh doanh' nameData2='% Sản xuất' nameData3='% Quản trị' lineBar={true} />
+                                <MultipleBarChart nameData1='% Kinh doanh' nameData2='% Sản xuất' nameData3='% Quản trị' lineBar={multipleBarChart} />
                             </div>
                         </div>
                     </div>
