@@ -95,19 +95,19 @@ var organizationalUnitKpiData = async () => {
 
     organizationalUnitKpiArray[0] = await OrganizationalUnitKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             type: 1,
             automaticPoint: 79,
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             type: 2,
             automaticPoint: 89,
             employeePoint: 90,
@@ -135,19 +135,19 @@ var organizationalUnitKpiData = async () => {
 
     organizationalUnitKpiArray[1] = await OrganizationalUnitKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             type: 1,
             automaticPoint: 84,
             employeePoint: 90,
             approvedPoint: 81
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             type: 2,
             automaticPoint: 93,
             employeePoint: 93,
@@ -242,20 +242,20 @@ var organizationalUnitKpiData = async () => {
 
     employee_1KpiArray[0] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[0][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 2,
             type: 1,
             automaticPoint: 80,
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[0][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 92,
@@ -286,20 +286,20 @@ var organizationalUnitKpiData = async () => {
 
     employee_1KpiArray[1] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 1,
             type: 1,
             automaticPoint: 87,
             employeePoint: 90,
             approvedPoint: 78
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -332,20 +332,20 @@ var organizationalUnitKpiData = async () => {
 
     employee_2KpiArray[0] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[0][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 2,
             type: 1,
             automaticPoint: 77,
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[0][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 96,
@@ -376,20 +376,20 @@ var organizationalUnitKpiData = async () => {
 
     employee_2KpiArray[1] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 1,
             type: 1,
             automaticPoint: 80,
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -1186,19 +1186,19 @@ var organizationalUnitKpiData = async () => {
 
     organizationalUnitKpiArray[0] = await OrganizationalUnitKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             type: 1,
             automaticPoint: 73,
             employeePoint: 73,
             approvedPoint: 45
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             type: 2,
             automaticPoint: 81,
             employeePoint: 56,
@@ -1226,19 +1226,19 @@ var organizationalUnitKpiData = async () => {
 
     organizationalUnitKpiArray[1] = await OrganizationalUnitKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             type: 1,
             automaticPoint: 80,
             employeePoint: 80,
             approvedPoint: 47
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             type: 2,
             automaticPoint: 73,
             employeePoint: 64,
@@ -1308,20 +1308,20 @@ var organizationalUnitKpiData = async () => {
 
     employeeKpiArray[0] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[0][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 2,
             type: 1,
             automaticPoint: 73,
             employeePoint: 73,
             approvedPoint: 45
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[0][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 81,
@@ -1352,20 +1352,20 @@ var organizationalUnitKpiData = async () => {
 
     employeeKpiArray[1] = await EmployeeKpi.insertMany([
         {
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Phê duyệt công việc",
             status: 1,
             type: 1,
             automaticPoint: 80,
             employeePoint: 80,
             approvedPoint: 47
         }, {
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Hỗ trợ thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 73,

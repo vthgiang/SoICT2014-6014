@@ -1,7 +1,8 @@
 const {
     EducationProgram,
     Course,
-    EmployeeCourse
+    EmployeeCourse,
+    Employee
 } = require('../../../models').schema;
 
 /**
@@ -46,6 +47,10 @@ exports.searchCourses = async (params, company) => {
     for (let n in listCourses) {
         let listEmployees = await EmployeeCourse.find({
             course: listCourses[n]._id
+        }).populate({
+            path: 'employee',
+            model:Employee,
+            select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
         });
         listCourses[n] = {
             ...listCourses[n]._doc,
@@ -67,13 +72,11 @@ exports.createCourse = async (data, company) => {
     var isCourse = await Course.findOne({
         courseId: data.courseId,
         company: company
-    }, {
-        _id: 1
-    });
+    }, {_id: 1});
     if (isCourse !== null) {
         return "have_exist"
     } else {
-        var course = await Course.create({
+        let course = await Course.create({
             company: company,
             name: data.name,
             courseId: data.courseId,
@@ -90,13 +93,22 @@ exports.createCourse = async (data, company) => {
             educationProgram: data.educationProgram,
             employeeCommitmentTime: data.employeeCommitmentTime
         });
-        // listEmployees
-        // await EmployeeCourse.create
-
-        return await Course.findById(course._id).populate({
+        if(data.listEmployees.length !==0){
+            data.listEmployees =data.listEmployees.map(x=> {return {course: course._id, employee: x._id, result: x.result}});
+            await EmployeeCourse.insertMany([...data.listEmployees]);
+        }
+        let newCourse = await Course.findById(course._id).populate({
             path: 'educationProgram',
             model: EducationProgram
         });
+        let listEmployees = await EmployeeCourse.find({
+            course: newCourse._id
+        }).populate({
+            path: 'employee',
+            model:Employee,
+            select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
+        });
+        return {...newCourse._doc, listEmployees}
     }
 }
 
@@ -105,10 +117,13 @@ exports.createCourse = async (data, company) => {
  * @id :id khoá đào tạo cần xoá
  */
 exports.deleteCourse = async (id) => {
-    var courseDelete = await Course.findOneAndDelete({
+    let courseDelete = await Course.findOneAndDelete({
         _id: id
     });
-    return courseDelete;
+    let listEmployees = await EmployeeCourse.deleteMany({
+        course:id
+    })
+    return {...courseDelete._doc, listEmployees: listEmployees };
 }
 
 /**
@@ -117,17 +132,12 @@ exports.deleteCourse = async (id) => {
  * @data : dữ liệu chỉnh sửa khoá đào tạo
  */
 exports.updateCourse = async (id, data) => {
-    var partStart = data.startDate.split('-');
-    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-    var partEnd = data.endDate.split('-');
-    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-    console.log(endDate);
     var courseChange = {
         name: data.name,
         offeredBy: data.offeredBy,
         coursePlace: data.coursePlace,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: data.startDate,
+        endDate: data.endDate,
         cost: {
             number: data.cost,
             unit: data.unit
@@ -137,13 +147,23 @@ exports.updateCourse = async (id, data) => {
         educationProgram: data.educationProgram,
         employeeCommitmentTime: data.employeeCommitmentTime
     };
-    await Course.findOneAndUpdate({
-        _id: id
-    }, {
-        $set: courseChange
-    });
-    return await Course.findById(id).populate({
+    await Course.findOneAndUpdate({_id: id}, {$set: courseChange});
+    await EmployeeCourse.deleteMany({course: id});
+    if(data.listEmployees.length !==0){
+        data.listEmployees = data.listEmployees.map(x=> {return {course: id, employee: x._id, result: x.result}});
+        await EmployeeCourse.insertMany([...data.listEmployees]);
+    }
+
+    let updateCourse = await Course.findById(id).populate({
         path: 'educationProgram',
         model: EducationProgram
     });
+    let listEmployees = await EmployeeCourse.find({
+        course: id
+    }).populate({
+        path: 'employee',
+        model:Employee,
+        select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
+    });
+    return {...updateCourse._doc, listEmployees}
 }

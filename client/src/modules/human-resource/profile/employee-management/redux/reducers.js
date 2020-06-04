@@ -48,15 +48,16 @@ export function employeesManager(state = initState, action) {
                         isLoading: false,
                 };
             case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
+                console.log(action.payload);
                 return {
                     ...state,
-                    listEmployees: state.listEmployees.map(employee => employee._id === action.payload._id ? action.payload : employee),
+                    listEmployees: state.listEmployees.map(x => x.employees[0]._id === action.payload.employees[0]._id ? action.payload : x),
                         isLoading: false
                 };
             case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
                 return {
                     ...state,
-                    listEmployees: state.listEmployees.filter(list => (list.employees[0]._id !== action.payload._id)),
+                    listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
                         isLoading: false,
                 };
 

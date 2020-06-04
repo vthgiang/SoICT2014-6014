@@ -220,7 +220,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
+                            <textarea rows={4} type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 

@@ -7,7 +7,20 @@ exports.getEmployeeKpiSet = async (id) => {
     var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 } })
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } });
-     return employeeKpiSet;
+    return employeeKpiSet;
+}
+
+/** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
+exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
+    var employeeKpiSetByMonth = await EmployeeKpiSet.find(
+        {
+            creator: userId,
+            date: { $gte: startDate, $lte: endDate }
+        },
+        { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1}
+    )
+    
+    return employeeKpiSetByMonth;
 }
 
 /** Khởi tạo tập KPI cá nhân */ 
@@ -102,12 +115,11 @@ exports.updateEmployeeKpiSetStatus = async (id,statusId) => {
 }
 
 /** Chỉnh sửa thông tin chung của KPI cá nhân */ 
-exports.editEmployeeKpiSet = async (dateId,id) => {
-    //req.body.date,req.params.id
-    var date = dateId.split("-");
-        var date = new Date(time[1], time[0], 0)
-        var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-        employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+exports.editEmployeeKpiSet = async (strDate,id) => {
+    var arr = strDate.split("-");
+    var date = new Date(arr[1], arr[0], 0)
+    var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
+    employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return employeeKpiSet;
 }
 

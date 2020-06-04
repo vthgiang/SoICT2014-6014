@@ -181,31 +181,6 @@ exports.editTaskResult = async (req, res) => {
         });
     }
 }
-
-//
-exports.getTaskActions = async (req, res) => {
-    if(req.query.confirmAction !== undefined){
-        confirmAction(req,res)
-    }else{
-    try {
-        var taskActions = await PerformTaskService.getTaskActions(req.query.task);
-        await LogInfo(req.user.email, ` get all task actions  `,req.user.company);
-        res.status(200).json({
-            success: true,
-            messages : ['get_task_actions_success'],
-            content : taskActions
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` get all task actions  `,req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_task_actions_fail'],
-            content : error
-        })
-    }
-}
-}
-
 exports.createTaskAction = async (req,res) => {
     try {
         var files=[] ;
@@ -373,27 +348,6 @@ exports.createTaskComment = async (req,res) => {
     }
 }
 /**
- * Lấy tất cả bình luận công việc
- */
-exports.getTaskComments = async(req,res) => {
-    try {
-        var taskComment = await PerformTaskService.getTaskComments(req.params);
-        await LogInfo(req.user.email, ` get task comments  `,req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_task_comments_success'],
-            content : taskComment
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` get task comments  `,req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_task_comments_fail'],
-            content: error
-        })
-    }
-}
-/**
  * Sửa bình luận của hoạt động
  */
 exports.editTaskComment = async(req,res) => {
@@ -530,9 +484,9 @@ evaluationAction= async (req,res) => {
 /**
  * Xác nhận hành động
  */
-confirmAction = async(req,res) =>{
+exports.confirmAction = async(req,res) =>{
     try {
-        var abc = await PerformTaskService.confirmAction(req.query.id,req.query.confirmAction);
+        var abc = await PerformTaskService.confirmAction(req.params);
         await LogInfo(req.user.email, ` confirm action  `,req.user.company)
         res.status(200).json({
             success: true,
@@ -561,7 +515,7 @@ exports.uploadFile = async(req,res) => {
                 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.params,files);
+        var comment = await PerformTaskService.uploadFile(req.params,files,req.body);
         await LogInfo(req.user.email, ` upload file of task  `,req.user.company);
         res.status(200).json({
             success: true,

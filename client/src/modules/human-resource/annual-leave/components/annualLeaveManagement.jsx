@@ -11,7 +11,7 @@ class AnnualLeaveManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationalUnit: null,
+            organizationalUnits: null,
             position: null,
             employeeNumber: "",
             month: null,
@@ -77,7 +77,7 @@ class AnnualLeaveManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -143,9 +143,9 @@ class AnnualLeaveManagement extends Component {
         const { list } = this.props.department;
         const { translate, annualLeave } = this.props;
         var listAnnualLeaves = "", listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (this.state.organizationalUnits !== null) {
+            let organizationalUnits = this.state.organizationalUnits;
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [

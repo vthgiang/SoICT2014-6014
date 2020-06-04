@@ -9,28 +9,28 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { performTaskAction } from '../redux/actions';
 
 import qs from 'qs';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class TaskComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
         
     }
-
     componentDidMount = () => {
+        console.log('dennnnnnnnnn');
         if (this.props.location) { // Nếu là trang trực tiếp (trong Route)
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId){
                 this.props.getTaskById(taskId);
-                this.props.getTaskActions(taskId);
-                this.props.getTaskComments(taskId);
+                // this.props.getTaskActions(taskId);
+                // this.props.getTaskComments(taskId);
                 this.props.getSubTask(taskId)
             }
         }
     }
 
     render() {
-                
         return (
             <div className="row row-equal-height" style={{margin: "0px", height: "100%", backgroundColor: "#fff"}}>
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px"}}>
@@ -59,8 +59,6 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    getTaskActions: performTaskAction.getTaskActions,
-    getTaskComments: performTaskAction.getTaskComments,
     getSubTask: taskManagementActions.getSubTask
 };
 

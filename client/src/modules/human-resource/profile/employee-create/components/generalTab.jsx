@@ -319,11 +319,13 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange}
+                                                checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange}
+                                                checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
                                     </div>
                                 </div>
                             </div>

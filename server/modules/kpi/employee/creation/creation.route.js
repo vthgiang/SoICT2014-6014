@@ -6,6 +6,9 @@ const {auth} = require('../../../../middleware/index');
 // Lấy tập KPI cá nhân hiện tại
 router.get('/current/:id',auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
+// Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
+router.get('/kpi-set-by-month/:id/:startDate/:endDate', auth, EmployeeKpiSetController.getAllEmployeeKpiSetByMonth);
+
 // Khởi tạo KPI cá nhân
 router.post('/create',auth, EmployeeKpiSetController.createEmployeeKpiSet);
 

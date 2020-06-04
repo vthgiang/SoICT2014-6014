@@ -1,12 +1,12 @@
- 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
-
+import { withTranslate } from 'react-redux-multilingual';
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class InformationForm extends Component{
     componentDidMount(){
@@ -263,42 +263,43 @@ class InformationForm extends Component{
     }
 
     render(){
+        const { translate } = this.props;
         var taskInformations =this.state.taskInformations;
         var information  =this.state.information;
         return(
             <fieldset className="scheduler-border">
-                <legend className="scheduler-border">Danh sách các trường thông tin của công việc</legend>
+                <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
                 
                 <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} >
-                    <label className="control-label">Tên thông tin</label>
+                    <label className="control-label">{translate('task_template.infor_name')}</label>
                     <div>
-                        <input type="text" className="form-control" placeholder="Tên thông tin" value={information.name} onChange={this.handleChangeInfoName} />
+                        <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={this.handleChangeInfoName} />
                         <ErrorLabel content={this.state.information.errorOnName}/>
                     </div>
                 </div>
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
-                    <label className="control-label" htmlFor="inputDescriptionInfo">Mô tả thông tin</label>
+                    <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
                     <div>
-                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder="Mô tả thông tin" value={information.description} onChange={this.handleChangeInfoDesc} />
+                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder={translate('task_template.description')} value={information.description} onChange={this.handleChangeInfoDesc} />
                         <ErrorLabel content={this.state.information.errorOnDescription}/>
                     </div>
                 </div>
                 <div className="form-group" >
-                    <label className=" control-label">Kiểu dữ liệu:</label>
+                    <label className=" control-label">{translate('task_template.datatypes')}:</label>
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                            <option value={this.INFO_TYPE.TEXT}>Văn bản</option>
-                            <option value={this.INFO_TYPE.NUMBER}>Số</option>
-                            <option value={this.INFO_TYPE.DATE}>Ngày tháng</option>
+                            <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
+                            <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
+                            <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>
                             <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
-                            <option value={this.INFO_TYPE.SET}>Tập giá trị</option>
+                            <option value={this.INFO_TYPE.SET}>{translate('task_template.value_set')}</option>
                         </select>
                     </div>
                 </div>
 
                 { this.state.information.type === this.INFO_TYPE.SET?
                     <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} >
-                        <label className="control-label">{`Nhập tập giá trị:`}</label>
+                        <label className="control-label">{translate('task_template.value_set')}</label>
                         
                         <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
                         <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
@@ -308,34 +309,34 @@ class InformationForm extends Component{
 
                 <div className="form-group" >
                     <label className="control-label">
-                        Chỉ quản lý được điền? &nbsp;
+                    {translate('task_template.manager_fill')} &nbsp;
                         <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
                     </label>
                 </div>
                 <div className="pull-right" style={{marginBottom: "10px"}}>
                     {this.state.editInfo ?
                         <React.Fragment>
-                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>Hủy chỉnh sửa</button>
-                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
+                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                         </React.Fragment>:
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>Thêm</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>Xóa trắng</button>
+                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
                 </div>
                 <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th style={{ width: '10%' }}>STT</th>
-                            <th title="Tên trường thông tin">Tên trường thông tin</th>
-                            <th title="Mô tả">Mô tả</th>
-                            <th title="Kiểu dữ liệu">Kiểu dữ liệu</th>
-                            <th title="Chỉ quản lý được điền?">Chỉ quản lý được điền?</th>
-                            <th>Hành động</th>
+                            <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
+                            <th title="Mô tả">{translate('task_template.description')}</th>
+                            <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
+                            <th title="Chỉ quản lý được điền?">{translate('task_template.manager_fill')}?</th>
+                            <th>{translate('task_template.action')}</th>
                         </tr>
                     </thead>
                     <tbody id="informations">
                         {
-                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
+                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 taskInformations.map((item, index) =>
                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                         <td>{index + 1}</td>
@@ -356,4 +357,6 @@ class InformationForm extends Component{
         )
     }
 }
-export { InformationForm as InformationForm };
+
+const informationForm = connect()(withTranslate(InformationForm));
+export { informationForm as InformationForm }

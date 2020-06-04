@@ -99,20 +99,20 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
         }
     } else {
         var targetA = await OrganizationalUnitKpi.create({
-            name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
-            criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
+            criteria: "Thực hiện tốt vai trò người phê duyệt trong các công việc. Người phê duyệt là người chịu trách nhiệm về thành công/thất bại của công việc",
             type: 1
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
         );
         var targetC = await OrganizationalUnitKpi.create({
-            name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
+            criteria: "Thực hiện tốt vai trò người hỗ trợ (consulted) trong các công việc",
             type: 2
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
