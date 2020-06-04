@@ -28,7 +28,7 @@ class KPIMember extends Component {
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: "",
-                status: 4,
+                status: -1,
                 startDate: this.formatDate(Date.now()),
                 endDate: this.formatDate(Date.now())
             },
@@ -39,10 +39,10 @@ class KPIMember extends Component {
     componentDidMount() {
         var infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "all",
-            status: 4,
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now())
+            // user: "all",
+            // status: 4,
+            startDate: "",
+            endDate: ""
         }
         // Lấy tất cả nhân viên của phòng ban
 
