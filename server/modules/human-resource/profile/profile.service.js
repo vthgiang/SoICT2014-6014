@@ -500,7 +500,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
-    let employees = [oldEmployee];
+    let employees = await Employee.find({_id: oldEmployee._id});
     let salarys = await Salary.find({employee: oldEmployee._id})
     let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id})
     let commendations = await Commendation.find({employee: oldEmployee._id})
