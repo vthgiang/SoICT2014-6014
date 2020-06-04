@@ -12,7 +12,8 @@ export const taskTemplateService = {
     getAllTaskTemplateByUser,
     addNewTaskTemplate,
     editTaskTemplate,
-    deleteTaskTemplateById
+    getChildrenOfOrganizationalUnitsAsTree,
+    deleteTaskTemplateById,    
 };
 // get all task template
 function getAll() {
@@ -78,7 +79,13 @@ function editTaskTemplate(id, newTaskTemplate) {
     }, true, true, 'task.task_template');
 }
 
-
+//get all children of an organizational unit and that organizational unit
+function getChildrenOfOrganizationalUnitsAsTree(id){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/organizational-units/${id}`,
+        method: 'GET',
+    }, false, true, 'task.task_template');
+}
 // delete a task template
 function deleteTaskTemplateById(id) {
     return sendRequest({
