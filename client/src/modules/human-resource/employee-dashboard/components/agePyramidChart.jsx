@@ -23,22 +23,23 @@ class AgePyramidChart extends Component {
     }
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
-    removePreviousChart(){
+    removePreviousChart() {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()){
+        while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
-    } 
+    }
 
     renderChart = (data) => {
         this.removePreviousChart();
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
 
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.chart,
             data: {
-                columns: [data.data1, data.data2],
+                columns: [],
+                hide: true,
                 type: 'bar',
                 groups: [[data.nameData1, data.nameData2]]
             },
@@ -57,9 +58,7 @@ class AgePyramidChart extends Component {
                 y: {
                     tick: {
                         outer: false,
-                        format: function (d) {
-                            return (parseInt(d) === d) ? Math.abs(d) : null;
-                        }
+                        format: function (d) { return (parseInt(d) === d) ? Math.abs(d) : null; }
                     },
                     max: qty_max, min: -qty_max
                 }
@@ -76,11 +75,32 @@ class AgePyramidChart extends Component {
                 }
             }
         });
+
+        var addColumn = (data, delay) => {
+            var dataTmp = [data[0], 0];
+            setTimeout(function () {
+                chart.load({
+                    columns: [dataTmp]
+                });
+            }, 200);
+            data.forEach(function (value, index) {
+                setTimeout(function () {
+                    dataTmp[index] = value;
+                    chart.load({
+                        columns: [dataTmp],
+                    });
+                }, (200 + (delay / 12 * index)));
+            });
+        }
+        addColumn(data.data1, 1100);
+        addColumn(data.data2, 1100);
+
+
     }
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.data1 !== this.state.data1 || nextProps.data2 !== this.state.data2) {
             this.renderChart(this.state);
-            
+
         }
         return false;
     }
