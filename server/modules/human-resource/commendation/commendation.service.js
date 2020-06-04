@@ -39,7 +39,6 @@ exports.getTotalCommendation = async (company, organizationalUnits, month)=>{
  * @company : Id công ty người tìm kiếm
  */ 
 exports.searchCommendations = async (params, company) => {
-    console.log(params);
     var keySearchEmployee, keySearch = { company: company};
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 

@@ -62,7 +62,6 @@ class DashBoardEmployees extends Component {
 
     // function bắt sự kiện thay đổi unit
     handleSelectOrganizationalUnit = (value) => {
-        console.log(value);
         if (value.length === 0) {
             value = null
         };
@@ -84,7 +83,6 @@ class DashBoardEmployees extends Component {
 
     // Bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        console.log(this.state);
         if (this.state.month === "-") {
             await this.setState({
                 ...this.state,
@@ -99,7 +97,6 @@ class DashBoardEmployees extends Component {
 
 
     render() {
-        console.log(this.props.discipline);
         const { employeesManager, department, discipline, annualLeave, translate } = this.props;
         const { organizationalUnits, month, barAndLineChartSalary, barAndLineChartSX, barAndLineChartKD, barAndLineChartQT, multipleBarChart } = this.state;
         return (

@@ -178,7 +178,6 @@ exports.searchEmployeeProfiles = async (params, company) => {
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        console.log(emailInCompany);
         keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
     }
     // Bắt sựu kiện MSNV tìm kiếm khác ""

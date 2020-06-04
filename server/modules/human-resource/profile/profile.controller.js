@@ -146,7 +146,6 @@ exports.createEmployee = async (req, res) => {
                 } else {
                     var data = await EmployeeService.createEmployee(req.body, req.user.company._id, fileInfo);
                     let checkUser = await UserService.checkUserExited(req.body.emailInCompany);
-                    console.log(checkUser);
                     if(checkUser === false){
                         let userInfo = {
                             email: req.body.emailInCompany,
