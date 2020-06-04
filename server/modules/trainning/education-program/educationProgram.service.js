@@ -67,7 +67,6 @@ exports.searchEducationPrograms = async (params, company) => {
  */
 exports.createEducationProgram = async (data, company) => {
     var isEducationProgram = await EducationProgram.findOne({programId: data.programId, company:company}, { _id: 1});
-    console.log(isEducationProgram);
     if(isEducationProgram !== null){
         return 'have_exist'
     } else{
@@ -97,7 +96,6 @@ exports.deleteEducationProgram = async (id) => {
     var educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });
-    console.log(educationDelete);
     return educationDelete;
 }
 

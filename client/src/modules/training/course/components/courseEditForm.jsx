@@ -280,7 +280,6 @@ class CourseEditForm extends Component {
         return true;
     }
     render() {
-        console.log(this.state);
         var userlist = [];
         const { education, translate, course, employeesManager } = this.props;
         const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,

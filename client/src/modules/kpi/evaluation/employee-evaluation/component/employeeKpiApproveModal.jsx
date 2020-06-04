@@ -51,37 +51,6 @@ class ModalMemberApprove extends Component {
         }
         return true;
     }
-    componentDidUpdate() {
-        this.handleResizeColumn();
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
-    }
     handleEdit = async (id) => {
         await this.setState(state => {
             // console.log('weight 1: =================== ' + this.state.weight);
@@ -272,7 +241,7 @@ class ModalMemberApprove extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                modalID={`modal-approve-KPI-member-${this.props.id}`}
+                modalID={`modal-approve-KPI-member`}
                 // formID={`form-evaluate-task-by-${this.props.role}`}
                 title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
                 // title={`Phê duyệt KPI nhân viên `}
@@ -322,10 +291,10 @@ class ModalMemberApprove extends Component {
                                             <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember.creator._id)}>Tìm kiếm</button>
                                         </div>
                                     </div>
-                                    <table className="table table-bordered table-striped">
+                                    <table className="table table-bordered table-striped table-hover">
                                         <thead>
                                             <tr>
-                                                <th title="STT">STT</th>
+                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
                                                 {/* <th title="Thời gian">Thời gian</th> */}
@@ -362,10 +331,10 @@ class ModalMemberApprove extends Component {
                                 
                                 <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
                                 columnArr={[ 'STT', 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Kết quả đánh giá' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
-                                <table id ="kpiApprove" className="table table-bordered table-striped">
+                                <table id ="kpiApprove" className="table table-bordered table-striped table-hover">
                                 <thead>
                                             <tr>
-                                                <th title="STT">STT</th>
+                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
                                                 {/* <th title="Thời gian">Thời gian</th> */}
@@ -373,7 +342,7 @@ class ModalMemberApprove extends Component {
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                                <th title="Hành động">Hành động</th>
+                                                <th title="Hành động" className="col-fixed" style={{width: 100}}>Hành động</th>
 
                                             </tr>
                                         </thead>

@@ -195,7 +195,6 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">

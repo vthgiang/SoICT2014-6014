@@ -67,7 +67,6 @@ exports.createSalary = async (data, company) => {
                 unit: data.unit,
                 bonus: data.bonus
             });
-            console.log(createSalary);
             // Lấy thông tin phòng ban, chức vụ của nhân viên
             let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
             // Lấy thông tin bảng lương vừa tạo

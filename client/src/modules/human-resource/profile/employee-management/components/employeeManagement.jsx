@@ -17,7 +17,6 @@ class EmployeeManagement extends Component {
             let index = search[n].lastIndexOf('organizationalUnits');
             if (index !== -1) {
                 organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
-                console.log(organizationalUnits);
                 if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
                     organizationalUnits = organizationalUnits.split(',')
                 } else organizationalUnits = null
@@ -171,7 +170,6 @@ class EmployeeManagement extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log(this.state);
         return (
             <div className="box">
                 <div className="box-body qlcv">
