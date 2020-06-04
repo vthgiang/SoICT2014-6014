@@ -9,11 +9,6 @@ var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 
     constructor(props) {
@@ -29,6 +24,26 @@ class ModalCreateEmployeeKpiSet extends Component {
             },
             adding: false
         };
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { user } = this.props;
+
+        // Khi truy vấn API đã có kết quả
+        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans.length>0) {
+            this.setState(state =>{
+                return{
+                    ...state,
+                    employeeKpiSet: {
+                        ...this.state.employeeKpiSet,
+                        approver: user.userdepartments.deans[0]
+                    }
+                };
+            });
+            return false; // Sẽ cập nhật lại state nên không cần render
+        }
+
+        return true;
     }
 
     formatDate = async (value) => {
@@ -56,11 +71,6 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
     
     handleCreateEmployeeKpiSet = async () => {
-        let userdepartments=null, items;
-        const { user } = this.props;
-        let approver = null;
-        if (user.userdepartments) userdepartments = user.userdepartments;
-
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -81,21 +91,6 @@ class ModalCreateEmployeeKpiSet extends Component {
                 }
             })
         }
-
-        if(this.state.employeeKpiSet.approver === null){
-            if(userdepartments === null){
-                approver = null;
-            }
-            else{    
-                items = userdepartments.map(x => {
-                    return { value: x.userId._id, text: x.userId.name } 
-                });
-                approver = items[0].value;
-            }    
-        }
-        else{
-            approver = this.state.employeeKpiSet.approver
-        }
         
         await this.setState(state => {
             return {
@@ -103,7 +98,6 @@ class ModalCreateEmployeeKpiSet extends Component {
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
                     organizationalUnit: this.props.organizationalUnit,
-                    approver: approver,
                 }
             }
         })
@@ -115,19 +109,10 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
     
     render() {
-        var userdepartments, items;
+        var userdepartments;
         const { organizationalUnit, user, translate } = this.props;
         const { _id } = this.state;
         if (user.userdepartments) userdepartments = user.userdepartments;
-
-        if(userdepartments === undefined) {
-            items = [];
-        } 
-        else {
-            items = userdepartments.map(x => {
-                return { value: x.userId._id, text: x.userId.name }
-            });
-        }
 
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -154,7 +139,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                     <form className="form-group" id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success'))}>
                         <div className="form-group">
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
-                            <lable style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</lable>
+                            <label style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
 
                         <div className="row">
@@ -169,17 +154,21 @@ class ModalCreateEmployeeKpiSet extends Component {
                                 />
                             </div>
 
-                            {userdepartments && (items.length !== 0) &&
+                            {userdepartments &&
                                 <div className="col-sm-6 col-xs-12 form-group">
                                     <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                     <SelectBox
                                         id={`createEmployeeKpiSet${_id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={items}
+                                        items={
+                                            userdepartments.deans.map(item => {
+                                                return {text: item.name, value: item._id}
+                                            }
+                                        )}
                                         multiple={false}
                                         onChange={this.handleApproverChange}
-                                        value={items[0]}
+                                        value={this.state.employeeKpiSet.approver}
                                     />
                                 </div>
                             }
@@ -187,8 +176,8 @@ class ModalCreateEmployeeKpiSet extends Component {
                         <div className="form-group" >
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.default_target')}</label>
                             <ul>
-                                <li>Hỗ trợ đồng nghiệp các vấn đề chuyên môn (Vai trò C)</li>
-                                <li>Hoàn thành nhiệm vụ phê duyệt (Vai trò A)</li>
+                                <li>Hỗ trợ thực hiện công việc</li>
+                                <li>Phê duyệt công việc</li>
                             </ul>
                         </div>
                     </form>

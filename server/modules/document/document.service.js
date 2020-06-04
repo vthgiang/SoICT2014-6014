@@ -352,18 +352,26 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     });
     var {option} = query;
     switch(option){
-        case 'downloaded': 
-            return await Document.find({ "downloads.downloader": userId }).select('-downloads -views');
-        case 'common':
+        case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
+            return await Document.find({ "downloads.downloader": userId }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]).limit(10);
+        case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
                 roles: {$in: user.roles.map(res=>res.roleId)}
-            }).select('-downloads -views').limit(5);
-        case 'latest':
-            const docs = await Document.find({
-                roles: {$in: user.roles.map(res=>res.roleId)}
-            }).select('-downloads -views');
-
-            return docs.length > 0 ? docs[docs.length-1] : undefined;
+            }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]).sort({numberOfView: -1}).limit(10);
+        case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
+            return await Document.find({
+                roles: {$in: user.roles.map(res=>res.roleId)},
+                "views.viewer": { "$ne": userId}
+            }).populate([
+                { path: 'category', model: DocumentCategory},
+                { path: 'domains', model: DocumentDomain},
+            ]);
         default:
             return null;
     }

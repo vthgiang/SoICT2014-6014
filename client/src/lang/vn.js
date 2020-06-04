@@ -547,6 +547,7 @@ export default {
             manage_link: 'Quản lý trang',
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
+            documents: 'Tài liệu văn bản',
 
             task_template: 'Mẫu Công Việc',
             cocautochuc: 'Cơ Cấu Tổ Chức',
@@ -1470,7 +1471,26 @@ export default {
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
             action: 'Hành động',
-            priority: 'Độ ưu tiên'
+            priority: 'Độ ưu tiên',
+            general_information: 'Thông tin chung',
+            parameters: 'Tham số',
+            roles: 'Các vai trò',
+            edit_tasktemplate: 'Chỉnh sửa mẫu công việc',
+            action_name: 'Tên hoạt động',
+            delete: 'Xóa trắng',
+            cancel_editing: 'Hủy chỉnh sửa',
+            obligatory: 'Bắt buộc',
+            add_tasktemplate: 'Thêm mẫu công việc',
+            infor_name: 'Tên thông tin',
+            datatypes: 'Kiểu dữ liệu',
+            manager_fill: 'Chỉ quản lý được điền',
+            high: 'Cao',
+            low: 'Thấp',
+            medium: 'Trung bình',
+            text: 'Văn bản',
+            number: 'Số',
+            date: 'Ngày tháng',
+            value_set: 'Tập giá trị'
         },
 
         task: {
@@ -1538,6 +1558,7 @@ export default {
                 action_edit: 'Băt đầu công việc',
                 action_delete: 'Xóa công việc',
                 action_store: 'Lưu vào kho',
+                action_restore: 'Lấy ra khỏi kho',
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ'
 

@@ -36,6 +36,7 @@ class CourseDetailForm extends Component {
         var { course, translate } = this.props
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
+        console.log(listEmployees);
         return (
             <React.Fragment>
                 <DialogModal
@@ -81,84 +82,22 @@ class CourseDetailForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>MS12365</td>
-                                    <td>Nguyễn Văn A</td>
-                                    <td>Hoàn thành</td>
-                                </tr>
-                                <tr>
-                                    <td>MS12367</td>
-                                    <td>Nguyễn Văn B</td>
-                                    <td>Hoàn thành</td>
-                                </tr>
-                                <tr>
-                                    <td>MS12369</td>
-                                    <td>Nguyễn Văn C</td>
-                                    <td>Chưa hoàn thành</td>
-                                </tr>
+                                {
+                                    listEmployees !== undefined && listEmployees.length !== 0 &&
+                                    listEmployees.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.employee.employeeNumber}</td>
+                                            <td>{x.employee.fullName}</td>
+                                            <td>{x.result}</td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
-                        {/* {course.isLoading ?
+                        {course.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                             (typeof listEmployees === 'undefined' || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        } */}
-
-
-
-
-                        {/* <div className="col-md-12">
-                                            <div className="col-md-6">
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Mã khoá đào tạo:&emsp; </strong>
-                                                    {courseId}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Thời gian bắt đầu:&emsp; </strong>
-                                                    {startDate}
-                                                </div>
-                                                <div className="form-group" >
-                                                    <strong>Địa điểm đào tạo:&emsp; </strong>
-                                                    {coursePlace}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Giảng viên:&emsp; </strong>
-                                                    {lecturer}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Thuộc chương trình đào tạo:&emsp; </strong>
-                                                    {educationProgram.name}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Thời gian cam kết:&emsp; </strong>
-                                                    {employeeCommitmentTime} Tháng
-                                                        </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-group" style={{ marginTop: 20 }} >
-                                                    <strong>Tên khoá đào tạo:&emsp; </strong>
-                                                    {name}
-                                                </div>
-
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Thời gian kết thúc:&emsp; </strong>
-                                                    {endDate}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Đơn vị đào tạo:&emsp; </strong>
-                                                    {offeredBy}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Loại đào tạo:&emsp; </strong>
-                                                    {type}
-                                                </div>
-                                                <div className="form-group" style={{ marginTop: 20 }}>
-                                                    <strong>Chi phí đào tạo:&emsp; </strong>
-                                                    {cost} {unit}
-                                                </div>
-
-                                            </div>
-                                            <div className="col-md-12"> */}
-
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment >

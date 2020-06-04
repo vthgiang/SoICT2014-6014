@@ -2,6 +2,7 @@ import { createKpiSetConstants } from "./constants";
 import { createKpiSetService } from "./services";
 export const createKpiSetActions = {
     getEmployeeKpiSet,
+    getAllEmployeeKpiSetByMonth,
     editEmployeeKpiSet,
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
@@ -22,7 +23,7 @@ function getEmployeeKpiSet() {
         createKpiSetService.getEmployeeKpiSet()
             .then(res => {
                 dispatch({ 
-                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SUCCESS,
+                    type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
@@ -35,6 +36,26 @@ function getEmployeeKpiSet() {
     }
 }
 
+// Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
+function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST });
+
+        createKpiSetService.getAllEmployeeKpiSetByMonth(userId, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
 
 // Chỉnh sửa thông tin chung của KPI cá nhân
 function editEmployeeKpiSet(id, kpipersonal) {

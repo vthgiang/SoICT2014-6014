@@ -320,11 +320,29 @@ class ModalEditTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}
                 formID="form-edit-task-template"
-                title={"Sửa mẫu công việc"}
+                title={translate('task_template.edit_tasktemplate')}
                 func={this.handleSubmit}
                 disableSubmit={!this.isTaskTemplateFormValidated()}
                 size={100}
@@ -332,7 +350,7 @@ class ModalEditTaskTemplate extends Component {
                 <div className="row">
                     <div className="col-sm-6">
                         <div className={`form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} >
-                            <label className="control-label">Đơn vị*:</label>
+                            <label className="control-label">{translate('task_template.unit')}*:</label>
                             {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${editingTemplate._id}`}
@@ -354,7 +372,7 @@ class ModalEditTaskTemplate extends Component {
                     </div>
                     <div className="col-sm-6">
                         <div className={`form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} >
-                            <label className="control-label">Những người được phép xem*</label>
+                            <label className="control-label">{translate('task_template.permission_view')}*</label>
                             {listRole && editingTemplate.readByEmployees &&
                                 <SelectBox
                                     id={`edit-read-select-box-${editingTemplate._id}`}
@@ -368,7 +386,7 @@ class ModalEditTaskTemplate extends Component {
                                     onChange={this.handleTaskTemplateRead}
                                     value={editingTemplate.readByEmployees}
                                     multiple={true}
-                                    options={{placeholder: "Chọn người được phép xem mẫu"}}
+                                    options={{placeholder: `${translate('task_template.permission_view')}`}}
                                 />
                             }
                             <ErrorLabel content={this.state.editingTemplate.errorOnRead}/>
@@ -379,25 +397,25 @@ class ModalEditTaskTemplate extends Component {
                 <div className="row">
                     <div className="col-sm-6">
                         <div className={`form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} >
-                            <label className="control-label">Tên mẫu*</label>
-                            <input type="Name" className="form-control" placeholder="Tên mẫu công việc" value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <label className="control-label">{translate('task_template.tasktemplate_name')}*</label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value ={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnName}/>
                         </div>
 
                         <div className="form-group" >
-                            <label className="control-label">Mức độ ưu tiên</label>
+                            <label className="control-label">{translate('task_template.priority')}</label>
                             <select className="form-control" value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
-                                <option value={3}>Cao</option>
-                                <option value={2}>Trung bình</option>
-                                <option value={1}>Thấp</option>
+                                <option value={3}>{translate('task_template.high')}</option>
+                                <option value={2}>{translate('task_template.medium')}</option>
+                                <option value={1}>{translate('task_template.low')}</option>
                             </select>
                         </div>
                     </div>
 
                     <div className="col-sm-6">
                         <div className={`form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">Mô tả công việc*</label>
-                            <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder="Mô tả công việc" value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')}*</label>
+                            <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnDescription}/>
                         </div>
                     </div>
@@ -406,55 +424,37 @@ class ModalEditTaskTemplate extends Component {
                 <div className="row">
                     <div className="col-sm-6">
                         <div className='form-group' >
-                            <label className="control-label" >Người thực hiện</label>
-                            {userdepartments && editingTemplate.responsibleEmployees &&
+                            <label className="control-label" >{translate('task_template.performer')}</label>
+                            {unitMembers && editingTemplate.responsibleEmployees &&
                                 <SelectBox
                                     id={`edit-responsible-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[2].roleId.name,
-                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                        },
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleTaskTemplateResponsible}
                                     value={editingTemplate.responsibleEmployees}
                                     multiple={true}
-                                    options={{placeholder: "Chọn người thực hiện"}}
+                                    options={{placeholder: `${translate('task_template.performer')}`}}
                                 />
                             }
                         </div>
                         <div className='form-group' >
-                            <label className="control-label">Người phê duyệt</label>
-                            {userdepartments && editingTemplate.accountableEmployees &&
+                            <label className="control-label">{translate('task_template.approver')}</label>
+                            {unitMembers && editingTemplate.accountableEmployees &&
                                 <SelectBox
                                     id={`edit-accounatable-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[0].roleId.name,
-                                            value: [{text: userdepartments[0].userId.name, value: userdepartments[0].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleTaskTemplateAccountable}
                                     value ={editingTemplate.accountableEmployees}
                                     multiple={true}
-                                    options={{placeholder: "Chọn người phê duyệt"}}
+                                    options={{placeholder:`${translate('task_template.approver')}`}}
                                 />
                             }
                         </div>
                         <div className='form-group' >
-                            <label className="control-label">Người hỗ trợ</label>
+                            <label className="control-label">{translate('task_template.supporter')}</label>
                             {usercompanys && editingTemplate.consultedEmployees &&
                                 <SelectBox
                                     id={`edit-consulted-select-box-${editingTemplate._id}`}
@@ -468,12 +468,12 @@ class ModalEditTaskTemplate extends Component {
                                     onChange={this.handleTaskTemplateConsult}
                                     value ={editingTemplate.consultedEmployees}
                                     multiple={true}
-                                    options={{placeholder: "Chọn người hỗ trợ"}}
+                                    options={{placeholder: `${translate('task_template.supporter')}`}}
                                 />
                             }
                         </div>
                         <div className='form-group' >
-                            <label className="control-label">Người quan sát</label>
+                            <label className="control-label">{translate('task_template.observer')}</label>
                             {usercompanys && editingTemplate.informedEmployees &&
                                 <SelectBox
                                     id={`edit-informed-select-box-${editingTemplate._id}`}
@@ -487,7 +487,7 @@ class ModalEditTaskTemplate extends Component {
                                     onChange={this.handleTaskTemplateInform}
                                     multiple={true}
                                     value = {editingTemplate.informedEmployees}
-                                    options={{placeholder: "Chọn người quan sát"}}
+                                    options={{placeholder: `${translate('task_template.observer')}`}}
                                 />
                             }
                         </div>                       
@@ -495,11 +495,11 @@ class ModalEditTaskTemplate extends Component {
 
                     <div className="col-sm-6">
                         <div className={`form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} >
-                            <label className="control-label" htmlFor="inputFormula">Công thức tính điểm KPI công việc*</label>
+                            <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
                             <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
                             
-                            <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>Trong công thức có thể dùng thêm các tham số tự động sau:</label>
+                            <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.parameters')}:</label>
                             <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
                             <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
                             <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
@@ -517,7 +517,7 @@ class ModalEditTaskTemplate extends Component {
                     </div>
                     <div className="col-sm-6">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Danh sách các trường thông tin</legend>
+                            <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
                             {
                                 (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
                                     <span>{translate('task_template.no_data')}</span>:
@@ -525,7 +525,7 @@ class ModalEditTaskTemplate extends Component {
                                         <div style={{paddingBottom: "20px"}} key={index}>
                                             <div>
                                                 <label>{item.name} - Kiểu {item.type}</label>
-                                                {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}
+                                                {item.filledByAccountableEmployeesOnly ? `- ${translate('task_template.manager_fill')}` : ""}
                                             </div>
                                             {item.description}
                                         </div>

@@ -355,7 +355,7 @@ exports.getDocumentsUserStatistical = async(req, res) => {
             content: docs
         });
     } catch (error) {
-        
+        console.log("error-----: ", error)
         await LogError(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.user.company);
         res.status(400).json({
             success: false,

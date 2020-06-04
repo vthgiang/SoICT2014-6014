@@ -62,6 +62,9 @@ const initState = {
 
             user_manage: []
         },
+        downloaded: [],
+        common: [],
+        latest: []
     }
 }
 
@@ -86,6 +89,9 @@ export function documents(state = initState, action) {
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_REQUEST:
         case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_REQUEST:
         case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_REQUEST:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_REQUEST:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_REQUEST:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -109,6 +115,9 @@ export function documents(state = initState, action) {
         case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE:
         case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_FAILE:
         case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_FAILE:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_FAILE:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_FAILE:
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -116,6 +125,27 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:  
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS:  
+            state.user.downloaded = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_SUCCESS:  
+            state.user.common = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_SUCCESS:  
+            state.user.latest = action.payload;
             return {
                 ...state,
                 isLoading: false
