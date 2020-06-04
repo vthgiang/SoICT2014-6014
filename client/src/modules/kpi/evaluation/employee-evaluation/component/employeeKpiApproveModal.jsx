@@ -294,7 +294,7 @@ class ModalMemberApprove extends Component {
                                     <table className="table table-bordered table-striped table-hover">
                                         <thead>
                                             <tr>
-                                                <th title="STT" style={{width: 50}}>STT</th>
+                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
                                                 {/* <th title="Thời gian">Thời gian</th> */}
@@ -334,7 +334,7 @@ class ModalMemberApprove extends Component {
                                 <table id ="kpiApprove" className="table table-bordered table-striped table-hover">
                                 <thead>
                                             <tr>
-                                                <th title="STT" style={{width: 50}}>STT</th>
+                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
                                                 <th title="Tên mục tiêu">Tên mục tiêu</th>
                                                 <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
                                                 {/* <th title="Thời gian">Thời gian</th> */}
@@ -342,7 +342,7 @@ class ModalMemberApprove extends Component {
                                                 <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
                                                 <th title="Trọng số">Trọng số</th>
                                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                                <th title="Hành động">Hành động</th>
+                                                <th title="Hành động" className="col-fixed" style={{width: 100}}>Hành động</th>
 
                                             </tr>
                                         </thead>
