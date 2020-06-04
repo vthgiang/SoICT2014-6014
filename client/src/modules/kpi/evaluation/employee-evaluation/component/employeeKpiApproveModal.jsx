@@ -104,7 +104,7 @@ class ModalMemberApprove extends Component {
     validateDate = (value) => {
         let msg = undefined;
         if (value.trim() === "") {
-            msg = "Chon thang so sanh";
+            msg = "Chọn tháng so sánh";
         }
         
         return msg;
@@ -215,17 +215,16 @@ class ModalMemberApprove extends Component {
         }
     }
     render() {
-        // console.log('approve id'+this.props.id);
         var kpimember;
         var kpimembercmp ;
         const { kpimembers } = this.props;
         const { errorOnDate, date,currentUser} = this.state;
+        var month;
+        if (kpimembers.currentKPI) {
+            kpimember = kpimembers.currentKPI;
+            month = kpimember.date.split('-');
+        }
 
-        if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
-        console.log('idddddddd================'+ this.props.id);
-        
-        // var comment = kpimembers.currentKPI.kpis;
-        // console.log('comments: ========'+ comment);
         if (kpimembers.kpimembers){
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
@@ -237,30 +236,14 @@ class ModalMemberApprove extends Component {
             });
         } 
         if (kpimembers.kpimember) kpimembercmp  =  kpimembers.kpimember;
-        // console.log('kpimembercmp'+ kpimember);
         return (
             <React.Fragment>
                 <DialogModal
                 modalID={`modal-approve-KPI-member`}
-                // formID={`form-evaluate-task-by-${this.props.role}`}
                 title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
-                // title={`Phê duyệt KPI nhân viên `}
-                // func={this.save}
                 hasSaveButton ={false}
-                // disableSubmit={!this.isFormValidated()}
                 size={100}
                 >
-            {/* <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> */}
-                {/* <div className="modal-dialog-full"> */}
-                    {/* <div className="modal-content"> */}
-                    {/* <form action=""></form> */}
-                    {/* <div className="modal-header">
-                        <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
-                            <span aria-hidden="true">×</span>
-                            <span className="sr-only">Close</span>
-                        </button>
-                        <h3 className="modal-title" style={{textAlign:"center"}}>Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
-                    </div> */}
                         <div className="box" >
                             <div className="box-body qlcv">
                             
@@ -325,10 +308,7 @@ class ModalMemberApprove extends Component {
                                 </div>
                                 }
                             <div className="form-inline">
-                                {/* {this.state.compare> */}
-                                    <h4 ><b>KPI tháng này</b></h4>
-                                {/* // } */}
-                                
+                                <h4 ><b>KPI tháng {kpimember && month[1]}</b></h4>
                                 <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
                                 columnArr={[ 'STT', 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Kết quả đánh giá' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
                                 <table id ="kpiApprove" className="table table-bordered table-striped table-hover">
