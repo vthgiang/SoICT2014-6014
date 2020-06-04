@@ -4,9 +4,12 @@ import {
 const initState = {
     isLoading: false,
     totalList: '',
-    totalEmployee: '',
-    listAllEmployees: [],
+    totalEmployeeOfOrganizationalUnits: '',
+    totalAllEmployee:'',
+
     listEmployees: [],
+    listEmployeesOfOrganizationalUnits: [],
+    listAllEmployees: [],
     error: '',
 }
 export function employeesManager(state = initState, action) {
@@ -20,20 +23,31 @@ export function employeesManager(state = initState, action) {
                 isLoading: true
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.totalEmployee !== undefined) {
-                return {
-                    ...state,
-                    listAllEmployees: action.payload.listAllEmployees,
-                    totalEmployee: action.payload.totalEmployee,
-                    isLoading: false
-                }
-            } else {
+            if (action.payload.totalList !== undefined) {
                 return {
                     ...state,
                     listEmployees: action.payload.data,
                     totalList: action.payload.totalList,
                     isLoading: false
                 };
+                
+            } else {
+                return {
+                    ...state,
+                    totalEmployeeOfOrganizationalUnits: action.payload.totalEmployee !== undefined ? 
+                        action.payload.totalEmployee : state.totalEmployeeOfOrganizationalUnits,
+                        
+                    listEmployeesOfOrganizationalUnits: action.payload.listEmployeesOfOrganizationalUnits !== undefined ? 
+                        action.payload.listEmployeesOfOrganizationalUnits: state.listEmployeesOfOrganizationalUnits,
+                    
+                    totalAllEmployee: action.payload.totalAllEmployee !== undefined ? 
+                        action.payload.totalAllEmployee : state.totalAllEmployee,
+
+                    listAllEmployees: action.payload.listAllEmployees !== undefined ? 
+                        action.payload.listAllEmployees : state.listAllEmployees ,
+                    
+                    isLoading: false
+                }
             }
 
             case EmployeeConstants.ADDEMPLOYEE_SUCCESS:

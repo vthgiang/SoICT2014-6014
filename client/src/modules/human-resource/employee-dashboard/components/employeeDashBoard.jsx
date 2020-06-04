@@ -44,6 +44,13 @@ class DashBoardEmployees extends Component {
         } else return [day, month, year].join('-');
     }
 
+    // Function tính tuổi nhân viện theo năm sinh nhập vào
+    getYear = (date) => {
+        let dateNow = new Date(Date.now()), birthDate = new Date(date);
+        let age = dateNow.getFullYear() - birthDate.getFullYear();
+        return age;
+    }
+
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
@@ -99,6 +106,29 @@ class DashBoardEmployees extends Component {
     render() {
         const { employeesManager, department, discipline, annualLeave, translate } = this.props;
         const { organizationalUnits, month, barAndLineChartSalary, barAndLineChartSX, barAndLineChartKD, barAndLineChartQT, multipleBarChart } = this.state;
+        let maleEmployees = employeesManager.listAllEmployees.filter(x => x.gender === 'male');
+        let femaleEmployees = employeesManager.listAllEmployees.filter(x => x.gender === 'female');
+
+        // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
+        let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
+        while (age > 18) {
+            let maleData = [], femaleData = [];
+            if (age === 19) {
+                femaleData = femaleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 2);
+                maleData = maleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 2);
+            } else {
+                femaleData = femaleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 5);
+                maleData = maleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 5);
+            }
+            data1AgePyramid[i] = 0 - femaleData.length;
+            data2AgePyramid[i] = maleData.length;
+            age = age - 5;
+            i++;
+        }
+        data1AgePyramid.unshift('Nữ');
+        data2AgePyramid.unshift('Nam');
+
+        // End Định dạng dữ liệu cho biểu đồ tháp tuổi
         return (
             <div className="qlcv">
                 <div className="form-inline">
@@ -131,7 +161,9 @@ class DashBoardEmployees extends Component {
 
                             <div className="info-box-content">
                                 <span className="info-box-text">Số nhân viên</span>
-                                <span className="info-box-number">{employeesManager.totalEmployee}</span>
+                                <span className="info-box-number">
+                                    {employeesManager.totalEmployeeOfOrganizationalUnits === '' ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
+                                </span>
                                 <a href={`/hr-list-employee?organizationalUnits=${organizationalUnits}`} >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -183,16 +215,16 @@ class DashBoardEmployees extends Component {
                                 <div className="form-inline">
                                     <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-md-sm-1 col-xs-1'>
                                         <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/female_icon.png" />
-                                        <div className='number_box'>55</div>
+                                        <div className='number_box'>{femaleEmployees.length}</div>
                                     </div>
                                     <div className='row form-group col-lg-10 col-md-10 col-md-sm-10 col-xs-10' style={{ padding: 0 }}>
                                         <p className="pull-left" style={{ marginBottom: 0 }}><b>Độ tuổi</b></p>
                                         <p className="pull-right" style={{ marginBottom: 0 }}><b>ĐV tính: Người</b></p>
-                                        <AgePyramidChart />
+                                        <AgePyramidChart data1={data1AgePyramid} data2={data2AgePyramid} />
                                     </div>
                                     <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-md-sm-1 col-xs-1'>
                                         <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/male_icon.png" />
-                                        <div className='number_box'>66</div>
+                                        <div className='number_box'>{maleEmployees.length}</div>
                                     </div>
                                 </div>
                             </div>
