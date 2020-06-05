@@ -7,9 +7,11 @@ const { LogInfo, LogError } = require('../../../logs');
 exports.searchCommendations = async (req, res) => {
     try {
         let data = {};
-        if (req.query.page !== undefined && req.query.limit !== undefined ){
+        if (req.query.page === undefined && req.query.limit === undefined ){
+            data = await CommendationService.getTotalCommendation(req.user.company._id, req.query.organizationalUnits, req.query.month )
+        } else{
             let params = {
-                organizationalUnit: req.query.organizationalUnit,
+                organizationalUnits: req.query.organizationalUnits,
                 position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 decisionNumber: req.query.decisionNumber,
@@ -18,6 +20,7 @@ exports.searchCommendations = async (req, res) => {
             }
             data = await CommendationService.searchCommendations(params, req.user.company._id);
         }
+        
         await LogInfo(req.user.email, 'GET_COMMENDATIONS', req.user.company);
             res.status(200).json({ success: true, messages:["get_commendations_success"], content: data});
     } catch (error) {

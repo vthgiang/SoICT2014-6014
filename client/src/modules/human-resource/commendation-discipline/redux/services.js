@@ -25,10 +25,11 @@ function getListDiscipline(data) {
         url: `${ LOCAL_SERVER_API }/disciplines`,
         method: 'GET',
         params: {
-            organizationalUnit: data.organizationalUnit,
+            organizationalUnits: data.organizationalUnits,
             position: data.position,
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
+            month: data.month,
             page: data.page,
             limit: data.limit
         }
@@ -89,10 +90,11 @@ function getListPraise(data) {
         url: `${ LOCAL_SERVER_API }/commendations`,
         method: 'GET',
         params: {
-            organizationalUnit: data.organizationalUnit,
+            organizationalUnits: data.organizationalUnits,
             position: data.position,
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
+            month: data.month,
             page: data.page,
             limit: data.limit
         }

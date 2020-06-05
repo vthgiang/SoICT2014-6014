@@ -143,28 +143,34 @@ exports.getEmployeeInforById = async(id)=> {
 }
 
 /**
- * Lấy tất cả danh sách nhân viên 
+ * Lấy tất cả danh sách nhân viên đang làm việc của công ty theo đơn vị và phòng ban
  * @company : id công ty
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
 exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    let keySearch = {company: company};
+    let keySearch = {company: company, status: 'active'};
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch);
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
         let listAllEmployees = await Employee.find(keySearch);
-        return {totalEmployee, listAllEmployees}
+        return {totalAllEmployee, listAllEmployees}
     } else {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
-        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1});
-        return {totalEmployee, listAllEmployees}
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
+        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+        return {totalAllEmployee, listAllEmployees}
     }
 }
 
@@ -178,7 +184,6 @@ exports.searchEmployeeProfiles = async (params, company) => {
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        console.log(emailInCompany);
         keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
     }
     // Bắt sựu kiện MSNV tìm kiếm khác ""
@@ -501,7 +506,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
-    let employees = [oldEmployee];
+    let employees = await Employee.find({_id: oldEmployee._id});
     let salarys = await Salary.find({employee: oldEmployee._id})
     let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id})
     let commendations = await Commendation.find({employee: oldEmployee._id})

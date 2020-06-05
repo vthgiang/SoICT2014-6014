@@ -5,7 +5,7 @@ import {
 export const RepairUpgradeFromValidator = {
     validateRepairNumber,
     validateDateCreate,
-    validateAssetNumber,
+    validateCode,
     validateReason,
     validateRepairDate,
     validateCost,
@@ -33,7 +33,7 @@ function validateDateCreate(value, translate) {
 }
 
 //3. Kiểm tra "Mã tài sản" nhập vào
-function validateAssetNumber(value, translate) {
+function validateCode(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mã tài sản không được để trống";

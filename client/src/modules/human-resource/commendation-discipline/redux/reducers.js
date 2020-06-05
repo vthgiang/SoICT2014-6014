@@ -27,7 +27,7 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listDisciplines: action.payload.listDisciplines,
+                listDisciplines: action.payload.listDisciplines !== undefined ? action.payload.listDisciplines : [],
                 totalListDiscipline: action.payload.totalList,
             };
         case DisciplineConstants.CREATE_DISCIPLINE_SUCCESS:
@@ -78,7 +78,7 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listCommendations: action.payload.listCommendations,
+                listCommendations: action.payload.listCommendations !== undefined ? action.payload.listCommendations : [],
                 totalListCommendation: action.payload.totalList,
             };
         case DisciplineConstants.CREATE_PRAISE_SUCCESS:

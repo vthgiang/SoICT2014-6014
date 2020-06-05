@@ -29,7 +29,13 @@ class DataTableSetting extends Component {
         window.$(`#${this.props.tableId} td`).show();
         window.$(`#${this.props.tableId} th`).show();
 
-        window.$(`#${this.props.tableId} th`).width(""); // Xóa các thuộc tính width
+        // Xóa các thuộc tính width, nếu không khi thêm cột, bảng sẽ tràn chiều rộng (lớn hơn width trình duyệt)
+        let headings = window.$(`#${this.props.tableId} th`);
+        for (let i = 0; i<headings.length; ++i){
+            if (!window.$(headings[i]).hasClass("col-fixed")) { // Riêng cột có class col-fixed sẽ không xóa thuộc tính width
+                window.$(headings[i]).width("");
+            }
+        }
 
         const {hiddenColumns} = this.state;
         for (var j = 0, len = hiddenColumns.length; j < len; j++) {

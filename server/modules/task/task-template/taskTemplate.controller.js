@@ -142,4 +142,25 @@ exports.editTaskTemplate = async(req, res) => {
         });
     }
 }
+
+exports.getAllChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
+    try {
+        var taskTemplate = await TaskTemplateService.getAllChildrenOfOrganizationalUnitsAsTree('5ed5d6623d78273704d546ab', req.params.id);
+        await LogInfo(req.user.email, `Get all children of this organizational unit ${req.body.name}`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_childern_of_this_unit_success'],
+            content: taskTemplate
+        });
+    } catch (error) {
+        await LogError(req.user.email, `Get all children of this organizational unit ${req.body.name}`, req.user.company);
+        res.status(200).json({
+            success: false,
+            messages: ['get_all_childern_of_this_unit_failed'],
+            content: error
+        });
+    }
+}
+
+
  

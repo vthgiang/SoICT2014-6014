@@ -7,7 +7,7 @@ export const RecommendDistributeFromValidator = {
     validateDateCreate,
     validateReqContent,
     validateProponent,
-    validateAssetNumber,
+    validateCode,
     validateDateStartUse,
     validateDateEndUse,
     validateApprover,
@@ -44,7 +44,7 @@ function validateReqContent(value, translate) {
 }
 
 // Kiểm tra "Mã tài sản" nhập vào
-function validateAssetNumber(value, translate) {
+function validateCode(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mã tài sản không được để trống";

@@ -19,7 +19,7 @@ export function annualLeave(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listAnnualLeaves: action.payload.listAnnualLeaves,
+                listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
                 totalList: action.payload.totalList,   
             };
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS:

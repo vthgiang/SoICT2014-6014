@@ -3,11 +3,27 @@ const RecommendProcure = require('../../../models/asset/recommendProcure.model')
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (company) => {
-    var listRecommendProcures = await RecommendProcure.find({
-        company: company
-    })
-    return listRecommendProcures;
+exports.searchRecommendProcures = async (data, company) => {
+    var keySearch = { company: company};
+
+    // Bắt sựu kiện mã phiếu tìm kiếm khác ""
+    if (data.recommendNumber !== "") {
+        keySearch = { ...keySearch, recommendNumber: { $regex: data.recommendNumber, $options: "i" } }
+    }
+
+    //Bắt sựu kiện tháng tìm kiếm khác ""
+    if (data.month !== "" && data.month !== null) {
+        keySearch = { ...keySearch, dateCreate: { $regex: data.month, $options: "i" } }
+    }
+
+    // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
+    if (data.status && data.status !== null) {
+        keySearch = { ...keySearch, status: { $in: data.status } };
+    };
+
+    var totalList = await RecommendProcure.count(keySearch);
+    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
+    return {totalList, listRecommendProcures};
 //
 }
 
@@ -22,12 +38,10 @@ exports.createRecommendProcure = async (data, company) => {
         company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        // proponent: data.proponent, //người đề nghị
-        proponent: null, //người đề nghị
+        proponent: data.proponent, //người đề nghị
         equipment: data.equipment,
         supplier: data.supplier,
-        // approver: data.approver, // người phê duyệt
-        approver: null, // người phê duyệt
+        approver: data.approver, // người phê duyệt
         total: data.total,
         unit: data.unit,
         estimatePrice: data.estimatePrice,
@@ -55,12 +69,10 @@ exports.updateRecommendProcure = async (id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        // proponent: data.proponent, //người đề nghị
-        proponent: null, //người đề nghị
+        proponent: data.proponent, //người đề nghị
         equipment: data.equipment,
         supplier: data.supplier,
-        // approver: data.approver, // người phê duyệt
-        approver: null, // người phê duyệt
+        approver: data.approver, // người phê duyệt
         total: data.total,
         unit: data.unit,
         estimatePrice: data.estimatePrice,

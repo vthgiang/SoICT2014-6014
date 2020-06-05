@@ -145,6 +145,9 @@ table.table td a.delete {
 table.table td a.approve {
     color: deepskyblue;
 }
+table.table td a.post_add {
+    color: green;
+}
 
 
 

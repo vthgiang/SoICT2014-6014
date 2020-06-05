@@ -1,24 +1,32 @@
 const DistributeTransfer = require('../../../models/asset/distributeTransfer.model');
-const {Asset, UserRole} = require('../../../models').schema;
+const { Asset, UserRole } = require('../../../models').schema;
 /**
  * Lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
  * Hiện tại đang lấy theo mã công ty
  * Sau làm lấy theo các keysearch: chức năng tìm kiếm
  */
 exports.searchDistributeTransfers = async (data, company) => {
-    var keySearch = { company: company};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (data.distributeNumber !== "") {
-        keySearch = {...keySearch, distributeNumber: {$regex: data.distributeNumber, $options: "i"}}
+        keySearch = { ...keySearch, distributeNumber: { $regex: data.distributeNumber, $options: "i" } }
+    }
+
+    // Thêm key tìm kiếm phiếu theo loại phiếu vào keySearch
+    if (data.type && data.type !== null) {
+        keySearch = { ...keySearch, type: { $in: data.type } }
+    }
+
+    //Bắt sựu kiện tháng tìm kiếm khác ""
+    if (data.month !== "" && data.month !== null) {
+        keySearch = { ...keySearch, dateCreate: { $regex: data.month, $options: "i" } }
     }
 
     var totalList = await DistributeTransfer.count(keySearch);
-    var listDistributeTransfers = await DistributeTransfer.find({
-        company: company
-    }).populate('asset handoverMan receiver').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
-    
-    return {totalList,listDistributeTransfers};
+    var listDistributeTransfers = await DistributeTransfer.find(keySearch).populate('asset handoverMan receiver').sort({ 'createdAt': 'desc' }).skip(data.page).limit(data.limit);
+
+    return { totalList, listDistributeTransfers };
 }
 
 /**
@@ -26,7 +34,7 @@ exports.searchDistributeTransfers = async (data, company) => {
  * @data: dữ liệu phiếu sửa chữa - thay thế - nâng cấp
  */
 exports.createDistributeTransfer = (data, company) => {
-    data = {...data, company};
+    data = { ...data, company };
     delete data.assetIndex;
     delete data.userReceiveIndex;
     return new DistributeTransfer(data);
@@ -48,7 +56,7 @@ exports.deleteDistributeTransfer = async (id) => {
  * @id: id phiếu sửa chữa - thay thế - nâng cấp muốn update
  */
 exports.updateDistributeTransfer = async (id, data) => {
-    return await DistributeTransfer.findByIdAndUpdate(id, data, {new: true}).populate('asset handoverMan receiver');
+    return await DistributeTransfer.findByIdAndUpdate(id, data, { new: true }).populate('asset handoverMan receiver');
 };
 
 // Kiểm tra sự tồn tại của mã phiếu

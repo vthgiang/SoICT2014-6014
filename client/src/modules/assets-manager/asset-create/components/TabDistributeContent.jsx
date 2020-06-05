@@ -35,7 +35,7 @@ class TabDistributeContent extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (event) => {
+    handleCodeChange = (event) => {
         const {name, value} = event.target;
         this.setState({
             [name]: value
@@ -87,7 +87,7 @@ class TabDistributeContent extends Component {
 
     // Function thêm thông tin phiếu
     handleAddDistribute = async (data) => {
-        console.log('dât',data);
+        console.log('data',data);
         const {distributeTransfer} = this.state;
         await this.setState({
             distributeTransfer: [...distributeTransfer, {
@@ -103,7 +103,6 @@ class TabDistributeContent extends Component {
         distributeTransfer[data.index] = data;
         await this.setState({
             distributeTransfer: distributeTransfer,
-
         })
         this.props.handleEditDistributeTransfer(data, 'edit')
     }

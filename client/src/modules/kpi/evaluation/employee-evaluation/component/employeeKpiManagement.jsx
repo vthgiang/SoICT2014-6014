@@ -28,7 +28,7 @@ class KPIMember extends Component {
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: "",
-                status: 4,
+                status: -1,
                 startDate: this.formatDate(Date.now()),
                 endDate: this.formatDate(Date.now())
             },
@@ -39,23 +39,16 @@ class KPIMember extends Component {
     componentDidMount() {
         var infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "all",
-            status: 4,
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now())
+            // user: "all",
+            // status: 4,
+            startDate: "",
+            endDate: ""
         }
         // Lấy tất cả nhân viên của phòng ban
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
         this.props.getAllKPIMemberOfUnit(infosearch);
-        
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/GridTableVers1.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        this.handleResizeColumn();
     }
     formatDateBack(date) {
         var d = new Date(date), month, day, year;
@@ -74,34 +67,6 @@ class KPIMember extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
- 
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
- 
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
- 
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -201,15 +166,16 @@ class KPIMember extends Component {
         }
     }
     handleShowApproveModal = async (id) => {
+        console.log('da goi den showApprove');
         await this.setState(state => {
             return {
                 ...state,
-                showApproveModal: id
+                kpiId: id
             }
         })
         // console.log('handle ============='+id);
         // console.log('state=============', this.state.showApproveModal);
-        window.$(`modal-approve-KPI-member-${id}`).modal('show')
+        window.$(`modal-approve-KPI-member`).modal('show')
     }
     showEvaluateModal = async (id) => {
         await this.setState(state => {
@@ -255,6 +221,7 @@ class KPIMember extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
+                    {<ModalMemberApprove id={this.state.kpiId} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>Nhân viên:</label>
@@ -355,9 +322,9 @@ class KPIMember extends Component {
                             <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                             
                             <td>
-                                <a data-target={`#modal-approve-KPI-member-${item._id}`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                <a data-target={`#modal-approve-KPI-member`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />}
+                                {/* {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />} */}
                                 {/* {<ModalMemberApprove id={item._id} />} */}
                             </td>
                             <td>
