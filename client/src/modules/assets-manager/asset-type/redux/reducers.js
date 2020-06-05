@@ -3,9 +3,10 @@ const initState = {
     isLoading: false,
     listAssetTypes: [],
     totalList: "",
-    error:"",
+    error: "",
 }
-export function assetType(state =initState, action) {
+
+export function assetType(state = initState, action) {
     switch (action.type) {
         case AssetTypeConstants.GET_ASSET_TYPE_REQUEST:
         case AssetTypeConstants.CREATE_ASSET_TYPE_REQUEST:

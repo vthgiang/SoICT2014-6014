@@ -7,8 +7,9 @@ import { RecommendProcureActions } from '../redux/actions';
 class RecommendProcureEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        this.save = this.save.bind(this);
+        this.state = {
+            userProponentIndex: "",
+        };
     }
     // Bắt sự kiện thay đổi mã phiếu
     handleRecommendNumberChange = (e) => {
@@ -36,6 +37,27 @@ class RecommendProcureEditForm extends Component {
             dateCreate: value
         })
     }
+
+        //Bắt sự kiện thay đổi "Người đề nghị"
+        handleProponentChange = (e) => {
+            const selectedIndex = e.target.options.selectedIndex;
+            this.setState({userProponentIndex: e.target.options[selectedIndex].getAttribute('data-key1')});
+            let value = e.target.value;
+            this.validateProponent(value, true);
+        }
+        validateProponent = (value, willUpdateState = true) => {
+            let msg = RecommendProcureFromValidator.validateProponent(value, this.props.translate)
+            if (willUpdateState) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        errorOnProponent: msg,
+                        proponent: value,
+                    }
+                });
+            }
+            return msg === undefined;
+        }
 
     // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
     handleEquipmentChange = (e) => {
@@ -143,7 +165,7 @@ class RecommendProcureEditForm extends Component {
                 approver: nextProps.approver,
                 positionApprover: nextProps.positionApprover,
                 status: nextProps.status,
-                note: nextProps.note,
+                // note: nextProps.note,
                 errorOnEquipment: undefined,
                 errorOnTotal: undefined,
                 errorOnUnit: undefined,
@@ -154,17 +176,16 @@ class RecommendProcureEditForm extends Component {
     }
 
     render() {
-        const { translate, recommendProcure } = this.props;
+        const { translate, recommendProcure, user } = this.props;
         const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier, total, unit, estimatePrice, approver, positionApprover, status, note,
                 errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
+                console.log('this.state', this.state);
         return (
             <React.Fragment>
                 <DialogModal
                     size='75' modalID="modal-edit-recommendprocure" isLoading={recommendProcure.isLoading}
                     formID="form-edit-recommendprocure"
                     title="Chỉnh sửa thông tin phiếu đề nghị mua sắm thiết bị"
-                    msg_success={translate('manage_user.edit_success')}
-                    msg_faile={translate('sabbatical.edit_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -173,7 +194,7 @@ class RecommendProcureEditForm extends Component {
                             <div className="col-sm-6">
                                 <div className="form-group">
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} disabled/>
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày lập<span className="text-red">*</span></label>
@@ -185,15 +206,24 @@ class RecommendProcureEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="proponent" value={proponent} disabled />
+                                    <select id="drops1" className="form-control" name="proponent"
+                                            value={proponent._id}
+                                            placeholder="Please Select"
+                                            onChange={this.handleProponentChange}
+                                            disabled>
+                                        <option value="" disabled>Please Select</option>
+                                        {user.list.length ? user.list.map((item, index) => {
+                                            return (
+                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                            )
+                                        }) : null}
+                                    </select>
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" value={department} disabled  />
-                                </div> */}
+
                                 <div className="form-group">
                                     <label>Chức vụ người đề nghị</label>
-                                    <input type="text" className="form-control" name="positionProponent"  value={positionProponent} disabled/>
+                                    <input disabled type="text" className="form-control" name="positionProponent"
+                                        value={this.state.userProponentIndex !== '' && user.list[this.state.userProponentIndex].roles.length ? user.list[this.state.userProponentIndex].roles[0].roleId.name : (proponent !== null && this.state.userProponentIndex === '' && user.list.find(user => user._id === proponent._id).roles.length) ? user.list.find(user => user._id === proponent._id).roles[0].roleId.name : ''} />
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
@@ -219,28 +249,11 @@ class RecommendProcureEditForm extends Component {
                                 <div className="form-group">
                                     <label>Giá trị dự tính (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} />
-                                    {/* <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <input type="text" className="form-control" name="status" value={status} disabled />
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Người phê duyệt</label>
-                                    <input type="text" className="form-control" name="approver" value={approver} disabled/>
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="positionApprover" value={positionApprover} disabled/>
-                                </div>
-                                <div className="form-group">
-                                    <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" value={status} disabled />
-                                </div>
-                                <div className="form-group">
-                                    <label>Ghi chú</label>
-                                    <input type="text" className="form-control" name="note" value={note} disabled/>
-                                </div> */}
                             </div>
                         </div>
                     </form>
@@ -251,8 +264,8 @@ class RecommendProcureEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const { recommendProcure, user } = state;
+    return { recommendProcure, user };
 };
 
 const actionCreators = {

@@ -2,11 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {DialogModal} from '../../../../common-components';
-
 import {AssetManagerActions} from '../redux/actions';
 import {RepairUpgradeActions} from '../../repair-upgrade/redux/actions';
 import {DistributeTransferActions} from '../../distribute-transfer/redux/actions';
-import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {TabAttachmentsContent, TabDepreciationContent, TabDistributeContent, TabGeneralContent, TabRepairContent} from '../../asset-create/components/CombineContent';
 
@@ -14,22 +12,33 @@ class AssetEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isClose: false
+            isClose: false, distributeTransferNew: [], isEditDistribute: '', repairUpgradeNew: [], isEditRepair: ''
         };
     }
 
 
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
-
     // Function upload avatar
     handleUpload = (img, avatar) => {
-        this.setState({
-            img: img,
-            avatar: avatar
-        })
+        console.log(img, avatar);
+        const {assetNew} = this.state;
+        if (avatar !== undefined) {
+            new Promise((resolve, reject) => {
+                let data = new FormData();
+                data.append('fileUpload', avatar);
+                AssetManagerActions.uploadFile(data).then((res) => {
+                    if (res.status === 200) {
+                        resolve(res.data.url)
+                    }
+                });
+            }).then(url => {
+                this.setState({
+                    assetNew: {
+                        ...assetNew,
+                        avatar: url
+                    }
+                });
+            })
+        }
     }
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
@@ -44,29 +53,43 @@ class AssetEditForm extends Component {
 
     // Function thêm, chỉnh sửa thông tin sửa chữa - thay thế - nâng cấp
     handleChangeRepairUpgrade = (data, isEdit) => {
-        this.setState({
-            repairUpgradeNew: data,
-            isEditRepair: isEdit
+        this.setState(state => {
+            return {
+                ...state,
+                repairUpgradeNew: data,
+                isEditRepair: isEdit
+            }
+
         })
     }
 
-// Function thêm, chỉnh sửa thông tin cấp phát - điều chuyển - thu hồi
+    // Function thêm, chỉnh sửa thông tin cấp phát - điều chuyển - thu hồi
     handleChangeDistributeTransfer = (data, isEdit) => {
-        this.setState({
-            distributeTransferNew: data,
-            isEditDistribute: isEdit
+        this.setState(state => {
+            return {
+                ...state,
+                distributeTransferNew: data,
+                isEditDistribute: isEdit
+            }
+
         })
     }
 
-// Function thêm, chỉnh sửa thông tin tài liệu đính kèm
+    // Function thêm, chỉnh sửa thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
+        console.log('data', data);
         this.setState({
-            file: data
+            assetNew: {
+                ...this.state.assetNew,
+                file: data
+            }
+
         })
     }
 
     save = async () => {
         let {distributeTransferNew, repairUpgradeNew, assetNew} = this.state;
+        console.log('state', repairUpgradeNew);
         let dataUpdate = {};
         let newDataToUpdateAsset = {
             person: distributeTransferNew.receiver,
@@ -74,32 +97,58 @@ class AssetEditForm extends Component {
             dateEndUse: distributeTransferNew.dateEndUse,
             location: distributeTransferNew.nextLocation
         };
+        console.log(distributeTransferNew);
         switch (true) {
-            case assetNew !== undefined:
+            case assetNew !== undefined && distributeTransferNew.length <= 0 && repairUpgradeNew.length <= 0:
+                console.log('1');
                 dataUpdate = {...this.state.asset, ...assetNew};
                 if (!Object.keys(dataUpdate.person).length) dataUpdate.person = null;
                 this.props.updateInformationAsset(this.state.asset._id, dataUpdate);
                 break;
-            case repairUpgradeNew !== undefined && this.state.isEditRepair === 'edit':
+            case repairUpgradeNew.length && this.state.isEditRepair === 'edit' && assetNew === undefined && distributeTransferNew === undefined :
                 this.props.updateRepairUpgrade(repairUpgradeNew._id, {...repairUpgradeNew, asset: this.state.asset._id});
                 break;
-            case repairUpgradeNew !== undefined && !this.state.isEditRepair:
+            case repairUpgradeNew.length && !this.state.isEditRepair && assetNew === undefined:
+                console.log('3');
                 this.props.createNewRepairUpgrade({...repairUpgradeNew, asset: this.state.asset._id});
                 break;
-            case distributeTransferNew !== undefined && this.state.isEditDistribute === 'edit':
+            case distributeTransferNew.length && this.state.isEditDistribute === 'edit' && (repairUpgradeNew === undefined || assetNew === undefined) :
+                console.log('4');
                 this.props.updateDistributeTransfer(distributeTransferNew._id, {...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
                     if (response.data.success) {
                         this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
                     }
                 });
                 break;
-            case distributeTransferNew !== undefined && this.state.isEditDistribute === undefined:
+            case distributeTransferNew.length && this.state.isEditDistribute === 'edit' && repairUpgradeNew !== undefined && this.state.isEditRepair === 'edit' && assetNew !== undefined :
+                dataUpdate = {...this.state.asset, ...assetNew};
+                if (!Object.keys(dataUpdate.person).length) dataUpdate.person = null;
+                this.props.updateInformationAsset(this.state.asset._id, dataUpdate);
+                this.props.updateRepairUpgrade(repairUpgradeNew._id, {...repairUpgradeNew, asset: this.state.asset._id})
+                this.props.updateDistributeTransfer(distributeTransferNew._id, {...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
+                    if (response.data.success) {
+                        this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
+                    }
+                });
+                break;
+            case assetNew !== undefined && distributeTransferNew !== undefined && this.state.isEditDistribute === 'edit' && repairUpgradeNew !== undefined && this.state.isEditRepair === 'edit':
+                console.log('123');
+                dataUpdate = {...this.state.asset, ...assetNew};
+                if (!Object.keys(dataUpdate.person).length) dataUpdate.person = null;
+                this.props.updateInformationAsset(this.state.asset._id, dataUpdate);
+                this.props.updateRepairUpgrade(repairUpgradeNew._id, {...repairUpgradeNew, asset: this.state.asset._id})
+                this.props.updateDistributeTransfer(distributeTransferNew._id, {...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
+                    if (response.data.success) {
+                        this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
+                    }
+                });
+                break;
+            case distributeTransferNew !== undefined && this.state.isEditDistribute === undefined && assetNew === undefined:
                 this.props.createNewDistributeTransfer({...distributeTransferNew, asset: this.state.asset._id}).then(({response}) => {
                     if (response.status === 200) {
                         this.props.updateInformationAsset(this.state._id, newDataToUpdateAsset);
                     }
                 });
-                ;
                 break;
             default:
                 break;
@@ -144,7 +193,6 @@ class AssetEditForm extends Component {
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_thongtinchung${_id}`}>Thông tin chung</a></li>
                             <li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href={`#edit_suachua${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
                             <li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href={`#edit_capphat${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
-                            {/* <li><a title="Bảo hành - bảo trì" data-toggle="tab" href={`#edit_baohanh${_id}`}>Bảo hành - Bảo trì</a></li> */}
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#edit_khauhao${_id}`}>Thông tin khấu hao</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#edit_tailieu${_id}`}>Tài liệu đính kèm</a></li>
                         </ul>
@@ -184,7 +232,7 @@ class AssetEditForm extends Component {
 
                             <TabAttachmentsContent
                                 id={`edit_tailieu${_id}`}
-                                file={this.state.file}
+                                file={this.state.asset.file}
                                 asset={this.state.asset}
                                 handleChange={this.handleChange}
                                 handleAddFile={this.handleChangeFile}
@@ -210,7 +258,7 @@ const actionCreators = {
     updateInformationAsset: AssetManagerActions.updateInformationAsset,
     getAllAsset: AssetManagerActions.getAllAsset,
     uploadAvatar: AssetManagerActions.uploadAvatar,
-    checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    checkCode: AssetManagerActions.checkCode,
 
     createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
     createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,

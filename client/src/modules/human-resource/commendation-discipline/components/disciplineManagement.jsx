@@ -5,6 +5,7 @@ import { DisciplineCreateForm, DisciplineEditForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
+
 class DisciplineManager extends Component {
     constructor(props) {
         super(props);
@@ -12,7 +13,7 @@ class DisciplineManager extends Component {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: null,
             page: 0,
             limit: 5,
         }
@@ -57,7 +58,7 @@ class DisciplineManager extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -105,9 +106,9 @@ class DisciplineManager extends Component {
         const { list } = this.props.department;
         const { translate, discipline } = this.props;
         var listDisciplines = "", listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (this.state.organizationalUnits !== null) {
+            let organizationalUnits = this.state.organizationalUnits;
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [

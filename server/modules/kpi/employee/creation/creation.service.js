@@ -7,7 +7,20 @@ exports.getEmployeeKpiSet = async (id) => {
     var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 } })
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } });
-     return employeeKpiSet;
+    return employeeKpiSet;
+}
+
+/** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
+exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
+    var employeeKpiSetByMonth = await EmployeeKpiSet.find(
+        {
+            creator: userId,
+            date: { $gte: startDate, $lte: endDate }
+        },
+        { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1}
+    )
+    
+    return employeeKpiSetByMonth;
 }
 
 /** Khởi tạo tập KPI cá nhân */ 

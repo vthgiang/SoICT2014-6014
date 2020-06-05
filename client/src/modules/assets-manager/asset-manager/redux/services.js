@@ -13,7 +13,7 @@ export const AssetService = {
     updateInformationAsset,
     uploadAvatar,
     updateFile,
-    checkAssetNumber,
+    checkCode,
     deleteAsset,
 }
 
@@ -27,25 +27,26 @@ function getAll(data) {
     return fetch(`${ LOCAL_SERVER_API }/asset/paginate`, requestOptions).then(handleResponse);
 }
 
-// Kiểm tra sự tồn tại của AssetNumber
-function checkAssetNumber(assetNumber) {
+// Kiểm tra sự tồn tại của Code
+function checkCode(code) {
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader(),
     }
 
-    return fetch(`${ LOCAL_SERVER_API }/asset/checkAssetNumber/${assetNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/asset/checkCode/${code}`, requestOptions).then(handleResponse);
 }
 
 // Thêm mới thông tin tài sản
 function addNewAsset(newAsset) {
     const requestOptions = {
+        url:`${ LOCAL_SERVER_API }/asset`,
         method: 'POST',
         headers: AuthenticateHeader(),
-        body: JSON.stringify(newAsset)
+        body: newAsset
     };
 
-    return fetch(`${ LOCAL_SERVER_API }/asset`, requestOptions).then(handleResponse)
+    return axios(requestOptions)
 
 }
 
@@ -60,9 +61,9 @@ function updateInformationAsset(id, data) {
 }
 
 // upload ảnh của tài sản
-function uploadAvatar(assetNumber, fileUpload) {
+function uploadAvatar(code, fileUpload) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/asset/avatar/${assetNumber}`,
+        url: `${ LOCAL_SERVER_API }/asset/avatar/${code}`,
         method: 'PATCH',
         data: fileUpload,
         headers: AuthenticateHeaderPATCH()
@@ -73,13 +74,13 @@ function uploadAvatar(assetNumber, fileUpload) {
 
 
 // Cập nhật (thêm) thông tin tài liệu đính kèm
-function updateFile(assetNumber, fileUpload) {
+function updateFile(code, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`${ LOCAL_SERVER_API }/asset/file/${assetNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/asset/file/${code}`, requestOptions).then(handleResponse);
 
 }
 

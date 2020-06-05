@@ -1,18 +1,32 @@
-import {
-    AssetConstants
-} from "./constants";
-import {
-    AssetService
-} from "./services";
+import {AssetConstants} from "./constants";
+import {AssetService} from "./services";
+import {LOCAL_SERVER_API} from "../../../../env";
+import {AuthenticateHeader} from "../../../../config";
+import axios from 'axios'
+
 export const AssetManagerActions = {
     getAllAsset,
     addNewAsset,
     uploadAvatar,
     updateFile,
     updateInformationAsset,
-    checkAssetNumber,
+    checkCode,
     deleteAsset,
+    uploadFile,
+    saveTimeDepreciation
 };
+
+function uploadFile(data) {
+    return axios.post(`${LOCAL_SERVER_API}/asset/uploadFile`, data, {headers: AuthenticateHeader()})
+}
+
+function saveTimeDepreciation(time,isChange) {
+    return {
+        type: AssetConstants.SAVE_TIME_DESPRECIATION,
+        time,
+        isChange
+    }
+}
 
 // Lấy danh sách tài sản
 function getAllAsset(data) {
@@ -46,33 +60,33 @@ function getAllAsset(data) {
     };
 }
 
-// Kiểm tra sự tồn tại của AssetNumber
-function checkAssetNumber(assetNumber) {
+// Kiểm tra sự tồn tại của Code
+function checkCode(code) {
     return dispatch => {
         dispatch(request());
-        AssetService.checkMSNV(assetNumber)
+        AssetService.checkMSNV(code)
             .then(
-                checkAssetNumber => dispatch(success(checkAssetNumber)),
+                checkCode => dispatch(success(checkCode)),
                 error => dispatch(failure(error.toString()))
             );
     };
 
     function request() {
         return {
-            type: AssetConstants.CHECK_ASSETNUMBER_REQUEST
+            type: AssetConstants.CHECK_CODE_REQUEST
         };
     };
 
-    function success(checkAssetNumber) {
+    function success(checkCode) {
         return {
-            type: AssetConstants.CHECK_ASSETNUMBER_SUCCESS,
-            checkAssetNumber
+            type: AssetConstants.CHECK_CODE_SUCCESS,
+            checkCode
         };
     };
 
     function failure(error) {
         return {
-            type: AssetConstants.CHECK_ASSETNUMBER_FAILURE,
+            type: AssetConstants.CHECK_CODE_FAILURE,
             error
         };
     };
@@ -83,17 +97,41 @@ function checkAssetNumber(assetNumber) {
 function addNewAsset(assetNew) {
     return dispatch => {
         dispatch(request(assetNew));
-
-        AssetService.addNewAsset(assetNew)
-            .then(
-                asset => {
-                    dispatch(getAllAsset());
-                    dispatch(success(asset));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
+        axios.post(`${LOCAL_SERVER_API}/asset`, assetNew, {headers: AuthenticateHeader()}).then(
+            asset => {
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: "",
+                    status: null,
+                    page: 0,
+                    limit: 5,
+                }));
+                dispatch(success(asset));
+            },
+            error => {
+                dispatch(failure(error.toString()));
+            }
+        );
+        // AssetService.addNewAsset(assetNew)
+        //     .then(
+        //         asset => {
+        //             dispatch(getAllAsset({
+        //                 code: "",
+        //                 assetName: "",
+        //                 assetType: null,
+        //                 month: "",
+        //                 status: null,
+        //                 page: 0,
+        //                 limit: 5,
+        //             }));
+        //             dispatch(success(asset));
+        //         },
+        //         error => {
+        //             dispatch(failure(error.toString()));
+        //         }
+        //     );
     };
 
     function request(asset) {
@@ -127,7 +165,7 @@ function updateInformationAsset(id, informationAsset) {
             .then(
                 informationAsset => {
                     dispatch(getAllAsset({
-                        assetNumber: "",
+                        code: "",
                         assetName: "",
                         assetType: null,
                         month: "",
@@ -166,12 +204,12 @@ function updateInformationAsset(id, informationAsset) {
 }
 
 // Cập nhật ảnh tài sản
-function uploadAvatar(assetNumber, fileUpload) {
+function uploadAvatar(code, fileUpload) {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPLOAD_AVATAR_REQUEST
         });
-        AssetService.uploadAvatar(assetNumber, fileUpload)
+        AssetService.uploadAvatar(code, fileUpload)
             .then(res => {
                 dispatch({
                     type: AssetConstants.UPLOAD_AVATAR_SUCCESS,
@@ -187,11 +225,11 @@ function uploadAvatar(assetNumber, fileUpload) {
     }
 }
 
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo AssetNumber
-function updateFile(assetNumber, fileUpload) {
+// Cập nhật(thêm) thông tin tài liệu đính kèm theo Code
+function updateFile(code, fileUpload) {
     return dispatch => {
         dispatch(request());
-        AssetService.updateFile(assetNumber, fileUpload)
+        AssetService.updateFile(code, fileUpload)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))

@@ -5,6 +5,7 @@ import { PraiseCreateForm, PraiseEditForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
+
 class PraiseManager extends Component {
     constructor(props) {
         super(props);
@@ -12,7 +13,7 @@ class PraiseManager extends Component {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: null,
             page: 0,
             limit: 5,
         }
@@ -55,7 +56,7 @@ class PraiseManager extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -104,9 +105,9 @@ class PraiseManager extends Component {
         const { list } = this.props.department;
         const { translate, discipline } = this.props;
         var listCommendations = "", listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (this.state.organizationalUnits !== null) {
+            let organizationalUnits = this.state.organizationalUnits;
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [

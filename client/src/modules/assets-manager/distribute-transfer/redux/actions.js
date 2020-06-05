@@ -1,6 +1,6 @@
-import {DistributeTransferConstants} from "./constants";
-import {DistributeTransferService} from "./services";
-import {AssetManagerActions} from "../../asset-manager/redux/actions";
+import { DistributeTransferConstants } from "./constants";
+import { DistributeTransferService } from "./services";
+import { AssetManagerActions } from "../../asset-manager/redux/actions";
 
 export const DistributeTransferActions = {
     searchDistributeTransfers,
@@ -9,7 +9,7 @@ export const DistributeTransferActions = {
     updateDistributeTransfer,
 };
 
-// Lấy danh sách nghỉ phép
+// Lấy danh sách cấp phát - điều chuyển - thu hồi
 function searchDistributeTransfers(data) {
 
     return async (dispatch) => {
@@ -28,24 +28,6 @@ function searchDistributeTransfers(data) {
             });
         }
     };
-    // return  dispatch => {
-    //     dispatch({
-    //         type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_REQUEST
-    //     });
-    //     DistributeTransferService.searchDistributeTransfers(data)
-    //         .then(res => {
-    //             dispatch({
-    //                 type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS,
-    //                 payload: res.data.content
-    //             })
-    //         })
-    //         .catch(err => {
-    //             dispatch({
-    //                 type: DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE,
-    //                 error: err.response.data
-    //             });
-    //         })
-    // }
 }
 
 // Tạo mới thông tin nghỉ phép
@@ -57,7 +39,7 @@ function createNewDistributeTransfer(data) {
             });
             const response = await DistributeTransferService.createNewDistributeTransfer(data).then(res => res);
             dispatch(AssetManagerActions.getAllAsset({
-                assetNumber: "",
+                code: "",
                 assetName: "",
                 assetType: null,
                 month: "",
@@ -67,7 +49,7 @@ function createNewDistributeTransfer(data) {
             }));
             dispatch(searchDistributeTransfers({
                 distributeNumber: "",
-                assetNumber: "",
+                code: "",
                 month: "",
                 type: null,
                 page: 0,
@@ -122,14 +104,14 @@ function updateDistributeTransfer(id, infoDistributeTransfer) {
             const response = await DistributeTransferService.updateDistributeTransfer(id, infoDistributeTransfer)
             dispatch(searchDistributeTransfers({
                 distributeNumber: "",
-                assetNumber: "",
+                code: "",
                 month: "",
                 type: null,
                 page: 0,
                 limit: 5
             }));
             dispatch(AssetManagerActions.getAllAsset({
-                assetNumber: "",
+                code: "",
                 assetName: "",
                 assetType: null,
                 month: "",

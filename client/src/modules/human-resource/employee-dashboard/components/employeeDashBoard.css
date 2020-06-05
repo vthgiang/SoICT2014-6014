@@ -1,6 +1,16 @@
-.bar1 {
-    fill: #0000FF;
+.number_box {
+    background-color: lightgrey;
+    width: 100%;
 }
+.dashboard_box_body {
+    height: 350px;
+}
+
+
+/* Bên dưới xoá sau */
+/* .bar1 {
+    fill: #0000FF;
+} */
 
 /* .bar2 {
     fill: deepskyblue;
@@ -10,7 +20,7 @@
     fill: steelblue;
 } */
 
-.bar:hover {
+/* .bar:hover {
     fill: #0DFF85;
 }
 
@@ -22,14 +32,14 @@
     fill: none;
     stroke: #FFAA4F;
     stroke-width: 3;
-}
+} */
 
 /* .dot {
     fill: royalblue;
     stroke: royalblue;
 } */
 
-div.tooltip {
+/* div.tooltip {
     position: absolute;
     text-align: center;
     width: 120px;
@@ -40,4 +50,4 @@ div.tooltip {
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
-}
+} */

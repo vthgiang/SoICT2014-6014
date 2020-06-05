@@ -1,9 +1,9 @@
-import {
-    AssetConstants
-} from './constants';
+import {AssetConstants} from './constants';
+
 const initState = {
-    checkArrayAssetNumber: []
-}
+
+};
+
 export function assetsManager(state = initState, action) {
     switch (action.type) {
         case AssetConstants.GETALL_REQUEST:
@@ -15,8 +15,8 @@ export function assetsManager(state = initState, action) {
             return {
                 ...state,
                 allAsset: action.assets.content.data,
-                    totalList: action.assets.content.totalList,
-                    isLoading: false
+                totalList: action.assets.content.totalList,
+                isLoading: false
             };
         case AssetConstants.GETALL_FAILURE:
             return {
@@ -87,18 +87,18 @@ export function assetsManager(state = initState, action) {
                 error: action.error,
                 isLoading: false,
             };
-        case AssetConstants.CHECK_ASSETNUMBER_REQUEST:
+        case AssetConstants.CHECK_CODE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case AssetConstants.CHECK_ASSETNUMBER_SUCCESS:
+        case AssetConstants.CHECK_CODE_SUCCESS:
             return {
                 ...state,
-                checkAssetNumber: action.checkAssetNumber.content,
+                checkCode: action.checkCode.content,
                 isLoading: false
             };
-        case AssetConstants.CHECK_ASSETNUMBER_FAILURE:
+        case AssetConstants.CHECK_CODE_FAILURE:
             return {
                 error: action.error,
                 isLoading: false,
@@ -113,12 +113,18 @@ export function assetsManager(state = initState, action) {
             return {
                 ...state,
                 allAsset: state.allAsset.filter(list => (list.asset[0]._id !== action.assetDelete.content.infoAsset._id)),
-                    isLoading: false,
+                isLoading: false,
             };
         case AssetConstants.DELETE_ASSET_FAILURE:
             return {
                 error: action.error,
                 isLoading: false,
+            };
+        case AssetConstants.SAVE_TIME_DESPRECIATION:
+            return {
+                ...state,
+                timeDepreciation: action.time,
+                isChangeTimeDep: action.isChange
             };
         default:
             return state

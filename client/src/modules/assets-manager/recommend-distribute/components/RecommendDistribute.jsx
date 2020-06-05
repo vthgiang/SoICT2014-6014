@@ -4,29 +4,65 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
 import { RecommendDistributeEditForm } from './RecommendDistributeEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { RecommendDistributeActions } from '../redux/actions';
+import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { RecommendDistributeActions } from '../redux/actions';
+import { AssetDetailForm } from "../../asset-manager/components/AssetDetailForm";
 
 class RecommendDistribute extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            recommendNumber: "",
-            month: "",
-            status: "Chờ phê duyệt",
+            code: "",
+            assetName: "",
+            assetType: null,
+            status: null,
             page: 0,
             limit: 5,
+            //-----------------------
+            recommendNumber: "",
+            month: "",
+            statusRecommend: "",
+            pageRecommend: 0,
+            limitRecommend: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
+        this.handleSubmitRecommendSearch = this.handleSubmitRecommendSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.searchRecommendDistributes(this.state);
+        this.props.searchRecommendDistributes(this.state);
+        this.props.getAllAsset(this.state);
+        this.props.getAllUsers();
     }
-    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
-    handleEdit = async (value) => {
+
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
+    }
+
+    // Bắt sự kiện click đăng ký cấp phát tài sản
+    handleCreateRecommend = async (value) => {
+        console.log(value);
         await this.setState(state => {
             return {
                 ...state,
                 currentRow: value
+            }
+        });
+        window.$('#modal-create-recommenddistribute').modal('show');
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin phiếu đăng ký cấp phát
+    handleEdit = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEdit: value
             }
         });
         window.$('#modal-edit-recommenddistribute').modal('show');
@@ -46,6 +82,85 @@ class RecommendDistribute extends Component {
 
         return [month, year].join('-');
     }
+
+    /**
+     * Bảng danh sách các tài sản
+     */
+    // Function lưu giá trị mã tài sản vào state khi thay đổi
+    handleCodeChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị tên tài sản vào state khi thay đổi
+    handleAssetNameChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị loại tài sản vào state khi thay đổi
+    handleAssetTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+        ;
+        this.setState({
+            ...this.state,
+            assetType: value
+        })
+    }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleStatusAssetChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+        ;
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
+
+    // Function bắt sự kiện tìm kiếm
+    handleSubmitSearch = async () => {
+        // if (this.state.month === null) {
+        await this.setState({
+            ...this.state,
+            // ,
+            // month: this.formatDate(Date.now())
+        })
+        // }
+        this.props.getAllAsset(this.state);
+    }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+        });
+        this.props.getAllAsset(this.state);
+    }
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
+
+        });
+        this.props.getAllAsset(this.state);
+    }
+
+    /**
+     * Bảng danh sách phiếu đăng ký cấp phát
+     */
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
     handleRecommendNumberChange = (event) => {
@@ -74,51 +189,184 @@ class RecommendDistribute extends Component {
         })
     }
 
-    // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = async () => {
-        if (this.state.month === "") {
+    // Function bắt sự kiện tìm kiếm
+    handleSubmitRecommendSearch = async () => {
+        // if (this.state.month === "") {
             await this.setState({
-                month: this.formatDate(Date.now())
+                ...this.state
+                // month: this.formatDate(Date.now())
             })
-        }
+        // }
         this.props.searchRecommendDistributes(this.state);
     }
 
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number),
-        });
-        this.props.searchRecommendDistributes(this.state);
-    }
+    // // Bắt sự kiện setting số dòng hiện thị trên một trang
+    // setLimit = async (number) => {
+    //     await this.setState({
+    //         limit: parseInt(number),
+    //     });
+    //     this.props.searchRecommendDistributes(this.state);
+    // }
 
-    // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
-            page: parseInt(page),
+    // // Bắt sự kiện chuyển trang
+    // setPage = async (pageNumber) => {
+    //     var page = (pageNumber - 1) * this.state.limit;
+    //     await this.setState({
+    //         page: parseInt(page),
 
-        });
-        this.props.searchRecommendDistributes(this.state);
-    }
+    //     });
+    //     this.props.searchRecommendDistributes(this.state);
+    // }
 
     render() {
-        const { translate, recommendDistribute } = this.props;
+        const { translate, recommendDistribute, assetsManager, auth } = this.props;
+        var lists = "";
         var listRecommendDistributes = "";
 
         if (this.props.recommendDistribute.isLoading === false) {
             listRecommendDistributes = this.props.recommendDistribute.listRecommendDistributes;
         }
-        var pageTotal = ((this.props.recommendDistribute.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.recommendDistribute.totalList / this.state.limit) :
-            parseInt((this.props.recommendDistribute.totalList / this.state.limit) + 1);
+        if (assetsManager.allAsset) {
+            lists = this.props.assetsManager.allAsset;
+        }
+        console.log('listRecommendDistributes', listRecommendDistributes);
+        // asset
+        var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
+            parseInt(assetsManager.totalList / this.state.limit) :
+            parseInt((assetsManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
+
+        // recommend
+        // var pageTotal = ((this.props.recommendDistribute.totalList % this.state.limit) === 0) ?
+        //     parseInt(this.props.recommendDistribute.totalList / this.state.limit) :
+        //     parseInt((this.props.recommendDistribute.totalList / this.state.limit) + 1);
+        // var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    <RecommendDistributeCreateForm />
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách phiếu đề nghị cấp phát thiết bị: </h4>
+                        <h4 className="box-title">Danh sách tài sản: </h4>
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">Mã tài sản</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Tên tài sản</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                        </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        <div className="form-group">
+                            <label className="form-control-static">Phân loại</label>
+                            <SelectMulti id={`multiSelectType`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                onChange={this.handleTypeChange}
+                                items={[
+
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
+                                onChange={this.handleStatusChange}
+                                items={[
+                                    { value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng" },
+                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
+                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
+                                    { value: "Mất", text: "Mất" }
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+                        <div className="form-group">
+                            {/* <label></label> */}
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()} >Tìm kiếm</button>
+                        </div>
+                    </div>
+                    <table id="asset-table" className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style={{ width: "8%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Loại tài sản</th>
+                                <th style={{ width: "10%" }}>Người được giao sử dụng</th>
+                                <th style={{ width: "20%" }}>Thời gian sử dụng từ ngày</th>
+                                <th style={{ width: "20%" }}>Thời gian sử dụng đến ngày</th>
+                                <th style={{ width: "10%" }}>Trạng thái</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                    <DataTableSetting
+                                        tableId="asset-table"
+                                        columnArr={[
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Loại tài sản",
+                                            "Người được giao sử dụng",
+                                            "Thời gian sử dụng từ ngày",
+                                            "Thời gian sử dụng đến ngày",
+                                            "Trạng thái"
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                                lists.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.asset.code}</td>
+                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.asset.assetType.typeName}</td>
+                                        <td>{x.asset.person !== null ? x.asset.person.name : ''}</td>
+                                        <td>{x.asset.dateStartUse}</td>
+                                        <td>{x.asset.dateEndUse}</td>
+                                        <td>{x.asset.status}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title="Đăng ký cấp phát thiết bị"><i className="material-icons">post_add</i></a>
+                                        </td>
+                                    </tr>))
+                            }
+                        </tbody>
+                    </table>
+                    {assetsManager.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                </div>
+                {
+                    this.state.currentRowView !== undefined &&
+                    <AssetDetailForm
+                        _id={this.state.currentRowView.asset._id}
+                        asset={this.state.currentRowView.asset}
+                        repairUpgrade={this.state.currentRowView.repairUpgrade}
+                        distributeTransfer={this.state.currentRowView.distributeTransfer}
+
+                    />
+                }
+                {
+                    this.state.currentRow !== undefined &&
+                    <RecommendDistributeCreateForm
+                        _id={this.state.currentRow._id}
+                        assetId={this.state.currentRow.asset._id}
+                        asset={this.state.currentRow.asset}
+                        code={this.state.currentRow.asset.code}
+                        assetName={this.state.currentRow.asset.assetName}
+                    />
+                }
+                <hr />
+                <div className="box-body qlcv">
+                    {/* <RecommendDistributeCreateForm /> */}
+                    <div className="form-group">
+                        <h4 className="box-title">Danh sách phiếu đăng ký cấp phát - sử dụng tài sản: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -152,7 +400,7 @@ class RecommendDistribute extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitRecommendSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
                     <table id="recommenddistribute-table" className="table table-striped table-bordered table-hover">
@@ -163,11 +411,9 @@ class RecommendDistribute extends Component {
                                 <th style={{ width: "15%" }}>Người đề nghị</th>
                                 <th style={{ width: "17%" }}>Mã tài sản</th>
                                 <th style={{ width: "15%" }}>Tên tài sản</th>
-                                {/* <th style={{ width: "17%" }}>Loại tài sản</th> */}
                                 <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng từ ngày</th>
-                                {/* <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th> */}
+                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th>
                                 <th style={{ width: "17%" }}>Người phê duyệt</th>
-                                {/* <th style={{ width: "17%" }}>Ghi chú</th> */}
                                 <th style={{ width: "11%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                     <DataTableSetting
@@ -179,14 +425,12 @@ class RecommendDistribute extends Component {
                                             "Mã tài sản",
                                             "Tên tài sản",
                                             "Thời gian đăng ký sử dụng từ ngày",
-                                            // "Thời gian đăng ký sử dụng đến ngày",
-                                            // "Loại tài sản",
+                                            "Thời gian đăng ký sử dụng đến ngày",
                                             "Người phê duyệt",
-                                            // "Ghi chú",
                                             "Trạng thái",
                                         ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
+                                        // limit={this.state.limit}
+                                        // setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
                                 </th>
@@ -194,31 +438,33 @@ class RecommendDistribute extends Component {
                         </thead>
                         <tbody>
                             {(typeof listRecommendDistributes !== 'undefined' && listRecommendDistributes.length !== 0) &&
-                                listRecommendDistributes.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.recommendNumber}</td>
-                                        <td>{x.dateCreate}</td>
-                                        <td>{x.proponent}</td>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
-                                        <td>{x.dateStartUse}</td>
-                                        {/* <td>{x.dateEndUse}</td> */}
-                                        {/* <td>{x.assetType}</td> */}
-                                        <td>{x.approver}</td>
-                                        {/* <td>{x.note}</td> */}
-                                        <td>{x.status}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content="Xóa thông tin phiếu"
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
-                                                }}
-                                                func={this.props.deleteRecommendDistribute}
-                                            />
-                                        </td>
-                                    </tr>))
+                                listRecommendDistributes.filter(item => item.proponent._id === auth.user._id).map((x, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{x.recommendNumber}</td>
+                                            <td>{x.dateCreate}</td>
+                                            <td>{x.proponent.name}</td>
+                                            <td>{x.asset !== null ? x.asset.code : ''}</td>
+                                            <td>{x.asset !== null ? x.asset.assetName : ''}</td>
+                                            <td>{x.dateStartUse}</td>
+                                            <td>{x.dateEndUse}</td>
+                                            {/* <td>{x.approver !== null ? x.approver.name : ''}</td> */}
+                                            <td>{x.approver && x.approver.name}</td>
+                                            <td>{x.status}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đăng ký cấp phát"><i className="material-icons">edit</i></a>
+                                                <DeleteNotification
+                                                    content="Xóa thông tin phiếu"
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    }}
+                                                    func={this.props.deleteRecommendDistribute}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )
+                                })
                             }
                         </tbody>
                     </table>
@@ -226,27 +472,28 @@ class RecommendDistribute extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listRecommendDistributes === 'undefined' || listRecommendDistributes.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    {/* <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} /> */}
                 </div>
-                
+
                 {
-                    this.state.currentRow !== undefined &&
+                    this.state.currentRowEdit !== undefined &&
                     <RecommendDistributeEditForm
-                        _id={this.state.currentRow._id}
-                        recommendNumber={this.state.currentRow.recommendNumber}
-                        dateCreate={this.state.currentRow.dateCreate}
-                        proponent={this.state.currentRow.proponent}
-                        positionProponent={this.state.currentRow.positionProponent}
-                        assetNumber={this.state.currentRow.assetNumber}
-                        assetName={this.state.currentRow.assetName}
-                        // assetType={this.state.currentRow.assetType}
-                        reqContent={this.state.currentRow.reqContent}
-                        dateStartUse={this.state.currentRow.dateStartUse}
-                        dateEndUse={this.state.currentRow.dateEndUse}
-                        approver={this.state.currentRow.approver} 
-                        positionApprover={this.state.currentRow.positionApprover}
-                        note={this.state.currentRow.note} 
-                        status={this.state.currentRow.status}
+                        _id={this.state.currentRowEdit._id}
+                        recommendNumber={this.state.currentRowEdit.recommendNumber}
+                        dateCreate={this.state.currentRowEdit.dateCreate}
+                        proponent={this.state.currentRowEdit.proponent}
+                        positionProponent={this.state.currentRowEdit.positionProponent}
+                        reqContent={this.state.currentRowEdit.reqContent}
+                        assetId={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset._id}
+                        code={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset.code}
+                        asset={this.state.currentRowEdit.asset}
+                        assetName={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset.assetName}
+                        dateStartUse={this.state.currentRowEdit.dateStartUse}
+                        dateEndUse={this.state.currentRowEdit.dateEndUse}
+                        approver={this.state.currentRowEdit.approver}
+                        positionApprover={this.state.currentRowEdit.positionApprover}
+                        status={this.state.currentRowEdit.status}
+                        note={this.state.currentRowEdit.note}
                     />
                 }
             </div >
@@ -255,13 +502,15 @@ class RecommendDistribute extends Component {
 };
 
 function mapState(state) {
-    const { recommendDistribute } = state;
-    return { recommendDistribute };
+    const { recommendDistribute, assetsManager, auth } = state;
+    return { recommendDistribute, assetsManager, auth };
 };
 
 const actionCreators = {
-    // searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
-    // deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    getAllUsers: UserActions.get,
+    searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
+    deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
 };
 
 const connectedListRecommendDistribute = connect(mapState, actionCreators)(withTranslate(RecommendDistribute));

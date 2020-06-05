@@ -105,19 +105,28 @@ class Content extends Component {
                     pressed = false;
                 }
             });
-
-            window.addEventListener("resize", function(){
-                // Xóa thuộc tính width (nếu đã) thiết lập, để khi resize window, kích thước các cột tự cập nhật lại theo default, tránh bị lỗi
-                for (let i = 0; i<tableHeadings.length; ++i){
-                    window.$(tableHeadings[i]).width("");
-                }
-            });
-
         });
     }
 
-    componentDidUpdate() {
+    adjustSize = () => {
+        let headings = window.$("table thead tr th");
+        for (let i = 0; i<headings.length; ++i){
+            if (!window.$(headings[i]).hasClass("col-fixed")) { // RIêng cột có class col-fixed sẽ không xóa thuộc tính width
+                window.$(headings[i]).width("");
+            }
+        }
+    }
+
+    componentDidUpdate(){
         this.handleResizeColumn();
+    }
+
+    componentDidMount() {
+        window.addEventListener("resize", this.adjustSize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.adjustSize);
     }
 
     render() {

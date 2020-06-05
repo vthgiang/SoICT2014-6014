@@ -4,9 +4,12 @@ import {
 const initState = {
     isLoading: false,
     totalList: '',
-    totalEmployee: '',
-    listAllEmployees: [],
+    totalEmployeeOfOrganizationalUnits: '',
+    totalAllEmployee:'',
+
     listEmployees: [],
+    listEmployeesOfOrganizationalUnits: [],
+    listAllEmployees: [],
     error: '',
 }
 export function employeesManager(state = initState, action) {
@@ -20,20 +23,31 @@ export function employeesManager(state = initState, action) {
                 isLoading: true
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.totalEmployee !== undefined) {
-                return {
-                    ...state,
-                    listAllEmployees: action.payload.listAllEmployees,
-                    totalEmployee: action.payload.totalEmployee,
-                    isLoading: false
-                }
-            } else {
+            if (action.payload.totalList !== undefined) {
                 return {
                     ...state,
                     listEmployees: action.payload.data,
                     totalList: action.payload.totalList,
                     isLoading: false
                 };
+                
+            } else {
+                return {
+                    ...state,
+                    totalEmployeeOfOrganizationalUnits: action.payload.totalEmployee !== undefined ? 
+                        action.payload.totalEmployee : state.totalEmployeeOfOrganizationalUnits,
+                        
+                    listEmployeesOfOrganizationalUnits: action.payload.listEmployeesOfOrganizationalUnits !== undefined ? 
+                        action.payload.listEmployeesOfOrganizationalUnits: state.listEmployeesOfOrganizationalUnits,
+                    
+                    totalAllEmployee: action.payload.totalAllEmployee !== undefined ? 
+                        action.payload.totalAllEmployee : state.totalAllEmployee,
+
+                    listAllEmployees: action.payload.listAllEmployees !== undefined ? 
+                        action.payload.listAllEmployees : state.listAllEmployees ,
+                    
+                    isLoading: false
+                }
             }
 
             case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
@@ -48,15 +62,16 @@ export function employeesManager(state = initState, action) {
                         isLoading: false,
                 };
             case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
+                console.log(action.payload);
                 return {
                     ...state,
-                    listEmployees: state.listEmployees.map(employee => employee._id === action.payload._id ? action.payload : employee),
+                    listEmployees: state.listEmployees.map(x => x.employees[0]._id === action.payload.employees[0]._id ? action.payload : x),
                         isLoading: false
                 };
             case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
                 return {
                     ...state,
-                    listEmployees: state.listEmployees.filter(list => (list.employees[0]._id !== action.payload._id)),
+                    listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
                         isLoading: false,
                 };
 

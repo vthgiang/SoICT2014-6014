@@ -7,7 +7,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         loading: true,
         isLoading: true
       };
-    case createKpiSetConstants.DELETE_EMPLOYEE_KPI_SUCCESS:
+    case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -16,6 +16,24 @@ export function createEmployeeKpiSet(state = {}, action) {
       };
     case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE:
       return { 
+        error: action.payload,
+        isLoading: false
+      };
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST:
+      return {
+        employeeKpiSetByMonth: null,
+        loading: true,
+        isLoading: true
+      };
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        employeeKpiSetByMonth: action.payload,
+        isLoading: false
+      };
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_FAILURE:
+      return {
         error: action.payload,
         isLoading: false
       };
