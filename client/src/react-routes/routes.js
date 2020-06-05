@@ -34,7 +34,7 @@ import ManageComponent from '../modules/super-admin/component/components';
 
 import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
-import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
+import EmployeeDashBoard from '../modules/human-resource/employee-dashboard/components';
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
@@ -371,7 +371,7 @@ class Routes extends Component {
                         path={ '/hr-dashboard-employee' }
                         pageName={'dashboard_employee' }
                         layout={ Layout }
-                        component={ DashBoardEmployees }
+                        component={ EmployeeDashBoard }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.discipline.isLoading }

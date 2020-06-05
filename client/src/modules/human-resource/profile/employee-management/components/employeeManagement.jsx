@@ -14,7 +14,7 @@ class EmployeeManagement extends Component {
         let keySearch = 'organizationalUnits';
         let organizationalUnits = null;
         for (let n in search) {
-            let index = search[n].lastIndexOf('organizationalUnits');
+            let index = search[n].lastIndexOf(keySearch);
             if (index !== -1) {
                 organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
                 if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
@@ -179,6 +179,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                value={this.state.organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>

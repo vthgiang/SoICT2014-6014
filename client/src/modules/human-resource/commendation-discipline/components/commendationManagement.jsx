@@ -9,11 +9,24 @@ import { DisciplineActions } from '../redux/actions';
 class PraiseManager extends Component {
     constructor(props) {
         super(props);
+        let search = window.location.search.split('?')
+        let keySearch = 'organizationalUnits';
+        let organizationalUnits = null;
+        for (let n in search) {
+            let index = search[n].lastIndexOf(keySearch);
+            if (index !== -1) {
+                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
+                    organizationalUnits = organizationalUnits.split(',')
+                } else organizationalUnits = null
+                break;
+            }
+        }
         this.state = {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnits: null,
+            organizationalUnits: organizationalUnits,
             page: 0,
             limit: 5,
         }
@@ -102,11 +115,11 @@ class PraiseManager extends Component {
     }
 
     render() {
+        const { limit, page, organizationalUnits } = this.state
         const { list } = this.props.department;
-        const { translate, discipline } = this.props;
+        const { translate, discipline, pageActive } = this.props;
         var listCommendations = "", listPosition = [];
-        if (this.state.organizationalUnits !== null) {
-            let organizationalUnits = this.state.organizationalUnits;
+        if (organizationalUnits !== null) {
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -120,15 +133,15 @@ class PraiseManager extends Component {
                 })
             })
         }
-        if (this.props.discipline.isLoading === false) {
-            listCommendations = this.props.discipline.listCommendations;
+        if (discipline.isLoading === false) {
+            listCommendations = discipline.listCommendations;
         }
-        var pageTotal = (this.props.discipline.totalListCommendation % this.state.limit === 0) ?
-            parseInt(this.props.discipline.totalListCommendation / this.state.limit) :
-            parseInt((this.props.discipline.totalListCommendation / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = (discipline.totalListCommendation % limit === 0) ?
+            parseInt(discipline.totalListCommendation / limit) :
+            parseInt((discipline.totalListCommendation / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
         return (
-            <div id="khenthuong" className="tab-pane active">
+            <div id="khenthuong" className={`tab-pane ${pageActive === 'commendation' ? 'active' : null}`}>
                 <div className="box-body qlcv">
                     <PraiseCreateForm />
                     <div className="form-inline">
@@ -136,6 +149,7 @@ class PraiseManager extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnitPraise`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                value={organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -223,7 +237,7 @@ class PraiseManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listCommendations === 'undefined' || listCommendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     {
                         this.state.currentRow !== undefined &&
                         <PraiseEditForm
