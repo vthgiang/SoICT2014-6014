@@ -575,10 +575,10 @@ class ActionTab extends Component {
     filesRemoveAll = () => {
     this.refs.filesAddAction.removeFiles()
     }
-    requestDownloadFile = (e,path) => {
+    requestDownloadFile = (e,path,fileName) => {
         
         e.preventDefault();
-        this.props.downloadFile(path);
+        this.props.downloadFile(path,fileName);
 
         
     }
@@ -686,7 +686,7 @@ class ActionTab extends Component {
                                                 <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-file" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                        return <a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url)}> {elem.name} </a>
+                                                        return <a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a>
                                                     })}</li>
                                                 }
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
@@ -804,7 +804,7 @@ class ActionTab extends Component {
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url)}> {elem.name} </a></div>
+                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
@@ -981,7 +981,7 @@ class ActionTab extends Component {
                                                 <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url)}> {elem.name} </a></div>
+                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                     })}</li>
                                                 }
                                                 </React.Fragment>
@@ -1045,7 +1045,7 @@ class ActionTab extends Component {
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url)}> {elem.name} </a></div>
+                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
