@@ -567,11 +567,11 @@ const sampleCompanyData = async () => {
         },
 
 
-        { //49
+        { //47
             url: '/task',
             description: 'Chi tiết công việc',
             company: vnist._id
-        },{ // 50 tài liệu văn bản
+        },{ // 48 tài liệu văn bản
             url: '/documents',
             description: 'Tài liệu',
             company: vnist._id
@@ -902,17 +902,17 @@ const sampleCompanyData = async () => {
 
         
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[2]._id // Vice Dean
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
@@ -1075,15 +1075,15 @@ const sampleCompanyData = async () => {
         },
 
         {
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[1]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[2]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
