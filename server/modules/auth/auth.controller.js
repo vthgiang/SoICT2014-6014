@@ -196,5 +196,25 @@ exports.getProfile = async (req, res) => {
         });
     }
 };
+ /**
+ * Người dùng download 1 file từ server
+ * @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
+ * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
+ * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
+ */
+exports.downloadFile = async (req, res) => {
+    console.log("hihihihihiihhi")
+    try {
+        const {path} = req.query;
+       // await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        res.download(path, "file");
+    } catch (error) {
 
- 
+        //await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_file_faile'],
+            content: error
+        });
+    }
+}

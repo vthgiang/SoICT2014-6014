@@ -534,35 +534,34 @@ exports.uploadFile = async(req,res) => {
 /**
  * Download file
  */
-exports.downloadFile = async (req, res) => {
-    console.log(req.query)
-    try {
-        if(req.query.type === "actions"){
-            console.log("hihihihi")
-            const file = await PerformTaskService.downloadFilePOfAction(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "commentofactions"){
-            const file = await PerformTaskService.downloadFileOfActionComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "taskcomments"){
-            const file = await PerformTaskService.downloadFilePOfTaskComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "commentoftaskcomments"){
-            const file = await PerformTaskService.downloadFileCommentOfTaskComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }     
-        await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-        res.download(file.url, file.name);
-    } catch (error) {
-        await LogError(req.user.email, 'DOWNLOAD FILE', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
-            content: error
-        });
-    }
-};
+// exports.downloadFile = async (req, res) => {
+//     console.log("performtask")
+//     try {
+//         if(req.query.type === "actions"){
+//             const file = await PerformTaskService.downloadFilePOfAction(req.params);
+//             await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//             res.download(file.url, file.name);
+//         }else if(req.query.type === "commentofactions"){
+//             const file = await PerformTaskService.downloadFileOfActionComment(req.params);
+//             await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//             res.download(file.url, file.name);
+//         }else if(req.query.type === "taskcomments"){
+//             const file = await PerformTaskService.downloadFilePOfTaskComment(req.params);
+//             await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//             res.download(file.url, file.name);
+//         }else if(req.query.type === "commentoftaskcomments"){
+//             const file = await PerformTaskService.downloadFileCommentOfTaskComment(req.params);
+//             await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//             res.download(file.url, file.name);
+//         }     
+//         await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//         res.download(file.url, file.name);
+//     } catch (error) {
+//         await LogError(req.user.email, 'DOWNLOAD FILE', req.user.company);
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['download_document_file_faile'],
+//             content: error
+//         });
+//     }
+// };

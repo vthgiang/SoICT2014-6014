@@ -46,9 +46,9 @@ exports.createUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
+    console.log("ádasdsadasdasdas")
     try {
         var user = await UserService.getUser(req.params.id);
-
         LogInfo(req.user.email, 'SHOW_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -179,14 +179,15 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
  * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
  * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
  */
-exports.dowloadFile = async (req, res) => {
+exports.downloadFile = async (req, res) => {
+    console.log("hihihihihiihhi")
     try {
         const {path} = req.query;
-        await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+       // await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
         res.download(path, "file");
     } catch (error) {
 
-        await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        //await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_file_faile'],
