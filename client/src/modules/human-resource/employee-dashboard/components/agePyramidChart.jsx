@@ -100,7 +100,6 @@ class AgePyramidChart extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.data1 !== this.state.data1 || nextProps.data2 !== this.state.data2) {
             this.renderChart(this.state);
-
         }
         return false;
     }
@@ -128,5 +127,10 @@ class AgePyramidChart extends Component {
     }
 }
 
-const agePyramidChart = connect(null, null)(withTranslate(AgePyramidChart));
+function mapState(state) {
+    const { employeesManager} = state;
+    return { employeesManager};
+}
+
+const agePyramidChart = connect(mapState, null)(withTranslate(AgePyramidChart));
 export { agePyramidChart as AgePyramidChart };

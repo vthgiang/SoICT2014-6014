@@ -359,7 +359,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.employeesManager.isLoading }
                         key={ 'dashBoard_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

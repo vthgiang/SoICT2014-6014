@@ -31,9 +31,8 @@ class TaskInformationForm extends Component {
         const { value } = this.props;
 
         var task = this.props.task
+        console.log('vlueeee', value);
 
-        // var x = "p1";
-        // console.log('state=====================================', this.state[`${x}`], this.state.p1);
         return (
             <React.Fragment>
                 <div>
@@ -49,7 +48,7 @@ class TaskInformationForm extends Component {
                                     name="progress"
                                     placeholder={85}
                                     onChange={this.props.handleChangeProgress}
-                                    value={value['progress']}
+                                    value={value.progress}
                                 />
                                 <ErrorLabel content={value.errorOnProgress}/>
                                 
@@ -70,7 +69,7 @@ class TaskInformationForm extends Component {
                                                 name={info.code}
                                                 placeholder={85}
                                                 onChange={this.props.handleChangeTextInfo}
-                                                value={value[`${info.code}`] && value[`${info.code}`].value}
+                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                             />
                                             <ErrorLabel content={value.errorOnTextInfo}/>
                                         </div>
@@ -86,7 +85,7 @@ class TaskInformationForm extends Component {
                                                 name={info.code}
                                                 placeholder={85}
                                                 onChange={this.props.handleChangeNumberInfo}
-                                                value={value[`${info.code}`] && value[`${info.code}`].value}
+                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                             />
                                             <ErrorLabel content={value.errorOnNumberInfo}/>
                                         </div>
@@ -97,7 +96,7 @@ class TaskInformationForm extends Component {
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <DatePicker
                                                 id={`info_date_${this.props.perform}_${index}_${info.code}`}
-                                                value={value[`${info.code}`] && value[`${info.code}`].value}
+                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                                 onChange={(value)=>this.props.handleInfoDateChange(value, info.code)}
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
@@ -113,7 +112,7 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={true}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={value[`${info.code}`] && value[`${info.code}`].value === "true"}
+                                                    checked={value.info[`${info.code}`] && value.info[`${info.code}`].value === "true"}
                                                 /> Đúng
                                             </label>
                                             <label class="radio-inline">
@@ -122,7 +121,7 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={false}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={value[`${info.code}`] && value[`${info.code}`].value === "false"}
+                                                    checked={value.info[`${info.code}`] && value.info[`${info.code}`].value === "false"}
                                                 /> Sai
                                             </label>
                                         </div>
@@ -138,12 +137,10 @@ class TaskInformationForm extends Component {
                                                 items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
                                                 onChange={(value)=>this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
-                                                value={value[`${info.code}`] && value[`${info.code}`].value}
+                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                             />
-                                            
                                         </div>
                                     }}
-                                    
                                 })
                             }
                         </fieldset>
