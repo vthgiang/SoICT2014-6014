@@ -13,7 +13,7 @@ class AssetTypeManager extends Component {
             typeNumber: "",
             typeName: "",
             page: 0,
-            limit: 5,
+            limit: 100,
         }
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }

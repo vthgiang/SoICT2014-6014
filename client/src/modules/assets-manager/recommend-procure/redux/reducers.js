@@ -3,9 +3,9 @@ const initState = {
     isLoading: false,
     listRecommendProcures: [],
     totalList: "",
-    error:"",
+    error: "",
 }
-export function recommendProcure(state =initState, action) {
+export function recommendProcure(state = initState, action) {
     switch (action.type) {
         case RecommendProcureConstants.GET_RECOMMEND_PROCURE_REQUEST:
         case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_REQUEST:
@@ -20,8 +20,8 @@ export function recommendProcure(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcures: action.payload,
-                //totalList: action.payload.totalList,
+                listRecommendProcures: action.payload.listRecommendProcures,
+                totalList: action.payload.totalList,
             };
         case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_SUCCESS:
             return {
@@ -40,7 +40,7 @@ export function recommendProcure(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcures: state.listRecommendProcures.map(recommendProcure =>recommendProcure._id === action.payload._id ?action.payload : recommendProcure),
+                listRecommendProcures: state.listRecommendProcures.map(recommendProcure => recommendProcure._id === action.payload._id ? action.payload : recommendProcure),
             };
         case RecommendProcureConstants.GET_RECOMMEND_PROCURE_FAILURE:
         case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_FAILURE:

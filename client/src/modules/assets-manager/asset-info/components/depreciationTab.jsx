@@ -13,7 +13,8 @@ class DepreciationTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                assetCost: nextProps.asset.assetCost,
+                cost: nextProps.asset.cost,
+                residualValue: nextProps.asset.residualValue,
                 startDepreciation: nextProps.asset.startDepreciation,
                 timeDepreciation: nextProps.asset.timeDepreciation,
                 endDepreciation: nextProps.asset.endDepreciation,
@@ -28,16 +29,23 @@ class DepreciationTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { assetCost, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
+        const { cost, residualValue, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
                 monthlyDepreciationValue } = this.state;
-        return (
+                console.log('this.state', this.state);
+                var formater = new Intl.NumberFormat();
+                return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
                         <div className="form-group">
                             <strong>Nguyên giá:&emsp; </strong>
-                            {assetCost} VNĐ
+                            {formater.format(parseInt(cost))} VNĐ
+                            
+                        </div>
+                        <div className="form-group">
+                            <strong>Giá trị thu hồi ước tính:&emsp; </strong>
+                            {formater.format(parseInt(residualValue))} VNĐ
                             
                         </div>
                         <div className={`form-group`}>

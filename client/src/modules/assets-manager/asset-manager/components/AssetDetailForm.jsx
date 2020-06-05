@@ -15,11 +15,11 @@ class AssetDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                assets: nextProps.assets,
+                asset: nextProps.asset,
                 repairUpgrade: nextProps.repairUpgrade,
                 distributeTransfer: nextProps.distributeTransfer,
-                depreciation: nextProps.depreciation,
-                file: nextProps.file
+                depreciation: nextProps.asset.depreciation,
+                file: nextProps.asset.file
             }
         } else {
             return null;
@@ -27,7 +27,8 @@ class AssetDetailForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const {_id, assets, repairUpgrade, distributeTransfer } = this.state;
+        const { _id, asset, repairUpgrade, distributeTransfer } = this.state;
+        console.log('this.state', this.state);
         return (
             <React.Fragment>
                 <DialogModal
@@ -35,44 +36,42 @@ class AssetDetailForm extends Component {
                     formID="form-view-asset"
                     title="Thông tin tài sản"
                     hasSaveButton={false}
-                // disableSubmit={false}
                 >
                     <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
-                        {(typeof assets !== 'undefined' && assets.length !== 0) &&
-                            assets.map((x, index) => (
-                                <div className="nav-tabs-custom" key={index}>
-                                    <ul className="nav nav-tabs">
-                                        <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>thông tin chung</a></li>
-                                        <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_repair${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
-                                        <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_distribute${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
-                                        <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
-                                        <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
-                                    </ul>
-                                    <div className="tab-content">
-                                        <GeneralTab
-                                            id={`view_general${_id}`}
-                                            asset={x}
-                                        />
-                                        <RepairTab
-                                            id={`view_repair${_id}`}
-                                            repairUpgrade={repairUpgrade}
-                                        />
-                                        <DistributeTab
-                                            id={`view_distribute${_id}`}
-                                            distributeTransfer={distributeTransfer}
-                                        />
-                                        <DepreciationTab
-                                            id={`view_depreciation${_id}`}
-                                            asset={x}
-                                        />
-                                        <AttachmentTab
-                                            id={`view_attachments${_id}`}
-                                            asset={x}
-                                            file={x.file}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+
+                        <div className="nav-tabs-custom" >
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
+                                <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_repair${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
+                                <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_distribute${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
+                                <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
+                                <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                <GeneralTab
+                                    id={`view_general${_id}`}
+                                    asset={asset}
+                                />
+                                <RepairTab
+                                    id={`view_repair${_id}`}
+                                    repairUpgrade={repairUpgrade}
+                                />
+                                <DistributeTab
+                                    id={`view_distribute${_id}`}
+                                    distributeTransfer={distributeTransfer}
+                                />
+                                <DepreciationTab
+                                    id={`view_depreciation${_id}`}
+                                    asset={asset}
+                                />
+                                <AttachmentTab
+                                    id={`view_attachments${_id}`}
+                                    asset={asset}
+                                    file={asset.file}
+                                />
+                            </div>
+                        </div>
+
                     </form>
                 </DialogModal>
             </React.Fragment>
