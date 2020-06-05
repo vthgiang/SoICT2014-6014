@@ -369,9 +369,13 @@ export function performtasks(state = {}, action) {
                 abc : true
             }
         case performTaskConstants.UPLOAD_FILE_SUCCESS:
+            var files = {...state.task.info,files: action.payload.data.content}
             return {
                 ...state,
-                files : action.payload.data.content
+                task : {
+                    ...state.task,
+                    info : files
+                }
             }
         case performTaskConstants.UPLOAD_FILE_FAILURE:                                                                                                  
         default:

@@ -21,23 +21,23 @@ exports.getTask = async (id) => {
         .populate("evaluations.kpis.kpis")
 
     var task = await Task.findById(id).populate([
-        {path: "parent", select: "name"},
-        {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
-        {path: "evaluations.results.employee", select: "name email _id"},
-        {path: "evaluations.kpis.employee", select: "name email _id"},
-        {path: "evaluations.kpis.kpis"},
+        { path: "parent", select: "name"},
+        { path: "organizationalUnit", model: OrganizationalUnit},
+        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "evaluations.results.employee", select: "name email _id"},
+        { path: "evaluations.kpis.employee", select: "name email _id"},
+        { path: "evaluations.kpis.kpis"},
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '},
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
+        { path: "files.creator", model: User, select: 'name email avatar'},
     ])
     
     if(task.taskTemplate === null){
         return {
             "info": task,
-            // "actions": task.taskActions,
             // "informations": task.taskInformations
         };
     } else {
@@ -46,7 +46,6 @@ exports.getTask = async (id) => {
         .populate({path: "taskActions.creator", model: User, select: "name email"});
         return {
             "info": task,
-            "actions": task2.taskActions,
             "informations": task2.taskInformations
         };
     }
