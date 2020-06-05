@@ -212,8 +212,6 @@ class PraiseCreateForm extends Component {
                                     items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleOrganizationalUnitChange}
                                 />
-
-                                {/* <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleOrganizationalUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} /> */}
                                 <ErrorLabel content={errorOnOrganizationalUnit} />
                             </div>
                         </div>

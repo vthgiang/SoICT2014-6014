@@ -43,6 +43,8 @@ class GeneralTab extends Component {
                 nationality: nextProps.employee.nationality,
                 ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
+                status: nextProps.employee.status,
+                roles: nextProps.roles
             }
         } else {
             return null;
@@ -50,7 +52,7 @@ class GeneralTab extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace,
+        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace, status, roles,
             emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion } = this.state;
         return (
             <div id={id} className="tab-pane active">
@@ -58,7 +60,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={LOCAL_SERVER_API + avatar} target="_blank">
-                            <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                                <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
                             </a>
                         </div>
                     </div>
@@ -92,7 +94,16 @@ class GeneralTab extends Component {
                                 <strong>{translate('manage_employee.place_birth')}&emsp; </strong>
                                 {birthplace}
                             </div>
-
+                        </div>
+                        <div className="row">
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong>Trạng thái &emsp; </strong>
+                                {status}
+                            </div>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong>Chức vụ&emsp; </strong>
+                                {roles.length !== 0 && roles.map(x => x.roleId.name).join(', ')}
+                            </div>
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
@@ -137,6 +148,7 @@ class GeneralTab extends Component {
                                 {nationality}
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div >

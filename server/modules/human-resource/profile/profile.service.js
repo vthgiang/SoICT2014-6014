@@ -262,6 +262,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
         employeeTimesheetId: data.employeeTimesheetId,
         company: company,
         gender: data.gender,
+        status: data.status,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -437,6 +438,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeNumber= employee.employeeNumber;
     oldEmployee.employeeTimesheetId= employee.employeeTimesheetId;
     oldEmployee.gender= employee.gender;
+    oldEmployee.status= employee.status;
     oldEmployee.birthdate= employee.birthdate;
     oldEmployee.birthplace= employee.birthplace;
     oldEmployee.identityCardNumber= employee.identityCardNumber;

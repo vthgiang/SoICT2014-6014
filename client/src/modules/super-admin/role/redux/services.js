@@ -41,11 +41,12 @@ function create(role) {
 }
 
 function edit(role) {
+    let showAlert = role.showAlert === undefined ? true : false;
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/${role.id}`,
         method: 'PATCH',
         data: role,
-    }, true, true, 'super_admin.role');
+    }, showAlert, showAlert, 'super_admin.role');
 }
 
 function destroy(roleId) {
