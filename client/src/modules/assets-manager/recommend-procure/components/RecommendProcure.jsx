@@ -6,6 +6,7 @@ import { RecommendProcureDetailForm } from './RecommendProcureDetailForm';
 import { RecommendProcureEditForm } from './RecommendProcureEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { RecommendProcureActions } from '../redux/actions';
+import { UserActions } from "../../../super-admin/user/redux/actions";
 
 class RecommendProcure extends Component {
     constructor(props) {
@@ -13,17 +14,18 @@ class RecommendProcure extends Component {
         this.state = {
             recommendNumber: "",
             month: "",
-            status: "Chờ phê duyệt",
+            status: "",
             page: 0,
             limit: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
+        this.props.getAllUsers();
     }
 
-    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
     handleView = async (value) => {
         await this.setState(state => {
             return {
@@ -32,7 +34,7 @@ class RecommendProcure extends Component {
         });
         window.$('#modal-view-recommendprocure').modal('show');
     }
-    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
+    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị mua sắm
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
@@ -87,12 +89,14 @@ class RecommendProcure extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = async () => {
-        if (this.state.month === "") {
-            await this.setState({
-                month: this.formatDate(Date.now())
-            })
-        }
+    handleSubmitSearch = async () => {
+        // if (this.state.month === "") {
+        await this.setState({
+            ...this.state,
+
+            // month: this.formatDate(Date.now())
+        })
+        // }
         this.props.searchRecommendProcures(this.state);
     }
 
@@ -115,7 +119,7 @@ class RecommendProcure extends Component {
     }
 
     render() {
-        const { translate, recommendProcure } = this.props;
+        const { translate, recommendProcure, auth } = this.props;
         var listRecommendProcures = "";
 
         if (this.props.recommendProcure.isLoading === false) {
@@ -164,7 +168,7 @@ class RecommendProcure extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
                     <table id="recommendprocure-table" className="table table-striped table-bordered table-hover">
@@ -198,13 +202,14 @@ class RecommendProcure extends Component {
                         </thead>
                         <tbody>
                             {(typeof listRecommendProcures !== 'undefined' && listRecommendProcures.length !== 0) &&
-                                listRecommendProcures.map((x, index) => (
+                                listRecommendProcures.filter(item => item.proponent._id === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
-                                        <td>{x.proponent}</td>
+                                        <td>{x.proponent.name}</td>
                                         <td>{x.equipment}</td>
-                                        <td>{x.approver}</td>
+                                        <td>{x.approver && x.approver.name}</td>
+                                        {/* <td>{x.approver}</td> */}
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -229,21 +234,22 @@ class RecommendProcure extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                
+
                 {
                     this.state.currentRowView !== undefined &&
                     <RecommendProcureDetailForm
                         _id={this.state.currentRowView._id}
                         recommendNumber={this.state.currentRowView.recommendNumber}
                         dateCreate={this.state.currentRowView.dateCreate}
-                        proponent={this.state.currentRowView.proponent}
+                        proponent={this.state.currentRowView.proponent.name}
+                        positionProponent={this.state.currentRowView.positionProponent}
                         equipment={this.state.currentRowView.equipment}
                         supplier={this.state.currentRowView.supplier}
-                        total={this.state.currentRowView.total} 
-                        unit={this.state.currentRowView.unit} 
-                        estimatePrice={this.state.currentRowView.estimatePrice} 
-                        approver={this.state.currentRowView.approver} 
-                        note={this.state.currentRowView.note} 
+                        total={this.state.currentRowView.total}
+                        unit={this.state.currentRowView.unit}
+                        estimatePrice={this.state.currentRowView.estimatePrice}
+                        approver={this.state.currentRowView.approver}
+                        note={this.state.currentRowView.note}
                         status={this.state.currentRowView.status}
                     />
                 }
@@ -256,12 +262,11 @@ class RecommendProcure extends Component {
                         proponent={this.state.currentRow.proponent}
                         equipment={this.state.currentRow.equipment}
                         supplier={this.state.currentRow.supplier}
-                        total={this.state.currentRow.total} 
-                        unit={this.state.currentRow.unit} 
-                        estimatePrice={this.state.currentRow.estimatePrice} 
-                        approver={this.state.currentRow.approver} 
-                        note={this.state.currentRow.note} 
+                        total={this.state.currentRow.total}
+                        unit={this.state.currentRow.unit}
+                        estimatePrice={this.state.currentRow.estimatePrice}
                         status={this.state.currentRow.status}
+                        approver={this.state.currentRow.approver}
                     />
                 }
             </div >
@@ -270,13 +275,14 @@ class RecommendProcure extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const { recommendProcure, auth } = state;
+    return { recommendProcure, auth };
 };
 
 const actionCreators = {
     searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
     deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
+    getAllUsers: UserActions.get
 };
 
 const connectedListRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcure));

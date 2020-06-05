@@ -240,3 +240,10 @@
 #actionComment > div.post.clearfix > div > div > ul > li {
     margin-left: 40px;
 }
+#documentTask > div.box-body.table-responsive.no-padding > table > tr > th:nth-child(1){
+    text-align: center;
+    width: 65px;
+}
+#documentTask > div.box-body.table-responsive> table > tr > th:nth-child(2) {
+    width: 280px;
+}

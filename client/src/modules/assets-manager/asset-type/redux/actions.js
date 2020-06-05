@@ -1,7 +1,5 @@
 import {AssetTypeConstants} from "./constants";
 import {AssetTypeService} from "./services";
-// import axios from "axios";
-// import { LOCAL_SERVER_API } from '../../../../env';
 export const AssetTypeActions = {
     searchAssetTypes,
     createAssetType,
@@ -40,6 +38,10 @@ function createAssetType(data) {
         });
         AssetTypeService.createAssetType(data)
             .then(res => {
+                dispatch(searchAssetTypes({ typeNumber: "",
+                    typeName: "",
+                    page: 0,
+                    limit: 100,}))
                 dispatch({
                     type: AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS,
                     payload: res.data.content
@@ -84,6 +86,10 @@ function updateAssetType(id, infoAssetType) {
         });
         AssetTypeService.updateAssetType(id, infoAssetType)
             .then(res => {
+                dispatch(searchAssetTypes({ typeNumber: "",
+                    typeName: "",
+                    page: 0,
+                    limit: 100,}));
                 dispatch({
                     type: AssetTypeConstants.UPDATE_ASSET_TYPE_SUCCESS,
                     payload: res.data.content

@@ -24,6 +24,7 @@ class EmployeeCreateForm extends Component {
                 maritalStatus: "single",
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
+                status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),

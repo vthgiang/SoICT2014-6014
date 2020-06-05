@@ -10,11 +10,31 @@ import { AnnualLeaveActions } from '../redux/actions';
 class AnnualLeaveManagement extends Component {
     constructor(props) {
         super(props);
+        let search = window.location.search.split('?')
+        let keySearch = 'organizationalUnits';
+        let keySearch2 = 'month';
+        let organizationalUnits = null, month = null;
+        for (let n in search) {
+            let index = search[n].lastIndexOf(keySearch);
+            if (index !== -1) {
+                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
+                    organizationalUnits = organizationalUnits.split(',')
+                } else organizationalUnits = null
+            }
+            let index2 = search[n].lastIndexOf(keySearch2);
+            if (index2 !== -1) {
+                month = search[n].slice(keySearch2.length + 1, search[n].length);
+                if (month === 'null' && month.trim() === '') {
+                    month = null
+                }
+            }
+        }
         this.state = {
-            organizationalUnits: null,
+            organizationalUnits: organizationalUnits,
             position: null,
             employeeNumber: "",
-            month: null,
+            month: month,
             status: null,
             page: 0,
             limit: 5,
@@ -140,11 +160,11 @@ class AnnualLeaveManagement extends Component {
     }
 
     render() {
+        const { month, limit, page, organizationalUnits } = this.state;
         const { list } = this.props.department;
         const { translate, annualLeave } = this.props;
         var listAnnualLeaves = "", listPosition = [];
-        if (this.state.organizationalUnits !== null) {
-            let organizationalUnits = this.state.organizationalUnits;
+        if (organizationalUnits !== null) {
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -158,13 +178,13 @@ class AnnualLeaveManagement extends Component {
                 })
             })
         }
-        if (this.props.annualLeave.isLoading === false) {
-            listAnnualLeaves = this.props.annualLeave.listAnnualLeaves;
+        if (annualLeave.isLoading === false) {
+            listAnnualLeaves = annualLeave.listAnnualLeaves;
         }
-        var pageTotal = ((this.props.annualLeave.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.annualLeave.totalList / this.state.limit) :
-            parseInt((this.props.annualLeave.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = ((annualLeave.totalList % limit) === 0) ?
+            parseInt(annualLeave.totalList / limit) :
+            parseInt((annualLeave.totalList / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
         return (
             <div className="box" >
                 <div className="box-body qlcv">
@@ -174,6 +194,7 @@ class AnnualLeaveManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
+                                value={organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -195,7 +216,7 @@ class AnnualLeaveManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now(), true)}
+                                value={month === null ? this.formatDate(Date.now(), true) : month}
                                 onChange={this.handleMonthChange}
                             />
 
@@ -290,7 +311,7 @@ class AnnualLeaveManagement extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listAnnualLeaves === 'undefined' || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 {
                     this.state.currentRow !== undefined &&

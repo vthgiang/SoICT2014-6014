@@ -19,7 +19,7 @@ class ModalAddDistribute extends Component {
             manager: "",
             handoverMan: "",
             receiver: "",
-            assetNumber: "",
+            code: "",
             reason: "",
             nextLocation: "",
             userManagerIndex:"",
