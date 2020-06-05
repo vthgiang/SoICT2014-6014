@@ -567,11 +567,11 @@ const sampleCompanyData = async () => {
         },
 
 
-        { //49
+        { //47
             url: '/task',
             description: 'Chi tiết công việc',
             company: vnist._id
-        },{ // 50 tài liệu văn bản
+        },{ // 48 tài liệu văn bản
             url: '/documents',
             description: 'Tài liệu',
             company: vnist._id
@@ -902,17 +902,17 @@ const sampleCompanyData = async () => {
 
         
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[2]._id // Vice Dean
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
@@ -1075,15 +1075,15 @@ const sampleCompanyData = async () => {
         },
 
         {
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[1]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[2]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
@@ -1437,15 +1437,16 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "123",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số",
-    }, {
+    }, 
+    {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1234",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số 500 triệu",
@@ -1462,7 +1463,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1456",
-        organizationalUnit: "Phòng nhân sự",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",
@@ -1471,7 +1472,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1457",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",
