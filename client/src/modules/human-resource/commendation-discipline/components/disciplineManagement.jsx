@@ -5,14 +5,28 @@ import { DisciplineCreateForm, DisciplineEditForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
+
 class DisciplineManager extends Component {
     constructor(props) {
         super(props);
+        let search = window.location.search.split('?')
+        let keySearch = 'organizationalUnits';
+        let organizationalUnits = null;
+        for (let n in search) {
+            let index = search[n].lastIndexOf(keySearch);
+            if (index !== -1) {
+                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
+                    organizationalUnits = organizationalUnits.split(',')
+                } else organizationalUnits = null
+                break;
+            }
+        }
         this.state = {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: organizationalUnits,
             page: 0,
             limit: 5,
         }
@@ -57,7 +71,7 @@ class DisciplineManager extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -102,12 +116,12 @@ class DisciplineManager extends Component {
         this.props.getListDiscipline(this.state);
     }
     render() {
+        const { limit, page, organizationalUnits } = this.state;
         const { list } = this.props.department;
-        const { translate, discipline } = this.props;
+        const { translate, discipline, pageActive } = this.props;
         var listDisciplines = "", listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (organizationalUnits !== null) {
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -120,15 +134,15 @@ class DisciplineManager extends Component {
                 })
             })
         }
-        if (this.props.discipline.isLoading === false) {
-            listDisciplines = this.props.discipline.listDisciplines;
+        if (discipline.isLoading === false) {
+            listDisciplines = discipline.listDisciplines;
         }
-        var pageTotal = (this.props.discipline.totalListDiscipline % this.state.limit === 0) ?
-            parseInt(this.props.discipline.totalListDiscipline / this.state.limit) :
-            parseInt((this.props.discipline.totalListDiscipline / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = (discipline.totalListDiscipline % limit === 0) ?
+            parseInt(discipline.totalListDiscipline / limit) :
+            parseInt((discipline.totalListDiscipline / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
         return (
-            <div id="kyluat" className="tab-pane">
+            <div id="kyluat" className={`tab-pane ${pageActive === 'discipline' ? 'active' : null}`}>
                 <div className="box-body qlcv">
                     <DisciplineCreateForm />
                     <div className="form-inline">
@@ -136,6 +150,7 @@ class DisciplineManager extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnitDiscipline`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                value={organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -226,7 +241,7 @@ class DisciplineManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listDisciplines === 'undefined' || listDisciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     {
                         this.state.currentRow !== undefined &&
                         <DisciplineEditForm

@@ -103,7 +103,7 @@ class AssetCreatePage extends Component {
         })
         const { assetNew } = this.state;
         // kiểm tra việc nhập các trường bắt buộc
-        if (!assetNew.assetNumber) {
+        if (!assetNew.code) {
             this.notifyerror("Bạn chưa nhập mã tài sản");
         } else if (!assetNew.assetName) {
             this.notifyerror("Bạn chưa nhập tên tài sản");
@@ -124,22 +124,22 @@ class AssetCreatePage extends Component {
             if (this.state.avatar !== "") {
                 let formData = new FormData();
                 formData.append('fileUpload', this.state.avatar);
-                this.props.uploadAvatar(this.state.assetNew.assetNumber, formData);
+                this.props.uploadAvatar(this.state.assetNew.code, formData);
             }
 
             // lưu lịch sử sửa chữa - thay thế - nâng cấp
             if (this.state.repairUpgradeNew.length !== 0) {
-                let assetNumber = this.state.assetNew.assetNumber;
+                let code = this.state.assetNew.code;
                 this.state.repairUpgradeNew.map(x => {
-                    this.props.createNewRepairUpgrade({ ...x, assetNumber })
+                    this.props.createNewRepairUpgrade({ ...x, code })
                 })
             }
 
             // lưu thông tin cấp phát - điều chuyển - thay thế
             if (this.state.distributeTransferNew.length !== 0) {
-                let assetNumber = this.state.assetNew.assetNumber;
+                let code = this.state.assetNew.code;
                 this.state.distributeTransferNew.map(x => {
-                    this.props.createNewDistributeTransfer({ ...x, assetNumber })
+                    this.props.createNewDistributeTransfer({ ...x, code })
                 })
             }
 
@@ -154,7 +154,7 @@ class AssetCreatePage extends Component {
                     formData.append('discFile', x.discFile);
                     formData.append('file', x.file);
                     formData.append('number', x.number);
-                    this.props.updateFile(this.state.assetNew.assetNumber, formData)
+                    this.props.updateFile(this.state.assetNew.code, formData)
                 })
             }
             
@@ -234,7 +234,7 @@ function mapState(state) {
 const actionCreators = {
     // addNewAsset: AssetManagerActions.addNewAsset,
     // uploadAvatar: AssetManagerActions.uploadAvatar,
-    // checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    // checkCode: AssetManagerActions.checkCode,
     // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
     // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
     // updateFile: AssetManagerActions.updateFile,

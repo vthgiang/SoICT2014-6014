@@ -42,8 +42,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
     try {
         let data;
         if(req.query.page === undefined && req.query.limit === undefined ){
-            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnit, req.query.position, false);
-        } else{
+            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false);
+        } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 position: req.query.position,
@@ -146,7 +146,6 @@ exports.createEmployee = async (req, res) => {
                 } else {
                     var data = await EmployeeService.createEmployee(req.body, req.user.company._id, fileInfo);
                     let checkUser = await UserService.checkUserExited(req.body.emailInCompany);
-                    console.log(checkUser);
                     if(checkUser === false){
                         let userInfo = {
                             email: req.body.emailInCompany,

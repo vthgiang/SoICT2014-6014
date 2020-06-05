@@ -151,7 +151,6 @@ exports.updateCourse = async (id, data) => {
     await EmployeeCourse.deleteMany({course: id});
     if(data.listEmployees.length !==0){
         data.listEmployees = data.listEmployees.map(x=> {return {course: id, employee: x._id, result: x.result}});
-        console.log(data.listEmployees);
         await EmployeeCourse.insertMany([...data.listEmployees]);
     }
 

@@ -97,7 +97,6 @@ class SalaryManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        console.log(this.state);
         if (this.state.month === null) {
             let partMonth = this.formatDate(Date.now(), true).split('-');
             let month = [partMonth[1], partMonth[0]].join('-');
@@ -131,7 +130,6 @@ class SalaryManagement extends Component {
         this.props.searchSalary(this.state);
     }
     render() {
-        console.log(this.state);
         const { list } = this.props.department;
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();

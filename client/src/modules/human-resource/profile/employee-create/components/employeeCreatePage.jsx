@@ -23,6 +23,7 @@ class EmployeeCreatePage extends Component {
                 maritalStatus: "single",
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
+                status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),
@@ -67,9 +68,9 @@ class EmployeeCreatePage extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
-        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+        if (name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             var partValue = value.split('-');
-            value = [partValue[2],partValue[1], partValue[0]].join('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         this.setState({
             employee: {

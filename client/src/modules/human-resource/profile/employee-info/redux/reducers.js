@@ -1,11 +1,13 @@
 import { Constants } from './constants';
 const initState ={
     isLoading: false,
-    employee: "",
-    salary: "",
-    annualLeave: "",
-    commendation: "",
-    discipline: "",
+    employees: "",
+    salarys: "",
+    annualLeaves: "",
+    commendations: "",
+    disciplines: "",
+    roles: "",
+    organizationalUnits: "",
     infoEmployeeUpdate: "",
     error: ""
 }
@@ -26,7 +28,10 @@ export function employeesInfo(state = initState, action) {
                 salarys: action.payload.salarys,
                 annualLeaves: action.payload.annualLeaves,
                 commendations: action.payload.commendations,
-                disciplines: action.payload.disciplines
+                disciplines: action.payload.disciplines,
+                roles : action.payload.roles,
+                organizationalUnits : action.payload.organizationalUnits
+
             };
         case Constants.UPDATE_PERSONAL_INFOR_SUCCESS:
             return {

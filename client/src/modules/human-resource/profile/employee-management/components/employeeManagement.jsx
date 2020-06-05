@@ -14,10 +14,9 @@ class EmployeeManagement extends Component {
         let keySearch = 'organizationalUnits';
         let organizationalUnits = null;
         for (let n in search) {
-            let index = search[n].lastIndexOf('organizationalUnits');
+            let index = search[n].lastIndexOf(keySearch);
             if (index !== -1) {
                 organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
-                console.log(organizationalUnits);
                 if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
                     organizationalUnits = organizationalUnits.split(',')
                 } else organizationalUnits = null
@@ -171,7 +170,6 @@ class EmployeeManagement extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log(this.state);
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -181,6 +179,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                value={this.state.organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -300,6 +299,7 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRowView.annualLeaves}
                         commendations={this.state.currentRowView.commendations}
                         disciplines={this.state.currentRowView.disciplines}
+                        roles={this.state.currentRowView.roles}
                     />
                 }
                 {

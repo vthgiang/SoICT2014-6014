@@ -13,6 +13,21 @@ class EvaluateByConsultedEmployee extends Component {
             info: {}
         }
     }
+
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
     
     componentWillMount() {
         this.props.getTaskById(this.props.id);
@@ -48,7 +63,7 @@ class EvaluateByConsultedEmployee extends Component {
                 ...prevState,
                 id: nextProps.id,
                 // TODO: Ve sau can sua
-                // point: nextProps.point,
+
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -81,6 +96,7 @@ class EvaluateByConsultedEmployee extends Component {
             user: getStorage("userId"),
             role: "Consulted",
             employeePoint: this.state.point,
+            date: this.formatDate(Date.now()),
             automaticPoint: task.evaluations[task.evaluations.length-1].results.length !== 0 ? task.evaluations[task.evaluations.length-1].results[0].automaticPoint : 0 
         }
 

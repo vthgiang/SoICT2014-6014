@@ -7,9 +7,34 @@ import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
 class RecommendProcureManagerEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        this.save = this.save.bind(this);
+        this.state = {
+            userProponentIndex: "",
+            userApproverIndex: "",
+        };
+
     }
+
+    //Bắt sự kiện thay đổi "Người đề nghị"
+    handleProponentChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userProponentIndex: e.target.options[selectedIndex].getAttribute('data-key1')});
+        let value = e.target.value;
+        this.validateProponent(value, true);
+    }
+    validateProponent = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateProponent(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnProponent: msg,
+                    proponent: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
         this.setState({
@@ -93,6 +118,27 @@ class RecommendProcureManagerEditForm extends Component {
         })
     }
 
+    //Bắt sự kiện thay đổi "Người phê duyệt"
+    handleApproverChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userApproverIndex: e.target.options[selectedIndex].getAttribute('data-key1')});
+        let value = e.target.value;
+        this.validateApprover(value, true);
+    }
+    validateApprover = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateApprover(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnApprover: msg,
+                    approver: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
     // Bắt sự kiện thay đổi trạng thái phiếu đề nghị mua sắm thiết bị
     handleStatusChange = (e) => {
         let value = e.target.value;
@@ -153,7 +199,7 @@ class RecommendProcureManagerEditForm extends Component {
     }
 
     render() {
-        const { translate, recommendProcure } = this.props;
+        const { translate, recommendProcure, user } = this.props;
         const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier, total, unit, estimatePrice, approver, positionApprover, status, note,
                 errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
@@ -162,8 +208,6 @@ class RecommendProcureManagerEditForm extends Component {
                     size='75' modalID="modal-edit-recommendprocuremanage" isLoading={recommendProcure.isLoading}
                     formID="form-edit-recommendprocuremanage"
                     title="Thông tin phiếu đề nghị mua sắm thiết bị"
-                    msg_success={translate('manage_user.edit_success')}
-                    msg_faile={translate('sabbatical.edit_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -185,12 +229,25 @@ class RecommendProcureManagerEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="proponent" value={proponent} disabled />
+                                    <select id="drops1" className="form-control" name="proponent"
+                                            value={proponent}
+                                            placeholder="Please Select"
+                                            onChange={this.handleProponentChange}
+                                            disabled>
+                                        <option value="" disabled>Please Select</option>
+                                        {user.list.length ? user.list.map((item, index) => {
+                                            return (
+                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                            )
+                                        }) : null}
+                                    </select>
                                 </div>
                                 <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="positionProponent"  value={positionProponent} disabled/>
+                                    <label>Chức vụ người đề nghị</label>
+                                    <input disabled type="text" className="form-control" name="positionProponent"
+                                           value={this.state.userProponentIndex !== '' && user.list[this.state.userProponentIndex].roles.length ? user.list[this.state.userProponentIndex].roles[0].roleId.name : (proponent !== '' && this.state.userProponentIndex === '' && user.list.filter(user => user._id === proponent).pop().roles.length) ? user.list.filter(user => user._id === proponent).pop().roles[0].roleId.name : ''}/>
                                 </div>
+
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange} disabled></textarea>
@@ -219,12 +276,24 @@ class RecommendProcureManagerEditForm extends Component {
                                     {/* <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label> */}
                                 </div>
                                 <div className="form-group">
-                                    <label>Người phê duyệt</label>
-                                    <input type="text" className="form-control" name="approver" value={approver} disabled/>
+                                    <label>Người phê duyệt<span className="text-red">*</span></label>
+                                    <select id="drops2" className="form-control" name="approver"
+                                            value={approver}
+                                            placeholder="Please Select"
+                                            onChange={this.handleApproverChange}>
+                                        <option value="" disabled>Please Select</option>
+                                        {user.list.length ? user.list.map((item, index) => {
+                                            return (
+                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                            )
+                                        }) : null}
+                                    </select>
                                 </div>
                                 <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="positionApprover" value={positionApprover} disabled/>
+                                    <label>Chức vụ người phê duyệt</label>
+                                    <input disabled type="text" className="form-control" name="positionApprover"
+                                        //    value={this.state.userApproverIndex !== '' && user.list[this.state.userApproverIndex].roles.length ? user.list[this.state.userApproverIndex].roles[0].roleId.name : (approver !== '' && this.state.userApproverIndex === '' && user.list.filter(user => user._id === approver).pop().roles.length) ? user.list.filter(user => user._id === approver).pop().roles[0].roleId.name : ''}
+                                           />
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
@@ -249,8 +318,8 @@ class RecommendProcureManagerEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const { recommendProcure, user } = state;
+    return { recommendProcure, user };
 };
 
 const actionCreators = {

@@ -54,8 +54,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             infoRoleDean, infoRoleViceDean, infoRoleEmployee } = this.state;
         userRoleEmployee = userRoleEmployee.concat(addUserEmployee);
 
-        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean }
-        let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean }
+        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean, showAlert:false }
+        let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean, showAlert:false }
         let roleEmployee = { id: infoRoleEmployee._id, name: infoRoleEmployee.name, parents: infoRoleEmployee.parents, users: userRoleEmployee }
         // Lưu chỉnh sửa các role của đơn vị
         this.props.edit(roleDean);

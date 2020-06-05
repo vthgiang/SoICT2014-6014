@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+// import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const RecommendDistributeService = {
     searchRecommendDistributes,
     createRecommendDistribute,
@@ -10,43 +11,35 @@ export const RecommendDistributeService = {
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendDistributes(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/recommenddistribute/paginate`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, false, true, 'asset.recommend_distribute');
 }
 
 // tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendDistribute(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/recommenddistribute/create`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.recommend_distribute');
 }
 
 // Xoá thông tin phiếu đề nghị mua sắm thiết bị
 function deleteRecommendDistribute(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, true, 'asset.recommend_distribute');
 }
 
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendDistribute(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
         method: 'PUT',
-        data:data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, true, 'asset.recommend_distribute');
 }

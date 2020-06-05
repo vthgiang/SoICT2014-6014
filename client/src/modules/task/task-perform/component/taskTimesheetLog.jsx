@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
-
+import { DialogModal } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
@@ -13,7 +13,9 @@ import './taskTimesheetLog.css';
 class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {
+            showModal:''
+        }
         this.sendQuery = false;
     }
 
@@ -59,9 +61,9 @@ class TaskTimesheetLog extends Component {
         }
     }
 
-    stopTimer = () => {
-        const { performtasks } = this.props;
-
+    stopTimer = async () => {
+        const { performtasks ,auth} = this.props;
+        console.log(auth.user.id)
         const timer = {
             stoppedAt: Date.now(),
             duration: Date.now() - performtasks.currentTimer.timesheetLogs[0].startedAt,
@@ -71,7 +73,14 @@ class TaskTimesheetLog extends Component {
         };
 
         this.props.stopTimer(timer);
-    }
+        await this.setState(state=>{
+            return {
+                ...state,
+                showModal: auth.user.id
+            }
+        });
+        console.log(this.state)
+    }   
 
     render() { 
         const { translate, performtasks, auth } = this.props;
@@ -81,6 +90,7 @@ class TaskTimesheetLog extends Component {
             <React.Fragment>
                 {
                     currentTimer &&
+                    <React.Fragment>
                     <div className="timer info-box">
                         <span className="timer info-box-icon">
                             <a href="#" className="link-black text-lg">
@@ -96,7 +106,22 @@ class TaskTimesheetLog extends Component {
                             </span>
                         </div>
                     </div>
+
+                    {this.state.showModal == auth.user.id && 
+                        
+                        <DialogModal
+                            size="100"
+                            modalID={`modal description`}
+                            formID="form-perform-task"
+                            title={' abcxuz'}
+                            bodyStyle={{padding: "0px"}}
+                            hasSaveButton={false}
+                        >
+                        </DialogModal>
+                    }
+                   </React.Fragment>
                 }
+                
             </React.Fragment>
         );
     }
