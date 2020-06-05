@@ -11,9 +11,10 @@ class AgePyramidChart extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            id: 'keyId'
+        }
     }
-
 
     componentDidMount() {
         this.props.getAllEmployee({ status: 'active' });
@@ -107,6 +108,12 @@ class AgePyramidChart extends Component {
         }
         addColumn(data.data1, 2200);
         addColumn(data.data2, 2200);
+    }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.id !== this.state.id) {
+            return true;
+        }
+        return false;
     }
     render() {
         const { listAllEmployees } = this.props.employeesManager;

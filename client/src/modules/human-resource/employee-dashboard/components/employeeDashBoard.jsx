@@ -9,15 +9,22 @@ class DashBoardEmployees extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
         }
     }
+    DisRenderAgePyramidChart = () => {
+        this.setState({
+            agePyramidChartId: 'keyId',
+        })
+    }
     render() {
+        const { agePyramidChartId } = this.state;
         return (
             <div className="qlcv">
-                <EmployeeDashBoardHeader/>
+                <EmployeeDashBoardHeader DisRenderAgePyramidChart={this.DisRenderAgePyramidChart} />
                 <div className="row">
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <AgePyramidChart />
+                        <AgePyramidChart id={agePyramidChartId} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' nameChart={'Tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần đây'} />

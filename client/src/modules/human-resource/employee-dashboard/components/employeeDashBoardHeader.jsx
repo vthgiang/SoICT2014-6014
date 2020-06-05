@@ -77,6 +77,7 @@ class EmployeeDashBoardHeader extends Component {
         this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
         this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
         this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.DisRenderAgePyramidChart();
     }
     render() {
         const { employeesManager, department, discipline, annualLeave, translate } = this.props;
