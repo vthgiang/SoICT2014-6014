@@ -40,6 +40,7 @@ class ActionTab extends Component {
             pauseTimer: false,
             showChildComment: "",
             showChildTaskComment: "",
+            showEvaluations: [],
             newCommentOfAction: {
                 creator: idUser,
                 description: "",
@@ -74,6 +75,7 @@ class ActionTab extends Component {
 			minRows: 3,
             maxRows: 25,
             showfile:[],
+            descriptionFile : ""
         };
         this.hover =[];
         this.contentTaskComment= [];
@@ -84,6 +86,7 @@ class ActionTab extends Component {
         this.newContentTaskComment= [];
         this.contentCommentOfTaskComment= [];
         this.newContentCommentOfTaskComment= [];
+        this.descriptionFile = []
 
     }
     componentDidMount() {
@@ -102,14 +105,6 @@ class ActionTab extends Component {
             }
         }
     }
-    // componentDidUpdate(oldProps) {
-    //     if(oldProps.performtasks.taskactions !== this.props.performtasks.taskactions ){
-    //         this.props.getTaskById(oldProps.id);
-    //     }
-    //     if(oldProps.performtasks.taskcomments !== this.props.performtasks.taskcomments ){
-    //         this.props.getTaskById(oldProps.id);
-    //     }
-    // }
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             this.props.getTimesheetLogs(nextProps.id);
@@ -479,7 +474,6 @@ class ActionTab extends Component {
                     ...state.newCommentOfTaskComment,
                     description: this.newContentCommentOfTaskComment[index].value,
                     id : index
-                    // file:
                 },
                 editCommentOfTaskComment: ""
             }
@@ -551,17 +545,21 @@ class ActionTab extends Component {
             cmtoftaskcmtfiles
         })
       }  
-    handleUploadFile   = (task) => {
+    handleUploadFile   = async (task,index,creator) => {
         const data  = new FormData();
+
         this.state.filestask.forEach(x => {
             data.append("files",x)
         })
+        data.append("description",this.descriptionFile[index].value)
+        data.append("creator",creator)
         this.props.uploadFile(task,data);
         if(this.state.filestask){
             this.state.filestask.forEach(item=>{
                 this.refs.filesAddTask.removeFile(item)
             })
         }
+        this.descriptionFile[index].value = ""
     }
     onFilesTaskChange  = (filestask) => {
         this.setState({
@@ -577,22 +575,14 @@ class ActionTab extends Component {
     filesRemoveAll = () => {
     this.refs.filesAddAction.removeFiles()
     }
-    requestDownloadFile = (e,id,fileName,type) => {
-        console.log(type)
+    requestDownloadFile = (e,path,fileName) => {
+        
         e.preventDefault();
-        if(type ==="actions"){
-            this.props.downloadFileActions(id,fileName,type);
-        }else if (type ==="commentofactions"){
-            this.props.downloadFileCommentOfActions(id,fileName,type);
-        }else if (type === "taskcomments"){
-            this.props.downloadFileTaskComments(id,fileName,type);
-        }else if (type === "commentoftaskcomments"){
-            this.props.downloadFileCommentOfTaskComments(id,fileName,type);
-        }
+        this.props.downloadFile(path,fileName);
 
         
     }
-    handleShowFile = (id) => {
+    handleShowFile =  (id) => {
         var a
         if(this.state.showfile.some(obj => obj === id)){
             a= this.state.showfile.filter(x => x !== id);
@@ -612,6 +602,25 @@ class ActionTab extends Component {
             })
         }
     }
+    handleShowEvaluations = (id) => {
+        var a
+        if(this.state.showEvaluations.some(obj => obj === id)){
+            a= this.state.showEvaluations.filter(x => x !== id);
+            this.setState(state => {
+                return {
+                    ...state,
+                    showEvaluations : a
+                }
+            })
+        }else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    showEvaluations: [...this.state.showEvaluations,id]
+                }
+            })
+        }
+    }
     render() {
         const { translate } = this.props;
         var type = ["actions","commentofactions","taskcomments","commentoftaskcomments"]
@@ -619,7 +628,7 @@ class ActionTab extends Component {
         var statusTask,files;
         const { tasks, performtasks, user,auth } = this.props; 
         var actionComments, taskActions,taskComments, actions,logTimer;
-        const { selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
+        const { showEvaluations, selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const checkUserId = obj =>  obj.creator._id === currentUser;
         if(typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
             task = performtasks.task.info;
@@ -673,16 +682,12 @@ class ActionTab extends Component {
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                                 <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
-                                                {item.files.length> 0 &&
-                                                <React.Fragment>
                                                 <li style={{display:"inline-table"}}>
-                                                <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm</i></b></a> </div></li>
+                                                <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-file" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[0])}> {elem.name} </a></div>
+                                                        return <a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a>
                                                     })}</li>
-                                                }   
-                                                </React.Fragment>
                                                 }
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
                                                 <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
@@ -690,15 +695,18 @@ class ActionTab extends Component {
                                                 {/* Đánh giá hoạt động */}
                                                 {item.creator &&
                                                 <React.Fragment>
-                                                    <li><a href="#" className="link-black text-sm"><i className="fa fa-thumbs-o-up margin-r-5"></i> Đánh giá: </a></li>
-                                                    <li style={{display:"inline-table"}} className="list-inline">
+                                                    <li><a href="#" className="link-black text-sm" onClick={()=>{this.handleShowEvaluations(item._id)}}><i className="fa fa-thumbs-o-up margin-r-5"></i>Đánh giá ({item.evaluations && item.evaluations.length})</a></li>
+                                                    {showEvaluations.some(obj => obj === item._id)&&
+                                                        <React.Fragment>
+                                                            <li style={{display:"inline-table"}} className="list-inline">
                                                         {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0?
                                                         <React.Fragment>
                                                             {item.evaluations.map(element => {
                                                                 if(task){
                                                                     if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
                                                                         return <div className="text-sm"> <b>{element.creator.name} - {element.rating}/10 </b> </div>
-                                                                    } else {
+                                                                    }
+                                                                    if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
                                                                         return <div className="text-sm"> {element.creator.name} - {element.rating}/10 </div>
                                                                     }
                                                                 }
@@ -707,7 +715,6 @@ class ActionTab extends Component {
                                                         <div className="text-sm">Chưa có</div>
                                                         }
                                                     </li>
-                                                    
                                                     {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                     <li style={{display:"inline-table"}} className="list-inline">
                                                         {(
@@ -733,13 +740,14 @@ class ActionTab extends Component {
                                                         }
                                                     </li>
                                                     }
+                                                        </React.Fragment>
+                                                    }
                                                 </React.Fragment>
                                                 }
                                             </ul>
                                         </React.Fragment>
                                         }
-                                            
-                                        
+
                                         {/*Chỉnh sửa nội dung hoạt động của công việc */}
                                         {editAction === item._id &&
                                             <div>
@@ -791,18 +799,16 @@ class ActionTab extends Component {
                                                             </div> */}
                                                             <ul className="list-inline tool-level2">
                                                                     <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
-                                                                    {child.files.length> 0 &&
-                                                                    <React.Fragment>
                                                                     <li style={{display:"inline-table"}}>
-                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm</i></b></a></div></li>
+                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[1])}> {elem.name} </a></div>
+                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
-                                                                    </React.Fragment>}
+
                                                             </ul>
                                                         </div>
                                                         }
@@ -972,10 +978,10 @@ class ActionTab extends Component {
                                                 {item.files.length> 0 &&
                                                 <React.Fragment>
                                                 <li style={{display:"inline-table"}}>
-                                                <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm</i></b></a> </div></li>
+                                                <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[2])}> {elem.name} </a></div>
+                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                     })}</li>
                                                 }
                                                 </React.Fragment>
@@ -1035,11 +1041,11 @@ class ActionTab extends Component {
                                                                     {child.files.length> 0 &&
                                                                     <React.Fragment>
                                                                     <li style={{display:"inline-table"}}>
-                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm</i></b></a></div></li>
+                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-folder" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem._id,elem.name,type[3])}> {elem.name} </a></div>
+                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
@@ -1166,7 +1172,59 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                        <Files
+                        <React.Fragment>
+                                <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
+                                <div className="text-input-level1">
+                                    <TextareaAutosize
+                                        placeholder="Hãy nhập mô tả"
+                                        useCacheForDOMMeasurements
+                                        minRows={3}
+                                        maxRows={20}
+                                        ref={input => this.descriptionFile[0] = input} />
+                                </div>
+                                <div className="tool-level1">
+                                    <div style={{textAlign: "right"}}>
+                                        <a href="#" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
+                                    </div>           
+                                    <Files
+                                        ref='filesAddTask'
+                                        className='files-dropzone-list'
+                                        onChange={this.onFilesTaskChange}
+                                        onError={this.onFilesError}
+                                        multiple
+                                        maxFiles={10}
+                                        maxFileSize={10000000}
+                                        minFileSize={0}
+                                        clickable={false}>  
+                                        <div className='files-list'>
+                                            <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
+                                                <i class="material-icons">attach_file</i>
+                                            </a>
+                                            <span>Drop files here</span>
+                                            <ul>{this.state.filestask.map((file) =>
+                                                <li className='files-list-item' key={file.id}>
+                                                    <div className='files-list-item-preview'>
+                                                    {file.preview.type === 'image' ?  
+                                                    <React.Fragment>
+                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
+                                                    </React.Fragment>    
+                                                    : 
+                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                    </div>
+                                                    <div className='files-list-item-content'>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
+                                                    </div>
+                                                </li>
+                                            )}
+                                            </ul>
+                                        </div> 
+                                    </Files>
+                                    
+                                </div>
+                            </React.Fragment>
+                        {/* <Files
                             ref='filesAddTask'
                             className='files-dropzone-list'
                             onChange={this.onFilesTaskChange}
@@ -1201,7 +1259,7 @@ class ActionTab extends Component {
                                 </ul>
                             </div> 
                         </Files>
-                        <button type="button" className="pull-right btn btn-primary" style={{marginTop:"10px"}} onClick={(e) => this.handleUploadFile(task._id)}>Upload</button>
+                        <button type="button" className="pull-right btn btn-primary" style={{marginTop:"10px"}} onClick={(e) => this.handleUploadFile(task._id)}>Upload</button> */}
                         </div>
 
 
@@ -1255,10 +1313,7 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
-    downloadFileActions: performTaskAction.downloadFileActions,
-    downloadFileCommentOfActions: performTaskAction.downloadFileCommentOfActions,
-    downloadFileTaskComments: performTaskAction.downloadFileTaskComments,
-    downloadFileCommentOfTaskComments: performTaskAction.downloadFileCommentOfTaskComments,
+    downloadFile: performTaskAction.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile
 };
