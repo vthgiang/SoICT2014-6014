@@ -1127,36 +1127,17 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                        {/* {files && 
-                            files.map(item => {
-                                return <div>
-                                   <ul className="list-inline">
-                                    <li>File: <a href="#">{item.name} -</a></li>
-                                    <li>Người tạo:  <a>{item.creator.name}</a></li>
-                                    <li>Mô tả:  {item.description}</li>
-                                   </ul>
-                                </div>
-                            })
-                        } */}
                         <div class="box-body table-responsive" style={{marginBottom:"30px"}}>
-                            <table class="table table-hover">
-                                <tr>
-                                <th>STT</th>
-                                <th>Tên File</th>
-                                <th>Người tạo</th>
-                                <th>Mô tả</th>
-                                </tr>
-                                {files &&
-                                    files.map((item,index)=>{
-                                        return <tr>
-                                            <th>{index +1 }</th>
-                                            <th><a href="#" onClick={(e)=>this.requestDownloadFile(e,item.url,item.name)} >{item.name}</a></th>
-                                            <th>{item.creator.name}</th>
-                                            <th>{item.description}</th>
-                                        </tr>
-                                    })
-                                }
-                            </table>
+                            {files &&
+                                files.map((item,index)=>{
+                                    return(
+                                    <div style={{marginBottom: 20}}>                                      
+                                        <div><strong>{item.creator.name} - </strong>{item.description}</div>
+                                        <a href="#" onClick={(e)=>this.requestDownloadFile(e,item.url,item.name)} >{item.name}</a>  
+                                    </div>
+                                    )
+                                })
+                            }
                         </div>
                         <React.Fragment>
                             <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
@@ -1219,15 +1200,14 @@ class ActionTab extends Component {
                         </div>
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            <ul style={{ listStyle: "none",fontFamily:'sans-serif' }}>
-                                {
-                                    logTimer &&
-                                    logTimer.map(item =>
-                                        <li className="list-log-timer" key={item._id}>
-                                            <p style={{ fontSize: "13px" }}><a href="#">{item.creator.name}</a> : {moment(item.startedAt, "x").format("DD MMM YYYY HH:mm")} - {moment(item.stoppedAt).format("DD MMM YYYY HH:mm ")} - {moment.utc(item.duration, "x").format('HH:mm:ss')} - Mô tả: {item.description} </p>
-                                        </li>)
-                                }
-                            </ul>
+                            {logTimer && logTimer.map(item =>
+                                <div key={item._id} style={{marginBottom: 20}}>
+                                    <a style={{fontWeight: 700}} href="#">{item.creator.name} - </a>
+                                    Tổng thời gian {moment.utc(item.duration, "x").format('HH:mm:ss')} - &nbsp;
+                                    {item.description? item.description: "Không có mô tả"}
+                                    <div>{moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")} </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
