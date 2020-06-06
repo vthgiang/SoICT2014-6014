@@ -47,7 +47,17 @@ class ModalAddTask extends Component {
     
    
     handleSubmit = async (event) => {
+        if(this.props.id !== ""){
+            this.state.newTask.parent = this.props.currentTasks[0];
+            this.setState(state =>{
+                return{
+                    ...state,
+                };
+            });
+        }
+        
         const { newTask } = this.state;
+        
         this.props.addTask(newTask);
     }
 
@@ -433,7 +443,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày bắt đầu*:</label>
                                     <DatePicker 
-                                        id="datepicker1"
+                                        id={`datepicker1${this.props.id}`}
                                         dateFormat="day-month-year"
                                         value={newTask.startDate}
                                         onChange={this.handleChangeTaskStartDate}
@@ -443,7 +453,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày kết thúc*:</label>
                                     <DatePicker 
-                                        id="datepicker2"
+                                        id={`datepicker2${this.props.id}`}
                                         value={newTask.endDate}
                                         onChange={this.handleChangeTaskEndDate}
                                     />
@@ -481,7 +491,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người thực hiện*</label>
                                 {unitMembers &&
                                 <SelectBox
-                                    id={`responsible-select-box${newTask.taskTemplate}`}
+                                    id={`responsible-select-box${this.props.id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items={unitMembers}
@@ -498,7 +508,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người phê duyệt*</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accounatable-select-box${newTask.taskTemplate}`}
+                                        id={`accounatable-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={unitMembers}
@@ -515,7 +525,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người hỗ trợ</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`consulted-select-box${newTask.taskTemplate}`}
+                                        id={`consulted-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -534,7 +544,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người quan sát</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`informed-select-box${newTask.taskTemplate}`}
+                                        id={`informed-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={

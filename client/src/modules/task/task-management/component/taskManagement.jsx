@@ -61,7 +61,6 @@ class TaskManagement extends Component {
         if(prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length){
             this.handleUpdateData();
         }
-        
     }
     
     UNSAFE_componentWillUpdate() {
@@ -319,6 +318,7 @@ class TaskManagement extends Component {
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }
+    
     handleCheckClickAddSubTask = async (id) => {
         await this.setState(state => {
             return {
