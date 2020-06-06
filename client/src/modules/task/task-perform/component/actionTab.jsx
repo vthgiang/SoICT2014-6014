@@ -384,6 +384,20 @@ class ActionTab extends Component {
         }
         this.contentCommentOfTaskComment[index].value = "";
     }
+    handleUploadFile   = async (task,index,creator) => {
+        const data  = new FormData();
+
+        this.state.filestask.forEach(x => {
+            data.append("files",x)
+        })
+        data.append("description",this.descriptionFile[index].value)
+        data.append("creator",creator)
+        if(this.state.filestask){
+            this.props.uploadFile(task,data);
+                this.refs.filesAddTask.removeFiles()
+        }
+        this.descriptionFile[index].value = ""
+    }
     handleEditActionComment = async (id) => {
 
         await this.setState(state => {
@@ -545,25 +559,10 @@ class ActionTab extends Component {
             cmtoftaskcmtfiles
         })
       }  
-    handleUploadFile   = async (task,index,creator) => {
-        const data  = new FormData();
 
-        this.state.filestask.forEach(x => {
-            data.append("files",x)
-        })
-        data.append("description",this.descriptionFile[index].value)
-        data.append("creator",creator)
-        this.props.uploadFile(task,data);
-        if(this.state.filestask){
-            this.state.filestask.forEach(item=>{
-                this.refs.filesAddTask.removeFile(item)
-            })
-        }
-        this.descriptionFile[index].value = ""
-    }
     onFilesTaskChange  = (filestask) => {
         this.setState({
-            filestask
+            filestask:filestask
         })
     }
     onFilesError = (error, file) => {
@@ -592,7 +591,6 @@ class ActionTab extends Component {
                     showfile : a
                 }
             })
-            console.log(this.state);
         }else {
             this.setState(state => {
                 return {
@@ -633,16 +631,17 @@ class ActionTab extends Component {
         if(typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
             task = performtasks.task.info;
             taskComments = task.taskComments;
-            taskActions = task.taskActions;}
+            taskActions = task.taskActions;
+            files = task.files
+        }
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
-        if(performtasks.files) files = performtasks.files
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động  ({taskActions && taskActions.length})</a></li>
                         <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi ({taskComments && taskComments.length})</a></li>
-                        <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu</a></li>
+                        <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu ({files && files.length})</a></li>
                         <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con</a></li>
                         <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ</a></li>
                     </ul>
@@ -1172,97 +1171,90 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                        <React.Fragment>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
-                                <div className="text-input-level1">
-                                    <TextareaAutosize
-                                        placeholder="Hãy nhập mô tả"
-                                        useCacheForDOMMeasurements
-                                        minRows={3}
-                                        maxRows={20}
-                                        ref={input => this.descriptionFile[0] = input} />
+                        {/* {files && 
+                            files.map(item => {
+                                return <div>
+                                   <ul className="list-inline">
+                                    <li>File: <a href="#">{item.name} -</a></li>
+                                    <li>Người tạo:  <a>{item.creator.name}</a></li>
+                                    <li>Mô tả:  {item.description}</li>
+                                   </ul>
                                 </div>
-                                <div className="tool-level1">
-                                    <div style={{textAlign: "right"}}>
-                                        <a href="#" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
-                                    </div>           
-                                    <Files
-                                        ref='filesAddTask'
-                                        className='files-dropzone-list'
-                                        onChange={this.onFilesTaskChange}
-                                        onError={this.onFilesError}
-                                        multiple
-                                        maxFiles={10}
-                                        maxFileSize={10000000}
-                                        minFileSize={0}
-                                        clickable={false}>  
-                                        <div className='files-list'>
-                                            <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
-                                                <i class="material-icons">attach_file</i>
-                                            </a>
-                                            <span>Drop files here</span>
-                                            <ul>{this.state.filestask.map((file) =>
-                                                <li className='files-list-item' key={file.id}>
-                                                    <div className='files-list-item-preview'>
-                                                    {file.preview.type === 'image' ?  
-                                                    <React.Fragment>
-                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
-                                                    </React.Fragment>    
-                                                    : 
-                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
-                                                    </div>
-                                                    <div className='files-list-item-content'>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
-                                                    </div>
-                                                </li>
-                                            )}
-                                            </ul>
-                                        </div> 
-                                    </Files>
-                                    
-                                </div>
-                            </React.Fragment>
-                        {/* <Files
-                            ref='filesAddTask'
-                            className='files-dropzone-list'
-                            onChange={this.onFilesTaskChange}
-                            onError={this.onFilesError}
-                            multiple
-                            maxFiles={10}
-                            maxFileSize={10000000}
-                            minFileSize={0}
-                            clickable={false}>  
-                            <div className='files-list'>
-                                <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
-                                    <i class="material-icons">attach_file</i>
-                                </a>
-                                <span>Drop files here</span>
-                                <ul>{this.state.filestask.map((file) =>
-                                    <li className='files-list-item' key={file.id}>
-                                        <div className='files-list-item-preview'>
-                                        {file.preview.type === 'image' ?  
-                                        <React.Fragment>
-                                            <img className='files-list-item-preview-image'src={file.preview.url} />
-                                        </React.Fragment>    
-                                        : 
-                                        <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                            <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
-                                        </div>
-                                        <div className='files-list-item-content'>
-                                            <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                            <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
-                                        </div>
-                                    </li>
-                                )}
-                                </ul>
-                            </div> 
-                        </Files>
-                        <button type="button" className="pull-right btn btn-primary" style={{marginTop:"10px"}} onClick={(e) => this.handleUploadFile(task._id)}>Upload</button> */}
+                            })
+                        } */}
+                        <div class="box-body table-responsive" style={{marginBottom:"30px"}}>
+                            <table class="table table-hover">
+                                <tr>
+                                <th>STT</th>
+                                <th>Tên File</th>
+                                <th>Người tạo</th>
+                                <th>Mô tả</th>
+                                </tr>
+                                {files &&
+                                    files.map((item,index)=>{
+                                        return <tr>
+                                            <th>{index +1 }</th>
+                                            <th><a href="#" onClick={(e)=>this.requestDownloadFile(e,item.url,item.name)} >{item.name}</a></th>
+                                            <th>{item.creator.name}</th>
+                                            <th>{item.description}</th>
+                                        </tr>
+                                    })
+                                }
+                            </table>
                         </div>
-
-
+                        <React.Fragment>
+                            <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
+                            <div className="text-input-level1">
+                                <TextareaAutosize
+                                    placeholder="Hãy nhập mô tả"
+                                    useCacheForDOMMeasurements
+                                    minRows={3}
+                                    maxRows={20}
+                                    ref={input => this.descriptionFile[0] = input} />
+                            </div>
+                            <div className="tool-level1">
+                                <div style={{textAlign: "right"}}>
+                                    <a href="#" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
+                                </div>           
+                                <Files
+                                    ref='filesAddTask'
+                                    className='files-dropzone-list'
+                                    onChange={this.onFilesTaskChange}
+                                    onError={this.onFilesError}
+                                    multiple
+                                    maxFiles={10}
+                                    maxFileSize={10000000}
+                                    minFileSize={0}
+                                    clickable={false}>  
+                                    <div className='files-list'>
+                                        <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
+                                            <i class="material-icons">attach_file</i>
+                                        </a>
+                                        <span>Drop files here</span>
+                                        <ul>{this.state.filestask.map((file) =>
+                                            <li className='files-list-item' key={file.id}>
+                                                <div className='files-list-item-preview'>
+                                                {file.preview.type === 'image' ?  
+                                                <React.Fragment>
+                                                    <img className='files-list-item-preview-image'src={file.preview.url} />
+                                                </React.Fragment>    
+                                                : 
+                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                                    <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                </div>
+                                                <div className='files-list-item-content'>
+                                                    <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                                    <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
+                                                </div>
+                                            </li>
+                                        )}
+                                        </ul>
+                                    </div> 
+                                </Files>
+                                
+                            </div>
+                            </React.Fragment>
+                        </div>
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
                             <SubTaskTab 

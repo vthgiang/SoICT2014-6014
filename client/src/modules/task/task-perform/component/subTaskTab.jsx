@@ -36,7 +36,7 @@ class SubTaskTab extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('-');
+        return [day, month, year].join('/');
     }
 
     render() {
@@ -66,10 +66,9 @@ class SubTaskTab extends Component {
                                     <li>
                                     <div className="row">
                                         <div className="col-xs-5">
-                                            <a href={`http://localhost:3000/task?taskId=${item._id}`} target="_blank" >{item.name}</a>
+                                            <strong><a style={ {color: "#605ca8" , line: "2.2"}}  href={`http://localhost:3000/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
                                         </div>
-                                    <div className="col-xs-3">{item.startDate}</div>
-                                    <div className="col-xs-3">{item.endDate}</div>
+                                    <div className="col-xs-6">{item.startDate} - {item.endDate}</div>
                                     <div className="col-xs-1">{item.status}</div>
                                     </div></li>
                                 </ul>
