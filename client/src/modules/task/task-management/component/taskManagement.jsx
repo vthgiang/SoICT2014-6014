@@ -5,19 +5,21 @@ import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { ModalAddTask } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
+import { performTaskAction } from "../../task-perform/redux/actions";
 import Swal from 'sweetalert2';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox } from '../../../../common-components';
-
+import {
+    getStorage
+} from '../../../../config';
 
 class TaskManagement extends Component {
     constructor(props) {
+        var userId = getStorage("userId");
         super(props);
         this.state = {
             perPage: 20,
-            startTimer: false,
-            currentTimer: "",
             currentPage: 1,
             // showModal: "",
             // showAddSubTask: ""
@@ -28,6 +30,14 @@ class TaskManagement extends Component {
             priority: '[]',
             special: '[]',
             name: null,
+
+            startTimer: false,
+            pauseTimer: false,
+            timer : {
+                startedAt: null,
+                creator: userId,
+                task: null
+            },
         };
     }
 
@@ -117,26 +127,14 @@ class TaskManagement extends Component {
         }
     }
 
-    handleCountTime = async (id) => {
-        const { startTimer } = this.state;
-        if (startTimer) {
-            Swal.fire({
-                title: "Thời gian đã làm: 120'",
-                type: 'success',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Lưu'
-            }).then((res) => {
-            });
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                startTimer: !state.startTimer,
-                currentTimer: id
-            }
-        })
+    startTimer = async (taskId) => {
+        var userId = getStorage("userId");
+        var timer = {
+            startedAt: Date.now(),
+            creator: userId,
+            task: taskId
+        };
+        this.props.startTimer(timer);
     }
 
     // Hàm xử lý trạng thái lưu kho
@@ -427,7 +425,7 @@ class TaskManagement extends Component {
         var currentTasks, units = [];
         var pageTotals;
         const { tasks, user, translate } = this.props;
-        const { startTimer, currentTimer, currentPage } = this.state;
+        const { startTimer, currentTimer, currentPage, showAddSubTask } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
@@ -631,7 +629,7 @@ class TaskManagement extends Component {
                             }}
                             funcEdit={this.handleShowModal}
                             funcAdd={this.handleCheckClickAddSubTask}
-                            funcStartTimer={this.handleCountTime}
+                            funcStartTimer={this.startTimer}
                             funcStore={this.handleStore}
                             // funcDelete={this.handleDelete}
                         />
@@ -658,14 +656,14 @@ class TaskManagement extends Component {
                         />
                     } */}
 
-                    {/* {
+                    {
                         this.state.showAddSubTask !== undefined &&
                         <ModalAddTask
-                            currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)}
+                            currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks).filter(item => item._id === showAddSubTask)}
                             id={this.state.showAddSubTask}
                             role={this.state.currentTab}
                         />
-                    } */}
+                    }
 
 
                     <PaginateBar
@@ -711,7 +709,8 @@ const actionCreators = {
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     editArchivedOfTask: taskManagementActions.editArchivedOfTask,
     getDepartment: UserActions.getDepartmentOfUser,
-    getSubTask: taskManagementActions.getSubTask
+    getSubTask: taskManagementActions.getSubTask,
+    startTimer: performTaskAction.startTimerTask,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export {translateTaskManagement as TaskManagement} ;

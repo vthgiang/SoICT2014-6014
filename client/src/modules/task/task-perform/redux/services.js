@@ -87,7 +87,7 @@ function getTimerStatusTask() { //function getTimerStatusTask(task, user)
     }, false, true, 'task.task_perform');
 };
 // start timer task
-function startTimerTask(newTimer) {
+function startTimerTask(newTimer) {        
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
         method : 'POST',

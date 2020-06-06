@@ -300,9 +300,9 @@ class ModalAddTask extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, id } = this.props;
         const { newTask } = this.state;
-
+        
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
@@ -318,7 +318,6 @@ class ModalAddTask extends Component {
                     newTask: {
                         ...this.state.newTask,
                         organizationalUnit: defaultUnit._id,
-                       
                     }
                 };
             });
@@ -338,7 +337,7 @@ class ModalAddTask extends Component {
         var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
-        
+                
         var taskTemplate,responsibleEmployees;
         if(tasktemplates.taskTemplate) 
         { 
@@ -378,7 +377,7 @@ class ModalAddTask extends Component {
 
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
-        
+                
         return (
             <React.Fragment>
                 <DialogModal
@@ -460,16 +459,18 @@ class ModalAddTask extends Component {
                                 </select>
                             </div>
 
-                            <div className="form-group">
-                                <label className="control-label">Công việc cha</label>
-                                <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
-                                    <option value="">--Hãy chọn công việc cha--</option>
-                                    {this.props.currentTasks &&
-                                        this.props.currentTasks.map(item => {
-                                            return <option key={item._id} value={item._id}>{item.name}</option>
-                                        })}
-                                </select>
-                            </div>
+                            {this.props.id === "" &&
+                                <div className="form-group">
+                                    <label className="control-label">Công việc cha</label>
+                                    <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
+                                        <option value="">--Hãy chọn công việc cha--</option>
+                                        {this.props.currentTasks &&
+                                            this.props.currentTasks.map(item => {
+                                                return <option key={item._id} value={item._id}>{item.name}</option>
+                                            })}
+                                    </select>
+                                </div>
+                            }
                         </fieldset>
                     </div>
                     
