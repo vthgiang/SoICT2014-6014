@@ -7,7 +7,8 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    Role
+    Role,
+    EmployeeCourse
 } = require('../../../models').schema;
 
 /**
@@ -373,6 +374,16 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
+    if(data.courses!==undefined){
+        let courses = data.courses;
+        for (let x in courses) {
+            EmployeeCourse.create({
+                employee: createEmployee._id,
+                course: courses[x].course,
+                result: courses[x].result,
+            });
+        } 
+    }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
     let employees = await Employee.find({_id: createEmployee._id});
@@ -380,8 +391,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
     let annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
     let commendations = await Commendation.find({employee: createEmployee._id})
     let disciplines = await Discipline.find({employee: createEmployee._id})
+    let courses = await EmployeeCourse.find({employee: createEmployee._id})
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 
 

@@ -2,91 +2,63 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, ButtonModal, SelectBox } from '../../../../../common-components';
-
-import { CourseFormValidator } from '../../../../training/course/components/courseFormValidator';
-
-class CourseAddModal extends Component {
+class CourseEditModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            result: 'failed',
-            course: '',
-            nameCourse: ''
-        }
+        this.state = {}
     }
-
     // Bắt sự kiện thay đổi kết quả đào tạo
     handleResultChange = (value) => {
         this.setState({
             result: value[0]
         });
     }
-    
-    // Bắt sự kiện thay đổi mã khoá đào tạo
-    handleCourseIdChange = (value) => {
-        this.validateCourseId(value[0], true);
-        let nameCourse = '';
-        this.props.course.listCourses.forEach(x => {
-            if (x._id === value[0]) {
-                nameCourse = x.name
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+                _id: nextProps._id,
+                index: nextProps.index,
+                course: nextProps.courseId,
+                result: nextProps.result,
+                nameCourse: nextProps.nameCourse,
             }
-        });
-        this.setState({
-            nameCourse: nameCourse
-        })
-    }
-    validateCourseId = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateCourseId(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCourseId: msg,
-                    course: value,
-                }
-            });
+        } else {
+            return null;
         }
-        return msg === undefined;
-    }
-
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        return this.validateCourseId(this.state.course, false);
     }
 
     // Bắt sự kiện submit form
     save = async () => {
-        if (this.isFormValidated()) {
-            this.props.handleChange(this.state);
-        }
+        this.props.handleChange(this.state);
     }
     render() {
         const { listCourses } = this.props.course;
         const { translate, id, } = this.props;
-        const { errorOnCourseId, course, result, nameCourse } = this.state;
+        const { course, result, nameCourse } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-course-${id}`} button_name={translate('modal.create')} title='Thêm mới khoá đào tạo' />
                 <DialogModal
-                    size='50' modalID={`modal-create-course-${id}`} isLoading={false}
-                    formID={`form-create-course-${id}`}
-                    title='Thêm mới khoá đào tạo'
+                    size='50' modalID={`modal-edit-course-${id}`} isLoading={false}
+                    formID={`form-edit-course-${id}`}
+                    title='Chỉnh sửa khoá đào tạo'
                     func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    disableSubmit={false}
                     maxWidth={500}
                 >
-                    <form className="form-group" id={`form-create-course-${id}`}>
-                        <div className={`col-sm-12 col-xs-12 form-group ${errorOnCourseId === undefined ? "" : "has-error"}`}>
+                    <form className="form-group" id={`form-edit-course-${id}`}>
+                        <div className={`col-sm-12 col-xs-12 form-group`}>
                             <label>Mã khoá đào tạo<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`create_courseID_course${id}`}
+                                id={`edit_courseID_course${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={course}
                                 items={[...listCourses.map((u, i) => { return { value: u._id, text: u.courseId } }), { value: '', text: 'Chọn khoá đào tạo' }]}
                                 onChange={this.handleCourseIdChange}
+                                disabled={true}
                             />
-                            <ErrorLabel content={errorOnCourseId} />
                         </div>
                         <div className={`form-group col-sm-12 col-xs-12`}>
                             <label>Tên khoá đào tạo<span className="text-red">*</span></label>
@@ -95,7 +67,7 @@ class CourseAddModal extends Component {
                         <div className={`form-group col-sm-12 col-xs-12`}>
                             <label>Kết quả<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`create_result_course${id}`}
+                                id={`edit_result_course${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={result}
@@ -114,6 +86,5 @@ function mapState(state) {
     const { course } = state;
     return { course };
 };
-
-const addModal = connect(mapState, null)(withTranslate(CourseAddModal));
-export { addModal as CourseAddModal };
+const editModal = connect(mapState, null)(withTranslate(CourseEditModal));
+export { editModal as CourseEditModal };

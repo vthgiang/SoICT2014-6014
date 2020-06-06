@@ -11,7 +11,7 @@ import {
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { months } from 'moment';
+
 class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
@@ -30,8 +30,8 @@ class EmployeeCreatePage extends Component {
                 taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
-                courses: []
             },
+            courses: [],
             degrees: [],
             certificates: [],
             contracts: [],
@@ -59,7 +59,7 @@ class EmployeeCreatePage extends Component {
             return [year, month].join('-');
         } else return [year, month, day].join('-');
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.getDepartment();
     }
     // Function upload avatar 
@@ -152,20 +152,16 @@ class EmployeeCreatePage extends Component {
         })
     }
 
-    // function thêm thông tin quá trình đào tạo
+    // Function thêm thông tin quá trình đào tạo
     handleChangeCourse = (data) => {
-        const { employee } = this.state;
         this.setState({
-            employee: {
-                ...employee,
-                courses: data
-            }
+            courses: data
         })
     }
     // function thêm mới thông tin nhân viên
     handleSubmit = async () => {
         let { employee, degrees, certificates, contracts, files,
-            disciplines, commendations, salaries, annualLeaves } = this.state;
+            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
         await this.setState({
             employee: {
                 ...employee,
@@ -176,7 +172,8 @@ class EmployeeCreatePage extends Component {
                 disciplines,
                 commendations,
                 salaries,
-                annualLeaves
+                annualLeaves,
+                courses
             }
         })
         let formData = convertJsonObjectToFormData({ ...this.state.employee });
@@ -197,7 +194,6 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">
@@ -262,7 +258,7 @@ class EmployeeCreatePage extends Component {
                         <ContractTab
                             id="hopdong"
                             contracts={this.state.contracts}
-                            courses={this.state.employee.courses}
+                            courses={this.state.courses}
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}

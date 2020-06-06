@@ -33,4 +33,5 @@ export * from './commendationAddModal';
 export * from './annualLeaveAddModal';
 export * from './salaryAddModal';
 export * from './socialInsuranceFileImportModal';
-export * from './courseAddModal'
+export * from './courseAddModal';
+export * from './courseEditModal';
