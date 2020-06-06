@@ -299,6 +299,7 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRowView.annualLeaves}
                         commendations={this.state.currentRowView.commendations}
                         disciplines={this.state.currentRowView.disciplines}
+                        courses = {this.state.currentRowView.courses}
                         roles={this.state.currentRowView.roles}
                     />
                 }
@@ -311,6 +312,7 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRow.annualLeaves}
                         commendations={this.state.currentRow.commendations}
                         disciplines={this.state.currentRow.disciplines}
+                        courses = {this.state.currentRow.courses}
                     />
                 }
             </div>

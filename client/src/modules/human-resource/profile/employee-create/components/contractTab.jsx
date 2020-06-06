@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LOCAL_SERVER_API } from '../../../../../env';
+import { toast } from 'react-toastify';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+
 import { ContractAddModal, ContractEditModal, CourseAddModal, CourseEditModal } from './combinedContent';
 
 import { CourseActions } from '../../../../training/course/redux/actions';
@@ -92,12 +95,29 @@ class ContractTab extends Component {
     // function thêm thông tin khoá đào tạo
     handleAddCourse = async (data) => {
         const { courses } = this.state;
-        await this.setState({
-            courses: [...courses, {
-                ...data
-            }]
+        let check = false;
+        courses.forEach(x => {
+            if (x.course === data.course) {
+                check = true;
+            }
         })
-        this.props.handleAddCourse(this.state.courses, data);
+        if (check === false) {
+            await this.setState({
+                courses: [...courses, {
+                    ...data
+                }]
+            })
+            this.props.handleAddCourse(this.state.courses, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Khoá đào tạo đã tồn tại']}
+                />, 
+                {containerId: 'toast-notification'}
+            );
+        }
     }
     // function chỉnh sửa thông tin khoá đào tạo
     handleEditCourse = async (data) => {
@@ -197,7 +217,7 @@ class ContractTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof courses !== 'undefined' && courses.length !== 0) &&
+                                {(courses !== 'undefined' && courses.length !== 0) &&
                                     courses.map((x, index) => {
                                         let courseInfo = '';
                                         course.listCourses.forEach(list => {
