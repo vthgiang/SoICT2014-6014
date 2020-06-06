@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import {ContentMaker} from '../../../../common-components'
+
 import {
     getStorage
 } from '../../../../config';
@@ -50,7 +52,7 @@ class ActionTab extends Component {
             newAction: {
                 creator: idUser,
                 description: "",
-                files: null
+                files: []
             },
             newTaskComment: {
                 creator: idUser,
@@ -276,40 +278,32 @@ class ActionTab extends Component {
         this.contentCommentOfAction[index].value = "";
     }
     //Thêm mới hoạt động
-    submitAction = async (e, id, index,taskId) => {
-        e.preventDefault();
+    submitAction = async (taskId) => {
+        var { newAction } = this.state;
+        const data = new FormData();
+
+        data.append("task", taskId);
+        data.append("creator", newAction.creator);
+        data.append("description", newAction.description);
+        newAction.files && newAction.files.forEach(x=>{
+            data.append("files", x);
+        })
+        
+        if(newAction.creator && newAction.description){
+            this.props.addTaskAction(data);
+        }
+
+        // Reset state cho việc thêm mới action
         await this.setState(state => {
             return {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    description: this.contentAction[index].value,
-                    task: taskId,
-                    files: this.state.files
-                }
+                    description: "",
+                    files: [],
+                },
             }
         })
-        var { newAction } = this.state;
-        const data = new FormData();
-        data.append("task", newAction.task);
-        data.append("creator", newAction.creator);
-        data.append("description", newAction.description);
-        newAction.files.forEach(x=>{
-            data.append("files", x);
-        })
-        //Xóa file đã được chọn mỗi khi gửi hoạt động
-        
-        if(newAction.creator && newAction.description){
-            
-            this.props.addTaskAction(data);
-            if(this.state.files){
-                this.state.files.forEach(item=>{
-                    this.refs.filesAddAction.removeFile(item)
-                })
-            }
-        }
-        
-        this.contentAction[index].value = "";
     }
     //Thêm mới bình luận của công việc
     submitTaskComment = async (e,id,index,taskId) => {
@@ -438,21 +432,17 @@ class ActionTab extends Component {
     }
     handleSaveEditAction = async (e, index) => {
         e.preventDefault();
-        await this.setState(state => {
-            return {
-                ...state,
-                newAction: {
-                    ...state.newAction,
-                    description: this.newContentAction[index].value,
-                    // file:
-                },
-                editAction: ""
-            }
-        })
-        var { newAction } = this.state;
-        if (newAction.description) {
-            this.props.editTaskAction(index, newAction);
+        let description = this.newContentAction[index].value;
+        if (description) {
+            this.props.editTaskAction(index, {description: description});
+            await this.setState(state => {
+                return {
+                    ...state,
+                    editAction: ""
+                }
+            })
         }
+
     }
     handleSaveEditTaskComment = async (e,index) => {
         e.preventDefault();
@@ -533,8 +523,14 @@ class ActionTab extends Component {
     });
 	};
     onFilesChange = (files) => {
-        this.setState({
-          files
+        this.setState((state)=>{
+            return {
+                ...state,
+                newAction: {
+                    ...state.newAction,
+                    files: files,
+                }
+            }
         })
       }
     onTaskCommentFilesChange = (files) => {
@@ -878,58 +874,24 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm hoạt động cho công việc*/}
-                            {this.props.role === "responsible" &&
+                            {this.props.role === "responsible" && task &&
                             <React.Fragment>
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
-                                <div className="text-input-level1">
-                                    <TextareaAutosize
-                                        placeholder="Hãy nhập nội dung hoạt động"
-                                        useCacheForDOMMeasurements
-                                        minRows={3}
-                                        maxRows={20}
-                                        ref={input => this.contentAction[0] = input} />
-                                </div>
-                                <div className="tool-level1">
-                                    <div style={{textAlign: "right"}}>
-                                        <a href="#" className="link-black text-sm" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</a>
-                                    </div>           
-                                    <Files
-                                        ref='filesAddAction'
-                                        className='files-dropzone-list'
-                                        onChange={this.onFilesChange}
-                                        onError={this.onFilesError}
-                                        multiple
-                                        maxFiles={10}
-                                        maxFileSize={10000000}
-                                        minFileSize={0}
-                                        clickable={false}>  
-                                        <div className='files-list'>
-                                            <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddAction.openFileChooser()}>
-                                                <i class="material-icons">attach_file</i>
-                                            </a>
-                                            <span>Drop files here</span>
-                                            <ul>{this.state.files.map((file) =>
-                                                <li className='files-list-item' key={file.id}>
-                                                    <div className='files-list-item-preview'>
-                                                    {file.preview.type === 'image' ?  
-                                                    <React.Fragment>
-                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
-                                                    </React.Fragment>    
-                                                    : 
-                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddAction.removeFile(file)}}><i className="fa fa-times"></i></a>
-                                                    </div>
-                                                    <div className='files-list-item-content'>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
-                                                    </div>
-                                                </li>
-                                            )}
-                                            </ul>
-                                        </div> 
-                                    </Files>
-                                    
-                                </div>
+                                <ContentMaker
+                                    onFilesChange={this.onFilesChange}
+                                    onFilesError={this.onFilesError}
+                                    files={this.state.newAction.files}
+                                    text={this.state.newAction.description}
+                                    placeholder={"Nhập hoạt động"}
+                                    submitButtonText={"Thêm hoạt động"}
+                                    onTextChange={(e)=>{
+                                        let value = e.target.value;
+                                        this.setState(state => {
+                                            return { ...state, newAction: {...state.newAction, description: value}}
+                                        })
+                                    }}
+                                    onSubmit={(e)=>{this.submitAction(task._id)}}
+                                />
                             </React.Fragment>}
                         </div>
                         {/* Chuyển qua tab trao đổi */}
