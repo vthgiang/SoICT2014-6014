@@ -16,6 +16,8 @@ export const EmployeeService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
+    console.log(data.organizationalUnits);
+        console.log(data.position);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employees`,
         method: 'GET',
