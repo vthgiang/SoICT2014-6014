@@ -77,13 +77,18 @@ exports.createEducationProgram = async (data, company) => {
             applyForOrganizationalUnits: data.organizationalUnit,
             applyForPositions: data.position,
         });
-        return await EducationProgram.findById(createEducation._id).populate([{
+        
+        let newEducation =  await EducationProgram.findById(createEducation._id).populate([{
             path: 'applyForOrganizationalUnits',
             model: OrganizationalUnit
         }, {
             path: 'applyForPositions',
             model: Role
         }])
+        let totalList = await Course.count({
+            educationProgram: newEducation._id
+        });
+        return {...newEducation._doc, totalList}
     }
     
 }
@@ -117,7 +122,7 @@ exports.updateEducationProgram = async (id, data) => {
         $set: eduacationChange
     });
 
-    return await EducationProgram.findOne({
+    let updateEducation= await EducationProgram.findOne({
         _id: id
     }).populate([{
         path: 'applyForOrganizationalUnits',
@@ -126,4 +131,9 @@ exports.updateEducationProgram = async (id, data) => {
         path: 'applyForPositions',
         model: Role
     }]);
+
+    let totalList = await Course.count({
+        educationProgram: updateEducation._id
+    });
+    return {...updateEducation._doc, totalList}
 }
