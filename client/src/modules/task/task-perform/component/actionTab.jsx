@@ -89,13 +89,6 @@ class ActionTab extends Component {
         this.descriptionFile = []
 
     }
-    componentDidMount() {
-        let script2 = document.createElement('script');
-        script2.src = '../lib/main/js/uploadfile/custom.js';
-        script2.async = true;
-        script2.defer = true;
-        document.body.appendChild(script2);
-    }
     
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -624,7 +617,8 @@ class ActionTab extends Component {
         var type = ["actions","commentofactions","taskcomments","commentoftaskcomments"]
         var task, actions, informations;
         var statusTask,files;
-        const { tasks, performtasks, user,auth } = this.props; 
+        const { tasks, performtasks, user,auth } = this.props;
+        const subtasks = tasks.subtasks;
         var actionComments, taskActions,taskComments, actions,logTimer;
         const { showEvaluations, selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const checkUserId = obj =>  obj.creator._id === currentUser;
@@ -642,8 +636,8 @@ class ActionTab extends Component {
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động  ({taskActions && taskActions.length})</a></li>
                         <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi ({taskComments && taskComments.length})</a></li>
                         <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu ({files && files.length})</a></li>
-                        <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con</a></li>
-                        <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ</a></li>
+                        <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ ({logTimer && logTimer.length})</a></li>
+                        <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con ({subtasks && subtasks.length})</a></li>
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
@@ -1258,7 +1252,7 @@ class ActionTab extends Component {
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
                             <SubTaskTab 
-                                id = {this.props.id}
+                                id = {this.state.id}
                             />
                         </div>
                         {/* Chuyển qua tab Bấm giờ */}
