@@ -257,6 +257,7 @@ class EmployeeCreatePage extends Component {
                         />
                         <ContractTab
                             id="hopdong"
+                            pageCreate={true}
                             contracts={this.state.contracts}
                             courses={this.state.courses}
                             handleAddContract={this.handleChangeContract}

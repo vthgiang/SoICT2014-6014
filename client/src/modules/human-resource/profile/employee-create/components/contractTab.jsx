@@ -30,8 +30,8 @@ class ContractTab extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
-    componentDidMount() {
-        this.props.getListCourse();
+    componentDidMount(){
+        this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits });
     }
     handleCourseEdit = async (value, index) => {
         let courseInfo = '';
@@ -101,6 +101,7 @@ class ContractTab extends Component {
                 check = true;
             }
         })
+        console.log(data);
         if (check === false) {
             await this.setState({
                 courses: [...courses, {
@@ -114,8 +115,8 @@ class ContractTab extends Component {
                     type='error'
                     title={'general.error'}
                     content={['Khoá đào tạo đã tồn tại']}
-                />, 
-                {containerId: 'toast-notification'}
+                />,
+                { containerId: 'toast-notification' }
             );
         }
     }
@@ -140,13 +141,24 @@ class ContractTab extends Component {
         this.props.handleDeleteCourse(this.state.courses, data)
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.id !== this.state.id) {
+            this.props.getListCourse({ organizationalUnits: nextProps.organizationalUnits });
+        }
+        return true
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps.id);
+        console.log(prevState.id);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 contracts: nextProps.contracts,
                 courses: nextProps.courses,
+                pageCreate: nextProps.pageCreate,
+                organizationalUnits: nextProps.organizationalUnits
             }
         } else {
             return null;
@@ -155,8 +167,9 @@ class ContractTab extends Component {
 
 
     render() {
-        const { id, translate, course } = this.props;
-        const { contracts, courses } = this.state;
+        const { id, translate, course, } = this.props;
+        console.log(this.state.organizationalUnits);
+        const { contracts, courses, pageCreate } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -203,7 +216,8 @@ class ContractTab extends Component {
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
-                        <CourseAddModal handleChange={this.handleAddCourse} id={`addCourse${id}`} />
+                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title='Do nhân viên chưa thuộc đơn vị nào' data-toggle="modal" data-backdrop="static" href='' disabled >{translate('modal.create')}</a>}
+                        {!pageCreate && <CourseAddModal handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>

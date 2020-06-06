@@ -494,6 +494,7 @@ class EmployeeEditFrom extends Component {
                 disciplines: nextProps.disciplines,
                 socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
                 courses: nextProps.courses,
+                organizationalUnits: nextProps.organizationalUnits,
 
                 editExperiences: [],
                 deleteExperiences: [],
@@ -601,8 +602,11 @@ class EmployeeEditFrom extends Component {
                             />
                             <ContractTab
                                 id={`edit_contract${_id}`}
+                                pageCreate={false}
                                 contracts={this.state.contracts}
                                 courses={this.state.courses}
+                                organizationalUnits = {this.state.organizationalUnits}
+
                                 handleAddContract={this.handleCreateContract}
                                 handleEditContract={this.handleEditContract}
                                 handleDeleteContract={this.handleDeleteContract}

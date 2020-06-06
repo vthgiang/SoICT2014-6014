@@ -24,7 +24,7 @@ exports.searchEducationPrograms = async (params, company) => {
     if (params.organizationalUnit !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForOrganizationalUnits: {$in: params.organizationalUnit} 
+            applyForOrganizationalUnits: {$in: params.organizationalUnit}
         }
     }
     if (params.position !== undefined) {

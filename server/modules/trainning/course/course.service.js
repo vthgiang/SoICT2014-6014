@@ -6,14 +6,20 @@ const {
 } = require('../../../models').schema;
 
 /**
- * Lấy danh sách tất cả các khoá đào tạo
+ * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị)
  * @company : Id công ty
  */
-exports.getAllCourses = async (company) => {
-    let listCourses =  await Course.find({
-        company: company
-    });
+exports.getAllCourses = async (company, organizationalUnits) => {
+    let listEducations =  await EducationProgram.find({
+        company: company,
+        applyForOrganizationalUnits: { $in: organizationalUnits}
+    }, {_id:1})
+    listEducations = listEducations.map(x=>{ return x._id});
 
+    let listCourses = await Course.find({
+        educationProgram: {$in : listEducations}
+    })
+    console.log(listCourses);
     return {listCourses}
 }
 
