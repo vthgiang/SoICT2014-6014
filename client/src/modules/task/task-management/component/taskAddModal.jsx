@@ -169,6 +169,7 @@ class ModalAddTask extends Component {
         let value = event.target.value;
         if (value) {
             this.props.getAllUserOfDepartment(value);
+            this.props.getChildrenOfOrganizationalUnits(value);
             this.setState(state =>{
                 return{
                     ...state,
@@ -581,7 +582,8 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);
