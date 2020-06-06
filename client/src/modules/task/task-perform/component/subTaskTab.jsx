@@ -40,45 +40,29 @@ class SubTaskTab extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { tasks } = this.props;
-        var subtasks,startDate,endDate;
-        if (tasks.subtasks) {
-            subtasks = tasks.subtasks;
-            console.log("subtasks : " + subtasks.length);
-            var subtask=[];
-            for (let n in subtasks){
-                subtask[n]={
-                    ...subtasks[n],
-                    name: subtasks[n].name,
-                    startDate: this.formatDate(subtasks[n].startDate),
-                    endDate: this.formatDate(subtasks[n].endDate),
-                    status: subtasks[n].status,
-                    progress: subtasks[n].progress
-                }
-            }
-            return (
-                <div>
-                    {subtask.map( item =>{
-                        return (
-                            <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
-                                <ul className="nav nav-tabs">
-                                    <li>
-                                    <div className="row">
-                                        <div className="col-xs-5">
-                                            <strong><a style={ {color: "#605ca8" , line: "2.2"}}  href={`http://localhost:3000/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
-                                        </div>
-                                    <div className="col-xs-6">{item.startDate} - {item.endDate}</div>
-                                    <div className="col-xs-1">{item.status}</div>
-                                    </div></li>
-                                </ul>
+        const { translate, tasks } = this.props;
+        var subtasks = tasks.subtasks;
+
+        return (
+            <div>
+                {subtasks && subtasks.length>0 &&
+                    subtasks.map( item =>{
+                    return (
+                        <div style={{marginBottom: 20}}>
+                            <strong><a href={`http://localhost:3000/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
+                            <span>{item.description}</span>
+                            <div>
+                                <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}. </span>
+                                <span>{item.status}. </span>
+                                <span>{item.progress}%</span>
                             </div>
-                        )
-                    })}
-                </div>
-            )
-        }
-        return (<div>{null}</div>)
+                        </div>
+                    )
+                })}
+
+                {subtasks && subtasks.length==0 && <dt>Không có công việc con</dt>}
+            </div>
+        )
     }
 }
 
