@@ -9,33 +9,37 @@ class MultipleBarChart extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            lineBar: true,
+        }
     }
 
     componentDidMount() {
-        this.renderChart(this.state.data);
+        this.renderChart(this.state);
     }
     componentDidUpdate() {
-        this.renderChart(this.state.data);
+        this.renderChart(this.state);
+    }
+    // Bắt sự kiện thay đổi chế đọ xem biểu đồ
+    handleChangeViewChart = (value) => {
+        this.setState({
+            ...this.state,
+            lineBar: value
+        })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.lineBar !== prevState.lineBar) {
-            return {
-                ...prevState,
-                data: {
-                    lineBar: nextProps.lineBar,
-                    nameData1: nextProps.nameData1,
-                    nameData2: nextProps.nameData2,
-                    nameData3: nextProps.nameData3,
-                    ratioX: ['x', "2019-07-01", "2019-08-01", "2019-09-01", "2019-10-01", "2019-11-02", "2019-12-01", "2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"],
-                    data1: ['data1', 12.33, 11.33, 10.33, 13.33, 10.33, 11.33, 12.33, 12.33, 11.33, 12.33, 9.33, 10.33],
-                    data2: ['data2', 13.50, 13.50, 13.50, 12.50, 11.50, 13.50, 10.50, 13.50, 13.50, 11.50, 13.50, 9.50],
-                    data3: ['data3', 11.50, 12.50, 19.50, 13.50, 13.50, 14.50, 13.50, 10.50, 13.50, 13.50, 12.50, 13.50]
-                }
-            }
-        } else {
-            return null;
+        return {
+            ...prevState,
+            nameChart: nextProps.nameChart,
+            nameData1: nextProps.nameData1,
+            nameData2: nextProps.nameData2,
+            nameData3: nextProps.nameData3,
+            ratioX: ['x', "2019-07-01", "2019-08-01", "2019-09-01", "2019-10-01", "2019-11-02", "2019-12-01", "2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"],
+            data1: ['data1', 12.33, 11.33, 10.33, 13.33, 10.33, 11.33, 12.33, 12.33, 11.33, 12.33, 9.33, 10.33],
+            data2: ['data2', 13.50, 13.50, 13.50, 12.50, 11.50, 13.50, 10.50, 13.50, 13.50, 11.50, 13.50, 9.50],
+            data3: ['data3', 11.50, 12.50, 19.50, 13.50, 13.50, 14.50, 13.50, 10.50, 13.50, 13.50, 12.50, 13.50]
+
         }
     }
 
@@ -92,24 +96,39 @@ class MultipleBarChart extends Component {
                 chart.load({
                     columns: [ratioX, dataTmp]
                 });
-            }, 1000);
+            }, 200);
             data.forEach(function (value, index) {
                 setTimeout(function () {
                     dataTmp[index] = value;
                     chart.load({
                         columns: [ratioX, dataTmp],
                     });
-                }, (500 + (delay / 12 * index)));
+                }, (200 + (delay / 12 * index)));
             });
         }
         addColumn(data.ratioX, data.data1, 2400);
-        addColumn(data.ratioX, data.data2, 2400);
-        addColumn(data.ratioX, data.data3, 2400);
+        addColumn(data.ratioX, data.data2, 2800);
+        addColumn(data.ratioX, data.data3, 3200);
     }
     render() {
+        const { lineBar, nameChart } = this.state;
         return (
             <React.Fragment>
-                <div ref="chart"></div>
+                <div className="box">
+                    <div className="box-header with-border">
+                        <h3 className="box-title">{nameChart}</h3>
+                    </div>
+                    <div className="box-body dashboard_box_body">
+                        <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
+                        <div className="box-tools pull-right">
+                            <div className="btn-group pull-rigth">
+                                <button type="button" className={`btn btn-default btn-xs ${lineBar === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
+                                <button type="button" className={`btn btn-default btn-xs ${lineBar === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                            </div>
+                        </div>
+                        <div ref="chart"></div>
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

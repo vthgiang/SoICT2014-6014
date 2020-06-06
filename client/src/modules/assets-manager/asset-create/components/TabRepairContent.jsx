@@ -35,7 +35,7 @@ class TabRepairContent extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (event) => {
+    handleCodeChange = (event) => {
         const {name, value} = event.target;
         this.setState({
             [name]: value

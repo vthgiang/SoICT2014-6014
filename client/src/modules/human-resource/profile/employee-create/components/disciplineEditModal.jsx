@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 import { DisciplineFromValidator } from '../../../commendation-discipline/components/combinedContent';
 class DisciplineEditModal extends Component {
     constructor(props) {
@@ -33,9 +33,8 @@ class DisciplineEditModal extends Component {
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      */
-    handleUnitChange = (e) => {
-        let value = e.target.value;
-        this.validateOrganizationalUnit(value, true);
+    handleUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
         let msg = DisciplineFromValidator.validateOrganizationalUnit(value, this.props.translate)
@@ -150,7 +149,7 @@ class DisciplineEditModal extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -180,7 +179,7 @@ class DisciplineEditModal extends Component {
         }
     }
     render() {
-        const { translate, id } = this.props;
+        const { translate, id, department } = this.props;
         const { startDate, reason, decisionNumber, organizationalUnit, type, errorOnEndDate, errorOnStartDate, endDate,
             errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
@@ -201,7 +200,14 @@ class DisciplineEditModal extends Component {
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="organizationalUnit" value={organizationalUnit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <SelectBox
+                                    id={`edit_discipline${id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnit}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
+                                    onChange={this.handleUnitChange}
+                                />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
@@ -241,5 +247,9 @@ class DisciplineEditModal extends Component {
         );
     }
 };
-const editModal = connect(null, null)(withTranslate(DisciplineEditModal));
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+const editModal = connect(mapState, null)(withTranslate(DisciplineEditModal));
 export { editModal as DisciplineEditModal };

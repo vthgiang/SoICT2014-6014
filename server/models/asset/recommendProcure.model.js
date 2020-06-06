@@ -46,11 +46,11 @@ const RecommendProcureSchema = new Schema({
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
-    createDate: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updateDate: {
+    updatedAt: {
         type: Date,
         default: Date.now
     }

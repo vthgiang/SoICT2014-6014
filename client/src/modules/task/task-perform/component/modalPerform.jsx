@@ -19,7 +19,6 @@ class ModalPerform extends Component {
         
         return (
             <React.Fragment>
-
                 <DialogModal
                     size="100"
                     modalID={`modelPerformTask${this.props.id}`}

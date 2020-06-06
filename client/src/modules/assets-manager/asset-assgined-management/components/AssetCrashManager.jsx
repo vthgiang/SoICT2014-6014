@@ -1,47 +1,46 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { AssetManagerActions } from '../../asset-manager/redux/actions';
-
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {AssetCrashEditForm} from './AssetCrashEditForm';
+import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
+import {AssetCrashActions} from '../redux/actions';
+import {AssetManagerActions} from "../../asset-manager/redux/actions";
+import {UserActions} from "../../../super-admin/user/redux/actions";
 class AssetCrashManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assetNumber: "",
+            code: "",
             assetName: "",
-            assetType: null,
             month: "",
-            status: null,
+            type: null,
             page: 0,
             limit: 5,
         }
-        // this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
+
     componentDidMount() {
-        // this.props.getListAssetCrash(this.state);
-    }
-
-    // Bắt sự kiện click xem thông tin tài sản
-    handleView = async (value) => {
-        await this.setState(state => {
-            return {
-                currentRowView: value
-            }
+        this.props.searchAssetCrashs(this.state);
+        this.props.getAllAsset({
+            code: "",
+            assetName: "",
+            month: "",
+            page: 0,
+            limit: 5,
         });
-        window.$('#modal-view-asset').modal('show');
+        this.props.getAllUsers();
     }
 
-    // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleReport = async (value) => {
-        console.log(value);
+    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
+    handleEdit = async (value) => {
         await this.setState(state => {
             return {
                 ...state,
                 currentRow: value
             }
         });
-        window.$('#modal-failure-report').modal('show');
+        window.$('#modal-edit-assetcrash').modal('show');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -60,58 +59,51 @@ class AssetCrashManager extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (event) => {
-        const { name, value } = event.target;
+    handleCodeChange = (event) => {
+        const {name, value} = event.target;
         this.setState({
             [name]: value
         });
 
     }
 
-    // Function lưu giá trị tên tài sản vào state khi thay đổi
+    // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleAssetNameChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         this.setState({
             [name]: value
         });
 
     }
 
-    // // Function lưu giá trị tháng vào state khi thay đổi
-    // handleMonthChange = (value) => {
-    //     this.setState({
-    //         ...this.state,
-    //         month: value
-    //     });
-    // }
-
-    // Function lưu giá trị loại tài sản vào state khi thay đổi
-    handleAssetTypeChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
+    // Function lưu giá trị tháng vào state khi thay đổi
+    handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            assetType: value
-        })
+            month: value
+        });
     }
 
-    // Function lưu giá trị status vào state khi thay đổi
-    handleStatusChange = (value) => {
+    // Function lưu giá trị loại phiếu vào state khi thay đổi
+    handleTypeChange = (value) => {
         if (value.length === 0) {
             value = null
         }
         ;
         this.setState({
             ...this.state,
-            status: value
+            type: value
         })
     }
 
-    // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = async () => {
-       
-        // this.props.getListAssetCrash(this.state);
+    // Function bắt sự kiện tìm kiếm
+    handleSubmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
+        this.props.searchAssetCrashs(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -119,178 +111,169 @@ class AssetCrashManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListAssetCrash(this.state);
+        this.props.searchAssetCrashs(this.state);
     }
 
-    //Bắt sự kiện chuyển trang
+    // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
             page: parseInt(page),
 
         });
-        this.props.getListAssetCrash(this.state);
+        this.props.searchAssetCrashs(this.state);
     }
 
     render() {
-        const { translate, asset } = this.props;
-        var listAssetCrash = "";
-
-        if (this.props.assetsManager.isLoading === false) {
-            listAssetCrash = this.props.assetsManager.listDepreciaton;
+        const {translate, assetCrash, auth} = this.props;
+        var listAssetCrashs = "";
+        var formater = new Intl.NumberFormat();
+        if (this.props.assetCrash.isLoading === false) {
+            listAssetCrashs = this.props.assetCrash.listAssetCrashs;
         }
-        var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.assetsManager.totalList / this.state.limit) :
-            parseInt((this.props.assetsManager.totalList / this.state.limit) + 1);
+        var pageTotal = ((this.props.assetCrash.totalList % this.state.limit) === 0) ?
+            parseInt(this.props.assetCrash.totalList / this.state.limit) :
+            parseInt((this.props.assetCrash.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" >
+            <div id="assetcrash" className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* <RepairUpgradeCreateForm/> */}
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách thiết bị được bàn giao: </h4>
+                        <h4 className="box-title">Danh sách sự cố thiết bị: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleAssetNumberChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off"/>
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleRepairNumberChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder="Mã phiếu" autoComplete="off"/>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
-                            <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
-                                onChange={this.handleTypeChange}
-                                items={[
-                                    
-                                ]}
-                            >
-                            </SelectMulti>
-                        </div>
-                        {/* <div className="form-group">
-                            <label className="form-control-static">Tháng</label>
-                            <DatePicker
-                                id="month1"
-                                dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
-                                onChange={this.handleMonthChange}
-                            />
-                        </div> */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                         options={{nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái"}}
-                                         onChange={this.handleStatusChange}
+                            <SelectMulti id={`multiSelectType1`} multiple="multiple"
+                                         options={{nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả sự cố"}}
+                                         onChange={this.handleTypeChange}
                                          items={[
-                                            //  {value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng"},
-                                             {value: "Đang sử dụng", text: "Đang sử dụng"},
-                                             {value: "Hỏng hóc", text: "Hỏng hóc"},
-                                             {value: "Mất", text: "Mất"}
+                                             {value: "Báo hỏng", text: "Báo hỏng"},
+                                             {value: "Báo mất", text: "Báo mất"}
                                          ]}
                             >
                             </SelectMulti>
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">{translate('page.month')}</label>
+                            <DatePicker
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
+                            />
+                        </div>
+                        <div className="form-group">
                             {/* <label></label> */}
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()} >Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
                         </div>
                     </div>
-                    <table id="assetassigned-table" className="table table-striped table-bordered table-hover">
+                    <table id="assetcrash-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                            <tr>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Giá trị tài sản</th>
-                                <th style={{ width: "20%" }}>Thời gian sử dụng từ ngày</th>
-                                {/* <th style={{ width: "10%" }}>Vị trí tài sản</th> */}
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
-                                    <DataTableSetting
-                                        tableId="assetassigned-table"
-                                        columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Giá trị tài sản",
-                                            "Thời gian sử dụng từ ngày",
-                                            // "Vị trí tài sản",
-                                            "Trạng thái"
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
+                        <tr>
+                            <th style={{width: "8%"}}>Mã tài sản</th>
+                            <th style={{width: "10%"}}>Tên tài sản</th>
+                            <th style={{width: "10%"}}>Phân loại</th>
+                            <th style={{width: "10%"}}>Thời gian báo cáo</th>
+                            <th style={{width: "10%"}}>Người báo cáo</th>
+                            <th style={{width: "10%"}}>Thời gian phát hiện sự cố</th>
+                            <th style={{width: "10%"}}>Nội dung</th>
+                            <th style={{width: '100px', textAlign: 'center'}}>Hành động
+                                <DataTableSetting
+                                    tableId="assetcrash-table"
+                                    columnArr={[
+                                        "Mã tài sản",
+                                        "Tên tài sản",
+                                        "Phân loại",
+                                        "Thời gian báo cáo",
+                                        "Người báo cáo",
+                                        "Thời gian phát hiện sự cố",
+                                        "Nội dung"
+                                    ]}
+                                    limit={this.state.limit}
+                                    setLimit={this.setLimit}
+                                    hideColumnOption={true}
+                                />
+                            </th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {(typeof listAssetCrash !== 'undefined' && listAssetCrash.length !== 0) &&
-                                listAssetCrash.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
-                                        <td>{x.assetType}</td>
-                                        <td>{x.initialPrice}</td>
-                                        <td>{x.dateStartUse}</td>
-                                        {/* <td>{x.location}</td> */}
-                                        <td>{x.status}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{width: '5px'}} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleReport(x)} className="edit text-yellow" style={{ width: '5px' }} title="Báo cáo sự cố thiết bị"><i className="material-icons">edit</i></a>
-                                        </td>
-                                    </tr>))
-                            }
+                        {(typeof listAssetCrashs !== 'undefined' && listAssetCrashs.length !== 0) &&
+                        listAssetCrashs.filter(item => item.annunciator._id === auth.user._id).map((x, index) => (
+                        // listAssetCrashs.map((x, index) => (
+                            <tr key={index}>
+                                <td>{x.asset !== null ? x.asset.code : ''}</td>
+                                <td>{x.asset !== null ? x.asset.assetName : ''}</td>
+                                <td>{x.type}</td>
+                                <td>{x.reportDate}</td>
+                                <td>{x.annunciator.name}</td>
+                                <td>{x.detectionDate}</td>
+                                <td>{x.reason}</td>
+                                <td style={{textAlign: "center"}}>
+                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin báo cáo sự cố"><i
+                                        className="material-icons">edit</i></a>
+                                    <DeleteNotification
+                                        content="Xóa thông tin báo cáo sự cố"
+                                        data={{
+                                            id: x._id,
+                                            info: x.asset.code //+ " - " + x.asset.code
+                                        }}
+                                        func={this.props.deleteAssetCrash}
+                                    />
+                                </td>
+                            </tr>))
+                        }
                         </tbody>
                     </table>
-                    {/* {assetsManager.isLoading ?
+                    {assetCrash.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listAssetCrash === 'undefined' || listAssetCrash.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listAssetCrashs === 'undefined' || listAssetCrashs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} /> */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
                 </div>
-                {/* {
-                    this.state.currentRowView !== undefined &&
-                    <AssetDetailForm
-                        _id={this.state.currentRowView.asset[0]._id}
-                        asset={this.state.currentRowView.asset}
-                        repairUpgrade={this.state.currentRowView.repairUpgrade}
-                        distributeTransfer={this.state.currentRowView.distributeTransfer}
-                    />
-                } */}
-                
-                {/* {
+
+                {
                     this.state.currentRow !== undefined &&
-                    <AssetEditForm
+                    <AssetCrashEditForm
                         _id={this.state.currentRow._id}
-                        repairNumber={this.state.currentRow.repairNumber}
-                        createDate={this.state.currentRow.createDate}
+                        assetId={this.state.currentRow.asset._id}
+                        code={this.state.currentRow.asset.code}
+                        asset={this.state.currentRow.asset}
+                        assetName={this.state.currentRow.asset.assetName}
                         type={this.state.currentRow.type}
-                        assetNumber={this.state.currentRow.assetNumber}
-                        assetName={this.state.currentRow.assetName}
-                        repairDate={this.state.currentRow.repairDate}
-                        completeDate={this.state.currentRow.completeDate}
-                        cost={this.state.currentRow.cost}
-                        status={this.state.currentRow.status}
+                        annunciator={this.state.currentRow.annunciator._id}
+                        reportDate={this.state.currentRow.reportDate}
+                        detectionDate={this.state.currentRow.detectionDate}
+                        reason={this.state.currentRow.reason}
                     />
-                } */}
-            </div >
+                }
+            </div>
         );
     }
 };
 
 function mapState(state) {
-    const { assetsManager } = state;
-    return { assetsManager };
+    const {assetCrash, auth} = state;
+    return {assetCrash, auth};
 };
 
 const actionCreators = {
-    // getListAssetCrash: AssetActions.getListAssetCrash,
+    searchAssetCrashs: AssetCrashActions.searchAssetCrashs,
+    deleteAssetCrash: AssetCrashActions.deleteAssetCrash,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    getAllUsers: UserActions.get
 };
 
 const connectedListAssetCrash = connect(mapState, actionCreators)(withTranslate(AssetCrashManager));
-export { connectedListAssetCrash as AssetCrashManager };
+export {connectedListAssetCrash as AssetCrashManager};

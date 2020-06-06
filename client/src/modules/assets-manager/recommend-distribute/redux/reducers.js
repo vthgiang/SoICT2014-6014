@@ -20,8 +20,8 @@ export function recommendDistribute(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listRecommendDistributes: action.payload,
-                //totalList: action.payload.totalList,
+                listRecommendDistributes: action.payload.listRecommendDistributes,
+                totalList: action.payload.totalList,
             };
         case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS:
             return {

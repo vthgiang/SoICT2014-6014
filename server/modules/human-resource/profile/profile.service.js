@@ -7,7 +7,8 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    Role
+    Role,
+    EmployeeCourse
 } = require('../../../models').schema;
 
 /**
@@ -83,7 +84,8 @@ exports.getEmployeeProfile = async (userId) => {
         let annualLeaves = await AnnualLeave.find({employee: employees[0]._id})
         let commendations = await Commendation.find({employee: employees[0]._id})
         let disciplines = await Discipline.find({employee: employees[0]._id})
-        return { employees: employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        let courses = await EmployeeCourse.find({employee: employees[0]._id})
+        return { employees: employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
 
 }
@@ -213,9 +215,9 @@ exports.searchEmployeeProfiles = async (params, company) => {
         let annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
         let commendations = await Commendation.find({employee: listEmployees[n]._id})
         let disciplines = await Discipline.find({employee: listEmployees[n]._id})
-        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        let courses = await EmployeeCourse.find({employee: listEmployees[n]._id})
+        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
-    
     return { data, totalList }
 }
 
@@ -262,6 +264,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
         employeeTimesheetId: data.employeeTimesheetId,
         company: company,
         gender: data.gender,
+        status: data.status,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -372,6 +375,16 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
+    if(data.courses!==undefined){
+        let courses = data.courses;
+        for (let x in courses) {
+            EmployeeCourse.create({
+                employee: createEmployee._id,
+                course: courses[x].course,
+                result: courses[x].result,
+            });
+        } 
+    }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
     let employees = await Employee.find({_id: createEmployee._id});
@@ -379,8 +392,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
     let annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
     let commendations = await Commendation.find({employee: createEmployee._id})
     let disciplines = await Discipline.find({employee: createEmployee._id})
+    let courses = await EmployeeCourse.find({employee: createEmployee._id})
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 
 
@@ -392,7 +406,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
         createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
         createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
-        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, 
+        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, deleteCourses, editCourses, createCourses,
         createFiles, editFiles, deleteFiles, createSocialInsuranceDetails, editSocialInsuranceDetails, deleteSocialInsuranceDetails} = data;
     let avatar = fileInfo.avatar === "" ? employee.avatar : fileInfo.avatar,
         fileDegree = fileInfo.fileDegree,
@@ -437,6 +451,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeNumber= employee.employeeNumber;
     oldEmployee.employeeTimesheetId= employee.employeeTimesheetId;
     oldEmployee.gender= employee.gender;
+    oldEmployee.status= employee.status;
     oldEmployee.birthdate= employee.birthdate;
     oldEmployee.birthplace= employee.birthplace;
     oldEmployee.identityCardNumber= employee.identityCardNumber;
@@ -503,16 +518,18 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses );
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
     let employees = await Employee.find({_id: oldEmployee._id});
-    let salarys = await Salary.find({employee: oldEmployee._id})
-    let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id})
-    let commendations = await Commendation.find({employee: oldEmployee._id})
-    let disciplines = await Discipline.find({employee: oldEmployee._id})
+    let salarys = await Salary.find({employee: oldEmployee._id});
+    let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id});
+    let commendations = await Commendation.find({employee: oldEmployee._id});
+    let disciplines = await Discipline.find({employee: oldEmployee._id});
+    let courses = await EmployeeCourse.find({employee: oldEmployee._id});
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 /**
  * Xoá thông tin nhân viên

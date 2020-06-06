@@ -85,14 +85,14 @@ const DistributeTransferSchema = new Schema({
     reason: {// nội dung, lý do
         type: String
     },
-    // createDate: { // 2
-    //     type: Date,
-    //     default: Date.now
-    // },
-    // updateDate: {
-    //     type: Date,
-    //     default: Date.now
-    // }
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = DistributeTransfer = mongoose.model("distribute_transfer", DistributeTransferSchema);

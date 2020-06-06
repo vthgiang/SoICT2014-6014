@@ -6,6 +6,19 @@ const {
 } = require('../../../models').schema;
 
 /**
+ * Lấy danh sách tất cả các khoá đào tạo
+ * @company : Id công ty
+ */
+exports.getAllCourses = async (company) => {
+    let listCourses =  await Course.find({
+        company: company
+    });
+
+    return {listCourses}
+}
+
+
+/**
  * Lấy danh sách khoá học theo key
  * @params : dữ liệu key tìm kiếm
  * @company : Id công ty

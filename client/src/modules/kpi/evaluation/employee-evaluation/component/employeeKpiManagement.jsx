@@ -10,7 +10,9 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-
+import {
+    getStorage
+} from '../../../../../config';
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { Comments } from './employeeKpiComment';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
@@ -27,8 +29,8 @@ class KPIMember extends Component {
             endDate : this.formatDateBack(Date.now()),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: "",
-                status: 4,
+                user: getStorage("userId"),
+                status: 0,
                 startDate: this.formatDate(Date.now()),
                 endDate: this.formatDate(Date.now())
             },
@@ -37,18 +39,18 @@ class KPIMember extends Component {
         };
     }
     componentDidMount() {
-        var infosearch = {
-            role: localStorage.getItem("currentRole"),
-            user: "all",
-            status: 4,
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now())
-        }
+        // var infosearch = {
+        //     role: localStorage.getItem("currentRole"),
+        //     // user: "all",
+        //     // status: 4,
+        //     startDate: "",
+        //     endDate: ""
+        // }
         // Lấy tất cả nhân viên của phòng ban
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
-        this.props.getAllKPIMemberOfUnit(infosearch);
+        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
     }
     formatDateBack(date) {
         var d = new Date(date), month, day, year;
@@ -89,7 +91,11 @@ class KPIMember extends Component {
         } else if (status === 2) {
             return "Đã kích hoạt";
         } else if (status === 3) {
-            return "Đã kết thúc"
+            return "Đã kết thúc";
+        } else if (status === 4) {
+            return "Đang hoạt động";
+        } else if (status === 5) {
+            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
@@ -135,10 +141,6 @@ class KPIMember extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    // user: this.user.value,
-                    // status: this.status.value,
-                    // startDate: this.state.startDate,
-                    // endDate: this.state.endDate
                     user: this.state.user,
                     status: this.state.status,
                     startDate: this.state.startDate,
@@ -166,7 +168,7 @@ class KPIMember extends Component {
         }
     }
     handleShowApproveModal = async (id) => {
-        console.log('da goi den showApprove');
+        // console.log('da goi den showApprove');
         await this.setState(state => {
             return {
                 ...state,
@@ -201,6 +203,10 @@ class KPIMember extends Component {
         let unitMembers;
         if (userdepartments) {
             unitMembers = [
+                {
+                    // text: "Chọn nhân viên",
+                    value: [{text:"--Chọn nhân viên--", value:""}]
+                },
                 {
                     text: userdepartments.roles.dean.name,
                     value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
@@ -243,6 +249,7 @@ class KPIMember extends Component {
                                     // className="form-control"
                                     style={{width: "100%"}}
                                     items = {[
+                                        {value:-1, text : "--Chọn trạng thái--"},
                                         {value:0, text : "Đang thiết lập"},
                                         {value:1, text : "Chờ phê duyệt"},
                                         {value:2, text : "Đã kích hoạt"},

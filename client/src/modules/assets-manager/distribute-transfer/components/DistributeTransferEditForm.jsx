@@ -184,19 +184,19 @@ class DistributeTransferEditForm extends Component {
     }
 
     //Bắt sự kiện thay đổi "Mã tài sản"
-    handleAssetNumberChange = (e) => {
+    handleCodeChange = (e) => {
         const selectedIndex = e.target.options.selectedIndex;
         this.setState({userHandoverManIndex: "", assetIndex: e.target.options[selectedIndex].getAttribute('data-key')});
         let value = e.target.value;
-        this.validateAssetNumber(value, true);
+        this.validateCode(value, true);
     }
-    validateAssetNumber = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateAssetNumber(value, this.props.translate)
+    validateCode = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateCode(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnAssetNumber: msg,
+                    errorOnCode: msg,
                     asset: value,
                 }
             });
@@ -247,7 +247,7 @@ class DistributeTransferEditForm extends Component {
         let result =
             this.validateDistributeNumber(this.state.distributeNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
-            this.validateAssetNumber(this.state.assetNumber, false) &&
+            this.validateCode(this.state.code, false) &&
             this.validatePlace(this.state.place, false) &&
             this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
@@ -269,7 +269,8 @@ class DistributeTransferEditForm extends Component {
         };
         console.log('newDataToSubmit', newDataToSubmit);
         if (this.isFormValidated()) {
-            return this.props.updateDistributeTransfer(this.state._id, newDataToSubmit).then(({response}) => {
+            return this.props.updateDistributeTransfer(this.state._id, newDataToSubmit)
+            .then(({response}) => {
                 if (response.data.success) {
                     this.props.updateAsset(this.state.assetId, newDataToUpdateAsset);
                 }
@@ -289,7 +290,7 @@ class DistributeTransferEditForm extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.assetId !== prevState.assetId) {
+        if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -297,7 +298,7 @@ class DistributeTransferEditForm extends Component {
                 dateCreate: nextProps.dateCreate,
                 type: nextProps.type,
                 place: nextProps.place,
-                assetNumber: nextProps.assetNumber,
+                code: nextProps.code,
                 asset: nextProps.assetId,
                 assetId: nextProps.assetId,
                 assetName: nextProps.assetName,
@@ -316,7 +317,7 @@ class DistributeTransferEditForm extends Component {
                 errorOnPlace: undefined,
                 errorOnHandoverMan: undefined,
                 errorOnReceiver: undefined,
-                errorOnAssetNumber: undefined,
+                errorOnCode: undefined,
                 errorOnNextLocation: undefined,
                 errorOnReason: undefined,
             }
@@ -343,9 +344,9 @@ class DistributeTransferEditForm extends Component {
         const {translate, distributeTransfer, assetsManager, user} = this.props;
         console.log('assetsManager',assetsManager);
         const {
-            distributeNumber, dateCreate, type, place, assetNumber, assetName, manager, positionManager,
+            distributeNumber, dateCreate, type, place, code, assetName, manager, positionManager,
             handoverMan, positionHandoverMan, receiver, positionReceiver, dateStartUse, dateEndUse, reason, nowLocation, nextLocation,
-            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber,
+            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnCode,
             errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason, assetId,
         } = this.state;
         return (
@@ -393,15 +394,15 @@ class DistributeTransferEditForm extends Component {
                                     <ErrorLabel content={errorOnPlace}/>
                                 </div>
 
-                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnCode === undefined ? "" : "has-error"}`}>
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <select id="drops1" className="form-control" name="asset" defaultValue={assetId}
                                             placeholder="Please Select"
-                                            onChange={this.handleAssetNumberChange}>
+                                            onChange={this.handleCodeChange}>
                                         <option value="" disabled>Please Select</option>
                                         {assetsManager.allAsset ? assetsManager.allAsset.map((item, index) => {
                                             return (
-                                                <option data-key={index} key={index} value={item.asset._id}>{item.asset.assetNumber}</option>
+                                                <option data-key={index} key={index} value={item.asset._id}>{item.asset.code}</option>
                                             )
                                         }) : null}
                                     </select>

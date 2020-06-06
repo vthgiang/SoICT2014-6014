@@ -26,13 +26,15 @@ exports.getKPIAllMember = async (data) => {
                 organizationalUnit: department._id,
                 date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else if (status === 4) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                status: { $ne: 3 },
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else {
+        } 
+        // else if (status === 4) {
+        //     kpipersonals = await KPIPersonal.find({
+        //         organizationalUnit: department._id,
+        //         status: { $ne: 3 },
+        //         date: { "$gte": startdate, "$lt": enddate }
+        //     }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+        // }
+         else {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 status: status,
@@ -46,14 +48,16 @@ exports.getKPIAllMember = async (data) => {
                 creator: data.user,
                 date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else if (status === 4) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                status: { $ne: 3 },
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else {
+        } 
+        // else if (status === 4) {
+        //     kpipersonals = await KPIPersonal.find({
+        //         organizationalUnit: department._id,
+        //         creator: data.user,
+        //         status: { $ne: 3 },
+        //         date: { "$gte": startdate, "$lt": enddate }
+        //     }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+        // }
+         else {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 creator: data.user,
