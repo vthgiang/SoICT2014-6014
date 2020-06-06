@@ -57,6 +57,13 @@ class TaskManagement extends Component {
         // }
     }
 
+    componentDidUpdate(prevProps, prevState) {        
+        if(prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length){
+            this.handleUpdateData();
+        }
+        
+    }
+    
     UNSAFE_componentWillUpdate() {
         let script = document.createElement('script');
         script.src = '../lib/main/js/GridTableVers1.js';//fix /lib/...
@@ -455,7 +462,6 @@ class TaskManagement extends Component {
                     name: dataTemp[n].name,
                     organization: dataTemp[n].organizationalUnit.name,
                     priority: this.formatPriority(dataTemp[n].priority),
-                    // priority: dataTemp[n].priority,
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: dataTemp[n].status,
@@ -486,6 +492,7 @@ class TaskManagement extends Component {
                     data[i] = { ...data[i], action: ["edit", "startTimer", ["add", archived, "delete"]] }
                 }
             }
+            
         }
 
         return (

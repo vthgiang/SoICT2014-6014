@@ -144,7 +144,7 @@ export function tasks(state = {}, action) {
                 adding: true,
                 isLoading: false
             };
-        case taskManagementConstants.ADDNEW_TASK_SUCCESS:
+        case taskManagementConstants.ADDNEW_TASK_SUCCESS:            
             return {
                 ...state,
                 tasks: [
