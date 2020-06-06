@@ -10,6 +10,7 @@ import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { months } from 'moment';
 class EmployeeCreatePage extends Component {
     constructor(props) {
@@ -57,6 +58,9 @@ class EmployeeCreatePage extends Component {
         if (monthYear === true) {
             return [year, month].join('-');
         } else return [year, month, day].join('-');
+    }
+    componentDidMount(){
+        this.props.getDepartment();
     }
     // Function upload avatar 
     handleUpload = (img, avatar) => {
@@ -148,16 +152,13 @@ class EmployeeCreatePage extends Component {
         })
     }
 
-    // TODO: function thêm thông tin quá trình đào tạo
+    // function thêm thông tin quá trình đào tạo
     handleChangeCourse = (data) => {
-        const { employeeNew } = this.state;
-        var course = employeeNew.course;
+        const { employee } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                course: [...course, {
-                    ...data
-                }]
+            employee: {
+                ...employee,
+                courses: data
             }
         })
     }
@@ -265,6 +266,9 @@ class EmployeeCreatePage extends Component {
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}
+                            handleAddCourse={this.handleChangeCourse}
+                            handleEditCourse={this.handleChangeCourse}
+                            handleDeleteCourse={this.handleChangeCourse}
                         />
                         <DisciplineTab
                             id="khenthuong"
@@ -306,12 +310,13 @@ class EmployeeCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
+    const { employeesManager, } = state;
     return { employeesManager };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    getDepartment: DepartmentActions.get,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));

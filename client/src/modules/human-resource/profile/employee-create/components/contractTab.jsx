@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LOCAL_SERVER_API } from '../../../../../env';
-import { ContractAddModal, ContractEditModal } from './combinedContent';
+import { ContractAddModal, ContractEditModal, CourseAddModal, } from './combinedContent';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -56,7 +56,7 @@ class ContractTab extends Component {
         })
         this.props.handleEditContract(this.state.contracts, data);
     }
-    // Function xoá bằng cấp
+    // Function xoá hợp đồng lao động
     delete = async (index) => {
         var { contracts } = this.state;
         var data = contracts[index];
@@ -66,6 +66,38 @@ class ContractTab extends Component {
             contracts: [...contracts]
         })
         this.props.handleDeleteContract(this.state.contracts, data)
+    }
+
+
+    // function thêm thông tin khoá đào tạo
+    handleAddCourse = async (data) => {
+        const { courses } = this.state;
+        await this.setState({
+            courses: [...courses, {
+                ...data
+            }]
+        })
+        this.props.handleAddCourse(this.state.courses, data);
+    }
+    // function chỉnh sửa thông tin khoá đào tạo
+    handleEditCourse = async (data) => {
+        const { courses } = this.state;
+        courses[data.index] = data;
+        await this.setState({
+            courses: courses
+        })
+        this.props.handleEditCourse(this.state.courses, data);
+    }
+    // Function xoá thông tin khoá đào tạo
+    deleteCourse = async (index) => {
+        var { courses } = this.state;
+        var data = courses[index];
+        courses.splice(index, 1);
+        await this.setState({
+            ...this.state,
+            courses: [...courses]
+        })
+        this.props.handleDeleteCourse(this.state.courses, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -131,18 +163,16 @@ class ContractTab extends Component {
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
-                        <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>{translate('modal.create')}</button>
+                        <CourseAddModal handleChange={this.handleAddCourse} id={`addCourse${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
+                                    <th>Mã khoá đào tạo</th>
                                     <th>{translate('manage_employee.course_name')}</th>
                                     <th>{translate('manage_employee.start_day')}</th>
                                     <th>{translate('manage_employee.end_date')}</th>
-                                    <th>{translate('manage_employee.diploma_issued_by')}</th>
-                                    <th>{translate('manage_employee.type_education')}</th>
-                                    <th>{translate('manage_employee.cost')}</th>
-                                    {/* <th style={{ width: '12%' }}>Thời gian cam kết</th> */}
-                                    <th>{translate('table.status')}</th>
+                                    <th>Địa điểm đào tạo</th>
+                                    <th>Kết quả</th>
                                     <th>{translate('table.action')}</th>
                                 </tr>
                             </thead>
@@ -150,15 +180,15 @@ class ContractTab extends Component {
                                 {(typeof courses !== 'undefined' && courses.length !== 0) &&
                                     courses.map((x, index) => (
                                         <tr key={index}>
+                                            <td></td>
                                             <td>{x.name}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{x.offeredBy}</td>
-                                            <td>{x.courseType}></td>
-                                            <td><input type="text" style={{ width: "100%" }} /></td>
                                             <td>{x.status}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
+                                            <td >
+                                                <a onClick={() => this.handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteCourse(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}

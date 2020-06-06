@@ -209,7 +209,7 @@ class PraiseCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
-                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn chương trình đào tạo' }]}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
                                     onChange={this.handleOrganizationalUnitChange}
                                 />
                                 <ErrorLabel content={errorOnOrganizationalUnit} />
