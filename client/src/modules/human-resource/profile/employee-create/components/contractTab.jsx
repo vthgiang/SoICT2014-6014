@@ -30,8 +30,8 @@ class ContractTab extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
-    componentDidMount(){
-        this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits });
+    componentDidMount() {
+        this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits, positions: this.state.roles });
     }
     handleCourseEdit = async (value, index) => {
         let courseInfo = '';
@@ -143,14 +143,12 @@ class ContractTab extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.id !== this.state.id) {
-            this.props.getListCourse({ organizationalUnits: nextProps.organizationalUnits });
+            this.props.getListCourse({ organizationalUnits: nextProps.organizationalUnits, positions: nextProps.roles });
         }
         return true
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log(nextProps.id);
-        console.log(prevState.id);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -158,7 +156,8 @@ class ContractTab extends Component {
                 contracts: nextProps.contracts,
                 courses: nextProps.courses,
                 pageCreate: nextProps.pageCreate,
-                organizationalUnits: nextProps.organizationalUnits
+                organizationalUnits: nextProps.organizationalUnits,
+                roles: nextProps.roles
             }
         } else {
             return null;
@@ -168,7 +167,6 @@ class ContractTab extends Component {
 
     render() {
         const { id, translate, course, } = this.props;
-        console.log(this.state.organizationalUnits);
         const { contracts, courses, pageCreate } = this.state;
         return (
             <div id={id} className="tab-pane">

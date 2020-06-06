@@ -223,15 +223,6 @@ const EmployeeSchema = new Schema({
         endDate: Date,
         urlFile: String
     }],
-    // TODO: Làm sau
-    courses: [{
-        name: String,
-        startDate: Date,
-        endDate: Date,
-        courseType: String,
-        offeredBy: String, // tổ chức bởi đơn vị nào
-        status: String // hoàn thành/chưa hoàn thành/đang tham gia/không đạt khoa học {code, value}
-    }],
     archivedRecordNumber: { // Mã hồ sơ lưu trữ
         type: String
     },

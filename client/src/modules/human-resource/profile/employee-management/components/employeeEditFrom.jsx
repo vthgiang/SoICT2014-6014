@@ -495,6 +495,7 @@ class EmployeeEditFrom extends Component {
                 socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
                 courses: nextProps.courses,
                 organizationalUnits: nextProps.organizationalUnits,
+                roles: nextProps.roles,
 
                 editExperiences: [],
                 deleteExperiences: [],
@@ -525,7 +526,6 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
@@ -605,7 +605,8 @@ class EmployeeEditFrom extends Component {
                                 pageCreate={false}
                                 contracts={this.state.contracts}
                                 courses={this.state.courses}
-                                organizationalUnits = {this.state.organizationalUnits}
+                                organizationalUnits={this.state.organizationalUnits}
+                                roles={this.state.roles}
 
                                 handleAddContract={this.handleCreateContract}
                                 handleEditContract={this.handleEditContract}

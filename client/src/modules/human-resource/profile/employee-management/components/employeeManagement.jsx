@@ -314,6 +314,7 @@ class EmployeeManagement extends Component {
                         disciplines={this.state.currentRow.disciplines}
                         courses={this.state.currentRow.courses}
                         organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
+                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
                     />
                 }
             </div>

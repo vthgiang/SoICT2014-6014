@@ -26,6 +26,7 @@ function getListCourse(data) {
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
             organizationalUnits: data !== undefined ? data.organizationalUnits : data,
+            positions: data !== undefined ? data.positions : data,
         }
     }, false, true, 'training.course');
 }

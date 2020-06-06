@@ -147,6 +147,8 @@ exports.getEmployeeInforById = async(id)=> {
 /**
  * Lấy tất cả danh sách nhân viên đang làm việc của công ty theo đơn vị và phòng ban
  * @company : id công ty
+ * @organizationalUnits : array id đơn vị
+ * @positions : array id chức vụ
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
 exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
