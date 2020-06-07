@@ -848,6 +848,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
  * edit task by responsible employee---PATCH
  */
 exports.editTaskByAccountableEmployees = async (data, taskId) => {
+    console.log('data', data);
     var description = data.description;
     var name = data.name;
     var priority = data.priority;
@@ -864,7 +865,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     
     // var date = Date.now();
     var date = data.date;
-    var evaluateId = await checkEvaluations(date, taskId);
+    // var evaluateId = await checkEvaluations(date, taskId);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
@@ -981,12 +982,9 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     // console.log('task ============================== ' , task, task.evaluations);
     // cập nhật thông tin result
 
-    // var listResult = task.evaluations[task.evaluations.length-1].results
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
 
-    console.log('kkkkkkkkkkkk', listResult);
-
-    // console.log('taskiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', task.taskInformations, task.evaluations[task.evaluations.length-1].taskInformations);
+    // console.log('kkkkkkkkkkkk', listResult);
 
     var check_results = listResult.find(r => (String(r.employee) === user && String(r.role === "Consulted")));
     console.log('check_results',check_results);
@@ -1135,10 +1133,9 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     // var listResult = task.evaluations[task.evaluations.length-1].results;
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
-    console.log('rrrrrrrrrrrr', listResult);
 
     var check_results = listResult.find(r => ( String(r.employee) === user && String(r.role) === "Responsible" ));
-    console.log('check_results',check_results);
+    // console.log('check_results',check_results);
     if(check_results === undefined){
         await Task.updateOne(
             {
@@ -1191,60 +1188,67 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     )
 
     // update Info task
-    var cloneInfo = task.taskInformations;
-    for(let item in info){
-        for( let i in cloneInfo){   
-            if(info[item].code === cloneInfo[i].code){
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly: cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value
-                }
+    var splitterDate = date.split("-");
+    var dateISO = new Date(splitterDate[2], splitterDate[1]-1, splitterDate[0]);
+    var monthOfParams = dateISO.getMonth();
+    var yearOfParams = dateISO.getFullYear();
+    var now = new Date();
 
-                // console.log('cloneInfo[i]', cloneInfo[i]);
-                await Task.updateOne(
-                    {
-                        _id: taskId,
-                        "taskInformations._id": cloneInfo[i]._id
-                    }, 
-                    {
-                        $set: {
-                            "taskInformations.$.value": cloneInfo[i].value
-                        }
+        var cloneInfo = task.taskInformations;
+        for(let item in info){
+            for( let i in cloneInfo){   
+                if(info[item].code === cloneInfo[i].code){
+                    cloneInfo[i] = {
+                        filledByAccountableEmployeesOnly: cloneInfo[i].filledByAccountableEmployeesOnly,
+                        _id: cloneInfo[i]._id,
+                        code: cloneInfo[i].code,
+                        name: cloneInfo[i].name,
+                        description: cloneInfo[i].description,
+                        type: cloneInfo[i].type,
+                        extra: cloneInfo[i].extra,
+                        value: info[item].value
                     }
-                    ,
-                    {
-                        $new: true
-                    }
-                )
-                await Task.updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId
-                    }, 
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value": cloneInfo[i].value
-                        }
-                    },
-                    {
-                        arrayFilters: [
+
+                    if(yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth()) ){
+                        // console.log('cloneInfo[i]', cloneInfo[i]);
+                        await Task.updateOne(
                             {
-                                "elem._id": cloneInfo[i]._id
+                                _id: taskId,
+                                "taskInformations._id": cloneInfo[i]._id
+                            }, 
+                            {
+                                $set: {
+                                    "taskInformations.$.value": cloneInfo[i].value
+                                }
+                            },
+                            {
+                                $new: true
                             }
-                        ]
+                        )
                     }
                     
-                )
+                    await Task.updateOne(
+                        {
+                            _id: taskId,
+                            "evaluations._id": evaluateId
+                        }, 
+                        {
+                            $set: {
+                                "evaluations.$.taskInformations.$[elem].value": cloneInfo[i].value
+                            }
+                        },
+                        {
+                            arrayFilters: [
+                                {
+                                    "elem._id": cloneInfo[i]._id
+                                }
+                            ]
+                        }
+                        
+                    )
+                }
             }
         }
-    }
-
 
     // update date of evaluation
 
@@ -1348,10 +1352,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    // var listResult = task.evaluations[task.evaluations.length-1].results;
     // var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
-    // console.log('rrrrrrrrrrrr', listResult);
 
     for(let i in listResult){
         console.log('list---------------------------------', listResult[i].role, listResult[i].employee, typeof(listResult[i].role), typeof(listResult[i].employee) );
@@ -1436,11 +1438,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    // var listResult = task2.evaluations[task2.evaluations.length-1].results;
     var listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     // cập nhật điểm cá nhân cho ng phe duyet
-    console.log('list', listResult2);
+    // console.log('list', listResult2);
     var check_approve = listResult2.find(r => ( String(r.employee) === user && String(r.role) === "Accountable" ));
     
     console.log('check_approve',check_approve);
@@ -1472,61 +1473,69 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
 
     // update Info task
-    var cloneInfo = task.taskInformations;
-    for(let item in info){
-        for( let i in cloneInfo){   
-            if(info[item].code === cloneInfo[i].code){
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly: cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value
-                }
+    var splitterDate = date.split("-");
+    var dateISO = new Date(splitterDate[2], splitterDate[1]-1, splitterDate[0]);
+    var monthOfParams = dateISO.getMonth();
+    var yearOfParams = dateISO.getFullYear();
+    var now = new Date();
 
-                // console.log('cloneInfo[i]', cloneInfo[i]);
-                await Task.updateOne(
-                    {
-                        _id: taskId,
-                        "taskInformations._id": cloneInfo[i]._id
-                    }, 
-                    {
-                        $set: {
-                            "taskInformations.$.value": cloneInfo[i].value
-                        }
+        var cloneInfo = task.taskInformations;
+        for(let item in info){
+            for( let i in cloneInfo){   
+                if(info[item].code === cloneInfo[i].code){
+                    cloneInfo[i] = {
+                        filledByAccountableEmployeesOnly: cloneInfo[i].filledByAccountableEmployeesOnly,
+                        _id: cloneInfo[i]._id,
+                        code: cloneInfo[i].code,
+                        name: cloneInfo[i].name,
+                        description: cloneInfo[i].description,
+                        type: cloneInfo[i].type,
+                        extra: cloneInfo[i].extra,
+                        value: info[item].value
                     }
-                    ,
-                    {
-                        $new: true
-                    }
-                )
-                await Task.updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId
-                    }, 
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value": cloneInfo[i].value
-                        }
-                    },
-                    {
-                        arrayFilters: [
+
+                    if(yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth()) ){
+                        // console.log('cloneInfo[i]', cloneInfo[i]);
+                        await Task.updateOne(
                             {
-                                "elem._id": cloneInfo[i]._id
+                                _id: taskId,
+                                "taskInformations._id": cloneInfo[i]._id
+                            }, 
+                            {
+                                $set: {
+                                    "taskInformations.$.value": cloneInfo[i].value
+                                }
+                            },
+                            {
+                                $new: true
                             }
-                        ]
+                        )
                     }
                     
-                )
+                    await Task.updateOne(
+                        {
+                            _id: taskId,
+                            "evaluations._id": evaluateId
+                        }, 
+                        {
+                            $set: {
+                                "evaluations.$.taskInformations.$[elem].value": cloneInfo[i].value
+                            }
+                        },
+                        {
+                            arrayFilters: [
+                                {
+                                    "elem._id": cloneInfo[i]._id
+                                }
+                            ]
+                        }
+                        
+                    )
+                }
             }
         }
-    }
 
-    // cập nhật thông tin result========================================================END=============================================================
+    // cập nhật thông tin result========================================================END========================================================
 
 
     // update date of evaluation

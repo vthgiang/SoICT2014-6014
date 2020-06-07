@@ -322,7 +322,7 @@ class ModalAddTask extends Component {
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
-
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
                 return{
                     ...state,
@@ -333,12 +333,7 @@ class ModalAddTask extends Component {
                 };
             });
             return false; // Sẽ cập nhật lại state nên không cần render
-        }
-        
-        if(newTask.taskTemplate !== nextState.newTask.taskTemplate){
-            
-           return true;
-        }
+        }        
       
         return true;
     }
@@ -367,25 +362,29 @@ class ModalAddTask extends Component {
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
-
-        let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
+        console.log("\n\n\n\n\n\n",usersOfChildrenOrganizationalUnit);
+        let unitMembers;
+        if(usersOfChildrenOrganizationalUnit){
+            unitMembers=usersOfChildrenOrganizationalUnit.map(unitMember=>{
 
+                var unit ={
+                    text : unitMember.department,
+                    value: unitMember.deans.map(item => {return {text: item.name +" (" +unitMember.roles.dean.name+")"  , value: item._id}}).
+                    concat(unitMember.viceDeans.map(item => {return {text: item.name +" (" +unitMember.roles.viceDean.name+")"  , value: item._id}})).
+                    concat( unitMember.employees.map(item => {return {text: item.name +" (" +unitMember.roles.employee.name+")"  , value: item._id}}))
+
+                };
+
+                return unit;                
+            })
+       
+        }
+  
+        
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
                 

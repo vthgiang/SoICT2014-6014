@@ -9,8 +9,22 @@ import { getStorage } from '../../../../config';
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
+
+        var {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
+        
+        var evaluations;
+        var dateOfEval = new Date();
+        var monthOfEval = dateOfEval.getMonth();
+        var yearOfEval = dateOfEval.getFullYear();
+        evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
+
+        var automaticPoint = evaluations ? evaluations.results[0].automaticPoint : 0;
+
         this.state={
-            info: {}
+            info: {},
+            evaluations: evaluations,
+            automaticPoint: automaticPoint
         }
     }
 
@@ -63,8 +77,7 @@ class EvaluateByConsultedEmployee extends Component {
                 ...prevState,
                 id: nextProps.id,
                 // TODO: Ve sau can sua
-
-
+                
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
@@ -85,37 +98,32 @@ class EvaluateByConsultedEmployee extends Component {
     }
     
     save = () => {
-        var {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
-
-        var evaluations, taskId;
+        var taskId;
         taskId = this.props.id;
-        evaluations = task.evaluations[task.evaluations.length-1]
         var data = {
-            evaluateId: evaluations._id,
             user: getStorage("userId"),
             role: "Consulted",
             employeePoint: this.state.point,
             date: this.formatDate(Date.now()),
-            automaticPoint: task.evaluations[task.evaluations.length-1].results.length !== 0 ? task.evaluations[task.evaluations.length-1].results[0].automaticPoint : 0 
+            automaticPoint: this.state.automaticPoint
         }
 
         console.log('data', data, taskId);
-        this.props.evaluateTaskByConsultedEmployee(data,taskId);
+        this.props.evaluateTaskByConsultedEmployees(data,taskId);
     }
 
 
 
     render() {
-        var { point, errorOnPoint } = this.state;
+        var { point, errorOnPoint, evaluations, automaticPoint } = this.state;
         var { id, role } = this.props;
         var { tasks } = this.props;
         var task = tasks.task.info;
+
         return (
             <React.Fragment>
             <DialogModal
                 modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
-                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID="form-evaluate-task-by-consulted"
                 title={this.props.title}
                 func={this.save}
@@ -140,46 +148,29 @@ class EvaluateByConsultedEmployee extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
                             
-                            {/* Hiện giờ đang lấy tháng đánh giá cuối cùng trong mảng là tháng đang đánh giá */}
-                            {/* TODO: sửa lấy theo tháng đúng tháng đánh giá hiện tại theo Date */}
-
                             {
-                                (task.evaluations.length !== 0 ) &&
+                                evaluations &&
                                 <div >
                                     {
-                                         (task.evaluations[task.evaluations.length-1].taskInformations.length !== 0) &&
-                                         <div>
+                                        (evaluations.taskInformations.length !== 0) &&
+                                        <div>
                                             <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p>
-                                            {/* {
-                                                (task && task.taskInformations.length !== 0) &&
-                                                task.taskInformations.map(info => {
-                                                    return <div>
-                                                        <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
-                                                    </div>
-                                                })
-                                            } */}
                                             {
-                                                task.evaluations[task.evaluations.length-1].taskInformations.map(info => {
+                                                evaluations.taskInformations.map(info => {
                                                     return <div>
                                                         <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
-                                                        {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
                                                     </div>
                                                 })
                                             }
                                         </div> 
-                                        }
-                                        {/* {
-                                            (task.evaluations[task.evaluations.length-1].taskInformations.length === 0) &&
-                                            <div><i style={{ color: "red", fontWeight: "bold" }}>...(Thông tin công việc chưa được cung cấp đầy đủ)</i></div>
-                                        } */}
-                                    
+                                    }                                        
                                     <br/>
                                     {
-                                        (task.evaluations[task.evaluations.length-1].results.length !== 0) ?
+                                        (evaluations.results.length !== 0) ?
                                         <div>
-                                            <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{task.evaluations[task.evaluations.length-1].results[0].automaticPoint}</p>
+                                            <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{automaticPoint}</p>
                                             {
-                                                task.evaluations[task.evaluations.length-1].results.map((res) => {
+                                                evaluations.results.map((res) => {
                                                     if(res.role === "Responsible"){
                                                         return <div >
                                                             <p><span style={{fontWeight: "bold"}}>Người thực hiện-{res.employee.name}</span>-Điểm tự đánh giá:{res.employeePoint}</p>
@@ -191,7 +182,6 @@ class EvaluateByConsultedEmployee extends Component {
                                     }
                                     
                                 </div> 
-                                // : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá</p></div>
                             }
                         </fieldset>
                     </form>
@@ -203,8 +193,8 @@ class EvaluateByConsultedEmployee extends Component {
 }
 
 const mapState = (state) => {
-    const { tasks, performtasks } = state; // tasks,
-    return { tasks, performtasks }; // tasks,
+    const { tasks, performtasks } = state; 
+    return { tasks, performtasks }; 
 }
 const getState = {
     getTaskById: taskManagementActions.getTaskById,
@@ -216,5 +206,3 @@ const getState = {
 
 const evaluateByConsultedEmployee = connect(mapState, getState)(withTranslate(EvaluateByConsultedEmployee));
 export { evaluateByConsultedEmployee as EvaluateByConsultedEmployee }
-
-// export {EvaluateByConsultedEmployee};
