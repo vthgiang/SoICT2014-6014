@@ -315,7 +315,7 @@ class EvaluateByResponsibleEmployee extends Component {
             employeePoint: this.state.point,
             role: "Responsible",
             
-            kpi: this.state.kpi,
+            kpi: this.state.kpi ? this.state.kpi : [],
             date: this.state.date,
             info: this.state.info,
             
@@ -351,7 +351,7 @@ class EvaluateByResponsibleEmployee extends Component {
         const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals )? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
         // var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
         return (
