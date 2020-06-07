@@ -40,7 +40,7 @@ class TaskComponent extends Component {
         this.props.getTimesheetLogs(taskId);
     }
     handleShowErr() {
-        window.$('#modal-show-err').modal('show');
+        window.$('#modal-show-err-task').modal('show');
     }
     handleClose() {
         // window.$(".modal-backdrop").remove();
@@ -80,10 +80,10 @@ class TaskComponent extends Component {
                 this.handleShowErr();
                 this.handleClose();
                 return (
-                    <React.Fragment>
-                        <DialogModal
+                    <div>
+                        {/* <DialogModal
                             size='50' modalID="modal-show-err" isLoading={false}
-                            formID="form-show-err"
+                            formID="form-show-err-task"
                             title="Bạn không có quyền truy cập vào công việc này"
                             hasSaveButton={false}
                             
@@ -95,8 +95,9 @@ class TaskComponent extends Component {
                                     <li>Công việc không còn tồn tại</li>
                                 </ul>
                             </div>
-                        </DialogModal>
-                    </React.Fragment>
+                        </DialogModal> */}
+                        <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
+                    </div>
                 );
             } else {
                 return (
