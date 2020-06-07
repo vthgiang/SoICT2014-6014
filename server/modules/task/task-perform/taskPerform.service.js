@@ -167,7 +167,6 @@ exports.createTaskAction = async (body,files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (id,body) => {
-    console.log(body)
     var action = await Task.updateOne(
         { "taskActions._id": id },
         {

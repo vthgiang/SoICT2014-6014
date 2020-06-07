@@ -16,15 +16,52 @@ class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
         super(props);
+
+        var {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
+        
+        var evaluations;
+        var dateOfEval = new Date();
+        var monthOfEval = dateOfEval.getMonth();
+        var yearOfEval = dateOfEval.getFullYear();
+        evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
+
+        var automaticPoint = evaluations ? evaluations.results[0].automaticPoint : 0;
+
+        let info = {}, infoEval = evaluations.taskInformations;
+        for(let i in infoEval){
+            if(infoEval[i].type === "Date"){
+                if(infoEval[i].value){
+                    infoEval[i].value = this.formatDate(infoEval[i].value);
+                } else infoEval[i].value = this.formatDate(Date.now());
+            }
+            info[`${infoEval[i].code}`] = {
+                value: infoEval[i].value,
+                code: infoEval[i].code,
+                type: ''
+            }
+            
+        }
+
+        // const { progress, date, kpi} = this.state;
+
+        var date = this.formatDate(evaluations.date);
+        for(let i in evaluations.kpis){
+            // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
+        }
+        var kpi = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser))).kpis;
+        var cloneKpi = [];
+        for(let i in kpi){
+            cloneKpi.push(kpi[i]._id);
+        }
+        console.log('------------------', cloneKpi);
         this.state={
             idUser: idUser ,
-            info: {},
-            autoPoint: 0,
-            // progress:89,
-            // "p1" : {
-            //     value: ['SSD'],
-            //     code: "p1"
-            // } 
+            info: info,
+            // autoPoint: automaticPoint,
+            date: date,
+            kpi: cloneKpi,
+            progress: task.progress
         }
     }
 
@@ -261,14 +298,9 @@ class EvaluateByResponsibleEmployee extends Component {
     }
     
     save = () => {
-        var {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
-
-        var evaluations, taskId;
+        var taskId;
         taskId = this.props.id;
-        evaluations = task.evaluations[task.evaluations.length-1]
         var data = {
-            evaluateId: evaluations._id,
             user: getStorage("userId"),
             progress: this.state.progress,
             automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
@@ -314,7 +346,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
-        // console.log('task ', task);
         return (
             <React.Fragment>
             <DialogModal
@@ -406,5 +437,3 @@ const getState = {
 
 const evaluateByResponsibleEmployee = connect(mapState, getState)(withTranslate(EvaluateByResponsibleEmployee));
 export { evaluateByResponsibleEmployee as EvaluateByResponsibleEmployee }
-
-// export {EvaluateByResponsibleEmployee} ;
