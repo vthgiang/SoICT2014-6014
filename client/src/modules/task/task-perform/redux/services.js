@@ -223,7 +223,7 @@ function confirmAction(id,idUser) {
 };
 function downloadFile(path) {  
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/download-file/`,
+        url: `${LOCAL_SERVER_API}/auth/download-file/`,
         method: 'GET',
         responseType: 'blob',
         params:{path:path}
