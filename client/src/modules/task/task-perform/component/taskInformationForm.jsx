@@ -61,7 +61,8 @@ class TaskInformationForm extends Component {
                                    
                                 
                                     if (info.type === 'Text'){
-                                        return <div className={`form-group ${value.errorOnTextInfo === undefined ? "" : "has-error"}`}>
+                                        // return <div className={`form-group ${value.errorOnTextInfo === undefined ? "" : "has-error"}`}>
+                                        return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <input 
                                                 className="form-control"
@@ -77,7 +78,8 @@ class TaskInformationForm extends Component {
                                      
                                     {
                                     if (info.type === 'Number') { 
-                                        return <div className={`form-group ${value.errorOnNumberInfo === undefined ? "" : "has-error"}`}>
+                                        // return <div className={`form-group ${value.errorOnNumberInfo === undefined ? "" : "has-error"}`}>
+                                        return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <input 
                                                 className="form-control"
