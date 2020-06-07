@@ -642,7 +642,7 @@ class ActionTab extends Component {
                                 taskActions.map(item => {
                                     // if (item.parent === null)
                                     return (
-                                    <div className="post clearfix"  key={item._id}>
+                                    <div className="clearfix"  key={item._id}>
                                         {item.creator ?
                                         <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" /> :
                                         <div className="user-img-level1" />
@@ -672,10 +672,6 @@ class ActionTab extends Component {
                                             {/* Các file đính kèm */}
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
-                                                <li style={{display:"inline-table"}}>
-                                                    <a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
-                                                </li>
 
                                                 
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
@@ -685,6 +681,8 @@ class ActionTab extends Component {
                                                 {item.creator &&
                                                 <React.Fragment>
                                                     <li><a href="#" className="link-black text-sm" onClick={()=>{this.handleShowEvaluations(item._id)}}><i className="fa fa-thumbs-o-up margin-r-5"></i>Đánh giá ({item.evaluations && item.evaluations.length})</a></li>
+
+                                                    {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                     <li style={{display:"inline-table"}} className="list-inline">
                                                         {(
                                                             (item.evaluations && item.evaluations.length !== 0 && !item.evaluations.some(checkUserId)) ||
@@ -708,6 +706,15 @@ class ActionTab extends Component {
                                                             </React.Fragment>
                                                         }
                                                     </li>
+                                                    }
+
+                                                    {item.files && item.files.length && // Chỉ hiện show file khi có file đính kèm
+                                                    <li style={{display:"inline-table"}}>
+                                                        <a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
+                                                    </li>
+                                                    }
+
+                                                    <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
                                                 </React.Fragment>
                                                 }
                                             </ul>
@@ -733,7 +740,6 @@ class ActionTab extends Component {
                                                         </div>
                                                     </React.Fragment>
                                                 }
-                                                
 
                                                 {/* Các file đính kèm của action */}
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
@@ -910,7 +916,7 @@ class ActionTab extends Component {
                                 taskComments.map(item => {
                                     // if (item.parent === null)
                                     return (
-                                    <div className="post clearfix"  key={item._id}>
+                                    <div className="clearfix"  key={item._id}>
                                         <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
                                         
                                         { editTaskComment !== item._id && // Khi đang edit thì ẩn đi
