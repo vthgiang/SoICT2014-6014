@@ -31,10 +31,7 @@ export const performTaskService = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFileActions,
-    downloadFileCommentOfActions,
-    downloadFileCommentOfTaskComments,
-    downloadFileTaskComments,
+    downloadFile,
     uploadFile
 };
 /**
@@ -87,7 +84,7 @@ function getTimerStatusTask() { //function getTimerStatusTask(task, user)
     }, false, true, 'task.task_perform');
 };
 // start timer task
-function startTimerTask(newTimer) {
+function startTimerTask(newTimer) {        
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
         method : 'POST',
@@ -220,43 +217,19 @@ function evaluationAction(id,evaluation){
 //getall Action task
 function confirmAction(id,idUser) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}/${idUser}`,
         method : 'GET',
-        params:{confirmAction:idUser,id:id}
     }, false, true, 'task.task_perform');  
 };
-function downloadFileActions(id,type) {  
+function downloadFile(path) {  
+    console.log("downloadfile")
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
+        url: `${LOCAL_SERVER_API}/auth/download-file/`,
         method: 'GET',
         responseType: 'blob',
-        params:{type:type}
-    }, false, true, 'task.task_perform');
+        params:{path:path}
+    }, false, false, 'task.task_perform');
 }
-function downloadFileCommentOfActions(id,type) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
-        method: 'GET',
-        responseType: 'blob',
-        params:{type:type}
-    }, false, true, 'task.task_perform');
-}
-function downloadFileTaskComments(id,type) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
-        method: 'GET',
-        responseType: 'blob',
-        params:{type:type}
-    }, false, true, 'task.task_perform');
-}function downloadFileCommentOfTaskComments(id,type) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/performtask/download-file/${id}`,
-        method: 'GET',
-        responseType: 'blob',
-        params:{type:type}
-    }, false, true, 'task.task_perform');
-}
-//getall Action task
 function uploadFile(task,data) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/${task}`,

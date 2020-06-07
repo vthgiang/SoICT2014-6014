@@ -1,4 +1,5 @@
-const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').schema;
+const { TaskTemplate, Privilege, Role, UserRole,OrganizationalUnit } = require('../../../models').schema;
+const DashboardService = require('../../kpi/evaluation/dashboard/dashboard.service');
 const mongoose = require('mongoose');
 /**
  * Lấy tất cả các mẫu công việc
@@ -241,4 +242,16 @@ exports.editTaskTemplate = async (data, id) => {
     ).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
 
     return taskTemplate;
+}
+/**
+ * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @id Id công ty
+ * @unitID Id của của đơn vị cần lấy đơn vị con
+ */
+exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
+    var organizationalUnit = await OrganizationalUnit.findById(unitId);
+
+    var data =DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
+    return data;
+   
 }

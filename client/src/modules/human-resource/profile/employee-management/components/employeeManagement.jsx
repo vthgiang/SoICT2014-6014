@@ -10,12 +10,25 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 class EmployeeManagement extends Component {
     constructor(props) {
         super(props);
+        let search = window.location.search.split('?')
+        let keySearch = 'organizationalUnits';
+        let organizationalUnits = null;
+        for (let n in search) {
+            let index = search[n].lastIndexOf(keySearch);
+            if (index !== -1) {
+                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
+                    organizationalUnits = organizationalUnits.split(',')
+                } else organizationalUnits = null
+                break;
+            }
+        }
         this.state = {
             position: null,
             gender: null,
             employeeNumber: null,
-            organizationalUnit: null,
-            status: null,
+            organizationalUnits: organizationalUnits,
+            status: 'active',
             page: 0,
             limit: 5,
         }
@@ -68,7 +81,7 @@ class EmployeeManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -134,9 +147,9 @@ class EmployeeManagement extends Component {
         const { list } = this.props.department;
         var { employeesManager, translate } = this.props;
         var lists, listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
-            organizationalUnit.forEach(u => {
+        if (this.state.organizationalUnits !== null) {
+            let organizationalUnits = this.state.organizationalUnits;
+            organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -166,6 +179,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                value={this.state.organizationalUnits !== null ? this.state.organizationalUnits : []}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -285,6 +299,8 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRowView.annualLeaves}
                         commendations={this.state.currentRowView.commendations}
                         disciplines={this.state.currentRowView.disciplines}
+                        courses={this.state.currentRowView.courses}
+                        roles={this.state.currentRowView.roles}
                     />
                 }
                 {
@@ -296,6 +312,9 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRow.annualLeaves}
                         commendations={this.state.currentRow.commendations}
                         disciplines={this.state.currentRow.disciplines}
+                        courses={this.state.currentRow.courses}
+                        organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
+                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
                     />
                 }
             </div>

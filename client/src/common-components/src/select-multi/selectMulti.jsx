@@ -67,11 +67,11 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items, display="" } = this.props;
+        const { id, items, display = "", disabled = false } = this.props;
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
-                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }}>
+                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }} disabled={disabled}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value}>{item.text}</option>
                         })}

@@ -36,7 +36,7 @@ const AssetCrashSchema = new Schema({
         required: true
     },
 
-    detectionDate: { //Ngày phát hiện
+    detectionDate: { //Ngày phát hiện sự cố
         type: String,
         defaut: Date.now,
         // required: true
@@ -46,6 +46,14 @@ const AssetCrashSchema = new Schema({
         type: String,
         // required: true
     },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
 
 });
 

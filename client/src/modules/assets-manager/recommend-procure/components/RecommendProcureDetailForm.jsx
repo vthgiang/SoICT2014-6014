@@ -37,6 +37,7 @@ class RecommendProcureDetailForm extends Component {
         const { translate, recommendProcure } = this.props;
         const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier,
             total, unit, estimatePrice, approver, positionApprover, status, note } = this.state;
+        console.log('this.state', this.state);
         return (
             <React.Fragment>
                 <DialogModal
@@ -88,7 +89,7 @@ class RecommendProcureDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                 <strong>Người phê duyệt:&emsp; </strong>
-                                    {approver}
+                                    {approver.name}
                                 </div>
                                 <div className="form-group">
                                 <strong>Chức vụ người phê duyệt:&emsp; </strong>

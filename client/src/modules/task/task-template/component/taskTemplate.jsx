@@ -128,7 +128,7 @@ class TaskTemplate extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
-        return (currentRole === deanCurrentUnit);
+        return (JSON.stringify(currentRole) === JSON.stringify(deanCurrentUnit));
     }
     
     checkHasComponent = (name) => {
@@ -264,7 +264,7 @@ class TaskTemplate extends Component {
                                                 <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
-                                                {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
+                                                {this.checkPermisson(item.organizationalUnit.dean) &&
                                                     <React.Fragment>
                                                         <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
                                                             <i className="material-icons">edit</i>
@@ -277,7 +277,7 @@ class TaskTemplate extends Component {
                                             </td>
                                         </tr>
                                     ):
-                                <tr><td colSpan={6}><center>Không có dữ liệu</center></td></tr>
+                                <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
                             }
                         </tbody>
                     </table>

@@ -226,7 +226,7 @@ class ModalEditEmployeeKpi extends Component {
 
                             <div className={`form-group ${errorOnCriteria === undefined ? "" : "has-error"}`}>
                                 <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
+                                <textarea rows={4} className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                                 <ErrorLabel content={errorOnCriteria}/>
                             </div>
 

@@ -15,8 +15,9 @@ const EmployeeCourseSchema = new Schema({
         ref: Employee,
         required: true
     },
-    result: {
+    result: { //pass: Đạt, failed: Không đạt
         type: String,
+        enum: ['pass', 'failed']
     }
 
 })

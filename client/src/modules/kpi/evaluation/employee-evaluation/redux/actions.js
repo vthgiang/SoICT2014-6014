@@ -11,11 +11,18 @@ export const kpiMemberActions = {
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
-    getAllComments
+    getAllComments,
+    createCommentOfApproveKPI,
+    editCommentOfApproveKPI,
+    deleteCommentOfApproveKPI,
+    createCommentOfComment,
+    editCommentOfComment,
+    deleteCommentOfComment
 };
  
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberOfUnit(infosearch) {
+    console.log('inforsearch action', infosearch);
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
  
@@ -36,6 +43,7 @@ function getAllKPIMemberOfUnit(infosearch) {
 }
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberByMember(member) { //member
+    console.log('mmmm',member);
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
  
@@ -240,6 +248,120 @@ function getAllComments(id_kpi) {
             .catch(error => {
                 dispatch({
                     type: kpiMemberConstants.GETALL_COMMENTS_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function createCommentOfApproveKPI(newComment) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.CREATE_APPROVE_COMMENT_REQUEST});
+ 
+        kpiMemberServices.createCommentOfApproveKPI(newComment)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.CREATE_APPROVE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.CREATE_APPROVE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function editCommentOfApproveKPI(id,newComment) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.EDIT_APPROVE_COMMENT_REQUEST});
+ 
+        kpiMemberServices.editCommentOfApproveKPI(id,newComment)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.EDIT_APPROVE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.EDIT_APPROVE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function deleteCommentOfApproveKPI(id,kpi) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.DELETE_APPROVE_COMMMENT_REQUEST});
+ 
+        kpiMemberServices.deleteCommentOfApproveKPI(id,kpi)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.DELETE_APPROVE_COMMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.DELETE_APPROVE_COMMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function createCommentOfComment(newComment) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.CREATE_CHILD_COMMENT_REQUEST});
+ 
+        kpiMemberServices.createCommentOfComment(newComment)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.CREATE_CHILD_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.CREATE_CHILD_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function editCommentOfComment(id,newComment) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.EDIT_CHILD_COMMENT_REQUEST});
+ 
+        kpiMemberServices.editCommentOfComment(id,newComment)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.EDIT_CHILD_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.EDIT_CHILD_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+function deleteCommentOfComment(id,kpi) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.DELETE_CHILD_COMMMENT_REQUEST});
+ 
+        kpiMemberServices.deleteCommentOfComment(id,kpi)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.DELETE_CHILD_COMMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.DELETE_CHILD_COMMMENT_FAILURE,
                     payload: error
                 })
             })

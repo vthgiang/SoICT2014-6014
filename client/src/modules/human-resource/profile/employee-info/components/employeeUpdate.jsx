@@ -6,7 +6,6 @@ import { EmployeeInfoActions } from '../redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
     constructor(props) {
         super(props);

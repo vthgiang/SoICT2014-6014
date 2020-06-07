@@ -512,25 +512,28 @@ exports.evaluationAction = async (id,body) => {
 /**
  * Xác nhận hành động
  */
-exports.confirmAction = async (id,idUser) => {
+exports.confirmAction = async (params) => {
+    
     var evaluationActionRating = await Task.updateOne(
-        {"taskActions._id":id},
+        {"taskActions._id":params.id},
         {
-            $set: {"taskActions.$.creator": idUser}
+            $set: {
+                "taskActions.$.creator": params.idUser,
+                "taskActions.$.createdAt":Date.now()
+            }
         }
     )  
-    var task = await Task.findOne({ "taskActions._id": id }).populate([
+    
+    var task = await Task.findOne({ "taskActions._id": params.id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
-    
     return task.taskActions;   
 }
 /**
  * Upload tài liệu cho cộng việc
  */
 exports.uploadFile = async (params,files) => {
-
     var evaluationActionRating = await Task.updateOne(
         {_id:params.task},
         {
@@ -539,65 +542,4 @@ exports.uploadFile = async (params,files) => {
     )  
     var task = await Task.findOne({ _id: params.task })
     return task.files
-}
-/**
- * Download tài liệu của hoạt động
- */
-exports.downloadFilePOfAction = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskActions"},
-        {$replaceRoot:{newRoot:"$taskActions"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}},
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu của bình luận hoạt động
- */
-exports.downloadFileOfActionComment = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskActions.comments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskActions"},
-        {$replaceRoot:{newRoot:"$taskActions"}},
-        {$unwind:"$comments"},
-        {$replaceRoot:{newRoot:"$comments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}}
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu của bình luận công việc
- */
-exports.downloadFilePOfTaskComment = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskComments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskComments"},
-        {$replaceRoot:{newRoot:"$taskComments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}},
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu bình luận của bình luận công việc
- */
-exports.downloadFileCommentOfTaskComment = async (params) => {
-    console.log("hihihihihi")
-    var file = await Task.aggregate([
-        {$match:{"taskComments.comments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskComments"},
-        {$replaceRoot:{newRoot:"$taskComments"}},
-        {$unwind:"$comments"},
-        {$replaceRoot:{newRoot:"$comments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}}
-    ])
-    console.log(file)
-    return file[0];
 }

@@ -55,6 +55,7 @@ const RecommendProcure = require('./asset/recommendProcure.model'); //đề ngh�
 const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
 const RepairUpgrade = require('./asset/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
 const DistributeTransfer = require('./asset/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
+const AssetCrash = require('./asset/assetCrash.model'); // sự cố tài sản
 
 exports.schema = {
     Privilege,
@@ -112,5 +113,6 @@ exports.schema = {
     RecommendProcure,
     RepairUpgrade,
     DistributeTransfer,
-    RecommendDistribute
+    RecommendDistribute,
+    AssetCrash
 } 

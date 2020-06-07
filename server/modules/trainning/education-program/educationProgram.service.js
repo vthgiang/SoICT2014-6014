@@ -24,7 +24,7 @@ exports.searchEducationPrograms = async (params, company) => {
     if (params.organizationalUnit !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForOrganizationalUnits: {$in: params.organizationalUnit} 
+            applyForOrganizationalUnits: {$in: params.organizationalUnit}
         }
     }
     if (params.position !== undefined) {
@@ -67,7 +67,6 @@ exports.searchEducationPrograms = async (params, company) => {
  */
 exports.createEducationProgram = async (data, company) => {
     var isEducationProgram = await EducationProgram.findOne({programId: data.programId, company:company}, { _id: 1});
-    console.log(isEducationProgram);
     if(isEducationProgram !== null){
         return 'have_exist'
     } else{
@@ -78,13 +77,18 @@ exports.createEducationProgram = async (data, company) => {
             applyForOrganizationalUnits: data.organizationalUnit,
             applyForPositions: data.position,
         });
-        return await EducationProgram.findById(createEducation._id).populate([{
+        
+        let newEducation =  await EducationProgram.findById(createEducation._id).populate([{
             path: 'applyForOrganizationalUnits',
             model: OrganizationalUnit
         }, {
             path: 'applyForPositions',
             model: Role
         }])
+        let totalList = await Course.count({
+            educationProgram: newEducation._id
+        });
+        return {...newEducation._doc, totalList}
     }
     
 }
@@ -97,7 +101,6 @@ exports.deleteEducationProgram = async (id) => {
     var educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });
-    console.log(educationDelete);
     return educationDelete;
 }
 
@@ -119,7 +122,7 @@ exports.updateEducationProgram = async (id, data) => {
         $set: eduacationChange
     });
 
-    return await EducationProgram.findOne({
+    let updateEducation= await EducationProgram.findOne({
         _id: id
     }).populate([{
         path: 'applyForOrganizationalUnits',
@@ -128,4 +131,9 @@ exports.updateEducationProgram = async (id, data) => {
         path: 'applyForPositions',
         model: Role
     }]);
+
+    let totalList = await Course.count({
+        educationProgram: updateEducation._id
+    });
+    return {...updateEducation._doc, totalList}
 }

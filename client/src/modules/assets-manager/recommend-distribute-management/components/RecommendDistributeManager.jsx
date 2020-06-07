@@ -4,8 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 // import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
 import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { RecommendDistributeActions } from '../../recommend-procure/redux/actions';
-
+import { RecommendDistributeActions } from './../redux/actions';
+import {UserActions} from "../../../super-admin/user/redux/actions";
+import {AssetManagerActions} from "../../asset-manager/redux/actions";
 class RecommendDistributeManager extends Component {
     constructor(props) {
         super(props);
@@ -16,10 +17,11 @@ class RecommendDistributeManager extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.searchRecommendDistributes(this.state);
+        this.props.searchRecommendDistributes(this.state);
+        this.props.getAllUsers();
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -75,14 +77,14 @@ class RecommendDistributeManager extends Component {
         })
     }
 
-    // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = async () => {
+    // Function bắt sự kiện tìm kiếm
+    handleSubmitSearch = async () => {
         if (this.state.month === "") {
             await this.setState({
                 month: this.formatDate(Date.now())
             })
         }
-        // this.props.searchRecommendDistributes(this.state);
+        this.props.searchRecommendDistributes(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -90,7 +92,7 @@ class RecommendDistributeManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.searchRecommendDistributes(this.state);
+        this.props.searchRecommendDistributes(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -100,7 +102,7 @@ class RecommendDistributeManager extends Component {
             page: parseInt(page),
 
         });
-        // this.props.searchRecommendDistributes(this.state);
+        this.props.searchRecommendDistributes(this.state);
     }
 
     render() {
@@ -119,7 +121,7 @@ class RecommendDistributeManager extends Component {
                 <div className="box-body qlcv">
                     {/* <RecommendDistributeCreateForm /> */}
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách phiếu đề nghị cấp phát thiết bị: </h4>
+                        <h4 className="box-title">Danh sách phiếu đăng ký cấp phát - sử dụng tài sản: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -153,10 +155,10 @@ class RecommendDistributeManager extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table id="recommenddistributemanage-table" className="table table-striped table-bordered table-hover">
+                    <table id="recommenddistributemanager-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                             <th style={{ width: "10%" }}>Mã phiếu</th>
@@ -164,15 +166,13 @@ class RecommendDistributeManager extends Component {
                                 <th style={{ width: "15%" }}>Người đề nghị</th>
                                 <th style={{ width: "17%" }}>Mã tài sản</th>
                                 <th style={{ width: "15%" }}>Tên tài sản</th>
-                                {/* <th style={{ width: "17%" }}>Loại tài sản</th> */}
                                 <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng từ ngày</th>
                                 <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th>
                                 <th style={{ width: "17%" }}>Người phê duyệt</th>
-                                {/* <th style={{ width: "17%" }}>Ghi chú</th> */}
                                 <th style={{ width: "11%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                     <DataTableSetting
-                                        tableId="recommenddistributemanage-table"
+                                        tableId="recommenddistributemanager-table"
                                         columnArr={[
                                             "Mã phiếu",
                                             "Ngày lập",
@@ -181,9 +181,7 @@ class RecommendDistributeManager extends Component {
                                             "Tên tài sản",
                                             "Thời gian đăng ký sử dụng từ ngày",
                                             "Thời gian đăng ký sử dụng đến ngày",
-                                            // "Loại tài sản",
                                             "Người phê duyệt",
-                                            // "Ghi chú",
                                             "Trạng thái",
                                         ]}
                                         limit={this.state.limit}
@@ -195,23 +193,32 @@ class RecommendDistributeManager extends Component {
                         </thead>
                         <tbody>
                             {(typeof listRecommendDistributes !== 'undefined' && listRecommendDistributes.length !== 0) &&
-                                listRecommendDistributes.map((x, index) => (
-                                    <tr key={index}>
+                                listRecommendDistributes.map((x, index) =>{
+                                    console.log(x);
+                                    return ( <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
-                                        <td>{x.proponent}</td>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
+                                        <td>{x.proponent.name}</td>
+                                        <td>{x.asset !== null ? x.asset.code : ''}</td>
+                                        <td>{x.asset !== null ? x.asset.assetName : ''}</td>
                                         <td>{x.dateStartUse}</td>
                                         <td>{x.dateEndUse}</td>
-                                        <td>{x.approver}</td>
-                                        {/* <td>{x.note}</td> */}
+                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        {/*<td>{x.approver.name}</td>*/}
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
-
+                                            <DeleteNotification
+                                                    content="Xóa thông tin phiếu"
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    }}
+                                                    func={this.props.deleteRecommendDistribute}
+                                            />
                                         </td>
-                                    </tr>))
+                                    </tr>)
+                                } )
                             }
                         </tbody>
                     </table>
@@ -221,7 +228,7 @@ class RecommendDistributeManager extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                
+
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendDistributeManagerEditForm
@@ -231,12 +238,14 @@ class RecommendDistributeManager extends Component {
                     proponent={this.state.currentRow.proponent}
                     positionProponent={this.state.currentRow.positionProponent}
                     reqContent={this.state.currentRow.reqContent}
-                    assetNumber={this.state.currentRow.assetNumber}
-                    assetName={this.state.currentRow.assetName}
+                    assetId={this.state.currentRow.asset && this.state.currentRow.asset._id}
+                    code={this.state.currentRow.asset && this.state.currentRow.asset.code}
+                    asset={this.state.currentRow.asset}
+                    assetName={this.state.currentRow.asset && this.state.currentRow.asset.assetName}
                     dateStartUse={this.state.currentRow.dateStartUse}
                     dateEndUse={this.state.currentRow.dateEndUse}
-                    approver={this.state.currentRow.approver} 
-                    positionApprover={this.state.currentRow.positionApprover} 
+                    approver={this.state.currentRow.approver}
+                    positionApprover={this.state.currentRow.positionApprover}
                     status={this.state.currentRow.status}
                     note={this.state.currentRow.note}
                     />
@@ -252,8 +261,10 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
-    // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
+    getAllUsers: UserActions.get,
+    searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
+    deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
+
 };
 
 const connectedListRecommendDistributeManager = connect(mapState, actionCreators)(withTranslate(RecommendDistributeManager));

@@ -8,6 +8,8 @@ export const RecommendProcureFromValidator = {
     validateEquipment,
     validateTotal,
     validateUnit,
+    validateProponent,
+    validateApprover,
 
 }
 
@@ -27,6 +29,15 @@ function validateDateCreate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày lập không được để trống";
+    }
+    return msg;
+}
+
+// Kiểm tra "Người đề nghị" nhập vào
+function validateProponent(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Người đề nghị không được để trống";
     }
     return msg;
 }
@@ -52,6 +63,15 @@ function validateUnit(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Đơn vị tính không được để trống";
+    }
+    return msg;
+}
+
+// Kiểm tra "Người đề nghị" nhập vào
+function validateApprover(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Người phê duyệt không được để trống";
     }
     return msg;
 }

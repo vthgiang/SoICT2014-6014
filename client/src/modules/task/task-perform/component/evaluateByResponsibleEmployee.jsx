@@ -28,6 +28,21 @@ class EvaluateByResponsibleEmployee extends Component {
         }
     }
 
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+
     componentDidMount() {
         this.props.getTaskById(this.props.id);
         this.props.getKPIMemberById(this.state.idUser);
@@ -262,7 +277,8 @@ class EvaluateByResponsibleEmployee extends Component {
             
             kpi: this.state.kpi,
             date: this.state.date,
-            info: this.state.info
+            info: this.state.info,
+            
         }
 
         console.log('data', data, taskId);
@@ -274,11 +290,8 @@ class EvaluateByResponsibleEmployee extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                // TODO: ve sau can sửa
+
                 id: nextProps.id,
-                // kpi: nextProps.kpi,
-                // date: nextProps.date,
-                // point: nextProps.point,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -306,7 +319,6 @@ class EvaluateByResponsibleEmployee extends Component {
             <React.Fragment>
             <DialogModal
                 modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
-                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID={`form-evaluate-task-by-${this.props.role}`}
                 title={this.props.title}
                 func={this.save}
@@ -349,11 +361,6 @@ class EvaluateByResponsibleEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
-                            // errorOnInfoBoolean={errorOnInfoBoolean}
-                            // errorOnProgress={errorOnProgress}
-                            // errorOnInfoDate={errorOnInfoDate}
-                            // errorOnTextInfo={errorOnTextInfo}
-                            // errorOnNumberInfo={errorOnNumberInfo}
                             perform={this.props.perform}
                             value={this.state}
                         />
@@ -384,8 +391,8 @@ class EvaluateByResponsibleEmployee extends Component {
 }
 
 const mapState = (state) => {
-    const { tasks, performtasks, kpimembers, KPIPersonalManager } = state; // tasks,
-    return { tasks, performtasks, kpimembers, KPIPersonalManager }; // tasks,
+    const { tasks, performtasks, kpimembers, KPIPersonalManager } = state;
+    return { tasks, performtasks, kpimembers, KPIPersonalManager };
 }
 const getState = {
     getTaskById: taskManagementActions.getTaskById,

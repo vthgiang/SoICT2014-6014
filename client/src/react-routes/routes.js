@@ -34,7 +34,7 @@ import ManageComponent from '../modules/super-admin/component/components';
 
 import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
-import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
+import EmployeeDashBoard from '../modules/human-resource/employee-dashboard/components';
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
@@ -76,7 +76,10 @@ import ManagerDistributeTransfer from "../modules/assets-manager/distribute-tran
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
 import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
+import ManagerAssetCrash from "../modules/assets-manager/asset-crash-management/components";
 import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
+import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
+import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
 
 class Routes extends Component {
 
@@ -356,7 +359,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.employeesManager.isLoading }
                         key={ 'dashBoard_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -368,7 +371,7 @@ class Routes extends Component {
                         path={ '/hr-dashboard-employee' }
                         pageName={'dashboard_employee' }
                         layout={ Layout }
-                        component={ DashBoardEmployees }
+                        component={ EmployeeDashBoard }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.discipline.isLoading }
@@ -744,18 +747,34 @@ class Routes extends Component {
                         key={ 'manage-assigned-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-assigned-asset', name: 'manage_assigned_asset', icon:'' }
+                            { link: '/manage-assigned-asset', name: 'manage_assigned_asset', icon:'fa fa-balance-scale' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/manage-assigned-asset' }
                         path={ '/manage-assigned-asset' }
-                        pageName={ 'manage_assigned_asset' }
+                        pageName={'manage_assigned_asset' }
                         layout={ Layout }
-                        component={ ManagerAssetAssigned }
+                        component={ ManagerAssetAssignedCrash }
                     />
 
                     {/** Quản lý */}
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'dashBoard_asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/dashboard-asset', name: 'dashboard_asset', icon:'fa fa-dashboard' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/dashboard-asset' }
+                        path={ '/dashboard-asset' }
+                        pageName={'dashboard_asset' }
+                        layout={ Layout }
+                        component={ DashBoardAssets }
+                    />
+
                     <PrivateRoute 
                         isLoading={ this.props.assetType.isLoading }
                         key={ 'manage-type-asset' }
@@ -850,6 +869,22 @@ class Routes extends Component {
                         pageName={ 'manage_depreciation_asset' }
                         layout={ Layout }
                         component={ ManagerDepreciation }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.assetCrash.isLoading }
+                        key={ 'manage-crash-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-crash-asset', name: 'manage_crash_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-crash-asset' } 
+                        path={ '/manage-crash-asset' }
+                        pageName={ 'manage_crash_asset' }
+                        layout={ Layout }
+                        component={ ManagerAssetCrash }
                     />
 
                     <PrivateRoute 

@@ -36,7 +36,6 @@ exports.createAssetType = async (data, company) => {
         typeName: data.typeName,
         timeDepreciation: data.timeDepreciation,
         parent: data.parent,
-        // parent: ObjectId.isValid(data.parent) ? data.parent : null,
         description: data.description,
     });
     return createAssetType;

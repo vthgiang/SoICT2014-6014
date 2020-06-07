@@ -7,7 +7,8 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    Role
+    Role,
+    EmployeeCourse
 } = require('../../../models').schema;
 
 /**
@@ -15,37 +16,15 @@ const {
  * @emailInCompany: email công ty của nhân viên
  */
 exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany) => {
-    let roles = [],
-        organizationalUnits = [];
-    let user = await User.findOne({
-        email: emailInCompany
-    }, {
-        _id: 1
-    })
+    let roles = [],organizationalUnits = [];
+    let user = await User.findOne({email: emailInCompany}, {_id: 1})
     if (user !== null) {
-        roles = await UserRole.find({
-            userId: user._id
-        }).populate([{
-            path: 'roleId',
-            model: Role
-        }]);
+        roles = await UserRole.find({userId: user._id}).populate([{path: 'roleId', model: Role}]);
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
-            $or: [{
-                    'dean': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'viceDean': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'employee': {
-                        $in: newRoles
-                    }
-                }
+            $or: [{'dean': {$in: newRoles}},
+                {'viceDean': {$in: newRoles}},
+                {'employee': {$in: newRoles}}
             ]
         });
     }
@@ -53,10 +32,7 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
 
-    return {
-        roles,
-        organizationalUnits
-    }
+    return { roles, organizationalUnits }
     // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 
@@ -66,8 +42,7 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
  * @position : mảng id chức vụ(role)
  */
 exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organizationalUnits, position) => {
-    let units = [],
-        roles = [];
+    let units = [], roles = [];
     for (let n in organizationalUnits) {
         // Lấy thông tin đơn vị
         let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);
@@ -83,23 +58,13 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     }
 
     // Lấy danh sách người dùng theo phòng ban và chức danh
-    let userRoles = await UserRole.find({
-        roleId: {
-            $in: roles
-        }
-    });
+    let userRoles = await UserRole.find({roleId: {$in: roles}});
 
     // Lấy userID vào 1 arr
     let userId = userRoles.map(userRole => userRole.userId);
 
     // Lấy email của người dùng theo phòng ban và chức danh
-    var emailUsers = await User.find({
-        _id: {
-            $in: userId
-        }
-    }, {
-        email: 1
-    });
+    let emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
 
     return emailUsers.map(user => user.email)
 }
@@ -110,35 +75,17 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
  */
 exports.getEmployeeProfile = async (userId) => {
     let user = await User.findById(userId);
-    let employees = await Employee.find({
-        emailInCompany: user.email
-    });
+    let employees = await Employee.find({emailInCompany: user.email});
     if (employees.length === 0) {
-        return {
-            employees: employees
-        }
+        return {employees: employees}
     } else {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(user.email);
-        let salarys = await Salary.find({
-            employee: employees[0]._id
-        })
-        let annualLeaves = await AnnualLeave.find({
-            employee: employees[0]._id
-        })
-        let commendations = await Commendation.find({
-            employee: employees[0]._id
-        })
-        let disciplines = await Discipline.find({
-            employee: employees[0]._id
-        })
-        return {
-            employees: employees,
-            salarys,
-            annualLeaves,
-            commendations,
-            disciplines,
-            ...value
-        }
+        let salarys = await Salary.find({employee: employees[0]._id})
+        let annualLeaves = await AnnualLeave.find({employee: employees[0]._id})
+        let commendations = await Commendation.find({employee: employees[0]._id})
+        let disciplines = await Discipline.find({employee: employees[0]._id})
+        let courses = await EmployeeCourse.find({employee: employees[0]._id})
+        return { employees: employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
 
 }
@@ -150,17 +97,11 @@ exports.getEmployeeProfile = async (userId) => {
  * @avatar : url file avatar
  */
 exports.updatePersonalInformation = async (userId, data, avatar) => {
-    if (avatar === "") {
-        avatar = data.avatar;
-    }
+    if (avatar === "") {avatar = data.avatar;}
     let user = await User.findById(userId);
-    var employeeInfo = await Employee.findOne({
-        emailInCompany: user.email
-    }, {
-        _id: 1
-    });
+    let employeeInfo = await Employee.findOne({emailInCompany: user.email}, {_id: 1});
     // Thông tin cần cập nhật 
-    var employeeUpdate = {
+    let employeeUpdate = {
         avatar: avatar,
         gender: data.gender,
         ethnic: data.ethnic,
@@ -190,15 +131,9 @@ exports.updatePersonalInformation = async (userId, data, avatar) => {
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
     // Cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({
-        _id: employeeInfo._id
-    }, {
-        $set: employeeUpdate
-    });
+    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
 
-    return await Employee.find({
-        _id: employeeInfo._id
-    });
+    return await Employee.find({_id: employeeInfo._id});
 }
 
 /**
@@ -210,40 +145,36 @@ exports.getEmployeeInforById = async(id)=> {
 }
 
 /**
- * Lấy tất cả danh sách nhân viên 
+ * Lấy tất cả danh sách nhân viên đang làm việc của công ty theo đơn vị và phòng ban
  * @company : id công ty
+ * @organizationalUnits : array id đơn vị
+ * @positions : array id chức vụ
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
 exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    var keySearch = {
-        company: company
-    };
+    let keySearch = {company: company, status: 'active'};
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {
-                ...keySearch,
-                emailInCompany: {
-                    $in: emailInCompany
-                }
-            }
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch);
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
         let listAllEmployees = await Employee.find(keySearch);
-        return {totalEmployee, listAllEmployees}
+        return {totalAllEmployee, listAllEmployees}
     } else {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {
-                ...keySearch,
-                emailInCompany: {
-                    $in: emailInCompany
-                }
-            }
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
-        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1});
-        return {totalEmployee, listAllEmployees}
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
+        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+        return {totalAllEmployee, listAllEmployees}
     }
 }
 
@@ -253,91 +184,43 @@ exports.getEmployees = async(company, organizationalUnits, positions, allInfor=t
  * @company : Id công ty người tìm kiếm
  */
 exports.searchEmployeeProfiles = async (params, company) => {
-    var keySearch = {
-        company: company
-    };
+    let keySearch = {company: company};
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
-        keySearch = {
-            ...keySearch,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
+        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
+        keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
     }
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (params.employeeNumber !==undefined && params.employeeNumber.length !==0) {
-        keySearch = {
-            ...keySearch,
-            employeeNumber: {
-                $regex: params.employeeNumber,
-                $options: "i"
-            }
-        }
+        keySearch = {...keySearch, employeeNumber: {$regex: params.employeeNumber, $options: "i"}}
     };
 
     // Bắt sựu kiện MSNV tìm kiếm khác "undefined"
     if (params.gender !== undefined) {
-        keySearch = {
-            ...keySearch,
-            gender: {
-                $in: params.gender
-            }
-        };
+        keySearch = {...keySearch, gender: {$in: params.gender}};
     };
 
     // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
     if (params.status !== undefined) {
-        keySearch = {
-            ...keySearch,
-            status: {
-                $in: params.status
-            }
-        };
+        keySearch = {...keySearch, status: { $in: params.status}};
     };
     
     // Lấy danh sách nhân viên
-    var totalList = await Employee.count(keySearch);
-    var listEmployees = await Employee.find(keySearch, {
-            field1: 1,
-            emailInCompany: 1
-        })
-        .sort({
-            'createdAt': 'desc'
-        }).skip(params.page).limit(params.limit);
-    var data = [];
+    let totalList = await Employee.count(keySearch);
+    let listEmployees = await Employee.find(keySearch, {field1: 1,emailInCompany: 1})
+        .sort({'createdAt': 'desc'}).skip(params.page).limit(params.limit);
+    let data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
-        var employees = await Employee.find({
-            _id: listEmployees[n]._id
-        });
-        var salarys = await Salary.find({
-            employee: listEmployees[n]._id
-        })
-        var annualLeaves = await AnnualLeave.find({
-            employee: listEmployees[n]._id
-        })
-        var commendations = await Commendation.find({
-            employee: listEmployees[n]._id
-        })
-        var disciplines = await Discipline.find({
-            employee: listEmployees[n]._id
-        })
-        data[n] = {
-            employees,
-            salarys,
-            annualLeaves,
-            commendations,
-            disciplines,
-            ...value
-        }
+        let employees = await Employee.find({_id: listEmployees[n]._id});
+        let salarys = await Salary.find({employee: listEmployees[n]._id})
+        let annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
+        let commendations = await Commendation.find({employee: listEmployees[n]._id})
+        let disciplines = await Discipline.find({employee: listEmployees[n]._id})
+        let courses = await EmployeeCourse.find({employee: listEmployees[n]._id})
+        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
-    
-    return {
-        data,
-        totalList
-    }
+    return { data, totalList }
 }
 
 /**
@@ -355,9 +238,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject)=>{
             })
         });
         return arrayObject;
-    }else{
-        return arrayObject;
-    }
+    } else return arrayObject;
 }
 
 /**
@@ -378,13 +259,14 @@ exports.createEmployee = async (data, company, fileInfo) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    var createEmployee = await Employee.create({
+    let createEmployee = await Employee.create({
         avatar: avatar,
         fullName: data.fullName,
         employeeNumber: data.employeeNumber,
         employeeTimesheetId: data.employeeTimesheetId,
         company: company,
         gender: data.gender,
+        status: data.status,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -495,25 +377,26 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
+    if(data.courses!==undefined){
+        let courses = data.courses;
+        for (let x in courses) {
+            EmployeeCourse.create({
+                employee: createEmployee._id,
+                course: courses[x].course,
+                result: courses[x].result,
+            });
+        } 
+    }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
-    var employees = await Employee.find({
-        _id: createEmployee._id
-    });
-    var salarys = await Salary.find({
-        employee: createEmployee._id
-    })
-    var annualLeaves = await AnnualLeave.find({
-        employee: createEmployee._id
-    })
-    var commendations = await Commendation.find({
-        employee: createEmployee._id
-    })
-    var disciplines = await Discipline.find({
-        employee: createEmployee._id
-    })
+    let employees = await Employee.find({_id: createEmployee._id});
+    let salarys = await Salary.find({employee: createEmployee._id})
+    let annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
+    let commendations = await Commendation.find({employee: createEmployee._id})
+    let disciplines = await Discipline.find({employee: createEmployee._id})
+    let courses = await EmployeeCourse.find({employee: createEmployee._id})
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 
 
@@ -525,7 +408,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
         createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
         createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
-        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, 
+        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, deleteCourses, editCourses, createCourses,
         createFiles, editFiles, deleteFiles, createSocialInsuranceDetails, editSocialInsuranceDetails, deleteSocialInsuranceDetails} = data;
     let avatar = fileInfo.avatar === "" ? employee.avatar : fileInfo.avatar,
         fileDegree = fileInfo.fileDegree,
@@ -570,6 +453,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeNumber= employee.employeeNumber;
     oldEmployee.employeeTimesheetId= employee.employeeTimesheetId;
     oldEmployee.gender= employee.gender;
+    oldEmployee.status= employee.status;
     oldEmployee.birthdate= employee.birthdate;
     oldEmployee.birthplace= employee.birthplace;
     oldEmployee.identityCardNumber= employee.identityCardNumber;
@@ -636,45 +520,29 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses );
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
-    var employees = [oldEmployee];
-    var salarys = await Salary.find({
-        employee: oldEmployee._id
-    })
-    var annualLeaves = await AnnualLeave.find({
-        employee: oldEmployee._id
-    })
-    var commendations = await Commendation.find({
-        employee: oldEmployee._id
-    })
-    var disciplines = await Discipline.find({
-        employee: oldEmployee._id
-    })
+    let employees = await Employee.find({_id: oldEmployee._id});
+    let salarys = await Salary.find({employee: oldEmployee._id});
+    let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id});
+    let commendations = await Commendation.find({employee: oldEmployee._id});
+    let disciplines = await Discipline.find({employee: oldEmployee._id});
+    let courses = await EmployeeCourse.find({employee: oldEmployee._id});
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 /**
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
  */
 exports.deleteEmployee = async (id) => {
-    var employee = await Employee.findOneAndDelete({
-        _id: id
-    });
-    await Discipline.deleteMany({
-        employee: id
-    });
-    await Commendation.deleteMany({
-        employee: id
-    });
-    await AnnualLeave.deleteMany({
-        employee: id
-    });
-    await Salary.deleteMany({
-        employee: id
-    });
+    let employee = await Employee.findOneAndDelete({_id: id});
+    await Discipline.deleteMany({employee: id});
+    await Commendation.deleteMany({employee: id});
+    await AnnualLeave.deleteMany({employee: id});
+    await Salary.deleteMany({employee: id});
     return employee;
 }
 
@@ -684,13 +552,11 @@ exports.deleteEmployee = async (id) => {
  * @company : Id công ty
  */
 exports.checkEmployeeExisted = async (employeeNumber, company) => {
-    var employee = await Employee.find({
+    let employee = await Employee.find({
         employeeNumber: employeeNumber,
         company: company
-    }, {
-        field1: 1
-    })
-    var checkMSNV = false;
+    }, {field1: 1})
+    let checkMSNV = false;
     if (employee.length !== 0) {
         checkMSNV = true
     }
@@ -702,12 +568,10 @@ exports.checkEmployeeExisted = async (employeeNumber, company) => {
  * @email : Mã số nhân viên
  */
 exports.checkEmployeeCompanyEmailExisted = async (email) => {
-    var employee = await Employee.find({
+    let employee = await Employee.find({
         emailInCompany: email
-    }, {
-        field1: 1
-    })
-    var checkEmail = false;
+    }, {field1: 1})
+    let checkEmail = false;
     if (employee.length !== 0) {
         checkEmail = true
     }

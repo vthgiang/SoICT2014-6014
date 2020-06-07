@@ -184,7 +184,7 @@ class TreeTable extends Component {
 
     // function hiện thị các action tương ứng cho các dòng 
     showActionColumn = (data, id) => {
-        var { titleAction } = this.props;
+        var { titleAction, performtasks } = this.props;
         switch (data) {
             case "edit":
                 return <a href="#abc" onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
@@ -211,7 +211,7 @@ class TreeTable extends Component {
                     <i className="material-icons">restore_page</i>
                 </a>
             case "startTimer":
-                return <a href="#abc" onClick={() => this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer}>
+                return <a href="#abc" onClick={() => !performtasks.currentTimer && this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer} disabled={performtasks.currentTimer}>
                     <i className="material-icons">timer</i>
                 </a>
             default:
@@ -267,6 +267,14 @@ class TreeTable extends Component {
         );
     }
 }
-const treeTable = connect(null, null)(withTranslate(TreeTable));
+function mapState(state) {
+    const { performtasks } = state;
+    return { performtasks };
+}
+
+const actionCreators = {
+
+};
+const treeTable = connect(mapState, actionCreators)(withTranslate(TreeTable));
 
 export { treeTable as TreeTable }
