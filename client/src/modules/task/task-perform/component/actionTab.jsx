@@ -708,7 +708,7 @@ class ActionTab extends Component {
                                                     </li>
                                                     }
 
-                                                    {item.files && item.files.length && // Chỉ hiện show file khi có file đính kèm
+                                                    {item.files && item.files.length >0 && // Chỉ hiện show file khi có file đính kèm
                                                     <li style={{display:"inline-table"}}>
                                                         <a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
                                                     </li>
