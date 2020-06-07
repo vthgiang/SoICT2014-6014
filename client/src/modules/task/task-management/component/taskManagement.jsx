@@ -21,8 +21,6 @@ class TaskManagement extends Component {
         this.state = {
             perPage: 20,
             currentPage: 1,
-            // showModal: "",
-            // showAddSubTask: ""
 
             currentTab: "responsible",
             organizationalUnit: '[]',
@@ -319,14 +317,18 @@ class TaskManagement extends Component {
         window.$(`#modelPerformTask${id}`).modal('show');
     }
     
-    handleCheckClickAddSubTask = async (id) => {
+    /**
+     * Mở modal thêm task mới
+     * @id task cha của task sẽ thêm (là "" nếu không có cha)
+     */
+    handleAddTask = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
-                showAddSubTask: id
+                parentTask: id
             }
         });
-        window.$(`#addNewTask${id}`).modal('show')
+        window.$(`#addNewTask`).modal('show')
     }
 
     getResponsibleOfItem = (data, id) => {
@@ -432,7 +434,7 @@ class TaskManagement extends Component {
         var currentTasks, units = [];
         var pageTotals;
         const { tasks, user, translate } = this.props;
-        const { startTimer, currentTimer, currentPage, showAddSubTask } = this.state;
+        const { startTimer, currentTimer, currentPage } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
@@ -500,9 +502,9 @@ class TaskManagement extends Component {
                 <div className="box-body qlcv">
                     <div style={{ height: "40px" }}>
                         {this.state.currentTab !== "informed" &&
-                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title={translate('task.task_management.add_title')} data-target="#addNewTask" data-backdrop="static" data-keyboard="false">{translate('task.task_management.add_task')}</button>
+                            <button type="button" onClick={()=>{this.handleAddTask("")}} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
-                        <ModalAddTask currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id="" />
+                        <ModalAddTask currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={this.state.parentTask} />
                     </div>
 
                     <div className="form-inline">
@@ -635,7 +637,7 @@ class TaskManagement extends Component {
                                 startTimer: translate('task.task_management.action_start_timer'),
                             }}
                             funcEdit={this.handleShowModal}
-                            funcAdd={this.handleCheckClickAddSubTask}
+                            funcAdd={this.handleAddTask}
                             funcStartTimer={this.startTimer}
                             funcStore={this.handleStore}
                             // funcDelete={this.handleDelete}
@@ -662,15 +664,6 @@ class TaskManagement extends Component {
                             role={this.state.currentTab}
                         />
                     } */}
-
-                    {
-                        this.state.showAddSubTask !== undefined &&
-                        <ModalAddTask
-                            currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks).filter(item => item._id === showAddSubTask)}
-                            id={this.state.showAddSubTask}
-                            role={this.state.currentTab}
-                        />
-                    }
 
 
                     <PaginateBar
