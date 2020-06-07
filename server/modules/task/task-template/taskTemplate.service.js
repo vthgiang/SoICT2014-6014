@@ -249,9 +249,72 @@ exports.editTaskTemplate = async (data, id) => {
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
 exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
+    //Lấy tất cả các đơn vị con của 1 đơn vị
     var organizationalUnit = await OrganizationalUnit.findById(unitId);
-
-    var data =DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
-    return data;
+    var data;
+    data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
    
+    var queue=[];
+    var departments = [];
+    //BFS tìm tât cả đơn vị con-hàm của Đức
+    departments.push(data);
+    queue.push(data);    
+    while(queue.length > 0){
+        var v = queue.shift();
+        if(v.children !== undefined){
+         for(var i = 0; i < v.children.length; i++){
+             var u = v.children[i];
+             queue.push(u);
+             departments.push(u);
+
+         }
+     }
+    }
+    //Lấy tất cả user của từng đơn vị
+    var userArray=[];
+    userArray=await _getAllUsersInOrganizationalUnits(departments);
+    return userArray;
+   
+}
+
+/**
+ * Hàm tiện ích dùng trong service ở trên 
+ * Khác với hàm bên module User: nhận vào 1 mảng các department và trả về 1 mảng với mỗi ptu là tất cả các nhân viên trong từng 1 phòng ban
+ */
+_getAllUsersInOrganizationalUnits = async (data) => {
+    var userArray=[];
+    for(let i= 0;i<data.length;i++)
+    { 
+        var department=data[i];
+        var userRoles = await UserRole
+        .find({ roleId: {$in: [department.dean, department.viceDean, department.employee]}})
+        .populate({path: 'userId', select: 'name'})
+    
+        var tmp = await Role.find({_id: {$in: [department.dean, department.viceDean, department.employee]}}, {name: 1});
+        var roles = {};
+        tmp.forEach(item => {
+        if (item._id.equals(department.dean))
+            roles.dean = item;
+        else if (item._id.equals(department.viceDean))
+            roles.viceDean = item;
+        else if (item._id.equals(department.employee))
+            roles.employee = item;
+        })
+
+        let deans=[], viceDeans=[], employees=[];
+        userRoles.forEach((item) => {
+        if (item.roleId.equals(department.dean)){
+            deans.push(item.userId);
+        } else if (item.roleId.equals(department.viceDean)){
+            viceDeans.push(item.userId);
+        } else if (item.roleId.equals(department.employee)){
+            employees.push(item.userId);
+        }
+        });
+
+    var users = {deans: deans, viceDeans: viceDeans, employees: employees, roles: roles,department:department.name};
+    userArray.push(users)
+    }
+     
+    return userArray;
 }
