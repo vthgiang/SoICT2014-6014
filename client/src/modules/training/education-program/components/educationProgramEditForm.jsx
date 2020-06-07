@@ -13,9 +13,20 @@ class EducationProgramEditForm extends Component {
     }
     // Function lưu giá trị unit vào state khi thay đổi
     handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
+        let position = this.state.position;
+
+        this.state.organizationalUnit.forEach(u => {
+            let check = value.lastIndexOf(u);
+            console.log(check);
+            if (check === -1) {
+                this.props.department.list.forEach(x => {
+                    if (x._id === u) {
+                        position = this.state.position.filter(p => p !== x.dean._id && p !== x.viceDean._id && p !== x.employee._id);
+                    }
+                })
+            }
+        })
+        this.validatePosition(position, true);
         this.validateOrganizationalUnit(value, true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
@@ -34,9 +45,6 @@ class EducationProgramEditForm extends Component {
 
     // Function lưu giá trị chức vụ vào state khi thay đổi
     handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         this.validatePosition(value, true);
     }
     validatePosition = (value, willUpdateState = true) => {
@@ -80,7 +88,6 @@ class EducationProgramEditForm extends Component {
         return result;
     }
     save = (e) => {
-        console.log(this.state)
         if (this.isFormValidated()) {
             this.props.updateEducation(this.state._id, this.state);
         }
@@ -94,6 +101,8 @@ class EducationProgramEditForm extends Component {
                 programId: nextProps.programId,
                 organizationalUnit: nextProps.organizationalUnit,
                 position: nextProps.position,
+                totalList: nextProps.totalList,
+
                 errorOnOrganizationalUnit: undefined,
                 errorOnPosition: undefined,
                 errorOnProgramName: undefined,
@@ -106,12 +115,11 @@ class EducationProgramEditForm extends Component {
     }
     render() {
         const { translate, education } = this.props;
-        const { name, programId, organizationalUnit, position, errorOnProgramName,
-            errorOnOrganizationalUnit, errorOnPosition } = this.state;
+        const { _id, name, programId, organizationalUnit, position, errorOnProgramName,
+            errorOnOrganizationalUnit, errorOnPosition, totalList } = this.state;
         const { list } = this.props.department;
         var listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
+        if (organizationalUnit !== null) {
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -139,8 +147,8 @@ class EducationProgramEditForm extends Component {
                     <form className="form-group" id="form-edit-education" >
                         <div className={`form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                             <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
-                            <SelectMulti id={`edit-multiSelectUnit`} multiple="multiple" display='inline-block'
-                                value={organizationalUnit}
+                            <SelectMulti id={`edit-multiSelectUnit${_id}`} multiple="multiple" display='inline-block'
+                                value={organizationalUnit} disabled={Number(totalList) > 0 ? true : false}
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
@@ -148,8 +156,8 @@ class EducationProgramEditForm extends Component {
                         </div>
                         <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
                             <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
-                            <SelectMulti id={`edit-multiSelectPosition`} multiple="multiple" display='inline-block'
-                                value={position}
+                            <SelectMulti id={`edit-multiSelectPosition${_id}`} multiple="multiple" display='inline-block'
+                                value={position} disabled={Number(totalList) > 0 ? true : false}
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>

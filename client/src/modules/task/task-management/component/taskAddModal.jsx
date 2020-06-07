@@ -47,7 +47,17 @@ class ModalAddTask extends Component {
     
    
     handleSubmit = async (event) => {
+        if(this.props.id !== ""){
+            this.state.newTask.parent = this.props.currentTasks[0];
+            this.setState(state =>{
+                return{
+                    ...state,
+                };
+            });
+        }
+        
         const { newTask } = this.state;
+        
         this.props.addTask(newTask);
     }
 
@@ -159,6 +169,7 @@ class ModalAddTask extends Component {
         let value = event.target.value;
         if (value) {
             this.props.getAllUserOfDepartment(value);
+            this.props.getChildrenOfOrganizationalUnits(value);
             this.setState(state =>{
                 return{
                     ...state,
@@ -300,9 +311,9 @@ class ModalAddTask extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, id } = this.props;
         const { newTask } = this.state;
-
+        
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
@@ -318,7 +329,6 @@ class ModalAddTask extends Component {
                     newTask: {
                         ...this.state.newTask,
                         organizationalUnit: defaultUnit._id,
-                       
                     }
                 };
             });
@@ -338,7 +348,7 @@ class ModalAddTask extends Component {
         var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
-        
+                
         var taskTemplate,responsibleEmployees;
         if(tasktemplates.taskTemplate) 
         { 
@@ -378,7 +388,7 @@ class ModalAddTask extends Component {
 
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
-        
+                
         return (
             <React.Fragment>
                 <DialogModal
@@ -434,7 +444,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày bắt đầu*:</label>
                                     <DatePicker 
-                                        id="datepicker1"
+                                        id={`datepicker1${this.props.id}`}
                                         dateFormat="day-month-year"
                                         value={newTask.startDate}
                                         onChange={this.handleChangeTaskStartDate}
@@ -444,7 +454,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày kết thúc*:</label>
                                     <DatePicker 
-                                        id="datepicker2"
+                                        id={`datepicker2${this.props.id}`}
                                         value={newTask.endDate}
                                         onChange={this.handleChangeTaskEndDate}
                                     />
@@ -460,16 +470,18 @@ class ModalAddTask extends Component {
                                 </select>
                             </div>
 
-                            <div className="form-group">
-                                <label className="control-label">Công việc cha</label>
-                                <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
-                                    <option value="">--Hãy chọn công việc cha--</option>
-                                    {this.props.currentTasks &&
-                                        this.props.currentTasks.map(item => {
-                                            return <option key={item._id} value={item._id}>{item.name}</option>
-                                        })}
-                                </select>
-                            </div>
+                            {this.props.id === "" &&
+                                <div className="form-group">
+                                    <label className="control-label">Công việc cha</label>
+                                    <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
+                                        <option value="">--Hãy chọn công việc cha--</option>
+                                        {this.props.currentTasks &&
+                                            this.props.currentTasks.map(item => {
+                                                return <option key={item._id} value={item._id}>{item.name}</option>
+                                            })}
+                                    </select>
+                                </div>
+                            }
                         </fieldset>
                     </div>
                     
@@ -480,7 +492,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người thực hiện*</label>
                                 {unitMembers &&
                                 <SelectBox
-                                    id={`responsible-select-box${newTask.taskTemplate}`}
+                                    id={`responsible-select-box${this.props.id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items={unitMembers}
@@ -497,7 +509,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người phê duyệt*</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accounatable-select-box${newTask.taskTemplate}`}
+                                        id={`accounatable-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={unitMembers}
@@ -514,7 +526,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người hỗ trợ</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`consulted-select-box${newTask.taskTemplate}`}
+                                        id={`consulted-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -533,7 +545,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người quan sát</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`informed-select-box${newTask.taskTemplate}`}
+                                        id={`informed-select-box${this.props.id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -570,7 +582,8 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

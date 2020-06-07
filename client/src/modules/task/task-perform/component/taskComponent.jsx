@@ -37,6 +37,7 @@ class TaskComponent extends Component {
         })
         this.props.getTaskById(taskId);
         this.props.getSubTask(taskId);
+        this.props.getTimesheetLogs(taskId);
     }
     handleShowErr() {
         window.$('#modal-show-err').modal('show');
@@ -149,7 +150,8 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    getSubTask: taskManagementActions.getSubTask
+    getSubTask: taskManagementActions.getSubTask,
+    getTimesheetLogs: performTaskAction.getTimesheetLogs,
 };
 
 const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));

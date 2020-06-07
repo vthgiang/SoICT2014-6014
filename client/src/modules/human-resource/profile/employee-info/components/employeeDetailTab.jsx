@@ -15,13 +15,14 @@ class EmployeeDetail extends Component {
         this.props.getEmployeeProfile();
     }
     render() {
-        var employees, salaries, annualLeaves, commendations, disciplines, roles = [];
+        var employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
         const { employeesInfo, translate } = this.props;
         if (employeesInfo.employees) employees = employeesInfo.employees;
         if (employeesInfo.salarys) salaries = employeesInfo.salarys;
         if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
         if (employeesInfo.commendations) commendations = employeesInfo.commendations;
         if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
+        if (employeesInfo.courses) courses = employeesInfo.courses
         if (employeesInfo.roles) roles = employeesInfo.roles
         return (
             <React.Fragment>
@@ -76,7 +77,7 @@ class EmployeeDetail extends Component {
                                         />
                                         <ContractTab
                                             id="view_contract"
-                                            courses={x.courses}
+                                            courses={courses}
                                             contracts={x.contracts}
                                         />
                                         <DisciplineTab

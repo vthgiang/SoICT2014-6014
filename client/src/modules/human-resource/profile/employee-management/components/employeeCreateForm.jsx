@@ -30,8 +30,8 @@ class EmployeeCreateForm extends Component {
                 taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
-                courses: []
             },
+            courses: [],
             degrees: [],
             certificates: [],
             contracts: [],
@@ -70,9 +70,9 @@ class EmployeeCreateForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
-        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+        if (name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             var partValue = value.split('-');
-            value = [partValue[2],partValue[1], partValue[0]].join('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         this.setState({
             employee: {
@@ -150,17 +150,10 @@ class EmployeeCreateForm extends Component {
         })
     }
 
-    // TODO: function thêm thông tin quá trình đào tạo
+    // Function thêm thông tin quá trình đào tạo
     handleChangeCourse = (data) => {
-        const { employeeNew } = this.state;
-        var course = employeeNew.course;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                course: [...course, {
-                    ...data
-                }]
-            }
+            courses: data
         })
     }
 
@@ -173,20 +166,20 @@ class EmployeeCreateForm extends Component {
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId)&&
-        this.validatorInput(this.state.employee.fullName)&& this.validatorInput(this.state.employee.birthdate)&&
-        this.validatorInput(this.state.employee.emailInCompany)&& this.validatorInput(this.state.employee.identityCardNumber)&& 
-        this.validatorInput(this.state.employee.identityCardDate)&& this.validatorInput(this.state.employee.identityCardAddress)&& 
-        this.validatorInput(this.state.employee.phoneNumber)&& this.validatorInput(this.state.employee.temporaryResidence) &&
-        this.validatorInput(this.state.employee.taxRepresentative)&& this.validatorInput(this.state.employee.taxNumber) &&
-        this.validatorInput(this.state.employee.taxDateOfIssue)&& this.validatorInput(this.state.employee.taxAuthority);
+        let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId) &&
+            this.validatorInput(this.state.employee.fullName) && this.validatorInput(this.state.employee.birthdate) &&
+            this.validatorInput(this.state.employee.emailInCompany) && this.validatorInput(this.state.employee.identityCardNumber) &&
+            this.validatorInput(this.state.employee.identityCardDate) && this.validatorInput(this.state.employee.identityCardAddress) &&
+            this.validatorInput(this.state.employee.phoneNumber) && this.validatorInput(this.state.employee.temporaryResidence) &&
+            this.validatorInput(this.state.employee.taxRepresentative) && this.validatorInput(this.state.employee.taxNumber) &&
+            this.validatorInput(this.state.employee.taxDateOfIssue) && this.validatorInput(this.state.employee.taxAuthority);
         return result;
     }
 
     // Function thêm mới thông tin nhân viên
     save = async () => {
         let { employee, degrees, certificates, contracts, files,
-            disciplines, commendations, salaries, annualLeaves } = this.state;
+            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
         await this.setState({
             employee: {
                 ...employee,
@@ -197,7 +190,8 @@ class EmployeeCreateForm extends Component {
                 disciplines,
                 commendations,
                 salaries,
-                annualLeaves
+                annualLeaves,
+                courses
             }
         })
         let formData = convertJsonObjectToFormData(this.state.employee);
@@ -217,6 +211,7 @@ class EmployeeCreateForm extends Component {
         this.props.addNewEmployee(formData);
     }
     render() {
+        console.log(this.state);
         const { translate, employeesManager } = this.props;
         return (
             <React.Fragment>
@@ -289,11 +284,17 @@ class EmployeeCreateForm extends Component {
                             />
                             <ContractTab
                                 id="contract"
+                                pageCreate={true}
                                 contracts={this.state.contracts}
-                                courses={this.state.employee.courses}
+                                courses={this.state.courses}
+                                organizationalUnits={[]}
                                 handleAddContract={this.handleChangeContract}
                                 handleEditContract={this.handleChangeContract}
                                 handleDeleteContract={this.handleChangeContract}
+
+                                handleAddCourse={this.handleChangeCourse}
+                                handleEditCourse={this.handleChangeCourse}
+                                handleDeleteCourse={this.handleChangeCourse}
                             />
                             <DisciplineTab
                                 id="reward"

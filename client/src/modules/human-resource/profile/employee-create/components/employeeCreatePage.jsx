@@ -10,7 +10,8 @@ import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
-import { months } from 'moment';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+
 class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
@@ -29,8 +30,8 @@ class EmployeeCreatePage extends Component {
                 taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
-                courses: []
             },
+            courses: [],
             degrees: [],
             certificates: [],
             contracts: [],
@@ -57,6 +58,9 @@ class EmployeeCreatePage extends Component {
         if (monthYear === true) {
             return [year, month].join('-');
         } else return [year, month, day].join('-');
+    }
+    componentDidMount() {
+        this.props.getDepartment();
     }
     // Function upload avatar 
     handleUpload = (img, avatar) => {
@@ -148,23 +152,16 @@ class EmployeeCreatePage extends Component {
         })
     }
 
-    // TODO: function thêm thông tin quá trình đào tạo
+    // Function thêm thông tin quá trình đào tạo
     handleChangeCourse = (data) => {
-        const { employeeNew } = this.state;
-        var course = employeeNew.course;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                course: [...course, {
-                    ...data
-                }]
-            }
+            courses: data
         })
     }
     // function thêm mới thông tin nhân viên
     handleSubmit = async () => {
         let { employee, degrees, certificates, contracts, files,
-            disciplines, commendations, salaries, annualLeaves } = this.state;
+            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
         await this.setState({
             employee: {
                 ...employee,
@@ -175,7 +172,8 @@ class EmployeeCreatePage extends Component {
                 disciplines,
                 commendations,
                 salaries,
-                annualLeaves
+                annualLeaves,
+                courses
             }
         })
         let formData = convertJsonObjectToFormData({ ...this.state.employee });
@@ -196,7 +194,6 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">
@@ -260,11 +257,15 @@ class EmployeeCreatePage extends Component {
                         />
                         <ContractTab
                             id="hopdong"
+                            pageCreate={true}
                             contracts={this.state.contracts}
-                            courses={this.state.employee.courses}
+                            courses={this.state.courses}
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}
+                            handleAddCourse={this.handleChangeCourse}
+                            handleEditCourse={this.handleChangeCourse}
+                            handleDeleteCourse={this.handleChangeCourse}
                         />
                         <DisciplineTab
                             id="khenthuong"
@@ -306,12 +307,13 @@ class EmployeeCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
+    const { employeesManager, } = state;
     return { employeesManager };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    getDepartment: DepartmentActions.get,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));
