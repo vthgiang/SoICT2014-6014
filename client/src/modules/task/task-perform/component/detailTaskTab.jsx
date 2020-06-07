@@ -337,9 +337,10 @@ class DetailTaskTab extends Component {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
                                                     
-                                                    { eva.results.length !== 0 ?
-                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt>
-                                                    }
+                                                    {/* { eva.results.length !== 0 ? */}
+                                                        {/* // <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt> */}
+                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
+                                                    {/* } */}
                                                     
                                                     <dd>
                                                         {
@@ -350,7 +351,7 @@ class DetailTaskTab extends Component {
                                                             { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
                                                                     return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
-                                                                }) : <li>Chưa có ái đánh giá vông việc tháng này</li>
+                                                                }) : <li>Chưa có ái đánh giá công việc tháng này</li>
                                                             }
                                                             </ul>
 
