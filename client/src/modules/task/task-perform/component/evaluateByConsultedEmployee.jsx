@@ -19,7 +19,9 @@ class EvaluateByConsultedEmployee extends Component {
         var yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        var automaticPoint = evaluations ? evaluations.results[0].automaticPoint : 0;
+        console.log('--------------------', evaluations);
+
+        var automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
         this.state={
             info: {},
@@ -77,7 +79,7 @@ class EvaluateByConsultedEmployee extends Component {
                 ...prevState,
                 id: nextProps.id,
                 // TODO: Ve sau can sua
-                
+
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,

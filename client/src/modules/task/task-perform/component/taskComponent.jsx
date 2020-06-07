@@ -39,14 +39,6 @@ class TaskComponent extends Component {
         this.props.getSubTask(taskId);
         this.props.getTimesheetLogs(taskId);
     }
-    handleShowErr() {
-        window.$('#modal-show-err-task').modal('show');
-    }
-    handleClose() {
-        // window.$(".modal-backdrop").remove();
-        // window.$('body').removeClass('modal-open');
-        // window.$('body').css('padding-right',"0px");
-    }
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
         var task, info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
@@ -77,25 +69,8 @@ class TaskComponent extends Component {
         const { tasks } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) {
             if (!this.checkPermission(tasks)) {
-                this.handleShowErr();
-                this.handleClose();
                 return (
                     <div>
-                        {/* <DialogModal
-                            size='50' modalID="modal-show-err" isLoading={false}
-                            formID="form-show-err-task"
-                            title="Bạn không có quyền truy cập vào công việc này"
-                            hasSaveButton={false}
-                            
-                        >
-                            <div className="modal-body">
-                                <p><b>Nguyên nhân có thể là do:</b></p>
-                                <ul>
-                                    <li>Bạn không có nhiệm vụ trong công việc</li>
-                                    <li>Công việc không còn tồn tại</li>
-                                </ul>
-                            </div>
-                        </DialogModal> */}
                         <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
                     </div>
                 );

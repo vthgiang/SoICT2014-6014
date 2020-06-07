@@ -11,6 +11,7 @@ import { TaskInformationForm } from './taskInformationForm';
 import {
     getStorage
 } from '../../../../config';
+import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
@@ -88,8 +89,9 @@ class EvaluateByResponsibleEmployee extends Component {
 
     componentDidMount() {
         this.props.getTaskById(this.props.id);
-        this.props.getKPIMemberById(this.state.idUser);
-        this.props.getAllKPIPersonalByUserID(this.state.idUser);
+        this.props.getEmployeeKpiSet();
+        // this.props.getKPIMemberById(this.state.idUser); // lỗi
+        this.props.getAllKPIPersonalByUserID(this.state.idUser);// lấy ra mảng các list kpi theo các tháng
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -313,7 +315,7 @@ class EvaluateByResponsibleEmployee extends Component {
             employeePoint: this.state.point,
             role: "Responsible",
             
-            kpi: this.state.kpi,
+            kpi: this.state.kpi ? this.state.kpi : [],
             date: this.state.date,
             info: this.state.info,
             
@@ -349,8 +351,8 @@ class EvaluateByResponsibleEmployee extends Component {
         const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
-
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        // var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
@@ -437,6 +439,7 @@ const getState = {
     editResultTask: performTaskAction.editResultTask,
     editStatusOfTask: taskManagementActions.editStatusOfTask,
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
 }
