@@ -51,11 +51,11 @@ function getKPIUnits(infosearch) {
 
 
 // lấy mục tiêu con của mục tiêu hiện tại
-function getChildTargetOfCurrentTarget(id) {
+function getChildTargetOfCurrentTarget(id, date) {
     return dispatch => {
         dispatch({type: managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST});
 
-        managerServices.getChildTargetOfCurrentTarget(id)
+        managerServices.getChildTargetOfCurrentTarget(id, date)
             .then(res => {
                 dispatch({
                     type: managerConstants.GETCHILDTARGET_CURRENTTARGET_SUCCESS,
