@@ -71,7 +71,7 @@ class TaskInformationForm extends Component {
                                                 onChange={this.props.handleChangeTextInfo}
                                                 value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                             />
-                                            <ErrorLabel content={value.errorOnTextInfo}/>
+                                            {/* <ErrorLabel content={value.errorOnTextInfo}/> */}
                                         </div>
                                     } 
                                      
@@ -87,7 +87,7 @@ class TaskInformationForm extends Component {
                                                 onChange={this.props.handleChangeNumberInfo}
                                                 value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
                                             />
-                                            <ErrorLabel content={value.errorOnNumberInfo}/>
+                                            {/* <ErrorLabel content={value.errorOnNumberInfo}/> */}
                                         </div>
                                     }}
                                     

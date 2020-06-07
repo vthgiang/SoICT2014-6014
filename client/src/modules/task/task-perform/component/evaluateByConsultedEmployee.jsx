@@ -10,6 +10,7 @@ class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
 
+        var idUser = getStorage("userId");
         var {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
@@ -22,11 +23,18 @@ class EvaluateByConsultedEmployee extends Component {
         console.log('--------------------', evaluations);
 
         var automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        
+        var point = 0;
+        if(evaluations){
+            var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
+            if(res) point = res.employeePoint ? res.employeePoint : 0;
+        }
 
         this.state={
             info: {},
             evaluations: evaluations,
-            automaticPoint: automaticPoint
+            automaticPoint: automaticPoint,
+            point: point
         }
     }
 
@@ -149,14 +157,14 @@ class EvaluateByConsultedEmployee extends Component {
                         </div>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
-                            
-                            {
-                                evaluations &&
+                            <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p>
+                            {   
+                                evaluations ?
                                 <div >
                                     {
                                         (evaluations.taskInformations.length !== 0) &&
                                         <div>
-                                            <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p>
+                                            {/* <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p> */}
                                             {
                                                 evaluations.taskInformations.map(info => {
                                                     return <div>
@@ -183,7 +191,7 @@ class EvaluateByConsultedEmployee extends Component {
                                         </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá </p></div>
                                     }
                                     
-                                </div> 
+                                </div> : <div><p style={{color: "red", fontWeight: "bold"}}>Chưa có thông tin đánh giá công việc </p></div>
                             }
                         </fieldset>
                     </form>
