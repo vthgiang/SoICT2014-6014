@@ -54,7 +54,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         allRole = allRole.concat(item.parents); //thêm các role children vào mảng
     })
     var tasktemplates = [];
-    roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
+    let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
     if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
         var tasktemplate = await TaskTemplate.aggregate([
             { $match: { name: { "$regex": name, "$options": "i" } } },
@@ -193,7 +193,7 @@ exports.createTaskTemplate = async (body) => {
 
     // TODO: Xử lý quyển với action
     var privilege = await Privilege.create({
-        roleId: body.readByEmployees[0], //id của người cấp quyền xem
+        roleId: body.readByEmployees, //id của người cấp quyền xem
         resourceId: tasktemplate._id,
         resourceType: "TaskTemplate",
         action: body.readByEmployees //quyền READ

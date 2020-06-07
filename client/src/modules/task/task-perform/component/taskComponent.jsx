@@ -22,7 +22,6 @@ class TaskComponent extends Component {
     componentWillMount = () => {
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
-            console.log(taskId);
             if (taskId) {
                 this.handleShowSubTask(taskId);
             }
@@ -41,7 +40,12 @@ class TaskComponent extends Component {
         this.props.getTimesheetLogs(taskId);
     }
     handleShowErr() {
-        window.$('#modal-show-err').modal('show');
+        window.$('#modal-show-err-task').modal('show');
+    }
+    handleClose() {
+        // window.$(".modal-backdrop").remove();
+        // window.$('body').removeClass('modal-open');
+        // window.$('body').css('padding-right',"0px");
     }
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
@@ -74,14 +78,15 @@ class TaskComponent extends Component {
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) {
             if (!this.checkPermission(tasks)) {
                 this.handleShowErr();
+                this.handleClose();
                 return (
-                    <React.Fragment>
-                        <DialogModal
+                    <div>
+                        {/* <DialogModal
                             size='50' modalID="modal-show-err" isLoading={false}
-                            formID="form-show-err"
+                            formID="form-show-err-task"
                             title="Bạn không có quyền truy cập vào công việc này"
                             hasSaveButton={false}
-
+                            
                         >
                             <div className="modal-body">
                                 <p><b>Nguyên nhân có thể là do:</b></p>
@@ -90,8 +95,9 @@ class TaskComponent extends Component {
                                     <li>Công việc không còn tồn tại</li>
                                 </ul>
                             </div>
-                        </DialogModal>
-                    </React.Fragment>
+                        </DialogModal> */}
+                        <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
+                    </div>
                 );
             } else {
                 return (
