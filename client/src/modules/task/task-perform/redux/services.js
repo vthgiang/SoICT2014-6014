@@ -125,14 +125,14 @@ function addActionComment(newComment) {
         url:`${LOCAL_SERVER_API}/performtask/action-comment/create`,
         method: 'POST',
         data : newComment
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 function addTaskAction(newAction){ 
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/create`,
         method : 'POST',
         data : newAction
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 // edit comment task
 function editActionComment(id, newComment) {
@@ -140,7 +140,7 @@ function editActionComment(id, newComment) {
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
         method:'PUT',
         data : newComment
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 function editTaskAction(id,newAction) {
     return sendRequest({
@@ -148,7 +148,7 @@ function editTaskAction(id,newAction) {
         method:'PUT',
         data : newAction,
         params: {edit:id}
-    }, true, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
 
 // delete comment task
@@ -156,54 +156,54 @@ function deleteActionComment(id,task) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${task}/${id}`,
         method: 'DELETE'
-    }, true, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
 
 function deleteTaskAction(id,task){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/${task}/${id}`,
         method:'DELETE'
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 function createTaskComment(newComment){
     return sendRequest({
         url : `${LOCAL_SERVER_API}/performtask/task-comment/create`,
         method : 'POST',
         data: newComment
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function editTaskComment(id,newComment){
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/task-comment/${id}`,
         method: 'PUT',
         data: newComment
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function deleteTaskComment(id,task){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/${task}/${id}`,
         method: 'DELETE'
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function createCommentOfTaskComment(newComment){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/create`,
         method: 'POST',
         data: newComment
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function editCommentOfTaskComment(id,newComment){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}`,
         method : 'PUT',
         data: newComment
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function deleteCommentOfTaskComment(id,task){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}/${task}`,
         method : 'DELETE',
-    },true, true, 'task.task_perform')
+    },false, true, 'task.task_perform')
 }
 function evaluationAction(id,evaluation){
     return sendRequest({
@@ -211,7 +211,7 @@ function evaluationAction(id,evaluation){
         method : 'PUT',
         data: evaluation,
         params: {evaluation:id}
-    },true,true,'task.task_perform')
+    },false,true,'task.task_perform')
 }
 
 //getall Action task
@@ -222,9 +222,8 @@ function confirmAction(id,idUser) {
     }, false, true, 'task.task_perform');  
 };
 function downloadFile(path) {  
-    console.log("downloadfile")
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/auth/download-file/`,
+        url: `${LOCAL_SERVER_API}/user/download-file/`,
         method: 'GET',
         responseType: 'blob',
         params:{path:path}
