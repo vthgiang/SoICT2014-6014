@@ -3,9 +3,9 @@ const initState = {
     isLoading: false,
     listDistributeTransfers: [],
     totalList: "",
-    error:"",
+    error: "",
 }
-export function distributeTransfer(state =initState, action) {
+export function distributeTransfer(state = initState, action) {
     switch (action.type) {
         case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_REQUEST:
         case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_REQUEST:
@@ -40,7 +40,7 @@ export function distributeTransfer(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfers: state.listDistributeTransfers.map(distributeTransfer =>distributeTransfer._id === action.payload._id ?action.payload : distributeTransfer),
+                listDistributeTransfers: state.listDistributeTransfers.map(distributeTransfer => distributeTransfer._id === action.payload._id ? action.payload : distributeTransfer),
             };
         case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE:
         case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_FAILURE:

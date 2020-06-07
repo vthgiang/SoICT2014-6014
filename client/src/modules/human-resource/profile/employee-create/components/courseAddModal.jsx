@@ -1,84 +1,119 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DialogModal, ErrorLabel, ButtonModal, SelectBox } from '../../../../../common-components';
+
+import { CourseFormValidator } from '../../../../training/course/components/courseFormValidator';
+
 class CourseAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            result: 'failed',
+            course: '',
+            nameCourse: ''
         }
-        this.handleChange = this.handleChange.bind(this)
     }
-    componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/AddEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
 
-    handleChange(event) {
-        const { name, value } = event.target;
+    // Bắt sự kiện thay đổi kết quả đào tạo
+    handleResultChange = (value) => {
         this.setState({
-            [name]: value
+            result: value[0]
         });
     }
+    
+    // Bắt sự kiện thay đổi mã khoá đào tạo
+    handleCourseIdChange = (value) => {
+        this.validateCourseId(value[0], true);
+        let nameCourse = '';
+        this.props.course.listCourses.forEach(x => {
+            if (x._id === value[0]) {
+                nameCourse = x.name
+            }
+        });
+        this.setState({
+            nameCourse: nameCourse
+        })
+    }
+    validateCourseId = (value, willUpdateState = true) => {
+        let msg = CourseFormValidator.validateCourseId(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnCourseId: msg,
+                    course: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        return this.validateCourseId(this.state.course, false);
+    }
+
+    // Bắt sự kiện submit form
+    save = async () => {
+        if (this.isFormValidated()) {
+            this.props.handleChange(this.state);
+        }
+    }
     render() {
+        const { listCourses } = this.props.course;
+        const { translate, id, } = this.props;
+        const { errorOnCourseId, course, result, nameCourse } = this.state;
         return (
-            <div className="modal fade" id={`modal-addNewCourse-${this.props.key}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới quá trình đào tạo:</h4>
+            <React.Fragment>
+                <ButtonModal modalID={`modal-create-course-${id}`} button_name={translate('modal.create')} title='Thêm mới khoá đào tạo' />
+                <DialogModal
+                    size='50' modalID={`modal-create-course-${id}`} isLoading={false}
+                    formID={`form-create-course-${id}`}
+                    title='Thêm mới khoá đào tạo'
+                    func={this.save}
+                    disableSubmit={!this.isFormValidated()}
+                    maxWidth={500}
+                >
+                    <form className="form-group" id={`form-create-course-${id}`}>
+                        <div className={`col-sm-12 col-xs-12 form-group ${errorOnCourseId === undefined ? "" : "has-error"}`}>
+                            <label>Mã khoá đào tạo<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create_courseID_course${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={course}
+                                items={[...listCourses.map((u, i) => { return { value: u._id, text: u.courseId } }), { value: '', text: 'Chọn khoá đào tạo' }]}
+                                onChange={this.handleCourseIdChange}
+                            />
+                            <ErrorLabel content={errorOnCourseId} />
                         </div>
-                        <div className="modal-body">
-                            <div className="col-md-12">
-                                <div className="checkbox" style={{ marginTop: 0 }}>
-                                    <label style={{ paddingLeft: 0 }}>
-                                        (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
-                                                        </label>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="unit">Đơn vị công tác:<span className="text-red">&#42;</span></label>
-                                    <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" />
-                                </div>
-                                
-                                <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                    <label htmlFor="startDate">Từ tháng/năm:<span className="text-red">&#42;</span></label>
-                                    <div className={'input-group date has-feedback'}>
-                                        <div className="input-group-addon">
-                                            <i className="fa fa-calendar" />
-                                        </div>
-                                        <input type="text" className="form-control employeedatepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-                                    </div>
-                                </div>
-                                <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="endDate">Đến tháng/năm:<span className="text-red">&#42;</span></label>
-                                    <div className={'input-group date has-feedback'}>
-                                        <div className="input-group-addon">
-                                            <i className="fa fa-calendar" />
-                                        </div>
-                                        <input type="text" className="form-control employeedatepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="position">chức vụ:<span className="text-red">&#42;</span></label>
-                                    <input type="text" className="form-control" name="position" onChange={this.handleChange} autoComplete="off" />
-                                </div>
-                            </div>
+                        <div className={`form-group col-sm-12 col-xs-12`}>
+                            <label>Tên khoá đào tạo<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" value={nameCourse} placeholder='Tên khoá đào tạo' disabled />
                         </div>
-                        <div className="modal-footer">
-                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                        <div className={`form-group col-sm-12 col-xs-12`}>
+                            <label>Kết quả<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create_result_course${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={result}
+                                items={[{ value: 'pass', text: 'Đạt' }, { value: 'failed', text: 'Không đạt' },]}
+                                onChange={this.handleResultChange}
+                            />
                         </div>
-                    </div>
-                </div >
-            </div>
+                    </form>
+                </DialogModal>
+            </React.Fragment>
         );
     }
 };
-export { CourseAddModal };
+
+function mapState(state) {
+    const { course } = state;
+    return { course };
+};
+
+const addModal = connect(mapState, null)(withTranslate(CourseAddModal));
+export { addModal as CourseAddModal };

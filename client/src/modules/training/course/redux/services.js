@@ -16,14 +16,17 @@ export const CourseService = {
  * @data : dữ liệu key tìm kiếm
  */
 function getListCourse(data) {
+    console.log(data);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/courses`,
         method: 'GET',
         params: {
-            courseId: data.courseId,
-            type: data.type,
-            page: data.page,
-            limit: data.limit
+            courseId: data !== undefined ? data.courseId : data,
+            type: data !== undefined ? data.type : data,
+            page: data !== undefined ? data.page : data,
+            limit: data !== undefined ? data.limit : data,
+            organizationalUnits: data !== undefined ? data.organizationalUnits : data,
+            positions: data !== undefined ? data.positions : data,
         }
     }, false, true, 'training.course');
 }

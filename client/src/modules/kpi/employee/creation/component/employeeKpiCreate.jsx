@@ -371,9 +371,9 @@ class CreateEmployeeKpiSet extends Component {
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item => (
-                item.dean._id === this.state.currentRole
-                || item.employee._id === this.state.currentRole
-                || item.viceDean._id === this.state.currentRole));
+                item.dean === this.state.currentRole
+                || item.employee === this.state.currentRole
+                || item.viceDean === this.state.currentRole));
         }
         if (createEmployeeKpiSet.currentKPI) currentKPI = createEmployeeKpiSet.currentKPI;
         if (user.userdepartments) userdepartments = user.userdepartments;

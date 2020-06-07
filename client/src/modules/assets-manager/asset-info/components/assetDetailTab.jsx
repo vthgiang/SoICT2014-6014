@@ -75,7 +75,7 @@ function mapState(state) {
     return { assetsInfo };
 }
 const actionCreators = {
-    // getAssetProfile: AssetInfoActions.getAssetProfile,
+    
 }
 const connectDetailAsset = connect(mapState, actionCreators)(withTranslate(AssetDetail));
 export { connectDetailAsset as AssetDetail };

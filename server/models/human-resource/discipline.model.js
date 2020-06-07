@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 
 // Tạo bảng datatable kỷ luật
 const DisciplineSchema = new Schema({
@@ -20,8 +21,8 @@ const DisciplineSchema = new Schema({
         require: true,
     },
     organizationalUnit: { // cấp ra quyết định
-        type: String,
-        require: true,
+        type: Schema.Types.ObjectId,
+        ref: OrganizationalUnit
     },
     startDate: {
         type: Date,

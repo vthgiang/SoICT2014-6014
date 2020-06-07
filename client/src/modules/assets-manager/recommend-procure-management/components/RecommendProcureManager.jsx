@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RecommendProcureManagerEditForm } from './RecommendProcureManagerEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { RecommendProcureDetailForm } from "../../recommend-procure/components/RecommendProcureDetailForm";
 
 class RecommendProcureManager extends Component {
     constructor(props) {
@@ -16,12 +18,24 @@ class RecommendProcureManager extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
+        this.props.getAllUsers();
     }
-    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
+
+    // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-recommendprocure').modal('show');
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị mua sắm
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
@@ -76,12 +90,14 @@ class RecommendProcureManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = async () => {
-        if (this.state.month === "") {
+    handleSubmitSearch = async () => {
+        // if (this.state.month === "") {
             await this.setState({
-                month: this.formatDate(Date.now())
+                ...this.state,
+
+                // month: this.formatDate(Date.now())
             })
-        }
+        // }
         this.props.searchRecommendProcures(this.state);
     }
 
@@ -153,7 +169,7 @@ class RecommendProcureManager extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
                     <table id="recommendprocuremanage-table" className="table table-striped table-bordered table-hover">
@@ -191,21 +207,22 @@ class RecommendProcureManager extends Component {
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
-                                        <td>{x.proponent}</td>
+                                        <td>{x.proponent.name}</td>
                                         <td>{x.equipment}</td>
-                                        <td>{x.approver}</td>
+                                        <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin Phiếu đề nghị mua sắm"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
+                                            <DeleteNotification
                                                 content="Xóa thông tin phiếu"
                                                 data={{
                                                     id: x._id,
                                                     info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteRecommendProcure}
-                                            /> */}
+                                            />
                                         </td>
                                     </tr>))
                             }
@@ -217,23 +234,40 @@ class RecommendProcureManager extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                
+                {
+                    this.state.currentRowView !== undefined &&
+                    <RecommendProcureDetailForm
+                        _id={this.state.currentRowView._id}
+                        recommendNumber={this.state.currentRowView.recommendNumber}
+                        dateCreate={this.state.currentRowView.dateCreate}
+                        proponent={this.state.currentRowView.proponent.name}
+                        equipment={this.state.currentRowView.equipment}
+                        supplier={this.state.currentRowView.supplier}
+                        total={this.state.currentRowView.total}
+                        unit={this.state.currentRowView.unit}
+                        estimatePrice={this.state.currentRowView.estimatePrice}
+                        approver={this.state.currentRowView.approver}
+                        note={this.state.currentRowView.note}
+                        status={this.state.currentRowView.status}
+                    />
+                }
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendProcureManagerEditForm
-                    _id={this.state.currentRow._id}
-                    recommendNumber={this.state.currentRow.recommendNumber}
-                    dateCreate={this.state.currentRow.dateCreate}
-                    proponent={this.state.currentRow.proponent}
-                    equipment={this.state.currentRow.equipment}
-                    supplier={this.state.currentRow.supplier}
-                    total={this.state.currentRow.total} 
-                    unit={this.state.currentRow.unit} 
-                    estimatePrice={this.state.currentRow.estimatePrice} 
-                    approver={this.state.currentRow.approver} 
-
-
-                    status={this.state.currentRow.status}
+                        _id={this.state.currentRow._id}
+                        recommendNumber={this.state.currentRow.recommendNumber}
+                        dateCreate={this.state.currentRow.dateCreate}
+                        proponent={this.state.currentRow.proponent._id}
+                        positionProponent={this.state.currentRow.positionProponent}
+                        equipment={this.state.currentRow.equipment}
+                        supplier={this.state.currentRow.supplier}
+                        total={this.state.currentRow.total}
+                        unit={this.state.currentRow.unit}
+                        estimatePrice={this.state.currentRow.estimatePrice}
+                        approver={this.state.currentRow.approver}
+                        positionApprover={this.state.currentRow.positionApprover}
+                        note={this.state.currentRow.note}
+                        status={this.state.currentRow.status}
                     />
                 }
             </div >
@@ -248,7 +282,8 @@ function mapState(state) {
 
 const actionCreators = {
     searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
-    // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
+    deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
+    getAllUsers: UserActions.get
 };
 
 const connectedListRecommendProcureManager = connect(mapState, actionCreators)(withTranslate(RecommendProcureManager));

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LOCAL_SERVER_API } from '../../../../../env';
 
+import { CourseActions } from '../../../../training/course/redux/actions';
+
 class ContractTab extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,9 @@ class ContractTab extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
-
+    componentDidMount() {
+        this.props.getListCourse();
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -41,7 +45,7 @@ class ContractTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
+        const { id, translate, course } = this.props;
         const { contracts, courses } = this.state;
         return (
             <div id={id} className="tab-pane">
@@ -87,28 +91,34 @@ class ContractTab extends Component {
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
+                                    <th>Mã khoá đào tạo</th>
                                     <th>{translate('manage_employee.course_name')}</th>
                                     <th>{translate('manage_employee.start_day')}</th>
                                     <th>{translate('manage_employee.end_date')}</th>
-                                    <th>{translate('manage_employee.diploma_issued_by')}</th>
-                                    <th>{translate('manage_employee.type_education')}</th>
-                                    <th>{translate('manage_employee.cost')}</th>
-                                    {/* <th style={{ width: '12%' }}>Thời gian cam kết</th> */}
-                                    <th>{translate('table.status')}</th>
+                                    <th>Địa điểm đào tạo</th>
+                                    <th>Kết quả</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof courses !== 'undefined' && courses.length !== 0) &&
-                                    courses.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.name}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
-                                            <td>{x.courseType}</td>
-                                            <td>{x.offeredBy}</td>
-                                            <td>{x.status}</td>
-                                        </tr>
-                                    ))
+                                {(courses !== 'undefined' && courses.length !== 0) &&
+                                    courses.map((x, index) => {
+                                        let courseInfo = '';
+                                        course.listCourses.forEach(list => {
+                                            if (list._id === x.course) {
+                                                courseInfo = list
+                                            }
+                                        });
+                                        return (
+                                            <tr key={index}>
+                                                <td>{courseInfo.courseId}</td>
+                                                <td>{courseInfo.name}</td>
+                                                <td>{this.formatDate(courseInfo.startDate)}</td>
+                                                <td>{this.formatDate(courseInfo.endDate)}</td>
+                                                <td>{courseInfo.coursePlace}</td>
+                                                <td>{x.result}</td>
+                                            </tr>
+                                        )
+                                    })
                                 }
                             </tbody>
                         </table>
@@ -122,5 +132,13 @@ class ContractTab extends Component {
     }
 };
 
-const tabContract = connect(null, null)(withTranslate(ContractTab));
+function mapState(state) {
+    const { course } = state;
+    return { course };
+};
+const actionCreators = {
+    getListCourse: CourseActions.getListCourse,
+};
+
+const tabContract = connect(mapState, actionCreators)(withTranslate(ContractTab));
 export { tabContract as ContractTab };

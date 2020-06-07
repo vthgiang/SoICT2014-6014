@@ -21,6 +21,8 @@ class EmployeeDetailForm extends Component {
                 annualLeaves: nextProps.annualLeaves,
                 commendations: nextProps.commendations,
                 disciplines: nextProps.disciplines,
+                courses: nextProps.courses,
+                roles: nextProps.roles
             }
         } else {
             return null;
@@ -28,7 +30,7 @@ class EmployeeDetailForm extends Component {
     }
     render() {
         const { employeesManager, translate } = this.props;
-        var { _id, employees, salaries, annualLeaves, commendations, disciplines } = this.state;
+        var { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -57,6 +59,7 @@ class EmployeeDetailForm extends Component {
                                         <GeneralTab
                                             id={`view_general${_id}`}
                                             employee={x}
+                                            roles={roles}
                                         />
                                         <ContactTab
                                             id={`view_contact${_id}`}
@@ -82,7 +85,7 @@ class EmployeeDetailForm extends Component {
                                         />
                                         <ContractTab
                                             id={`view_contract${_id}`}
-                                            courses={x.courses}
+                                            courses={courses}
                                             contracts={x.contracts}
                                         />
                                         <DisciplineTab

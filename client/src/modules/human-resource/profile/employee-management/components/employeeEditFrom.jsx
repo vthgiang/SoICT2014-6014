@@ -28,9 +28,9 @@ class EmployeeEditFrom extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
-        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+        if (name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             var partValue = value.split('-');
-            value = [partValue[2],partValue[1], partValue[0]].join('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         this.setState({
             employee: {
@@ -370,19 +370,39 @@ class EmployeeEditFrom extends Component {
         }
     }
 
-    // TODO: function thêm thông tin quá trình đào tạo
-    handleChangeCourse = (data) => {
-        const { employeeNew } = this.state;
-        var course = employeeNew.course;
+    // Function thêm thông tin quá trình đào tạo
+    handleCreateCourse = (data, addData) => {
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                course: [...course, {
-                    ...data
-                }]
-            }
+            courses: data
         })
     }
+    // Function chỉnh sửa thông tin quá trình đào tạo
+    handleEditCourse = (data, editData) => {
+        if (editData._id !== undefined) {
+            this.setState({
+                editCourses: [...this.state.editCourses, editData]
+            })
+        } else {
+            this.setState({
+                courses: data
+            })
+        }
+    }
+    // Function xoá thông tin quá trình đào tạo
+    handleDeleteCourse = (data, deleteData) => {
+        if (deleteData._id !== undefined) {
+            this.setState({
+                deleteCourses: [...this.state.deleteCourses, deleteData],
+                editCourses: this.state.editCourses.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                courses: data
+            })
+        }
+    }
+
+
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
@@ -419,6 +439,7 @@ class EmployeeEditFrom extends Component {
             createCommendations: commendations.filter(x => x._id === undefined),
             createSalaries: salaries.filter(x => x._id === undefined),
             createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
+            createCourses: courses.filter(x => x._id === undefined),
             createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
             createFiles: files.filter(x => x._id === undefined),
         })
@@ -472,7 +493,9 @@ class EmployeeEditFrom extends Component {
                 annualLeaves: nextProps.annualLeaves,
                 disciplines: nextProps.disciplines,
                 socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
-                courses: nextProps.employees[0].courses,
+                courses: nextProps.courses,
+                organizationalUnits: nextProps.organizationalUnits,
+                roles: nextProps.roles,
 
                 editExperiences: [],
                 deleteExperiences: [],
@@ -492,6 +515,8 @@ class EmployeeEditFrom extends Component {
                 deleteSalaries: [],
                 editAnnualLeaves: [],
                 deleteAnnualLeaves: [],
+                editCourses: [],
+                deleteCourses: [],
                 editFiles: [],
                 deleteFiles: [],
 
@@ -501,7 +526,6 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (
@@ -544,6 +568,7 @@ class EmployeeEditFrom extends Component {
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
+
                                 handleAddExperience={this.handleCreateExperiences}
                                 handleEditExperience={this.handleEditExperiences}
                                 handleDeleteExperience={this.handleDeleteExperiences}
@@ -552,9 +577,11 @@ class EmployeeEditFrom extends Component {
                                 id={`edit_diploma${_id}`}
                                 degrees={this.state.degrees}
                                 certificates={this.state.certificates}
+
                                 handleAddDegree={this.handleCreateDegree}
                                 handleEditDegree={this.handleEditDegree}
                                 handleDeleteDegree={this.handleDeleteDegree}
+
                                 handleAddCertificate={this.handleCreateCertificate}
                                 handleEditCertificate={this.handleEditCertificate}
                                 handleDeleteCertificate={this.handleDeleteCertificate}
@@ -568,17 +595,26 @@ class EmployeeEditFrom extends Component {
                                 socialInsuranceDetails={this.state.socialInsuranceDetails}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
+
                                 handleAddBHXH={this.handleCreateBHXH}
                                 handleEditBHXH={this.handleEditBHXH}
                                 handleDeleteBHXH={this.handleDeleteBHXH}
                             />
                             <ContractTab
                                 id={`edit_contract${_id}`}
+                                pageCreate={false}
                                 contracts={this.state.contracts}
                                 courses={this.state.courses}
-                                handleAddContract={this.handleEditContract}
+                                organizationalUnits={this.state.organizationalUnits}
+                                roles={this.state.roles}
+
+                                handleAddContract={this.handleCreateContract}
                                 handleEditContract={this.handleEditContract}
                                 handleDeleteContract={this.handleDeleteContract}
+
+                                handleAddCourse={this.handleCreateCourse}
+                                handleEditCourse={this.handleEditCourse}
+                                handleDeleteCourse={this.handleDeleteCourse}
                             />
                             <DisciplineTab
                                 id={`edit_reward${_id}`}
@@ -587,6 +623,7 @@ class EmployeeEditFrom extends Component {
                                 handleAddConmmendation={this.handleCreateConmmendation}
                                 handleEditConmmendation={this.handleEditConmmendation}
                                 handleDeleteConmmendation={this.handleDeleteConmmendation}
+
                                 handleAddDiscipline={this.handleCreateDiscipline}
                                 handleEditDiscipline={this.handleEditDiscipline}
                                 handleDeleteDiscipline={this.handleDeleteDiscipline}
@@ -598,6 +635,7 @@ class EmployeeEditFrom extends Component {
                                 handleAddSalary={this.handleCreateSalary}
                                 handleEditSalary={this.handleEditSalary}
                                 handleDeleteSalary={this.handleDeleteSalary}
+
                                 handleAddAnnualLeave={this.handleCreateAnnualLeave}
                                 handleEditAnnualLeave={this.handleEditAnnualLeave}
                                 handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
@@ -607,6 +645,7 @@ class EmployeeEditFrom extends Component {
                                 files={this.state.files}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
+
                                 handleAddFile={this.handleCreateFile}
                                 handleEditFile={this.handleEditFile}
                                 handleDeleteFile={this.handleDeleteFile}

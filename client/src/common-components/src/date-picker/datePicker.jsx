@@ -10,6 +10,7 @@ class DatePicker extends Component {
     }
     componentDidMount() {
         const { id, dateFormat, onChange } = this.props;
+        
         dateFormat !== "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,

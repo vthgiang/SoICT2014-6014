@@ -47,15 +47,15 @@ const RecommendDistributeSchema = new Schema({
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
-    // createDate: {
-    //     type: Date,
-    //     default: Date.now
-    // },
-    // updateDate: {
-    //     type: Date,
-    //     default: Date.now
-    // }
-    
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+
 });
 
 module.exports = RecommendDistribute = mongoose.model("recommend_distribute", RecommendDistributeSchema);

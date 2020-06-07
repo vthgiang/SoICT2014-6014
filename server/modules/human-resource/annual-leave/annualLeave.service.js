@@ -1,6 +1,38 @@
 const EmployeeService = require('../profile/profile.service');
 const { Employee, AnnualLeave} = require('../../../models').schema;
 
+
+/**
+ * Lấy tổng số thông tin nghỉ phép theo đơn vị (phòng ban) và tháng 
+ * @company : id công ty
+ * @organizationalUnits : array id đơn vị tìm kiếm
+ * @month : tháng tìm kiếm
+ */
+exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
+    let keySearchEmployee, keySearch = {company: company};
+
+    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    if (organizationalUnits !== undefined) {
+        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
+        keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
+    }
+    if (keySearchEmployee !== undefined) {
+        var employeeinfo = await Employee.find(keySearchEmployee);
+        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        keySearch = {...keySearch, employee: {$in: employee}}
+    }
+    //Bắt sựu kiện tháng tìm kiếm khác "", undefined
+    if (month !== undefined && month.length !== 0) {
+        var date = new Date(month);
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        keySearch = {...keySearch,"$or": [{startDate: {"$gt": firstDay, "$lte": lastDay}}, {endDate: {"$gt": firstDay, "$lte": lastDay}}]}
+    };
+
+    var totalList = await AnnualLeave.count(keySearch);
+    return {totalList};
+}
+
 /**
  * Lấy danh sách thông tin nghỉ phép
  * @params : dữ liệu key tìm kiếm
@@ -8,11 +40,10 @@ const { Employee, AnnualLeave} = require('../../../models').schema;
  */ 
 exports.searchAnnualLeaves = async (params, company) => {
     let keySearchEmployee, keySearch = {company: company};
-    console.log(params);
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit !== undefined) {
-        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
+    if (params.organizationalUnits !== undefined) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
         keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
 

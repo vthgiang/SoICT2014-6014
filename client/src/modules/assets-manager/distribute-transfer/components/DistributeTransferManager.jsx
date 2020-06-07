@@ -1,31 +1,31 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {DistributeTransferCreateForm} from './DistributeTransferCreateForm';
-import {DistributeTransferEditForm} from './DistributeTransferEditForm';
-import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
-import {DistributeTransferActions} from '../redux/actions';
-import {AssetManagerActions} from "../../asset-manager/redux/actions";
-import {UserActions} from "../../../super-admin/user/redux/actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DistributeTransferCreateForm } from './DistributeTransferCreateForm';
+import { DistributeTransferEditForm } from './DistributeTransferEditForm';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DistributeTransferActions } from '../redux/actions';
+import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { UserActions } from "../../../super-admin/user/redux/actions";
 
 class DistributeTransferManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
             distributeNumber: "",
-            assetNumber: "",
+            code: "",
             month: "",
             type: null,
             page: 0,
             limit: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
 
     componentDidMount() {
         this.props.searchDistributeTransfers(this.state);
         this.props.getAllAsset({
-            assetNumber: "",
+            code: "",
             assetName: "",
             assetType: null,
             month: "",
@@ -64,7 +64,7 @@ class DistributeTransferManager extends Component {
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
     handleDistributeNumberChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
@@ -72,8 +72,8 @@ class DistributeTransferManager extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (e) => {
-        const {name, value} = e.target;
+    handleCodeChange = (e) => {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
@@ -101,12 +101,14 @@ class DistributeTransferManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm
-    handleSunmitSearch = async () => {
-        if (this.state.month === "") {
-            await this.setState({
-                month: this.formatDate(Date.now())
-            })
-        }
+    handleSubmitSearch = async () => {
+        // if (this.state.month === "") {
+        await this.setState({
+            ...this.state,
+
+            // month: this.formatDate(Date.now())
+        })
+        // }
         this.props.searchDistributeTransfers(this.state);
     }
 
@@ -129,7 +131,7 @@ class DistributeTransferManager extends Component {
     }
 
     render() {
-        const {translate, distributeTransfer} = this.props;
+        const { translate, distributeTransfer } = this.props;
         var listDistributeTransfers = "";
         if (this.props.distributeTransfer.isLoading === false) {
             listDistributeTransfers = this.props.distributeTransfer.listDistributeTransfers;
@@ -141,31 +143,31 @@ class DistributeTransferManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <DistributeTransferCreateForm/>
+                    <DistributeTransferCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">Lịch sử cấp phát - điều chuyển - thu hồi: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleAssetNumberChange} placeholder="Mã tài sản" autoComplete="off"/>
+                            <label className="form-control-static">Mã phiếu</label>
+                            <input type="text" className="form-control" name="distributeNumber" onChange={this.handleDistributeNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input type="text" className="form-control" name="distributeNumber" onChange={this.handleDistributeNumberChange} placeholder="Mã phiếu" autoComplete="off"/>
+                            <label className="form-control-static">Mã tài sản</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom: 10}}>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                         options={{nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu"}}
-                                         onChange={this.handleTypeChange}
-                                         items={[
-                                             {value: "Cấp phát", text: "Cấp phát"},
-                                             {value: "Điều chuyển", text: "Điều chuyển"},
-                                             {value: "Thu hồi", text: "Thu hồi"}
-                                         ]}
+                                options={{ nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu" }}
+                                onChange={this.handleTypeChange}
+                                items={[
+                                    { value: "Cấp phát", text: "Cấp phát" },
+                                    { value: "Điều chuyển", text: "Điều chuyển" },
+                                    { value: "Thu hồi", text: "Thu hồi" }
+                                ]}
                             >
                             </SelectMulti>
                         </div>
@@ -180,73 +182,73 @@ class DistributeTransferManager extends Component {
                         </div>
                         <div className="form-group">
                             {/* <label></label> */}
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
                         </div>
                     </div>
                     <table id="distributetransfer-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th style={{width: "8%"}}>Mã tài sản</th>
-                            <th style={{width: "10%"}}>Tên tài sản</th>
-                            <th style={{width: "10%"}}>Mã phiếu</th>
-                            <th style={{width: "10%"}}>Ngày lập</th>
-                            <th style={{width: "10%"}}>Phân loại</th>
-                            <th style={{width: "10%"}}>Người bàn giao</th>
-                            <th style={{width: "10%"}}>Người tiếp nhận</th>
-                            <th style={{width: "10%"}}>Vị trí tài sản</th>
-                            <th style={{width: '100px', textAlign: 'center'}}>Hành động
+                            <tr>
+                                <th style={{ width: "10%" }}>Mã phiếu</th>
+                                <th style={{ width: "10%" }}>Ngày lập</th>
+                                <th style={{ width: "10%" }}>Phân loại</th>
+                                <th style={{ width: "8%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Người bàn giao</th>
+                                <th style={{ width: "10%" }}>Người tiếp nhận</th>
+                                <th style={{ width: "10%" }}>Vị trí tài sản</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
-                                    tableId="distributetransfer-table"
-                                    columnArr={[
-                                        "Mã tài sản",
-                                        "Tên tài sản",
-                                        "Mã phiếu",
-                                        "Ngày lập",
-                                        "Phân loại",
-                                        "Người bàn giao",
-                                        "Người tiếp nhận",
-                                        "Vị trí tài sản",
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
+                                        tableId="distributetransfer-table"
+                                        columnArr={[
+                                            "Mã phiếu",
+                                            "Ngày lập",
+                                            "Phân loại",
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Người bàn giao",
+                                            "Người tiếp nhận",
+                                            "Vị trí tài sản",
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {(typeof listDistributeTransfers !== 'undefined' && listDistributeTransfers.length !== 0) &&
-                        listDistributeTransfers.map((x, index) => (
-                            <tr key={index}>
-                                <td>{x.asset !== null ? x.asset.assetNumber : ''}</td>
-                                <td>{x.asset !== null ? x.asset.assetName : ''}</td>
-                                <td>{x.distributeNumber}</td>
-                                <td>{x.dateCreate}</td>
-                                <td>{x.type}</td>
-                                <td>{x.handoverMan !== null ? x.handoverMan.name : ''}</td>
-                                <td>{x.receiver.name}</td>
-                                <td>{x.nextLocation}</td>
-                                <td style={{textAlign: "center"}}>
-                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin phiếu"><i
-                                        className="material-icons">edit</i></a>
-                                    <DeleteNotification
-                                        content="Xóa thông tin phiếu"
-                                        data={{
-                                            id: x._id,
-                                            info: x.distributeNumber + " - " // + x.asset.assetNumber
-                                        }}
-                                        func={this.props.deleteDistributeTransfer}
-                                    />
-                                </td>
-                            </tr>))
-                        }
+                            {(typeof listDistributeTransfers !== 'undefined' && listDistributeTransfers.length !== 0) &&
+                                listDistributeTransfers.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.distributeNumber}</td>
+                                        <td>{x.dateCreate}</td>
+                                        <td>{x.type}</td>
+                                        <td>{x.asset !== null ? x.asset.code : ''}</td>
+                                        <td>{x.asset !== null ? x.asset.assetName : ''}</td>
+                                        <td>{x.handoverMan !== null ? x.handoverMan.name : ''}</td>
+                                        <td>{x.receiver.name}</td>
+                                        <td>{x.nextLocation}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
+                                                className="material-icons">edit</i></a>
+                                            <DeleteNotification
+                                                content="Xóa thông tin phiếu"
+                                                data={{
+                                                    id: x._id,
+                                                    info: x.distributeNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                }}
+                                                func={this.props.deleteDistributeTransfer}
+                                            />
+                                        </td>
+                                    </tr>))
+                            }
                         </tbody>
                     </table>
                     {distributeTransfer.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listDistributeTransfers === 'undefined' || listDistributeTransfers.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
                 {
@@ -260,7 +262,7 @@ class DistributeTransferManager extends Component {
                         place={this.state.currentRow.place}
                         type={this.state.currentRow.type}
                         assetId={this.state.currentRow.asset._id}
-                        assetNumber={this.state.currentRow.asset.assetNumber}
+                        code={this.state.currentRow.asset.code}
                         assetName={this.state.currentRow.asset.assetName}
                         handoverMan={this.state.currentRow.handoverMan !== null ? this.state.currentRow.handoverMan._id : null}
                         receiver={this.state.currentRow.receiver._id}
@@ -275,8 +277,8 @@ class DistributeTransferManager extends Component {
 };
 
 function mapState(state) {
-    const {distributeTransfer} = state;
-    return {distributeTransfer};
+    const { distributeTransfer } = state;
+    return { distributeTransfer };
 };
 
 const actionCreators = {
@@ -287,4 +289,4 @@ const actionCreators = {
 };
 
 const connectedListDistributeTransfer = connect(mapState, actionCreators)(withTranslate(DistributeTransferManager));
-export {connectedListDistributeTransfer as DistributeTransferManager};
+export { connectedListDistributeTransfer as DistributeTransferManager };

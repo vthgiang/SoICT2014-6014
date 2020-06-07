@@ -12,10 +12,26 @@ class EvaluateByAccountableEmployee extends Component {
         super(props);
         this.state={
             info: {},
-            results: {}
+            results: {},
+            autoPoint: 0
         }
     }
     
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+
     componentWillMount() {
         this.props.getTaskById(this.props.id);
     }
@@ -412,19 +428,17 @@ class EvaluateByAccountableEmployee extends Component {
 
         var evaluations, taskId;
         taskId = this.props.id;
-        evaluations = task.evaluations[task.evaluations.length-1]
         var data = {
-            evaluateId: evaluations._id,
             user: getStorage("userId"),
             progress: this.state.progress,
-            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
+            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : parseInt(this.state.progress),
             role: "Responsible",
             status: this.state.status !== undefined ? this.state.status : ['Inprocess'],
 
             date: this.state.date,
             
             info: this.state.info,
-            results: this.state.results
+            results: this.state.results,
         }
 
         console.log('data', data, taskId);
@@ -514,57 +528,12 @@ class EvaluateByAccountableEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
-                            // errorOnInfoBoolean={errorOnInfoBoolean}
-                            // errorOnProgress={errorOnProgress}
-                            // errorOnInfoDate={errorOnInfoDate}
-                            // errorOnTextInfo={errorOnTextInfo}
-                            // errorOnNumberInfo={errorOnNumberInfo}
-                            
                             perform={this.props.perform}
                             value={this.state}
                         />
                         
                     </div>
                     <div>
-                        {/* <strong>Điểm tự động: &nbsp;<span id='autoPoint'></span> </strong>
-                        <br/> */}
-                        {
-                            // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results !== 0 ) &&
-                            // <fieldset className="scheduler-border">
-                            //     <legend className="scheduler-border">Đánh giá cá nhân người phê duyệt</legend>
-                            //     <div className="row">
-                            //         <div className="col-sm-6">
-                            //             <div className={`form-group ${errorOnAccountableContribution===undefined?"":"has-error"}`}>
-                            //                 <label>% đóng góp (<span style={{color:"red"}}>*</span>)</label>
-                            //                 <input 
-                            //                     className="form-control"
-                            //                     type="number" 
-                            //                     name="accountableContribution"
-                            //                     placeholder={85}
-                            //                     onChange={this.handleChangeAccountableContribution}
-                            //                     value={accountableContribution}
-                            //                 />
-                            //                 <ErrorLabel content={errorOnAccountableContribution}/>
-                            //             </div>
-                            //         </div>
-                            //         <div className="col-sm-6">
-                            //             <div className={`form-group ${errorOnMyPoint===undefined?"":"has-error"}`}>
-                            //                 <label>Điểm tự đánh giá-phê duyệt (<span style={{color:"red"}}>*</span>)</label>
-                            //                 <input 
-                            //                     className="form-control"
-                            //                     type="number" 
-                            //                     name="myPoint"
-                            //                     placeholder={85}
-                            //                     onChange={this.handleChangeMyPoint}
-                            //                     value={myPoint}
-                            //                 />
-                            //                 <ErrorLabel content={errorOnMyPoint}/>
-                            //             </div>
-                            //         </div>
-                            //     </div>
-                            // </fieldset>
-                        }
-                        
                         <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
                         <br/>
                         <br/>
@@ -572,7 +541,6 @@ class EvaluateByAccountableEmployee extends Component {
                         <br/>
                         <br/>
                         {
-                            // (task && task.evaluations.length !== 0 && task.evaluations[task.evaluations.length-1].results.length !== 0 ) ?
                             <table className="table table-striped table-hover">
                                 <tr>
                                     <th>Tên</th>
@@ -582,78 +550,51 @@ class EvaluateByAccountableEmployee extends Component {
                                     <th>Đánh giá của người phê duyệt</th>
                                 </tr>
                             
-                                {/* {
-                                    // (task && task.evaluations.length !== 0) &&
-                                    task.evaluations[task.evaluations.length-1].results.map((res,index) => 
-                                        (
-                                            (res.role !== "accountable")&&
-                                            <tr>
-                                                <td>{res.employee.name}</td>
-                                                <td>{res.role}</td>
-                                                <td>{res.employeePoint}</td>
-                                                <td><input className="form-control" type="number" name={`contribute${index}`} placeholder={50} onChange={(e)=>this.onContributeChange(e,res.employee._id)}/></td>
-                                                <td><input className="form-control" type="number" name={`approvedPoint${index}`} placeholder={85} onChange={(e)=>this.onApprovedPointChange(e,res.employee._id)}/></td>
-                                            </tr>  
-                                        )
-                                          
-                                    )
-                                } */}
-
                                 {
-                                    // (task && task.evaluations.length !== 0) &&
-                                    task.responsibleEmployees.map((item,index) => 
+                                    task && task.responsibleEmployees.map((item,index) => 
                                         (
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Responsible'}</td>
-                                                <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeConsulted${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}/></td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointConsulted${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}/></td>
+                                                <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td>
+                                                {/* <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td> */}
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeResponsible${item._id}`} placeholder={"% Đóng góp"} onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointResponsible${item._id}`} placeholder={"Điểm phê duyệt"} onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
                                     )
                                 }
                                 {
-                                    // (task && task.evaluations.length !== 0) &&
-                                    task.consultedEmployees.map((item,index) => 
+                                    task && task.consultedEmployees.map((item,index) => 
                                         (
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Consulted'}</td>
-                                                <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeResponsible${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}/></td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointResponsible${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}/></td>
+                                                {/* <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td> */}
+                                                <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeConsulted${item._id}`} placeholder={"% Đóng góp"} onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPointConsulted${item._id}`} placeholder={"Điểm phê duyệt"} onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
                                     )
                                 }
                                 {
-                                    // (task && task.evaluations.length !== 0) &&
-                                    task.accountableEmployees.map((item,index) => 
+                                    task && task.accountableEmployees.map((item,index) => 
                                         (
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Accountable'}</td>
                                                 <td><p id={`accountablePoint${item._id}`}>{this.state.results[`accountable${item._id}`]?this.state.results[`accountable${item._id}`]:0}</p></td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeAccountable${item._id}`} placeholder={50} onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}/></td>
-                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPoint${item._id}`} placeholder={85} onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`contributeAccountable${item._id}`} placeholder={"% Đóng góp"} onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}/></td>
+                                                <td style={{padding: 5}}><input className="form-control" type="number" name={`approvedPoint${item._id}`} placeholder={"Điểm phê duyệt"} onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}/></td>
                                             </tr>  
                                         )
                                           
                                     )
                                 }
-
-                                {/* <tr>
-                                    <td>{res.employee.name}</td>
-                                    <td>{res.role}</td>
-                                    <td><span id="accountablePoint"></span></td>
-                                    <td><input className="form-control" type="number" placeholder={50}/></td>
-                                    <td><input className="form-control" type="number" placeholder={85} value={accountablePoint} onChange={this.handleChangeAccountablePoint}/></td>
-                                </tr> */}
                             </table> 
-                            // : <div><p style={{color: "red", fontWeight: "bold"}}>Người thực hiện chưa đánh giá - Chờ người thực hiện đánh giá</p></div>
                         }
                     </div>
                 </form>
@@ -664,8 +605,8 @@ class EvaluateByAccountableEmployee extends Component {
 }
 
 const mapState = (state) => {
-    const { tasks, performtasks } = state; // tasks,
-    return { tasks, performtasks }; // tasks,
+    const { tasks, performtasks } = state; 
+    return { tasks, performtasks };
 }
 const getState = {
     getTaskById: taskManagementActions.getTaskById,
@@ -677,5 +618,3 @@ const getState = {
 
 const evaluateByAccountableEmployee = connect(mapState, getState)(withTranslate(EvaluateByAccountableEmployee));
 export { evaluateByAccountableEmployee as EvaluateByAccountableEmployee }
-
-// export {EvaluateByAccountableEmployee};

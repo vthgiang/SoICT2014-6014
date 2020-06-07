@@ -7,7 +7,8 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    Role
+    Role,
+    EmployeeCourse
 } = require('../../../models').schema;
 
 /**
@@ -83,7 +84,8 @@ exports.getEmployeeProfile = async (userId) => {
         let annualLeaves = await AnnualLeave.find({employee: employees[0]._id})
         let commendations = await Commendation.find({employee: employees[0]._id})
         let disciplines = await Discipline.find({employee: employees[0]._id})
-        return { employees: employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        let courses = await EmployeeCourse.find({employee: employees[0]._id})
+        return { employees: employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
 
 }
@@ -143,28 +145,36 @@ exports.getEmployeeInforById = async(id)=> {
 }
 
 /**
- * Lấy tất cả danh sách nhân viên 
+ * Lấy tất cả danh sách nhân viên đang làm việc của công ty theo đơn vị và phòng ban
  * @company : id công ty
+ * @organizationalUnits : array id đơn vị
+ * @positions : array id chức vụ
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
 exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    let keySearch = {company: company};
+    let keySearch = {company: company, status: 'active'};
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch);
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
         let listAllEmployees = await Employee.find(keySearch);
-        return {totalEmployee, listAllEmployees}
+        return {totalAllEmployee, listAllEmployees}
     } else {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
-            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
+            keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}};
+            let totalEmployee = await Employee.countDocuments(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+            return {totalEmployee, listEmployeesOfOrganizationalUnits}
         }
-        let totalEmployee = await Employee.countDocuments(keySearch);
-        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1});
-        return {totalEmployee, listAllEmployees}
+        let totalAllEmployee = await Employee.countDocuments(keySearch);
+        let listAllEmployees = await Employee.find(keySearch, {_id: 1, emailInCompany: 1, fullName: 1, employeeNumber: 1, gender: 1, birthdate: 1});
+        return {totalAllEmployee, listAllEmployees}
     }
 }
 
@@ -178,7 +188,6 @@ exports.searchEmployeeProfiles = async (params, company) => {
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        console.log(emailInCompany);
         keySearch = {...keySearch, emailInCompany: {$in: emailInCompany}}
     }
     // Bắt sựu kiện MSNV tìm kiếm khác ""
@@ -208,9 +217,9 @@ exports.searchEmployeeProfiles = async (params, company) => {
         let annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
         let commendations = await Commendation.find({employee: listEmployees[n]._id})
         let disciplines = await Discipline.find({employee: listEmployees[n]._id})
-        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, ...value}
+        let courses = await EmployeeCourse.find({employee: listEmployees[n]._id})
+        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, courses, ...value}
     }
-    
     return { data, totalList }
 }
 
@@ -257,6 +266,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
         employeeTimesheetId: data.employeeTimesheetId,
         company: company,
         gender: data.gender,
+        status: data.status,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -367,6 +377,16 @@ exports.createEmployee = async (data, company, fileInfo) => {
             });
         }
     }
+    if(data.courses!==undefined){
+        let courses = data.courses;
+        for (let x in courses) {
+            EmployeeCourse.create({
+                employee: createEmployee._id,
+                course: courses[x].course,
+                result: courses[x].result,
+            });
+        } 
+    }
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(createEmployee.emailInCompany);
     let employees = await Employee.find({_id: createEmployee._id});
@@ -374,8 +394,9 @@ exports.createEmployee = async (data, company, fileInfo) => {
     let annualLeaves = await AnnualLeave.find({employee: createEmployee._id})
     let commendations = await Commendation.find({employee: createEmployee._id})
     let disciplines = await Discipline.find({employee: createEmployee._id})
+    let courses = await EmployeeCourse.find({employee: createEmployee._id})
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 
 
@@ -387,7 +408,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     let {employee, createExperiences, deleteExperiences, editExperiences, createDegrees, editDegrees, deleteDegrees,
         createCertificates, editCertificates, deleteCertificates, createContracts, editContracts, deleteContracts,
         createDisciplines, editDisciplines, deleteDisciplines, createCommendations, editConmmendations, deleteConmmendations,
-        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, 
+        createSalaries, editSalaries, deleteSalaries, createAnnualLeaves, editAnnualLeaves, deleteAnnualLeaves, deleteCourses, editCourses, createCourses,
         createFiles, editFiles, deleteFiles, createSocialInsuranceDetails, editSocialInsuranceDetails, deleteSocialInsuranceDetails} = data;
     let avatar = fileInfo.avatar === "" ? employee.avatar : fileInfo.avatar,
         fileDegree = fileInfo.fileDegree,
@@ -432,6 +453,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeNumber= employee.employeeNumber;
     oldEmployee.employeeTimesheetId= employee.employeeTimesheetId;
     oldEmployee.gender= employee.gender;
+    oldEmployee.status= employee.status;
     oldEmployee.birthdate= employee.birthdate;
     oldEmployee.birthplace= employee.birthplace;
     oldEmployee.identityCardNumber= employee.identityCardNumber;
@@ -498,16 +520,18 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries );
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves );
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses );
     
     // Lấy thông tin nhân viên vừa thêm vào
     let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(oldEmployee.emailInCompany);
-    let employees = [oldEmployee];
-    let salarys = await Salary.find({employee: oldEmployee._id})
-    let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id})
-    let commendations = await Commendation.find({employee: oldEmployee._id})
-    let disciplines = await Discipline.find({employee: oldEmployee._id})
+    let employees = await Employee.find({_id: oldEmployee._id});
+    let salarys = await Salary.find({employee: oldEmployee._id});
+    let annualLeaves = await AnnualLeave.find({employee: oldEmployee._id});
+    let commendations = await Commendation.find({employee: oldEmployee._id});
+    let disciplines = await Discipline.find({employee: oldEmployee._id});
+    let courses = await EmployeeCourse.find({employee: oldEmployee._id});
 
-    return {...value, employees, salarys, annualLeaves, commendations, disciplines};
+    return {...value, employees, salarys, annualLeaves, commendations, disciplines, courses};
 }
 /**
  * Xoá thông tin nhân viên

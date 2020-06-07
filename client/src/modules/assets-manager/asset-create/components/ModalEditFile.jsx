@@ -1,34 +1,47 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel } from '../../../../common-components';
-import { AssetCreateValidator } from './CombineContent';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DialogModal, ErrorLabel} from '../../../../common-components';
+import {AssetCreateValidator} from './CombineContent';
+import {AssetManagerActions} from "../../asset-manager/redux/actions";
+
 class ModalEditFile extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {isUpload: false}
     }
+
     // Bắt sự kiện thay đổi file đính kèm
     handleChangeFile = (e) => {
-        const { name } = e.target;
         var file = e.target.files[0];
+        var name = e.target.name;
         if (file !== undefined) {
-            var url = URL.createObjectURL(file);
-            var fileLoad = new FileReader();
-            fileLoad.readAsDataURL(file);
-            fileLoad.onload = () => {
-                this.setState({
-                    [name]: file.name,
-                    urlFile: url,
-                    fileUpload: file,
-                })
-            };
+            new Promise((resolve, reject) => {
+                let data = new FormData();
+                data.append('fileUpload', file);
+                AssetManagerActions.uploadFile(data).then((res) => {
+                    if (res.status === 200) {
+                        resolve(res.data.url)
+                    }
+                });
+            }).then(url => {
+                var fileLoad = new FileReader();
+                fileLoad.readAsDataURL(file);
+                fileLoad.onload = () => {
+                    this.setState({
+                        urlFile: url,
+                        [name]: file.name,
+                        isUploadDone: true,
+                        isUpload: true
+                    })
+                };
+            })
         }
     }
 
     // Bắt sự kiên thay đổi mô tả
     handleNameFileChange = (e) => {
-        let { value } = e.target;
+        let {value} = e.target;
         this.validateNameFile(value, true);
     }
     validateNameFile = (value, willUpdateState = true) => {
@@ -47,7 +60,7 @@ class ModalEditFile extends Component {
 
     // Bắt sự kiên thay đổi mô tả
     handleDiscFileChange = (e) => {
-        let { value } = e.target;
+        let {value} = e.target;
         this.validateDiscFile(value, true);
     }
     validateDiscFile = (value, willUpdateState = true) => {
@@ -66,7 +79,7 @@ class ModalEditFile extends Component {
 
     // Bắt sự kiên thay đổi mô tả
     handleNumberChange = (e) => {
-        let { value } = e.target;
+        let {value} = e.target;
         this.validateNumberFile(value, true);
     }
     validateNumberFile = (value, willUpdateState = true) => {
@@ -96,8 +109,10 @@ class ModalEditFile extends Component {
             return this.props.handleChange(this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
+            console.log(12312312);
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -105,7 +120,7 @@ class ModalEditFile extends Component {
                 nameFile: nextProps.nameFile,
                 discFile: nextProps.discFile,
                 number: nextProps.number,
-
+                urlFile: nextProps.urlFile,
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
                 errorOnNumberFile: undefined,
@@ -114,10 +129,14 @@ class ModalEditFile extends Component {
             return null;
         }
     }
+
     render() {
-        const { id, translate } = this.props;
-        const { nameFile, discFile, number, 
-            errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+        const {id, translate} = this.props;
+        const {
+            nameFile, discFile, number,
+            errorOnNameFile, errorOnDiscFile, errorOnNumberFile, urlFile,isUploadDone
+        } = this.state;
+        console.log(urlFile);
         return (
             <React.Fragment>
                 <DialogModal
@@ -125,28 +144,29 @@ class ModalEditFile extends Component {
                     formID={`form-edit-file-${id}`}
                     title="Chỉnh sửa tài liệu đính kèm"
                     func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!isUploadDone || !this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-file-${id}`}>
                         <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
                             <label>Tên tài liệu<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameFile" value={nameFile} onChange={this.handleNameFileChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNameFile} />
+                            <input type="text" className="form-control" name="nameFile" value={nameFile} onChange={this.handleNameFileChange} autoComplete="off"/>
+                            <ErrorLabel content={errorOnNameFile}/>
                         </div>
                         <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
                             <label>Mô tả<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnDiscFile} />
+                            <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off"/>
+                            <ErrorLabel content={errorOnDiscFile}/>
                         </div>
-                            <div className={`form-group ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
-                                <label>Số lượng<span className="text-red">*</span></label>
-                                <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
-                                <ErrorLabel content={errorOnNumberFile} />
-                            </div>
-                            
+                        <div className={`form-group ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
+                            <label>Số lượng<span className="text-red">*</span></label>
+                            <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off"/>
+                            <ErrorLabel content={errorOnNumberFile}/>
+                        </div>
+
                         <div className="form-group">
                             <label htmlFor="file">File đính kèm</label>
-                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
+                            <input type="file" style={{height: 34, paddingTop: 2}} className="form-control" name="file" onChange={this.handleChangeFile}/>
+                            {urlFile !== undefined && <input value={urlFile} type="text" style={{height: 34, paddingTop: 2}} className="form-control" name="file" disabled/>}
                         </div>
                     </form>
                 </DialogModal>
@@ -155,4 +175,4 @@ class ModalEditFile extends Component {
     }
 };
 const editFile = connect(null, null)(withTranslate(ModalEditFile));
-export { editFile as ModalEditFile };
+export {editFile as ModalEditFile};

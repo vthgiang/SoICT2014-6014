@@ -10,23 +10,23 @@ class GeneralTab extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
-
             return {
                 ...prevState,
                 id: nextProps.id,
-                img: nextProps.img,
-                assetNumber: nextProps.asset.assetNumber,
+                img: nextProps.asset.avatar,
+                code: nextProps.asset.code,
                 assetName: nextProps.asset.assetName,
+                serial: nextProps.asset.serial,
                 assetType: nextProps.asset.assetType,
-                location: nextProps.asset.location,
                 datePurchase: nextProps.asset.datePurchase,
+                warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
                 manager: nextProps.asset.manager,
-                position: nextProps.asset.manager.position,
+                positionManager: nextProps.asset.manager.positionManager,
                 person: nextProps.asset.person,
-                position1: nextProps.asset.person.position1,
+                positionPerson: nextProps.asset.person.positionPerson,
                 dateStartUse: nextProps.asset.dateStartUse,
                 dateEndUse: nextProps.asset.dateEndUse,
-                initialPrice: nextProps.asset.initialPrice,
+                location: nextProps.asset.location,
                 description: nextProps.asset.description,
                 status: nextProps.asset.status,
                 detailInfo: nextProps.asset.detailInfo,
@@ -36,28 +36,30 @@ class GeneralTab extends Component {
         }
     }
 
-    string2literal = (value) => {
-        var maps = {
-            "NaN": NaN,
-            "null": null,
-            "undefined": undefined,
-            "Infinity": Infinity,
-            "-Infinity": -Infinity
-        }
-        console.log((value in maps) ? maps[value] : value);
-        return ((value in maps) ? maps[value] : value);
-    };
+    // string2literal = (value) => {
+    //     var maps = {
+    //         "NaN": NaN,
+    //         "null": null,
+    //         "undefined": undefined,
+    //         "Infinity": Infinity,
+    //         "-Infinity": -Infinity
+    //     }
+    //     console.log((value in maps) ? maps[value] : value);
+    //     return ((value in maps) ? maps[value] : value);
+    // };
 
     render() {
         const { id, translate } = this.props;
 
         const {
-            img, assetNumber, assetName, asssetType, location, datePurchase, manager, position, person, position1, dateStartUse, dateEndUse, 
-             initialPrice, description, status, detailInfo
+            img, avatar, code, assetName, serial, assetType, datePurchase, warrantyExpirationDate, manager, positionManager, person, positionPerson, dateStartUse, dateEndUse,
+            location, description, status, detailInfo
         } = this.state;
+        console.log('this.state', this.state);
+        console.log('code', code);
         const user = this.props.user;
         const listAssetTypes = this.props.assetType;
-        console.log('this.props.asset.person', this.props.asset.person);
+
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body">
@@ -72,44 +74,49 @@ class GeneralTab extends Component {
                         <div className="col-md-8">
                             <div>
                                 <div className="col-md-6">
-                                    <div className={`form-group `}>
+                                    <div className="form-group">
                                         <strong>Mã tài sản:&emsp; </strong>
-                                        {assetNumber}
+                                        {code}
                                     </div>
-                                    <div className={`form-group`}>
+                                    <div className="form-group">
                                         <strong>Tên tài sản:&emsp; </strong>
                                         {assetName}
                                     </div>
-                                    <div className={`form-group`}>
+                                    <div className="form-group">
+                                        <strong>Số serial:&emsp; </strong>
+                                        {serial}
+                                    </div>
+                                    <div className="form-group">
                                         <strong>Loại tài sản:&emsp; </strong>
-                                        {asssetType}
+                                        {assetType.typeName}
+                                        {/* cái này la đoi tuowng nay no ko in ra dc vay dau. thế gọi ntn ôg */}
                                     </div>
-                                    <div className={`form-group`}>
-                                        <strong>Vị trí tài sản:&emsp; </strong>
-                                        {location}
-                                    </div>
-                                    <div className={`form-group`}>
+                                    <div className="form-group">
                                         <strong>Ngày nhập:&emsp; </strong>
                                         {datePurchase}
                                     </div>
-                                    <div className={`form-group`}>
+                                    <div className="form-group">
+                                        <strong>Ngày bảo hành:&emsp; </strong>
+                                        {warrantyExpirationDate}
+                                    </div>
+                                    <div className="form-group">
                                         <strong>Người quản lý:&emsp; </strong>
-                                        {datePurchase}
+                                        {manager.name}
                                     </div>
                                     <div className="form-group">
                                         <strong>Chức vụ:&emsp; </strong>
-                                        {position}
+                                        {positionManager}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
-                                    <div className={`form-group`}>
+                                    <div className="form-group">
                                         <strong>Người được giao sử dụng tài sản:&emsp; </strong>
-                                        {person}
+                                        {person.name}
                                     </div>
                                     <div className="form-group">
                                         <strong>Chức vụ:&emsp; </strong>
-                                        {position1}
+                                        {positionPerson}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
@@ -119,9 +126,9 @@ class GeneralTab extends Component {
                                         <strong>Thời gian sử dụng đến ngày:&emsp; </strong>
                                         {dateEndUse}
                                     </div>
-                                    <div className={`form-group`}>
-                                        <strong>Giá trị ban đầu:&emsp; </strong>
-                                        {initialPrice} VNĐ
+                                    <div className="form-group">
+                                        <strong>Vị trí tài sản:&emsp; </strong>
+                                        {location}
                                     </div>
                                     <div className="form-group">
                                         <strong>Mô tả:&emsp; </strong>
@@ -133,13 +140,9 @@ class GeneralTab extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {/* <hr/> */}
-                            <div>
-                                <label>Thông tin chi tiết:<a title="Thông tin chi tiết"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}/></a></label>
-                            </div>
-                            <div>
-                                <div className={`form-group`}>
-
+                            <div className="col-md-12">
+                                <label>Thông tin chi tiết:<a title="Thông tin chi tiết"></a></label>
+                                <div className="form-group">
                                     <table className="table table-bordered">
                                         <thead>
                                             <tr>

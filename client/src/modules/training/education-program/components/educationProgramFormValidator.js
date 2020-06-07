@@ -25,7 +25,7 @@ function validateProgramId(value, translate) {
 // Kiểm tra trường áp dụng cho đơn vị
 function validateOrganizationalUnit(value, translate) {
     let msg = undefined;
-    if (value === null) {
+    if (value.length === 0) {
         msg = translate('training.education_program.apply_for_organizational_units_required');
     }
     return msg;
@@ -33,7 +33,7 @@ function validateOrganizationalUnit(value, translate) {
 // Kiểm tra trường áp dụng cho chức vụ
 function validatePosition(value, translate) {
     let msg = undefined;
-    if (value === null) {
+    if (value.length === 0) {
         msg = translate('training.education_program.apply_for_positions_required');
     }
     return msg;
