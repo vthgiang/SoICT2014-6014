@@ -26,44 +26,50 @@ class EvaluateByResponsibleEmployee extends Component {
         var yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        var automaticPoint = evaluations ? evaluations.results[0].automaticPoint : 0;
+        var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
-        let info = {}, infoEval = evaluations.taskInformations;
-        for(let i in infoEval){
-            if(infoEval[i].type === "Date"){
-                if(infoEval[i].value){
-                    infoEval[i].value = this.formatDate(infoEval[i].value);
-                } else infoEval[i].value = this.formatDate(Date.now());
-            }
-            info[`${infoEval[i].code}`] = {
-                value: infoEval[i].value,
-                code: infoEval[i].code,
-                type: ''
-            }
-            
-        }
-
-        // const { progress, date, kpi} = this.state;
-
-        var date = this.formatDate(evaluations.date);
-        for(let i in evaluations.kpis){
-            // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
-        }
-        var kpi = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser))).kpis;
+        var info = {};
         var cloneKpi = [];
-        for(let i in kpi){
-            cloneKpi.push(kpi[i]._id);
+        if(evaluations){
+            let infoEval = evaluations.taskInformations;
+                for(let i in infoEval){
+                    if(infoEval[i].type === "Date"){
+                        if(infoEval[i].value){
+                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                        } else infoEval[i].value = this.formatDate(Date.now());
+                    }
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: ''
+                    }
+                    
+                }
+
+                // const { progress, date, kpi} = this.state;
+
+                var date = this.formatDate(evaluations.date);
+                for(let i in evaluations.kpis){
+                    // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
+                }
+                var kpi = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser))).kpis;
+                
+                for(let i in kpi){
+                    cloneKpi.push(kpi[i]._id);
+                }
+                console.log('------------------', cloneKpi);
+            }
+            this.state={
+                idUser: idUser ,
+                info: info,
+                autoPoint: 0,
+                // autoPoint: automaticPoint,
+                date: date,
+                kpi: cloneKpi,
+                progress: task.progress
+            }
         }
-        console.log('------------------', cloneKpi);
-        this.state={
-            idUser: idUser ,
-            info: info,
-            // autoPoint: automaticPoint,
-            date: date,
-            kpi: cloneKpi,
-            progress: task.progress
-        }
-    }
+        
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
