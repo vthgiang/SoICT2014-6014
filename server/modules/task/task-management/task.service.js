@@ -12,7 +12,7 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
 /**
  * Lấy mẫu công việc theo Id
  */
-exports.getTask = async (id) => {
+exports.getTask = async (id,userId) => {
     //req.params.id
     var superTask = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })   
@@ -34,7 +34,41 @@ exports.getTask = async (id) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
         { path: "files.creator", model: User, select: 'name email avatar'},
     ])
-    
+    var responsibleEmployees,accountableEmployees,consultedEmployees,informedEmployees;
+    responsibleEmployees = task.responsibleEmployees;
+    accountableEmployees = task.accountableEmployees;
+    consultedEmployees = task.consultedEmployees;
+    informedEmployees = task.informedEmployees;
+    var flag=0;
+    for (let n in responsibleEmployees) {
+        if (JSON.stringify(responsibleEmployees[n]._id) === JSON.stringify(userId)){
+            flag=1;
+            break;
+        }
+    }
+    for (let n in accountableEmployees) {
+        if (JSON.stringify(accountableEmployees[n]._id) === JSON.stringify(userId)){
+            flag=1;
+            break;
+        }
+    }
+    for (let n in consultedEmployees) {
+        if (JSON.stringify(consultedEmployees[n]._id) === JSON.stringify(userId)){
+            flag=1;
+            break;
+        }
+    }
+    for (let n in informedEmployees) {
+        if (JSON.stringify(informedEmployees[n]._id) === JSON.stringify(userId)){
+            flag=1;
+            break;
+        }
+    }
+    if (flag===0){
+        return {
+            "info": null
+        }
+    }
     if(task.taskTemplate === null){
         return {
             "info": task,
