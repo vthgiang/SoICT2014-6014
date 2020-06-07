@@ -1143,7 +1143,7 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab tài liệu */}
                         <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                        <div class="box-body table-responsive" style={{marginBottom:"30px"}}>
+                        <div>
                             {files &&
                                 files.map((item,index)=>{
                                     return(
