@@ -1182,7 +1182,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }, {
@@ -1271,7 +1270,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }])
@@ -1362,7 +1360,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [{
             name: "Ảnh",

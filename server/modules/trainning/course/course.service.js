@@ -6,6 +6,27 @@ const {
 } = require('../../../models').schema;
 
 /**
+ * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
+ * @organizationalUnits :array id đơn vị
+ * @positions : array id chức vụ
+ * @company : Id công ty
+ */
+exports.getAllCourses = async (company, organizationalUnits, positions) => {
+    let listEducations =  await EducationProgram.find({
+        company: company,
+        applyForOrganizationalUnits: { $in: organizationalUnits},
+        applyForPositions: {$in: positions }
+    }, {_id:1})
+    listEducations = listEducations.map(x=>{ return x._id});
+
+    let listCourses = await Course.find({
+        educationProgram: {$in : listEducations}
+    })
+    return {listCourses}
+}
+
+
+/**
  * Lấy danh sách khoá học theo key
  * @params : dữ liệu key tìm kiếm
  * @company : Id công ty

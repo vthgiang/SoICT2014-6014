@@ -28,7 +28,7 @@ exports.getAllTasks = async (req, res) => {
  */
 exports.getTask = async (req, res) => {
     try {
-        var task = await TaskManagementService.getTask(req.params.id);
+        var task = await TaskManagementService.getTask(req.params.id,req.user._id);
         await LogInfo(req.user.email, ` get task by id `,req.user.company);
         res.status(200).json({
             success: true,

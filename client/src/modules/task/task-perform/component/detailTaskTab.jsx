@@ -159,7 +159,7 @@ class DetailTaskTab extends Component {
                     }
                     
                     { (this.props.role !== "informed" && this.props.role !== "creator") &&
-                        <a className="btn btn-app" onClick={() => this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc">
+                        <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
                             <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
@@ -322,41 +322,53 @@ class DetailTaskTab extends Component {
                                     {/* Evaluations */}
                                     <div>
                                         {
-                                            (task && task.evaluations && task.evaluations.length !== 0 ) &&
+                                            (task && task.evaluations && task.evaluations.length !== 0 ) && 
                                             task.evaluations.map(eva => {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
-                                                    <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
+                                                    
+                                                    { eva.results.length !== 0 ?
+                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt>
+                                                    }
+                                                    
                                                     <dd>
-                                                        <div><strong>Điểm các thành viên</strong> (Tự động - Tự đánh giá - Người phê duyệt đánh giá)</div>
-                                                        <ul>
-                                                        { (eva.results.length !== 0) ?
-                                                            eva.results.map((res) => {
-                                                                return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
-                                                            }) : <li>Chưa có ái đánh giá vông việc tháng này</li>
-                                                        }
-                                                        </ul>
-
-                                                        {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
-                                                        <div><strong>Thông tin công việc</strong></div>
-                                                        <ul>
-                                                        <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
-                                                        {(task && task.point && task.point !== -1) ?
-                                                            <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
-                                                            <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
-                                                        }
-
                                                         {
-                                                            eva.taskInformations.map(info => {
-                                                                if( !isNaN(Date.parse(info.value)) && isNaN(info.value) ){
-                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
-                                                                }
-                                                                return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? info.value : "Chưa đánh giá tháng này"}</li>
-                                                            })
+                                                        eva.results.length !== 0 &&
+                                                        <div>
+                                                            <div><strong>Điểm các thành viên</strong> (Tự động - Tự đánh giá - Người phê duyệt đánh giá)</div>
+                                                            <ul>
+                                                            { (eva.results.length !== 0) ?
+                                                                eva.results.map((res) => {
+                                                                    return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                }) : <li>Chưa có ái đánh giá vông việc tháng này</li>
+                                                            }
+                                                            </ul>
+
+                                                            {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
+                                                            <div><strong>Thông tin công việc</strong></div>
+                                                            <ul>
+                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                            {(task && task.point && task.point !== -1) ?
+                                                                <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
+                                                                <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
+                                                            }
+
+                                                            {
+                                                                eva.taskInformations.map(info => {
+                                                                    if( !isNaN(Date.parse(info.value)) && isNaN(info.value) ){
+                                                                        return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
+                                                                    }
+                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? info.value : "Chưa đánh giá tháng này"}</li>
+                                                                })
+                                                            }
+                                                            </ul>
+                                                        </div>     
                                                         }
-                                                        </ul>
+                                                        
 
+                                                    {/* </dd>
 
+                                                    <dd> */}
                                                         {/* KPI */}
                                                         <div><strong>Liên kết KPI</strong></div>
                                                         <ul>
@@ -384,6 +396,7 @@ class DetailTaskTab extends Component {
                                             })
                                         }
                                         {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa được đánh giá lần nào</dt>}
+                                    
                                     </div>
                                 </fieldset>
                             </div>

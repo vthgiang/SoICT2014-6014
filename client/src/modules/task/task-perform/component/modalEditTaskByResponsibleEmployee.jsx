@@ -278,15 +278,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         // var {tasks} = this.props;
         var evaluations, taskId;
         taskId = this.props.id;
-        evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
         var data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
-            evaluateId: evaluations._id,
+            // evaluateId: evaluations._id,
             user: this.state.userId,
             progress: this.state.progress,
-            kpi: this.state.kpi,
+            kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
         }
 
@@ -327,10 +327,12 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         const { kpimembers, KPIPersonalManager, createEmployeeKpiSet } = this.props
         const {task, taskName, taskDescription, kpi} = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals )? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        // console.log('KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]', KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]);
+        // var listKpi = [];
         var currentKPI = (createEmployeeKpiSet && createEmployeeKpiSet.currentKPI) && createEmployeeKpiSet.currentKPI;
-        var list = (currentKPI !== undefined ) && currentKPI.kpis;
-        console.log('listKPI', list);
+        var list = currentKPI && currentKPI.kpis;
+        console.log('listKPI==========================', list);
         console.log('this.props.perform',this.props.perform);
         return (
             <div>

@@ -13,8 +13,7 @@ class CourseEditForm extends Component {
         this.state = {};
     }
     componentDidMount() {
-        let educationInfo = this.props.education.listAll.filter(x => x._id === this.state.educationProgram);
-        this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+        this.props.getAllEmployee({ organizationalUnits: this.state.applyForOrganizationalUnits, position: this.state.applyForPositions });
     }
 
     // Bắt sự kiện thay đổi tên kháo đào tạo
@@ -124,7 +123,7 @@ class CourseEditForm extends Component {
     handleEducationProgramChange = (value) => {
         if (value[0] !== '') {
             let educationInfo = this.props.education.listAll.filter(x => x._id === value[0]);
-            this.props.getAllEmployee({ organizationalUnit: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+            this.props.getAllEmployee({ organizationalUnits: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
         }
         this.validateEducationProgram(value[0], true);
     }
@@ -187,8 +186,10 @@ class CourseEditForm extends Component {
 
     // Bắt sự kiện xoá nhân viên thêm gia
     handleDelete = (id) => {
+        console.log(id);
+        console.log(this.state.listEmployees)
         this.setState({
-            listEmployees: this.state.listEmployees.filter(x => x !== id)
+            listEmployees: this.state.listEmployees.filter(x => x._id !== id)
         })
     }
 
@@ -252,7 +253,9 @@ class CourseEditForm extends Component {
                 endDate: nextProps.endDate,
                 cost: nextProps.cost,
                 lecturer: nextProps.lecturer,
-                educationProgram: nextProps.educationProgram._id,
+                applyForOrganizationalUnits: nextProps.applyForOrganizationalUnits,
+                applyForPositions: nextProps.applyForPositions,
+                educationProgram: nextProps.educationProgram,
                 employeeCommitmentTime: nextProps.employeeCommitmentTime,
                 type: nextProps.type,
                 listEmployees: nextProps.listEmployees,
@@ -274,27 +277,28 @@ class CourseEditForm extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps._id !== this.state._id) {
-            let educationInfo = this.props.education.listAll.filter(x => x._id === nextProps.educationProgram._id);
-            this.props.getAllEmployee({ organizationalUnits: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
+            this.props.getAllEmployee({ organizationalUnits: nextProps.applyForOrganizationalUnits, position: nextProps.applyForPositions });
         }
         return true;
     }
+
     render() {
         var userlist = [];
-        const { education, translate, course, employeesManager } = this.props;
-        const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
+        var { education, translate, course, employeesManager } = this.props;
+        var { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
         var listEducations = education.listAll;
         if (employeesManager.listEmployeesOfOrganizationalUnits.length !== 0) {
             userlist = employeesManager.listEmployeesOfOrganizationalUnits;
         }
+        console.log(listEmployees);
         let employeeInfors = [];
         if (listEmployees.length !== 0) {
             for (let n in listEmployees) {
                 userlist = userlist.filter(x => x._id !== listEmployees[n]._id);
                 let employeeInfor = employeesManager.listEmployeesOfOrganizationalUnits.filter(x => x._id === listEmployees[n]._id);
-                
+
                 employeeInfor[0] = { ...employeeInfor[0], result: listEmployees[n].result }
                 employeeInfors = employeeInfor.concat(employeeInfors);
             }

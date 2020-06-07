@@ -15,11 +15,11 @@ const PrivilegeSchema = new Schema({
         type: String,
         enum: ['Link', 'TaskTemplate', 'Component'],
     },
-    roleId: {
+    roleId: [{
         type: Schema.Types.ObjectId,
         ref: Role,
         required: true
-    },
+    }],
     actions: [{
         type: String,
         enum: ['See', 'Open', 'Edit', 'Delete'],

@@ -1,7 +1,7 @@
 const EmployeeKpiSet = require('../../../../models/kpi/employeeKpiSet.model');
 
 /** Lấy tất cả KPI cá nhân theo người thiết lập */
-exports.getAllEmployeeKpiSets = async (member) => {
+exports.getAllEmployeeKpiSets = async (member) => { // getEmployeeKpiSets(unitID, month,iduser) // TODO:...
     var kpipersonals = await EmployeeKpiSet.find({ creator: { $in: member.split(",") } })
         .sort({ 'time': 'desc' })
         .populate("organizationalUnit creator approver")

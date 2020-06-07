@@ -7,6 +7,7 @@ const initState ={
     commendations: "",
     disciplines: "",
     roles: "",
+    courses: "",
     organizationalUnits: "",
     infoEmployeeUpdate: "",
     error: ""
@@ -29,6 +30,7 @@ export function employeesInfo(state = initState, action) {
                 annualLeaves: action.payload.annualLeaves,
                 commendations: action.payload.commendations,
                 disciplines: action.payload.disciplines,
+                courses: action.payload.courses,
                 roles : action.payload.roles,
                 organizationalUnits : action.payload.organizationalUnits
 

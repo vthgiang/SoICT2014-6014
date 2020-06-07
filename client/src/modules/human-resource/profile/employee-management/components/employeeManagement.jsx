@@ -179,7 +179,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                value={this.state.organizationalUnits}
+                                value={this.state.organizationalUnits !== null ? this.state.organizationalUnits : []}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -299,6 +299,7 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRowView.annualLeaves}
                         commendations={this.state.currentRowView.commendations}
                         disciplines={this.state.currentRowView.disciplines}
+                        courses={this.state.currentRowView.courses}
                         roles={this.state.currentRowView.roles}
                     />
                 }
@@ -311,6 +312,9 @@ class EmployeeManagement extends Component {
                         annualLeaves={this.state.currentRow.annualLeaves}
                         commendations={this.state.currentRow.commendations}
                         disciplines={this.state.currentRow.disciplines}
+                        courses={this.state.currentRow.courses}
+                        organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
+                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
                     />
                 }
             </div>

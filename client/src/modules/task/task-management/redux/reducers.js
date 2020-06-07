@@ -144,7 +144,7 @@ export function tasks(state = {}, action) {
                 adding: true,
                 isLoading: false
             };
-        case taskManagementConstants.ADDNEW_TASK_SUCCESS:
+        case taskManagementConstants.ADDNEW_TASK_SUCCESS:            
             return {
                 ...state,
                 tasks: [
@@ -332,12 +332,12 @@ export function tasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
             return {
                 ...state,
                 isLoading : true
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -345,7 +345,7 @@ export function tasks(state = {}, action) {
                     info : action.payload
                 }
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {
                 isLoading: false,
                 error: action.error

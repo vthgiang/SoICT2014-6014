@@ -28,9 +28,9 @@ function getKPIUnits(infosearch) {
     }, false, true, 'kpi.organizational_unit');
 }
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(id) {
+function getChildTargetOfCurrentTarget(id, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }
