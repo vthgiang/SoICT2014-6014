@@ -89,14 +89,16 @@ class KPIUnitManager extends Component {
 
         return [month, year].join('-');
     }
-    handleShowEdit = async (id) => {
+    handleShowEdit = async (id, idkpiunit, date) => {
         await this.setState(state => {
             return {
                 ...state,
-                showEdit: id
+                id: id,
+                idkpiunit: idkpiunit,
+                date: date
             }
         });
-        window.$(`#dataResultTask-${id}`).modal('show');
+        window.$(`#dataResultTask`).modal('show');
 
     }
     handleSearchData = async () => {
@@ -191,6 +193,12 @@ class KPIUnitManager extends Component {
             <React.Fragment>
             <div className="box">
                 <div className="box-body qlcv">
+                    <ModalDetailKPI 
+                                            date={this.state.date} 
+                                            id={this.state.id} 
+                                            idkpiunit={this.state.idkpiunit}
+                                            // idkpiunit={item}
+                                        />
                     <div className="form-inline">
                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
                             <label>Từ tháng:</label>
@@ -268,10 +276,10 @@ class KPIUnitManager extends Component {
                                 <td>{item.kpis.length}</td>
                                 <td>{item.approvedPoint}-{item.automaticPoint}-{item.employeePoint}{item.approvedPoint=== null ? "Chưa đánh giá" : item.result}</td>
                                 <td>
-                                    <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
+                                    <a href={`#dataResultTask`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
-                                            className="material-icons" onClick={() => this.handleShowEdit(item._id)}>view_list</i></a>
-                                    {
+                                            className="material-icons" onClick={() => this.handleShowEdit(item._id,item.organizationalUnit._id,item.date)}>view_list</i></a>
+                                    {/* {
                                         this.state.showEdit === item._id &&
                                         <ModalDetailKPI 
                                             date={item.date} 
@@ -279,7 +287,7 @@ class KPIUnitManager extends Component {
                                             idkpiunit={item._id}
                                             // idkpiunit={item}
                                         />
-                                    }
+                                    } */}
                                     
                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"
