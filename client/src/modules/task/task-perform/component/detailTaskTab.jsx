@@ -129,6 +129,12 @@ class DetailTaskTab extends Component {
         window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
+
+    refresh = () => {
+        this.props.getTaskById(this.state.id);
+        this.props.getSubTask(this.state.id);
+        this.props.getTimesheetLogs(this.state.id);
+    }
     
     render() {
         const { translate } = this.props;
@@ -152,6 +158,10 @@ class DetailTaskTab extends Component {
       
             <div>
                 <div style={{ marginLeft: "-10px" }}>
+                    <a className="btn btn-app" onClick={this.refresh} title="Refresh">
+                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                    </a>
+                    
                     { (this.props.role === "responsible" || this.props.role === "accountable") && 
                         <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
@@ -495,6 +505,7 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
+    getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
