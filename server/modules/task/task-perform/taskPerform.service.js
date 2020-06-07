@@ -468,44 +468,51 @@ exports.deleteCommentOfTaskComment = async (params) => {
  */
 exports.evaluationAction = async (id,body) => {
     var task1 = await Task.findOne({ "taskActions._id": id })
-    task1.accountableEmployees.forEach(async elem => {  
-        if(body.creator == elem){
-            var evaluationAction = await Task.update(
-                {"taskActions._id":id},
-                {
-                    "$push": {
-                        "taskActions.$.evaluations":
-                        {
-                            creator: body.creator,
-                            rating: body.rating,
-                        }
-                    },
-                    
-                })
-            var evaluationActionRating = await Task.update(
-                {"taskActions._id":id},
-                {
-                    $set: {"taskActions.$.rating": body.rating}
-                }
-            )   
-            }else {
-                var evaluationAction1 = await Task.update(
-                    {"taskActions._id":id},
+    let idAccountableEmployee = task1.accountableEmployees.find(elem => body.creator===elem);
+    if (idAccountableEmployee) {
+        var evaluationAction = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
                     {
-                        "$push": {
-                            "taskActions.$.evaluations":
-                            {
-                                creator: body.creator,
-                                rating: body.rating,
-                            }
-                        }
-                    })   
-            }
-    })
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                },
+            },
+            {$new: true}
+        )
+
+        var evaluationActionRating = await Task.update(
+            {"taskActions._id":id},
+            {
+                $set: {"taskActions.$.rating": body.rating}
+            },
+            {$new: true}
+        )
+    } else {
+        var evaluationAction1 = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
+                    {
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                }
+            },
+            {$new: true}
+        )
+    }
+
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
+    ]);
+    
     return task.taskActions;
 }
 /**

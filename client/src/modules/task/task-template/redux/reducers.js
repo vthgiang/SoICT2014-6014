@@ -131,7 +131,7 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 loading: false,
-                childrenOrganizationalUnit: action.payload,
+                usersOfChildrenOrganizationalUnit: action.payload,
                 isLoading: false
             };
         
