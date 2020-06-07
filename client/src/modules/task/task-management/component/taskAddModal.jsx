@@ -491,7 +491,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người thực hiện*</label>
                                 {unitMembers &&
                                 <SelectBox
-                                    id={`responsible-select-box${this.props.id}`}
+                                    id={`responsible-select-box${newTask.taskTemplate}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items={unitMembers}
@@ -508,7 +508,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người phê duyệt*</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accounatable-select-box${this.props.id}`}
+                                        id={`accounatable-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={unitMembers}
@@ -525,7 +525,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người hỗ trợ</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`consulted-select-box${this.props.id}`}
+                                        id={`consulted-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -544,7 +544,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người quan sát</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`informed-select-box${this.props.id}`}
+                                        id={`informed-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
