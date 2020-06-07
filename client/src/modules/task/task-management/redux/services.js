@@ -174,7 +174,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
  */
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/edit/task-responsible/${taskId}`,
+        url: `${LOCAL_SERVER_API}/tasks/edit/task-accountable/${taskId}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'task.task_management');

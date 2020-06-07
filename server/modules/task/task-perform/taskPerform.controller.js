@@ -515,7 +515,6 @@ exports.uploadFile = async(req,res) => {
                 
             })
         }
-        console.log(files)
         var comment = await PerformTaskService.uploadFile(req.params,files);
         await LogInfo(req.user.email, ` upload file of task  `,req.user.company);
         res.status(200).json({
