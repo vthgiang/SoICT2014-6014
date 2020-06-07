@@ -48,6 +48,15 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+/* Css cho Link */
+a {
+    color: #385898;
+}
+a:hover, a:active, a:focus {
+    color: #6a8dd1;
+}
+
+
 
 
 /* CSS cho C3 Chart */
