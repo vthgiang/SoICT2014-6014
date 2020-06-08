@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
-
+const nodemailer = require("nodemailer");
 /**
  * Lấy tất cả các công việc
  */
@@ -570,6 +570,75 @@ exports.createTask = async (task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
     });
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+    var userId,user;
+
+    userId = task.responsibleEmployees;
+    user = await User.find({
+        _id : { $in: userId }
+    })
+    for (let n in user){
+        var mainOptions = {
+            from: 'vnist.qlcv@gmail.com',
+            to: user[n].email,
+            subject: 'Tạo mới công việc hành công',
+            text: '',
+            html:   
+                `<p>Bạn được giao nhiệm vụ thực hiện công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+        }
+        await transporter.sendMail(mainOptions);
+    }
+    
+    userId = task.accountableEmployees;
+    user = await User.find({
+        _id : { $in: userId }
+    })
+    for (let n in user){
+        var mainOptions = {
+            from: 'vnist.qlcv@gmail.com',
+            to: user[n].email,
+            subject: 'Tạo mới công việc hành công',
+            text: '',
+            html:   
+                `<p>Bạn được giao nhiệm vụ phê duyệt công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+        }
+        await transporter.sendMail(mainOptions);
+    }
+    
+    userId = task.consultedEmployees;
+    user = await User.find({
+        _id : { $in: userId }
+    })
+    for (let n in user){
+        var mainOptions = {
+            from: 'vnist.qlcv@gmail.com',
+            to: user[n].email,
+            subject: 'Tạo mới công việc hành công',
+            text: '',
+            html:   
+                `<p>Bạn được giao nhiệm vụ hỗ trợ công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+        }
+        await transporter.sendMail(mainOptions);
+    }
+    
+    userId = task.informedEmployees;
+    user = await User.find({
+        _id : { $in: userId }
+    })
+    for (let n in user){
+        var mainOptions = {
+            from: 'vnist.qlcv@gmail.com',
+            to: user[n].email,
+            subject: 'Tạo mới công việc hành công',
+            text: '',
+            html:   
+                `<p>Bạn được giao nhiệm vụ quan sát công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+        }
+        await transporter.sendMail(mainOptions);
+    }
 
     if(task.taskTemplate !== null){
         await TaskTemplate.findByIdAndUpdate(
@@ -578,7 +647,7 @@ exports.createTask = async (task) => {
     }
 
     task = await task.populate("organizationalUnit creator parent").execPopulate();
-    
+
     return task;
 }
 
