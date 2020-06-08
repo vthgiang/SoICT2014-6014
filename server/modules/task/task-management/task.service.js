@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
 const moment = require("moment");
+const nodemailer = require("nodemailer");
 
 /**
  * Lấy tất cả các công việc
@@ -588,11 +589,10 @@ exports.createTask = async (task) => {
             subject: 'Tạo mới công việc hành công',
             text: '',
             html:   
-                `<p>Bạn được giao nhiệm vụ thực hiện công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+                `<p>Bạn được giao nhiệm vụ <strong>thực hiện</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
         }
-        await transporter.sendMail(mainOptions);
+        transporter.sendMail(mainOptions);
     }
-    
     userId = task.accountableEmployees;
     user = await User.find({
         _id : { $in: userId }
@@ -604,9 +604,9 @@ exports.createTask = async (task) => {
             subject: 'Tạo mới công việc hành công',
             text: '',
             html:   
-                `<p>Bạn được giao nhiệm vụ phê duyệt công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+                `<p>Bạn được giao nhiệm vụ <strong>phê duyệt</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
         }
-        await transporter.sendMail(mainOptions);
+        transporter.sendMail(mainOptions);
     }
     
     userId = task.consultedEmployees;
@@ -620,9 +620,9 @@ exports.createTask = async (task) => {
             subject: 'Tạo mới công việc hành công',
             text: '',
             html:   
-                `<p>Bạn được giao nhiệm vụ hỗ trợ công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+                `<p>Bạn được giao nhiệm vụ <strong>hỗ trợ</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
         }
-        await transporter.sendMail(mainOptions);
+        transporter.sendMail(mainOptions);
     }
     
     userId = task.informedEmployees;
@@ -636,9 +636,9 @@ exports.createTask = async (task) => {
             subject: 'Tạo mới công việc hành công',
             text: '',
             html:   
-                `<p>Bạn được giao nhiệm vụ quan sát công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+                `<p>Bạn được giao nhiệm vụ <strong>quan sát</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
         }
-        await transporter.sendMail(mainOptions);
+        transporter.sendMail(mainOptions);
     }
 
     if(task.taskTemplate !== null){
