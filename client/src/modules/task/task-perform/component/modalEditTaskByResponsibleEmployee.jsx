@@ -55,12 +55,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 // for(let i in evaluations.kpis){
                 //     // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
                 // }
-                var kpi = evaluations.kpis.find(e => (String(e.employee._id) === String(userId))).kpis;
                 
-                for(let i in kpi){
-                    cloneKpi.push(kpi[i]._id);
+                let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(userId)));
+                if (tmp){
+                    var kpi = tmp.kpis;
+                
+                    for(let i in kpi){
+                        cloneKpi.push(kpi[i]._id);
+                    }
+                    console.log('------------------', cloneKpi);;
                 }
-                console.log('------------------', cloneKpi);
             }
             // const {task, taskName, taskDescription, kpi} = this.state;
 
