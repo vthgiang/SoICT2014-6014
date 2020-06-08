@@ -6,29 +6,39 @@ import { sendRequest} from '../../../../../helpers/requestHelper';
 export const dashboardOrganizationalUnitKpiServices = {
     getAllChildTargetOfOrganizationalUnitKpis,
     getAllTaskOfOrganizationalUnit,
-    getAllOrganizationalUnitKpiSetEachYear
+    getAllOrganizationalUnitKpiSetEachYear,
+    getAllEmployeeKpiSetInOrganizationalUnit
 }
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-function getAllChildTargetOfOrganizationalUnitKpis(id) {
+function getAllChildTargetOfOrganizationalUnitKpis(userRoleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-targets/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/child-targets/${userRoleId}`,
         method: 'GET'
     }, false, false)
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
-function getAllTaskOfOrganizationalUnit(id) {
+function getAllTaskOfOrganizationalUnit(userRoleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/tasks/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/tasks/${userRoleId}`,
         method: 'GET'
     }, false, false)
 }
  
 /** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
-function getAllOrganizationalUnitKpiSetEachYear(id, year) {
+function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-each-year/${id}/${year}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-each-year/${organizationalUnitId}/${year}`,
+        method: 'GET'
+    }, false, false)
+}
+
+
+/** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
+function getAllEmployeeKpiSetInOrganizationalUnit(userRoleId, month) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-set-in-organizational-unit/${userRoleId}/${month}`,
         method: 'GET'
     }, false, false)
 }
