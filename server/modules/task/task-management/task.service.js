@@ -572,74 +572,6 @@ exports.createTask = async (task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
     });
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
-    });
-    var userId,user;
-
-    userId = task.responsibleEmployees;
-    user = await User.find({
-        _id : { $in: userId }
-    })
-    for (let n in user){
-        var mainOptions = {
-            from: 'vnist.qlcv@gmail.com',
-            to: user[n].email,
-            subject: 'Tạo mới công việc hành công',
-            text: '',
-            html:   
-                `<p>Bạn được giao nhiệm vụ <strong>thực hiện</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-        }
-        transporter.sendMail(mainOptions);
-    }
-    userId = task.accountableEmployees;
-    user = await User.find({
-        _id : { $in: userId }
-    })
-    for (let n in user){
-        var mainOptions = {
-            from: 'vnist.qlcv@gmail.com',
-            to: user[n].email,
-            subject: 'Tạo mới công việc hành công',
-            text: '',
-            html:   
-                `<p>Bạn được giao nhiệm vụ <strong>phê duyệt</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-        }
-        transporter.sendMail(mainOptions);
-    }
-    
-    userId = task.consultedEmployees;
-    user = await User.find({
-        _id : { $in: userId }
-    })
-    for (let n in user){
-        var mainOptions = {
-            from: 'vnist.qlcv@gmail.com',
-            to: user[n].email,
-            subject: 'Tạo mới công việc hành công',
-            text: '',
-            html:   
-                `<p>Bạn được giao nhiệm vụ <strong>hỗ trợ</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-        }
-        transporter.sendMail(mainOptions);
-    }
-    
-    userId = task.informedEmployees;
-    user = await User.find({
-        _id : { $in: userId }
-    })
-    for (let n in user){
-        var mainOptions = {
-            from: 'vnist.qlcv@gmail.com',
-            to: user[n].email,
-            subject: 'Tạo mới công việc hành công',
-            text: '',
-            html:   
-                `<p>Bạn được giao nhiệm vụ <strong>quan sát</strong> công việc  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-        }
-        transporter.sendMail(mainOptions);
-    }
 
     if(task.taskTemplate !== null){
         await TaskTemplate.findByIdAndUpdate(
@@ -648,6 +580,70 @@ exports.createTask = async (task) => {
     }
 
     task = await task.populate("organizationalUnit creator parent").execPopulate();
+
+    // Gửi email
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+    var email,userId,user,users;
+
+    userId = task.responsibleEmployees;  // lấy id người thực hiện
+    user = await User.find({
+        _id : { $in: userId }
+    })
+
+    userId = task.accountableEmployees;  // lấy id người phê duyệt
+    users = await User.find({
+        _id : { $in: userId }
+    })
+    user.push(...users);  // thêm dánh sách người phê duyệt
+
+    userId = task.consultedEmployees;  // lấy id người hỗ trợ
+    users = await User.find({
+        _id : { $in: userId }
+    })
+    user.push(...users); // thêm danh sách người hỗ trợ
+
+    userId = task.informedEmployees;  // lấy id người quan sát
+    users = await User.find({
+        _id : { $in: userId }
+    })
+    user.push(...users);  // thêm danh sách người quan sát
+
+    email = user.map( item => item.email); // Lấy ra tất cả email của người dùng
+    // Loại bỏ các giá trị email trùng nhau
+    email = email.map(mail => mail.toString());
+    for(let i = 0, max = email.length; i < max; i++) {
+        if(email.indexOf(email[i]) != email.lastIndexOf(email[i])) {
+            email.splice(email.indexOf(email[i]), 1);
+            i--;
+        }
+    }
+    email.push('trinhhong102@gmail.com');
+
+    var mainOptions = {
+        from: 'vnist.qlcv@gmail.com',
+        to: email,
+        subject: 'Tạo mới công việc hành công',
+        text: '',
+        html:   
+            `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
+    }
+    transporter.sendMail(mainOptions);
+    
+    // Tạo thông báo
+    let notifications = user.map(user => {
+        return {
+            title: "Tạo mới công việc",
+            level: "general",
+            content: "Bạn được giao nhiệm vụ mới trong công việc ",
+            sender:task.organizationalUnit.name,
+            user
+        }
+    });
+    Notification.insertMany(notifications);
+    
 
     return task;
 }
