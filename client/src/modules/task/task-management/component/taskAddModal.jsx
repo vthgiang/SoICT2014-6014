@@ -12,6 +12,8 @@ import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../comm
 import { TaskFormValidator} from './taskFormValidator';
 import { taskTemplateConstants } from '../../task-template/redux/constants';
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+
 class ModalAddTask extends Component {
 
     componentDidMount() {
@@ -370,99 +372,8 @@ class ModalAddTask extends Component {
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
        
-        var unitMembers;
-        var structEmployee=[];
-        if(usersOfChildrenOrganizationalUnit){
-            let units={};
-            let employees={};
-            let roles={};
-              
-            for (let  i=0;i< usersOfChildrenOrganizationalUnit.length;i++){
-                var unit = usersOfChildrenOrganizationalUnit[i];
-                for( let j=0;j < unit.deans.length;j++){
-                    let dean = unit.deans[j];
-                    
-                    if(employees[dean._id]){
-                        //employees[dean._id]+=", "+dean.name;
-                        roles[dean._id]+= ", "+unit.roles.dean.name;
-                    }
-                    else{
-                        employees[dean._id]=dean.name;
-                        roles[dean._id]=unit.roles.dean.name;                        
-                        units[dean._id]= units[dean._id] ? units[dean._id]:unit.department;
-                       
-
-                        
-                    }
-                }    
-                for( let j=0;j < unit.viceDeans.length;j++){
-                    let viceDean = unit.viceDeans[j];
-
-                    if(employees[viceDean._id]){
-                        //employees[viceDean._id]+=", "+viceDean.name;
-                        roles[viceDean._id]+= ", "+unit.roles.viceDean.name;
-                    }
-                    else{
-                        employees[viceDean._id]=viceDean.name;
-                        roles[viceDean._id]=unit.roles.viceDean.name;                        
-                        units[viceDean._id]= units[viceDean._id] ? units[viceDean._id]:unit.department;
-                       
-
-                        
-                    }
-                }    
-                for( let j=0;j < unit.employees.length;j++){
-                    let employee = unit.employees[j];
-                    
-                    if(employees[employee._id]){
-                        //employees[employee._id]+=", "+employee.name;
-                        roles[employee._id]+= ", "+unit.roles.employee.name;
-                    }
-                    else{
-                        employees[employee._id]=employee.name;
-                        roles[employee._id]=unit.roles.employee.name;                        
-                        units[employee._id]= units[employee._id] ? units[employee._id]:unit.department;
-                       
-
-                        
-                    }
-                }            
-            }
-    
-            for(let item in employees){
-                let unitMember ={
-                    id : item,
-                    name : employees[item],
-                    role: roles[item],
-                    department: units[item]
-                }
-                structEmployee.push(unitMember)
-            }
-
-        }
-        if(usersOfChildrenOrganizationalUnit && structEmployee){
-            unitMembers=usersOfChildrenOrganizationalUnit.map(unitMember=>{
-                var temp=[];
-                for(let i=0;i<structEmployee.length;i++){
-                    let item=structEmployee[i];
-                    if(item.department === unitMember.department){
-                        let j={
-                            text: item.name +" ("+item.role+")",
-                            value : item.id
-                            
-                        }
-                        temp.push(j);
-                    }
-                }
-                var unit ={
-                    text : unitMember.department,
-                    value : temp
-                };
-    
-                    return unit;                
-                })    
-       
-        }
+        var unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        
   
         
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
