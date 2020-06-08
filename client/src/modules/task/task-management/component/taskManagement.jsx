@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ModalPerformTask } from '../../task-perform/component/modalPerformTask';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { ModalAddTask } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -311,7 +310,7 @@ class TaskManagement extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                showModal: id
+                currentTaskId: id
             }
         })
         window.$(`#modelPerformTask${id}`).modal('show');
@@ -648,7 +647,7 @@ class TaskManagement extends Component {
                         // this.state.showModal !== undefined &&
 
                         <ModalPerform
-                            id={this.state.showModal}
+                            id={this.state.currentTaskId}
                             role={this.state.currentTab}
                         />
                     }

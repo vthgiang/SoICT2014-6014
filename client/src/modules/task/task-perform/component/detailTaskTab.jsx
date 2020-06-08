@@ -203,6 +203,7 @@ class DetailTaskTab extends Component {
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
+                        {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {priority}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && task.status}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>

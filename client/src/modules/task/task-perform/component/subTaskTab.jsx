@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { taskManagementActions } from "../../task-management/redux/actions";
-import { LOCAL_SERVER_API } from '../../../../env';
-import { ModalPerformTask } from './modalPerformTask';
 import './actionTab.css';
 import qs from 'qs';
 class SubTaskTab extends Component {
