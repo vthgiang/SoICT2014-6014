@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
-const nodemailer = require("nodemailer");
+const moment = require("moment");
+
 /**
  * Lấy tất cả các công việc
  */
@@ -721,8 +722,12 @@ formatDate = (date) => {
 /**
  * hàm check điều kiện evaluate tồn tại
  */
-async function checkEvaluations(date, taskId) {
+async function checkEvaluations(date, taskId, storeDate) {
     var evaluateId;
+
+    var splitterStoreDate = storeDate.split("-");
+    var storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1]-1, splitterStoreDate[0]);
+
     var splitterDate = date.split("-");
     var dateISO = new Date(splitterDate[2], splitterDate[1]-1, splitterDate[0]);
     var monthOfParams = dateISO.getMonth();
@@ -758,7 +763,7 @@ async function checkEvaluations(date, taskId) {
     if(testCase === "TH1"){
         console.log('TH1----chưa có evaluations');
         var evaluationsVer1 = {
-            date: dateISO,
+            date: storeDateISO,
             kpi: [],
             result: [],
             taskInformations: cloneTaskInfo
@@ -782,7 +787,7 @@ async function checkEvaluations(date, taskId) {
     else if(testCase === "TH2") {
         console.log('TH2---Có evaluation nhưng chưa có tháng giống với date');
         var evaluationsVer2 = {
-            date: dateISO,
+            date: storeDateISO,
             kpi: [],
             result: [],
             taskInformations: cloneTaskInfo
@@ -829,7 +834,58 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         kpis: kpi
     };
     var date = data.date;
-    var evaluateId = await checkEvaluations(date, taskId);
+    var evaluateId;
+
+    const endOfMonth   = moment().endOf("month").format('DD-MM-YYYY')
+    console.log(endOfMonth);
+
+    // if(kpi.length !== 0){
+        evaluateId = await checkEvaluations(date, taskId, endOfMonth);
+        console.log('evaluateId cần lấy-----', evaluateId);
+    // }
+    // var myTask =  await Task.findById(taskId);
+    // if( evaluateId) {
+        let task = await Task.findById(taskId);
+        // cập nhật thông tin kpi
+        var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
+        console.log('liissssssssssssss', listKpi);
+        var check_kpi = listKpi.find(kpi => String(kpi.employee) === user );
+        console.log('check_kpi', check_kpi);
+        if(check_kpi === undefined){
+            await Task.updateOne(
+                {
+                    _id: taskId,
+                    "evaluations._id" : evaluateId
+                },
+                {
+                    $push: {
+                        "evaluations.$.kpis": kpisItem
+                    }
+                },
+                {$new: true}
+            );
+        } else {
+            await Task.updateOne(
+                {
+                    _id: taskId,
+                    "evaluations._id" : evaluateId,
+
+                },
+                {
+                    $set: {
+                        "evaluations.$.kpis.$[elem].kpis": kpi
+                    }
+                },
+                {
+                    arrayFilters: [
+                        {
+                            "elem.employee": user
+                        }
+                    ]
+                }
+            );
+        }
+    // }
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
@@ -842,8 +898,6 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         }
     }
 
-    console.log('evaluateId cần lấy-----', evaluateId);
-
     await Task.updateOne(
         {_id: taskId},
         {
@@ -855,48 +909,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         },
         {$new: true}   
     );
-    var task = await Task.findById(taskId);
 
-    // cập nhật thông tin kpi
-    // console.log('=============', String(task.evaluations[0]._id) === String(evaluateId));
-    var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
-    var check_kpi = listKpi.find(kpi => String(kpi.employee) === user );
-    console.log('check_kpi', check_kpi);
-    if(check_kpi === undefined){
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id" : evaluateId
-            },
-            {
-                $push: {
-                    "evaluations.$.kpis": kpisItem
-                }
-            },
-            {$new: true}
-        );
-    } else {
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id" : evaluateId,
-
-            },
-            {
-                $set: {
-                    "evaluations.$.kpis.$[elem].kpis": kpi
-                }
-            },
-            {
-                arrayFilters: [
-                    {
-                        "elem.employee": user
-                    }
-                ]
-            }
-        );
-    }
-
+    // var task = await Task.findById(taskId);
     for(let item in info){
         for( let i in task.taskInformations){   
             if(info[item].code === task.taskInformations[i].code){
@@ -1071,7 +1085,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     var employeePoint = data.employeePoint;
     var role = data.role;
     var date = data.date;
-    var evaluateId = await checkEvaluations(date, taskId);
+    var evaluateId = await checkEvaluations(date, taskId, date);
 
     var resultItem = {
         employee: user,
@@ -1176,7 +1190,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         role: role
     }
 
-    var evaluateId = await checkEvaluations(date, taskId);
+    var evaluateId = await checkEvaluations(date, taskId, date);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
@@ -1408,7 +1422,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     var evaluateDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     var dateFormat = evaluateDate;
 
-    var evaluateId = await checkEvaluations(date, taskId);
+    var evaluateId = await checkEvaluations(date, taskId, date);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){

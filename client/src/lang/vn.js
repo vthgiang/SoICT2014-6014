@@ -1531,7 +1531,7 @@ export default {
                 role: 'Vai trò',
 
                 status: 'Trạng thái',
-                select_status: 'Chon trang thái',
+                select_status: 'Chọn trạng thái',
                 select_all_status: 'Chọn tất cả trạng thái',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',

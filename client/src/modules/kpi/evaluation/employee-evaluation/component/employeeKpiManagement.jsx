@@ -23,19 +23,23 @@ class KPIMember extends Component {
         super(props);
         this.state = {
             commenting: false,
-            user:"",
-            status:"",
-            startDate : this.formatDateBack(Date.now()),
-            endDate : this.formatDateBack(Date.now()),
+            user:null,
+            status:null,
+            // startDate : this.formatDateBack(Date.now()),
+            // endDate : this.formatDateBack(Date.now()),
+            startDate: null,
+            endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: getStorage("userId"),
-                status: 0,
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now())
+                user: null,
+                status: null,
+                // startDate: this.formatDate(Date.now()),
+                // endDate: this.formatDate(Date.now())
+                startDate: null,
+                endDate: null
             },
-            showApproveModal: "",
-            showEvaluateModal: ""
+            showApproveModal: null,
+            showEvaluateModal: null
         };
     }
     componentDidMount() {
@@ -149,23 +153,36 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-         console.log("inforsearch", infosearch);
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            var startDate = infosearch.startDate.split("-");
-            var startdate = new Date(startDate[1], startDate[0], 0);
-            var endDate = infosearch.endDate.split("-");
-            var enddate = new Date(endDate[1], endDate[0], 28);
-            if (Date.parse(startdate) > Date.parse(enddate)) {
+         
+        // if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
+            
+            var startDate;
+            var startdate=null;
+            var endDate;
+            var enddate=null;
+            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
+            startdate = new Date(startDate[1], startDate[0], 0);}
+            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
+            enddate = new Date(endDate[1], endDate[0], 28);}
+            // if(data.status) status= parseInt(data.status); 
+        // var startDate = infosearch.startDate.split("-");
+        //     var startdate = new Date(startDate[1], startDate[0], 0);
+        //     var endDate = infosearch.endDate.split("-");
+        //     var enddate = new Date(endDate[1], endDate[0], 28);
+            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Xác nhận'
                 })
-            } else {
+            } 
+            else {
                 this.props.getAllKPIMemberOfUnit(infosearch);
+                console.log("========================goi den tim kiem")
+                console.log("inforsearch", infosearch);
             }
-        }
+        // }
     }
     handleShowApproveModal = async (id) => {
         // console.log('da goi den showApprove');
@@ -205,7 +222,7 @@ class KPIMember extends Component {
             unitMembers = [
                 {
                     // text: "Chọn nhân viên",
-                    value: [{text:"--Chọn nhân viên--", value:""}]
+                    value: [{text:"--Chọn nhân viên--", value: "null"}]
                 },
                 {
                     text: userdepartments.roles.dean.name,
@@ -249,7 +266,7 @@ class KPIMember extends Component {
                                     // className="form-control"
                                     style={{width: "100%"}}
                                     items = {[
-                                        {value:-1, text : "--Chọn trạng thái--"},
+                                        {value:"null", text : "--Chọn trạng thái--"},
                                         {value:0, text : "Đang thiết lập"},
                                         {value:1, text : "Chờ phê duyệt"},
                                         {value:2, text : "Đã kích hoạt"},
@@ -269,7 +286,7 @@ class KPIMember extends Component {
                                 <label>Từ tháng:</label>
                                 <DatePicker
                                 id='start_date'
-                                defaultValue={this.formatDate(Date.now())}
+                                
                                 value = {startDate}
                                 onChange={this.handleStartDateChange}
                                 dateFormat="month-year"
@@ -279,7 +296,7 @@ class KPIMember extends Component {
                                 <label>Đến tháng:</label>
                                 <DatePicker
                                 id='end_date'
-                                defaultValue={this.formatDate(Date.now())}
+                               
                                 value = {endDate}
                                 onChange={this.handleEndDateChange}
                                 dateFormat="month-year"

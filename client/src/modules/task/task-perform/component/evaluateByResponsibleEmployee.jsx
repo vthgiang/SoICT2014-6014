@@ -29,9 +29,15 @@ class EvaluateByResponsibleEmployee extends Component {
 
         var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
+        var date = this.formatDate(new Date());
+        var point = 0;
         var info = {};
         var cloneKpi = [];
         if(evaluations){
+            if(evaluations.results.length !== 0) {
+                var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
+                if(res) point = res.employeePoint ? res.employeePoint : 0;
+            }
             let infoEval = evaluations.taskInformations;
                 for(let i in infoEval){
                     if(infoEval[i].type === "Date"){
@@ -49,7 +55,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
                 // const { progress, date, kpi} = this.state;
 
-                var date = this.formatDate(evaluations.date);
+                date = this.formatDate(evaluations.date);
                 for(let i in evaluations.kpis){
                     // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
                 }
@@ -60,13 +66,15 @@ class EvaluateByResponsibleEmployee extends Component {
                 }
                 console.log('------------------', cloneKpi);
             }
+            console.log('date',this.formatDate(date));
             this.state={
                 idUser: idUser ,
                 info: info,
                 autoPoint: 0,
-                // autoPoint: automaticPoint,
+                autoPoint: automaticPoint,
                 date: date,
                 kpi: cloneKpi,
+                point: point,
                 progress: task.progress
             }
         }
@@ -149,11 +157,12 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
+                autoPoint: value,
                 progress: value,
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
+        // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
     
     handleChangeNumberInfo = async (e) => {
@@ -311,11 +320,12 @@ class EvaluateByResponsibleEmployee extends Component {
         var data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
+            // automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
+            automaticPoint: this.state.autoPoint,
             employeePoint: this.state.point,
             role: "Responsible",
             
-            kpi: this.state.kpi,
+            kpi: this.state.kpi ? this.state.kpi : [],
             date: this.state.date,
             info: this.state.info,
             
@@ -351,7 +361,7 @@ class EvaluateByResponsibleEmployee extends Component {
         const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals )? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
         // var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
         return (

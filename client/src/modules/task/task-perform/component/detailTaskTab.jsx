@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from './../redux/actions';
+import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
@@ -17,10 +18,11 @@ import {
 class DetailTaskTab extends Component {
 
     constructor(props) {
-
-        var idUser = getStorage("userId");
-
         super(props);
+        
+        var idUser = getStorage("userId");
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+
         this.state = {
             collapseInfo: false,
             openTimeCounnt: false,
@@ -29,8 +31,10 @@ class DetailTaskTab extends Component {
             highestIndex: 0,
             currentUser: idUser,
             showModalApprove: "",
-            showEdit: ""
+            showEdit: "",
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
+
     }
 
     
@@ -52,8 +56,28 @@ class DetailTaskTab extends Component {
             this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
             this.props.getTimesheetLogs(nextProps.id);
+            this.setState(state=>{
+                return{
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+            return false;
+        }
 
-            // return true;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            if (!nextProps.tasks.task){
+                return false;
+            } else {
+                this.props.getChildrenOfOrganizationalUnits(nextProps.tasks.task.info.organizationalUnit._id);
+                this.setState(state=>{
+                    return{
+                        ...state,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                })
+                return false;
+            }
         }
         return true;
     }
@@ -129,6 +153,12 @@ class DetailTaskTab extends Component {
         window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
+
+    refresh = () => {
+        this.props.getTaskById(this.state.id);
+        this.props.getSubTask(this.state.id);
+        this.props.getTimesheetLogs(this.state.id);
+    }
     
     render() {
         const { translate } = this.props;
@@ -152,6 +182,10 @@ class DetailTaskTab extends Component {
       
             <div>
                 <div style={{ marginLeft: "-10px" }}>
+                    <a className="btn btn-app" onClick={this.refresh} title="Refresh">
+                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                    </a>
+                    
                     { (this.props.role === "responsible" || this.props.role === "accountable") && 
                         <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
@@ -193,6 +227,7 @@ class DetailTaskTab extends Component {
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
+                        {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {priority}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && task.status}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
@@ -327,9 +362,10 @@ class DetailTaskTab extends Component {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
                                                     
-                                                    { eva.results.length !== 0 ?
-                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt>
-                                                    }
+                                                    {/* { eva.results.length !== 0 ? */}
+                                                        {/* // <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt> */}
+                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
+                                                    {/* } */}
                                                     
                                                     <dd>
                                                         {
@@ -340,7 +376,7 @@ class DetailTaskTab extends Component {
                                                             { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
                                                                     return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
-                                                                }) : <li>Chưa có ái đánh giá vông việc tháng này</li>
+                                                                }) : <li>Chưa có ái đánh giá công việc tháng này</li>
                                                             }
                                                             </ul>
 
@@ -495,9 +531,11 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
+    getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
+    getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

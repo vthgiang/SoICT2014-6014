@@ -546,6 +546,8 @@ exports.uploadFile = async (params,files) => {
             $push: {files:  files}
         }
     )  
-    var task = await Task.findOne({ _id: params.task })
+    var task = await Task.findOne({ _id: params.task }).populate([
+        { path: "files.creator", model: User, select: 'name email avatar' },
+    ]);
     return task.files
 }
