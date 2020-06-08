@@ -648,7 +648,6 @@ class TaskManagement extends Component {
 
                         <ModalPerform
                             id={this.state.currentTaskId}
-                            role={this.state.currentTab}
                         />
                     }
                     {/* {
