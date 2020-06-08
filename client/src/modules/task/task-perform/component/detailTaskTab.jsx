@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from './../redux/actions';
+import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
@@ -17,10 +18,11 @@ import {
 class DetailTaskTab extends Component {
 
     constructor(props) {
-
-        var idUser = getStorage("userId");
-
         super(props);
+        
+        var idUser = getStorage("userId");
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+
         this.state = {
             collapseInfo: false,
             openTimeCounnt: false,
@@ -29,8 +31,10 @@ class DetailTaskTab extends Component {
             highestIndex: 0,
             currentUser: idUser,
             showModalApprove: "",
-            showEdit: ""
+            showEdit: "",
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
+
     }
 
     
@@ -52,8 +56,28 @@ class DetailTaskTab extends Component {
             this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
             this.props.getTimesheetLogs(nextProps.id);
+            this.setState(state=>{
+                return{
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+            return false;
+        }
 
-            // return true;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            if (!nextProps.tasks.task){
+                return false;
+            } else {
+                this.props.getChildrenOfOrganizationalUnits(nextProps.tasks.task.info.organizationalUnit._id);
+                this.setState(state=>{
+                    return{
+                        ...state,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                })
+                return false;
+            }
         }
         return true;
     }
@@ -511,6 +535,7 @@ const actionGetState = { //dispatchActionToProps
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
+    getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

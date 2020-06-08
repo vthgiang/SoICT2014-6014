@@ -8,6 +8,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
@@ -442,7 +443,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
-        const { user } = this.props;
+        const { user, tasktemplates } = this.props;
         var departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -450,27 +451,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let priorityArr = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
         let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
-        let unitMembers;
-        if (departmentUsers) {
-            unitMembers = [
-                {
-                    text: departmentUsers.roles.dean.name,
-                    value: departmentUsers.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: departmentUsers.roles.viceDean.name,
-                    value: departmentUsers.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: departmentUsers.roles.employee.name,
-                    value: departmentUsers.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
-        console.log('iiiiiiiiiiiiiiiiiiii', this.state);
-        console.log('-------------',task.responsibleEmployees.map(item=>{ return { value: item._id, text: item.name } }));
-        // console.log('----------------', priorityOptions.find(p=>p.value === task.priority));
-        // console.log('----------------', statusOptions.filter(s => s.text === task.status));
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        
         return (
             <div>
                 <React.Fragment>
@@ -678,8 +664,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user } = state;
-    return { tasks, user };
+    const { tasks, user, tasktemplates } = state;
+    return { tasks, user, tasktemplates };
 }
 
 const actionGetState = { //dispatchActionToProps
