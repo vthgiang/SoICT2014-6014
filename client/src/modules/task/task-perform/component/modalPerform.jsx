@@ -27,7 +27,7 @@ class ModalPerform extends Component {
                     bodyStyle={{padding: "0px"}}
                     hasSaveButton={false}
                 >
-                    <TaskComponent id={this.props.id} role={this.props.role}/>
+                    <TaskComponent id={this.props.id}/>
                 </DialogModal>
             </React.Fragment>
         );
