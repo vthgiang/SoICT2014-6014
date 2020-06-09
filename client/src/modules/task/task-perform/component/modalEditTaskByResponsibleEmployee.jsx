@@ -63,7 +63,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                     for(let i in kpi){
                         cloneKpi.push(kpi[i]._id);
                     }
-                    console.log('------------------', cloneKpi);;
+                    console.log('------------------', cloneKpi);
                 }
             }
             // const {task, taskName, taskDescription, kpi} = this.state;
@@ -323,10 +323,17 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     componentDidMount() {
+
+        var { task, userId } = this.state;
+        var date = this.formatDate(new Date());
+        var department = task.organizationalUnit._id;
+
+        console.log('----------------------\n\n\n', date, userId, department);
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
         // this.props.getKPIMemberById(this.state.userId);// lỗi
-        this.props.getAllKPIPersonalByUserID(this.state.userId); // lấy ra mảng các list kpi theo các tháng
+        // this.props.getAllKPIPersonalByUserID(this.state.userId); // lấy ra mảng các list kpi theo các tháng
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -351,16 +358,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     
 
     render() {
-        const { kpimembers, KPIPersonalManager, createEmployeeKpiSet } = this.props
+        const { KPIPersonalManager } = this.props
         const {task, taskName, taskDescription, kpi} = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
-        // console.log('KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]', KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]);
-        // var listKpi = [];
-        var currentKPI = (createEmployeeKpiSet && createEmployeeKpiSet.currentKPI) && createEmployeeKpiSet.currentKPI;
-        var list = currentKPI && currentKPI.kpis;
-        console.log('listKPI==========================', list);
-        console.log('this.props.perform',this.props.perform);
+        var listKpi = [];
+        if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+        
+        console.log('listKPI==========================\n\n\n', listKpi);
         return (
             <div>
                 <React.Fragment>
@@ -412,8 +416,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             id={`select-kpi-personal-edit-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
-                                            // items = {(currentKPI !== undefined ) && currentKPI.kpis.map(x => { return { value: x._id, text: x.name } })}
+                                            items = {listKpi && listKpi.map(x => { return { value: x._id, text: x.name } })}
                                             onChange={this.handleKpiChange}
                                             multiple={true}
                                             value={kpi}
@@ -460,8 +463,8 @@ const actionGetState = { //dispatchActionToProps
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
-
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));
