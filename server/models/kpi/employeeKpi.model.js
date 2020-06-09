@@ -47,6 +47,8 @@ const EmployeeKpiSchema = new Schema({
         type: Number,
         default: null
     }
+}, {
+    timestamps: true
 });
 
 module.exports = EmployeeKpi = mongoose.model("employee_kpis", EmployeeKpiSchema);
