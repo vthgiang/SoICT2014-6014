@@ -116,8 +116,7 @@ exports.approveAllTarget = async (id) => {
     kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    return [kpipersonal, targets];
-
+    return kpipersonal;
 }
 
 // Phê duyệt từng mục tiêu
