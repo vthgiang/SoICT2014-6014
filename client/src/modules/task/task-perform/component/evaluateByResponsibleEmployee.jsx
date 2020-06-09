@@ -59,16 +59,20 @@ class EvaluateByResponsibleEmployee extends Component {
                 for(let i in evaluations.kpis){
                     // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
                 }
-                var kpi = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser))).kpis;
+                let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
+                if (tmp){
+                    var kpi = tmp.kpis;
                 
-                for(let i in kpi){
-                    cloneKpi.push(kpi[i]._id);
+                    for(let i in kpi){
+                        cloneKpi.push(kpi[i]._id);
+                    }
+                    console.log('------------------', cloneKpi);
                 }
-                console.log('------------------', cloneKpi);
             }
             console.log('date',this.formatDate(date));
             this.state={
-                idUser: idUser ,
+                task: task,
+                idUser: idUser,
                 info: info,
                 autoPoint: 0,
                 autoPoint: automaticPoint,
@@ -96,10 +100,15 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     componentDidMount() {
+        var { task, idUser } = this.state;
+        var date = this.formatDate(new Date());
+        var department = task.organizationalUnit._id;
+
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
         // this.props.getKPIMemberById(this.state.idUser); // lỗi
-        this.props.getAllKPIPersonalByUserID(this.state.idUser);// lấy ra mảng các list kpi theo các tháng
+        // this.props.getAllKPIPersonalByUserID(this.state.idUser);// lấy ra mảng các list kpi theo các tháng
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -361,8 +370,9 @@ class EvaluateByResponsibleEmployee extends Component {
         const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
-        // var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
+        var listKpi = [];
+        if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+
         var task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
@@ -451,6 +461,7 @@ const getState = {
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
 }
 

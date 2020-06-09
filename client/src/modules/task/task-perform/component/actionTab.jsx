@@ -643,18 +643,15 @@ class ActionTab extends Component {
                                                 <a href="#">{item.creator.name} </a>:
                                                 item.name && <b>{item.name} </b>}
                                                 {item.description}
-                                                {(this.props.role === 'responsible' && item.creator) && <div className="btn-group dropleft pull-right">
-                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
-                                                        <div className="dropdown-divider"></div>
-                                                        <button className="dropdown-item btn-primary-outline" type="button"  onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</button>
-                                                        <div className="dropdown-divider"></div>
-                                                    </div>
+                                                {(this.props.role === 'responsible' && item.creator) &&
+                                                <div className="btn-group pull-right">
+                                                    <span data-toggle="dropdown">
+                                                        <i className="fa fa-ellipsis-h"></i>
+                                                    </span>
+                                                    <ul className="dropdown-menu">
+                                                        <li><a href="#" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</a></li>
+                                                        <li><a href="#" onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</a></li>
+                                                    </ul>
                                                 </div>}                 
                                             </p>
 
@@ -751,7 +748,7 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentAction[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
                                                 </ul>
@@ -772,20 +769,15 @@ class ActionTab extends Component {
                                                                 <a href="#">{child.creator.name} </a>
                                                                 {child.description}
 
-                                                                {child.creator._id === currentUser && 
-                                                                <div className="btn-group dropleft pull-right">
-                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        
-                                                                    </div>
+                                                                {child.creator._id === currentUser &&
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a href="#" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a href="#" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</a></li>
+                                                                    </ul>
                                                                 </div>}
                                                             </p>
                                                             {/* <div className="tool-level2">
@@ -820,7 +812,7 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
@@ -838,6 +830,7 @@ class ActionTab extends Component {
                                                         src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"
                                                     />
                                                     <ContentMaker
+                                                        inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                         onFilesChange={this.onCommentFilesChange}
                                                         onFilesError={this.onFilesError}
                                                         files={this.state.newCommentOfAction.files}
@@ -863,6 +856,7 @@ class ActionTab extends Component {
                             <React.Fragment>
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
                                 <ContentMaker
+                                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                     onFilesChange={this.onActionFilesChange}
                                     onFilesError={this.onFilesError}
                                     files={this.state.newAction.files}
@@ -893,20 +887,15 @@ class ActionTab extends Component {
                                             <p className="content-level1">
                                                 <a href="#">{item.creator.name} </a>
                                                 {item.description}
-                                                {item.creator._id === currentUser && 
-                                                <div className="btn-group dropleft pull-right">
-                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
-                                                        <div className="dropdown-divider"></div>
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
-                                                        <div className="dropdown-divider"></div>
-                                
-                                                    </div>
+                                                {item.creator._id === currentUser &&
+                                                <div className="btn-group pull-right">
+                                                    <span data-toggle="dropdown">
+                                                        <i className="fa fa-ellipsis-h"></i>
+                                                    </span>
+                                                    <ul className="dropdown-menu">
+                                                        <li><a href="#" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</a></li>
+                                                        <li><a href="#" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</a></li>
+                                                    </ul>
                                                 </div>}
                                             </p>
 
@@ -939,7 +928,7 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentTaskComment[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</a></li>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
                                                 </ul>
@@ -962,18 +951,14 @@ class ActionTab extends Component {
                                                                 {child.description}
 
                                                                 {child.creator._id === currentUser &&
-                                                                <div className="btn-group dropleft pull-right">
-                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                    </div>
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a href="#" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a href="#" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</a></li>
+                                                                    </ul>
                                                                 </div>}
                                                             </p>
                                                             <ul className="list-inline tool-level2">
@@ -1003,7 +988,7 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfTaskComment[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa </a></li>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
@@ -1020,6 +1005,7 @@ class ActionTab extends Component {
                                                 <div>
                                                     <img className="user-img-level2" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"/>
                                                     <ContentMaker
+                                                        inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                         onFilesChange={this.onCommentOfTaskCommentFilesChange}
                                                         onFilesError={this.onFilesError}
                                                         files={this.state.newCommentOfTaskComment.files}
@@ -1044,6 +1030,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="User Image" />
                             <ContentMaker
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={this.state.newTaskComment.files}
