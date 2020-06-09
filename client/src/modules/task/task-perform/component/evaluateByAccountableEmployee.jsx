@@ -10,26 +10,44 @@ import { getStorage } from '../../../../config';
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
+        
+        var date = this.formatDate(new Date());
+        var data = this.getData(date);
 
+        this.state={
+            task: data.task,
+            userId: data.userId,
+            info: data.info,
+            results: data.results,
+            empPoint: data.empPoint,
+            status: data.statusOptions,
+            progress: data.task.progress,
+            autoPoint: data.automaticPoint,
+            date: data.date
+        }
+        console.log('-----------------------------------------', this.state);
+    }
+    
+
+    getData = (dateParam) => {
         var idUser = getStorage("userId");
         var {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
         var evaluations;
-        var dateOfEval = new Date();
+        
+        var splitter = dateParam.split("-");
+        var dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
         var monthOfEval = dateOfEval.getMonth();
         var yearOfEval = dateOfEval.getFullYear();
+
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
         var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
         var date = this.formatDate(new Date());
-        var point = 0;
         var info = {};
-        // const { date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, } = this.state;
-
-        // approvedPointConsulted5ed68e90ec0683397cbdf9fd: {value: 1, employee: "5ed68e90ec0683397cbdf9fd", role: "Consulted", target: "Point"}
-        // contributeResponsible5ed68e90ec0683397cbdf9fe: {value: 1, employee: "5ed68e90ec0683397cbdf9fe", role: "Responsible", target: "Contribution"}
+        
         var empPoint = {}, results = {};
         if(evaluations){
             if(evaluations.results.length !== 0) {
@@ -65,8 +83,6 @@ class EvaluateByAccountableEmployee extends Component {
                             target: "Contribution"
                         }
                     }
-                    // approvedPoint5ed68e90ec0683397cbdf9fc: {value: 1, employee: "5ed68e90ec0683397cbdf9fc", role: "Accountable", target: "Point"}
-                    // contributeAccountable5ed68e90ec0683397cbdf9fc: {value: 1, employee: "5ed68e90ec0683397cbdf9fc", role: "Accountable", target: "Contribution"}
                     else if(listResult[i].role === "Accountable"){
                         empPoint[`accountable${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
                         results[`approvedPoint${listResult[i].employee._id}`] ={
@@ -85,8 +101,7 @@ class EvaluateByAccountableEmployee extends Component {
                     
                     
                 }
-                // var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable" ));
-                // if(res) point = res.employeePoint ? res.employeePoint : 0;
+                
             }
             
             let infoEval = evaluations.taskInformations;
@@ -108,19 +123,20 @@ class EvaluateByAccountableEmployee extends Component {
         }
 
         let statusOptions = []; statusOptions.push(task && task.status);
-        
-        this.state={
+
+        return {
             info: info,
+            date: date,
             results: results,
+            task: task,
+            userId: idUser,
             empPoint: empPoint,
-            status: statusOptions,
-            progress: task.progress,
-            autoPoint: automaticPoint,
-            date: date
+            results: results,
+            automaticPoint: automaticPoint,
+            statusOptions: statusOptions
         }
-        console.log('-----------------------------------------', this.state);
     }
-    
+
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
         var d = new Date(date),
@@ -136,7 +152,7 @@ class EvaluateByAccountableEmployee extends Component {
         return [day, month, year].join('-');
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.getTaskById(this.props.id);
     }
 
@@ -501,11 +517,20 @@ class EvaluateByAccountableEmployee extends Component {
 
     handleDateChange = (value) => {
         // var value = e.target.value;
+        var data = this.getData(value);
+       
         this.setState(state => {
                 return {
                     ...state,
                     errorOnDate: this.validateDate(value),
                     date: value,
+                    info: data.info,
+                    results: data.results,
+                    status: data.statusOptions,
+                    empPoint: data.empPoint,
+                    autoPoint: data.automaticPoint,
+                    task: data.task,
+                    userId: data.userId,
                 }
             });
         

@@ -69,6 +69,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
             this.barChart();
+
             this.setState(state =>{
                 return {
                     ...state,
@@ -289,7 +290,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         if (dashboardOrganizationalUnitKpi.childTargets !== []) {
             listChildTarget = dashboardOrganizationalUnitKpi.childTargets
         }
-
         if(listOrganizationalUnitKpi === undefined && listChildTarget !== undefined){
             numberOfChildKpis = {}
         } else {
@@ -325,7 +325,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        
+
         if(listOrganizationalUnitKpi !== undefined) {
             listOrganizationalUnitKpi.map(parent => {
                 var temporary = {};

@@ -79,7 +79,7 @@ exports.editUser = async (req, res) => {
             content: result
         });
     } catch (error) {
-        
+        console.log("errrr: ", error)
         LogError(req.user.email, 'EDIT_USER', req.user.company);
         res.status(400).json({
             success: false,
@@ -183,11 +183,11 @@ exports.downloadFile = async (req, res) => {
     console.log("hihihihihiihhi")
     try {
         const {path} = req.query;
-       // await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
-        res.download(path, "file");
+        await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        res.download(path);
     } catch (error) {
 
-        //await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
+        await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_file_faile'],

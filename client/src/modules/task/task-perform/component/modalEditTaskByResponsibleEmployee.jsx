@@ -15,70 +15,82 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     constructor(props) {
         super(props);
 
-        var userId = getStorage("userId");
-        let { tasks } = this.props;
+        var date = this.formatDate(new Date());
+        var data = this.getData(date);
 
+        this.state={
+            task: data.task,
+            userId: data.idUser,
+            taskName: data.task.name,
+            taskDescription: data.task.description,
+            idUser: data.idUser,
+            info: data.info,
+            date: data.date,
+            kpi: data.kpi,
+            progress: data.task.progress
+        }   
+    }
+
+    //  Hàm xử lý dữ liệu khởi tạo
+    getData = (dateParam) => {
+        var idUser = getStorage("userId");
+        var {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
-
-        // khởi tạo state của task
-
-        let taskName = task && task.name;
-        let taskDescription = task && task.description;
         
-        let progress = task && task.progress;
-
         var evaluations;
-        var dateOfEval = new Date();
+        
+        var splitter = dateParam.split("-");
+        var dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
         var monthOfEval = dateOfEval.getMonth();
         var yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
+        var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+
+        var date = this.formatDate(new Date());
+        var point = 0;
         var info = {};
         var cloneKpi = [];
         if(evaluations){
+            if(evaluations.results.length !== 0) {
+                var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
+                if(res) point = res.employeePoint ? res.employeePoint : 0;
+            }
             let infoEval = evaluations.taskInformations;
-                for(let i in infoEval){
-                    if(infoEval[i].type === "Date"){
-                        if(infoEval[i].value){
-                            infoEval[i].value = this.formatDate(infoEval[i].value);
-                        } else infoEval[i].value = this.formatDate(Date.now());
-                    }
-                    info[`${infoEval[i].code}`] = {
-                        value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: ''
-                    }
-                    
+            for(let i in infoEval){
+                if(infoEval[i].type === "Date"){
+                    if(infoEval[i].value){
+                        infoEval[i].value = this.formatDate(infoEval[i].value);
+                    } else infoEval[i].value = this.formatDate(Date.now());
                 }
+                info[`${infoEval[i].code}`] = {
+                    value: infoEval[i].value,
+                    code: infoEval[i].code,
+                    type: ''
+                }
+                
+            }
 
-                var date = this.formatDate(evaluations.date);
-                // for(let i in evaluations.kpis){
-                //     // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
-                // }
-                
-                let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(userId)));
-                if (tmp){
-                    var kpi = tmp.kpis;
-                
-                    for(let i in kpi){
-                        cloneKpi.push(kpi[i]._id);
-                    }
-                    console.log('------------------', cloneKpi);;
+            date = this.formatDate(evaluations.date);
+           
+            let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
+            if (tmp){
+                var kpi = tmp.kpis;
+            
+                for(let i in kpi){
+                    cloneKpi.push(kpi[i]._id);
                 }
             }
-            // const {task, taskName, taskDescription, kpi} = this.state;
-
-        // TODO: chua lay dc gia tri cua KPI
-
-        this.state = {
-            userId: userId,
+        }
+        return {
             task: task,
+            idUser: idUser,
             kpi: cloneKpi,
             info: info,
-            taskName : taskName,
-            taskDescription: taskDescription,
-            progress: progress
-        }        
+            autoPoint: automaticPoint,
+            point: point,
+            date: date
+        }
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -302,15 +314,12 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     save = () => {        
-        // var {tasks} = this.props;
-        var evaluations, taskId;
+        var taskId;
         taskId = this.props.id;
-        // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
         var data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
-            // evaluateId: evaluations._id,
             user: this.state.userId,
             progress: this.state.progress,
             kpi: this.state.kpi ? this.state.kpi : [],
@@ -323,10 +332,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     componentDidMount() {
+
+        var { task, userId } = this.state;
+        var date = this.formatDate(new Date());
+        var department = task.organizationalUnit._id;
+
+        console.log('----------------------\n\n\n', date, userId, department);
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
-        // this.props.getKPIMemberById(this.state.userId);// lỗi
-        this.props.getAllKPIPersonalByUserID(this.state.userId); // lấy ra mảng các list kpi theo các tháng
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -351,16 +365,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     
 
     render() {
-        const { kpimembers, KPIPersonalManager, createEmployeeKpiSet } = this.props
+        const { KPIPersonalManager } = this.props
         const {task, taskName, taskDescription, kpi} = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
-        // console.log('KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]', KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]);
-        // var listKpi = [];
-        var currentKPI = (createEmployeeKpiSet && createEmployeeKpiSet.currentKPI) && createEmployeeKpiSet.currentKPI;
-        var list = currentKPI && currentKPI.kpis;
-        console.log('listKPI==========================', list);
-        console.log('this.props.perform',this.props.perform);
+        var listKpi = [];
+        if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+        
+        console.log('listKPI==========================\n\n\n', listKpi);
         return (
             <div>
                 <React.Fragment>
@@ -412,8 +423,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             id={`select-kpi-personal-edit-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
-                                            // items = {(currentKPI !== undefined ) && currentKPI.kpis.map(x => { return { value: x._id, text: x.name } })}
+                                            items = {listKpi && listKpi.map(x => { return { value: x._id, text: x.name } })}
                                             onChange={this.handleKpiChange}
                                             multiple={true}
                                             value={kpi}
@@ -460,8 +470,8 @@ const actionGetState = { //dispatchActionToProps
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
-
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));

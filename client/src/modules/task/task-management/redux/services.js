@@ -61,6 +61,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
     return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
+        
     }, false, true, 'task.task_management');
 }
 

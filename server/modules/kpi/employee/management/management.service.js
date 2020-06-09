@@ -16,3 +16,28 @@ exports.getAllFinishedEmployeeKpiSets = async (member) => {
         .populate({ path: "kpis"});
     return kpipersonals;
 }
+
+/**
+ * get all kpi set in Organizational Unit by month
+ * @data : dữ liệu lấy từ params {userId, department, date}
+ */
+exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
+    var userId = data.user;
+    var departmentId = data.department;
+    var date = data.date;
+
+    var splitterDate = date.split("-");
+    var dateISO = new Date(splitterDate[2], splitterDate[1]-1, splitterDate[0]);
+    var monthOfParams = dateISO.getMonth();
+    var yearOfParams = dateISO.getFullYear();
+
+    var kpiSets = await EmployeeKpiSet.find({
+        creator: userId,
+        organizationalUnit: departmentId
+    }).populate({ path: 'kpis', select: 'name'});
+
+    var kpiSetsByMonth = kpiSets.find(e => (e.date.getMonth() === monthOfParams && e.date.getFullYear() === yearOfParams));
+
+    return kpiSetsByMonth;
+    
+}

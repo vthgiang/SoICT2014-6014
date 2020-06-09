@@ -19,35 +19,48 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             year: new Date().getFullYear(),
             dataStatus: this.DATA_STATUS.QUERYING
         };
-
-        // Lấy tập KPI đơn vị theo từng năm
-        this.props.getAllOrganizationalUnitKpiSetEachYear(this.state.currentRole, this.state.year)
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if(this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            // Lấy tập KPI đơn vị theo từng năm
-            this.props.getAllOrganizationalUnitKpiSetEachYear(this.state.currentRole, this.state.year)
+    componentDidMount = () => {
+        this.props.getAllOrganizationalUnitKpiSetEachYear(this.props.organizationalUnitId, this.state.year);
 
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.QUERYING,
+            }
+        });
+    }
+
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        console.log("333", nextProps.organizationalUnitId, this.state.organizationalUnitId)
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
+            // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
+            await this.props.getAllOrganizationalUnitKpiSetEachYear(nextProps.organizationalUnitId, this.state.year);
+            
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING
+                    dataStatus: this.DATA_STATUS.QUERYING,
                 }
-            })
+            });
+
             return false;
-        } else if(this.state.dataStatus === this.DATA_STATUS.QUERYING) {
+        }
+        
+        if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear) {
                 return false
             }
-
+            console.log("9999", this.props.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear)
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.AVAILABLE
                 }
             })
-        } else if(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
+            return false;
+        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.multiLineChart();
 
             this.setState(state => {
@@ -60,33 +73,49 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
         return false;
     }
-    
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+            return {
+                ...prevState,
+                organizationalUnitId: nextProps.organizationalUnitId
+            }
+        } else{
+            return null;
+        }
+    }
+
     // Thiết lập dữ liệu biểu đồ
     setDataMultiLineChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear !== [] && dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear !== undefined) {
+        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear) {
             listOrganizationalUnitKpiSetEachYear = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear
         }
 
-        if(listOrganizationalUnitKpiSetEachYear !== undefined) {
-            automaticPoint = ['Hệ thống đánh giá'].concat(listOrganizationalUnitKpiSetEachYear.map(x => x.automaticPoint));
-            
-            employeePoint = ['Cá nhân tự đánh giá'].concat(listOrganizationalUnitKpiSetEachYear.map(x => x.employeePoint));
+        if(listOrganizationalUnitKpiSetEachYear) {
 
-            approvedPoint = ['Quản lý đánh giá'].concat(listOrganizationalUnitKpiSetEachYear.map(x => x.approvedPoint));
-        
-            date = listOrganizationalUnitKpiSetEachYear.map(x => {
-                date = new Date(x.date);
-                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() - 1);
-            })
+            automaticPoint = ['Hệ thống đánh giá'];
+            employeePoint = ['Cá nhân tự đánh giá'];
+            approvedPoint = ['Quản lý đánh giá'];
+            date = ['x'];
+
+            listOrganizationalUnitKpiSetEachYear.map(x => {
+                automaticPoint.push(x.automaticPoint);
+                employeePoint.push(x.employeePoint);
+                approvedPoint.push(x.approvedPoint);
+
+                var newDate = new Date(x.date);
+                newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+                date.push(newDate);
+            });
         }
         
-        dataMultiLineChart = [['x'].concat(date), automaticPoint, employeePoint, approvedPoint];
+        dataMultiLineChart = [date, automaticPoint, employeePoint, approvedPoint];
 
         return dataMultiLineChart;
-    }
+    };
 
     // Xóa các chart đã render trước khi đủ dữ liệu
     removePreviosMultiLineChart = () => {

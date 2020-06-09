@@ -33,36 +33,51 @@ exports.getKPIUnits = async (data) => {
             { 'employee': data.role }
         ]
     });
-    var kpiunits;
-    var startDate = data.startDate.split("-");
-    var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
-    var endDate = data.endDate.split("-");
-    if (endDate[0] === "12") {
-        endDate[1] = String(parseInt(endDate[1]) + 1);
-        endDate[0] = "1";
+    var status = Number(data.status);
+    if(data.startDate !== "undefined"){
+        var startDate = data.startDate.split("-");
+        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
     }
-    endDate[0] = String(parseInt(endDate[0]) + 1);
-    var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
-    var status = parseInt(data.status);
-
-    if (status === 3) {
-        kpiunits = await KPIUnit.find({
-            organizationalUnit: department._id,
-            date: { "$gte": startdate, "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
-    } else if (status === 1) {
-        kpiunits = await KPIUnit.find({
-            organizationalUnit: department._id,
-            status: { $ne: 2 },
-            date: { "$gte": startdate, "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
-    } else {
-        kpiunits = await KPIUnit.find({
-            organizationalUnit: department._id,
-            status: status,
-            date: { "$gte": startdate, "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+    if(data.endDate !== "undefined"){
+        var endDate = data.endDate.split("-");
+        if (endDate[0] === "12") {
+            endDate[1] = String(parseInt(endDate[1]) + 1);
+            endDate[0] = "1";
+        }
+        endDate[0] = String(parseInt(endDate[0]) + 1);
+        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
+    var keySearch = {
+        organizationalUnit: department._id
+       
+    };
+    if(status !== 3){
+        keySearch = {
+            ...keySearch,
+            status: status
+        };
+    }
+    if(data.startDate !== "undefined" && data.endDate !== "undefined"){
+        keySearch = {
+            ...keySearch,
+            date: { "$gte": startdate , "$lt": enddate}
+        }
+    }
+    if(data.startDate !== "undefined" && data.endDate == "undefined"){
+        keySearch = {
+            ...keySearch,
+            date: {"$gte": startdate}
+            
+        }
+    }
+    if(data.startDate == "undefined" && data.endDate !== "undefined"){
+        keySearch = {
+            ...keySearch,
+            date: {"$lt": enddate}
+        }
+    }
+    var kpiunits= await KPIUnit.find(keySearch)
+        .skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;
 }
 

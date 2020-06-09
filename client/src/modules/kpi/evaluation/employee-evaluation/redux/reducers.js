@@ -86,7 +86,7 @@ export function kpimembers(state = {}, action) {
         ...state,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload.kpimember._id?action.payload.kpimember:item),
+          item._id===action.payload._id?action.payload:item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
