@@ -271,6 +271,12 @@ exports.data = [
     { path: '/tasks/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/archived/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
     
+    { path: '/tasks/edit/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/edit/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/evaluate/task-consulted/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/evaluate/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/evaluate/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+
     { path: '/tasks/sub-task/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
