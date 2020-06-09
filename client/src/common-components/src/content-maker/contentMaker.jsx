@@ -76,8 +76,8 @@ class ContentMaker extends Component {
                 </Files>
                 <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
-                        <a href="#" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
-                        <a href="#" className="link-black text-sm" onClick={(e)=>{
+                        <a href="javascript:;" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
+                        <a href="javascript:;" className="link-black text-sm" onClick={(e)=>{
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
                             }}>
@@ -95,7 +95,7 @@ class ContentMaker extends Component {
                                     </React.Fragment>    
                                     : 
                                     <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        <a href="javascript:;" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
