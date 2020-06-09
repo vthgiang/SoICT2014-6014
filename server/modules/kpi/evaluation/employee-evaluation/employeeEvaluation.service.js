@@ -5,6 +5,7 @@ const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
 const User = require('../../../../models/auth/user.model')
 const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
+
 exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
         $or: [
@@ -13,231 +14,71 @@ exports.getKPIAllMember = async (data) => {
             { 'employee': data.role }
         ]
     });
+
     var kpipersonals;
     var startDate;
-    var startdate=null;
     var endDate;
+    var startdate=null;
     var enddate=null;
     var status =null;
+
     if(data.startDate !== 'null') {startDate = data.startDate.split("-");
-    
     startdate = new Date(startDate[1], startDate[0], 0);}
     if (data.endDate!== 'null'){endDate= data.endDate.split("-");
     enddate = new Date(endDate[1], endDate[0], 28);}
-    console.log("========"+data.user)
     if(data.status!== 'null') status= parseInt(data.status);
-    if (data.user === 'null' || data.user.length === 0) {
-        if (status === 5 || status === null) {
-           
-            if(startdate === null && enddate === null){
-                kpipersonals = await KPIPersonal.find({
-                    organizationalUnit: department._id,
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-            else if(startdate === null && enddate !== null){
-                kpipersonals = await KPIPersonal.find({
-                    organizationalUnit: department._id,
-                    date: {  "$lt": enddate }
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-                }
-            else if(startdate !== null && enddate === null){
-                    kpipersonals = await KPIPersonal.find({
-                        organizationalUnit: department._id,
-                        date: {  "$gte": startdate }
-                    }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-                }
-            else {
-                kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            } 
-        }
-        
-        else{
-            if(startdate === null && enddate === null){
-                kpipersonals = await KPIPersonal.find({
-                    status : status,
-                    organizationalUnit: department._id,
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-            if(startdate === null && enddate !== null ){
-                kpipersonals = await KPIPersonal.find({
-                    status : status,
-                    organizationalUnit: department._id,
-                    date: { "$lt": enddate }
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-            if(startdate !== null && enddate  === null){
-                kpipersonals = await KPIPersonal.find({
-                    status : status,
-                    organizationalUnit: department._id,
-                    date: { "$gte": startdate }
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-            else {
-                kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                status: status,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-        }
-    } 
-    else if(status === 5 || status === null) {
-        if(startdate === null && enddate === null){
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        }
-        else if(startdate === null && enddate !== null){
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                date: {  "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });}
-            else if(startdate !== null && enddate === null){
-                kpipersonals = await KPIPersonal.find({
-                    organizationalUnit: department._id,
-                    creator: data.user,
-                    date: {  "$gte": startdate }
-                }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-            }
-        else {
-            kpipersonals = await KPIPersonal.find({
-            organizationalUnit: department._id,
-            creator: data.user,
-            date: { "$gte": startdate, "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } 
-        
-        
-    }
-    else if(startdate === null && enddate === null){
-        kpipersonals = await KPIPersonal.find({
-            organizationalUnit: department._id,
-            creator: data.user,
-            status: status
-        }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        
-    }
-    else if(startdate === null && enddate !== null){
-        kpipersonals = await KPIPersonal.find({
-            organizationalUnit: department._id,
-            creator: data.user,
-            status: status,
-            date: {  "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-    }
-    else if(startdate !== null && enddate === null){
-        kpipersonals = await KPIPersonal.find({
-            organizationalUnit: department._id,
-            creator: data.user,
-            status: status,
-            date: {  "$gte": startdate }
-        }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-    }
-    else{
-        kpipersonals = await KPIPersonal.find({
-            organizationalUnit: department._id,
-            creator: data.user,
-            status: status,
-            date: { "$gte": startdate, "$lt": enddate }
-        }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-    }
 
+    var keySearch = {
+        organizationalUnit: {
+            $in: department._id
+        }
+    }
+    if(data.user !== 'null'){
+        keySearch ={
+            ...keySearch,
+            creator: {
+                $in: data.user
+            }
+            
+        }
+    }
+    if(status !== null && status !== 5){
+        keySearch ={
+            ...keySearch,
+            status:{
+                $in: status
+            } 
+            
+        }
+    }
+    if(startdate !== null && enddate !== null){
+        keySearch ={
+            ...keySearch,
+
+            date:{ "$gte": startdate , "$lt": enddate}
+            
+        }
+    }
+    if(startdate !== null && enddate === null){
+        keySearch ={
+            ...keySearch,
+            date: {
+                $gte: startdate,
+            }
+        }
+    }
+    if(enddate !== null && startdate === null){
+        keySearch ={
+            ...keySearch,
+            date: {
+                $lt: enddate,
+            }
+        }
+    }
+    kpipersonals = await KPIPersonal.find(keySearch)
+    .skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonals;
 }
-
-
-// //// test
-
-// exports.getKPIAllMember = async (data) => {
-//     var department = await Department.findOne({
-//         $or: [
-//             { 'dean': data.role },
-//             { 'viceDean': data.role },
-//             { 'employee': data.role }
-//         ]
-//     });
-
-//     var kpipersonals;
-//     var startDate;
-//     var startdate=null;
-//     var endDate;
-//     var enddate=null;
-//     var status =null;
-//     if(data.startDate !== 'null') {startDate = data.startDate.split("-");
-    
-//     startdate = new Date(startDate[1], startDate[0], 0);}
-//     if (data.endDate!== 'null'){endDate= data.endDate.split("-");
-//     enddate = new Date(endDate[1], endDate[0], 28);}
-//     if(data.status!== 'null') status= parseInt(data.status);
-//     // console.log(data.user + status + enddate + startdate)
-//     var keySearch = {
-//         organizationalUnit: {
-//             $in: department._id
-//         }
-//     }
-//     if(data.user !== 'null'){
-//         console.log("TH1")
-//         keySearch ={
-//             ...keySearch,
-//             creator: {
-//                 $in: data.user
-//             }
-            
-//         }
-//     }
-//     if(status !== null){
-//         console.log("TH2")
-
-//         keySearch ={
-//             ...keySearch,
-//             status:{
-//                 $in:status
-//             } 
-            
-//         }
-//     }
-//     if(startdate !== null && enddate !== null){
-//         console.log("TH3")
-
-//         keySearch ={
-//             ...keySearch,
-//                date:{
-//                 $in: [startdate , enddate]
-//                } 
-            
-//         }
-//     }
-//     if(startdate !== null && enddate === null){
-//         console.log("TH4")
-
-//         keySearch ={
-//             ...keySearch,
-//             date: {
-//                 $in: startdate,
-//             }
-//         }
-//     }
-//     if(startdate === null && enddate !== null){
-//         console.log("TH5")
-
-//         keySearch ={
-//             ...keySearch,
-//             date: {
-//                 $in: [enddate],
-//             }
-//         }
-//     }
-//     console.log(keySearch);
-//     kpipersonals = await KPIPersonal.find(keySearch)
-//     .skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-//     console.log(kpipersonals);
-//     return kpipersonals;
-// }
 
 
 

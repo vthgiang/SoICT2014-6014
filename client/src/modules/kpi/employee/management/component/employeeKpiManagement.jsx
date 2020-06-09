@@ -8,34 +8,27 @@ import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+import { DatePicker, SelectBox } from '../../../../../common-components/index';
 import { kpiMemberServices } from '../../../evaluation/employee-evaluation/redux/services';
 
 class KPIPersonalManager extends Component {
-    // UNSAFE_componentWillMount() {
-    //     this.props.getAllKPIPersonal();//localStorage.getItem("id")
-    // }
     constructor(props) {
         super(props);
         this.state = {
             commenting: false,
             user:null,
             status:null,
-            // startDate : this.formatDateBack(Date.now()),
-            // endDate : this.formatDateBack(Date.now()),
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: null,
                 status: null,
-                // startDate: this.formatDate(Date.now()),
-                // endDate: this.formatDate(Date.now())
                 startDate: null,
                 endDate: null
             },
             showApproveModal: null,
-            showEvaluateModal: null
+            showDetailKpiPersonal: null
         };
     }
     componentDidMount() {
@@ -90,7 +83,6 @@ class KPIPersonalManager extends Component {
         }
     }
     handleStartDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -100,7 +92,6 @@ class KPIPersonalManager extends Component {
         
     }
     handleEndDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -126,6 +117,8 @@ class KPIPersonalManager extends Component {
         });
     }
     handleSearchData = async () => {
+        if(this.state.startDate === "") this.state.startDate = null;
+        if(this.state.endDate === "") this.state.endDate = null;
         await this.setState(state => {
             return {
                 ...state,
@@ -139,22 +132,16 @@ class KPIPersonalManager extends Component {
             }
         })
         const { infosearch } = this.state;
-         
-        // if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            
             var startDate;
             var startdate=null;
             var endDate;
             var enddate=null;
+
             if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
             startdate = new Date(startDate[1], startDate[0], 0);}
             if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
             enddate = new Date(endDate[1], endDate[0], 28);}
-            // if(data.status) status= parseInt(data.status); 
-        // var startDate = infosearch.startDate.split("-");
-        //     var startdate = new Date(startDate[1], startDate[0], 0);
-        //     var endDate = infosearch.endDate.split("-");
-        //     var enddate = new Date(endDate[1], endDate[0], 28);
+
             if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
@@ -165,78 +152,37 @@ class KPIPersonalManager extends Component {
             } 
             else {
                 this.props.getAllKPIMemberOfUnit(infosearch);
-                console.log("========================goi den tim kiem")
-                console.log("inforsearch", infosearch);
             }
-        // }
     }
-    showEvaluateModal = async (id) => {
+    showDetailKpiPersonal = async (name, employeeId, id, date) => {
         await this.setState(state => {
             return {
                 ...state,
-                showEvaluateModal: id
+                name: name,
+                employeeId: employeeId,
+                showDetailKpiPersonal: id,
+                date: date
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`memberEvaluate${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`modal-detail-KPI-personal`).modal('show')
     }
     render() {
         var kpipersonal;
         var userdepartments;
-        const {status,employee,startDate, endDate} = this.state;
-        var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
-        const {  kpimembers, KPIPersonalManager, user } = this.props;
+        const {status,startDate, endDate} = this.state;
+        // var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
+        const {  kpimembers, user } = this.props;
         if (user !== "undefined") userdepartments = user.userdepartments;
         if ( kpimembers !== "undefined") kpipersonal =  kpimembers.kpimembers;
-        // if ( kpimembers !== "undefined") {
-        //     kpipersonal =  kpimembers.kpimembers;
-        //     if (typeof kpipersonal !== "undefined" && kpipersonal.length !== 0) {//kpipersonal.content
-        //         kpiApproved = kpipersonal.filter(item => item.status === 3);
-        //         currentKPI = kpipersonal.filter(item => item.status !== 3);
-        //         currentTargets = currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
-        //         systempoint = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: item.systempoint }
-        //         }).reverse();
-        //         mypoint = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: item.mypoint }
-        //         }).reverse();
-        //         approverpoint = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: item.approverpoint }
-        //         }).reverse();
-        //         targetA = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: item.kpis[0].approverpoint }
-        //         }).reverse();
-        //         targetC = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: item.kpis[1].approverpoint }
-        //         }).reverse();
-        //         targetOther = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: (item.approverpoint - item.kpis[0].approverpoint - item.kpis[1].approverpoint) }
-        //         }).reverse();
-        //         misspoint = kpiApproved.map(item => {
-        //             return { label: this.formatDate(item.time), y: (100 - item.approverpoint) }
-        //         }).reverse();
-        //     }
-        // }
+       
         let unitMembers;
         if (userdepartments) {
             unitMembers = [
                 {
-                    // text: "Chọn nhân viên",
                     value: [{text:"--Chọn nhân viên--", value: "null"}]
                 },
-                // {
-                //     text: userdepartments.roles.dean.name,
-                //     value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                // },
-                // {
-                //     text: userdepartments.roles.viceDean.name,
-                //     value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                // },
+                
                 {
-                    // text: userdepartments.roles.employee.name,
                     value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
                 },
             ]
@@ -244,23 +190,10 @@ class KPIPersonalManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                <ModalDetailKPIPersonal name={this.state.name} employeeId={this.state.employeeId} id={this.state.showDetailKpiPersonal} date={this.state.date}/>
                 <div className="form-inline">
                             <div className="form-group">
-                                
                                 <label>Nhân viên:</label>
-                                {/* { <select defaultValue="all" className="form-control" ref={input=> this.user = input}>
-                            <option value="all">Tất cả nhân viên</option>
-                            <option value="all">Nhân viên phòng hành chính</option>
-                            <option value="all">Nhân viên phòng giao dịch</option> */}
-                            {/* <optgroup label={userdepartments[1].roleId.name}>
-                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>
-                                {userdepartments[1].userId.name}</option>
-                            </optgroup>
-                            <optgroup label={userdepartments[2].roleId.name}>
-                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>
-                                {userdepartments[2].userId.name}</option> */}
-                            {/* </optgroup> */}
-                            {/* </select>} */}
                                 {unitMembers &&
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id={`employee-kpi-manage`}
@@ -336,7 +269,6 @@ class KPIPersonalManager extends Component {
                                                 setLimit={this.setLimit} 
                                                 hideColumnOption={true} />
 
-                                                {/* <table id="kpiEmployeeManagement" className="table table-hover table-bordered"></table> */}
                                                 <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
@@ -360,10 +292,8 @@ class KPIPersonalManager extends Component {
                                                         <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
                                                         <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                                                         <td>
-                                                            <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
+                                                            <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item.creator.name, item.creator._id, item._id, item.date)} data-toggle="modal"
                                                             className="copy" title="Xem chi tiết"><i className="fa fa-list"></i></a>
-                                                            {this.state.showEvaluateModal === item._id ?
-                                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null}
                                                             <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
                                                             className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons"></i></a>
                                                             {this.state.showModalCopy === item._id ? 
@@ -380,7 +310,6 @@ class KPIPersonalManager extends Component {
                                         </tbody>
                                     </table>
                                 </div>
-                            // </div>
         )
     }
 

@@ -53,13 +53,10 @@ class ModalMemberApprove extends Component {
     }
     handleEdit = async (id) => {
         await this.setState(state => {
-            // console.log('weight 1: =================== ' + this.state.weight);
-
             return {
                 ...state,
                 editing: true,
                 edit: state.edit ===id ? "" : id,
-                // weight: this.state.weight
             }
         })
     }
@@ -72,12 +69,9 @@ class ModalMemberApprove extends Component {
                 newTarget: {
                     ...target,
                     weight: parseInt(this.newWeight[target._id].value)                
-                    // weight: parseInt(this.newWeight[target._id].value)                
                 },            
             }
         })
-        // console.log('weight 2 ===================' + this.state.weight);
-        // console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
             this.props.editTarget(target._id, newTarget);
