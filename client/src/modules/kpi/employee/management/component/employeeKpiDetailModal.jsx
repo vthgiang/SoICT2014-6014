@@ -11,6 +11,8 @@ import React, { Component, useState } from 'react';
 import ReactSlider from 'react-slider';
 
 import { connect } from 'react-redux';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
@@ -32,13 +34,23 @@ class ModalDetailKPIPersonal extends Component {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
-    componentDidMount() {
-        this.props.getKPIMemberById(this.props.id);
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+            } 
+        } else {
+            return null;
+        }
     }
 
-
-    componentDidUpdate() {
-        // this.handleResizeColumn();
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.id !== this.state.id) {
+            this.props.getKPIMemberById(nextProps.id);
+            return false;
+        }
+        return true;
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -125,13 +137,13 @@ class ModalDetailKPIPersonal extends Component {
         })
     }
 
-    handleCloseModal = async (id) => {
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.remove("modal-open");
-        var modal = document.getElementById(`memberEvaluate${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
-    }
+    // handleCloseModal = async (id) => {
+    //     var element = document.getElementsByTagName("BODY")[0];
+    //     element.classList.remove("modal-open");
+    //     var modal = document.getElementById(`memberEvaluate${id}`);
+    //     modal.classList.remove("in");
+    //     modal.style = "display: none;";
+    // }
 
     setValueSlider = (e, id) => {
         var value = e.target.value;
@@ -150,33 +162,30 @@ class ModalDetailKPIPersonal extends Component {
         })
     }
     render() {
+        var kpimember;
         var list, myTask = [], thisKPI = null;
         const { kpimembers } = this.props;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
-
+        kpimember = kpimembers && kpimembers.kpimembers;
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
         // if(kpimembers.result){
         //     thisKPI = kpimembers.result;
         // }
-        console.log('-------------', this.state);
+        // console.log('-------------', this.state);
         return (
-            <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full modal-tasktemplate">
-                    <div className="modal-content">
-                        {/* Modal Header */}
-                        <div className="modal-header" style={{ textAlign: "center", background: "#605ca8", color: "white" }}>
-                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id)}>
-                                <span aria-hidden="true">×</span>
-                                <span className="sr-only">Close</span>
-                            </button>
-                            <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(this.props.date)}</h3>
-                        </div>
-                        {/* Modal Body */}
+            <React.Fragment>
+                <DialogModal
+                modalID={`modal-detail-KPI-personal`}
+                title={`Chi tiết KPI nhân viên ${this.props.name}, tháng ${this.formatMonth(this.props.date)} `}
+                hasSaveButton ={false}
+                size={100}
+                >
+                    {/* <div className="qlcv"> */}
                         <div className="modal-body modal-body-perform-task" >
                             <div className="col-sm-3">
-                                <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white" }}>
+                                <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white",padding:"1px 15px", borderRadius:"5px" }}>
                                     <h4>Danh sách mục tiêu</h4>
                                 </div>
                                 <div className="content-left-modal" id="style-1" >
@@ -207,15 +216,15 @@ class ModalDetailKPIPersonal extends Component {
                                             
                                                 { item.automaticPoint && 
                                                 <div className="row">
-                                                <div className="col-sm-12">
+                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
                                                     <label style={{ width: "150px" }}>Điểm tự động:</label>
                                                     <label >{item.automaticPoint}</label>
                                                 </div>
-                                                <div className="col-sm-12">
+                                                <div className="col-sm-12 " style={{marginLeft: "15px"}}>
                                                     <label style={{ width: "150px" }}>Điểm tự đánh giá:</label>
                                                     <label >{item.employeePoint}</label>
                                                 </div>
-                                                <div className="col-sm-12">
+                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
                                                     <label style={{ width: "150px" }}>Điểm phê duyệt:</label>
                                                     <label >{item.approvedPoint}</label>
                                                 </div>
@@ -226,7 +235,7 @@ class ModalDetailKPIPersonal extends Component {
                                                 </div> */}
                                             </div>
                                             <div className="body-content-right">
-                                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
+                                                <div className="col-sm-12" style={{ fontWeight: "500", marginLeft:"-15px" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
 
@@ -283,9 +292,9 @@ class ModalDetailKPIPersonal extends Component {
                                 }
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    {/* </div>     */}
+                </DialogModal>
+            </React.Fragment>
         );
     }
 }

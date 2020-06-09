@@ -28,6 +28,7 @@ class TableComponent extends Component {
     render() { 
         const { component, translate } = this.props;
         const { currentRow } = this.state;
+        console.log("roles", currentRow);
         return ( 
             <React.Fragment>
                 {
@@ -35,7 +36,7 @@ class TableComponent extends Component {
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
-                        componentLink={ currentRow.link._id }
+                        componentLink={ currentRow.link !== undefined ? currentRow.link._id : null }
                         componentDescription={ currentRow.description }
                         componentRoles={ currentRow.roles.map(role => role.roleId._id) }
                     />
