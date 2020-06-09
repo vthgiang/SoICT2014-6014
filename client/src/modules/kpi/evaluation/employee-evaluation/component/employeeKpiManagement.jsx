@@ -376,8 +376,8 @@ class KPIMember extends Component {
 }
 
 function mapState(state) {
-    const { user, kpimembers } = state;
-    return { user, kpimembers };
+    const { user, kpimembers,KPIPersonalManager } = state;
+    return { user, kpimembers,KPIPersonalManager };
 }
  
 const actionCreators = {
