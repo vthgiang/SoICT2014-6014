@@ -39,6 +39,7 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple=true, maxFiles=10, maxFileSize=10000000, minFileSize=0, clickable=false,
             text, onTextChange, placeholder, minRows=3, maxRows=20,
             onSubmit, submitButtonText,
+            inputCssClass, controlCssClass,
         } = this.props
 
         return (
@@ -54,7 +55,7 @@ class ContentMaker extends Component {
                     minFileSize={minFileSize}
                     clickable={clickable}>
                 
-                    <div className="text-input-level1" style={{position: "relative"}}>
+                    <div className={inputCssClass} style={{position: "relative"}}>
                         <TextareaAutosize
                             placeholder={placeholder}
                             useCacheForDOMMeasurements
@@ -73,7 +74,7 @@ class ContentMaker extends Component {
                         }
                     </div>
                 </Files>
-                <div className="tool-level1">
+                <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
                         <a href="#" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
                         <a href="#" className="link-black text-sm" onClick={(e)=>{
