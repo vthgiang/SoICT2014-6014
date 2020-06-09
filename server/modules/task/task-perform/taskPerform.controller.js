@@ -253,7 +253,6 @@ exports.deleteTaskAction = async (req,res)=>{
  exports.createCommentOfTaskAction = async (req, res) => {
      try {
         var files=[] ;
-        
         if(req.files !== undefined){
             req.files.forEach((elem,index) => {
                 var path = elem.destination +'/'+ elem.filename;
