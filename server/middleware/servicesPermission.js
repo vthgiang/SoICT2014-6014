@@ -247,9 +247,9 @@ exports.data = [
     { path: '/kpipersonals/task/:member', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpipersonals/:user/:department/:date', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     
-    { path: '/kpimembers/all-member/:role/:user/:status/:startDate/:endDate', method: 'GET', roles: ['Dean']},
-    { path: '/kpimembers/user/:member', method: 'GET', roles: ['Dean']},
-    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/all-member/:role/:user/:status/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Employee']},
+    { path: '/kpimembers/user/:member', method: 'GET', roles: ['Dean', 'Employee']},
+    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean', 'Employee']},
     { path: '/kpimembers/member/:id/:date', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/approve/:id', method:'PUT', roles: ['Dean']},
     { path: '/kpimembers/target/:id', method: 'PUT', roles: ['Dean']},
