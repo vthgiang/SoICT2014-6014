@@ -751,7 +751,7 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentAction[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
                                                 </ul>
@@ -820,7 +820,7 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
@@ -941,7 +941,7 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentTaskComment[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</a></li>
                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
                                                 </ul>
@@ -1005,7 +1005,7 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfTaskComment[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa </a></li>
                                                                     <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
