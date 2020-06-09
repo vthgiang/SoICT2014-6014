@@ -12,6 +12,8 @@ import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../comm
 import { TaskFormValidator} from './taskFormValidator';
 import { taskTemplateConstants } from '../../task-template/redux/constants';
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+
 class ModalAddTask extends Component {
 
     componentDidMount() {
@@ -159,6 +161,7 @@ class ModalAddTask extends Component {
         let value = event.target.value;
         if (value) {
             this.props.getAllUserOfDepartment(value);
+            this.props.getChildrenOfOrganizationalUnits(value);
             this.setState(state =>{
                 return{
                     ...state,
@@ -303,6 +306,19 @@ class ModalAddTask extends Component {
         const { user } = this.props;
         const { newTask } = this.state;
 
+        if (nextProps.parentTask !== this.props.parentTask){ // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
+            this.setState(state =>{
+                return{
+                    ...state,
+                    newTask: {
+                        ...this.state.newTask,
+                        parent: nextProps.parentTask,
+                    }
+                };
+            });
+            return false;
+        }
+
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
@@ -311,24 +327,18 @@ class ModalAddTask extends Component {
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
-
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
                 return{
                     ...state,
                     newTask: {
                         ...this.state.newTask,
                         organizationalUnit: defaultUnit._id,
-                       
                     }
                 };
             });
             return false; // Sẽ cập nhật lại state nên không cần render
-        }
-        
-        if(newTask.taskTemplate !== nextState.newTask.taskTemplate){
-            
-           return true;
-        }
+        }        
       
         return true;
     }
@@ -338,7 +348,7 @@ class ModalAddTask extends Component {
         var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
-        
+                
         var taskTemplate,responsibleEmployees;
         if(tasktemplates.taskTemplate) 
         { 
@@ -357,32 +367,22 @@ class ModalAddTask extends Component {
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
-
-        let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
-
+       
+        var unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        
+  
+        
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
-        
+                
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`addNewTask${this.props.id}`} isLoading={false}
+                    size='100' modalID={`addNewTask`} isLoading={false}
                     formID="form-add-new-task"
                     disableSubmit={!this.isTaskFormValidated()}
                     func={this.handleSubmit}
@@ -570,7 +570,8 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

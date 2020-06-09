@@ -1103,7 +1103,7 @@ const sampleCompanyData = async () => {
         status: "active",
         company: vnist._id,
         employeeTimesheetId: "123456",
-        gender: "male",
+        gender: "female",
         birthdate: new Date("1998-02-17"),
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
         identityCardNumber: 163414569,
@@ -1182,7 +1182,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }, {
@@ -1271,7 +1270,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }])
@@ -1284,7 +1282,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         employeeTimesheetId: "123456",
         gender: "male",
-        birthdate: new Date("1998-05-20"),
+        birthdate: new Date("1988-05-20"),
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
         identityCardNumber: 163414569,
         identityCardDate: new Date("2015-10-20"),
@@ -1362,7 +1360,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [{
             name: "Ảnh",
@@ -1437,15 +1434,16 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "123",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số",
-    }, {
+    }, 
+    {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1234",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số 500 triệu",
@@ -1462,7 +1460,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1456",
-        organizationalUnit: "Phòng nhân sự",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",
@@ -1471,7 +1469,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1457",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",

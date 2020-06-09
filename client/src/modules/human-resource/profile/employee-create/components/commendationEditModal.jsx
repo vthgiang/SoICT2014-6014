@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 import { CommendationFromValidator } from '../../../commendation-discipline/components/combinedContent';
 class CommendationEditModal extends Component {
     constructor(props) {
@@ -32,9 +32,8 @@ class CommendationEditModal extends Component {
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      */
-    handleUnitChange = (e) => {
-        let value = e.target.value;
-        this.validateOrganizationalUnit(value, true);
+    handleUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
         let msg = CommendationFromValidator.validateOrganizationalUnit(value, this.props.translate)
@@ -124,11 +123,11 @@ class CommendationEditModal extends Component {
     /**
      * Bắt sự kiện submit form
      */
-    save = async() => {
+    save = async () => {
         var partStart = this.state.startDate.split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate });
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -158,7 +157,7 @@ class CommendationEditModal extends Component {
 
 
     render() {
-        const { translate, id } = this.props;
+        const { translate, id, department } = this.props;
         const { startDate, reason, decisionNumber, organizationalUnit, type, errorOnStartDate,
             errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
@@ -179,7 +178,14 @@ class CommendationEditModal extends Component {
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="organizationalUnit" value={organizationalUnit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <SelectBox
+                                    id={`edit_commendation${id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnit}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
+                                    onChange={this.handleUnitChange}
+                                />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
@@ -210,5 +216,9 @@ class CommendationEditModal extends Component {
         );
     }
 };
-const editModal = connect(null, null)(withTranslate(CommendationEditModal));
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+const editModal = connect(mapState, null)(withTranslate(CommendationEditModal));
 export { editModal as CommendationEditModal };

@@ -13,7 +13,7 @@ exports.getTaskTimesheetLogs = async (req, res) => {
         })
     } catch (error) {
         await LogError(req.user.email, ` get log timer  `,req.user.company)
-        res.status(200).json({
+        res.status(400).json({
             success: false,
             messages :['get_log_timer_fail'],
             content : error
@@ -33,7 +33,7 @@ exports.getActiveTimesheetLog = async (req, res) => {
         })
     } catch (error) {
         await LogError(req.user.email, ` get timer status `,req.user.company)
-        res.status(200).json({
+        res.status(400).json({
             success: false,
             messages :['get_timer_status_fail'],
             content : error
@@ -147,14 +147,14 @@ exports.createTaskResult = async (req, res) => {
     try {
         var task = await PerformTaskService.createTaskResult(req.body.result,req.body.task, req.body.evaluateID, req.body.date);
         await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
-        res.json({
+        res.status(200).json({
             success : true,
             messages: ["create_result_task_success"],
             content: task
         });
     } catch (error) {
         await LogError(req.user.email, ` create result of task  `,req.user.company);
-        res.json({ 
+        res.status(400).json({ 
             success: false,
             messages: ['create_result_task_fail'],
             content: error 
@@ -167,14 +167,14 @@ exports.editTaskResult = async (req, res) => {
     try {
         var listResultTask = await PerformTaskService.editTaskResult(req.body, req.params.id);
         await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
-        res.json({
+        res.status(200).json({
             success: true,
             message: ['edit_result_task_success'],
             content: listResultTask
         });
     } catch (error) {
         await LogError(req.user.email, ` edit result of task  `,req.user.company);
-        res.json({
+        res.status(400).json({
             success: false,
             message: ['edit_result_task_fail'],
             content: error
@@ -253,7 +253,6 @@ exports.deleteTaskAction = async (req,res)=>{
  exports.createCommentOfTaskAction = async (req, res) => {
      try {
         var files=[] ;
-        
         if(req.files !== undefined){
             req.files.forEach((elem,index) => {
                 var path = elem.destination +'/'+ elem.filename;
@@ -511,11 +510,11 @@ exports.uploadFile = async(req,res) => {
         if(req.files !== undefined){
             req.files.forEach((elem,index) => {
                 var path = elem.destination +'/'+ elem.filename;
-                files.push({name : elem.originalname, url: path})
+                files.push({name : elem.originalname, url: path,description : req.body.description,creator : req.body.creator})
                 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.params,files,req.body);
+        var comment = await PerformTaskService.uploadFile(req.params,files);
         await LogInfo(req.user.email, ` upload file of task  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -531,38 +530,3 @@ exports.uploadFile = async(req,res) => {
         })
     }
 }
-/**
- * Download file
- */
-exports.downloadFile = async (req, res) => {
-    console.log(req.query)
-    try {
-        if(req.query.type === "actions"){
-            console.log("hihihihi")
-            const file = await PerformTaskService.downloadFilePOfAction(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "commentofactions"){
-            const file = await PerformTaskService.downloadFileOfActionComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "taskcomments"){
-            const file = await PerformTaskService.downloadFilePOfTaskComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }else if(req.query.type === "commentoftaskcomments"){
-            const file = await PerformTaskService.downloadFileCommentOfTaskComment(req.params);
-            await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-            res.download(file.url, file.name);
-        }     
-        await LogInfo(req.user.email, 'DOWNLOAD FILE', req.user.company);
-        res.download(file.url, file.name);
-    } catch (error) {
-        await LogError(req.user.email, 'DOWNLOAD FILE', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
-            content: error
-        });
-    }
-};

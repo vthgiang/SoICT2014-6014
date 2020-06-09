@@ -118,20 +118,20 @@ export function tasktemplates(state = {}, action) {
             };
         case taskTemplateConstants.EDIT_TEMPLATE_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
         case  taskTemplateConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
             return {
-                loading: true,
+                ...state,
                 isLoading: true
             };
         
         case taskTemplateConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:      
             return {
                 ...state,
-                loading: false,
-                childrenOrganizationalUnit: action.payload,
+                usersOfChildrenOrganizationalUnit: action.payload,
                 isLoading: false
             };
         

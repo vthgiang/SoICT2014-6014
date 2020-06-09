@@ -32,5 +32,5 @@ router.delete('/task-comment/:task/:id',auth,PerformTaskController.deleteTaskCom
 router.post('/task-comment/comment/create',auth,uploadFile([{name:'files', path:'/files/commentoftaskcomment'}], 'array'),PerformTaskController.createCommentOfTaskComment);
 router.put('/task-comment/comment/:id',auth,PerformTaskController.editCommentOfTaskComment);
 router.delete('/task-comment/comment/:id/:task',auth,PerformTaskController.deleteCommentOfTaskComment);
-router.get("/download-file/:id", auth, PerformTaskController.downloadFile);
+// router.get("/download-file", auth, PerformTaskController.downloadFile);
 module.exports = router;

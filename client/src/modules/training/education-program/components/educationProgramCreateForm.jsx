@@ -10,8 +10,8 @@ class EducationProgramCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationalUnit: null,
-            position: null,
+            organizationalUnit: [],
+            position: [],
             name: "",
             programId: "",
         };
@@ -19,9 +19,6 @@ class EducationProgramCreateForm extends Component {
 
     // Function lưu giá trị unit vào state khi thay đổi
     handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         this.validateOrganizationalUnit(value, true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
@@ -40,9 +37,6 @@ class EducationProgramCreateForm extends Component {
 
     // Function lưu giá trị chức vụ vào state khi thay đổi
     handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         this.validatePosition(value, true);
     }
     validatePosition = (value, willUpdateState = true) => {

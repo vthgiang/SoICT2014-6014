@@ -40,6 +40,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST:
             return {
                 ...state,
+                responsibleTasks: null,
                 tasks: null,
                 pages: null,
                 loadingResponsible: true,
@@ -48,6 +49,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS:
             return {
                 ...state,
+                responsibleTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 isLoading: false
@@ -60,6 +62,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_REQUEST:
             return {
                 ...state,
+                accountableTasks: null,
                 tasks: null,
                 pages: null,
                 loadingAccountable: true,
@@ -68,6 +71,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS:
             return {
                 ...state,
+                accountableTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 loadingAccountable: false,
@@ -81,6 +85,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_REQUEST:
             return {
                 ...state,
+                consultedTasks: null,
                 tasks: null,
                 pages: null,
                 loadingConsulted: true,
@@ -89,6 +94,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS:
             return {
                 ...state,
+                consultedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 isLoading: false
@@ -101,6 +107,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_REQUEST:
             return {
                 ...state,
+                informedTasks: null,
                 tasks: null,
                 pages: null,
                 loadingInformed: true,
@@ -109,6 +116,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS:
             return {
                 ...state,
+                informedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 isLoading: false
@@ -121,6 +129,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_REQUEST:
             return {
                 ...state,
+                creatorTasks: null,
                 tasks: null,
                 pages: null,
                 loadingCreator: true,
@@ -129,6 +138,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS:
             return {
                 ...state,
+                creatorTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 isLoading: false
@@ -144,7 +154,7 @@ export function tasks(state = {}, action) {
                 adding: true,
                 isLoading: false
             };
-        case taskManagementConstants.ADDNEW_TASK_SUCCESS:
+        case taskManagementConstants.ADDNEW_TASK_SUCCESS:            
             return {
                 ...state,
                 tasks: [
@@ -332,12 +342,12 @@ export function tasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
             return {
                 ...state,
                 isLoading : true
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -345,7 +355,7 @@ export function tasks(state = {}, action) {
                     info : action.payload
                 }
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {
                 isLoading: false,
                 error: action.error

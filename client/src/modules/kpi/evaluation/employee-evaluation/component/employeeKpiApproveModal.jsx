@@ -271,7 +271,7 @@ class ModalMemberApprove extends Component {
                                             
                                            </div>
                                             <div className="form-group" >
-                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember.creator._id)}>Tìm kiếm</button>
+                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>Tìm kiếm</button>
                                         </div>
                                     </div>
                                     <table className="table table-bordered table-striped table-hover">

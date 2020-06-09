@@ -190,14 +190,14 @@ class ListEducation extends Component {
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="Thông tin chương trình đào tạo"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa chương trình đào tạo"><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
+                                            {Number(x.totalList) === 0 && <DeleteNotification
                                                 content="Xoá chương trình đào tạo"
                                                 data={{
                                                     id: x._id,
                                                     info: x.name + " - " + x.programId
                                                 }}
                                                 func={this.props.deleteEducation}
-                                            />
+                                            />}
                                         </td>
                                     </tr>))
                             }
@@ -217,6 +217,7 @@ class ListEducation extends Component {
                         programId={this.state.currentEditRow.programId}
                         organizationalUnit={this.state.currentEditRow.applyForOrganizationalUnits.map(x => x._id)}
                         position={this.state.currentEditRow.applyForPositions.map(x => x._id)}
+                        totalList={this.state.currentEditRow.totalList}
                     />
                 }
                 {

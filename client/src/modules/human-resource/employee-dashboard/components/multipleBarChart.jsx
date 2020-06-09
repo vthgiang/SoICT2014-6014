@@ -96,7 +96,7 @@ class MultipleBarChart extends Component {
                 chart.load({
                     columns: [ratioX, dataTmp]
                 });
-            }, 500);
+            }, 200);
             data.forEach(function (value, index) {
                 setTimeout(function () {
                     dataTmp[index] = value;
@@ -106,9 +106,9 @@ class MultipleBarChart extends Component {
                 }, (200 + (delay / 12 * index)));
             });
         }
-        addColumn(data.ratioX, data.data1, 1200);
-        addColumn(data.ratioX, data.data2, 1200);
-        addColumn(data.ratioX, data.data3, 1200);
+        addColumn(data.ratioX, data.data1, 2400);
+        addColumn(data.ratioX, data.data2, 2800);
+        addColumn(data.ratioX, data.data3, 3200);
     }
     render() {
         const { lineBar, nameChart } = this.state;

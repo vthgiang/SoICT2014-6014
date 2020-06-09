@@ -10,7 +10,9 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-
+import {
+    getStorage
+} from '../../../../../config';
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { Comments } from './employeeKpiComment';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
@@ -21,34 +23,38 @@ class KPIMember extends Component {
         super(props);
         this.state = {
             commenting: false,
-            user:"",
-            status:"",
-            startDate : this.formatDateBack(Date.now()),
-            endDate : this.formatDateBack(Date.now()),
+            user:null,
+            status:null,
+            // startDate : this.formatDateBack(Date.now()),
+            // endDate : this.formatDateBack(Date.now()),
+            startDate: null,
+            endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: "",
-                status: -1,
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now())
+                user: null,
+                status: null,
+                // startDate: this.formatDate(Date.now()),
+                // endDate: this.formatDate(Date.now())
+                startDate: null,
+                endDate: null
             },
-            showApproveModal: "",
-            showEvaluateModal: ""
+            showApproveModal: null,
+            showEvaluateModal: null
         };
     }
     componentDidMount() {
-        var infosearch = {
-            role: localStorage.getItem("currentRole"),
-            // user: "all",
-            // status: 4,
-            startDate: "",
-            endDate: ""
-        }
+        // var infosearch = {
+        //     role: localStorage.getItem("currentRole"),
+        //     // user: "all",
+        //     // status: 4,
+        //     startDate: "",
+        //     endDate: ""
+        // }
         // Lấy tất cả nhân viên của phòng ban
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
-        this.props.getAllKPIMemberOfUnit(infosearch);
+        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
     }
     formatDateBack(date) {
         var d = new Date(date), month, day, year;
@@ -89,7 +95,11 @@ class KPIMember extends Component {
         } else if (status === 2) {
             return "Đã kích hoạt";
         } else if (status === 3) {
-            return "Đã kết thúc"
+            return "Đã kết thúc";
+        } else if (status === 4) {
+            return "Đang hoạt động";
+        } else if (status === 5) {
+            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
@@ -135,10 +145,6 @@ class KPIMember extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    // user: this.user.value,
-                    // status: this.status.value,
-                    // startDate: this.state.startDate,
-                    // endDate: this.state.endDate
                     user: this.state.user,
                     status: this.state.status,
                     startDate: this.state.startDate,
@@ -147,26 +153,39 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-         console.log("inforsearch", infosearch);
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            var startDate = infosearch.startDate.split("-");
-            var startdate = new Date(startDate[1], startDate[0], 0);
-            var endDate = infosearch.endDate.split("-");
-            var enddate = new Date(endDate[1], endDate[0], 28);
-            if (Date.parse(startdate) > Date.parse(enddate)) {
+         
+        // if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
+            
+            var startDate;
+            var startdate=null;
+            var endDate;
+            var enddate=null;
+            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
+            startdate = new Date(startDate[1], startDate[0], 0);}
+            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
+            enddate = new Date(endDate[1], endDate[0], 28);}
+            // if(data.status) status= parseInt(data.status); 
+        // var startDate = infosearch.startDate.split("-");
+        //     var startdate = new Date(startDate[1], startDate[0], 0);
+        //     var endDate = infosearch.endDate.split("-");
+        //     var enddate = new Date(endDate[1], endDate[0], 28);
+            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Xác nhận'
                 })
-            } else {
+            } 
+            else {
                 this.props.getAllKPIMemberOfUnit(infosearch);
+                console.log("========================goi den tim kiem")
+                console.log("inforsearch", infosearch);
             }
-        }
+        // }
     }
     handleShowApproveModal = async (id) => {
-        console.log('da goi den showApprove');
+        // console.log('da goi den showApprove');
         await this.setState(state => {
             return {
                 ...state,
@@ -201,6 +220,10 @@ class KPIMember extends Component {
         let unitMembers;
         if (userdepartments) {
             unitMembers = [
+                {
+                    // text: "Chọn nhân viên",
+                    value: [{text:"--Chọn nhân viên--", value: "null"}]
+                },
                 {
                     text: userdepartments.roles.dean.name,
                     value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
@@ -243,6 +266,7 @@ class KPIMember extends Component {
                                     // className="form-control"
                                     style={{width: "100%"}}
                                     items = {[
+                                        {value:"null", text : "--Chọn trạng thái--"},
                                         {value:0, text : "Đang thiết lập"},
                                         {value:1, text : "Chờ phê duyệt"},
                                         {value:2, text : "Đã kích hoạt"},
@@ -262,7 +286,7 @@ class KPIMember extends Component {
                                 <label>Từ tháng:</label>
                                 <DatePicker
                                 id='start_date'
-                                defaultValue={this.formatDate(Date.now())}
+                                
                                 value = {startDate}
                                 onChange={this.handleStartDateChange}
                                 dateFormat="month-year"
@@ -272,7 +296,7 @@ class KPIMember extends Component {
                                 <label>Đến tháng:</label>
                                 <DatePicker
                                 id='end_date'
-                                defaultValue={this.formatDate(Date.now())}
+                               
                                 value = {endDate}
                                 onChange={this.handleEndDateChange}
                                 dateFormat="month-year"
@@ -352,8 +376,8 @@ class KPIMember extends Component {
 }
 
 function mapState(state) {
-    const { user, kpimembers } = state;
-    return { user, kpimembers };
+    const { user, kpimembers,KPIPersonalManager } = state;
+    return { user, kpimembers,KPIPersonalManager };
 }
  
 const actionCreators = {

@@ -27,26 +27,53 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         
         let progress = task && task.progress;
 
-        let info = {}, taskInfo = task && task.taskInformations;
-        for(let i in taskInfo){
-            if(taskInfo[i].type === "Date"){
-                if(taskInfo[i].value){
-                    taskInfo[i].value = this.formatDate(taskInfo[i].value);
-                } else taskInfo[i].value = this.formatDate(Date.now());
+        var evaluations;
+        var dateOfEval = new Date();
+        var monthOfEval = dateOfEval.getMonth();
+        var yearOfEval = dateOfEval.getFullYear();
+        evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
+
+        var info = {};
+        var cloneKpi = [];
+        if(evaluations){
+            let infoEval = evaluations.taskInformations;
+                for(let i in infoEval){
+                    if(infoEval[i].type === "Date"){
+                        if(infoEval[i].value){
+                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                        } else infoEval[i].value = this.formatDate(Date.now());
+                    }
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: ''
+                    }
+                    
+                }
+
+                var date = this.formatDate(evaluations.date);
+                // for(let i in evaluations.kpis){
+                //     // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
+                // }
+                
+                let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(userId)));
+                if (tmp){
+                    var kpi = tmp.kpis;
+                
+                    for(let i in kpi){
+                        cloneKpi.push(kpi[i]._id);
+                    }
+                    console.log('------------------', cloneKpi);;
+                }
             }
-            info[`${taskInfo[i].code}`] = {
-                value: taskInfo[i].value,
-                code: taskInfo[i].code,
-                type: ''
-            }
-            
-        }
+            // const {task, taskName, taskDescription, kpi} = this.state;
 
         // TODO: chua lay dc gia tri cua KPI
 
         this.state = {
             userId: userId,
             task: task,
+            kpi: cloneKpi,
             info: info,
             taskName : taskName,
             taskDescription: taskDescription,
@@ -278,15 +305,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         // var {tasks} = this.props;
         var evaluations, taskId;
         taskId = this.props.id;
-        evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
         var data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
-            evaluateId: evaluations._id,
+            // evaluateId: evaluations._id,
             user: this.state.userId,
             progress: this.state.progress,
-            kpi: this.state.kpi,
+            kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
         }
 
@@ -327,10 +354,12 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         const { kpimembers, KPIPersonalManager, createEmployeeKpiSet } = this.props
         const {task, taskName, taskDescription, kpi} = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals )? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals.length !== 0)? KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1].kpis : [];
+        // console.log('KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]', KPIPersonalManager.kpipersonals[KPIPersonalManager.kpipersonals.length-1]);
+        // var listKpi = [];
         var currentKPI = (createEmployeeKpiSet && createEmployeeKpiSet.currentKPI) && createEmployeeKpiSet.currentKPI;
-        var list = (currentKPI !== undefined ) && currentKPI.kpis;
-        console.log('listKPI', list);
+        var list = currentKPI && currentKPI.kpis;
+        console.log('listKPI==========================', list);
         console.log('this.props.perform',this.props.perform);
         return (
             <div>

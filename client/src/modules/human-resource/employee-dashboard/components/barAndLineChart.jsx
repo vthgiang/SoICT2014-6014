@@ -85,18 +85,18 @@ class BarAndLineChart extends Component {
                 chart.load({
                     columns: [ratioX, dataTmp]
                 });
-            }, 100);
+            }, 200);
             data.forEach(function (value, index) {
                 setTimeout(function () {
                     dataTmp[index] = value;
                     chart.load({
                         columns: [ratioX, dataTmp],
                     });
-                }, (100 + (delay / 12 * index)));
+                }, (200 + (delay / 12 * index)));
             });
         }
-        addColumn(data.ratioX, data.data1, 1200);
-        addColumn(data.ratioX, data.data2, 1200);
+        addColumn(data.ratioX, data.data1, 2000);
+        addColumn(data.ratioX, data.data2, 2400);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

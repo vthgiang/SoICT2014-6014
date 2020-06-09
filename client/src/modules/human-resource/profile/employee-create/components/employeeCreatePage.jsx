@@ -10,7 +10,8 @@ import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
     ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
-import { months } from 'moment';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+
 class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
@@ -23,13 +24,14 @@ class EmployeeCreatePage extends Component {
                 maritalStatus: "single",
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
+                status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
-                courses: []
             },
+            courses: [],
             degrees: [],
             certificates: [],
             contracts: [],
@@ -57,6 +59,9 @@ class EmployeeCreatePage extends Component {
             return [year, month].join('-');
         } else return [year, month, day].join('-');
     }
+    componentDidMount() {
+        this.props.getDepartment();
+    }
     // Function upload avatar 
     handleUpload = (img, avatar) => {
         this.setState({
@@ -67,9 +72,9 @@ class EmployeeCreatePage extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
-        if(name==='birthdate'||name==='identityCardDate'||name==='taxDateOfIssue'||name==='healthInsuranceStartDate'||name==='healthInsuranceEndDate'){
+        if (name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             var partValue = value.split('-');
-            value = [partValue[2],partValue[1], partValue[0]].join('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         this.setState({
             employee: {
@@ -147,23 +152,16 @@ class EmployeeCreatePage extends Component {
         })
     }
 
-    // TODO: function thêm thông tin quá trình đào tạo
+    // Function thêm thông tin quá trình đào tạo
     handleChangeCourse = (data) => {
-        const { employeeNew } = this.state;
-        var course = employeeNew.course;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                course: [...course, {
-                    ...data
-                }]
-            }
+            courses: data
         })
     }
     // function thêm mới thông tin nhân viên
     handleSubmit = async () => {
         let { employee, degrees, certificates, contracts, files,
-            disciplines, commendations, salaries, annualLeaves } = this.state;
+            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
         await this.setState({
             employee: {
                 ...employee,
@@ -174,7 +172,8 @@ class EmployeeCreatePage extends Component {
                 disciplines,
                 commendations,
                 salaries,
-                annualLeaves
+                annualLeaves,
+                courses
             }
         })
         let formData = convertJsonObjectToFormData({ ...this.state.employee });
@@ -258,11 +257,15 @@ class EmployeeCreatePage extends Component {
                         />
                         <ContractTab
                             id="hopdong"
+                            pageCreate={true}
                             contracts={this.state.contracts}
-                            courses={this.state.employee.courses}
+                            courses={this.state.courses}
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}
+                            handleAddCourse={this.handleChangeCourse}
+                            handleEditCourse={this.handleChangeCourse}
+                            handleDeleteCourse={this.handleChangeCourse}
                         />
                         <DisciplineTab
                             id="khenthuong"
@@ -304,12 +307,13 @@ class EmployeeCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
+    const { employeesManager, } = state;
     return { employeesManager };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    getDepartment: DepartmentActions.get,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));

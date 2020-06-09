@@ -11,6 +11,6 @@ router.delete("/:id", auth, UserController.deleteUser);
 router.get("/same-department/:id", auth, UserController.getAllUsersInSameOrganizationalUnitWithUserRole);
 router.get("/users-of-department/:id", auth, UserController.getAllUsersInOrganizationalUnit);
 router.get('/:id/organizational-units', auth, UserController.getOrganizationalUnitsOfUser);
-router.get("/download-file", auth, UserController.dowloadFile);
+router.get("/download-file",auth, UserController.downloadFile);
 
 module.exports = router;
