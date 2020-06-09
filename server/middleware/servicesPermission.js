@@ -247,7 +247,7 @@ exports.data = [
     
     { path: '/kpimembers/all-member/:role/:user/:status/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Employee']},
     { path: '/kpimembers/user/:member', method: 'GET', roles: ['Dean', 'Employee']},
-    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean', 'Employee']},
     { path: '/kpimembers/member/:id/:date', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/approve/:id', method:'PUT', roles: ['Dean']},
     { path: '/kpimembers/target/:id', method: 'PUT', roles: ['Dean']},

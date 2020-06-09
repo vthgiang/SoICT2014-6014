@@ -170,6 +170,19 @@ class KPIPersonalManager extends Component {
             }
         // }
     }
+    showEvaluateModal = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showEvaluateModal: id
+            }
+        })
+        var element = document.getElementsByTagName("BODY")[0];
+        element.classList.add("modal-open");
+        var modal = document.getElementById(`memberEvaluate${id}`);
+        modal.classList.add("in");
+        modal.style = "display: block; padding-right: 17px;";
+    }
     render() {
         var kpipersonal;
         var userdepartments;
@@ -347,11 +360,21 @@ class KPIPersonalManager extends Component {
                                                         <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
                                                         <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                                                         <td>
+                                                            <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
+                                                            className="copy" title="Xem chi tiết"><i className="fa fa-list"></i></a>
+                                                            {this.state.showEvaluateModal === item._id ?
+                                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null}
+                                                            <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
+                                                            className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons"></i></a>
+                                                            {this.state.showModalCopy === item._id ? 
+                                                            <ModalCopyKPIPersonal kpipersonal={item} /> : null}
+                                                        </td>
+                                                        {/* <td>
                                                             <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
-                                                            <ModalDetailKPIPersonal kpipersonal={item} />
+                                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/>
                                                             {<a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
                                                             {this.state.showModalCopy === item._id ? <ModalCopyKPIPersonal kpipersonal={item} /> : null}
-                                                        </td>
+                                                        </td> */}
                                                     </tr>) : null
                                             }
                                         </tbody>
