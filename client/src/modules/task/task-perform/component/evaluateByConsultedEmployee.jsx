@@ -10,23 +10,23 @@ class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
 
-        var idUser = getStorage("userId");
-        var {tasks} = this.props;
+        let idUser = getStorage("userId");
+        let {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
-        var evaluations;
-        var dateOfEval = new Date();
-        var monthOfEval = dateOfEval.getMonth();
-        var yearOfEval = dateOfEval.getFullYear();
+        let evaluations;
+        let dateOfEval = new Date();
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
         console.log('--------------------', evaluations);
 
-        var automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
         
-        var point = 0;
+        let point = 0;
         if(evaluations){
-            var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
+            let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
             if(res) point = res.employeePoint ? res.employeePoint : 0;
         }
 
@@ -40,7 +40,7 @@ class EvaluateByConsultedEmployee extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -58,7 +58,7 @@ class EvaluateByConsultedEmployee extends Component {
     }
 
     validatePoint = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -70,7 +70,7 @@ class EvaluateByConsultedEmployee extends Component {
     }
 
     handleChangePoint = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -103,14 +103,14 @@ class EvaluateByConsultedEmployee extends Component {
 
 
     isFormValidated = () => {
-        var { point, errorOnPoint } = this.state;
+        let { point, errorOnPoint, info  } = this.state;
         return ( point !== undefined && errorOnPoint === undefined)?true:false;
     }
     
     save = () => {
-        var taskId;
+        let taskId;
         taskId = this.props.id;
-        var data = {
+        let data = {
             user: getStorage("userId"),
             role: "Consulted",
             employeePoint: this.state.point,
@@ -125,10 +125,10 @@ class EvaluateByConsultedEmployee extends Component {
 
 
     render() {
-        var { point, errorOnPoint, evaluations, automaticPoint } = this.state;
-        var { id, role } = this.props;
-        var { tasks } = this.props;
-        var task = tasks.task.info;
+        let { point, errorOnPoint, evaluations, automaticPoint } = this.state;
+        let { id, role } = this.props;
+        let { tasks } = this.props;
+        let task = tasks.task.info;
 
         return (
             <React.Fragment>
@@ -168,6 +168,7 @@ class EvaluateByConsultedEmployee extends Component {
                                             {
                                                 evaluations.taskInformations.map(info => {
                                                     return <div>
+                                                        {/* TODO: Check date ISO */}
                                                         <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
                                                     </div>
                                                 })

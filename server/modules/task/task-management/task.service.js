@@ -739,6 +739,7 @@ async function checkEvaluations(date, taskId, storeDate) {
             _id: initTask.taskInformations[i]._id,
             name: initTask.taskInformations[i].name,
             code: initTask.taskInformations[i].code,
+            type: initTask.taskInformations[i].type,
         }
     }
 
