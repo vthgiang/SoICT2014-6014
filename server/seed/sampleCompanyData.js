@@ -604,26 +604,24 @@ const sampleCompanyData = async () => {
     await taskTemplateManagementLink.save();
 
     //gán quyền tạo thông báo cho admin, superadmin
-    var data = [roles[0]._id, admin._id].map(role => {
-        return {
+    var dataComponents = [
+        {
             resourceId: components[0]._id,
             resourceType: 'Component',
-            roleId: role
-        };
-    });
-
-    //gán quyền component tạo task template cho Dean
-    var data2 = [roles[1]._id].map(role => {
-        return {
+            roleId: roles[0]._id
+        },{
+            resourceId: components[0]._id,
+            resourceType: 'Component',
+            roleId: admin._id
+        },{
             resourceId: components[1]._id,
             resourceType: 'Component',
-            roleId: role
-        };
-    });
+            roleId: roles[1]._id
+        }
+    ];
 
-    var privileges_component = await Privilege.insertMany(data);
+    var privileges_component = await Privilege.insertMany(dataComponents);
     console.log("privilege component: ", privileges_component);
-    privileges_component = await Privilege.insertMany(data2);
 
     //END
 

@@ -15,14 +15,34 @@ import { createKpiSetActions } from '../../../kpi/employee/creation/redux/action
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
-        var idUser = getStorage("userId");
+        
         super(props);
 
+        var date = this.formatDate(new Date());
+        var data = this.getData(date);
+
+        this.state={
+            task: data.task,
+            idUser: data.idUser,
+            info: data.info,
+            autoPoint: data.automaticPoint,
+            date: data.date,
+            kpi: data.kpi,
+            point: data.point,
+            progress: data.task.progress
+        }
+    }
+        
+    //  Hàm xử lý dữ liệu khởi tạo
+    getData = (dateParam) => {
+        var idUser = getStorage("userId");
         var {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
         var evaluations;
-        var dateOfEval = new Date();
+        
+        var splitter = dateParam.split("-");
+        var dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
         var monthOfEval = dateOfEval.getMonth();
         var yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
@@ -39,50 +59,42 @@ class EvaluateByResponsibleEmployee extends Component {
                 if(res) point = res.employeePoint ? res.employeePoint : 0;
             }
             let infoEval = evaluations.taskInformations;
-                for(let i in infoEval){
-                    if(infoEval[i].type === "Date"){
-                        if(infoEval[i].value){
-                            infoEval[i].value = this.formatDate(infoEval[i].value);
-                        } else infoEval[i].value = this.formatDate(Date.now());
-                    }
-                    info[`${infoEval[i].code}`] = {
-                        value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: ''
-                    }
-                    
+            for(let i in infoEval){
+                if(infoEval[i].type === "Date"){
+                    if(infoEval[i].value){
+                        infoEval[i].value = this.formatDate(infoEval[i].value);
+                    } else infoEval[i].value = this.formatDate(Date.now());
                 }
-
-                // const { progress, date, kpi} = this.state;
-
-                date = this.formatDate(evaluations.date);
-                for(let i in evaluations.kpis){
-                    // console.log('------------', evaluations.kpis[i], typeof(evaluations.kpis[i]), idUser, typeof(idUser));
+                info[`${infoEval[i].code}`] = {
+                    value: infoEval[i].value,
+                    code: infoEval[i].code,
+                    type: ''
                 }
-                let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
-                if (tmp){
-                    var kpi = tmp.kpis;
                 
-                    for(let i in kpi){
-                        cloneKpi.push(kpi[i]._id);
-                    }
-                    console.log('------------------', cloneKpi);
-                }
             }
-            console.log('date',this.formatDate(date));
-            this.state={
-                task: task,
-                idUser: idUser,
-                info: info,
-                autoPoint: 0,
-                autoPoint: automaticPoint,
-                date: date,
-                kpi: cloneKpi,
-                point: point,
-                progress: task.progress
+
+            date = this.formatDate(evaluations.date);
+           
+            let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
+            if (tmp){
+                var kpi = tmp.kpis;
+            
+                for(let i in kpi){
+                    cloneKpi.push(kpi[i]._id);
+                }
             }
         }
-        
+        return {
+            task: task,
+            idUser: idUser,
+            kpi: cloneKpi,
+            info: info,
+            autoPoint: automaticPoint,
+            point: point,
+            date: date
+        }
+    }
+
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
@@ -106,8 +118,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
-        // this.props.getKPIMemberById(this.state.idUser); // lỗi
-        // this.props.getAllKPIPersonalByUserID(this.state.idUser);// lấy ra mảng các list kpi theo các tháng
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
     }
 
@@ -137,14 +147,23 @@ class EvaluateByResponsibleEmployee extends Component {
 
     handleDateChange = (value) => {
         // var value = e.target.value;
+        var {idUser, task} = this.state;
+
+        var data = this.getData(value);
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, task.organizationalUnit._id, value);
+
         this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDate: this.validateDate(value),
-                    date: value,
-                }
-            });
-        
+            return {
+                ...state,
+                errorOnDate: this.validateDate(value),
+                date: value,
+                info: data.info, 
+                kpi: data.kpi,
+                autoPoint: data.automaticPoint,
+                point: data.point
+            }
+        });
+        console.log('-----stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.state);
     }
 
     handleChangePoint = async (e) => {
@@ -402,7 +421,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                 id={`select-kpi-personal-evaluate-${this.props.perform}-${this.props.role}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
+                                // items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
+                                items = { ((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
                                 onChange={this.handleKpiChange}
                                 multiple={true}
                                 value={kpi}

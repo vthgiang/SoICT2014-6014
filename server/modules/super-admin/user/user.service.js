@@ -22,8 +22,8 @@ exports.getAllUsers = async (company, query) => {
     }else{
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {};
-        
+            : {company};
+        console.log("option: ", option);
         return await User.paginate( option , { 
             page, 
             limit,
@@ -121,7 +121,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
     });
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
-        to: email,
+        to: newEmail,
         subject: 'Xác thực thay đổi email',
         text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
         html:   
