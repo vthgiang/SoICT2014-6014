@@ -2,7 +2,7 @@
  * Các thông tin về tài sản cần lưu trữ trong model này:
  * 1. Công ty: company: lấy id của bên company.model.js
  * 2. Ảnh: avatar (String)
- * 3. Mã tài sản : assetNumber (String)
+ * 3. Mã tài sản : code (String)
  * 4. Tên tài sản: assetName (String)
  * 5. Loại tài sản: lấy id của bên assetType.model.js
  * 6. Ngày nhập/ngày mua: datePurchase (date)
@@ -36,87 +36,126 @@ const AssetSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company,
     },
-    avatar: { //2.ảnh
+    /**
+     * Tab Thông tin chung
+     */
+    avatar: { // ảnh
         type: String
     },
-    assetNumber: { //3.mã tài sản
+    code: { // mã tài sản
         type: String,
         required: true
     },
-    assetName: { //4.tên tài sản
+    assetName: { // tên tài sản
         type: String,
         required: true
     },
-    assetType: { //5.loại tài sản
+    serial: { // số serial
+    },
+    assetType: { // loại tài sản
         type: Schema.Types.ObjectId,
         ref: AssetType,
     },
-    datePurchase: { //6.ngày nhập, ngày mua
+    datePurchase: { // ngày nhập, ngày mua
         type: String,
         defaut: Date.now,
         required: true
     },
-    manager: {//7.Người quản lý
-        type: Schema.Types.ObjectId,
-        ref: User,
-        // required: true
-    },
-    person: {//8.Người được giao sử dụng
-        type: Schema.Types.ObjectId,
-        ref: User,
-        // required: true
-    },
-    dateStartUse: { //9.Người được giao sử dụng từ ngày
+    warrantyExpirationDate: { // ngày bảo hành (thời gian bảo hành)
         type: String,
         defaut: Date.now,
-        // required: true
+        required: true
     },
-    dateEndUse: { //10.Người được giao sử dụng đến ngày
+    manager: {// Người quản lý
+        type: Schema.Types.ObjectId,
+        ref: User,
+        required: true
+    },
+    person: {// Người được giao sử dụng
+        type: Schema.Types.ObjectId,
+        ref: User,
+    },
+    dateStartUse: { // Người được giao sử dụng từ ngày
         type: String,
         defaut: Date.now,
-        // required: true
+    },
+    dateEndUse: { // Người được giao sử dụng đến ngày
+        type: String,
+        defaut: Date.now,
     },
     location: { //11.vị trí
         type: String,
         required: true
     },
-    initialPrice: { //12.giá trị ban đầu
-        type: String,
-        required: true
-    },
-    status: { //13.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
+    
+    status: { // tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
     },
-    description: { //14.mô tả
+    description: { // mô tả
         type: String,
     },
 
-    detailInfo: [{//15.thông tin chi tiết
+    detailInfo: [{// thông tin chi tiết
         nameField: String,// tên trường dữ liệu
         value: String, //giá trị
     }],
 
-    startDepreciation: {//16.thời gian bắt đầu trích khấu hao (VD: 20-02-2020)
+    /**
+     * Tab Thông tin khấu hao
+     */
+    cost: { // nguyên giá
+        type: Number,
+        required: true
+    },
+    residualValue: { // Giá trị thu hồi ước tính.
+                    //Là giá trị ước tính của một tài sản vào cuối thời hạn thuê 
+                    //hoặc thời gian sử dụng hữu ích.Theo nguyên tắc chung, 
+                    //thời gian sử dụng hữu dụng hoặc thời gian thuê của một tài sản càng dài 
+                    // thì giá trị còn lại của nó càng thấp
+        type: Number
+    },
+    startDepreciation: {// thời gian bắt đầu trích khấu hao (VD: 20-02-2020)
         type: String,
     },
-    timeDepreciation: { //17. thời gian trích khấu hao (VD: 5 năm) à. mình viế sai. đây rồi
-        type: String, // nay dung lk.
+    timeDepreciation: { // thời gian trích khấu hao
+        type: String,
     },
 
-    numberFile: { //18.mã hồ sơ lưu trữ
+    /**
+     * Tab Tài liệu đính kèm
+     */
+    numberFile: { // mã hồ sơ lưu trữ
         type: String
     },
-    file: [{ //19. các file đính kèm
+    file: [{ // các file đính kèm
         nameFile: String,
         discFile: String,
         number: String,
         urlFile: String
     }],
-    createDate: {
+
+    /**
+     * Tab Thông tin thanh lý
+     */
+    disposalDate: { // ngày thanh lý
+        type: String,
+    },
+    disposalType: { // hình thức thanh lý
+        type: String,
+    },
+    disposalCost: { // Giá trị thanh lý
+        type: Number,
+    },
+    disposalDescription: { // Mô tả
+        type: String,
+    },
+
+    
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updateDate: {
+    updatedAt: {
         type: Date,
         default: Date.now
     }

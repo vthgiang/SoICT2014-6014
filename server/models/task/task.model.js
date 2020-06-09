@@ -163,7 +163,14 @@ const TaskSchema = new Schema({
         url: {
             type: String,
             required: true
-        }
+        },
+        description: {
+            type: String,
+        },
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: User,
+        },
     }],
     timesheetLogs:[{
         creator: { // Người thực hiện nào tiến hành bấm giờ

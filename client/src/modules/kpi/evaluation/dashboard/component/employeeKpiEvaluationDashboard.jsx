@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+
+import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
+
 import { SelectBox, SelectMulti } from '../../../../../common-components';
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DatePicker } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
@@ -20,14 +23,20 @@ class DashBoardKPIMember extends Component {
         var currentYear = currentDate.getFullYear();
         var currentMonth = currentDate.getMonth();
         
+        this.INFO_SEARCH = {
+            userId: localStorage.getItem("userId"),
+            startMonth: currentYear + '-' + 1,
+            endMonth: currentYear + '-' + (currentMonth + 2)
+        }
+
         this.state = {
             commenting: false,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: "",
+                userId: localStorage.getItem("userId"),
                 status: 4,
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now())
+                startMonth: currentYear + '-' + 1,
+                endMonth: currentYear + '-' + (currentMonth + 2)
             },
             showApproveModal: "",
             showEvaluateModal: "",
@@ -120,34 +129,30 @@ class DashBoardKPIMember extends Component {
     }
     
     handleSearchData = async () => {
-        await this.setState(state => {
-            return {
-                ...state,
-                infosearch: {
-                    ...state.infosearch,
-                    user: this.user.value,
-                    status: this.status.value,
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value
+        var startDate = this.INFO_SEARCH.startMonth.split("-");
+        var startdate = new Date(startDate[1], startDate[0], 0);
+        var endDate = this.INFO_SEARCH.endMonth.split("-");
+        var enddate = new Date(endDate[1], endDate[0], 28);
+        
+        if (Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        userId: this.INFO_SEARCH.userId,
+                        startMonth: this.INFO_SEARCH.startMonth,
+                        endMonth: this.INFO_SEARCH.endMonth
+                    }
                 }
-            }
-        })
-        const { infosearch } = this.state;
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            var startDate = infosearch.startDate.split("-");
-            var startdate = new Date(startDate[1], startDate[0], 0);
-            var endDate = infosearch.endDate.split("-");
-            var enddate = new Date(endDate[1], endDate[0], 28);
-            if (Date.parse(startdate) > Date.parse(enddate)) {
-                Swal.fire({
-                    title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
-                    type: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
-                })
-            } else {
-                this.props.getAllKPIMemberOfUnit(infosearch);
-            }
+            })
         }
     }
 
@@ -222,9 +227,24 @@ class DashBoardKPIMember extends Component {
         });
     }
 
+    handleSelectEmployee = (value) => {
+        this.INFO_SEARCH.userId = value[0];
+    }
+
+    handleSelectMonthStart = (value) => {
+        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        this.INFO_SEARCH.startMonth = month;
+    }
+
+    handleSelectMonthEnd = async (value) => {
+        var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        this.INFO_SEARCH.endMonth = month;
+    }
+
     render() {
-        var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
+        var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         var { dateOfExcellentEmployees, numberOfExcellentEmployees, editing } = this.state;
+        const { user, kpimembers, translate } = this.props;
 
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
@@ -279,10 +299,25 @@ class DashBoardKPIMember extends Component {
            }
         }        
         
-
-        var userdepartments, kpimember;
-        const { user, kpimembers } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         var listkpi;
         var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
@@ -300,43 +335,17 @@ class DashBoardKPIMember extends Component {
             }).reverse();
         }
         
-        const options1 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            // title: {
-            //     text: "Kết quả KPI cá nhân năm 2019",
-            //     fontFamily: "tahoma",
-            //     fontWeight: "normal",
-            //     fontSize: 25,
-            // },
-            axisY: {
-                title: "Kết quả",
-                includeZero: false
-            },
-            toolTip: {
-                shared: true
-            },
-            data: [{
-                type: "spline",
-                name: "Hệ thống đánh giá",
-                showInLegend: true,
-                dataPoints: automaticPoint
-            },
-            {
-                type: "spline",
-                name: "Cá nhân tự đánh giá",
-                showInLegend: true,
-                dataPoints: employeePoint
-            }, {
-                type: "spline",
-                name: "Quản lý đánh giá",
-                showInLegend: true,
-                dataPoints: approvedPoint
-            }]
-        }
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        var defaultEndMonth = [month, year].join('-');
+        var defaultStartMonth = ['01', year].join('-');
 
         return (
             <div className="box">
@@ -461,57 +470,62 @@ class DashBoardKPIMember extends Component {
                                     </div>
                                 </div>
                                 {/* /.box-header */}
-                                <div className="box-body qlcv">
-                                
-                                        <div className="form-inline">
-                                            
-                                            <div className="form-group" >
-                                                <label>Từ tháng:</label>
-                                                {/* <div className='input-group col-sm-4 date has-feedback'> */}
-                                                    {/* <div className="input-group-addon"> */}
-                                                        {/* <i className="fa fa-calendar" /> */}
-                                                        {/* </div> */}
-                                                    <input type="text" className="form-control" ref={input => this.startDate = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
-                                                {/* </div> */}
-                                            </div>
-                                            <div className="form-group" >
-                                                <label>Đến tháng:</label>
-                                                {/* <div className='input-group col-sm-4 date has-feedback' > */}
-                                                    {/* <div className="input-group-addon"> */}
-                                                        {/* <i className="fa fa-calendar" /> */}
-                                                    {/* </div> */}
-                                                    <input type="text" className="form-control" ref={input => this.endDate = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
-                                                {/* </div> */}
-                                            </div>
-                                            
-                                        </div>
-                                        <div className="form-inline">
-                                    <div className='form-group'>
-                                        <label>Nhân viên:</label>
-                                        {userdepartments && <select defaultValue={userdepartments[1].userId._id} className="form-control" ref={input => this.user = input}>
-                                            <optgroup label={userdepartments[1].roleId.name}>
-                                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
-                                            </optgroup>
-                                            <optgroup label={userdepartments[2].roleId.name}>
-                                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>{userdepartments[2].userId.name}</option>
-                                            </optgroup>
-                                        </select>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label></label>
-                                        <button type="button" className="btn btn-success pull-right" onClick={() => this.handleSearchData()}>Tìm kiếm</button>
-                                    </div>
-                                </div>
-                                
-                                        
-                                        <div className="col-xs-12">
-                                            <CanvasJSReact options={options1} />
-                                        </div>
-                                    </div>
-                                </div>
 
+                                <div className="box-body qlcv">
+                                    <div className="form-inline">
+                                        <div className="col-sm-6 col-xs-12 form-group" >
+                                            <label>Từ tháng</label>
+                                            <DatePicker 
+                                                id="monthStart"      
+                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
+                                                onChange={this.handleSelectMonthStart}
+                                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                            />
+                                        </div>
+                                        <div className="col-sm-6 col-xs-12 form-group" >
+                                            <label>Đến tháng</label>
+                                            <DatePicker 
+                                                id="monthEnd"      
+                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
+                                                onChange={this.handleSelectMonthEnd}
+                                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="form-inline">
+                                        {unitMembers &&
+                                            <div className="col-sm-6 col-xs-12 form-group"> 
+                                                <label>Nhân viên</label>
+                                                <SelectBox
+                                                    id={`createEmployeeKpiSet`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={unitMembers}
+                                                    multiple={false}
+                                                    onChange={this.handleSelectEmployee}
+                                                    value={unitMembers[2].value[0].value}
+                                                />
+                                            </div>
+                                        }
+                                        <div className="col-sm-6 col-xs-12 form-group">
+                                            <label></label>
+                                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-sm-12 col-xs-12">
+                                        <StatisticsOfEmployeeKpiSetChart 
+                                            userId={this.state.infosearch.userId} 
+                                            startMonth={this.state.infosearch.startMonth}
+                                            endMonth={this.state.infosearch.endMonth}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
                         {/* Phản hồi nhân viên */}
                         <div className="col-md-3" id="chart-member">

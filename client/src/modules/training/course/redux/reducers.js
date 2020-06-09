@@ -22,8 +22,8 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 listCourses: action.payload.listCourses,
-                    totalList: action.payload.totalList,
-                    isLoading: false,
+                totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
+                isLoading: false,
             };
         case CourseConstants.CREATE_COURSE_SUCCESS:
             console.log(action.payload._id);
@@ -37,7 +37,7 @@ export function course(state = initState, action) {
                     isLoading: false,
             };
         case CourseConstants.DELETE_COURSE_SUCCESS:
-            console.log(action.payload._id);
+            console.log(action.payload);
             console.log(state.listCourses);
             return {
                 ...state,

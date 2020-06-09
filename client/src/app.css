@@ -48,6 +48,15 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+/* Css cho Link */
+a {
+    color: #385898;
+}
+a:hover, a:active, a:focus {
+    color: #6a8dd1;
+}
+
+
 
 
 /* CSS cho C3 Chart */
@@ -61,8 +70,16 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
     width: 100%;
 }
 
+path.area { 
+    stroke: none;
+	fill: #FF8C2B;
+    opacity: 0.9
+}
 
-
+text.c3-axis-x-label, text.c3-axis-y-label {
+    font-weight: bold;
+    font-size: 120%
+}
 
 
 /*
@@ -145,6 +162,9 @@ table.table td a.delete {
 table.table td a.approve {
     color: deepskyblue;
 }
+table.table td a.post_add {
+    color: green;
+}
 
 
 
@@ -218,21 +238,18 @@ legend.scheduler-border {
     border-bottom: 1px solid #eae9f5;
 }
 .box.box-solid.description > .box-body{
-    padding: 0;
+    padding: 10px 0 0 15px;
 }
-.box.box-solid.description > .box-body dt{
-    padding: 10px 5px 10px 15px;
+dt{
     color: #605ca8;
+    line-height: 2.2;
 }
-.box.box-solid.description > .box-body dd{
-    padding: 0px 5px 5px 15px;
-    margin-bottom: 5px;
+dd{
+    line-height: 2.2;
 }
-.box.box-solid.description > .box-body dd > ul{
-    margin: 0px;
-}
-.box.box-solid.description > .box-body dd > ul > li{
-    padding: 0px 5px 5px 5px;
+dd ul, dd ol{
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 

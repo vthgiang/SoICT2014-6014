@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { toast } from 'react-toastify';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+
 import { SalaryAddModal, SalaryEditModal, AnnualLeaveAddModal, AnnualLeaveEditModal } from './combinedContent';
 
 class SalaryTab extends Component {
@@ -51,7 +54,14 @@ class SalaryTab extends Component {
         let check = [];
         check = salaries.filter(x => (x.month === data.month));
         if (check.length !== 0) {
-            console.log("Tháng lương đã tồn tại");
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Tháng lương đã tồn tại']}
+                />, 
+                {containerId: 'toast-notification'}
+            );
         } else {
             await this.setState({
                 salaries: [...salaries, {

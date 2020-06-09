@@ -8,4 +8,7 @@ router.get('/user/:member',auth, KPIPersonalController.getAllEmployeeKpiSets);
 // get all kpi personal
 router.get('/task/:member',auth, KPIPersonalController.getAllFinishedEmployeeKpiSets);
 
+// get all kpi employee in department by month
+router.get('/:user/:department/:date', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
+
 module.exports = router;

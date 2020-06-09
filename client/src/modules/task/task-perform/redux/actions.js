@@ -15,11 +15,9 @@ export const performTaskAction = {
     createResultTask,
     editResultTask,
     addTaskAction,
-    getTaskActions,
     editTaskAction,
     deleteTaskAction,
     createTaskComment,
-    getTaskComments,
     editTaskComment,
     deleteTaskComment,
     createCommentOfTaskComment,
@@ -27,13 +25,9 @@ export const performTaskAction = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFileActions,
-    downloadFileCommentOfActions,
-    downloadFileCommentOfTaskComments,
-    downloadFileTaskComments,
+    downloadFile,
     uploadFile
 };
-
 // Create result task
 function createResultTask(result) {
     return dispatch => {
@@ -125,18 +119,6 @@ function stopTimerTask(newTimer) {
                     dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
                 }
             );
-    };
-}
-//get Action task
-function getTaskActions(task) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.GET_TASKACTION_REQUEST });
-
-        performTaskService.getTaskAction(task)
-            .then(
-                payload => dispatch({ type: performTaskConstants.GET_TASKACTION_SUCCESS, payload }),
-                error => dispatch({ type: performTaskConstants.GET_TASKACTION_FAILURE, error })
-            )
     };
 }
 
@@ -234,17 +216,6 @@ function createTaskComment(newComment) {
             );
     }
 }
-function getTaskComments(task) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_REQUEST });
-
-        performTaskService.getTaskComments(task)
-            .then(
-                payload => dispatch({ type: performTaskConstants.GET_TASKCOMMENTS_SUCCESS, payload }),
-                error => dispatch( { type: performTaskConstants.GET_TASKCOMMENTS_FAILURE, error })
-            )
-    };
-}
 function editTaskComment(id, newComment) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EDIT_TASKCOMMENT_REQUEST });
@@ -319,48 +290,13 @@ function confirmAction(id,idUser) {
         );
     }
 }
-function downloadFileActions(id,fileName,type){
+function downloadFile(path,fileName){
     return dispatch => {
         dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
-        performTaskService.downloadFileActions(id,type)
+        performTaskService.downloadFile(path)
             .then(res => { 
                 dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
-                const content = res.headers['content-type'];
-                FileDownload(res.data ,fileName, content)
-            })
-            .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
-    }
-}
-function downloadFileCommentOfActions(id,fileName,type){
-    return dispatch => {
-        dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
-        performTaskService.downloadFileCommentOfActions(id,type)
-            .then(res => { 
-                dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
-                const content = res.headers['content-type'];
-                FileDownload(res.data ,fileName, content)
-            })
-            .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
-    }
-}
-function downloadFileTaskComments(id,fileName,type){
-    return dispatch => {
-        dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
-        performTaskService.downloadFileTaskComments(id,type)
-            .then(res => { 
-                dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
-                const content = res.headers['content-type'];
-                FileDownload(res.data ,fileName, content)
-            })
-            .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE})})
-    }
-}
-function downloadFileCommentOfTaskComments(id,fileName,type){
-    return dispatch => {
-        dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST});
-        performTaskService.downloadFileCommentOfTaskComments(id,type)
-            .then(res => { 
-                dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
+                console.log(res)
                 const content = res.headers['content-type'];
                 FileDownload(res.data ,fileName, content)
             })

@@ -8,6 +8,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
@@ -19,16 +20,65 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let { tasks } = this.props;
 
         let task = (tasks && tasks.task) && tasks.task.info;
-        // let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
-        // let taskInformation = task && task.taskInformations;
 
+        // khởi tạo state của task
+
+        let statusOptions = []; statusOptions.push(task && task.status);
+        let priorityOptions = []; priorityOptions.push(task && task.priority);
+        let taskName = task && task.name;
+        let taskDescription = task && task.description;
+        let progress = task && task.progress;
+
+        let info = {}, taskInfo = task && task.taskInformations;
+        for(let i in taskInfo){
+            if(taskInfo[i].type === "Date"){
+                if(taskInfo[i].value){
+                    taskInfo[i].value = this.formatDate(taskInfo[i].value);
+                } else taskInfo[i].value = this.formatDate(Date.now());
+            }
+            info[`${taskInfo[i].code}`] = {
+                value: taskInfo[i].value,
+                code: taskInfo[i].code,
+                type: ''
+            }
+            
+        }
+    
+        let responsibleEmployees = task && task.responsibleEmployees.map(employee => { return employee._id });
+        let accountableEmployees = task && task.accountableEmployees.map(employee => { return employee._id });
+        let consultedEmployees = task && task.consultedEmployees.map(employee => { return employee._id });
+        let informedEmployees = task && task.informedEmployees.map(employee => { return employee._id });
+        let inactiveEmployees = task && task.inactiveEmployees.map(employee => { return employee._id });
         this.state = {
             userId: userId,
-            inactiveEmployees: [],
             task: task,
-            info: {}
-            // taskInformation: taskInformation,
-        }
+            info: info,
+            taskName : taskName,
+            taskDescription: taskDescription,
+            statusOptions :  statusOptions,
+            priorityOptions : priorityOptions,
+            progress: progress,
+            responsibleEmployees: responsibleEmployees,
+            accountableEmployees: accountableEmployees,
+            consultedEmployees: consultedEmployees,
+            informedEmployees: informedEmployees,
+            inactiveEmployees: inactiveEmployees
+        }        
+    }
+
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
     }
 
     // ==============================BEGIN HANDLE TASK INFORMATION===================================
@@ -337,15 +387,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         var evaluations, taskId;
         taskId = this.props.id;
-        evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
         var data = {
             name: this.state.taskName,
             description: this.state.taskDescription,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
-            evaluateId: evaluations._id,
+            // evaluateId: evaluations._id,
             user: this.state.userId,
             progress: this.state.progress,
+            date: this.formatDate(Date.now()),
 
             accountableEmployees: this.state.accountableEmployees,
             consultedEmployees: this.state.consultedEmployees,
@@ -372,9 +423,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 ...prevState,
                 // TODO: ve sau can sửa
                 id: nextProps.id,
-                // kpi: nextProps.kpi,
-                // date: nextProps.date,
-                // point: nextProps.point,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -388,29 +436,33 @@ class ModalEditTaskByAccountableEmployee extends Component {
             return null;
         }
     }
-
+    
     render() {
         const { task } = this.state;
-        const { errorTaskName, errorTaskDescription, errorTaskProgress, 
+        const { errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
             responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
-        const { user } = this.props;
-        var departmentUsers = [];
+        const { user, tasktemplates } = this.props;
+        var departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
+        if (user.usercompanys) usercompanys = user.usercompanys;
 
-        let priorityOptions = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
-        let statusOptions = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
+        let priorityArr = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
+        let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
-        // console.log('task', task);
-
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        }
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        
         return (
             <div>
                 <React.Fragment>
                     <DialogModal
                         size={75}
                         maxWidth={750}
-                        // modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
                         modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
                         formID={`form-edit-task-${this.props.role}-${this.props.id}`}
                         title={this.props.title}
@@ -427,7 +479,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
                                         <label>Tên công việc<span className="text-red">*</span></label>
                                         <input type="text"
-                                               value={this.state.taskName !== undefined ? this.state.taskName : task && task.name}
+                                               value={taskName}
                                                className="form-control" onChange={this.handleTaskNameChange}/>
                                         <ErrorLabel content={errorTaskName}/>
                                     </div>
@@ -436,7 +488,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>Mô tả công việc<span className="text-red">*</span></label>
                                         <input type="text"
-                                               value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
+                                            //    value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
+                                               value={taskDescription}
                                                className="form-control" onChange={this.handleTaskDescriptionChange}/>
                                         <ErrorLabel content={errorTaskDescription}/>
                                     </div>
@@ -456,9 +509,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 id={`select-status-${this.props.perform}-${this.props.role}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
-                                                items = {statusOptions}
+                                                items = {statusArr}
                                                 multiple={false}
-                                                value={statusOptions.filter(s => s.text === task.status)[0].value}
+                                                value={statusOptions}
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
@@ -472,38 +525,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 id={`select-priority-${this.props.perform}-${this.props.role}`}
                                                 className="form-control select2"
                                                 style={{width: "100%"}}
-                                                items = {priorityOptions}
+                                                items = {priorityArr}
                                                 multiple={false}
-                                                value={priorityOptions.find(p => p.value === task.priority)}
+                                                // value={priorityOptions.find(p => p.value === task.priority)}
+                                                value={priorityOptions}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
-                                    </div>
-
-                                    {/*Mức độ hoàn thành*/}
-                                    {/* <div className={`form-group ${errorTaskProgress === undefined ? "" : "has-error"}`}>
-                                        <label>Mức độ hoàn thành</label>
-                                        <input 
-                                            type="text"
-                                            value={this.state.taskProgress !== undefined ? this.state.taskProgress : task && task.progress}
-                                            className="form-control" onChange={this.handleTaskProgressChange}/>
-                                        <ErrorLabel content={errorTaskProgress}/>
-                                    </div> */}
-
-                                    {/*Task information*/}
-                                    {/* {
-                                        (taskInformation != null && taskInformation.length !== 0) && taskInformation.map((info, index) => {
-                                            return <div
-                                                className={`form-group`}>
-                                                <label>{info.name}</label>
-                                                <input type="text"
-                                                       value={info.value}
-                                                       className="form-control"
-                                                       onChange=""/>
-                                            </div>
-                                        })
-                                    } */}
-                                    
+                                    </div>                                    
                                 </div>
                                 
                             </fieldset>
@@ -527,12 +556,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người thực hiện*/}
                                 <div className="form-group">
                                     <label>Người thực hiện</label>
-                                    {
+                                    {unitMembers &&
                                         <SelectBox
                                             id={`select-responsible-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {unitMembers}
                                             onChange={this.handleSelectedResponsibleEmployee}
                                             multiple={true}
                                             value={responsibleEmployees}
@@ -543,12 +572,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người phê duyệt*/}
                                 <div className="form-group">
                                     <label>Người phê duyệt</label>
-                                    {
+                                    {unitMembers &&
                                         <SelectBox
                                             id={`select-accountable-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {unitMembers}
                                             onChange={this.handleSelectedAccountableEmployee}
                                             multiple={true}
                                             value={accountableEmployees}
@@ -559,12 +588,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người hỗ trợ*/}
                                 <div className="form-group">
                                     <label>Người hỗ trợ</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-consulted-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             onChange={this.handleSelectedConsultedEmployee}
                                             multiple={true}
                                             value={consultedEmployees}
@@ -575,12 +608,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/*Người giám sát*/}
                                 <div className="form-group">
                                     <label>Người giám sát</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-informed-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             onChange={this.handleSelectedInformEmployee}
                                             multiple={true}
                                             value={informedEmployees}
@@ -596,13 +633,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 <legend className="scheduler-border">Nhân viên không làm việc nữa</legend>
                                 <div className="form-group">
                                     <label>Chọn người không làm việc nữa</label>
-                                    {
+                                    {usercompanys &&
                                         <SelectBox
                                             id={`select-inactive-employee-${this.props.perform}-${this.props.role}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             // items = {task && task.responsibleEmployees.map(employee => { return { value: employee._id, text: employee.name } })}
-                                            items = {departmentUsers.map(employee => { return { value: employee._id, text: employee.userId.name } })}
+                                            items = {
+                                                usercompanys.map(x => {
+                                                    return {value: x._id, text: x.name};
+                                                })
+                                            }
                                             // items = {[{value:1, text: "n1" }, {value:2, text: "n2" }, {value:3, text: "n3" }, {value:4, text: "n4" }, {value:5, text: "n5" }, {value:5, text: "n5" }, ]}
                                             onChange={this.handleChangeActiveEmployees}
                                             multiple={true}
@@ -612,47 +653,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     {/* về sau nếu muốn xóa nhân viên trong mảng nhân viên phía client thì dùng splice(index,1) server thì dùng $pull */}
                                 </div>
 
-                                {/* <div className="checkbox">
-                                    {
-                                        task && task.responsibleEmployees.map(r=>{
-                                            return <div>
-                                                    <label>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            value={r._id}
-                                                            onChange={this.handleChangeActiveEmployees}
-                                                        /> {r.name}
-                                                    </label>
-                                                    <br/>
-                                                    <label>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            value="cb1"
-                                                            onChange={this.handleChangeActiveEmployees}
-                                                        /> cb1
-                                                    </label>
-                                                    <br/>
-                                                    <label>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            value="cb2"
-                                                            onChange={this.handleChangeActiveEmployees}
-                                                        /> cb2
-                                                    </label>
-                                                    <br/>
-                                                    <label>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            value="cb3"
-                                                            onChange={this.handleChangeActiveEmployees}
-                                                        /> cb3
-                                                    </label>
-                                                    <br/>
-                                                </div>
-                                        })
-                                    } 
-                                    
-                                </div> */}
+                                
                             </fieldset>
                         </form>
                     </DialogModal>
@@ -663,8 +664,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user } = state;
-    return { tasks, user };
+    const { tasks, user, tasktemplates } = state;
+    return { tasks, user, tasktemplates };
 }
 
 const actionGetState = { //dispatchActionToProps

@@ -89,6 +89,18 @@ class KPIUnitManager extends Component {
 
         return [month, year].join('-');
     }
+    handleShowEdit = async (id, idkpiunit, date) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                id: id,
+                idkpiunit: idkpiunit,
+                date: date
+            }
+        });
+        window.$(`#dataResultTask`).modal('show');
+
+    }
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -102,7 +114,15 @@ class KPIUnitManager extends Component {
             }
         })
         const { infosearch } = this.state;
-        console.log("inforsearch", infosearch);
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate !== undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate !== undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
         if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
             var startDate =new Date(startDate[1], startDate[0]);
@@ -176,11 +196,17 @@ class KPIUnitManager extends Component {
             };
             
         }
-       // console.log("listkpi---", listkpi);
+
         return (
             <React.Fragment>
             <div className="box">
                 <div className="box-body qlcv">
+                    <ModalDetailKPI 
+                                            date={this.state.date} 
+                                            id={this.state.id} 
+                                            idkpiunit={this.state.idkpiunit}
+                                            // idkpiunit={item}
+                                        />
                     <div className="form-inline">
                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
                             <label>Từ tháng:</label>
@@ -258,10 +284,19 @@ class KPIUnitManager extends Component {
                                 <td>{item.kpis.length}</td>
                                 <td>{item.approvedPoint}-{item.automaticPoint}-{item.employeePoint}{item.approvedPoint=== null ? "Chưa đánh giá" : item.result}</td>
                                 <td>
-                                    <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
+                                    <a href={`#dataResultTask`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
-                                            className="material-icons">view_list</i></a>
-                                    <ModalDetailKPI date={item.date} kpiunit={item} />
+                                            className="material-icons" onClick={() => this.handleShowEdit(item._id,item.organizationalUnit._id,item.date)}>view_list</i></a>
+                                    {/* {
+                                        this.state.showEdit === item._id &&
+                                        <ModalDetailKPI 
+                                            date={item.date} 
+                                            id={item.organizationalUnit._id} 
+                                            idkpiunit={item._id}
+                                            // idkpiunit={item}
+                                        />
+                                    } */}
+                                    
                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"
                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
@@ -269,10 +304,10 @@ class KPIUnitManager extends Component {
                                     {this.state.showModalCopy === item._id ?
                                     <ModalCopyKPIUnit kpiunit={item} /> : null}
                                
-                                    {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a
+                                    {/* {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a
                                         style={{ color: "navy" }} href="#abc" onClick={()=> this.props.refreshData(item._id)}
                                         title="Cập nhật kết quả mới nhất của KPI này" ><i
-                                            className="material-icons">refresh</i></a> : null}
+                                            className="material-icons">refresh</i></a> : null} */}
                                 </td>
                             </tr>) : <tr>
                                 <td colSpan={8}>

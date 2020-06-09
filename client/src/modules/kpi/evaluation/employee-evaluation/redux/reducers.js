@@ -86,7 +86,7 @@ export function kpimembers(state = {}, action) {
         ...state,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload.kpimember._id?action.payload.kpimember:item),
+          item._id===action.payload._id?action.payload:item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
@@ -150,7 +150,8 @@ export function kpimembers(state = {}, action) {
     case  kpiMemberConstants.GET_TASK_BYID_REQUEST: 
       return {
         ...state,
-        loading: true 
+        loading: true,
+        tasks: null
         };
     case  kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {
@@ -166,11 +167,16 @@ export function kpimembers(state = {}, action) {
         editing: true
         };
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
+        console.log(action.payload.result);
+        console.log(state.currentKPI);
         return {
             ...state,
-            // currentKPI : action.payload,
             tasks: action.payload.task,
-            result: action.payload.result
+            currentKPI : {
+              ...state.currentKPI,
+              kpis:state.currentKPI.kpis.map(kpi =>
+                (kpi._id === action.payload.result._id) ? action.payload.result : kpi )
+            }
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
         return { 
@@ -209,7 +215,98 @@ export function kpimembers(state = {}, action) {
         return { 
           error: action.payload
         };
+    //----------------------------------
+    case kpiMemberConstants.CREATE_APPROVE_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.CREATE_APPROVE_COMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.CREATE_APPROVE_COMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
+    case kpiMemberConstants.EDIT_APPROVE_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.EDIT_APPROVE_COMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.EDIT_APPROVE_COMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
+    case kpiMemberConstants.DELETE_APPROVE_COMMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.DELETE_APPROVE_COMMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.DELETE_APPROVE_COMMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
 
+    case kpiMemberConstants.CREATE_CHILD_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.CREATE_CHILD_COMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.CREATE_CHILD_COMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
+    case kpiMemberConstants.EDIT_CHILD_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.EDIT_CHILD_COMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.EDIT_CHILD_COMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
+    case kpiMemberConstants.DELETE_CHILD_COMMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+      case kpiMemberConstants.DELETE_CHILD_COMMMENT_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.DELETE_CHILD_COMMMENT_FAILURE:
+        return { 
+          error: action.payload
+        };
+//----------------------------------
     default:
       return state
   }

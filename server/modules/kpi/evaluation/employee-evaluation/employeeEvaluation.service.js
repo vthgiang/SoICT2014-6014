@@ -5,6 +5,7 @@ const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
 const User = require('../../../../models/auth/user.model')
 const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
+
 exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
         $or: [
@@ -13,57 +14,73 @@ exports.getKPIAllMember = async (data) => {
             { 'employee': data.role }
         ]
     });
-    var kpipersonals;
-    var startDate = data.startDate.split("-");
-    var startdate = new Date(startDate[1], startDate[0], 0);
-    var endDate = data.endDate.split("-");
-    var enddate = new Date(endDate[1], endDate[0], 28);
-    var status = parseInt(data.status);
 
-    if (data.user === "all") {
-        if (status === 5) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else if (status === 4) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                status: { $ne: 3 },
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                status: status,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        }
-    } else {
-        if (status === 5) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else if (status === 4) {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                status: { $ne: 3 },
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-        } else {
-            kpipersonals = await KPIPersonal.find({
-                organizationalUnit: department._id,
-                creator: data.user,
-                status: status,
-                date: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+    var kpipersonals;
+    var startDate;
+    var endDate;
+    var startdate=null;
+    var enddate=null;
+    var status =null;
+
+    if(data.startDate !== 'null') {startDate = data.startDate.split("-");
+    startdate = new Date(startDate[1], startDate[0], 0);}
+    if (data.endDate!== 'null'){endDate= data.endDate.split("-");
+    enddate = new Date(endDate[1], endDate[0], 28);}
+    if(data.status!== 'null') status= parseInt(data.status);
+
+    var keySearch = {
+        organizationalUnit: {
+            $in: department._id
         }
     }
+    if(data.user !== 'null'){
+        keySearch ={
+            ...keySearch,
+            creator: {
+                $in: data.user
+            }
+            
+        }
+    }
+    if(status !== null && status !== 5){
+        keySearch ={
+            ...keySearch,
+            status:{
+                $in: status
+            } 
+            
+        }
+    }
+    if(startdate !== null && enddate !== null){
+        keySearch ={
+            ...keySearch,
+
+            date:{ "$gte": startdate , "$lt": enddate}
+            
+        }
+    }
+    if(startdate !== null && enddate === null){
+        keySearch ={
+            ...keySearch,
+            date: {
+                $gte: startdate,
+            }
+        }
+    }
+    if(enddate !== null && startdate === null){
+        keySearch ={
+            ...keySearch,
+            date: {
+                $lt: enddate,
+            }
+        }
+    }
+    kpipersonals = await KPIPersonal.find(keySearch)
+    .skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonals;
 }
+
+
 
 // Lấy tất cả KPI cá nhân theo người thiết lập
 exports.getByMember = async (creatorID) => {
@@ -99,8 +116,7 @@ exports.approveAllTarget = async (id) => {
     kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    return [kpipersonal, targets];
-
+    return kpipersonal;
 }
 
 // Phê duyệt từng mục tiêu
@@ -153,34 +169,17 @@ exports.getTaskById = async (data) => {
     var daykpi = parseInt(date[2]);
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
-    console.log("tttttttt", yearkpi);
-    console.log("rrrrrr", data);
+   
     // tìm kiếm các công việc cần được đánh giá trong tháng
     var task = await getResultTaskByMonth(data);
     var priority;
-    // tính điểm taskImportanceLevel:
+    // tính điểm taskImportanceLevel:2
     var Task =  await task.map((element)=>{
-        console.log("qqqqqqqqqqqqqqq", element.taskImportanceLevel);
-        if(element.taskImportanceLevel === null){
-            if(element.priority ==="Cao") priority = 3;
-            else if( element.priority=== "Trung") priority = 2;
-            else priority = 1;
-            element.taskImportanceLevel = Math.round(3*(priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
-            
-            console.log('eeee', element);
-        }
+            element.taskImportanceLevelCal = Math.round(3*(element.priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+           if(element.taskImportanceLevel === -1)
+                element.taskImportanceLevel = element.taskImportanceLevelCal;
     })
-    
     console.log("----", task);
-    
-    //update importanceLevel arr
-    // for(var element of task){
-    //     var setPoint = await updateTaskImportanceLevel(element.taskId, element.employee._id, element.taskImportanceLevel, data.date);
-    // }
-
-    // // get task 
-    // var resultTask = await getResultTaskByMonth(data);
-
     return task;
 }
 
@@ -211,12 +210,18 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 exports.setTaskImportanceLevel = async (id, data) => {
     // data body co taskId, date, point, employeeId
     // id là id của employee kpi
-    console.log(data);
+   // console.log(data);
+   console.log(data);
+   var date = new Date(data[0].date);
+    console.log("tetete",date);
+    var daykpi = date.getDate();
+    console.log('dayyyy', daykpi);
+   //var daykpi = new Date(data.date);
     var set = [];
     for (const element of data) {
 
         var setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, element.point, element.date);
-        await set.push(setPoint);
+       // await set.push(setPoint);
     };
     // tinh diem kpi ca nhan 
     var key = {
@@ -224,23 +229,31 @@ exports.setTaskImportanceLevel = async (id, data) => {
         date : data[0].date,
         employeeId : data[0].employeeId
     }
-    console.log("keyyyyyy", key);
+  //  console.log("keyyyyyy", key);
     var task = await getResultTaskByMonth(key);
     var autoPoint = 0;
     var approvePoint = 0;
     var employPoint = 0;
-   // console.log("ttttttttttttttttt", task);
-    for(element of task){
-        autoPoint += element.automaticPoint;
-        approvePoint += element.approvedPoint;
-        employPoint += element.contribution;
+    var sumTaskImportance = 0;
+    let priority;
+    // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
+
+    for (element of task) {
+        autoPoint += element.automaticPoint * element.taskImportanceLevel / 10;
+        approvePoint += element.approvedPoint * element.taskImportanceLevel / 10;
+        employPoint += element.contribution * element.taskImportanceLevel / 10;
+        sumTaskImportance += element.taskImportanceLevel;
+        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.contribution / 100) + 4 * (daykpi / 30));
+        if (element.taskImportanceLevel === -1)
+            element.taskImportanceLevel = element.taskImportanceLevelCal;
     }
     var n = task.length;
+    
     var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
         $set :{
-            "automaticPoint" : autoPoint/n,
-            "employeePoint" : employPoint/n,
-            "approvedPoint" : approvePoint/n,
+            "automaticPoint" : Math.round(autoPoint/n),
+            "employeePoint" : Math.round(employPoint/n),
+            "approvedPoint" : Math.round(approvePoint/n),
         },
     }, {new: true} );
 
@@ -252,9 +265,13 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     // id la _id tháng trong evaluation trong task
     // trong data có điểm taskImportanceLevel và id của nhân viên cần chỉnh sửa
     // find task
-    console.log("ID ++++++++", taskId);
-    var date = await date.split("-");
-    console.log("---------", date);
+    //console.log("ID ++++++++", taskId);
+
+    var date = new Date(date);
+    var year = date.getFullYear();
+    var month = date.getMonth();
+   // console.log('----', last);
+    var lastDate = new Date(year, month+1, 0);
 
     // find task
     var task = await Task.aggregate([
@@ -265,29 +282,35 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
             $unwind: "$evaluations"
         },
         {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" },{ startDate: "$startDate" },  { endDate: "$endDate" }, { status: "$status" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: 5 } },
-        { $match: { year: 2020 } },
+        {$project:{
+            "_id": 1,
+        
+            "compStartDate": { "$lte":["$startDate",date]},
+            "compEndDate": {"$gte":["$endDate",date]}
+            }},
+            { $match: { 'compStartDate': true } },
+            { $match: { "compEndDate": true } },
 
     ])
-    // ket qua tra ve la mang 1 phan tu
-    console.log("taskkkkk", task[0]._id);
-
-    // update
+  //  console.log('taskkkk daayyy', task);
     var setPoint = await Task.findOneAndUpdate(
         {
             "evaluations._id": task[0]._id,
             "evaluations.results.employee": mongoose.Types.ObjectId(employeeId),
         },
         {
-            $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
+            $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point,
+                    "evaluations.$.date": lastDate 
+                }
         },
         {
             arrayFilters: [
                 {
-                    "elem.employee": employeeId
+                    "elem.employee": employeeId,
+
                 }
             ]
         });
@@ -301,6 +324,7 @@ async function getResultTaskByMonth(data) {
     // var monthkpi = date[1];
     // var yearkpi = date[0];
     var date = new Date(data.date);
+    console.log("tetete",date);
     var monthkpi = date.getMonth()+1;
     var yearkpi = date.getFullYear();
     var task = await Task.aggregate([
@@ -314,26 +338,32 @@ async function getResultTaskByMonth(data) {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: monthkpi } },
-        { $match: { year: yearkpi } },
         { $unwind: "$results" },
         {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
-        {
-            $lookup: {
-                from: "users",
-                localField: "employee",
-                foreignField: "_id",
-                as: "employee"
-
-            }
-        },
-        { $unwind: "$employee" },
-        { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId)} }
+        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} },  
+        {$project:{
+            "name": 1,
+            "startDate":1,
+            "endDate": 1,
+            "taskId" : 1,
+            "priority": 1,
+            "status" : 1,
+            "role": 1,
+            "automaticPoint" : 1,
+             "employeePoint" : 1,
+             "approvedPoint" : 1,
+            "contribution": 1,
+            "taskImportanceLevel": 1,
+            "compStartDate": { "$lte":["$startDate",date]},
+            "compEndDate": {"$gte":["$endDate",date]}
+            }},
+          { $match: { 'compStartDate': true } },
+          { $match: { "compEndDate": true } },
 
     ]);
-    //console.log("task funcccc", task);
+    
     return task;
 }
 

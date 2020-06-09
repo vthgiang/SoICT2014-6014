@@ -16,11 +16,13 @@ export const EmployeeService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
+    console.log(data.organizationalUnits);
+        console.log(data.position);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employees`,
         method: 'GET',
         params: {
-            organizationalUnit: data !== undefined ? data.organizationalUnit : data,
+            organizationalUnits: data !== undefined ? data.organizationalUnits : data,
             position: data !== undefined ? data.position : data,
             employeeNumber: data !== undefined ? data.employeeNumber : data,
             gender: data !== undefined ? data.gender : data,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './employeeCreateValidator';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import "./addEmployee.css";
@@ -50,6 +50,13 @@ class GeneralTab extends Component {
             [name]: value,
         })
         this.props.handleChange(name, value);
+    }
+    //Funtion bắt sự kiện thay đổi trạng thái làm việc
+    handleChangeStatus = (value) => {
+        this.setState({
+            status: value[0]
+        })
+        this.props.handleChange('status', value[0]);
     }
 
     // Funtion bắt sự kiện thay đổi giới tính
@@ -253,6 +260,7 @@ class GeneralTab extends Component {
                 ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
                 nationality: nextProps.employee.nationality,
+                status: nextProps.employee.status,
 
                 errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
@@ -270,7 +278,7 @@ class GeneralTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace,
+        const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
             emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
             errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany,
             errorOnCMND, errorOnAddressCMND } = this.state;
@@ -319,11 +327,13 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange} checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                            <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange}
+                                                checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange} checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                            <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange}
+                                                checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -344,10 +354,16 @@ class GeneralTab extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
-                                <ErrorLabel content={errorOnEmailCompany} />
+                            <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                <label>Trạng thái</label>
+                                <SelectBox
+                                    id={`status${id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={status}
+                                    items={[{ value: 'active', text: 'Đang làm việc' }, { value: 'leave', text: 'Đã nghỉ làm' }]}
+                                    onChange={this.handleChangeStatus}
+                                />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                 <label>{translate('manage_employee.relationship')}</label>
@@ -361,6 +377,13 @@ class GeneralTab extends Component {
                                             <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
+                                <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
+                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                         </div>
                     </div>

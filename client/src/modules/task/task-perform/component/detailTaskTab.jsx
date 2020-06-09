@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from './../redux/actions';
+import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
@@ -17,10 +18,19 @@ import {
 class DetailTaskTab extends Component {
 
     constructor(props) {
-
-        var idUser = getStorage("userId");
-
         super(props);
+        
+        var idUser = getStorage("userId");
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+
+        this.ROLE = {
+            RESPONSIBLE: {name: "Người thực hiện", value: "responsible"},
+            ACCOUNTABLE:  {name: "Người phê duyệt", value: "accountable"},
+            CONSULTED:  {name: "Người hỗ trợ", value: "consulted"},
+            CREATOR:  {name: "Người tạo", value: "creator"},
+            INFORMED:  {name: "Người quan sát", value: "informed"},
+        };
+
         this.state = {
             collapseInfo: false,
             openTimeCounnt: false,
@@ -29,8 +39,10 @@ class DetailTaskTab extends Component {
             highestIndex: 0,
             currentUser: idUser,
             showModalApprove: "",
-            showEdit: ""
+            showEdit: "",
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
+
     }
 
     
@@ -52,8 +64,69 @@ class DetailTaskTab extends Component {
             this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
             this.props.getTimesheetLogs(nextProps.id);
+            this.setState(state=>{
+                return{
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+            return false;
+        }
 
-            // return true;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            if (!nextProps.tasks.task){
+                return false;
+            } else { // Dữ liệu đã về
+                let task = nextProps.tasks.task.info;
+                this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+
+
+                let roles = [];
+                if (task) {
+                    let userId = getStorage("userId");
+                    let tmp = task.responsibleEmployees.find(item => item._id === userId);
+                    if (tmp){
+                        roles.push(this.ROLE.RESPONSIBLE);
+                    }
+
+                    tmp = task.accountableEmployees.find(item => item._id === userId);
+                    if (tmp){
+                        roles.push(this.ROLE.ACCOUNTABLE);
+                    }
+
+                    tmp = task.consultedEmployees.find(item => item._id === userId);
+                    if (tmp){
+                        roles.push(this.ROLE.CONSULTED);
+                    }
+
+                    tmp = task.informedEmployees.find(item => item._id === userId);
+                    if (tmp){
+                        roles.push(this.ROLE.INFORMED);
+                    }
+
+                    if (userId === task.creator._id){
+                        roles.push(this.ROLE.CREATOR);
+                    }
+                }
+
+                let currentRole;
+                if (roles.length>0){
+                    currentRole= roles[0].value;
+                    if (this.props.onChangeTaskRole){
+                        this.props.onChangeTaskRole(currentRole);
+                    }
+                }
+                
+                this.setState(state=>{
+                    return{
+                        ...state,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                        roles: roles,
+                        currentRole: roles.length>0? roles[0].value: null,
+                    }
+                })
+                return false;
+            }
         }
         return true;
     }
@@ -78,8 +151,7 @@ class DetailTaskTab extends Component {
     }
 
 
-
-
+    // convert ISODate to String dd/mm/yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -130,6 +202,22 @@ class DetailTaskTab extends Component {
         window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
+
+    refresh = () => {
+        this.props.getTaskById(this.state.id);
+        this.props.getSubTask(this.state.id);
+        this.props.getTimesheetLogs(this.state.id);
+    }
+
+    changeRole = (role) => {
+        this.setState(state => {
+            return {
+                ...state,
+                currentRole: role
+            }
+        })
+        this.props.onChangeTaskRole(role);
+    }
     
     render() {
         const { translate } = this.props;
@@ -148,33 +236,36 @@ class DetailTaskTab extends Component {
         if(task && task.priority === 3) priority ="Cao";
         if(task && task.priority === 2) priority ="Trung bình";
         if(task && task.priority === 1) priority ="Thấp";
-
-        // console.log(`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-evaluate`);
+        
+        let roles = this.state.roles;
+        let currentRole = this.state.currentRole;
 
         return (
       
             <div>
                 <div style={{ marginLeft: "-10px" }}>
-                    { (this.props.role === "responsible" || this.props.role === "accountable") && 
-                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} title="Chỉnh sửa thông tin chung">
+                    <a className="btn btn-app" onClick={this.refresh} title="Refresh">
+                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                    </a>
+                    
+                    { (currentRole === "responsible" || currentRole === "accountable") && 
+                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, currentRole)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                         </a>
                     }
                     
-                    { (this.props.role !== "informed" && this.props.role !== "consulted") &&
-                        <a className="btn btn-app" onClick={() => this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc">
+                    { (currentRole !== "informed" && currentRole !== "creator") &&
+                        <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
                             <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
-                    { (this.props.role === "consulted" || this.props.role === "responsible" || this.props.role === "accountable") &&
+                    { (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") &&
                         <React.Fragment>
-                            {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target={`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-stop`} data-backdrop="static" data-keyboard="false" title="Kết thúc công việc"> */}
-                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} title="Kết thúc công việc">
+                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, currentRole)} title="Kết thúc công việc">
                                 <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
                             </a>
 
-                            {/* <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target={`#modal-evaluate-task-by-${this.props.role}-${this.props.id}-evaluate`} data-backdrop="static" data-keyboard="false" title="Đánh giá công việc"> */}
-                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} title="Đánh giá công việc">
+                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, currentRole)} title="Đánh giá công việc">
                                 <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
                             </a>
                         </React.Fragment>
@@ -188,7 +279,19 @@ class DetailTaskTab extends Component {
                             <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
                         </a>
                     }
-        
+
+                    {roles && roles.length>1 &&
+                    <div class="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
+                        <a class="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
+                            <i className="fa fa-user" style={{ fontSize: "16px" }}></i>Chọn Vai trò
+                        </a>
+                        <ul class="dropdown-menu">
+                            {roles.map(
+                                (item, index) => {return <li className={item.value===currentRole && "active"} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
+                            )}
+                        </ul>
+                    </div>
+                    }
                 </div>   
 
                 <br />
@@ -196,9 +299,10 @@ class DetailTaskTab extends Component {
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
-                        <p><strong>Độ ưu tiên công việc:</strong> {priority}</p>
-                        <p><strong>Trạng thái công việc:</strong> {task && task.status}</p>
-                        <p><strong>Thời gian thực hiện:</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
+                        {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
+                        <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {priority}</p>
+                        <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && task.status}</p>
+                        <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         {/* </div>
                                 <hr />
                             </div>
@@ -212,17 +316,15 @@ class DetailTaskTab extends Component {
 
                                     {/* Description */}
                                     <div>
-                                        <strong>Mô tả</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>{task && task.description}</p>
-                                        </div>
+                                        <dt>Mô tả</dt>
+                                        <dd>
+                                            {task && task.description}
+                                        </dd>
                                     </div>
 
-                                    <br />
                                     <div>
-                                        <strong>Vai trò</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>Người thực hiện:</p>
+                                        <dt>Người thực hiện</dt>
+                                        <dd>
                                             <ul>
                                                 {
                                                     (task && task.responsibleEmployees.length !== 0) &&
@@ -236,7 +338,9 @@ class DetailTaskTab extends Component {
                                                     })
                                                 }
                                             </ul>
-                                            <p>Người phê duyệt:</p>
+                                        </dd>
+                                        <dt>Người phê duyệt</dt>
+                                        <dd>
                                             <ul>
                                                 {
                                                     (task && task.accountableEmployees.length !== 0) &&
@@ -249,11 +353,13 @@ class DetailTaskTab extends Component {
                                                     })
                                                 }
                                             </ul>
+                                        </dd>
 
-                                            {
-                                                (task && task.consultedEmployees.length !== 0) &&
-                                                <React-Fragment>
-                                                    <p>Người phê duyệt:</p>
+                                        {
+                                            (task && task.consultedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                                <dt>Người hỗ trợ</dt>
+                                                <dd>
                                                     <ul>
                                                         {
                                                             (task && task.consultedEmployees.length !== 0) &&
@@ -266,45 +372,53 @@ class DetailTaskTab extends Component {
                                                             })
                                                         }
                                                     </ul>
-                                                </React-Fragment>
-                                            }
-                                            {
-                                                (task && task.informedEmployees.length !== 0) &&
-                                                <React-Fragment>
-                                                    <p>Người phê duyệt:</p>
-                                                    <ul>
-                                                        {
-                                                            (task && task.informedEmployees.length !== 0) &&
-                                                            task.informedEmployees.map(item => {
-                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) {
-                                                                    return <li><u>{item.name}</u></li>
-                                                                } else {
-                                                                    return <li>{item.name}</li>
-                                                                }
-                                                            })
-                                                        }
-                                                    </ul>
-                                                </React-Fragment>
-                                            }
-                                        </div>
+                                                </dd>
+                                            </React-Fragment>
+                                        }
+                                        {
+                                            (task && task.informedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                            <dt>Người quan sát</dt>
+                                            <dd>
+                                                <ul>
+                                                    {
+                                                        (task && task.informedEmployees.length !== 0) &&
+                                                        task.informedEmployees.map(item => {
+                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                                return <li><u>{item.name}</u></li>
+                                                            } else {
+                                                                return <li>{item.name}</li>
+                                                            }
+                                                        })
+                                                    }
+                                                </ul>
+                                            </dd>
+                                            </React-Fragment>
+                                        }
                                     </div>
 
-                                    <br />
                                     <div>
                                         {/* Task information*/}
-                                        <strong>Thông tin công việc</strong>
-                                        <div style={{ marginLeft: "10px" }}>
-                                            <p>-&nbsp;Mức độ hoàn thành: {task && task.progress}%</p>
-                                            {
-                                                (task && task.taskInformations.length !== 0) &&
-                                                task.taskInformations.map(info => {
-                                                    return <div>
-                                                        <p>-&nbsp;{info.name}&nbsp;-&nbsp;Giá trị: {info.value?info.value:"Chưa có thông tin"}</p>
-                                                        {/* &nbsp;-&nbsp;Giá trị: {info.value} */}
-                                                    </div>
-                                                })
-                                            }
-                                        </div>
+                                        <dt>Thông tin công việc</dt>
+                                        <dd>
+                                            <ul>
+                                                <li>Mức độ hoàn thành: &nbsp;&nbsp; {task && task.progress}%</li>
+                                                {(task && task.point && task.point !== -1) ?
+                                                    <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
+                                                    <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
+                                                }
+                                                {
+                                                    (task && task.taskInformations.length !== 0) &&
+                                                    task.taskInformations.map(info => {
+                                                        
+                                                        if(info.type === "Date") {
+                                                            return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
+                                                        }
+                                                        return <li>{info.name}: &nbsp;&nbsp;{info.value? info.value: "Chưa có thông tin"}</li>
+                                                    })
+                                                }
+                                            </ul>
+                                        </dd>
                                     </div>
                                 </fieldset>
                             </div>
@@ -314,110 +428,83 @@ class DetailTaskTab extends Component {
 
                                     {/* Evaluations */}
                                     <div>
-                                        {/* <div className="tooltip2">
-                                                    <a>
-                                                        <i className="material-icons">help</i>
-                                                    </a>
-                                                    <span className="tooltip2text" style={{right: "0px"}}>
-                                                    {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.content')}
-                                                    </span>
-                                                </div> */}
-
                                         {
-                                            (task && task.evaluations.length !== 0 ) &&
-
-                                            ( task.evaluations.map(eva => {
-                                                if (eva.results.length !== 0) {
-                                                    return <div>
-                                                        <strong>Đánh giá ngày: <span>( {this.formatDate(eva.date)} )</span></strong>
-
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            {
+                                            (task && task.evaluations && task.evaluations.length !== 0 ) && 
+                                            task.evaluations.map(eva => {
+                                                return (
+                                                <div style={{paddingBottom: 10}}>
+                                                    
+                                                    {/* { eva.results.length !== 0 ? */}
+                                                        {/* // <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt> */}
+                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
+                                                    {/* } */}
+                                                    
+                                                    <dd>
+                                                        {
+                                                        eva.results.length !== 0 &&
+                                                        <div>
+                                                            <div><strong>Điểm các thành viên</strong> (Tự động - Tự đánh giá - Người phê duyệt đánh giá)</div>
+                                                            <ul>
+                                                            { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
-                                                                    return <div >
-                                                                        <p>{res.employee.name}&nbsp;-&nbsp;{res.role}&nbsp;-&nbsp;{res.automaticPoint}-{res.employeePoint}-{res.approvedPoint}</p>
-                                                                    </div>
-                                                                })
+                                                                    return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                }) : <li>Chưa có ái đánh giá công việc tháng này</li>
                                                             }
-                                                        </div>
-                                                        <br />
+                                                            </ul>
 
-                                                        {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            <p>Mức độ hoàn thành: {task && task.progress}%</p>
+                                                            {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
+                                                            <div><strong>Thông tin công việc</strong></div>
+                                                            <ul>
+                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
                                                             {(task && task.point && task.point !== -1) ?
-                                                                <p>Điểm công việc: {task && task.point}%</p> :
-                                                                <p>Điểm công việc: Chưa được tính</p>
+                                                                <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
+                                                                <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
                                                             }
 
                                                             {
                                                                 eva.taskInformations.map(info => {
-                                                                    return <div>
-                                                                        <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
-                                                                    </div>
+                                                                    if( !isNaN(Date.parse(info.value)) && isNaN(info.value) ){
+                                                                        return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
+                                                                    }
+                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? info.value : "Chưa đánh giá tháng này"}</li>
                                                                 })
                                                             }
-                                                        </div>
-                                                        <br />
-                                                        <div style={{ marginLeft: "10px" }}>
-                                                            {/* KPI */}
-                                                            {(eva.kpis.length !== 0) ?
-                                                                (
-                                                                    eva.kpis.map(item => {
-                                                                        return <div>
-                                                                            <p>KPI &nbsp; {item.employee.name}: &nbsp;</p>
-                                                                            {(item.kpis.length !== 0) ?
-                                                                                <ol>
-                                                                                    {
-                                                                                        item.kpis.map(kpi => {
-                                                                                            return <div>
-                                                                                                <li>{kpi.name}</li>
-                                                                                            </div>
-                                                                                        })
-                                                                                    }
-                                                                                </ol>
-                                                                                : <p>Chưa liên kết công việc với KPI</p>
-                                                                            }
-                                                                        </div>
-                                                                    })
-                                                                ): <p>Chưa ai liên kết công việc với KPI</p>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else {
-                                                    return <div style={{ marginLeft: "10px" }}>
-                                                        <div><p style={{color: "red", fontWeight: "bold"}}>Chưa đánh giá công việc tháng nào</p></div>
-                                                        <br/>
+                                                            </ul>
+                                                        </div>     
+                                                        }
+                                                        
+
+                                                    {/* </dd>
+
+                                                    <dd> */}
                                                         {/* KPI */}
+                                                        <div><strong>Liên kết KPI</strong></div>
+                                                        <ul>
                                                         {(eva.kpis.length !== 0) ?
                                                             (
                                                                 eva.kpis.map(item => {
-                                                                    return <div>
-                                                                        <p>KPI &nbsp; {item.employee.name}: &nbsp;</p>
+                                                                    return (<li>KPI {item.employee.name}
                                                                         {(item.kpis.length !== 0) ?
                                                                             <ol>
                                                                                 {
                                                                                     item.kpis.map(kpi => {
-                                                                                        return <div>
-                                                                                            <li>{kpi.name}</li>
-                                                                                        </div>
+                                                                                        return <li>{kpi.name}</li>
                                                                                     })
                                                                                 }
                                                                             </ol>
-                                                                            : <p>Chưa liên kết công việc với KPI</p>
+                                                                            : <span>&nbsp;&nbsp; Chưa liên kết công việc với KPI</span>
                                                                         }
-                                                                    </div>
+                                                                    </li>)
                                                                 })
-                                                            ) : <p>Chưa ai liên kết công việc với KPI</p>
+                                                            ): <li>Chưa ai liên kết công việc với KPI</li>
                                                         }
-                                                    </div>
-                                                }
-                                            })) 
-                                            // : <div>
-                                            //     <p>Chưa đánh giá công viêc</p>
-                                            // </div> 
+                                                        </ul>
+                                                    </dd>
+                                                </div>);
+                                            })
                                         }
+                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa được đánh giá lần nào</dt>}
+                                    
                                     </div>
                                 </fieldset>
                             </div>
@@ -427,48 +514,48 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (this.props.id && this.state.showEdit === this.props.id) && this.props.role === "responsible" &&
+                    (this.props.id && this.state.showEdit === this.props.id) && currentRole === "responsible" &&
                     <ModalEditTaskByResponsibleEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người thực hiện'
-                        perform={`edit-${this.props.role}`}
+                        perform={`edit-${currentRole}`}
                     />
                 }
 
                 {
-                    (this.props.id && this.state.showEdit === this.props.id) && this.props.role === "accountable" &&
+                    (this.props.id && this.state.showEdit === this.props.id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người phê duyệt'
-                        perform={`edit-${this.props.role}`}
+                        perform={`edit-${currentRole}`}
                     />
                 }
 
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "responsible") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Đánh giá công việc với vai trò người thực hiện'
                         perform='evaluate'
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "accountable") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Đánh giá công việc với vai trò người phê duyệt'
                         perform='evaluate'
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "consulted") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Đánh giá công việc với vai trò người hỗ trợ'
                         perform='evaluate'
                     />
@@ -476,28 +563,28 @@ class DetailTaskTab extends Component {
 
 
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "responsible") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Kết thúc công việc với vai trò người thực hiện'
                         perform='stop'
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "accountable") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Kết thúc công việc với vai trò người phê duyệt'
                         perform='stop'
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "consulted") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
-                        role={this.props.role}
+                        role={currentRole}
                         title='Kết thúc công việc với vai trò người hỗ trợ'
                         perform='stop'
                     />
@@ -516,9 +603,11 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: taskManagementActions.getTaskById,
+    getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
+    getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

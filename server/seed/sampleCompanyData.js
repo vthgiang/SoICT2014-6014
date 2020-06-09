@@ -18,7 +18,9 @@ const {
     //asset
     Asset,
     AssetType,
+    AssetCrash,
     RecommendProcure,
+    RecommendDistribute,
     RepairUpgrade,
     DistributeTransfer,
 
@@ -496,84 +498,80 @@ const sampleCompanyData = async () => {
         // thêm link quản lý tài sản
         // QUẢN LÝ
         { //35. quản lý loại tài sản
+            url: '/dashboard-asset',
+            description: 'DashBoard quản lý tài sản',
+            company: vnist._id
+        },
+        { //36. quản lý loại tài sản
             url: '/manage-type-asset',
             description: 'Quản lý loại tài sản',
             company: vnist._id
         },
-        { //36. Thêm mới tài sản
-            url: '/add-asset',
-            description: 'Thêm mới tài sản',
-            company: vnist._id
-        },
+
         { //37. quản lý thông tin tài sản
             url: '/manage-info-asset',
             description: 'Quản lý thông tin tài sản',
             company: vnist._id
         },
-        { //38
-            url: '/manage-history-asset',
-            description: 'Quản lý lịch sử hoạt động sử dụng tài sản',
-            company: vnist._id
-        },
-        { //39
+
+        { //38. quản lý sửa chữa - thay thế - nâng cấp tài sản
             url: '/manage-repair-asset',
             description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
             company: vnist._id
         },
-        { //40
-            url: '/manage-maintain-asset',
-            description: 'Quản lý bảo trì tài sản',
-            company: vnist._id
-        },
-        { //41
+
+        { //39. Quản lý cấp phát - điều chuyển - thu hồi tài sản
             url: '/manage-distribute-asset',
             description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
             company: vnist._id
         },
-        { //42
+
+        { //40. Quản lý khấu hao tài sản
             url: '/manage-depreciation-asset',
             description: 'Quản lý khấu hao tài sản',
             company: vnist._id
         },
-        { //43
-            url: '/manage-room-asset',
-            description: 'Quản lý phòng và trang thiết bị tài sản',
-            company: vnist._id
-        },
-        { //44
+
+        { //41. Quản lý đề nghị mua sắm tài sản
             url: '/manage-recommend-procure',
             description: 'Quản lý đề nghị mua sắm tài sản',
             company: vnist._id
         },
-        { //45
+        { //42. Quản lý đề nghị cấp phát tài sản
             url: '/manage-recommend-distribute-asset',
             description: 'Quản lý đề nghị cấp phát tài sản',
             company: vnist._id
         },
 
+        { //43. Quản lý sự cố tài sản
+            url: '/manage-crash-asset',
+            description: 'Quản lý sự cố tài sản',
+            company: vnist._id
+        },
+
         // NHÂN VIÊN
-        { //46
+        { //44
             url: '/recommend-equipment-procurement',
             description: 'Đăng ký mua sắm tài sản',
             company: vnist._id
         },
-        { //47
+        { //45
             url: '/recommmend-distribute-asset',
             description: 'Đăng ký cấp phát tài sản',
             company: vnist._id
         },
-        { //48
+        { //46
             url: '/manage-assigned-asset',
             description: 'Quản lý tài sản được bàn giao',
             company: vnist._id
         },
 
 
-        { //49
+        { //47
             url: '/task',
             description: 'Chi tiết công việc',
             company: vnist._id
-        },{ // 50 tài liệu văn bản
+        },{ // 48 tài liệu văn bản
             url: '/documents',
             description: 'Tài liệu',
             company: vnist._id
@@ -904,17 +902,17 @@ const sampleCompanyData = async () => {
 
         
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[2]._id // Vice Dean
         },
         {
-            resourceId: links[49]._id, // Chi tiết công việc
+            resourceId: links[47]._id, // Chi tiết công việc
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
@@ -928,91 +926,164 @@ const sampleCompanyData = async () => {
         },
 
 
-        // gán quyền quản lý tài sản cho Dean
-        {
-            resourceId: links[35]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[36]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[37]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[38]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[39]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[40]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[41]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[42]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[43]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
+        /**
+         * gán quyền quản lý tài sản tất cả mọi người trong công ty
+         */
+        //role: 1
         {
             resourceId: links[44]._id,
             resourceType: 'Link',
-            roleId: roles[1]._id // Dean
+            roleId: roles[1]._id
         },
         {
             resourceId: links[45]._id,
             resourceType: 'Link',
-            roleId: roles[1]._id // Dean
+            roleId: roles[1]._id
         },
-
-        // gán quyền quản lý tài sản cho nhân viên
-
         {
             resourceId: links[46]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[1]._id
+        },
+
+        //role 2
+        {
+            resourceId: links[44]._id,
+            resourceType: 'Link',
+            roleId: roles[2]._id
         },
         {
-            resourceId: links[47]._id,
+            resourceId: links[45]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[2]._id
         },
         {
-            resourceId: links[48]._id,
+            resourceId: links[46]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[2]._id
+        },
+
+        //role 3
+        {
+            resourceId: links[44]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id
+        },
+        {
+            resourceId: links[45]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id
+        },
+        {
+            resourceId: links[46]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id
+        },
+
+        // gán quyền quản lý tài sản cho Admin
+        {
+            resourceId: links[35]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[36]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[37]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[38]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[39]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[40]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[41]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[42]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[43]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+
+        // gán quyền quản lý tài sản cho Super Admin
+        {
+            resourceId: links[35]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[36]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[37]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[38]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[39]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[40]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[41]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[42]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[43]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
         },
 
         {
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[1]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[2]._id // Employee
         },{
-            resourceId: links[50]._id,
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
@@ -1032,7 +1103,7 @@ const sampleCompanyData = async () => {
         status: "active",
         company: vnist._id,
         employeeTimesheetId: "123456",
-        gender: "male",
+        gender: "female",
         birthdate: new Date("1998-02-17"),
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
         identityCardNumber: 163414569,
@@ -1111,7 +1182,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }, {
@@ -1200,7 +1270,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }])
@@ -1213,7 +1282,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         employeeTimesheetId: "123456",
         gender: "male",
-        birthdate: new Date("1998-05-20"),
+        birthdate: new Date("1988-05-20"),
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
         identityCardNumber: 163414569,
         identityCardDate: new Date("2015-10-20"),
@@ -1291,7 +1360,6 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-10-25"),
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courses: [],
         archivedRecordNumber: "T3 - 123698",
         files: [{
             name: "Ảnh",
@@ -1366,15 +1434,16 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "123",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số",
-    }, {
+    }, 
+    {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1234",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
         type: "Thưởng tiền",
         reason: "Vượt doanh số 500 triệu",
@@ -1391,7 +1460,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1456",
-        organizationalUnit: "Phòng nhân sự",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",
@@ -1400,7 +1469,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         decisionNumber: "1457",
-        organizationalUnit: "Phòng kinh doanh",
+        organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
         endDate: "2020-02-09",
         type: "Phạt tiền",
@@ -1571,134 +1640,136 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu loại tài sản");
-    var listAssetType = await AssetType.insertMany([{
-        company: vnist._id,
-        typeNumber: "10",
-        typeName: "Tài sản hữu hình",
-        timeDepreciation: null,
-        parent: null,
-        description: "Tài sản hữu hình"
-    }, {
-        company: vnist._id,
-        typeNumber: "101",
-        typeName: "Nhà cửa, vật kiến trúc",
-        timeDepreciation: null,
-        parent: null,
-        description: "Nhà cửa, vật kiến trúc"
-    }, {
-        company: vnist._id,
-        typeNumber: "10101",
-        typeName: "Tòa nhà làm việc",
-        timeDepreciation: null,
-        parent: null,
-        description: "Tòa nhà làm việc"
-    }, {
-        company: vnist._id,
-        typeNumber: "10102",
-        typeName: "Nhà xưởng",
-        timeDepreciation: null,
-        parent: null,
-        description: "Nhà xưởng"
-    }, {
-        company: vnist._id,
-        typeNumber: "10103",
-        typeName: "Nhà kho",
-        timeDepreciation: null,
-        parent: null,
-        description: "Nhà kho"
-    }, {
-        company: vnist._id,
-        typeNumber: "102",
-        typeName: "Máy móc, thiết bị",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy móc, thiết bị"
-    }, {
-        company: vnist._id,
-        typeNumber: "10201",
-        typeName: "Thiết bị phát điện, máy biến áp và nguồn điện khác",
-        timeDepreciation: null,
-        parent: null,
-        description: "Thiết bị phát điện, máy biến áp và nguồn điện khác "
-    }, {
-        company: vnist._id,
-        typeNumber: "10202",
-        typeName: "Thiết bị an ninh",
-        timeDepreciation: null,
-        parent: null,
-        description: "Thiết bị an ninh"
-    }, {
-        company: vnist._id,
-        typeNumber: "103",
-        typeName: "Phương tiện vận tải, truyền dẫn",
-        timeDepreciation: null,
-        parent: null,
-        description: "Phương tiện vận tải, truyền dẫn"
-    }, {
-        company: vnist._id,
-        typeNumber: "10301",
-        typeName: "Ô tô",
-        timeDepreciation: null,
-        parent: null,
-        description: "Ô tô"
-    }, {
-        company: vnist._id,
-        typeNumber: "10302",
-        typeName: "Xe máy",
-        timeDepreciation: null,
-        parent: null,
-        description: "Xe máy"
-    }, {
-        company: vnist._id,
-        typeNumber: "10303",
-        typeName: "Thang máy",
-        timeDepreciation: null,
-        parent: null,
-        description: "Thang máy"
-    }, {
-        company: vnist._id,
-        typeNumber: "10304",
-        typeName: "Tổng đài điện thoại",
-        timeDepreciation: null,
-        parent: null,
-        description: "Tổng đài điện thoại"
-    }, {
-        company: vnist._id,
-        typeNumber: "104",
-        typeName: "Thiết bị, dụng cụ quản lý",
-        timeDepreciation: null,
-        parent: null,
-        description: "Thiết bị, dụng cụ quản lý"
-    }, {
-        company: vnist._id,
-        typeNumber: "10401",
-        typeName: "Máy chủ",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy chủ"
-    }, {
-        company: vnist._id,
-        typeNumber: "10402",
-        typeName: "Máy tính để bàn",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy tính để bàn"
-    }, {
-        company: vnist._id,
-        typeNumber: "10403",
-        typeName: "Máy tính xách tay",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy tính xách tay"
-    }, {
-        company: vnist._id,
-        typeNumber: "10404",
-        typeName: "Máy in",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy in"
-    }, ])
-    console.log(`Xong! Thông tin loại tài sản đã được tạo`);
+    var listAssetType = await AssetType.insertMany([
+        {
+            company: vnist._id,
+            typeNumber: "10",
+            typeName: "Tài sản hữu hình",
+            timeDepreciation: null,
+            parent: null,
+            description: "Tài sản hữu hình"
+        },{
+            company: vnist._id,
+            typeNumber: "101",
+            typeName: "Nhà cửa, vật kiến trúc",
+            timeDepreciation: 12,
+            parent: null,
+            description: "Nhà cửa, vật kiến trúc"
+        },{
+            company: vnist._id,
+            typeNumber: "10101",
+            typeName: "Tòa nhà làm việc",
+            timeDepreciation: 12,
+            parent: null,
+            description: "Tòa nhà làm việc"
+        },{
+            company: vnist._id,
+            typeNumber: "10102",
+            typeName: "Nhà xưởng",
+            timeDepreciation: 12,
+            parent: null,
+            description: "Nhà xưởng"
+        },{
+            company: vnist._id,
+            typeNumber: "10103",
+            typeName: "Nhà kho",
+            timeDepreciation: 12,
+            parent: null,
+            description: "Nhà kho"
+        },{
+            company: vnist._id,
+            typeNumber: "102",
+            typeName: "Máy móc, thiết bị",
+            timeDepreciation: 12,
+            parent: null,
+            description: "Máy móc, thiết bị"
+        },{
+            company: vnist._id,
+            typeNumber: "10201",
+            typeName: "Thiết bị phát điện, máy biến áp và nguồn điện khác",
+            timeDepreciation: 10,
+            parent: null,
+            description: "Thiết bị phát điện, máy biến áp và nguồn điện khác "
+        },{
+            company: vnist._id,
+            typeNumber: "10202",
+            typeName: "Thiết bị an ninh",
+            timeDepreciation: 10,
+            parent: null,
+            description: "Thiết bị an ninh"
+        },{
+            company: vnist._id,
+            typeNumber: "103",
+            typeName: "Phương tiện vận tải, truyền dẫn",
+            timeDepreciation: 10,
+            parent: null,
+            description: "Phương tiện vận tải, truyền dẫn"
+        },{
+            company: vnist._id,
+            typeNumber: "10301",
+            typeName: "Ô tô",
+            timeDepreciation: 14,
+            parent: null,
+            description: "Ô tô"
+        },{
+            company: vnist._id,
+            typeNumber: "10302",
+            typeName: "Xe máy",
+            timeDepreciation: null,
+            parent: null,
+            description: "Xe máy"
+        },{
+            company: vnist._id,
+            typeNumber: "10303",
+            typeName: "Thang máy",
+            timeDepreciation: 14,
+            parent: null,
+            description: "Thang máy"
+        },{
+            company: vnist._id,
+            typeNumber: "10304",
+            typeName: "Tổng đài điện thoại",
+            timeDepreciation: 24,
+            parent: null,
+            description: "Tổng đài điện thoại"
+        },{
+            company: vnist._id,
+            typeNumber: "104",
+            typeName: "Thiết bị, dụng cụ quản lý",
+            timeDepreciation: 24,
+            parent: null,
+            description: "Thiết bị, dụng cụ quản lý"
+        },{
+            company: vnist._id,
+            typeNumber: "10401",
+            typeName: "Máy chủ",
+            timeDepreciation: 20,
+            parent: null,
+            description: "Máy chủ"
+        },{
+            company: vnist._id,
+            typeNumber: "10402",
+            typeName: "Máy tính để bàn",
+            timeDepreciation: 20,
+            parent: null,
+            description: "Máy tính để bàn"
+        },{
+            company: vnist._id,
+            typeNumber: "10403",
+            typeName: "Máy tính xách tay",
+            timeDepreciation: 10,
+            parent: null,
+            description: "Máy tính xách tay"
+        },{
+            company: vnist._id,
+            typeNumber: "10404",
+            typeName: "Máy in",
+            timeDepreciation: 8,
+            parent: null,
+            description: "Máy in"
+        },
+    ])
+        console.log(`Xong! Thông tin loại tài sản đã được tạo`);
 
 
     /*---------------------------------------------------------------------------------------------
@@ -1707,181 +1778,226 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu phiếu đề nghị mua sắm thiết bị");
-    var listRecommendProcure = await RecommendProcure.insertMany([{
-        company: vnist._id,
-        recommendNumber: "MS0001",
-        dateCreate: "20-02-2020",
-        proponent: users[7]._id,
-        equipment: "đề nghị mua Laptop DELL 5559",
-        supplier: "HanoiComputer",
-        total: "1",
-        unit: "cái",
-        estimatePrice: "60000000",
-        note: "",
-        approver: null,
-        status: "Chờ phê duyệt"
-    }, {
-        company: vnist._id,
-        recommendNumber: "MS0002",
-        dateCreate: "20-03-2020",
-        proponent: users[7]._id,
-        equipment: "đề nghị mua Laptop DELL XPS",
-        supplier: "HanoiComputer",
-        total: "1",
-        unit: "cái",
-        estimatePrice: "70000000",
-        note: "",
-        approver: null,
-        status: "Chờ phê duyệt"
-    }, {
-        company: vnist._id,
-        recommendNumber: "MS0003",
-        dateCreate: "20-04-2020",
-        proponent: users[7]._id,
-        equipment: "đề nghị mua máy photocopy",
-        supplier: "HanoiComputer",
-        total: "1",
-        unit: "cái",
-        estimatePrice: "50000000",
-        note: "",
-        approver: null,
-        status: "Chờ phê duyệt"
-    }, {
-        company: vnist._id,
-        recommendNumber: "MS0004",
-        dateCreate: "20-05-2020",
-        proponent: users[7]._id,
-        equipment: "đề nghị mua PC",
-        supplier: "HanoiComputer",
-        total: "1",
-        unit: "cái",
-        estimatePrice: "40000000",
-        note: "",
-        approver: null,
-        status: "Chờ phê duyệt"
-    }])
-    console.log(`Xong! Thông tin phiếu đề nghị mua sắm thiết bị đã được tạo`);
+    var listRecommendProcure = await RecommendProcure.insertMany([
+        {
+            company: vnist._id,
+            recommendNumber: "MS0001",
+            dateCreate: "20-02-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua Laptop DELL 5559",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "60000000",
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        },{
+            company: vnist._id,
+            recommendNumber: "MS0002",
+            dateCreate: "20-03-2020",
+            proponent: users[5]._id,
+            equipment: "đề nghị mua Laptop DELL XPS",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "70000000",
+            note: "",
+            approver: users[1]._id,
+            status: "Đã chấp nhận"
+        },{
+            company: vnist._id,
+            recommendNumber: "MS0003",
+            dateCreate: "20-04-2020",
+            proponent: users[6]._id,
+            equipment: "đề nghị mua máy photocopy",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "50000000",
+            note: "",
+            approver: users[1]._id,
+            status: "Không chấp nhận"
+        },{
+            company: vnist._id,
+            recommendNumber: "MS0004",
+            dateCreate: "20-05-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua PC",
+            supplier: "HanoiComputer",
+            total: "1",
+            unit: "cái",
+            estimatePrice: "40000000",
+            note: "",
+            approver: null,
+            status: "Chờ phê duyệt"
+        }
+    ])
+        console.log(`Xong! Thông tin phiếu đề nghị mua sắm thiết bị đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
         TẠO DỮ LIỆU TÀI SẢN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu tài sản");
+    console.log("Khởi tạo dữ liệu tài sản");    
     var listAsset = await Asset.insertMany([{
-        avatar: "/upload/asset/avatars/avatar5.png",
+        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
         assetName: "Laptop Dell 5559",
-        assetNumber: "LT0001",
-        company: vnist._id,
+        code: "TS0001",
+        company:vnist._id,
+        serial: "123456789",
         assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
-        manager: users[2]._id,
+        warrantyExpirationDate: "20-02-2022",
+        manager: users[1]._id,
         person: users[4]._id,
         dateStartUse: "20-02-2020",
-        dateEndUse: "",
+        dateEndUse: "20-03-2020",
         location: "P104",
-        initialPrice: 50000000,
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "500GB",
         }],
+        cost: 50000000,
+        residualValue: 10000000,
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDeprecition: "5", // thời gian trích khấu hao
+        timeDepreciation: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
-        file: [],
+        file: [{
+            nameFile: "Tài liệu hướng dẫn",
+            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 1",
+            number: "1",
+            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+        }],
     }, {
-        avatar: "/upload/asset/avatars/avatar5.png",
+        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
         assetName: "Laptop Dell XPS",
-        assetNumber: "LT0002",
-        company: vnist._id,
+        code: "TS0002",
+        company:vnist._id,
+        serial: "123456789",
         assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
-        manager: users[2]._id,
-        person: users[4]._id,
+        warrantyExpirationDate: "20-02-2022",
+        manager: users[1]._id,
+        person: users[5]._id,
         dateStartUse: "20-02-2020",
-        dateEndUse: "",
+        dateEndUse: "20-04-2020",
         location: "P105",
-        initialPrice: 60000000,
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "256GB",
         }],
+        cost: 60000000,
+        residualValue: 15000000,
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDeprecition: "5", // thời gian trích khấu hao
+        timeDepreciation: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
-        file: [],
-    }, {
-        avatar: "/upload/asset/avatars/avatar5.png",
+        file: [{
+            nameFile: "Tài liệu hướng dẫn",
+            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 2",
+            number: "1",
+            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+        }],
+    },{
+        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
         assetName: "Laptop Lenovo",
-        assetNumber: "LT0003",
-        company: vnist._id,
+        code: "TS0003",
+        company:vnist._id,
+        serial: "987654321",
         assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
-        manager: users[2]._id,
-        person: users[4]._id,
+        warrantyExpirationDate: "20-02-2022",
+        manager: users[1]._id,
+        person: users[6]._id,
         dateStartUse: "20-02-2020",
-        dateEndUse: "",
+        dateEndUse: "20-04-2020",
         location: "P104",
-        initialPrice: 50000000,
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "240GB",
         }],
+        cost: 60000000,
+        residualValue: 15000000,
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDeprecition: "5", // thời gian trích khấu hao
+        timeDepreciation: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
-        file: [],
-    }, {
-        avatar: "/upload/asset/avatars/avatar5.png",
+        file: [{
+            nameFile: "Tài liệu hướng dẫn",
+            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 3",
+            number: "1",
+            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+        }],
+    },{
+        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
         assetName: "Laptop HP",
-        assetNumber: "LT0004",
-        company: vnist._id,
+        code: "TS0004",
+        company:vnist._id,
+        serial: "111111111",
         assetType: listAssetType[16]._id,
         datePurchase: "20-02-2020",
-        manager: users[2]._id,
+        warrantyExpirationDate: "20-02-2022",
+        manager: users[1]._id,
         person: users[4]._id,
         dateStartUse: "20-02-2020",
-        dateEndUse: "",
+        dateEndUse: "20-04-2020",
         location: "P104",
-        initialPrice: 50000000,
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "120GB",
         }],
+        cost: 60000000,
+        residualValue: 15000000,
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDeprecition: "5", // thời gian trích khấu hao
+        timeDepreciation: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
-        file: [],
+        file: [{
+            nameFile: "Tài liệu hướng dẫn",
+            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 4",
+            number: "1",
+            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+        }],
     }])
     console.log("Khởi tạo dữ liệu tài sản!");
     var asset = await Asset.create({
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
-        assetName: "Laptop Dell 5559",
-        assetNumber: "LT0001",
-        company: vnist._id,
-        assetType: listAssetType[1]._id,
-        datePurchase: "20-02/2020",
-        manager: users[7]._id,
-        location: "P104",
-        initialPrice: 50000000,
-        status: "available", // sẵn sàng sử dụng
-        description: "Laptop ver 2016",
+        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
+        assetName: "Laptop Dell XPS",
+        code: "TS0005",
+        company:vnist._id,
+        serial: "111111111",
+        assetType: listAssetType[16]._id,
+        datePurchase: "25-02-2020",
+        warrantyExpirationDate: "20-02-2022",
+        manager: users[1]._id,
+        person: users[4]._id,
+        dateStartUse: "20-03-2020",
+        dateEndUse: "20-04-2020",
+        location: "P105",
+        status: "Đang sử dụng",
+        description: "Macbook Pro",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
-            value: "500GB",
+            value: "256GB",
         }],
+        cost: 60000000,
+        residualValue: 15000000,
         startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDeprecition: "5", // thời gian trích khấu hao
+        timeDepreciation: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
-        file: [],
+        file: [{
+            nameFile: "Tài liệu hướng dẫn",
+            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 5",
+            number: "1",
+            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+        }],
     });
     console.log(`Xong! Thông tin tài sản đã được tạo`);
     //END
@@ -1894,26 +2010,37 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu sửa chữa, thay thế, nâng cấp!");
     var repairupgrade = await RepairUpgrade.insertMany([{
         asset: asset._id,
-        company: vnist._id,
+        company:vnist._id,
         repairNumber: "SC0001",
-        type: "repair", // sửa chữa
+        type: "Sửa chữa",
         dateCreate: "20-02-2020",
         reason: "Sửa chữa hỏng hóc thiết bị",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
-        status: "complete" // đã thực hiện
+        status: "Đang thực hiện"
     }, {
         asset: asset._id,
-        company: vnist._id,
+        company:vnist._id,
         repairNumber: "SC0002",
-        type: "upgrade", // nâng cấp
+        type: "Thay thế",
+        dateCreate: "20-02-2020",
+        reason: "Thay thế thiết bị",
+        repairDate: "20-02-2020",
+        completeDate: "22-02-2020",
+        cost: "10000000",
+        status: "Đã thực hiện"
+    },{
+        asset: asset._id,
+        company:vnist._id,
+        repairNumber: "SC0003",
+        type: "Nâng cấp",
         dateCreate: "20-02-2020",
         reason: "Nâng cấp thiết bị",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
-        status: "complete" // đã thực hiện
+        status: "Chưa thực hiện"
     }])
     console.log(`Xong! Thông tin sửa chữa - thay thế - nâng cấp đã được tạo`);
 
@@ -1925,17 +2052,36 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
     var distributetransfer = await DistributeTransfer.insertMany([{
         asset: asset._id,
-        company: vnist._id,
+        company:vnist._id,
         distributeNumber: "CP0001",
-        type: "distribute", // cấp phát
+        type: "Cấp phát",
         dateCreate: "20-02-2020",
         place: "Phòng 104",
-        handoverMan: users[2]._id,
-        receiver: users[7]._id,
-        nowLocation: "P104",
-        nextLocation: "P105",
-        reason: "Cấp phát abcd",
-    }])
+        manager : users[1]._id,
+        handoverMan : users[2]._id,
+        receiver : users[7]._id,
+        nowLocation : "P104",
+        nextLocation : "P105",
+        dateStartUse : "10-05-2020",
+        dateEndUse : "12-05-2020",
+        reason: "Cấp phát thiết bị",
+    },{
+        asset: asset._id,
+        company:vnist._id,
+        distributeNumber: "DC0001",
+        type: "Điều chuyển",
+        dateCreate: "01-04-2020",
+        place: "Phòng 103",
+        manager : users[1]._id,
+        handoverMan : users[2]._id,
+        receiver : users[7]._id,
+        nowLocation : "P104",
+        nextLocation : "P103",
+        dateStartUse : "10-05-2020",
+        dateEndUse : "12-05-2020",
+        reason: "Điều chuyển thiết bị",
+    }
+    ])
     console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
@@ -1943,42 +2089,47 @@ const sampleCompanyData = async () => {
         TẠO DỮ LIỆU SỰ CỐ TÀI SẢN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
-    var distributetransfer = await DistributeTransfer.insertMany([{
+    console.log("Khởi tạo dữ liệu sự cố tài sản!");
+    var assetcrash = await AssetCrash.insertMany([{
         asset: asset._id,
-        company: vnist._id,
-        distributeNumber: "CP0001",
-        type: "distribute", // cấp phát
-        dateCreate: "20-02-2020",
-        place: "Phòng 104",
-        handoverMan: users[2]._id,
-        receiver: users[7]._id,
-        nowLocation: "P104",
-        nextLocation: "P105",
-        reason: "Cấp phát abcd",
+        company:vnist._id,
+        type: "Hỏng hóc", //phân loại
+        annunciator: users[4]._id, //người báo cáo
+        reportDate: "20-02-2020", // ngày báo cáo
+        detectionDate: "20-02-2020", // ngày phát hiện
+        reason: "Hỏng hóc thiết bị",
+    },
+    {
+        asset: asset._id,
+        company:vnist._id,
+        type: "Mất", //phân loại
+        annunciator: users[4]._id, // người báo cáo
+        reportDate: "20-02-2020", // ngày báo cáo
+        detectionDate: "20-02-2020", // ngày phát hiện
+        reason: "Mất thiết bị",
     }])
-    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
+    console.log(`Xong! Thông tin sự cố tài sản đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU ĐỀ NGHỊ CẤP PHÁT
+        TẠO DỮ LIỆU ĐỀ NGHỊ CẤP PHÁT SỬ DỤNG
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
-    var distributetransfer = await DistributeTransfer.insertMany([{
+    console.log("Khởi tạo dữ liệu đăng ký cấp phát-sử dụng thiết bị!");
+    var recommmenddistribute = await RecommendDistribute.insertMany([{
         asset: asset._id,
-        company: vnist._id,
-        distributeNumber: "CP0001",
-        type: "distribute", // cấp phát
+        company:vnist._id,
+        recommendNumber: "CP0001",
         dateCreate: "20-02-2020",
-        place: "Phòng 104",
-        handoverMan: users[2]._id,
-        receiver: users[7]._id,
-        nowLocation: "P104",
-        nextLocation: "P105",
-        reason: "Cấp phát abcd",
+        proponent: users[4]._id,
+        reqContent: "Đề nghị cấp phát sử dụng laptop dell xps",
+        dateStartUse: "11-05-2020",
+        dateEndUse: "11-06-2020",
+        approver : null,
+        note : "",
+        status : "Chờ phê duyệt",
     }])
-    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
+    console.log(`Xong! Thông tin đăng ký cấp phát sử dụng đã được tạo`);
 }
 
 

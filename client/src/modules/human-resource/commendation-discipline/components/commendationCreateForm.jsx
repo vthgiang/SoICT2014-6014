@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 import { CommendationFromValidator } from './commendationFormValidator';
 
 import { DisciplineActions } from '../redux/actions';
@@ -78,9 +78,8 @@ class PraiseCreateForm extends Component {
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      */
-    handleOrganizationalUnitChange = (e) => {
-        let value = e.target.value;
-        this.validateOrganizationalUnit(value, true);
+    handleOrganizationalUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
         let msg = CommendationFromValidator.validateOrganizationalUnit(value, this.props.translate)
@@ -176,7 +175,7 @@ class PraiseCreateForm extends Component {
         }
     }
     render() {
-        const { translate, discipline } = this.props;
+        const { translate, discipline, department } = this.props;
         const { employeeNumber, startDate, reason, decisionNumber, organizationalUnit, type, errorOnStartDate,
             errorOnEmployeeNumber, errorOnDecisionNumber, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
         return (
@@ -205,7 +204,14 @@ class PraiseCreateForm extends Component {
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleOrganizationalUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <SelectBox
+                                    id={`create_commendation`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnit}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
+                                    onChange={this.handleOrganizationalUnitChange}
+                                />
                                 <ErrorLabel content={errorOnOrganizationalUnit} />
                             </div>
                         </div>
@@ -238,8 +244,8 @@ class PraiseCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { discipline } = state;
-    return { discipline };
+    const { discipline, department } = state;
+    return { discipline, department };
 };
 
 const actionCreators = {

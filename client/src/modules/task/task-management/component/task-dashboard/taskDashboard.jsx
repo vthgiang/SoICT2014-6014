@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 import { TaskStatusChart } from './taskStatusChart';
+import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -314,44 +315,6 @@ class TaskDashboard extends Component {
                 dataPoints: this.generateDataPoints(500)
             }]
         }
-        
-        const options5 = {
-            exportEnabled: true,
-            title: {
-                text: "Miền kết quả công việc theo tháng",
-                fontFamily: "tahoma",
-                fontSize: 25,
-            },
-            axisY: {
-                includeZero: false,
-                // suffix: " °C",
-                maximum: 100,
-                gridThickness: 0
-            },
-            toolTip: {
-                shared: true,
-                content: "{name} </br> <strong>Kết quả: </strong> </br> Thấp nhất: {y[0]}, Cao nhất: {y[1]}"
-            },
-            data: [{
-                type: "rangeSplineArea",
-                fillOpacity: 0.1,
-                color: "#91AAB1",
-                indexLabelFormatter: window.formatter,
-                dataPoints: [
-                    { label: "Tháng 1", y: [75, 95], name: "Tốt" },
-                    { label: "Tháng 2", y: [50, 80], name: "Trung bình" },
-                    { label: "Tháng 3", y: [70, 85], name: "Khá" },
-                    { label: "Tháng 4", y: [80, 95], name: "Tốt" },
-                    { label: "Tháng 5", y: [65, 87], name: "Khá" },
-                    { label: "Tháng 6", y: [79, 98], name: "Tốt" },
-                    { label: "Tháng 7", y: [45, 70], name: "Trung bình" },
-                    { label: "Tháng 8", y: [40, 68], name: "Trung bình" },
-                    { label: "Tháng 9", y: [50, 77], name: "Trung bình" },
-                    { label: "Tháng 10", y: [30, 70], name: "Trung bình" },
-                    { label: "Tháng 11", y: [60, 70], name: "Trung bình" },
-                ]
-            }]
-        }
         return (
             <div className="table-wrapper">
                 {/* <div className="content-wrapper">
@@ -407,8 +370,9 @@ class TaskDashboard extends Component {
                         </div>
                         <div className="row">
                             <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options5} />
+                                <div className="box box-primary" style={ {textAlign: 'center'}}>
+                                    <h2>Miền kết quả công việc</h2>
+                                    <DomainOfTaskResultsChart/>
                                 </div>
                             </div>
                             <div className="col-xs-6">
@@ -417,6 +381,8 @@ class TaskDashboard extends Component {
                                     <TaskStatusChart/>
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-xs-6">
                                 <div className="box box-primary">
                                     <CanvasJSReact options={options2} />

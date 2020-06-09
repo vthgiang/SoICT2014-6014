@@ -44,6 +44,7 @@ exports.createEducationProgram = async (req, res) => {
             res.status(400).json({ success: false, messages: ["name_required"], content:{ inputData: req.body } });
         } else {
             var education = await EducationProgramService.createEducationProgram(req.body,req.user.company._id);
+            console.log(education);
             if(education ==='have_exist'){
                 await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
                 res.status(400).json({ success: false, messages: ["program_id_have_exist"], content:{ inputData: req.body } });

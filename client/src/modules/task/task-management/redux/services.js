@@ -61,6 +61,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
     return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
+        
     }, false, true, 'task.task_management');
 }
 
@@ -174,7 +175,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
  */
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/edit/task-responsible/${taskId}`,
+        url: `${LOCAL_SERVER_API}/tasks/edit/task-accountable/${taskId}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'task.task_management');

@@ -58,7 +58,7 @@ class ModalViewTaskTemplate extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
-                                        Thông tin chung
+                                        {translate('task_template.general_information')}
                                     </div>
                                     <div className="box-body">
 
@@ -71,7 +71,7 @@ class ModalViewTaskTemplate extends Component {
                                         <dt>{translate('task_template.formula')}</dt>
                                         <dd>{taskTemplate.formula}</dd>
                                         
-                                        <dt>Tham số</dt>
+                                        <dt>{translate('task_template.parameters')}</dt>
                                         <dd>
                                             <div>D: Tổng số ngày thực hiện công việc (trừ CN)</div>
                                             <div>D0: Số ngày quá hạn</div>
@@ -88,7 +88,7 @@ class ModalViewTaskTemplate extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}} >
                                 <div className="box box-solid description">
                                     <div className="box-header with-border">
-                                        Các vai trò
+                                        {translate('task_template.roles')}
                                     </div>
                                     <div className="box-body">
                                         <dl>
@@ -189,7 +189,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <dt>{translate('task_template.no_data')}</dt> :
                                                 taskTemplate.taskInformations.map((item, index) =>
                                                     <React.Fragment key={index}>
-                                                        <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}</dt>
+                                                        <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
                                                 )

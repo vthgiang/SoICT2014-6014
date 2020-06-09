@@ -124,7 +124,7 @@ class DisciplineTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
+        const { id, translate, department } = this.props;
         const { commendations, disciplines } = this.state;
         return (
             <div id={id} className="tab-pane">
@@ -146,20 +146,27 @@ class DisciplineTab extends Component {
                             </thead>
                             <tbody>
                                 {(typeof commendations !== 'undefined' && commendations.length !== 0) &&
-                                    commendations.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.decisionNumber}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{x.organizationalUnit}</td>
-                                            <td>{x.type}</td>
-                                            <td>{x.reason}</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteConmmendation(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
-
+                                    commendations.map((x, index) => {
+                                        let nameUnit;
+                                        department.list.forEach(u => {
+                                            if (u._id === x.organizationalUnit) {
+                                                nameUnit = u.name;
+                                            }
+                                        })
+                                        return (
+                                            <tr key={index}>
+                                                <td>{x.decisionNumber}</td>
+                                                <td>{this.formatDate(x.startDate)}</td>
+                                                <td>{nameUnit}</td>
+                                                <td>{x.type}</td>
+                                                <td>{x.reason}</td>
+                                                <td>
+                                                    <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteConmmendation(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
                             </tbody>
                         </table>
                         {
@@ -183,20 +190,28 @@ class DisciplineTab extends Component {
                             </thead>
                             <tbody>
                                 {(typeof disciplines !== 'undefined' && disciplines.length !== 0) &&
-                                    disciplines.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.decisionNumber}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{x.organizationalUnit}</td>
-                                            <td>{x.type}</td>
-                                            <td>{x.reason}</td>
-                                            <td>
-                                                <a onClick={() => this.handleViewDiscipline(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDiscipline(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    disciplines.map((x, index) => {
+                                        let nameUnit;
+                                        department.list.forEach(u => {
+                                            if (u._id === x.organizationalUnit) {
+                                                nameUnit = u.name;
+                                            }
+                                        })
+                                        return (
+                                            <tr key={index}>
+                                                <td>{x.decisionNumber}</td>
+                                                <td>{this.formatDate(x.startDate)}</td>
+                                                <td>{this.formatDate(x.endDate)}</td>
+                                                <td>{nameUnit}</td>
+                                                <td>{x.type}</td>
+                                                <td>{x.reason}</td>
+                                                <td>
+                                                    <a onClick={() => this.handleViewDiscipline(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDiscipline(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
                             </tbody>
                         </table>
                         {
@@ -237,6 +252,9 @@ class DisciplineTab extends Component {
         );
     }
 };
-
-const disciplineTab = connect(null, null)(withTranslate(DisciplineTab));
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+const disciplineTab = connect(mapState, null)(withTranslate(DisciplineTab));
 export { disciplineTab as DisciplineTab };

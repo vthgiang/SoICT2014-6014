@@ -10,10 +10,12 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-
+import {
+    getStorage
+} from '../../../../../config';
 import { ModalMemberApprove } from './employeeKpiApproveModal';
-import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
 import { Comments } from './employeeKpiComment';
+import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -21,41 +23,24 @@ class KPIMember extends Component {
         super(props);
         this.state = {
             commenting: false,
-            user:"",
-            status:"",
-            startDate : this.formatDateBack(Date.now()),
-            endDate : this.formatDateBack(Date.now()),
+            user:null,
+            status:null,
+            startDate: null,
+            endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: "",
-                status: 4,
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now())
+                user: null,
+                status: null,
+                startDate: null,
+                endDate: null
             },
-            showApproveModal: "",
-            showEvaluateModal: ""
+            showApproveModal: null,
+            showEvaluateModal: null
         };
     }
     componentDidMount() {
-        var infosearch = {
-            role: localStorage.getItem("currentRole"),
-            user: "all",
-            status: 4,
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now())
-        }
-        // Lấy tất cả nhân viên của phòng ban
-
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
-        this.props.getAllKPIMemberOfUnit(infosearch);
-        
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/GridTableVers1.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        this.handleResizeColumn();
+        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
     }
     formatDateBack(date) {
         var d = new Date(date), month, day, year;
@@ -74,34 +59,6 @@ class KPIMember extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
- 
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
- 
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
- 
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -124,11 +81,14 @@ class KPIMember extends Component {
         } else if (status === 2) {
             return "Đã kích hoạt";
         } else if (status === 3) {
-            return "Đã kết thúc"
+            return "Đã kết thúc";
+        } else if (status === 4) {
+            return "Đang hoạt động";
+        } else if (status === 5) {
+            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -138,7 +98,6 @@ class KPIMember extends Component {
         
     }
     handleEndDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -165,15 +124,13 @@ class KPIMember extends Component {
     }
     
     handleSearchData = async () => {
+        if(this.state.startDate === "") this.state.startDate = null;
+        if(this.state.endDate === "") this.state.endDate = null;
         await this.setState(state => {
             return {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    // user: this.user.value,
-                    // status: this.status.value,
-                    // startDate: this.state.startDate,
-                    // endDate: this.state.endDate
                     user: this.state.user,
                     status: this.state.status,
                     startDate: this.state.startDate,
@@ -182,34 +139,36 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-        // console.log("inforsearch", infosearch);
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            var startDate = infosearch.startDate.split("-");
-            var startdate = new Date(startDate[1], startDate[0], 0);
-            var endDate = infosearch.endDate.split("-");
-            var enddate = new Date(endDate[1], endDate[0], 28);
-            if (Date.parse(startdate) > Date.parse(enddate)) {
+            var startDate;
+            var endDate;
+            var startdate=null;
+            var enddate=null;
+            
+            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
+            startdate = new Date(startDate[1], startDate[0], 0);}
+            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
+            enddate = new Date(endDate[1], endDate[0], 28);}
+   
+            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Xác nhận'
                 })
-            } else {
+            } 
+            else {
                 this.props.getAllKPIMemberOfUnit(infosearch);
             }
-        }
     }
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
-                showApproveModal: id
+                kpiId: id
             }
         })
-        // console.log('handle ============='+id);
-        // console.log('state=============', this.state.showApproveModal);
-        window.$(`modal-approve-KPI-member-${id}`).modal('show')
+        window.$(`modal-approve-KPI-member`).modal('show')
     }
     showEvaluateModal = async (id) => {
         await this.setState(state => {
@@ -225,35 +184,48 @@ class KPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
-        // const {startDate, endDate} = this.state;
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
         const {status,employee,startDate, endDate} = this.state;
+
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
-        // console.log('ifo'+ this.state);
+
+        let unitMembers;
+        if (userdepartments) {
+            unitMembers = [
+                {
+                    value: [{text:"--Chọn nhân viên--", value: "null"}]
+                },
+                {
+                    text: userdepartments.roles.dean.name,
+                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.viceDean.name,
+                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                },
+                {
+                    text: userdepartments.roles.employee.name,
+                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+                },
+            ]
+        }
+
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
+                    {<ModalMemberApprove id={this.state.kpiId} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>Nhân viên:</label>
-                                {userdepartments &&
+                                {unitMembers &&
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id={`employee-kpi-manage`}
                                     className="form-control"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {
-                                            text: userdepartments[1].roleId.name,
-                                            value: [{text: userdepartments[1].userId.name, value: userdepartments[1].userId._id}]
-                                        },
-                                        {
-                                            text: userdepartments[2].roleId.name,
-                                            value: [{text: userdepartments[2].userId.name, value: userdepartments[2].userId._id}]
-                                        }
-                                    ]}
+                                    items={unitMembers}
                                     onChange={this.handleEmployeeChange}
                                     // multiple={true}
                                     value={user}
@@ -266,15 +238,14 @@ class KPIMember extends Component {
                                     // className="form-control"
                                     style={{width: "100%"}}
                                     items = {[
+                                        {value:"null", text : "--Chọn trạng thái--"},
                                         {value:0, text : "Đang thiết lập"},
                                         {value:1, text : "Chờ phê duyệt"},
                                         {value:2, text : "Đã kích hoạt"},
                                         {value:3, text : "Đã kết thúc"},
                                         {value:4, text : "Đang hoạt động"},
                                         {value:5, text : "Tất cả các trạng thái"},]}
-                                    // items = {items}
                                     onChange={this.handleStatusChange}
-                                    // multiple={true}
                                     value={status}
                                 />
                             </div>
@@ -285,7 +256,7 @@ class KPIMember extends Component {
                                 <label>Từ tháng:</label>
                                 <DatePicker
                                 id='start_date'
-                                defaultValue={this.formatDate(Date.now())}
+                                
                                 value = {startDate}
                                 onChange={this.handleStartDateChange}
                                 dateFormat="month-year"
@@ -295,7 +266,7 @@ class KPIMember extends Component {
                                 <label>Đến tháng:</label>
                                 <DatePicker
                                 id='end_date'
-                                defaultValue={this.formatDate(Date.now())}
+                               
                                 value = {endDate}
                                 onChange={this.handleEndDateChange}
                                 dateFormat="month-year"
@@ -345,10 +316,8 @@ class KPIMember extends Component {
                             <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                             
                             <td>
-                                <a data-target={`#modal-approve-KPI-member-${item._id}`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                <a data-target={`#modal-approve-KPI-member`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />}
-                                {/* {<ModalMemberApprove id={item._id} />} */}
                             </td>
                             <td>
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
@@ -365,18 +334,15 @@ class KPIMember extends Component {
                         </tbody>
                         </table>
                     </div>
-                    {/* {this.state.showApproveModal !== "" && <ModalMemberApprove id={"5ec9e97e0d402827b818761c"} />} */}
-                    
                 </div>
-            {/* </div> */}
         </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { user, kpimembers } = state;
-    return { user, kpimembers };
+    const { user, kpimembers,KPIPersonalManager } = state;
+    return { user, kpimembers,KPIPersonalManager };
 }
  
 const actionCreators = {

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 
 // Tạo bảng datatable khen thưởng
 const CommendationSchema = new Schema({
@@ -20,8 +21,8 @@ const CommendationSchema = new Schema({
         require: true,
     },
     organizationalUnit: { // cấp ra quyết định
-        type: String,
-        require: true,
+        type: Schema.Types.ObjectId,
+        ref: OrganizationalUnit
     },
     startDate: { // ngày ra quyết định
         type: Date,

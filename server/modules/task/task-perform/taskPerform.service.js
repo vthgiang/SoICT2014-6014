@@ -142,19 +142,6 @@ exports.deleteCommentOfTaskAction = async (params) => {
     return task.taskActions ;    
 }
 /**
- * Lấy thông tin tất cả các hoạt động không theo mẫu của công việc
- */
-exports.getTaskActions = async (taskId) => {
-    //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
-    var task = await Task.findOne({ _id: taskId }).populate([
-        { path: "taskActions.creator", model: User,select: 'name email avatar '},
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
-    
-    return task.taskActions
- };
- 
-/**
  * Thêm hoạt động cho công việc
  */
 
@@ -368,16 +355,6 @@ exports.createTaskComment = async (body,files) => {
      return task.taskComments;
 }
 /**
- * Lấy tất cả bình luận công việc
-*/
-exports.getTaskComments = async (params) => {
-    var task = await Task.findOne({_id:params.task}).populate([
-        { path: "taskComments.creator", model: User,select: 'name email avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])   
-    return task.taskComments;
-}
-/**
  * Sửa bình luận công việc
  */
 exports.editTaskComment = async (params,body) => {
@@ -414,7 +391,6 @@ exports.deleteTaskComment = async (params) => {
  * Thêm bình luận của bình luận công việc
  */
 exports.createCommentOfTaskComment = async (body,files) => {
-
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
@@ -491,135 +467,86 @@ exports.deleteCommentOfTaskComment = async (params) => {
  */
 exports.evaluationAction = async (id,body) => {
     var task1 = await Task.findOne({ "taskActions._id": id })
-    task1.accountableEmployees.forEach(async elem => {  
-        if(body.creator == elem){
-            var evaluationAction = await Task.update(
-                {"taskActions._id":id},
-                {
-                    "$push": {
-                        "taskActions.$.evaluations":
-                        {
-                            creator: body.creator,
-                            rating: body.rating,
-                        }
-                    },
-                    
-                })
-            var evaluationActionRating = await Task.update(
-                {"taskActions._id":id},
-                {
-                    $set: {"taskActions.$.rating": body.rating}
-                }
-            )   
-            }else {
-                var evaluationAction1 = await Task.update(
-                    {"taskActions._id":id},
+    let idAccountableEmployee = task1.accountableEmployees.find(elem => body.creator===elem);
+    if (idAccountableEmployee) {
+        var evaluationAction = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
                     {
-                        "$push": {
-                            "taskActions.$.evaluations":
-                            {
-                                creator: body.creator,
-                                rating: body.rating,
-                            }
-                        }
-                    })   
-            }
-    })
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                },
+            },
+            {$new: true}
+        )
+
+        var evaluationActionRating = await Task.update(
+            {"taskActions._id":id},
+            {
+                $set: {"taskActions.$.rating": body.rating}
+            },
+            {$new: true}
+        )
+    } else {
+        var evaluationAction1 = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
+                    {
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                }
+            },
+            {$new: true}
+        )
+    }
+
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
+    ]);
+    
     return task.taskActions;
 }
 /**
  * Xác nhận hành động
  */
-exports.confirmAction = async (id,idUser) => {
+exports.confirmAction = async (params) => {
+    
     var evaluationActionRating = await Task.updateOne(
-        {"taskActions._id":id},
+        {"taskActions._id":params.id},
         {
-            $set: {"taskActions.$.creator": idUser}
+            $set: {
+                "taskActions.$.creator": params.idUser,
+                "taskActions.$.createdAt":Date.now()
+            }
         }
     )  
-    var task = await Task.findOne({ "taskActions._id": id }).populate([
+    
+    var task = await Task.findOne({ "taskActions._id": params.id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
-    
     return task.taskActions;   
 }
 /**
  * Upload tài liệu cho cộng việc
  */
 exports.uploadFile = async (params,files) => {
-
     var evaluationActionRating = await Task.updateOne(
         {_id:params.task},
         {
             $push: {files:  files}
         }
     )  
-    var task = await Task.findOne({ _id: params.task })
+    var task = await Task.findOne({ _id: params.task }).populate([
+        { path: "files.creator", model: User, select: 'name email avatar' },
+    ]);
     return task.files
-}
-/**
- * Download tài liệu của hoạt động
- */
-exports.downloadFilePOfAction = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskActions"},
-        {$replaceRoot:{newRoot:"$taskActions"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}},
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu của bình luận hoạt động
- */
-exports.downloadFileOfActionComment = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskActions.comments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskActions"},
-        {$replaceRoot:{newRoot:"$taskActions"}},
-        {$unwind:"$comments"},
-        {$replaceRoot:{newRoot:"$comments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}}
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu của bình luận công việc
- */
-exports.downloadFilePOfTaskComment = async (params) => {
-    
-    var file = await Task.aggregate([
-        {$match:{"taskComments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskComments"},
-        {$replaceRoot:{newRoot:"$taskComments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}},
-    ])
-    return file[0];
-}
-/**
- * Download tài liệu bình luận của bình luận công việc
- */
-exports.downloadFileCommentOfTaskComment = async (params) => {
-    console.log("hihihihihi")
-    var file = await Task.aggregate([
-        {$match:{"taskComments.comments.files._id":mongoose.Types.ObjectId(params.id)}},
-        {$unwind:"$taskComments"},
-        {$replaceRoot:{newRoot:"$taskComments"}},
-        {$unwind:"$comments"},
-        {$replaceRoot:{newRoot:"$comments"}},
-        {$unwind:"$files"},
-        {$replaceRoot:{newRoot:"$files"}}
-    ])
-    console.log(file)
-    return file[0];
 }

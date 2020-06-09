@@ -204,10 +204,12 @@ class TrainingPlan extends Component {
                         endDate={this.formatDate(this.state.currentEditRow.endDate)}
                         cost={this.state.currentEditRow.cost.number}
                         lecturer={this.state.currentEditRow.lecturer}
-                        educationProgram={this.state.currentEditRow.educationProgram}
+                        applyForOrganizationalUnits={this.state.currentEditRow.educationProgram.applyForOrganizationalUnits}
+                        applyForPositions={this.state.currentEditRow.educationProgram.applyForPositions}
+                        educationProgram={this.state.currentEditRow.educationProgram._id}
                         employeeCommitmentTime={this.state.currentEditRow.employeeCommitmentTime}
                         type={this.state.currentEditRow.type}
-                        listEmployees={["5ecc8a6ede9c0a42c8d44f40"]}
+                        listEmployees={this.state.currentEditRow.listEmployees.map(x => { return { _id: x.employee._id, result: x.result } })}
                         unit={this.state.currentEditRow.cost.unit}
                     />
                 }
@@ -226,7 +228,7 @@ class TrainingPlan extends Component {
                         educationProgram={this.state.currentViewRow.educationProgram}
                         employeeCommitmentTime={this.state.currentViewRow.employeeCommitmentTime}
                         type={this.state.currentViewRow.type}
-                        listEmployees={[]}
+                        listEmployees={this.state.currentViewRow.listEmployees}
                         unit={this.state.currentViewRow.cost.unit}
                     />
                 }
