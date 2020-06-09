@@ -25,7 +25,7 @@ class EvaluateByResponsibleEmployee extends Component {
             task: data.task,
             idUser: data.idUser,
             info: data.info,
-            autoPoint: data.automaticPoint,
+            autoPoint: data.autoPoint,
             date: data.date,
             kpi: data.kpi,
             point: data.point,
@@ -159,7 +159,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 date: value,
                 info: data.info, 
                 kpi: data.kpi,
-                autoPoint: data.automaticPoint,
+                autoPoint: data.autoPoint,
                 point: data.point
             }
         });
