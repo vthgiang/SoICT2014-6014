@@ -79,7 +79,7 @@ exports.editUser = async (req, res) => {
             content: result
         });
     } catch (error) {
-        
+        console.log("errrr: ", error)
         LogError(req.user.email, 'EDIT_USER', req.user.company);
         res.status(400).json({
             success: false,
@@ -183,7 +183,7 @@ exports.dowloadFile = async (req, res) => {
     try {
         const {path} = req.query;
         await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
-        res.download(path, "file");
+        res.download(path);
     } catch (error) {
 
         await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
