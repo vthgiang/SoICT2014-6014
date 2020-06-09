@@ -4,7 +4,7 @@ import {withTranslate} from 'react-redux-multilingual';
 import {AssetCrashEditForm} from './AssetCrashEditForm';
 import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
 import {AssetCrashActions} from '../redux/actions';
-import {AssetManagerActions} from "../../asset-manager/redux/actions";
+// import {AssetManagerActions} from "../../asset-management/redux/actions";
 import {UserActions} from "../../../super-admin/user/redux/actions";
 class AssetCrashManager extends Component {
     constructor(props) {
@@ -271,7 +271,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetCrashs: AssetCrashActions.searchAssetCrashs,
     deleteAssetCrash: AssetCrashActions.deleteAssetCrash,
-    getAllAsset: AssetManagerActions.getAllAsset,
+    // getAllAsset: AssetManagerActions.getAllAsset,
     getAllUsers: UserActions.get
 };
 

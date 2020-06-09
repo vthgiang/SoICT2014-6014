@@ -5,7 +5,7 @@ import { RepairUpgradeCreateForm } from './RepairUpgradeCreateForm';
 import { RepairUpgradeEditForm } from './RepairUpgradeEditForm';
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import { RepairUpgradeActions } from '../redux/actions';
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 class RepairUpgradeManager extends Component {
     constructor(props) {

@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {DataTableSetting, PaginateBar, SelectMulti} from '../../../../common-components';
-import {AssetManagerActions} from '../../asset-manager/redux/actions';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 import {AssetTypeActions} from "../../asset-type/redux/actions";
 import {AssetCrashCreateForm} from "./AssetCrashCreateForm";
 import {UserActions} from "../../../super-admin/user/redux/actions";
-import {AssetDetailForm} from "../../asset-manager/components/AssetDetailForm";
+// import {AssetDetailForm} from "../../asset-management/components/AssetDetailForm";
 
 class AssetAssignedManager extends Component {
     constructor(props) {
@@ -250,7 +250,7 @@ class AssetAssignedManager extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
                 </div>
-                {
+                {/* {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
                         _id={this.state.currentRowView.asset._id}
@@ -258,7 +258,7 @@ class AssetAssignedManager extends Component {
                         repairUpgrade={this.state.currentRowView.repairUpgrade}
                         distributeTransfer={this.state.currentRowView.distributeTransfer}
                     />
-                }
+                } */}
 
                 {
                     this.state.currentRow !== undefined &&

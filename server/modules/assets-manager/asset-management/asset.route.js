@@ -1,32 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const {auth} = require('../../../middleware');
+const {
+    auth,
+    uploadFile
+} = require('../../../middleware');
 const AssetController = require("./asset.controller");
-const formidable = require("express-formidable");
+const data =[
+    {name:'fileAvatar', path:'/human-resource/avatars'},
+    {name:'file', path:'/human-resource/files'}
+]
+
 /**
  * Lấy danh sách tài sản
  */
-router.post('/paginate', auth, AssetController.searchAssetProfiles);
+router.get('/', auth, AssetController.searchAssetProfiles);
 
-// Kiểm tra sự tồn tại của mã tài sản
-router.get('/checkCode/:code', auth, AssetController.checkCode);
+/**
+ * Thêm mới một tài sản
+ */
+router.post('/', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 
-// Thêm mới một tài sản
-router.post('/', auth, formidable(), AssetController.create);
+/**
+ * Cập nhật thông tin tài sản theo id
+ */
+router.put('/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 
-// them file
-router.post('/uploadFile', auth, formidable(), AssetController.uploadFileAttachments);
-
-// Cập nhật thông tin tài sản theo id
-router.put('/update/:id', auth, AssetController.updateInfoAsset);
-
-// Cập nhật Avatar của tài sản theo mã tài sản
-router.patch('/avatar/:code', auth, AssetController.uploadAvatar, AssetController.updateAvatar);
-
-// Cập nhật(thêm) thông tin file đính kèm
-router.patch('/file/:code', auth, AssetController.uploadFile, AssetController.updateFile);
-
-// Xoá thông tin tài sản
-router.delete('/:id', auth, AssetController.delete);
+/**
+ * Xoá thông tin tài sản
+ */
+router.delete('/:id', auth, AssetController.deleteAsset);
 
 module.exports = router;

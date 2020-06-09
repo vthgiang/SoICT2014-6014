@@ -1335,8 +1335,8 @@ export default {
             asset_info: {
 
                 //Thông điệp trả về từ server
-                get_asset_success: 'Lấy thông tin tài sản thành công',
-                get_asset_faile: 'Lấy thông tin tài sản thất bại',
+                get_list_asset_success: 'Lấy thông tin tài sản thành công',
+                get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
                 create_asset_success: 'Thêm tài sản thành công',
                 create_asset_faile: 'Thêm tài sản thất bại',
                 delete_asset_success: 'Xoá tài sản thành công',

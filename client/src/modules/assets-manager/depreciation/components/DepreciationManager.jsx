@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-import { AssetManagerActions } from '../../asset-manager/redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
-import { AssetDetailForm } from '../../asset-manager/components/AssetDetailForm';
+// import { AssetDetailForm } from '../../asset-management/components/AssetDetailForm';
 class DepreciationManager extends Component {
     constructor(props) {
         super(props);
@@ -240,7 +240,7 @@ class DepreciationManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
-                {
+                {/* {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
                         _id={this.state.currentRowView.asset._id}
@@ -248,7 +248,7 @@ class DepreciationManager extends Component {
                         repairUpgrade={this.state.currentRowView.repairUpgrade}
                         distributeTransfer={this.state.currentRowView.distributeTransfer}
                     />
-                }
+                } */}
             </div >
         );
     }

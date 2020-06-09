@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {ButtonModal, DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
 import {AssetCrashFromValidator} from './AssetCrashFromValidator';
-import {AssetManagerActions} from '../../asset-manager/redux/actions';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 import {AssetCrashActions} from '../redux/actions';
 // import { string2literal } from '../utils/format_data';
 

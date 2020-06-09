@@ -1,120 +1,225 @@
 const {
     Asset,
-    RepairUpgrade,
-    DistributeTransfer,
-    UserRole
 } = require('../../../models').schema;
 
+
 /**
- * Lấy danh sách tài sản
- * @data: dữ liệu key tìm kiếm
- * @company: Id công ty người tìm kiếm
+ * Lấy thông tin tài sản theo id
+ * @id : id thông tin tài sản cần lấy
  */
-exports.searchAssetProfiles = async (data, company) => {
-    var keySearch = {company: company};
+exports.getAssetInforById = async (id) => {
+    return await Asset.findById(id);
+}
 
-    // Bắt sựu kiện mã tài sản tìm kiếm khác "Null"
-    if (data.code && data.code !== "") {
-        keySearch = {...keySearch, code: {$regex: data.code, $options: "i"}}
-    }
-    ;
 
-    // Bắt sựu kiện tên tài sản tìm kiếm khác ""
-    if (data.assetName && data.assetName !== "") {
-        keySearch = {...keySearch, assetName: {$regex: data.assetName, $options: "i"}}
-    }
-    ;
+/**
+ * Lấy danh sách tài sản theo key tìm kiếm
+ * @params : dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
+ */
+exports.searchAssetProfiles = async (params, company) => {
+    let keySearch = { company: company };
 
-    //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "" && data.month !== null) {
-        keySearch = {...keySearch, datePurchase: {$regex: data.month, $options: "i"}}
-    }
-    ;
+    // Bắt sựu kiện MSTS tìm kiếm khác ""
+    if (params.code !== undefined && params.code.length !== 0) {
+        keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
+    };
 
-    // Thêm key tìm kiếm tài sản theo trạng thái vào keySearch
-    if (data.status && data.status !== null) {
-        keySearch = {...keySearch, status: {$in: data.status}};
-    }
-    ;
+    // Bắt sựu kiện Tên tài sản tìm kiếm khác ""
+    if (params.assetName !== undefined && params.assetName.length !== 0) {
+        keySearch = { ...keySearch, assetName: { $regex: params.assetName, $options: "i" } }
+    };
+
+    // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
+    if (params.status !== undefined && params.status.length !== 0) {
+        keySearch = { ...keySearch, status: { $in: params.status } };
+    };
 
     // Lấy danh sách tài sản
-    var totalList = await Asset.count(keySearch);
-    var listAssets = await Asset.find(keySearch, {field1: 1, emailInCompany: 1})
-        .sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
-    var data = [];
-    var positionManager = {};
-    var newAssetManager = {};
-    var positionPerson = {};
-    var newAssetPerson = {};
+    let totalList = await Asset.count(keySearch);
+    let listAssets = await Asset.find(keySearch, { field1: 1, emailInCompany: 1 })
+        .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+    let data = [];
     for (let n in listAssets) {
-        var asset = await Asset.find({_id: listAssets[n]._id}).populate('assetType manager person');
-        if (asset.length) {
+        let assets = await Asset.find({ _id: listAssets[n]._id });
+        data[n] = { assets }
+    }
+    return { data, totalList }
+}
 
-            positionManager = await UserRole.find({userId: asset[0].manager._id}).populate('roleId');
-            if (asset[0].person !== null && asset[0].person !== undefined) positionPerson = await UserRole.find({userId: asset[0].person._id}).populate('roleId');
-            if (asset[0].person === null) newAssetPerson = null;
-            if (Object.keys(positionManager) && Object.keys(positionPerson)) {
-                newAssetManager = asset[0].manager.toObject();
 
-                newAssetManager.position = positionManager.pop().roleId;
-
-                if (asset[0].person !== null && asset[0].person !== undefined) {
-                    newAssetPerson = asset[0].person.toObject();
-                    newAssetPerson.position = positionPerson.length ? positionPerson.pop().roleId : {};
+/**
+ * Function merge urlFile upload với object
+ * @arrayFile : mảng chứa các file
+ * @arrayObject :mảng chứa các object
+ */
+exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
+    if (arrayFile !== undefined) {
+        arrayObject.forEach(x => {
+            arrayFile.forEach(y => {
+                if (x.file === y.originalname) {
+                    x.urlFile = `/${y.path}`;
                 }
+            })
+        });
+        return arrayObject;
+    } else return arrayObject;
+}
 
+/**
+ * Thêm mới tài sản
+ * @data : Dữ liệu thông tin tài sản
+ * @company : Id công ty
+ * @fileInfo : Thông tin file đính kèm
+ */
+exports.createAsset = async (data, company, fileInfo) => {
+    console.log(data);
+    console.log(fileInfo);
+
+    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        file = fileInfo.file;
+    let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
+    files = this.mergeUrlFileToObject(file, files);
+
+    let createAsset = await Asset.create({
+        company: company,
+        avatar: avatar,
+        assetName: data.assetName,
+        code: data.assetName,
+        serial: data.serial,
+        assetType: data.assetType,
+        purchaseDate: data.purchaseDate,
+        warrantyExpirationDate: data.warrantyExpirationDate,
+        managedBy: data.managedBy,
+        assignedTo: data.assignedTo,
+        handoverFromDate: data.handoverFromDate,
+        handoverToDate: data.handoverToDate,
+        location: data.location,
+        status: data.status,
+        description: data.description,
+
+        // khấu hao
+        cost: data.cost,
+        usefulLife: data.usefulLife,
+        residualValue: data.residualValue,
+        startDepeciation: data.startDepeciation,
+
+        // sửa chữa - bảo trì
+        maintainanceLogs: maintainanceLogs, // khi thêm mới tôi chưa thêm 
+        // day la toi khai bao o tren roi . oi,ông thu mo cai cua toi xem 
+
+        //cấp phát - sử dụng
+        usageLogs: usageLogs,
+
+        // sự cố tài sản
+        incidentLogs: incidentLogs,
+
+        // Lịch sử vị trí tài sản
+        locationLogs: locationLogs,
+
+        archivedRecordNumber: data.archivedRecordNumber,
+        files: files,
+    });
+
+    // Lấy thông tin nhân viên vừa thêm vào
+    let assets = await Asset.find({ _id: createAsset._id });
+
+    return { assets };
+}
+
+
+/**
+ * Cập nhât thông tin tài sản theo id
+ */
+exports.updateAssetInformation = async (id, data, fileInfo, company) => {
+    let { asset,
+        createMaintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs,
+        createUsageLogs, editUsageLogs, deleteUsageLogs,
+        createIncidentLogs, editIncidentLogs, deleteIncidentLogs,
+        createFiles, editFiles, deleteFiles } = data;
+    let avatar = fileInfo.avatar === "" ? asset.avatar : fileInfo.avatar,
+        file = fileInfo.file;
+
+    let oldAsset = await Asset.findById(id);
+
+    deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
+        if (arrDelete !== undefined) {
+            for (let n in arrDelete) {
+                arrObject = arrObject.filter(x => x._id.toString() !== arrDelete[n]._id);
+            };
+        };
+        if (arrEdit !== undefined) {
+            if (fileInfor !== undefined) {
+                arrEdit = this.mergeUrlFileToObject(fileInfor, arrEdit);
             }
+            for (let n in arrEdit) {
+                arrObject = arrObject.map(x => (x._id.toString() !== arrEdit[n]._id) ? x : arrEdit[n])
+            }
+        };
+        if (arrCreate !== undefined) {
+            if (fileInfor !== undefined) {
+                arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
+            }
+            arrCreate.forEach(x => arrObject.push(x));
+        };
+        return arrObject;
+    }
+
+    oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
+    oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
+    oldAsset.incidentLogs = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs);
+    oldAsset.files = deleteEditCreateObjectInArrayObject(oldAsset.files, deleteFiles, editFiles, createFiles, file);
+
+    oldAsset.avatar = avatar;
+    oldAsset.assetName = asset.assetName;
+    oldAsset.code = asset.code;
+    oldAsset.serial = asset.serial;
+    oldAsset.assetType = asset.assetType;
+    oldAsset.purchaseDate = asset.purchaseDate;
+    oldAsset.warrantyExpirationDate = asset.warrantyExpirationDate;
+    oldAsset.managedBy = asset.managedBy;
+    oldAsset.assignedTo = asset.assignedTo;
+    oldAsset.handoverFromDate = asset.handoverFromDate;
+    oldAsset.handoverToDate = asset.handoverToDate;
+    oldAsset.location = asset.location;
+    oldAsset.status = asset.status;
+    oldAsset.description = asset.description;
+
+    oldAsset.cost = asset.cost;
+    oldAsset.usefulLife = asset.usefulLife;
+    oldAsset.residualValue = asset.residualValue;
+    oldAsset.startDepeciation = asset.startDepeciation;
+
+    oldAsset.archivedRecordNumber = asset.archivedRecordNumber;
+
+    // Edit  thông tin tài sản
+    oldAsset.save();
+
+    // Function edit, create, Delete Document of collection
+    queryEditCreateDeleteDocumentInCollection = async (assetId, company, collection, arrDelete, arrEdit, arrCreate) => {
+        let queryDelete = arrDelete !== undefined ? arrDelete.map(x => { return { deleteOne: { "filter": { "_id": x._id } } } }) : [];
+        let queryEdit = arrEdit !== undefined ? arrEdit.map(x => {
+            return { updateOne: { "filter": { "_id": x._id }, "update": { $set: x } } }
+        }) : [];
+        let queryCrete = arrCreate !== undefined ? arrCreate.map(x => { return { insertOne: { "document": { ...x, asset: assetId, company: company } } } }) : [];
+        let query = [...queryDelete, ...queryEdit, ...queryCrete];
+        if (query.length !== 0) {
+            await collection.bulkWrite(query);
         }
-        var repairUpgrade = await RepairUpgrade.find({asset: listAssets[n]._id})
-        var distributeTransfer = await DistributeTransfer.find({asset: listAssets[n]._id});
+    };
 
-        data[n] = {asset: {...asset[0].toObject(), manager: newAssetManager, person: newAssetPerson}, repairUpgrade, distributeTransfer}
-    }
-    return {data, totalList}
+    // Lấy thông tin tài sản vừa thêm vào
+    let assets = await Asset.find({ _id: oldAsset._id });
+
+    return { assets };
 }
 
-// Thêm mới tài sản
-exports.create = (data) => {
-    var createAsset = new Asset(data);
-    return createAsset;
+/**
+ * Xoá thông tin tài sản
+ * @id : Id tài sản cần xoá
+ */
+exports.deleteAsset = async (id) => {
+    let asset = await Asset.findOneAndDelete({ _id: id });
+
+    return asset;
 }
-
-// Cập nhât thông tin tài sản theo id
-exports.updateInfoAsset = async (id, data) => {
-    return Asset.findByIdAndUpdate(id, data, {
-        new: true
-    });
-}
-
-// Cập nhật(thêm mới) Avatar tài sản
-exports.updateAvatar = async (code, url, company) => {
-
-}
-
-// Cập nhật(thêm) thông tin tài liệu đính kèm theo mã tài sản Code
-exports.updateFile = async (code, data, url, company) => {
-
-}
-
-//  Xoá thông tin tài sản theo id
-exports.delete = async (id) => {
-    return await Asset.findOneAndDelete({
-        _id: id
-    });
-}
-// Kiểm tra sự tồn tại của mã tài sản
-exports.checkAssetExisted = async (code, company) => {
-    var idAsset = await Asset.find({
-        code: code,
-        company: company
-    }, {
-        field1: 1
-    })
-    var checkCode = false;
-    if (idAsset.length !== 0) {
-        checkCode = true
-    }
-    return checkCode;
-}
-
-

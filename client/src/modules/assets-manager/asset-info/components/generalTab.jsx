@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import { LOCAL_SERVER_API } from '../../../../env';
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -13,19 +30,17 @@ class GeneralTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                img: nextProps.asset.avatar,
+                avatar: nextProps.asset.avatar,
                 code: nextProps.asset.code,
                 assetName: nextProps.asset.assetName,
                 serial: nextProps.asset.serial,
                 assetType: nextProps.asset.assetType,
-                datePurchase: nextProps.asset.datePurchase,
+                purchaseDate: nextProps.asset.purchaseDate,
                 warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
-                manager: nextProps.asset.manager,
-                positionManager: nextProps.asset.manager.positionManager,
-                person: nextProps.asset.person,
-                positionPerson: nextProps.asset.person.positionPerson,
-                dateStartUse: nextProps.asset.dateStartUse,
-                dateEndUse: nextProps.asset.dateEndUse,
+                managedBy: nextProps.asset.managedBy,
+                assignedTo: nextProps.asset.assignedTo,
+                handoverFromDate: nextProps.asset.handoverFromDate,
+                handoverToDate: nextProps.asset.handoverToDate,
                 location: nextProps.asset.location,
                 description: nextProps.asset.description,
                 status: nextProps.asset.status,
@@ -36,25 +51,13 @@ class GeneralTab extends Component {
         }
     }
 
-    // string2literal = (value) => {
-    //     var maps = {
-    //         "NaN": NaN,
-    //         "null": null,
-    //         "undefined": undefined,
-    //         "Infinity": Infinity,
-    //         "-Infinity": -Infinity
-    //     }
-    //     console.log((value in maps) ? maps[value] : value);
-    //     return ((value in maps) ? maps[value] : value);
-    // };
-
     render() {
         const { id, translate } = this.props;
 
         const {
-            img, avatar, code, assetName, serial, assetType, datePurchase, warrantyExpirationDate, manager, positionManager, person, positionPerson, dateStartUse, dateEndUse,
-            location, description, status, detailInfo
-        } = this.state;
+                img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
+                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo
+            } = this.state;
         console.log('this.state', this.state);
         console.log('code', code);
         const user = this.props.user;
@@ -66,7 +69,9 @@ class GeneralTab extends Component {
                     <div className="col-md-12">
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
-                                <img className="attachment-img avarta" src={img} alt="Attachment" />
+                                <a href={LOCAL_SERVER_API + avatar} target="_blank">
+                                <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                                </a>
                             </div>
                         </div>
                         <label>Thông tin cơ bản:</label>
@@ -89,42 +94,41 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <strong>Loại tài sản:&emsp; </strong>
                                         {assetType.typeName}
-                                        {/* cái này la đoi tuowng nay no ko in ra dc vay dau. thế gọi ntn ôg */}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày nhập:&emsp; </strong>
-                                        {datePurchase}
+                                        {this.formatDate(purchaseDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày bảo hành:&emsp; </strong>
-                                        {warrantyExpirationDate}
+                                        {this.formatDate(warrantyExpirationDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Người quản lý:&emsp; </strong>
-                                        {manager.name}
+                                        {managedBy.name}
                                     </div>
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <strong>Chức vụ:&emsp; </strong>
                                         {positionManager}
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <strong>Người được giao sử dụng tài sản:&emsp; </strong>
-                                        {person.name}
+                                        {assignedTo.name}
                                     </div>
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <strong>Chức vụ:&emsp; </strong>
                                         {positionPerson}
-                                    </div>
+                                    </div> */}
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
-                                        {dateStartUse}
+                                        {this.formatDate(handoverFromDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng đến ngày:&emsp; </strong>
-                                        {dateEndUse}
+                                        {this.formatDate(handoverToDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Vị trí tài sản:&emsp; </strong>

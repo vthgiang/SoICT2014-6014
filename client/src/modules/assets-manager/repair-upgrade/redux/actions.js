@@ -1,6 +1,6 @@
 import { RepairUpgradeConstants } from "./constants";
 import { RepairUpgradeService } from "./services";
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 export const RepairUpgradeActions = {
     searchRepairUpgrades,
     createNewRepairUpgrade,

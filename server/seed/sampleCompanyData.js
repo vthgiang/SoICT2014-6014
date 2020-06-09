@@ -1844,18 +1844,18 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");    
     var listAsset = await Asset.insertMany([{
-        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
         assetName: "Laptop Dell 5559",
         code: "TS0001",
         company:vnist._id,
         serial: "123456789",
         assetType: listAssetType[16]._id,
-        datePurchase: "20-02-2020",
-        warrantyExpirationDate: "20-02-2022",
-        manager: users[1]._id,
-        person: users[4]._id,
-        dateStartUse: "20-02-2020",
-        dateEndUse: "20-03-2020",
+        purchaseDate: new Date("2020-02-20"),
+        warrantyExpirationDate: new Date("2022-02-20"),
+        managedBy: users[1]._id,
+        assignedTo: users[4]._id,
+        handoverFromDate: new Date("2020-02-20"),
+        handoverToDate: new Date("2020-04-20"),
         location: "P104",
         status: "Đang sử dụng",
         description: "Laptop",
@@ -1863,254 +1863,175 @@ const sampleCompanyData = async () => {
             nameField: "Bộ nhớ ổ cứng",
             value: "500GB",
         }],
+
+        usageLogs: [{ //ghi lại lịch sử sử dụng
+            usedBy: users[4]._id,
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            description: "abcd"
+        }],
+
+        maintainanceLogs: [{ // bảo trì thiết bị
+            maintainanceCode: "SC0001",
+            createDate: new Date("2020-02-20"),
+            type: "Sửa chữa",
+            description: "Sửa chữa",
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            expense: 5000000,
+            status: "Đã thực hiện"
+        }],
+
         cost: 50000000,
         residualValue: 10000000,
-        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDepreciation: "5", // thời gian trích khấu hao
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile: "Tài liệu hướng dẫn",
-            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 1",
-            number: "1",
-            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
-        }],
+        startDepreciation: new Date("2020-02-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 15, // thời gian trích khấu hao
+
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     }, {
-        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
-        assetName: "Laptop Dell XPS",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
+        assetName: "Laptop HP",
         code: "TS0002",
-        company:vnist._id,
-        serial: "123456789",
-        assetType: listAssetType[16]._id,
-        datePurchase: "20-02-2020",
-        warrantyExpirationDate: "20-02-2022",
-        manager: users[1]._id,
-        person: users[5]._id,
-        dateStartUse: "20-02-2020",
-        dateEndUse: "20-04-2020",
-        location: "P105",
-        status: "Đang sử dụng",
-        description: "Laptop",
-        detailInfo: [{
-            nameField: "Bộ nhớ ổ cứng",
-            value: "256GB",
-        }],
-        cost: 60000000,
-        residualValue: 15000000,
-        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDepreciation: "5", // thời gian trích khấu hao
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile: "Tài liệu hướng dẫn",
-            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 2",
-            number: "1",
-            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
-        }],
-    },{
-        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
-        assetName: "Laptop Lenovo",
-        code: "TS0003",
         company:vnist._id,
         serial: "987654321",
         assetType: listAssetType[16]._id,
-        datePurchase: "20-02-2020",
-        warrantyExpirationDate: "20-02-2022",
-        manager: users[1]._id,
-        person: users[6]._id,
-        dateStartUse: "20-02-2020",
-        dateEndUse: "20-04-2020",
+        purchaseDate: new Date("2020-02-20"),
+        warrantyExpirationDate: new Date("2022-02-20"),
+        managedBy: users[1]._id,
+        assignedTo: users[4]._id,
+        handoverFromDate: new Date("2020-02-20"),
+        handoverToDate: new Date("2020-04-20"),
         location: "P104",
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
-            value: "240GB",
+            value: "500GB",
         }],
-        cost: 60000000,
-        residualValue: 15000000,
-        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDepreciation: "5", // thời gian trích khấu hao
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile: "Tài liệu hướng dẫn",
-            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 3",
-            number: "1",
-            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+
+        usageLogs: [{ //ghi lại lịch sử sử dụng
+            usedBy: users[4]._id,
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            description: "abcd"
         }],
+
+        maintainanceLogs: [{ // bảo trì thiết bị
+            maintainanceCode: "SC0001",
+            createDate: new Date("2020-02-20"),
+            type: "Sửa chữa",
+            description: "Sửa chữa",
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            expense: 5000000,
+            status: "Đã thực hiện"
+        }],
+
+        cost: 50000000,
+        residualValue: 10000000,
+        startDepreciation: new Date("2020-02-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 15, // thời gian trích khấu hao
+
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     },{
-        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
-        assetName: "Laptop HP",
-        code: "TS0004",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
+        assetName: "Laptop Lenovo",
+        code: "TS0003",
         company:vnist._id,
-        serial: "111111111",
+        serial: "123456789",
         assetType: listAssetType[16]._id,
-        datePurchase: "20-02-2020",
-        warrantyExpirationDate: "20-02-2022",
-        manager: users[1]._id,
-        person: users[4]._id,
-        dateStartUse: "20-02-2020",
-        dateEndUse: "20-04-2020",
+        purchaseDate: new Date("2020-02-20"),
+        warrantyExpirationDate: new Date("2022-02-20"),
+        managedBy: users[1]._id,
+        assignedTo: users[4]._id,
+        handoverFromDate: new Date("2020-02-20"),
+        handoverToDate: new Date("2020-04-20"),
         location: "P104",
         status: "Đang sử dụng",
         description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
-            value: "120GB",
+            value: "500GB",
         }],
-        cost: 60000000,
-        residualValue: 15000000,
-        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDepreciation: "5", // thời gian trích khấu hao
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile: "Tài liệu hướng dẫn",
-            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 4",
-            number: "1",
-            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+
+        usageLogs: [{ //ghi lại lịch sử sử dụng
+            usedBy: users[4]._id,
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            description: "abcd"
         }],
+
+        maintainanceLogs: [{ // bảo trì thiết bị
+            maintainanceCode: "SC0001",
+            createDate: new Date("2020-02-20"),
+            type: "Sửa chữa",
+            description: "Sửa chữa",
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            expense: 5000000,
+            status: "Đã thực hiện"
+        }],
+
+        cost: 50000000,
+        residualValue: 10000000,
+        startDepreciation: new Date("2020-02-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 15, // thời gian trích khấu hao
+
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     }])
     console.log("Khởi tạo dữ liệu tài sản!");
     var asset = await Asset.create({
-        avatar: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg",
-        assetName: "Laptop Dell XPS",
-        code: "TS0005",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
+        assetName: "Laptop Dell 5559",
+        code: "TS0001",
         company:vnist._id,
-        serial: "111111111",
+        serial: "123456789",
         assetType: listAssetType[16]._id,
-        datePurchase: "25-02-2020",
-        warrantyExpirationDate: "20-02-2022",
-        manager: users[1]._id,
-        person: users[4]._id,
-        dateStartUse: "20-03-2020",
-        dateEndUse: "20-04-2020",
-        location: "P105",
+        purchaseDate: new Date("2020-02-20"),
+        warrantyExpirationDate: new Date("2022-02-20"),
+        managedBy: users[1]._id,
+        assignedTo: users[4]._id,
+        handoverFromDate: new Date("2020-02-20"),
+        handoverToDate: new Date("2020-04-20"),
+        location: "P104",
         status: "Đang sử dụng",
-        description: "Macbook Pro",
+        description: "Laptop",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
-            value: "256GB",
+            value: "500GB",
         }],
-        cost: 60000000,
-        residualValue: 15000000,
-        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-        timeDepreciation: "5", // thời gian trích khấu hao
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile: "Tài liệu hướng dẫn",
-            discFile: "Tài liệu hướng dẫn sử dụng kèm theo 5",
-            number: "1",
-            urlFile: "http://res.cloudinary.com/moto-com/image/upload/v1590394753/ws90ppssxv3dzox7kdxn.jpg"
+
+        usageLogs: [{ //ghi lại lịch sử sử dụng
+            usedBy: users[4]._id,
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            description: "abcd"
         }],
+
+        maintainanceLogs: [{ // bảo trì thiết bị
+            maintainanceCode: "SC0001",
+            createDate: new Date("2020-02-20"),
+            type: "Sửa chữa",
+            description: "Sửa chữa",
+            startDate: new Date("2020-02-20"),
+            endDate: new Date("2020-02-20"),
+            expense: 5000000,
+            status: "Đã thực hiện"
+        }],
+
+        cost: 50000000,
+        residualValue: 10000000,
+        startDepreciation: new Date("2020-02-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 15, // thời gian trích khấu hao
+
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     });
     console.log(`Xong! Thông tin tài sản đã được tạo`);
     //END
-
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU SỬA CHỮA, THAY THẾ, NÂNG CẤP
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu sửa chữa, thay thế, nâng cấp!");
-    var repairupgrade = await RepairUpgrade.insertMany([{
-        asset: asset._id,
-        company:vnist._id,
-        repairNumber: "SC0001",
-        type: "Sửa chữa",
-        dateCreate: "20-02-2020",
-        reason: "Sửa chữa hỏng hóc thiết bị",
-        repairDate: "20-02-2020",
-        completeDate: "22-02-2020",
-        cost: "10000000",
-        status: "Đang thực hiện"
-    }, {
-        asset: asset._id,
-        company:vnist._id,
-        repairNumber: "SC0002",
-        type: "Thay thế",
-        dateCreate: "20-02-2020",
-        reason: "Thay thế thiết bị",
-        repairDate: "20-02-2020",
-        completeDate: "22-02-2020",
-        cost: "10000000",
-        status: "Đã thực hiện"
-    },{
-        asset: asset._id,
-        company:vnist._id,
-        repairNumber: "SC0003",
-        type: "Nâng cấp",
-        dateCreate: "20-02-2020",
-        reason: "Nâng cấp thiết bị",
-        repairDate: "20-02-2020",
-        completeDate: "22-02-2020",
-        cost: "10000000",
-        status: "Chưa thực hiện"
-    }])
-    console.log(`Xong! Thông tin sửa chữa - thay thế - nâng cấp đã được tạo`);
-
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU CẤP PHÁT - ĐIỀU CHUYỂN - THAY THẾ
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
-    var distributetransfer = await DistributeTransfer.insertMany([{
-        asset: asset._id,
-        company:vnist._id,
-        distributeNumber: "CP0001",
-        type: "Cấp phát",
-        dateCreate: "20-02-2020",
-        place: "Phòng 104",
-        manager : users[1]._id,
-        handoverMan : users[2]._id,
-        receiver : users[7]._id,
-        nowLocation : "P104",
-        nextLocation : "P105",
-        dateStartUse : "10-05-2020",
-        dateEndUse : "12-05-2020",
-        reason: "Cấp phát thiết bị",
-    },{
-        asset: asset._id,
-        company:vnist._id,
-        distributeNumber: "DC0001",
-        type: "Điều chuyển",
-        dateCreate: "01-04-2020",
-        place: "Phòng 103",
-        manager : users[1]._id,
-        handoverMan : users[2]._id,
-        receiver : users[7]._id,
-        nowLocation : "P104",
-        nextLocation : "P103",
-        dateStartUse : "10-05-2020",
-        dateEndUse : "12-05-2020",
-        reason: "Điều chuyển thiết bị",
-    }
-    ])
-    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
-
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU SỰ CỐ TÀI SẢN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu sự cố tài sản!");
-    var assetcrash = await AssetCrash.insertMany([{
-        asset: asset._id,
-        company:vnist._id,
-        type: "Hỏng hóc", //phân loại
-        annunciator: users[4]._id, //người báo cáo
-        reportDate: "20-02-2020", // ngày báo cáo
-        detectionDate: "20-02-2020", // ngày phát hiện
-        reason: "Hỏng hóc thiết bị",
-    },
-    {
-        asset: asset._id,
-        company:vnist._id,
-        type: "Mất", //phân loại
-        annunciator: users[4]._id, // người báo cáo
-        reportDate: "20-02-2020", // ngày báo cáo
-        detectionDate: "20-02-2020", // ngày phát hiện
-        reason: "Mất thiết bị",
-    }])
-    console.log(`Xong! Thông tin sự cố tài sản đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------

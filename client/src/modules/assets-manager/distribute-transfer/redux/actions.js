@@ -1,6 +1,6 @@
 import { DistributeTransferConstants } from "./constants";
 import { DistributeTransferService } from "./services";
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 export const DistributeTransferActions = {
     searchDistributeTransfers,

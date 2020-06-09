@@ -5,7 +5,7 @@ import { DistributeTransferCreateForm } from './DistributeTransferCreateForm';
 import { DistributeTransferEditForm } from './DistributeTransferEditForm';
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import { DistributeTransferActions } from '../redux/actions';
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 
 class DistributeTransferManager extends Component {

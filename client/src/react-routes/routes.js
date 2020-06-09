@@ -75,9 +75,9 @@ import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/compo
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
 import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
-import ManagerAsset from "../modules/assets-manager/asset-manager/components";
+import AssetManager from "../modules/assets-manager/asset-management/components";
 import ManagerAssetCrash from "../modules/assets-manager/asset-crash-management/components";
-import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
+// import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
 import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
 import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
 
@@ -791,7 +791,7 @@ class Routes extends Component {
                         component={ ManagerAssetType }
                     /> 
 
-                    <PrivateRoute 
+                    {/* <PrivateRoute 
                         isLoading={ this.props.assetsManager.isLoading }
                         key={ 'add-asset' }
                         arrPage={[
@@ -805,7 +805,7 @@ class Routes extends Component {
                         pageName={ 'add_asset' }
                         layout={ Layout }
                         component={ AssetCreatePage }
-                    /> 
+                    />  */}
 
                     <PrivateRoute 
                         isLoading={ this.props.assetsManager.isLoading }
@@ -820,7 +820,7 @@ class Routes extends Component {
                         path={ '/manage-info-asset' }
                         pageName={ 'manage_info_asset' }
                         layout={ Layout }
-                        component={ ManagerAsset }
+                        component={ AssetManager }
                     />
 
                     <PrivateRoute 

@@ -4,7 +4,7 @@ import {withTranslate} from 'react-redux-multilingual';
 import {DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
 import {DistributeTransferFromValidator} from './DistributeTransferFromValidator';
 import {DistributeTransferActions} from '../redux/actions';
-import {AssetManagerActions} from '../../asset-manager/redux/actions';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 import {string2literal} from '../utils/format_data';
 
 class DistributeTransferEditForm extends Component {

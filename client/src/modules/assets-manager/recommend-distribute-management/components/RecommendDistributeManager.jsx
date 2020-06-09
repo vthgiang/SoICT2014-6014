@@ -6,7 +6,7 @@ import { RecommendDistributeManagerEditForm } from './RecommendDistributeManager
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { RecommendDistributeActions } from './../redux/actions';
 import {UserActions} from "../../../super-admin/user/redux/actions";
-import {AssetManagerActions} from "../../asset-manager/redux/actions";
+import {AssetManagerActions} from "../../asset-management/redux/actions";
 class RecommendDistributeManager extends Component {
     constructor(props) {
         super(props);

@@ -5,9 +5,9 @@ import {withTranslate} from 'react-redux-multilingual';
 // import {RepairUpgradeEditForm} from './RepairUpgradeEditForm';
 import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
 import {AssetCrashActions} from '../redux/actions';
-import {AssetManagerActions} from "../../asset-manager/redux/actions";
+import {AssetManagerActions} from "../../asset-management/redux/actions";
 import {UserActions} from "../../../super-admin/user/redux/actions";
-import { AssetDetailForm } from '../../asset-manager/components/AssetDetailForm';
+// import { AssetDetailForm } from '../../asset-management/components/AssetDetailForm';
 class AssetCrashManager extends Component {
     constructor(props) {
         super(props);
@@ -244,7 +244,7 @@ class AssetCrashManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
                 </div>
 
-                {
+                {/* {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
                         _id={this.state.currentRowView.asset._id}
@@ -253,7 +253,7 @@ class AssetCrashManager extends Component {
                         distributeTransfer={this.state.currentRowView.distributeTransfer}
 
                     />
-                }
+                } */}
             </div>
         );
     }

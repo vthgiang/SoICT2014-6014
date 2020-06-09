@@ -8,6 +8,23 @@ class DepreciationTab extends Component {
         this.state = {};
     }
 
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -15,8 +32,8 @@ class DepreciationTab extends Component {
                 id: nextProps.id,
                 cost: nextProps.asset.cost,
                 residualValue: nextProps.asset.residualValue,
+                usefulLife: nextProps.asset.usefulLife,
                 startDepreciation: nextProps.asset.startDepreciation,
-                timeDepreciation: nextProps.asset.timeDepreciation,
                 endDepreciation: nextProps.asset.endDepreciation,
                 annualDepreciationValue: nextProps.asset.annualDepreciationValue,
                 monthlyDepreciationValue: nextProps.asset.monthlyDepreciationValue,
@@ -29,7 +46,7 @@ class DepreciationTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { cost, residualValue, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
+        const { cost, residualValue, startDepreciation, usefulLife, endDepreciation, annualDepreciationValue, 
                 monthlyDepreciationValue } = this.state;
                 console.log('this.state', this.state);
                 var formater = new Intl.NumberFormat();
@@ -50,11 +67,11 @@ class DepreciationTab extends Component {
                         </div>
                         <div className={`form-group`}>
                             <strong>Thời gian bắt đầu trích khấu hao:&emsp; </strong>
-                            {startDepreciation}
+                            {this.formatDate(startDepreciation)}
                         </div>
                         <div className={`form-group`}>
-                            <strong>Thời gian trích khấu hao:&emsp; </strong>
-                            {timeDepreciation} Tháng
+                            <strong>Thời gian sử dụng:&emsp; </strong>
+                            {usefulLife} Tháng
                             
                         </div>
                         <div className="form-group">
@@ -77,5 +94,5 @@ class DepreciationTab extends Component {
         );
     }
 };
-const tabDepreciation = connect(null, null)(withTranslate(DepreciationTab));
-export { tabDepreciation as DepreciationTab };
+const depreciationTab = connect(null, null)(withTranslate(DepreciationTab));
+export { depreciationTab as DepreciationTab };

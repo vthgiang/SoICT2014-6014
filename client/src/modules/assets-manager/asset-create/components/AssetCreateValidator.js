@@ -10,31 +10,38 @@ export const AssetCreateValidator = {
     validateAssetName, //tên tài sản
     validateSerial, //Số serial
     validateAssetType, //loại tài sản
-    validateDatePurchase, //ngày nhập
+    validatePurchaseDate, //ngày nhập
     validateWarrantyExpirationDate, //ngày bảo hành
-    validateManager, //người quản lý
-    validatePerson, //người sử dụng
-    validateDateStartUse, //ngày bát đầu
-    validateDateEndUse, //ngày kết thúc
+    validateManagedBy, //người quản lý
+    validateAssignedTo, //người sử dụng
+    validateHandoverFromDate, //ngày bát đầu
+    validateHandoverToDate, //ngày kết thúc
     validateLocation, //vị trí tài sản
-    validateInitialPrice, //giá trị ban đầu
     validateNameField, //tên trường dữ liệu
     validateValue, //giá trị
 
     /**
      * Sửa chữa - thay thế - nâng cấp
      */
+    validateMaintainanceCode, //mã phiếu
+    validateCreateDate, // ngày lập
+    validateDescription, // nội dung bảo trì
+    validateExpense,
+
 
     /**
-     * Cấp phát - điều chuyển - thu hồi
+     * Cấp phát - điều chuyển - thu hồi - lịch sử sử dụng
      */
+    validateStartDate, // ngày bắt đầu sử dụng
+    validateEndDate, // ngày kết thúc sử dụng
+    validateUsedBy, // người sử dụng
 
     /** 
      * Thông tin khấu hao
      */
     validateCost, //Nguyên giá
     validateResidualValue, //Giá trị thu hồi dự tính
-    validateTimeDepreciation, // Thời gian trích khấu hao
+    validateUsefulLife, // Thời gian trích khấu hao
     validateStartDepreciation, // Thời gian bắt đầu trích khấu hao
 
     /** 
@@ -104,7 +111,7 @@ function validateAssetType(value, translate) {
 /**
  * kiểm tra ngày nhập
  */
-function validateDatePurchase(value, translate) {
+function validatePurchaseDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày nhập không được để trống";
@@ -124,7 +131,7 @@ function validateWarrantyExpirationDate(value, translate) {
 }
 
 //kiểm tra người quản lý
-function validateManager(value, translate) {
+function validateManagedBy(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Người quản lý không được để trống";
@@ -133,12 +140,12 @@ function validateManager(value, translate) {
 }
 
 //kiểm tra người sử dụng
-function validatePerson(value, translate) {
+function validateAssignedTo(value, translate) {
     return undefined;
 }
 
 //kiểm tra ngày bắt đầu sử dụng
-function validateDateStartUse(value, translate) {
+function validateHandoverFromDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày nhập không được để trống";
@@ -147,7 +154,7 @@ function validateDateStartUse(value, translate) {
 }
 
 //kiểm tra kết thúc sử dụng
-function validateDateEndUse(value, translate) {
+function validateHandoverToDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày nhập không được để trống";
@@ -190,6 +197,75 @@ function validateValue(value, translate) {
     return msg;
 }
 
+/**
+ * Validate TabMaintainance (Thông tin bảo trì)
+ */
+/**
+ * Kiểm tra số phiếu nhập vào
+ */
+function validateMaintainanceCode(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Mã phiếu không được để trống";
+    } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
+        msg = "Mã phiếu không được chứa kí tự đặc biệt";
+    }
+    return msg;
+}
+
+// Function kiểm tra ngày lập
+function validateCreateDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày lập không được để trống";
+    }
+    return msg;
+}
+
+// Function kiểm tra nội dung bảo trì
+function validateDescription(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Nội dung không được để trống";
+    }
+    return msg;
+}
+
+function validateExpense(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Chi phí không được để trống";
+    }
+    return msg;
+}
+
+/**
+ * Validate TabMaintainance (Lịch sử sử dụng)
+ */
+//
+
+function validateUsedBy(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Người sử dụng không được để trống";
+    }
+    return msg;
+}
+function validateStartDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày bắt đầu sử dụng không được để trống";
+    }
+    return msg;
+}
+
+function validateEndDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày kết thúc sử dụng không được để trống";
+    }
+    return msg;
+}
 
 /**
  * Validate TabDepreciation (Thông tin khấu hao)
@@ -223,10 +299,10 @@ function validateStartDepreciation(value, translate) {
 }
 
 //kiểm tra thời gian trích khấu hao
-function validateTimeDepreciation(value, translate) {
+function validateUsefulLife(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Thời gian trích khấu hao không được để trống";
+        msg = "Thời gian sử dụng không được để trống";
     }
     return msg;
 }

@@ -1,6 +1,6 @@
 import { RecommendDistributeConstants } from "./constants";
 import { RecommendDistributeService } from "./services";
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 export const RecommendDistributeActions = {
     searchRecommendDistributes,

@@ -43,7 +43,7 @@ import { componentsDefault } from "../modules/system-admin/system-component/redu
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
 import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
-import { assetsManager } from "../modules/assets-manager/asset-manager/redux/reducers";
+import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
 import { assetCrash } from "../modules/assets-manager/asset-crash-management/redux/reducers";
 import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
 import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";

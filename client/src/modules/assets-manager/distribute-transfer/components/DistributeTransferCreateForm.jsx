@@ -5,7 +5,7 @@ import { ButtonModal, DatePicker, DialogModal, ErrorLabel } from '../../../../co
 import { DistributeTransferFromValidator } from './DistributeTransferFromValidator';
 import { DistributeTransferActions } from '../redux/actions';
 import { string2literal } from '../utils/format_data';
-import { AssetManagerActions } from '../../asset-manager/redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 
 class DistributeTransferCreateForm extends Component {
     constructor(props) {
