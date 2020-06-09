@@ -114,7 +114,15 @@ class KPIUnitManager extends Component {
             }
         })
         const { infosearch } = this.state;
-        console.log("inforsearch", infosearch);
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate !== undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate !== undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
         if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
             var startDate =new Date(startDate[1], startDate[0]);

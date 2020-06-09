@@ -64,6 +64,15 @@ class TaskComponent extends Component {
         return false;
     }
 
+    onChangeTaskRole = (role) => {
+        this.setState(state => {
+            return {
+                ...state,
+                role: role
+            }
+        })
+    }
+
     render() {
         const { taskId } = this.state;
         const { tasks } = this.props;
@@ -80,15 +89,14 @@ class TaskComponent extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
 
                             <DetailTaskTab
-                                id={this.props.id}
-                                role={this.props.role}
+                                id={this.props.id} onChangeTaskRole={this.onChangeTaskRole}
                             />
                         </div>
 
                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
                             <ActionTab
                                 id={this.props.id}
-                                role={this.props.role}
+                                role={this.state.role}
                             />
                         </div>
 

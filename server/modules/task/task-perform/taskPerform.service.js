@@ -391,7 +391,6 @@ exports.deleteTaskComment = async (params) => {
  * Thêm bình luận của bình luận công việc
  */
 exports.createCommentOfTaskComment = async (body,files) => {
-
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
@@ -546,6 +545,8 @@ exports.uploadFile = async (params,files) => {
             $push: {files:  files}
         }
     )  
-    var task = await Task.findOne({ _id: params.task })
+    var task = await Task.findOne({ _id: params.task }).populate([
+        { path: "files.creator", model: User, select: 'name email avatar' },
+    ]);
     return task.files
 }

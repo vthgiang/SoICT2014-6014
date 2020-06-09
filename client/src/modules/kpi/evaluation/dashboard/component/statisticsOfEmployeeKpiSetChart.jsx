@@ -8,13 +8,14 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
-class StatisticsEmployeeKpiSetChart extends Component {
+class StatisticsOfEmployeeKpiSetChart extends Component {
 
     constructor(props) {
         super(props);
+
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            dataStatus: this.DATA_STATUS.QUERYING,
         };
     }
 
@@ -117,14 +118,14 @@ class StatisticsEmployeeKpiSetChart extends Component {
     
     multiLineChart = () => {
         this.removePreviousChart();
-console.log("5555-------", this.state.userId, this.state.startMonth, this.state.endMonth)
         var dataMultiLineChart = this.setDataMultiLineChart();
-        console.log("00000", dataMultiLineChart)
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
             padding: {
-                top: 20
+                top: 20,
+                right: 20,
+                left: 20
             },
 
             data: {                                 // Dữ liệu biểu đồ
@@ -165,5 +166,5 @@ const actions = {
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 }
 
-const connectedStatisticsEmployeeKpiSetChart = connect(mapState, actions)(StatisticsEmployeeKpiSetChart);
-export { connectedStatisticsEmployeeKpiSetChart as StatisticsEmployeeKpiSetChart };
+const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(StatisticsOfEmployeeKpiSetChart);
+export { connectedStatisticsOfEmployeeKpiSetChart as StatisticsOfEmployeeKpiSetChart };
