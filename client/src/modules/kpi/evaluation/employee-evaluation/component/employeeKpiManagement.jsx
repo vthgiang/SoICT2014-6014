@@ -300,7 +300,7 @@ class KPIMember extends Component {
                             <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                             <th title="Trạng thái KPI">Trạng thái Kpi</th>
                             <th title="Kết quả">Kết quả</th>
-                            <th title=">Phê duyệt">Phê duyệt</th>
+                            <th title=">Phê duyệt" style={{textAlign: "center"}}>Phê duyệt</th>
                             <th title="Đánh giá">Đánh giá</th>
                             </tr>
                         </thead>
