@@ -79,7 +79,7 @@ class TaskTimesheetLog extends Component {
                 showModal: auth.user.id
             }
         });
-        window.$("#modal-description-abc").modal('show')
+        // window.$("#modal-description-abc").modal('show')
     }   
     save = () => {
         //do something
@@ -89,8 +89,8 @@ class TaskTimesheetLog extends Component {
         
         const { translate, performtasks, auth } = this.props;
         const currentTimer = performtasks.currentTimer;
-        console.log(auth.user.id)
-        console.log(this.state.showModal)
+        // console.log(auth.user.id)
+        // console.log(this.state.showModal)
         return ( 
             <React.Fragment>
                 {
