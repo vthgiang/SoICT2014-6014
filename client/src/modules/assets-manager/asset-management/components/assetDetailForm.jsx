@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import {
-    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, AttachmentTab
+    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, AttachmentTab
 } from '../../asset-info/components/combinedContent';
 class AssetDetailForm extends Component {
     constructor(props) {
@@ -43,6 +43,7 @@ class AssetDetailForm extends Component {
                                         <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
                                         <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
                                         <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
+                                        <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
                                         <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
                                     </ul>
                                     <div className="tab-content">
@@ -61,6 +62,10 @@ class AssetDetailForm extends Component {
                                         <DepreciationTab
                                             id={`view_depreciation${_id}`}
                                             asset={x}
+                                        />
+                                        <IncidentLogTab
+                                            id={`view_incident${_id}`}
+                                            incidentLogs={x.incidentLogs}
                                         />
                                         <AttachmentTab
                                             id={`view_attachments${_id}`}

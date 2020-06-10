@@ -126,36 +126,36 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi loại tài sản
      */
-    // handleAssetTypeChange = (value) => {
-    //     this.setState({
-    //         assetType: value[0]
-    //     });
-    //     this.props.handleChange("assetType", value[0]);
-    // }
-    handleAssetTypeChange = (e) => {
-        const { assetType } = this.props,
-            selectedIndex = e.target.options.selectedIndex,
-            assetTypeIndex = e.target.options[selectedIndex].getAttribute('data-key');
-
-        const { value } = e.target;
-        this.validateAssetType(value, true);
-    };
-
-    validateAssetType = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateAssetType(value, this.props.translate)
-        if (willUpdateState) {
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnAssetType: msg,
-                    assetType: value,
-                }
-            });
-            this.props.handleChange("assetType", value);
-        }
-        return msg === undefined;
+    handleAssetTypeChange = (value) => {
+        this.setState({
+            assetType: value[0]
+        });
+        this.props.handleChange("assetType", value[0]);
     }
+    // handleAssetTypeChange = (e) => {
+    //     const { assetType } = this.props,
+    //         selectedIndex = e.target.options.selectedIndex,
+    //         assetTypeIndex = e.target.options[selectedIndex].getAttribute('data-key');
+
+    //     const { value } = e.target;
+    //     this.validateAssetType(value, true);
+    // };
+
+    // validateAssetType = (value, willUpdateState = true) => {
+    //     let msg = AssetCreateValidator.validateAssetType(value, this.props.translate)
+    //     if (willUpdateState) {
+
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 errorOnAssetType: msg,
+    //                 assetType: value,
+    //             }
+    //         });
+    //         this.props.handleChange("assetType", value);
+    //     }
+    //     return msg === undefined;
+    // }
 
     /**
      * Bắt sự kiện thay đổi ngày nhập
@@ -471,19 +471,19 @@ class GeneralTab extends Component {
     // };
 
     render() {
-        // const { id, translate, user, assetType } = this.props;
-        const { id, translate, user } = this.props;
+        const { id, translate, user, assetType } = this.props;
+        // const { id, translate, user } = this.props;
 
         const {
-            img, code, assetName, serial, asssetType, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo,
+            img, code, assetName, serial, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate, errorOnWarrantyExpirationDate, errorOnHandoverFromDate, errorOnHandoverToDate,
             errorOnManagedBy, errorOnAssignedTo, errorOnNameField, errorOnValue,
         } = this.state;
         var userlist = user.list;
-        // var assettypelist = assetType.listAssetTypes;
+        var assettypelist = assetType.listAssetTypes;
         // const user = this.props.user;
-        const listAssetTypes = this.props.assetType;
-        console.log(this.state, 'this.state')
+        // const listAssetTypes = this.props.assetType;
+        console.log(this.state, 'this.state1')
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body">
@@ -526,23 +526,23 @@ class GeneralTab extends Component {
                                         <ErrorLabel content={errorOnSerial} />
                                     </div>
 
-                                    {/* <div className={`form-group`}>
+                                    <div className={`form-group`}>
                                         <label>Loại tài sản</label>
                                         <div>
                                             <div id="assetTypeBox">
                                                 <SelectBox
-                                                    id={`assetType`}
+                                                    id={`assetType${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })}
                                                     onChange={this.handleAssetTypeChange}
-                                                    value={assetType1}
+                                                    value={assetType}
                                                     multiple={false}
                                                 />
                                             </div>
                                         </div>
-                                    </div> */}
-                                    <div className={`form-group ${errorOnAssetType === undefined ? "" : "has-error"} `}>
+                                    </div>
+                                    {/* <div className={`form-group ${errorOnAssetType === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="assetType">Loại tài sản<span className="text-red">*</span></label>
                                         <select id="drops" className="form-control" name="assetType" defaultValue={!this.props.asset.assetType ? '' : this.props.assetType._id}
                                             onChange={this.handleAssetTypeChange}>
@@ -554,7 +554,7 @@ class GeneralTab extends Component {
                                         </select>
 
                                         <ErrorLabel content={errorOnAssetType} />
-                                    </div>
+                                    </div> */}
 
                                     <div className={`form-group ${errorOnPurchaseDate === undefined ? "" : "has-error"}`}>
                                         <label htmlFor="purchaseDate">Ngày nhập<span className="text-red">*</span></label>
@@ -581,7 +581,7 @@ class GeneralTab extends Component {
                                         <div>
                                             <div id="managedByBox">
                                                 <SelectBox
-                                                    id={`managedBy`}
+                                                    id={`managedBy${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
@@ -600,7 +600,7 @@ class GeneralTab extends Component {
                                         <div>
                                             <div id="assignedToBox">
                                                 <SelectBox
-                                                    id={`assignedTo`}
+                                                    id={`assignedTo${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}

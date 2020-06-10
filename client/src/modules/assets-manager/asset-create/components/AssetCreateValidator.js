@@ -44,6 +44,13 @@ export const AssetCreateValidator = {
     validateUsefulLife, // Thời gian trích khấu hao
     validateStartDepreciation, // Thời gian bắt đầu trích khấu hao
 
+    /**
+     * Thông tin sự cố
+     */
+    validateIncidentCode,
+    validateDateOfIncident,
+    validateIncidentDescription,
+
     /** 
      * Tài liệu đính kèm 
     */
@@ -307,7 +314,36 @@ function validateUsefulLife(value, translate) {
     return msg;
 }
 
+/**
+ * Validate Tab IncidentLog (Thông tin sự cố)
+ */
+function validateIncidentCode(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Mã sự cố không được để trống";
+    } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
+        msg = "Mã sự cố không được chứa kí tự đặc biệt";
+    }
+    return msg;
+}
 
+// Function kiểm tra ngày phát hiện sự cố
+function validateDateOfIncident(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày phát hiện không được để trống";
+    }
+    return msg;
+}
+
+// Function kiểm tra nội dung sự cố
+function validateIncidentDescription(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Nội dung sự cố không được để trống";
+    }
+    return msg;
+}
 /**
  * Validate TabAttachmentsContent (Tài liệu đính kèm)
  */

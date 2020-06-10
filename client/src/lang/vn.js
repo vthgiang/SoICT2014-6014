@@ -601,11 +601,12 @@ export default {
             manage_type_asset: 'Quản lý loại tài sản',
             add_asset: 'Thêm tài sản',
             manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_maintainance_asset: 'Quản lý bảo trì tài sản',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
-            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
             manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset:'Quản lý đề nghị cấp phát',
@@ -1346,7 +1347,21 @@ export default {
 
             },
 
-            // Quản lý sửa chữa, thay thế, nâng cấp
+            // Quản lý bảo trì
+            maintainance: {
+
+                //Thông điệp trả về từ server
+                get_maintainance_success: 'Lấy thông tin bảo trì thành công',
+                get_maintainance_faile: 'Lấy thông tin thông tin bảo trì thất bại',
+                create_maintainance_success: 'Thêm phiếu bảo trì thành công',
+                create_maintainance_faile: 'Thêm phiếu bảo trì thất bại',
+                delete_maintainance_success: 'Xoá phiếu bảo trì thành công',
+                delete_maintainance_faile: 'Xoá phiếu bảo trì thất bại',
+                edit_maintainance_success: 'Chỉnh sửa thông tin phiếu bảo trì thành công',
+                edit_maintainance_faile: 'Chỉnh sửa thông tin phiếu bảo trì thất bại',
+            },
+
+            // Quản lý sửa chữa, thay thế, nâng cấp TODO: Xóa sau
             repair_upgrade: {
 
                 //Thông điệp trả về từ server
@@ -1360,7 +1375,21 @@ export default {
                 edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thất bại',
             },
 
-            // Quản lý cấp phát, điều chuyển, thu hồi
+            // Quản lý sử dụng
+            usage: {
+
+                //Thông điệp trả về từ server
+                get_usage_success: 'Lấy thông tin sử dụng thành công',
+                get_usage_faile: 'Lấy thông tin sử dụng thất bại',
+                create_usage_success: 'Thêm hoạt động sử dụng tài sản thành công',
+                create_usage_faile: 'Thêm hoạt động sử dụng tài sản thất bại',
+                delete_usage_success: 'Xoá hoạt động sử dụng tài sản thành công',
+                delete_usage_faile: 'Xoá hoạt động sử dụng tài sản thất bại',
+                edit_usage_success: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thành công',
+                edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
+            },
+
+            // Quản lý cấp phát, điều chuyển, thu hồi TODO: Xóa sau
             distribute_transfer: {
 
                 //Thông điệp trả về từ server

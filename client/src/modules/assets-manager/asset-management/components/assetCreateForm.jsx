@@ -7,7 +7,7 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import {
-    GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, FileTab
+    GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, IncidentLogTab, FileTab
 } from '../../asset-create/components/combinedContent';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -170,10 +170,10 @@ class AssetCreateForm extends Component {
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#general">Thông tin chung</a></li>
-                            <li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href="#maintainance">Sửa chữa - Thay thế - Nâng cấp</a></li>
-                            <li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href="#usage">Cấp phát - Điều chuyển - Thu hồi</a></li>
-                            {/*<li><a title="Bảo hành - bảo trì" data-toggle="tab" href="#baohanh">Bảo hành - Bảo trì</a></li>*/}
+                            <li><a title="Thông tin bảo trì" data-toggle="tab" href="#maintainance">Thông tin bảo trì</a></li>
+                            <li><a title="Thông tin sử dụng" data-toggle="tab" href="#usage">Thông tin sử dụng</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href="#depreciation">Thông tin khấu hao</a></li>
+                            <li><a title="Thông tin sự cố" data-toggle="tab" href="#incident">Thông tin sự cố</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#attachments">Tài liệu đính kèm</a></li>
                         </ul>
                         < div className="tab-content">
@@ -205,6 +205,14 @@ class AssetCreateForm extends Component {
                                 id="depreciation"
                                 asset={this.state.asset}
                                 handleChange={this.handleChange}
+                            />
+
+                            <IncidentLogTab
+                                id="incident"
+                                incidentLogs={this.state.incidentLogs}
+                                handleAddIncident={this.handleChangeIncidentLog}
+                                handleEditIncident={this.handleChangeIncidentLog}
+                                handleDeleteIncident={this.handleChangeIncidentLog}
                             />
 
                             <FileTab

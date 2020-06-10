@@ -1,39 +1,67 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { AssetCreateValidator } from './combinedContent';
+import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { UsageFormValidator } from './usageFormValidator';
+import { UsageActions } from '../redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
-class UsageLogEditModal extends Component {
+class UsageCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            asset: "",
+            usedBy: "",
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now()),
+            description: "",
+        };
     }
 
-    // //6. Bắt sự kiện thay đổi "Người sử dụng"
-    // handleUsedByChange = (e) => {
-    //     const selectedIndex = e.target.options.selectedIndex;
-    //     this.setState({ userReceiveIndex: e.target.options[selectedIndex].getAttribute('data-key1') });
-    //     let value = e.target.value;
-    //     this.validateUsedBy(value, true);
+    // componentDidMount() {
+    //     // this.props.
+    //     this.props.getAllAsset({
+    //         _id: "",
+    //         code: "",
+    //         assetName: "",
+    //         assetType: null,
+    //         month: null,
+    //         status: "",
+    //         page: 0,
+    //         limit: 5,
+    //     });
     // }
-    // validateUsedBy = (value, willUpdateState = true) => {
-    //     let msg = AssetCreateValidator.validateUsedBy(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnUsedBy: msg,
-    //                 usedBy: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
-    // /**
-    //  * Bắt sự kiện thay đổi người sử dụng
-    //  */
+
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
+    /**
+     * Bắt sự kiện thay đổi Mã tài sản
+     */
+    handleAssetChange = (value) => {
+        this.setState({
+            asset: value[0]
+        });
+    }
+
+    /**
+     * Bắt sự kiện thay đổi người sử dụng
+     */
     handleUsedByChange = (value) => {
         this.setState({
             ...this.state,
@@ -46,7 +74,7 @@ class UsageLogEditModal extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateStartDate(value, this.props.translate)
+        let msg = UsageFormValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -64,7 +92,7 @@ class UsageLogEditModal extends Component {
         this.validateEndDate(value, true);
     }
     validateEndDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateEndDate(value, this.props.translate)
+        let msg = UsageFormValidator.validateEndDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -83,7 +111,7 @@ class UsageLogEditModal extends Component {
         this.validateDescription(value, true);
     }
     validateDescription = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDescription(value, this.props.translate)
+        let msg = UsageFormValidator.validateDescription(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -100,78 +128,69 @@ class UsageLogEditModal extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            // this.validateUsedBy(this.state.usedBy, false) &&
+            this.validateStartDate(this.state.startDate, false) &&
             this.validateDescription(this.state.description, false)
         return result;
     }
 
     // Bắt sự kiện submit form
-    save = async () => {
+    save = () => {
         var partStart = this.state.startDate.split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
+            return this.props.createNewUsage({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                _id: nextProps._id,
-                index: nextProps.index,
-                usedBy: nextProps.usedBy,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                description: nextProps.description,
-                errorOnDescription: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
-
+    
     render() {
-        const { translate, id, user } = this.props;
+        const {id, translate, user, assetsManager } = this.props;
         var userlist = user.list;
+        console.log(userlist, 'userlist');
+        // var lists = "";
+        // if (assetsManager.listAssets) {
+        //     lists = assetsManager.listAssets;
+        // }
+        var assetlist = assetsManager.listAssets;
+        console.log(assetlist, 'assetlist');
         const {
-            usedBy, startDate, endDate, description, errorOnDescription } = this.state;
-            console.log(this.state, 'this.state')
+            asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription } = this.state;
+            console.log(this.state, 'tungstate')
         return (
             <React.Fragment>
+                <ButtonModal modalID={`modal-create-usage`} button_name="Thêm mới" title="Thêm mới thông tin sử dụng tài sản" />
                 <DialogModal
-                    size='50' modalID={`modal-edit-usage-${id}`} isLoading={false}
-                    formID={`form-edit-usage-${id}`}
-                    title="Chỉnh sửa thông tin cấp phát sử dụng"
+                    size='50' modalID={`modal-create-usage`} isLoading={false}
+                    formID={`form-create-usage`}
+                    title="Thêm mới thông tin sử dụng tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id={`form-edit-usage-${id}`}>
+                    <form className="form-group" id={`form-create-usage`}>
                         <div className="col-md-12">
-                            {/* <div className="form-group">
-                                <label>Người sử dụng<span className="text-red">*</span></label>
-                                <select id="drops1" className="form-control" name="usedBy"
-                                    value={this.state.usedBy ? this.state.usedBy : ''}
-                                    placeholder="Please Select"
-                                    onChange={this.handleUsedByChange}>
-                                    <option value="" disabled>Please Select</option>
-                                    {user.list.length ? user.list.map((item, index) => {
-                                        return (
-                                            <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
-                                        )
-                                    }) : null}
-                                </select>
-
-                            </div> */}
+                            <div className={`form-group`}>
+                                <label>Tài sản</label>
+                                <div>
+                                    <div id="assetUBox">
+                                        <SelectBox
+                                            id={`add-usage-asset${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={assetlist.map(x => { return { value: x.assets[0]._id, text: x.assets[0].code + " - " + x.assets[0].assetName } })}
+                                            onChange={this.handleAssetChange}
+                                            value={asset}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                             <div className={`form-group`}>
                                 <label>Người sử dụng</label>
                                 <div>
-                                    <div id="usedByBox">
+                                    <div id="usedByUBox">
                                         <SelectBox
-                                            id={`usedBy${id}`}
+                                            id={`add-usedBy${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
@@ -182,19 +201,20 @@ class UsageLogEditModal extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-group">
-                                <label>Thời gian bắt đầu sử dụng</label>
+                            <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`edit-start-date-${id}`}
+                                    id={`add-start-date${id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
-                                    id={`edit-end-date-${id}`}
+                                    id={`add-end-date${id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
@@ -214,14 +234,15 @@ class UsageLogEditModal extends Component {
 };
 
 function mapState(state) {
-    var { user } = state;
-    return { user };
+    var { usage, assetsManager, user } = state;
+    return { usage, assetsManager, user };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    // createNewUsage: MaintainanceActions.createNewUsage,
 };
 
-
-const editModal = connect((state) => ({ assetsManager: state.assetsManager, user: state.user }), null)(withTranslate(UsageLogEditModal));
-export { editModal as UsageLogEditModal };
+const addModal = connect(mapState, actionCreators)(withTranslate(UsageCreateForm));
+export { addModal as UsageCreateForm };

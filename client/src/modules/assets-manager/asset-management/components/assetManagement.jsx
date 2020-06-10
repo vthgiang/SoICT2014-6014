@@ -19,14 +19,13 @@ class AssetManagement extends Component {
             status: "",
             page: 0,
             limit: 5,
-            // typeNumber: "",
-            // typeName: "",
         }
     }
 
     componentDidMount() {
         this.props.getAllAsset(this.state);
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.getUser();
     }
 
     // Function format dữ liệu Date thành string

@@ -575,7 +575,25 @@ const sampleCompanyData = async () => {
             url: '/documents',
             description: 'Tài liệu',
             company: vnist._id
-        }
+        },
+
+        { //49. quản lý bảo trì
+            url: '/manage-maintainance-asset',
+            description: 'Quản lý bảo trì tài sản',
+            company: vnist._id
+        },
+
+        { //50. quản lý lịch sử hoạt động tài sản
+            url: '/manage-usage-asset',
+            description: 'Quản lý lịch sử hoạt động tài sản',
+            company: vnist._id
+        },
+
+        { //51. quản lý sự cố tài sản
+            url: '/manage-incident-asset',
+            description: 'Quản lý sự cố tài sản',
+            company: vnist._id
+        },
     ]);
 
     const updateVnist = await Company.findById(vnist._id);
@@ -1026,6 +1044,21 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: admin._id // admin
         },
+        {
+            resourceId: links[49]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[50]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
+        {
+            resourceId: links[51]._id,
+            resourceType: 'Link',
+            roleId: admin._id // admin
+        },
 
         // gán quyền quản lý tài sản cho Super Admin
         {
@@ -1070,6 +1103,21 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[43]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[49]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[50]._id,
+            resourceType: 'Link',
+            roleId: roles[0]._id // Super Admin
+        },
+        {
+            resourceId: links[51]._id,
             resourceType: 'Link',
             roleId: roles[0]._id // Super Admin
         },
@@ -1879,6 +1927,13 @@ const sampleCompanyData = async () => {
             expense: 5000000,
             status: "Đã thực hiện"
         }],
+        incidentLogs: [{
+            incidentCode: "HH001",
+            type: "Hỏng hóc",
+            reportedBy: users[4]._id,
+            dateOfIncident: new Date("2020-02-20"),
+            description: "Hỏng hóc thiết bị"
+        }],
 
         cost: 50000000,
         residualValue: 10000000,
@@ -1924,6 +1979,14 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-02-20"),
             expense: 5000000,
             status: "Đã thực hiện"
+        }],
+
+        incidentLogs: [{
+            incidentCode: "HH001",
+            type: "Hỏng hóc",
+            reportedBy: users[4]._id,
+            dateOfIncident: new Date("2020-02-20"),
+            description: "Hỏng hóc thiết bị"
         }],
 
         cost: 50000000,
@@ -1972,6 +2035,14 @@ const sampleCompanyData = async () => {
             status: "Đã thực hiện"
         }],
 
+        incidentLogs: [{
+            incidentCode: "HH001",
+            type: "Hỏng hóc",
+            reportedBy: users[4]._id,
+            dateOfIncident: new Date("2020-02-20"),
+            description: "Hỏng hóc thiết bị"
+        }],
+
         cost: 50000000,
         residualValue: 10000000,
         startDepreciation: new Date("2020-02-20"), // thời gian bắt đầu trích khấu hao
@@ -1984,7 +2055,7 @@ const sampleCompanyData = async () => {
     var asset = await Asset.create({
         avatar: "/upload/human-resource/avatars/avatar5.png",
         assetName: "Laptop Dell 5559",
-        code: "TS0001",
+        code: "TS0004",
         company:vnist._id,
         serial: "123456789",
         assetType: listAssetType[16]._id,
@@ -2018,6 +2089,14 @@ const sampleCompanyData = async () => {
             endDate: new Date("2020-02-20"),
             expense: 5000000,
             status: "Đã thực hiện"
+        }],
+
+        incidentLogs: [{
+            incidentCode: "HH001",
+            type: "Hỏng hóc",
+            reportedBy: users[4]._id,
+            dateOfIncident: new Date("2020-02-20"),
+            description: "Hỏng hóc thiết bị"
         }],
 
         cost: 50000000,

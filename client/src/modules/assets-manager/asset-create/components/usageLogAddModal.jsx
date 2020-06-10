@@ -139,7 +139,7 @@ class UsageLogAddModal extends Component {
                                 <div>
                                     <div id="usedByBox">
                                         <SelectBox
-                                            id={`usedBy`}
+                                            id={`usedBy${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}

@@ -7,7 +7,7 @@ import {DialogModal} from '../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import {
-        GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, FileTab
+        GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, FileTab
         } from '../../asset-create/components/combinedContent';
 import {AssetManagerActions} from '../redux/actions';
 
@@ -278,10 +278,10 @@ class AssetEditForm extends Component {
                     <div className="nav-tabs-custom" style={{marginTop: '-15px'}}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
-                            <li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href={`#edit_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
-                            <li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href={`#edit_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
-                            {/* <li><a title="Sự cố tài sản" data-toggle="tab" href={`#edit_suco${_id}`}>Sự cố tài sản</a></li> */}
+                            <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#edit_maintainance${_id}`}>Thông tin bảo trì</a></li>
+                            <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#edit_usage${_id}`}>Thông tin sử dụng</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#edit_depreciation${_id}`}>Thông tin khấu hao</a></li>
+                            <li><a title="Thông tin sự cố" data-toggle="tab" href={`#edit_incident${_id}`}>Thông tin sự cố</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#edit_attachments${_id}`}>Tài liệu đính kèm</a></li>
                         </ul>
                         < div className="tab-content">
@@ -311,6 +311,13 @@ class AssetEditForm extends Component {
                                 id={`edit_depreciation${_id}`}
                                 asset={this.state.asset}
                                 handleChange={this.handleChange}
+                            />
+                            <IncidentLogTab
+                                id={`edit_incident${_id}`}
+                                incidentLogs={this.state.incidentLogs}
+                                handleAddIncident={this.handleCreateIncidentLogs}
+                                handleEditIncident={this.handleEditIncidentLogs}
+                                handleDeleteIncident={this.handleDeleteIncidentLogs}
                             />
 
                             <FileTab

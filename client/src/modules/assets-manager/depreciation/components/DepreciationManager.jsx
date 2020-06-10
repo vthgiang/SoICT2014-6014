@@ -4,7 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
-// import { AssetDetailForm } from '../../asset-management/components/AssetDetailForm';
+import { AssetDetailForm } from '../../asset-management/components/assetDetailForm';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 class DepreciationManager extends Component {
     constructor(props) {
         super(props);
@@ -15,8 +16,6 @@ class DepreciationManager extends Component {
             month: "",
             page: 0,
             limit: 5,
-            typeNumber: "",
-            typeName: "",
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -35,8 +34,8 @@ class DepreciationManager extends Component {
         window.$('#modal-view-asset').modal('show');
     }
 
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -47,7 +46,19 @@ class DepreciationManager extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [month, year].join('-');
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
@@ -89,13 +100,9 @@ class DepreciationManager extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
-        // if (this.state.month === null) {
         await this.setState({
             ...this.state,
-            // ,
-            // month: this.formatDate(Date.now())
         })
-        // }
         this.props.getAllAsset(this.state);
     }
 
@@ -118,11 +125,13 @@ class DepreciationManager extends Component {
     }
 
     render() {
-        const { translate, assetsManager } = this.props;
+        const { translate, assetsManager, assetType, user } = this.props;
         var lists = "";
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
-        if (assetsManager.allAsset) {
-            lists = this.props.assetsManager.allAsset;
+        if (assetsManager.listAssets) {
+            lists = assetsManager.listAssets;
         }
 
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
@@ -177,8 +186,8 @@ class DepreciationManager extends Component {
                                 <th style={{ width: "8%" }}>Mã tài sản</th>
                                 <th style={{ width: "10%" }}>Tên tài sản</th>
                                 <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Thời gian bắt đầu trích khấu hao</th>
                                 <th style={{ width: "10%" }}>Nguyên giá</th>
+                                <th style={{ width: "10%" }}>Thời gian bắt đầu trích khấu hao</th>
                                 <th style={{ width: "10%" }}>Thời gian trích khấu hao</th>
                                 <th style={{ width: "10%" }}>Mức độ KH trung bình năm</th>
                                 <th style={{ width: "10%" }}>Mức độ KH  trung bình tháng</th>
@@ -192,8 +201,8 @@ class DepreciationManager extends Component {
                                             "Mã tài sản",
                                             "Tên tài sản",
                                             "Loại tài sản",
-                                            "Thời gian bắt đầu trích khấu hao",
                                             "Nguyên giá",
+                                            "Thời gian bắt đầu trích khấu hao",
                                             "Thời gian trích khấu hao",
                                             "Mức độ KH trung bình năm",
                                             "Mức độ KH trung bình tháng",
@@ -212,12 +221,12 @@ class DepreciationManager extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.asset.code}</td>
-                                        <td>{x.asset.assetName}</td>
-                                        <td>{x.asset.assetType.typeName}</td>
-                                        <td>{x.asset.startDepreciation}</td>
-                                        <td>{formater.format(parseInt(x.asset.cost))} VNĐ</td>
-                                        <td>{x.asset.timeDepreciation} Tháng</td>
+                                        <td>{x.assets.map(y => y.code)}</td>
+                                        <td>{x.assets.map (y => y.assetName)}</td>
+                                        <td>{x.assets.map(y=>y.assetType !== null ? assettypelist.filter(item => item._id === y.assetType).pop().typeName : '')}</td>
+                                        <td>{formater.format(parseInt(x.assets.map(y => y.cost)))} VNĐ</td>
+                                        <td>{this.formatDate(x.assets.map(y => y.startDepreciation))}</td>
+                                        <td>{x.assets.map (y => y.usefulLife)} Tháng</td>
                                         <td>{x.annualDepreciationValue} VNĐ/Năm</td>
                                         <td>{x.monthlyDepreciationValue} VNĐ/Tháng</td>
                                         <td>{x.accumulatedDepreciation} VNĐ</td>
@@ -240,28 +249,28 @@ class DepreciationManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
-                {/* {
+                {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView.asset._id}
-                        asset={this.state.currentRowView.asset}
-                        repairUpgrade={this.state.currentRowView.repairUpgrade}
-                        distributeTransfer={this.state.currentRowView.distributeTransfer}
+                        _id={this.state.currentRowView.assets[0]._id}
+                        assets={this.state.currentRowView.assets}
+
                     />
-                } */}
+                }
             </div >
         );
     }
 };
 
 function mapState(state) {
-    const { assetsManager } = state;
-    return { assetsManager };
+    const { assetsManager, assetType, user } = state;
+    return { assetsManager, assetType, user };
 };
 
 const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getUser: UserActions.get,
 };
 
 const connectedListDepreciation = connect(mapState, actionCreators)(withTranslate(DepreciationManager));

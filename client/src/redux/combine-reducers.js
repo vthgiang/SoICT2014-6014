@@ -44,6 +44,9 @@ import { recommendProcure } from "../modules/assets-manager/recommend-procure/re
 import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
 import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
+import { maintainance } from "../modules/assets-manager/maintainance-management/redux/reducers";
+import { usage } from "../modules/assets-manager/usage-management/redux/reducers";
+import { incident } from "../modules/assets-manager/incident-management/redux/reducers";
 import { assetCrash } from "../modules/assets-manager/asset-crash-management/redux/reducers";
 import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
 import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
@@ -99,6 +102,9 @@ const appReducer = combineReducers(Object.assign({
     recommendDistribute,
     assetType,
     assetsManager,
+    maintainance,
+    usage,
+    incident,
     repairUpgrade,
     distributeTransfer,
     assetCrash,

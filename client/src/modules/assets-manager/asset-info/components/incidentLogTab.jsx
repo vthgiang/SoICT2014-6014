@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
-class UsageLogTab extends Component {
+class IncidentLogTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    componentDidMount() {
+        this.props.getUser({ name: ""});
     }
 
     // Function format dữ liệu Date thành string
@@ -30,7 +35,7 @@ class UsageLogTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                usageLogs: nextProps.usageLogs,
+                incidentLogs: nextProps.incidentLogs,
             }
         } else {
             return null;
@@ -39,30 +44,32 @@ class UsageLogTab extends Component {
 
     render() {
         const { id, translate, user } = this.props;
-        const { usageLogs } = this.state;
+        const { incidentLogs } = this.state;
         var userlist = user.list;
         console.log('this.state', this.state);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử cấp phát - điều chuyển - thu hồi</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">Danh sách sự cố tài sản</h4></legend>
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Người sử dụng</th>
-                                    <th>Ngày bắt đầu sử dụng</th>
-                                    <th>Ngày kết thúc sử dụng</th>
+                                    <th>Mã sự cố</th>
+                                    <th>Loại sự cố</th>
+                                    <th>Người báo cáo</th>
+                                    <th>Ngày phát hiện sự cố</th>
                                     <th>Nội dung</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof usageLogs !== 'undefined' && usageLogs.length !== 0) &&
-                                    usageLogs.map((x, index) => (
+                                {(typeof incidentLogs !== 'undefined' && incidentLogs.length !== 0) &&
+                                    incidentLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.usedby !==null ? userlist.filter(item => item._id === x.usedBy).pop().name: ''}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td>{x.incidentCode}</td>
+                                            <td>{x.type}</td>
+                                            <td>{x.reportedby !==null ? userlist.filter(item => item._id === x.reportedBy).pop().name: ''}</td>
+                                            <td>{this.formatDate(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>
                                         </tr>
                                     )
@@ -71,7 +78,7 @@ class UsageLogTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof usageLogs === 'undefined' || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof incidentLogs === 'undefined' || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -83,5 +90,9 @@ function mapState(state) {
     const { user } = state;
     return { user };
 };
-const usageLogTab = connect(mapState, null)(withTranslate(UsageLogTab));
-export { usageLogTab as UsageLogTab };
+const actionCreators = {
+    getUser: UserActions.get,
+    
+};
+const incidentLogTab = connect(mapState, actionCreators)(withTranslate(IncidentLogTab));
+export { incidentLogTab as IncidentLogTab };

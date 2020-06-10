@@ -223,3 +223,65 @@ exports.deleteAsset = async (id) => {
 
     return asset;
 }
+
+
+//******************************** Chức năng quản lý bảo trì ****************************************/
+
+
+/*
+ * Lấy danh sách tất cả các phiếu bảo trì của tất cả tài sản hoặc có thể lấy ra danh sách các phiếu bảo trì gần nhất của tất cả tài sản
+ */
+exports.searchMaintainances = async (id, data, company) => {
+
+}
+
+/*
+ * Thêm mới phiếu bảo trì
+ */
+exports.createMaintainance = async (id, data, company) => {
+
+}
+
+/**
+ * Chỉnh sửa phiếu bảo trì
+ */
+exports.updateMaintainance = async (id, data, company) => {
+
+}
+
+/**
+ * Xóa phiếu bảo trì
+ */
+exports.deleteMaintainance = async (id, data, company) => {
+
+}
+
+
+//******************************** Chức năng quản lý sử dụng ****************************************/
+/*
+ * Lấy danh sách tất cả lịch sử sử dụng của tất cả tài sản hoặc có thể lấy ra danh sách các lịch sử sử dụng gần nhất của tất cả tài sản
+ */
+exports.searchUsages = async (id, data, company) => {
+
+}
+
+/**
+ * Thêm mới thông tin sử dụng
+ */
+exports.createUsage = async (id, data, company) => {
+
+}
+
+/**
+ * Chỉnh sửa thông tin sử dụng
+ */
+exports.updateUsage = async (id, data, company) => {
+
+}
+
+/**
+ * Xóa xóa thông tin sử dụng
+ */
+exports.deleteUsage = async (id, data, company) => {
+
+}
