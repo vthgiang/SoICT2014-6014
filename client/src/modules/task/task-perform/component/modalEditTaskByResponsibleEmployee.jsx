@@ -59,12 +59,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             if(infoEval[i].type === "Date"){
                 if(infoEval[i].value){
                     infoEval[i].value = this.formatDate(infoEval[i].value);
-                } else infoEval[i].value = this.formatDate(Date.now());
+                } 
+                else infoEval[i].value = this.formatDate(Date.now());
             }
             else if(infoEval[i].type === "SetOfValues"){
-                if(infoEval[i].value){
-                    infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                }
+                let splitter = infoEval[i].extra.split('\n');
+
+                // if(infoEval[i].value){
+                    infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+                // }
             }
             info[`${infoEval[i].code}`] = {
                 value: infoEval[i].value,

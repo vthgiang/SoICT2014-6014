@@ -62,23 +62,25 @@ class EvaluateByResponsibleEmployee extends Component {
         let info = {};
         let cloneKpi = [];
 
-        
-        for(let i in task.taskInformations){
-            if(task.taskInformations[i].type === "Date"){
-                if(task.taskInformations[i].value){
-                    task.taskInformations[i].value = this.formatDate(task.taskInformations[i].value);
-                } else task.taskInformations[i].value = this.formatDate(new Date());
+        let infoTask = task.taskInformations;
+        for(let i in infoTask){
+            if(infoTask[i].type === "Date"){
+                if(infoTask[i].value){
+                    infoTask[i].value = this.formatDate(infoTask[i].value);
+                } else infoTask[i].value = this.formatDate(new Date());
             }
-            else if(task.taskInformations[i].type === "SetOfValues"){
-                if(task.taskInformations[i].value){
-                    task.taskInformations[i].value = task.taskInformations[i].value === undefined ? undefined : [task.taskInformations[i].value];
-                }
+            else if(infoTask[i].type === "SetOfValues"){
+                let splitter = infoTask[i].extra.split('\n');
+
+                // if(infoTask[i].value){
+                    infoTask[i].value = infoTask[i].value === undefined ? [splitter[0]] : [infoTask[i].value];
+                // }
             }
             
-            info[`${task.taskInformations[i].code}`] = {
-                value: task.taskInformations[i].value,
-                code: task.taskInformations[i].code,
-                type: task.taskInformations[i].type
+            info[`${infoTask[i].code}`] = {
+                value: infoTask[i].value,
+                code: infoTask[i].code,
+                type: infoTask[i].type
             }
         }
         
@@ -106,9 +108,13 @@ class EvaluateByResponsibleEmployee extends Component {
                         
                     }
                     else if(infoEval[i].type === "SetOfValues"){
-                        if(infoEval[i].value){
-                            infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                        }
+                        let splitter = infoEval[i].extra.split('\n');
+
+                        infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+
+                        // if(infoEval[i].value){
+                        //     infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
+                        // }
                     }
                     info[`${infoEval[i].code}`] = {
                         value: infoEval[i].value,

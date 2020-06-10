@@ -64,9 +64,12 @@ class EvaluateByAccountableEmployee extends Component {
                 } else infoEval[i].value = this.formatDate(Date.now());
             }
             else if(infoEval[i].type === "SetOfValues"){
-                if(infoEval[i].value){
-                    infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                }
+                // if(infoEval[i].value){
+                //     infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
+                // }
+                let splitter = infoEval[i].extra.split('\n');
+                infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+
             }
             info[`${infoEval[i].code}`] = {
                 value: infoEval[i].value,
@@ -151,9 +154,10 @@ class EvaluateByAccountableEmployee extends Component {
                         
                     }
                     else if(infoEval[i].type === "SetOfValues"){
-                        if(infoEval[i].value){
-                            infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                        }
+                        let splitter = infoEval[i].extra.split('\n');
+                        // if(infoEval[i].value){
+                            infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+                        // }
                     }
                     info[`${infoEval[i].code}`] = {
                         value: infoEval[i].value,
