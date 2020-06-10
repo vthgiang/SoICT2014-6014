@@ -11,11 +11,19 @@ import './employeeInOrganizationalUnit.css'
 class EmployeeInOrganizationalUnitEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            searchItems: [],
+        };
         this.handleAdd = this.handleAdd.bind(this);
     }
     componentDidMount() {
-        this.props.getUser();
+        this.props.getUser()
+    }
+    changeSearch = async (value) => {
+        this.setState({
+            textSearch: value
+        });
+        await this.props.getUser({ name: value })
     }
     // Bắt sự kiện thay đổi trưởng đơn vị
     handleDeanChange = (value) => {
@@ -54,8 +62,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             infoRoleDean, infoRoleViceDean, infoRoleEmployee } = this.state;
         userRoleEmployee = userRoleEmployee.concat(addUserEmployee);
 
-        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean, showAlert:false }
-        let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean, showAlert:false }
+        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean, showAlert: false }
+        let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean, showAlert: false }
         let roleEmployee = { id: infoRoleEmployee._id, name: infoRoleEmployee.name, parents: infoRoleEmployee.parents, users: userRoleEmployee }
         // Lưu chỉnh sửa các role của đơn vị
         this.props.edit(roleDean);
@@ -89,7 +97,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
 
     render() {
         var infoEmployee = [];
-        const { translate, user } = this.props;
+        var { translate, user } = this.props;
         const { _id, userRoleDean, userRoleViceDean, userRoleEmployee, addUserEmployee } = this.state;
         // Lấy thông tin name và email của nhân viên đơn vị
         for (let n in userRoleEmployee) {
@@ -127,6 +135,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={user.list.map(x => { return { value: x._id, text: x.name } })}
+                                changeSearch={false}
                                 onChange={this.handleDeanChange}
                                 value={userRoleDean[0]}
                             />
@@ -139,28 +148,31 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 style={{ width: "100%" }}
                                 items={user.list.map(x => { return { value: x._id, text: x.name } })}
                                 onChange={this.handleViceDeanChange}
+                                // searchItems={user.searchUses.map(x => { return { value: x._id, text: x.name } })}
+                                // changeSearch={this.changeSearch}
+                                // textSearch={this.state.textSearch}
                                 value={userRoleViceDean}
                                 multiple={true}
                             />
                         </div>
-                        
-                        
-                        
+
                         <div className="form-group" style={{ marginBottom: 0, marginTop: 40 }}>
                             <label>{translate('manage_unit.employee_unit')}</label>
                             <div>
-                                <div id="employeeBox">
+                                <div className="employeeBox">
                                     <SelectBox
                                         id={`employee-unit-${_id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={userlist.map(x => { return { value: x._id, text: x.name } })}
                                         onChange={this.handleEmployeeChange}
                                         value={addUserEmployee}
+                                        searchItems={user.searchUses.map(x => { return { value: x._id, text: x.name } })}
+                                        changeSearch={this.changeSearch}
+                                        textSearch={this.state.textSearch}
                                         multiple={true}
                                     />
                                 </div>
-                                <button type="button" className="btn btn-success pull-right" style={{marginBottom: 5}} onClick={this.handleAdd} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
+                                <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={this.handleAdd} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
                             </div>
                         </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
@@ -186,9 +198,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 }
                             </tbody>
                         </table>
-                        {user.isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof infoEmployee === 'undefined' || infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        {
+                            (infoEmployee === 'undefined' || infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </form>
                 </DialogModal>

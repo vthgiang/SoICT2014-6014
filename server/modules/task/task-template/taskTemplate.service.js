@@ -192,12 +192,47 @@ exports.createTaskTemplate = async (body) => {
     });
 
     // TODO: Xử lý quyển với action
-    var privilege = await Privilege.create({
-        roleId: body.readByEmployees, //id của người cấp quyền xem
-        resourceId: tasktemplate._id,
-        resourceType: "TaskTemplate",
-        action: body.readByEmployees //quyền READ
-    });
+
+    // xu ly quyen nguoi xem
+    var read = body.readByEmployees;
+    var roleId=[];
+    var role,roleParent;
+    role = await Role.find({ _id : { $in: read } }) ;
+    roleParent = role.map( item => item.parents);   // lấy ra các parent của các role
+    var flag;
+    var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
+    for (let n in reads){
+        flag = 0;                                  
+        var parent = [];
+        parent = parent.concat(roleParent[n]);
+        for (let i in parent){
+            for (let j in reads){
+                if (JSON.stringify(reads[j]) === JSON.stringify(parent[i])){  // nếu 1 role là kế thừa của role có sẵn quyền xem thì loại role đấy đi 
+                    reads[n]="";                                              // loại role
+                    flag=1;
+                    roleId.push(reads[j]);                                    // thêm vào danh sách role có quyền xem
+                }
+            }
+        }
+        if (flag === 0) roleId.push(reads[n]);    // role này không là role cha của role khác => thêm vào danh sách role có quyền xem
+    }
+    // xử lý các role trùng lặp
+    roleId = roleId.map(u => u.toString());
+    for(let i = 0, max = roleId.length; i < max; i++) {
+        if(roleId.indexOf(roleId[i]) != roleId.lastIndexOf(roleId[i])) {
+            roleId.splice(roleId.indexOf(roleId[i]), 1);
+            i--;
+        }
+    }
+    // mỗi roleId là một Document
+    for (let i in roleId){
+        var privilege = await Privilege.create({
+            roleId: roleId[i], //id của người cấp quyền xem
+            resourceId: tasktemplate._id,
+            resourceType: "TaskTemplate",
+            action: body.readByEmployees //quyền READ
+        });
+    }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
     return tasktemplate;
 }

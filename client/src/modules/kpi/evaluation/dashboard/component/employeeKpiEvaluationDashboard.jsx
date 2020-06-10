@@ -55,7 +55,7 @@ class DashBoardKPIMember extends Component {
 
         var infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "all",
+            user: "null",
             status: 5,
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
@@ -362,7 +362,7 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
                         </div>
                     </div>
                 </div>
@@ -444,8 +444,8 @@ class DashBoardKPIMember extends Component {
                                     <ul className="users-list clearfix">
                                         {
                                             (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
-                                                lastMonthEmployeeKpiSets.map(item =>
-                                                    <li>
+                                                lastMonthEmployeeKpiSets.map((item, index) =>
+                                                    <li key={index}>
                                                         <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
                                                         <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                         <span className="users-list-date">{item.approvedPoint}</span>
@@ -505,7 +505,7 @@ class DashBoardKPIMember extends Component {
                                                     items={unitMembers}
                                                     multiple={false}
                                                     onChange={this.handleSelectEmployee}
-                                                    value={unitMembers[2].value[0].value}
+                                                    value={this.INFO_SEARCH.userId}
                                                 />
                                             </div>
                                         }
