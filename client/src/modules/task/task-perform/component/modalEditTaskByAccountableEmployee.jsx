@@ -47,7 +47,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             info[`${taskInfo[i].code}`] = {
                 value: taskInfo[i].value,
                 code: taskInfo[i].code,
-                type: ''
+                type: taskInfo[i].type
             }
             
         }
