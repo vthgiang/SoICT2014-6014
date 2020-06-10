@@ -24,7 +24,7 @@ class Notification extends Component {
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
                         <i className="fa fa-bell-o" />
                         {
-                            count > 0 && <span class="label label-warning">{count}</span>
+                            count > 0 && <span className="label label-warning">{count}</span>
                         }
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
