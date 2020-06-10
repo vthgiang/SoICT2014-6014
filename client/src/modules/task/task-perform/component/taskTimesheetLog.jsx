@@ -63,7 +63,7 @@ class TaskTimesheetLog extends Component {
 
     stopTimer = async () => {
         const { performtasks ,auth} = this.props;
-        console.log(auth.user.id)
+
         const timer = {
             stoppedAt: Date.now(),
             duration: Date.now() - performtasks.currentTimer.timesheetLogs[0].startedAt,
@@ -71,21 +71,26 @@ class TaskTimesheetLog extends Component {
             description: "",
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
         };
-
-        this.props.stopTimer(timer);
+        //this.props.ABC()
+        await this.props.stopTimer(timer);
         await this.setState(state=>{
             return {
                 ...state,
                 showModal: auth.user.id
             }
         });
-        console.log(this.state)
+        window.$("#modal-description-abc").modal('show')
     }   
-
+    save = () => {
+        //do something
+        console.log("Clicked!!")
+    }
     render() { 
+        
         const { translate, performtasks, auth } = this.props;
         const currentTimer = performtasks.currentTimer;
-
+        console.log(auth.user.id)
+        console.log(this.state.showModal)
         return ( 
             <React.Fragment>
                 {
@@ -108,15 +113,23 @@ class TaskTimesheetLog extends Component {
                     </div>
 
                     {this.state.showModal == auth.user.id && 
-                        
                         <DialogModal
-                            size="100"
-                            modalID={`modal description`}
-                            formID="form-perform-task"
-                            title={' abcxuz'}
-                            bodyStyle={{padding: "0px"}}
-                            hasSaveButton={false}
+                            marginTop = {"30px"}
+                            isLoading={false}
+                            size="30vh"
+                            modalID={"modal-description-abc"}
+                            formID="form-timesheet-log"
+                            title={'Mô tả bấm giờ'}
+                            bodyStyle={{padding: "15px"}}
+                            hasSaveButton={true}
+                            func= {this.save}
                         >
+                            <form>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Nhập mô tả (*):</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                            </form>
                         </DialogModal>
                     }
                    </React.Fragment>
@@ -135,6 +148,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     getStatusTimer: performTaskAction.getTimerStatusTask,
     stopTimer: performTaskAction.stopTimerTask,
+    ABC: performTaskAction.ABC
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(TaskTimesheetLog) );

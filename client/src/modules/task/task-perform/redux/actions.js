@@ -26,7 +26,8 @@ export const performTaskAction = {
     evaluationAction,
     confirmAction,
     downloadFile,
-    uploadFile
+    uploadFile,
+    ABC
 };
 // Create result task
 function createResultTask(result) {
@@ -311,5 +312,11 @@ function uploadFile(task,data) {
             payload => dispatch({ type: performTaskConstants.UPLOAD_FILE_SUCCESS, payload }),
             error => dispatch({ type: performTaskConstants.UPLOAD_FILE_FAILURE, error })
         );
+    }
+}
+function ABC () {
+    return dispatch => {
+    
+        dispatch({type: performTaskConstants.ABC})
     }
 }
