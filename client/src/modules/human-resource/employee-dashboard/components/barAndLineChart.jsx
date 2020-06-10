@@ -38,6 +38,9 @@ class BarAndLineChart extends Component {
     }
 
     renderChart = (data) => {
+        data.data1.shift(); data.data2.shift();
+        let bigData1 = data.data1.map(x => 1.5 * x);
+        let bigData2 = data.data2.map(x => 2 * x);
         this.removePreviousChart();
 
         let chart = c3.generate({
@@ -79,24 +82,16 @@ class BarAndLineChart extends Component {
             }
         });
 
-        var addColumn = (ratioX, data, delay) => {
-            var dataTmp = [data[0], 0];
-            setTimeout(function () {
-                chart.load({
-                    columns: [ratioX, dataTmp]
-                });
-            }, 200);
-            data.forEach(function (value, index) {
-                setTimeout(function () {
-                    dataTmp[index] = value;
-                    chart.load({
-                        columns: [ratioX, dataTmp],
-                    });
-                }, (200 + (delay / 12 * index)));
+        setTimeout(function () {
+            chart.load({
+                columns: [data.ratioX, ['data1', ...bigData1], ['data2', ...bigData2]],
             });
-        }
-        addColumn(data.ratioX, data.data1, 2000);
-        addColumn(data.ratioX, data.data2, 2400);
+        }, 100);
+        setTimeout(function () {
+            chart.load({
+                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
+            });
+        }, 300);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
