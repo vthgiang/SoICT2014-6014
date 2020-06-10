@@ -34,12 +34,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
             if(taskInfo[i].type === "Date"){
                 if(taskInfo[i].value){
                     taskInfo[i].value = this.formatDate(taskInfo[i].value);
-                } else taskInfo[i].value = this.formatDate(Date.now());
+                } 
+                else taskInfo[i].value = this.formatDate(Date.now());
             }
             else if(taskInfo[i].type === "SetOfValues"){
-                if(taskInfo[i].value){
-                    taskInfo[i].value = taskInfo[i].value === undefined ? undefined : [taskInfo[i].value];
-                }
+                let splitter = taskInfo[i].extra.split('\n');
+
+                // if(taskInfo[i].value){
+                    taskInfo[i].value = taskInfo[i].value === undefined ? [splitter[0]] : [taskInfo[i].value];
+                // }
             }
             info[`${taskInfo[i].code}`] = {
                 value: taskInfo[i].value,
