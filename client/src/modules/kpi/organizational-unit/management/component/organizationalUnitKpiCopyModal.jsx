@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { managerActions } from '../redux/actions';
 // import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
 import Swal from 'sweetalert2';
+import { ErrorLabel, DatePicker } from '../../../../../common-components';
 import {
     getStorage
 } from '../../../../../config';
@@ -14,7 +15,7 @@ class ModalCopyKPIUnit extends Component {
             kpiunit: {
                 unit: "",
                 date: this.formatDate(Date.now()),
-                creator: "" //localStorage.getItem("id")
+                creator: "" ,//localStorage.getItem("id")
             }
         };
     }
@@ -32,9 +33,21 @@ class ModalCopyKPIUnit extends Component {
 
         return [month, year].join('-');
     }
+    handleNewDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    //errorOnDate: this.validateDate(value),
+                    NewDate: value,
+                }
+            });
+        
+    }
     handleSubmit = async (event, oldkpiunit) => {
         event.preventDefault();
         var id = getStorage("userId");
+        var currentRole= getStorage("currentRole");
         // kpiunit.creator = id;
         await this.setState(state => {
             return {
@@ -48,6 +61,8 @@ class ModalCopyKPIUnit extends Component {
             }
         })
         var { kpiunit } = this.state;
+        this.props.copyKPIUnit(currentRole, oldkpiunit.date, this.state.NewDate);
+        
         if (kpiunit.unit && kpiunit.date ) {//&& kpiunit.creater
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
@@ -69,7 +84,9 @@ class ModalCopyKPIUnit extends Component {
         modal.style = "display: none;";
     }
     render() {
+        const{NewDate, errorOnDate}= this.state;
         const { kpiunit } = this.props;
+        console.log("=====", kpiunit);
         return (
             <div className="modal fade" id={`copyOldKPIToNewTime${kpiunit._id}`}>
                 <div className="modal-dialog">
@@ -85,12 +102,13 @@ class ModalCopyKPIUnit extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2">Tháng:</label>
-                                <div className='input-group col-sm-9 date has-feedback' style={{marginLeft: "11px"}}>
-                                    <div className="input-group-addon">
-                                        <i className="fa fa-calendar" />
-                                    </div>
-                                    <input type="text" className="form-control pull-right" ref={input => this.date = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
-                                </div>
+                                <DatePicker
+                                id="new_date"
+                                value={NewDate}
+                                onChange={this.handleNewDateChange}
+                                dateFormat="month-year"
+                            />
+                            <ErrorLabel content={errorOnDate} />
                             </div>
                             <div className="form-group" >
                                 <label className="col-sm-12">Danh sách mục tiêu:</label>
@@ -120,6 +138,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    copyKPIUnit: managerActions.copyKPIUnit
 };
 const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(ModalCopyKPIUnit);
 export { connectedModalCopyKPIUnit as ModalCopyKPIUnit };
