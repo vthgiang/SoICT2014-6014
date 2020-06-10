@@ -8,25 +8,9 @@ class SelectBox extends Component {
     }
 
     componentDidMount() {
-        let { id, onChange, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
-        if (changeSearch !== undefined && changeSearch !== false) {
-            options = {
-                ...options, ajax: {
-                    url: function (params) {
-                        if (params.term !== undefined && params.term !== "") {
-                            changeSearch(params.term);
-                        }
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                        };
-                    },
-                }
-            }
-        }
-
+        const { id, onChange, options = { minimumResultsForSearch: 15 } } = this.props;
         window.$("#" + id).select2(options);
+
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
             this.setState(state => {
@@ -40,15 +24,14 @@ class SelectBox extends Component {
             }
         });
     }
-    componentDidUpdate() {
-        let { id, options = {}, changeSearch, } = this.props;
-        if (changeSearch === undefined || changeSearch === false) {
-            window.$("#" + id).select2(options);
-        }
-    }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
         return this.state.value;
+    }
+
+    componentDidUpdate() {
+        const { id, options = {} } = this.props;
+        window.$("#" + id).select2(options);
     }
 
     static isEqual = (items1, items2) => {
@@ -69,13 +52,11 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) ||
-            nextProps.disabled !== prevState.disabled || !SelectBox.isEqual(nextProps.searchItems, prevState.searchItems)) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
-                searchItems: nextProps.searchItems,
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
@@ -85,37 +66,8 @@ class SelectBox extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) ||
-            (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
-            !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-
-            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-                let { id, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
-                if (changeSearch !== undefined && changeSearch !== false) {
-                    options = {
-                        ...options, ajax: {
-                            url: function (params) {
-                                if (params.term !== undefined && params.term !== "") {
-                                    changeSearch(params.term);
-                                }
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                                };
-                            },
-                        },
-                    }
-                    window.$("#" + id).select2(options);
-                    window.$("#" + nextProps.id).select2('open');
-                }
-                let parentSelect = window.$("#" + id).parent();
-                let children = parentSelect.children(1);
-                let inputSearch = children.find('span.selection input.select2-search__field')
-                inputSearch.val(nextProps.textSearch);
-            }
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
-        }
         return false;
     }
 
@@ -126,7 +78,7 @@ class SelectBox extends Component {
                 <div className="select2">
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
                         {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
-                        {items && items.map(item => {
+                        {items.map(item => {
                             if (!(item.value instanceof Array)) { // Dạng bình thường
                                 return <option key={item.value} value={item.value}>{item.text}</option>
                             } else {
