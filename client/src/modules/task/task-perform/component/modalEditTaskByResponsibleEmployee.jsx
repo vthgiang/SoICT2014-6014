@@ -56,19 +56,26 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         
         let infoEval = task.taskInformations;
         for(let i in infoEval){
+
             if(infoEval[i].type === "Date"){
                 if(infoEval[i].value){
                     infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
-                else infoEval[i].value = this.formatDate(Date.now());
+                else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                    infoEval[i].value = this.formatDate(Date.now());
+                } 
             }
             else if(infoEval[i].type === "SetOfValues"){
-                let splitter = infoEval[i].extra.split('\n');
-
-                // if(infoEval[i].value){
-                    infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
-                // }
+                let splitSetOfValues = infoEval[i].extra.split('\n');
+                if(infoEval[i].value){
+                    infoEval[i].value = [infoEval[i].value];
+                }
+                else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                    infoEval[i].value = [splitSetOfValues[0]];
+                }
             }
+        
+            
             info[`${infoEval[i].code}`] = {
                 value: infoEval[i].value,
                 code: infoEval[i].code,
@@ -328,7 +335,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 break;
             }
         }
-        return check && this.validateTaskName(this.state.taskName, false)
+        // check &&
+        return  this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
             // && this.validateTaskProgress(this.state.taskProgress, false);
     }
@@ -357,7 +365,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        console.log('----------------------\n\n\n', date, userId, department);
+        // console.log('----------------------\n\n\n', date, userId, department);
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
@@ -391,7 +399,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
         
-        console.log('listKPI==========================\n\n\n', listKpi);
+        // console.log('listKPI==========================\n\n\n', listKpi);
         return (
             <div>
                 <React.Fragment>

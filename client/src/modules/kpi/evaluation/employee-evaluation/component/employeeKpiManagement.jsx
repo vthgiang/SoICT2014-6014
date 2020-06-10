@@ -168,20 +168,16 @@ class KPIMember extends Component {
                 kpiId: id
             }
         })
-        window.$(`modal-approve-KPI-member`).modal('show')
+        window.$(`modal-approve-KPI-member`).modal('show');
     }
-    showEvaluateModal = async (id) => {
+    showEvaluateModal = async (item) => {
         await this.setState(state => {
             return {
                 ...state,
-                showEvaluateModal: id
+                employeeKpiSet: item
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`memberEvaluate${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
     render() {
         var userdepartments, kpimember;
@@ -216,7 +212,9 @@ class KPIMember extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
-                    {<ModalMemberApprove id={this.state.kpiId} />}
+                        <ModalMemberApprove id={this.state.kpiId} />
+                        <ModalMemberEvaluate employeeKpiSet={this.state.employeeKpiSet}/>
+
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>Nhân viên:</label>
@@ -320,10 +318,10 @@ class KPIMember extends Component {
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
                             </td>
                             <td>
-                                <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
+                                <a data-target={`#employee-kpi-evaluation-modal`} onClick={()=> this.showEvaluateModal(item)} data-toggle="modal"
                                 className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
-                                {this.state.showEvaluateModal === item._id ?
-                                <ModalMemberEvaluate name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null}
+                                {/* {this.state.showEvaluateModal === item._id ?
+                                <ModalMemberEvaluate name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null} */}
                             </td>
                             </tr>
                             ) : <tr>
