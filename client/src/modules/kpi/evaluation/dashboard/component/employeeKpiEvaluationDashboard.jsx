@@ -55,7 +55,7 @@ class DashBoardKPIMember extends Component {
 
         var infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "all",
+            user: "null",
             status: 5,
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
@@ -505,7 +505,7 @@ class DashBoardKPIMember extends Component {
                                                     items={unitMembers}
                                                     multiple={false}
                                                     onChange={this.handleSelectEmployee}
-                                                    value={unitMembers[2].value[0].value}
+                                                    value={this.INFO_SEARCH.userId}
                                                 />
                                             </div>
                                         }
