@@ -27,6 +27,7 @@ class TaskInformationForm extends Component {
         }
     }
 
+    // Hàm tính điểm tự động cho một công việc
     calculateAutomaticPoint = () => {
         let task = this.props.task;
 
@@ -37,7 +38,7 @@ class TaskInformationForm extends Component {
         let taskActions = task.taskActions;
         let actionRating = taskActions.map(action => action.rating)
 
-        let automaticPoint;
+        let automaticPoint = -1;
         
         if(task.taskTemplate === null || task.taskTemplate === undefined){ // Công việc không theo mẫu
             // Tổng số điểm của các hoạt động
@@ -60,7 +61,7 @@ class TaskInformationForm extends Component {
             let a = actionRating.length;
 
             // Tổng số lần duyệt "Chưa đạt" cho các hoạt động
-            let ad = actionRating.filter(x => x.rating > 5) // mấy điểm thì đạt???
+            let ad = actionRating.filter(x => x.rating > 5).length; // mấy điểm thì đạt???
 
             let formula = task.taskTemplate.formula;
             let taskInformations = task.taskInformations;
@@ -75,6 +76,7 @@ class TaskInformationForm extends Component {
             automaticPoint = eval(formula);            
         }
         
+        return automaticPoint;
     }
 
     render() {
