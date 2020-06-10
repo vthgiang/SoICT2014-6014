@@ -59,6 +59,9 @@ class TaskComponent extends Component {
             for (let n in informedEmployees) {
                 if (informedEmployees[n]._id === id) return true;
             }
+            if (info.creator._id === id){
+                return true;
+            }
         }
         return false;
     }
