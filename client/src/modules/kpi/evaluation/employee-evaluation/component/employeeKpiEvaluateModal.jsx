@@ -176,6 +176,11 @@ class ModalMemberEvaluate extends Component {
 
 
                 <div className="col-xs-12 col-sm-8 qlcv">
+                    <div className="form-inline pull-right">
+                        <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
+                        <button className="btn btn-primary">Xuất file</button>
+                    </div>
+
                     {list && list.map(item => {
                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                             <h4>{`Thông tin KPI "${item.name}"`}</h4>
@@ -191,19 +196,12 @@ class ModalMemberEvaluate extends Component {
                                 </div>
 
                                 <div>
-                                    <label>Điểm tự động:</label>
+                                    <label>Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá):</label>
                                     <span> {item.automaticPoint? item.automaticPoint: "Chưa có điểm"}</span>
+                                    <span> - {item.employeePoint? item.employeePoint: "Chưa có điểm"}</span>
+                                    <span> - {item.approvedPoint? item.approvedPoint: "Chưa có điểm"}</span>
                                 </div>
 
-                                <div>
-                                    <label>Điểm tự đánh giá:</label>
-                                    <span> {item.employeePoint? item.employeePoint: "Chưa có điểm"}</span>
-                                </div>
-
-                                <div>
-                                    <label>Điểm phê duyệt:</label>
-                                    <span> {item.approvedPoint? item.approvedPoint: "Chưa có điểm"}</span>
-                                </div>
                                 { item.updatedAt &&
                                 <div>
                                     <label>Lần đánh giá cuối: </label>
@@ -211,13 +209,13 @@ class ModalMemberEvaluate extends Component {
                                 </div>
                                 }
                             </div>
+                            <br/>
+                            <br/>
 
-                            <div className="form-inline" style={{textAlign: "right"}}>
-                                <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
-                                <button className="btn btn-primary">Xuất file</button>
-                            </div>
+                            
 
 
+                            <h4>Danh sách các công việc</h4>
                             <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
                             columnArr={[
                                 'STT',
@@ -230,7 +228,6 @@ class ModalMemberEvaluate extends Component {
                             limit={this.state.perPage}
                             setLimit={this.setLimit}
                             hideColumnOption={true} />
-                            <h4>Danh sách các công việc</h4>
                             
 
                             
