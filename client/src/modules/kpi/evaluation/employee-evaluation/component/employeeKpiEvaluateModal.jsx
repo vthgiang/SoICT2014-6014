@@ -103,7 +103,7 @@ class ModalMemberEvaluate extends Component {
                 taskId: data[n].taskId,
                 date: date,
                 point: data[n].taskImportanceLevel,
-                employeeId: this.props.employeeKpiSet.employeeId,
+                employeeId: this.props.employeeKpiSet.creator._id,
             }
         }
         console.log("efefefef",data);
