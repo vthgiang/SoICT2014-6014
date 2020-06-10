@@ -5,9 +5,6 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
-// import { ModalDetailKPI } from './ModalDetailKPI';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
-// import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
 
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
 import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
@@ -15,15 +12,22 @@ import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUn
 import { TaskPerformanceResultsOfOrganizationalUnitChart } from './taskPerformanceResultsOfOrganizationalUnitChart';
 import { StatisticsOfPerformanceResultsChart } from './statisticsOfPerformanceResultsChart';
 
+import CanvasJSReact from '../../../../../chart/canvasjs.react';
+
+import { SelectBox } from '../../../../../common-components/index';
 class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
         
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+
         this.state = {
             currentMonth: new Date().getMonth() + 1,
             currentYear: new Date().getFullYear(),
-            currentRole: localStorage.getItem("currentRole")
+            currentRole: localStorage.getItem("currentRole"),
+            organizationalUnitId: null,
+            dataStatus: this.DATA_STATUS.AVAILABLE
         };
     }
 
@@ -33,7 +37,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         this.props.getChildrenOfOrganizationalUnitsAsTree(this.state.currentRole)
     }
 
-    componentDidUpdate() {
+    componentDidUpdate = async () => {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
             this.setState(state => {
@@ -43,6 +47,39 @@ class OrganizationalUnitKpiDashboard extends Component {
                 }
             })
         }
+    }
+
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        console.log("999", this.state.currentRole, localStorage.getItem('currentRole'), nextState.currentRole)
+        if (this.state.currentRole !== nextState.currentRole) {
+            await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+            console.log("****", nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit, this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit)
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+
+        }
+
+        if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if(!nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+                return false
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE
+                }
+            })
+            return false;
+        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+            return true;
+        }
+
+        return false;
     }
 
     formatDate(date) {
@@ -65,10 +102,18 @@ class OrganizationalUnitKpiDashboard extends Component {
         
     }
 
+    handleSelectOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationalUnitId: value
+            }
+        })
+    }
+
     render() {
         
-        var childOrganizationalUnit, listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, childrenOrganizationalUnit;
-        var unitList, currentUnit;
+        var childOrganizationalUnit, targetA, targetC, targetOther, misspoint, childrenOrganizationalUnit, organizationalUnitSelectBox;
         const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet } = this.props;
 
         if(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
@@ -107,38 +152,17 @@ class OrganizationalUnitKpiDashboard extends Component {
             }
         }
 
-        if (user.organizationalUnitsOfUser) {
-            unitList = user.organizationalUnitsOfUser;
-            currentUnit = unitList.filter(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-        }
-        
-        if (managerKpiUnit.kpis) {
-            listkpi = managerKpiUnit.kpis;
-            if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
-            {
-                kpiApproved = listkpi.filter(item => item.status === 2);
-                currentKPI = listkpi.filter(item => item.status !== 2);
-                currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
+        if(childOrganizationalUnit) {
+            organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
 
-                datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.automaticPoint }
-                }).reverse();
-                targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.kpis[0].result }
-                }).reverse();
-                targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.kpis[1].result }
-                }).reverse();
-                targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
-                }).reverse();
-                misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: (100 - item.result) }
-                }).reverse();
-            };
+            if(organizationalUnitSelectBox && this.state.organizationalUnitId === null) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        organizationalUnitId: organizationalUnitSelectBox[0].value
+                    }
+                })
+            }
         }
         
         const options2 = {
@@ -209,7 +233,29 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
                                             <h2>Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
-                                            <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={childOrganizationalUnit[0].id}/>
+                                            {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
+                                                <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                                            }
+                                            <div className='box-tools pull-right'>
+                                                <button type="button" data-toggle="collapse" data-target="#organizationalUnitSelectBox" className="pull-right" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                                                <div id="organizationalUnitSelectBox" className="box collapse setting-table">
+                                                    <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
+
+                                                    <div className = "form-group">
+                                                        <label>Đơn vị</label>
+                                                        <SelectBox
+                                                            id={`childOrganizationalUnitSelectBox`}
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            items={organizationalUnitSelectBox}
+                                                            multiple={false}
+                                                            onChange={this.handleSelectOrganizationalUnit}
+                                                            value={organizationalUnitSelectBox[0].value}
+                                                        />
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 }   
@@ -234,7 +280,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
                                             <h2>Kết quả thực hiện công việc các đơn vị năm {this.state.currentYear}</h2>
-                                            <TaskPerformanceResultsOfOrganizationalUnitChart childrenOrganizationalUnit={childOrganizationalUnit}/>
+                                            <TaskPerformanceResultsOfOrganizationalUnitChart/>
                                         </div>
                                     </div>
                                 }       

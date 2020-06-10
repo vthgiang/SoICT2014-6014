@@ -258,7 +258,7 @@ class ModalMemberEvaluate extends Component {
                                                         <tr>
                                                             <th title="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
-                                                            <th title="Thời gian">Thời gian</th>
+                                                            <th title="Thời gian">Thời gian đánh giá</th>
                                                             <th title="Trạng thái">Trạng thái</th>
                                                             <th title="Đóng góp">Đóng góp</th>
                                                             <th title="Điểm">Điểm</th>
@@ -280,7 +280,7 @@ class ModalMemberEvaluate extends Component {
                                                                         <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                                         <td>
                                                                             <input type="range"
-                                                                                min="0"
+                                                                                min="1"
                                                                                 max='10'
                                                                                 name={`taskImportanceLevel${itemTask.taskId}`}
                                                                                 value={this.state[`taskImportanceLevel${itemTask.taskId}`]}

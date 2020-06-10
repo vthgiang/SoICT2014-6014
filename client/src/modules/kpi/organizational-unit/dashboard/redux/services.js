@@ -7,6 +7,7 @@ export const dashboardOrganizationalUnitKpiServices = {
     getAllChildTargetOfOrganizationalUnitKpis,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
+    getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
@@ -34,6 +35,13 @@ function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
     }, false, false)
 }
 
+/** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
+function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-each-year-of-child/${userRoleId}/${year}`,
+        method: 'GET'
+    }, false, false)
+}
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(userRoleId, month) {
