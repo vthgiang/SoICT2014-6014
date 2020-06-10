@@ -9,7 +9,8 @@ export const managerServices = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
     evaluateKPIUnit,
-    getKPIUnits
+    getKPIUnits,
+    copyKPIUnit,
 }
 
 // Lấy tất cả KPI đơn vị
@@ -28,9 +29,9 @@ function getKPIUnits(infosearch) {
     }, false, true, 'kpi.organizational_unit');
 }
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(id) {
+function getChildTargetOfCurrentTarget(id, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }
@@ -42,4 +43,11 @@ function evaluateKPIUnit(id) {
         url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
         method: 'PUT',
     }, false, true, 'kpi.organizational_unit');
+}
+
+function copyKPIUnit(id, dateold, datenew){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/copykpi/${id}/${dateold}/${datenew}`,
+        method: 'POST',
+    }, true, true, 'kpi.organizational_unit');
 }

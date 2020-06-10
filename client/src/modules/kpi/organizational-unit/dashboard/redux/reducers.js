@@ -4,6 +4,7 @@ const initState = {
     childTargets: null,
     tasks: null,
     organizationalUnitKpiSetsEachYear: null,
+    employeeKpiSets: null,
     isLoading: false,
     error: null
 }
@@ -66,6 +67,26 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 organizationalUnitKpiSetsEachYear: action.payload
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST:
+            return {
+                ...state,
+                employeeKpiSets: null,
+                loading: true,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isLoading: false,
+                employeeKpiSets: action.payload
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE:
             return {
                 ...state,
                 loading: false,

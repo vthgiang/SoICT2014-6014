@@ -11,6 +11,8 @@ import {ActionForm} from '../component/actionsTemplate';
 import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+
 class ModalAddTaskTemplate extends Component {
     constructor(props) {
         super(props);
@@ -44,9 +46,7 @@ class ModalAddTaskTemplate extends Component {
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
-        // Lấy tất cả nhân viên của phòng ban
-        // this.props.getAllUserOfDepartment();
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả các role là dean 
@@ -140,7 +140,7 @@ class ModalAddTaskTemplate extends Component {
                 // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
                 let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
                 if (dept){
-                    this.props.getAllUserSameDepartment(dept.dean);
+                    this.props.getChildrenOfOrganizationalUnits(singleValue);
                     this.props.getRoleSameDepartment(dept.dean);
                 }
             }
@@ -275,6 +275,8 @@ class ModalAddTaskTemplate extends Component {
                         }
                     };
                 });
+
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
                 return false; // Sẽ cập nhật lại state nên không cần render
             }
         }
@@ -285,7 +287,7 @@ class ModalAddTaskTemplate extends Component {
     render() {
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
         const { newTemplate } = this.state;
-        const { department, user, translate } = this.props;
+        const { department, user, translate, tasktemplates } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
         
@@ -299,23 +301,11 @@ class ModalAddTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
-        let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
             <React.Fragment>
@@ -499,9 +489,9 @@ class ModalAddTaskTemplate extends Component {
 }
 
 function mapState(state) {
-    const { department, user } = state;
+    const { department, user, tasktemplates } = state;
     const adding = state.tasktemplates;
-    return { adding, department, user };
+    return { adding, department, user, tasktemplates };
 }
 
 const actionCreators = {
@@ -510,8 +500,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
+    getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalAddTaskTemplate));
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };

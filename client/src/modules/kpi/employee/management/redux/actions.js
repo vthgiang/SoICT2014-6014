@@ -3,7 +3,8 @@ import { managerKPIPerService } from "./services";
 export const managerKpiActions = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfResponsible,
-    getAllKPIPersonalByUserID
+    getAllKPIPersonalByUserID,
+    getAllKpiSetsOrganizationalUnitByMonth
 };
 
 // Lấy tất cả KPI cá nhân
@@ -64,6 +65,30 @@ function getAllKPIPersonalOfResponsible(member) {
             .catch(error =>{
                 dispatch({
                     type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE,
+                    payload: error
+                })
+            })
+    };
+
+}
+/**
+ * 
+ * @param {*} 
+ */
+function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
+    return dispatch => {
+        dispatch({ type: managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_REQUEST});
+
+        managerKPIPerService.getAllKpiSetsOrganizationalUnitByMonth(user, department, date)
+            .then(res=>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_FAILURE,
                     payload: error
                 })
             })

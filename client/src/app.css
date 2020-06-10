@@ -48,6 +48,15 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+/* Css cho Link */
+a {
+    color: #385898;
+}
+a:hover, a:active, a:focus {
+    color: #6a8dd1;
+}
+
+
 
 
 /* CSS cho C3 Chart */
@@ -61,8 +70,16 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
     width: 100%;
 }
 
+path.area { 
+    stroke: none;
+	fill: #FF8C2B;
+    opacity: 0.9
+}
 
-
+text.c3-axis-x-label, text.c3-axis-y-label {
+    font-weight: bold;
+    font-size: 120%
+}
 
 
 /*

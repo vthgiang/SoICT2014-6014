@@ -86,7 +86,7 @@ export function kpimembers(state = {}, action) {
         ...state,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload.kpimember._id?action.payload.kpimember:item),
+          item._id===action.payload._id?action.payload:item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
@@ -167,11 +167,16 @@ export function kpimembers(state = {}, action) {
         editing: true
         };
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
+        console.log(action.payload.result);
+        console.log(state.currentKPI);
         return {
             ...state,
-            // currentKPI : action.payload,
             tasks: action.payload.task,
-            result: action.payload.result
+            currentKPI : {
+              ...state.currentKPI,
+              kpis:state.currentKPI.kpis.map(kpi =>
+                (kpi._id === action.payload.result._id) ? action.payload.result : kpi )
+            }
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
         return { 

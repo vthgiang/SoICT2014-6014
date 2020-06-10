@@ -99,37 +99,30 @@ class ModalMemberEvaluate extends Component {
         console.log('date', date.getMonth());
         var isoDate = date.toISOString();
         this.props.getTaskById(id, employeeId, isoDate);
-        //var kpimembers =  this.props.kpimembers;
-       //if(kpimembers.tasks !== undefined){
         this.setState(state => {
-            // console.log("iiiiiiii", kpimembers);
-            //    kpimembers.tasks.map(async(task)=>{
-            //    state[`taskImportanceLevel${task._id}`] = kpimembers.taskImportanceLevel;
-            //    })
-   
                return {
                    ...state,
                    content: id,
-                   //dataStatus : this.DATA_STATUS.QUERYING
                }
            });
-       //}
-
     }
 
     handleSetPointKPI = () => {
-        var date = new Date();
+        var date = this.props.date;
+        console.log("eeeee",this.props.kpimembers.tasks);
         let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
+        console.log('dataatata', data);
         for (let n in data) {
             data[n]={
                 taskId: data[n].taskId,
-                date: date.toISOString(),
+                date: date,
                 point: data[n].taskImportanceLevel,
                 employeeId: this.props.employeeId,
             }
         }
-        console.log(data);
+        console.log("efefefef",data);
         this.props.setPointKPI(this.state.content, data);
+        console.log("iddddd",this.state.content);
         this.setState({
             editing: true,
         })
@@ -167,10 +160,10 @@ class ModalMemberEvaluate extends Component {
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
-        if(kpimembers.result){
-            thisKPI = kpimembers.result;
-        }
-        console.log('-------------', this.state);
+        // if(kpimembers.result){
+        //     thisKPI = kpimembers.result;
+        // }
+        console.log('-------------', this.props.kpimembers.tasks);
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -215,21 +208,28 @@ class ModalMemberEvaluate extends Component {
                                                     <label style={{ display: "inline" }}>{item.weight}</label>
                                                 </div>
                                             
-                                                { thisKPI && 
+                                                { item.automaticPoint && 
                                                 <div className="row">
                                                 <div className="col-sm-12">
                                                     <label style={{ width: "150px" }}>Điểm tự động:</label>
-                                                    <label >{thisKPI.automaticPoint}</label>
+                                                    <label >{item.automaticPoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label style={{ width: "150px" }}>Điểm tự đánh giá:</label>
-                                                    <label >{thisKPI.employeePoint}</label>
+                                                    <label >{item.employeePoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label style={{ width: "150px" }}>Điểm phê duyệt:</label>
-                                                    <label >{thisKPI.approvedPoint}</label>
+                                                    <label >{item.approvedPoint}</label>
                                                 </div>
                                                 </div>
+                                               }
+                                               { item.updatedAt &&
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Ngày đánh giá gần nhất: </label>
+                                                    <label >{this.formatDate(item.updatedAt)}</label>
+                                                </div>
+
                                                }
                                                 <div className="form-inline">
                                                     <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>

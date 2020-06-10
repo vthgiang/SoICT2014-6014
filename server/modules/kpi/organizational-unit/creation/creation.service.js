@@ -13,8 +13,14 @@ exports.getOrganizationalUnitKpiSet = async (id) => {
         ]
     });
     
+    var now = new Date();
+    var currentYear = now.getFullYear();
+    var currentMonth = now.getMonth();
+    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    var endOfLastMonth = new Date(currentYear, currentMonth);
+
     // Status khác 2 --> chưa kết thúc
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, status: { $ne: 2 } })
+    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     

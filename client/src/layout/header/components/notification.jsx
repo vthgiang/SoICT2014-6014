@@ -17,13 +17,14 @@ class Notification extends Component {
 
     render() { 
         const {translate, notifications} = this.props;
+        const count = notifications.receivered.list.filter(notification => !notification.readed).length;
         return ( 
             <React.Fragment>
                 <li className="dropdown notifications-menu">
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
                         <i className="fa fa-bell-o" />
                         {
-                            notifications.receivered.list.filter(notification => !notification.readed).length > 0 && <sup><i className="fa fa-circle text-yellow" style={{fontSize: '8px'}}></i></sup>
+                            count > 0 && <span className="label label-warning">{count}</span>
                         }
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>

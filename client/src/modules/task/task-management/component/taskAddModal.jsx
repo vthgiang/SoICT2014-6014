@@ -12,6 +12,8 @@ import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../comm
 import { TaskFormValidator} from './taskFormValidator';
 import { taskTemplateConstants } from '../../task-template/redux/constants';
 
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+
 class ModalAddTask extends Component {
 
     componentDidMount() {
@@ -47,17 +49,7 @@ class ModalAddTask extends Component {
     
    
     handleSubmit = async (event) => {
-        if(this.props.id !== ""){
-            this.state.newTask.parent = this.props.currentTasks[0];
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        
         const { newTask } = this.state;
-        
         this.props.addTask(newTask);
     }
 
@@ -169,6 +161,7 @@ class ModalAddTask extends Component {
         let value = event.target.value;
         if (value) {
             this.props.getAllUserOfDepartment(value);
+            this.props.getChildrenOfOrganizationalUnits(value);
             this.setState(state =>{
                 return{
                     ...state,
@@ -310,9 +303,22 @@ class ModalAddTask extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, id } = this.props;
+        const { user } = this.props;
         const { newTask } = this.state;
-        
+
+        if (nextProps.parentTask !== this.props.parentTask){ // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
+            this.setState(state =>{
+                return{
+                    ...state,
+                    newTask: {
+                        ...this.state.newTask,
+                        parent: nextProps.parentTask,
+                    }
+                };
+            });
+            return false;
+        }
+
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
@@ -321,7 +327,7 @@ class ModalAddTask extends Component {
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
-
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
                 return{
                     ...state,
@@ -332,12 +338,7 @@ class ModalAddTask extends Component {
                 };
             });
             return false; // Sẽ cập nhật lại state nên không cần render
-        }
-        
-        if(newTask.taskTemplate !== nextState.newTask.taskTemplate){
-            
-           return true;
-        }
+        }        
       
         return true;
     }
@@ -366,32 +367,22 @@ class ModalAddTask extends Component {
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
-
-        let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        var usersOfChildrenOrganizationalUnit;
+        if(tasktemplates.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
-
+       
+        var unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        
+  
+        
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
                 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`addNewTask${this.props.id}`} isLoading={false}
+                    size='100' modalID={`addNewTask`} isLoading={false}
                     formID="form-add-new-task"
                     disableSubmit={!this.isTaskFormValidated()}
                     func={this.handleSubmit}
@@ -443,7 +434,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày bắt đầu*:</label>
                                     <DatePicker 
-                                        id={`datepicker1${this.props.id}`}
+                                        id="datepicker1"
                                         dateFormat="day-month-year"
                                         value={newTask.startDate}
                                         onChange={this.handleChangeTaskStartDate}
@@ -453,7 +444,7 @@ class ModalAddTask extends Component {
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
                                     <label className="control-label">Ngày kết thúc*:</label>
                                     <DatePicker 
-                                        id={`datepicker2${this.props.id}`}
+                                        id="datepicker2"
                                         value={newTask.endDate}
                                         onChange={this.handleChangeTaskEndDate}
                                     />
@@ -469,18 +460,16 @@ class ModalAddTask extends Component {
                                 </select>
                             </div>
 
-                            {this.props.id === "" &&
-                                <div className="form-group">
-                                    <label className="control-label">Công việc cha</label>
-                                    <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
-                                        <option value="">--Hãy chọn công việc cha--</option>
-                                        {this.props.currentTasks &&
-                                            this.props.currentTasks.map(item => {
-                                                return <option key={item._id} value={item._id}>{item.name}</option>
-                                            })}
-                                    </select>
-                                </div>
-                            }
+                            <div className="form-group">
+                                <label className="control-label">Công việc cha</label>
+                                <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
+                                    <option value="">--Hãy chọn công việc cha--</option>
+                                    {this.props.currentTasks &&
+                                        this.props.currentTasks.map(item => {
+                                            return <option key={item._id} value={item._id}>{item.name}</option>
+                                        })}
+                                </select>
+                            </div>
                         </fieldset>
                     </div>
                     
@@ -491,7 +480,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người thực hiện*</label>
                                 {unitMembers &&
                                 <SelectBox
-                                    id={`responsible-select-box${this.props.id}`}
+                                    id={`responsible-select-box${newTask.taskTemplate}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items={unitMembers}
@@ -508,7 +497,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người phê duyệt*</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accounatable-select-box${this.props.id}`}
+                                        id={`accounatable-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={unitMembers}
@@ -525,7 +514,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người hỗ trợ</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`consulted-select-box${this.props.id}`}
+                                        id={`consulted-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -544,7 +533,7 @@ class ModalAddTask extends Component {
                                 <label className="control-label">Người quan sát</label>
                                 {usercompanys &&
                                     <SelectBox
-                                        id={`informed-select-box${this.props.id}`}
+                                        id={`informed-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={
@@ -581,7 +570,8 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

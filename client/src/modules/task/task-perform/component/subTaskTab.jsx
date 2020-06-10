@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { taskManagementActions } from "../../task-management/redux/actions";
-import { LOCAL_SERVER_API } from '../../../../env';
-import { ModalPerformTask } from './modalPerformTask';
 import './actionTab.css';
 import qs from 'qs';
 class SubTaskTab extends Component {
@@ -49,8 +47,8 @@ class SubTaskTab extends Component {
                     subtasks.map( item =>{
                     return (
                         <div style={{marginBottom: 20}}>
-                            <strong><a href={`http://localhost:3000/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
-                            <span>{item.description}</span>
+                            <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
+                            <span> - {item.description}</span>
                             <div>
                                 <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}. </span>
                                 <span>{item.status}. </span>

@@ -6,11 +6,10 @@ import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
-import { StatisticsEmployeeKpiSetChart } from './statisticsEmployeeKpiSetChart';
+import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
 
 import { SelectBox, SelectMulti } from '../../../../../common-components';
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DatePicker } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
@@ -27,7 +26,7 @@ class DashBoardKPIMember extends Component {
         this.INFO_SEARCH = {
             userId: localStorage.getItem("userId"),
             startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 1)
+            endMonth: currentYear + '-' + (currentMonth + 2)
         }
 
         this.state = {
@@ -37,7 +36,7 @@ class DashBoardKPIMember extends Component {
                 userId: localStorage.getItem("userId"),
                 status: 4,
                 startMonth: currentYear + '-' + 1,
-                endMonth: currentYear + '-' + (currentMonth + 1)
+                endMonth: currentYear + '-' + (currentMonth + 2)
             },
             showApproveModal: "",
             showEvaluateModal: "",
@@ -56,7 +55,7 @@ class DashBoardKPIMember extends Component {
 
         var infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "all",
+            user: "null",
             status: 5,
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
@@ -155,7 +154,6 @@ class DashBoardKPIMember extends Component {
                 }
             })
         }
-        console.log("55555", this.state.infosearch, this.INFO_SEARCH)
     }
 
     handleShowApproveModal = async (id) => {
@@ -239,13 +237,14 @@ class DashBoardKPIMember extends Component {
     }
 
     handleSelectMonthEnd = async (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
         this.INFO_SEARCH.endMonth = month;
     }
 
     render() {
-        var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
+        var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         var { dateOfExcellentEmployees, numberOfExcellentEmployees, editing } = this.state;
+        const { user, kpimembers, translate } = this.props;
 
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
@@ -300,10 +299,6 @@ class DashBoardKPIMember extends Component {
            }
         }        
         
-
-        var userdepartments, kpimember;
-        const { user, kpimembers } = this.props;
-
         if (user.userdepartments) userdepartments = user.userdepartments;
         let unitMembers;
         if (userdepartments) {
@@ -349,10 +344,8 @@ class DashBoardKPIMember extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultTime =  [month, year].join('-');
-
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
+        var defaultEndMonth = [month, year].join('-');
+        var defaultStartMonth = ['01', year].join('-');
 
         return (
             <div className="box">
@@ -369,7 +362,7 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
                         </div>
                     </div>
                 </div>
@@ -451,8 +444,8 @@ class DashBoardKPIMember extends Component {
                                     <ul className="users-list clearfix">
                                         {
                                             (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
-                                                lastMonthEmployeeKpiSets.map(item =>
-                                                    <li>
+                                                lastMonthEmployeeKpiSets.map((item, index) =>
+                                                    <li key={index}>
                                                         <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
                                                         <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                         <span className="users-list-date">{item.approvedPoint}</span>
@@ -485,7 +478,7 @@ class DashBoardKPIMember extends Component {
                                             <DatePicker 
                                                 id="monthStart"      
                                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                //value={defaultTime}                 // giá trị mặc định cho datePicker    
+                                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
                                                 onChange={this.handleSelectMonthStart}
                                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                             />
@@ -495,7 +488,7 @@ class DashBoardKPIMember extends Component {
                                             <DatePicker 
                                                 id="monthEnd"      
                                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                //value={defaultTime}                 // giá trị mặc định cho datePicker    
+                                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
                                                 onChange={this.handleSelectMonthEnd}
                                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                             />
@@ -512,7 +505,7 @@ class DashBoardKPIMember extends Component {
                                                     items={unitMembers}
                                                     multiple={false}
                                                     onChange={this.handleSelectEmployee}
-                                                    value={unitMembers[2].value[0].value}
+                                                    value={this.INFO_SEARCH.userId}
                                                 />
                                             </div>
                                         }
@@ -523,7 +516,7 @@ class DashBoardKPIMember extends Component {
                                     </div>
 
                                     <div className="col-sm-12 col-xs-12">
-                                        <StatisticsEmployeeKpiSetChart 
+                                        <StatisticsOfEmployeeKpiSetChart 
                                             userId={this.state.infosearch.userId} 
                                             startMonth={this.state.infosearch.startMonth}
                                             endMonth={this.state.infosearch.endMonth}

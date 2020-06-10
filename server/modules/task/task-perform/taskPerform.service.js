@@ -167,7 +167,6 @@ exports.createTaskAction = async (body,files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (id,body) => {
-    console.log(body)
     var action = await Task.updateOne(
         { "taskActions._id": id },
         {
@@ -392,7 +391,6 @@ exports.deleteTaskComment = async (params) => {
  * Thêm bình luận của bình luận công việc
  */
 exports.createCommentOfTaskComment = async (body,files) => {
-
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
@@ -469,44 +467,51 @@ exports.deleteCommentOfTaskComment = async (params) => {
  */
 exports.evaluationAction = async (id,body) => {
     var task1 = await Task.findOne({ "taskActions._id": id })
-    task1.accountableEmployees.forEach(async elem => {  
-        if(body.creator == elem){
-            var evaluationAction = await Task.update(
-                {"taskActions._id":id},
-                {
-                    "$push": {
-                        "taskActions.$.evaluations":
-                        {
-                            creator: body.creator,
-                            rating: body.rating,
-                        }
-                    },
-                    
-                })
-            var evaluationActionRating = await Task.update(
-                {"taskActions._id":id},
-                {
-                    $set: {"taskActions.$.rating": body.rating}
-                }
-            )   
-            }else {
-                var evaluationAction1 = await Task.update(
-                    {"taskActions._id":id},
+    let idAccountableEmployee = task1.accountableEmployees.find(elem => body.creator===elem);
+    if (idAccountableEmployee) {
+        var evaluationAction = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
                     {
-                        "$push": {
-                            "taskActions.$.evaluations":
-                            {
-                                creator: body.creator,
-                                rating: body.rating,
-                            }
-                        }
-                    })   
-            }
-    })
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                },
+            },
+            {$new: true}
+        )
+
+        var evaluationActionRating = await Task.update(
+            {"taskActions._id":id},
+            {
+                $set: {"taskActions.$.rating": body.rating}
+            },
+            {$new: true}
+        )
+    } else {
+        var evaluationAction1 = await Task.update(
+            {"taskActions._id":id},
+            {
+                "$push": {
+                    "taskActions.$.evaluations":
+                    {
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                }
+            },
+            {$new: true}
+        )
+    }
+
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
+    ]);
+    
     return task.taskActions;
 }
 /**
@@ -540,6 +545,8 @@ exports.uploadFile = async (params,files) => {
             $push: {files:  files}
         }
     )  
-    var task = await Task.findOne({ _id: params.task })
+    var task = await Task.findOne({ _id: params.task }).populate([
+        { path: "files.creator", model: User, select: 'name email avatar' },
+    ]);
     return task.files
 }

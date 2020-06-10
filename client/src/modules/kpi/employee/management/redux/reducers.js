@@ -38,6 +38,24 @@ export function KPIPersonalManager(state = {}, action) {
         error: action.error,
         isLoading: false
       };
+    case  managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        isLoading: true
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        kpiSets: action.payload,
+        isLoading: false
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_IN_ORGANIZATION_BY_MONTH_FAILURE:
+      return { 
+        error: action.error,
+        isLoading: false
+      };
     default:
       return state
   }

@@ -39,6 +39,7 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple=true, maxFiles=10, maxFileSize=10000000, minFileSize=0, clickable=false,
             text, onTextChange, placeholder, minRows=3, maxRows=20,
             onSubmit, submitButtonText,
+            inputCssClass, controlCssClass,
         } = this.props
 
         return (
@@ -54,7 +55,7 @@ class ContentMaker extends Component {
                     minFileSize={minFileSize}
                     clickable={clickable}>
                 
-                    <div className="text-input-level1" style={{position: "relative"}}>
+                    <div className={inputCssClass} style={{position: "relative"}}>
                         <TextareaAutosize
                             placeholder={placeholder}
                             useCacheForDOMMeasurements
@@ -73,10 +74,10 @@ class ContentMaker extends Component {
                         }
                     </div>
                 </Files>
-                <div className="tool-level1">
+                <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
-                        <a href="#" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
-                        <a href="#" className="link-black text-sm" onClick={(e)=>{
+                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
+                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e)=>{
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
                             }}>
@@ -94,7 +95,7 @@ class ContentMaker extends Component {
                                     </React.Fragment>    
                                     : 
                                     <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>

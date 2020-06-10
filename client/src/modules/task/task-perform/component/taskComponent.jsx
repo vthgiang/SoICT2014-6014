@@ -18,30 +18,22 @@ class TaskComponent extends Component {
             taskId: null
         };
 
+        /**
+         * Dùng khi mở task từ URL. Ban đầu flag là 1, chạy vào render trước, taskID=null
+         * Sau đó chạy vào shouldComponentUpdate, flag có giá trị là 2, taskID sẽ là tham số từ URL 
+         */
+        this.flag= 1;
     }
-    componentWillMount = () => {
+
+    shouldComponentUpdate = (nextProps, nextState) => {
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
-            console.log(taskId);
-            if (taskId) {
-                this.handleShowSubTask(taskId);
+            if (taskId && this.flag ==1) {
+                this.flag = 2;
+                return true;
             }
         }
-    }
-    handleShowSubTask = async (taskId) => {
-        console.log(taskId);
-        await this.setState(state => {
-            return {
-                ...state,
-                taskId: taskId
-            }
-        })
-        this.props.getTaskById(taskId);
-        this.props.getSubTask(taskId);
-        this.props.getTimesheetLogs(taskId);
-    }
-    handleShowErr() {
-        window.$('#modal-show-err').modal('show');
+        return true;
     }
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
@@ -68,74 +60,50 @@ class TaskComponent extends Component {
         return false;
     }
 
-    render() {
-        const { taskId } = this.state;
-        const { tasks } = this.props;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) {
-            if (!this.checkPermission(tasks)) {
-                this.handleShowErr();
-                return (
-                    <React.Fragment>
-                        <DialogModal
-                            size='50' modalID="modal-show-err" isLoading={false}
-                            formID="form-show-err"
-                            title="Bạn không có quyền truy cập vào công việc này"
-                            hasSaveButton={false}
-
-                        >
-                            <div className="modal-body">
-                                <p><b>Nguyên nhân có thể là do:</b></p>
-                                <ul>
-                                    <li>Bạn không có nhiệm vụ trong công việc</li>
-                                    <li>Công việc không còn tồn tại</li>
-                                </ul>
-                            </div>
-                        </DialogModal>
-                    </React.Fragment>
-                );
-            } else {
-                return (
-                    <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
-                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
-
-                            <DetailTaskTab
-                                id={this.props.id}
-                                role={this.props.role}
-                            />
-                        </div>
-
-                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                            <ActionTab
-                                id={this.props.id}
-                                role={this.props.role}
-                            />
-                        </div>
-
-                    </div>
-                );
+    onChangeTaskRole = (role) => {
+        this.setState(state => {
+            return {
+                ...state,
+                role: role
             }
-        } else {
+        })
+    }
+
+    render = () => {
+        let taskId = this.props.id;;
+
+        if (this.props.location){
+            if (this.flag !== 1){
+                taskId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).taskId;
+            }
+        }
+        
+        const { tasks } = this.props;
+        if (tasks.task && !this.checkPermission(tasks)) {
             return (
-                <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
-
-                        <DetailTaskTab
-                            id={this.props.id}
-                            role={this.props.role}
-                        />
-                    </div>
-
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                        <ActionTab
-                            id={this.props.id}
-                            role={this.props.role}
-                        />
-                    </div>
-
+                <div>
+                    <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
                 </div>
             );
         }
-        return null;
+        return (
+            <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
+
+                    <DetailTaskTab
+                        id={taskId} onChangeTaskRole={this.onChangeTaskRole}
+                    />
+                </div>
+
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
+                    <ActionTab
+                        id={taskId}
+                        role={this.state.role}
+                    />
+                </div>
+
+            </div>
+        );
     }
 }
 function mapState(state) {

@@ -9,9 +9,11 @@ router.get('/unit/:id',auth, managerController.get);
 router.get('/all-unit/:role/:status/:startDate/:endDate', auth, managerController.getKPIUnits);
 
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
-router.get('/child-target/:id',auth, managerController.getChildTargetByParentId);
+router.get('/child-target/:id/:date',auth, managerController.getChildTargetByParentId);
 
 // Cập nhật dữ liệu mới nhất cho kpi đơn vị
 router.put('/evaluate/:id',auth, managerController.evaluateKPI);
+
+router.post('/copykpi/:id/:dateold/:datenew', auth, managerController.copyKPI);
 
 module.exports = router;
