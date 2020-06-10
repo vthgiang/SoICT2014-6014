@@ -242,43 +242,23 @@ exports.copyKPI = async (data) => {
             date: dateNewKPIUnit,
             kpis: []
         })
-        if (department.parent !== null) {
-            var organizationalUnitParent = await KPIUnit.findOne({ organizationalUnit: department.parent, status: 1 }).populate("kpis");
-            var defaultTarget;
-            if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.type !== 0);//default Target là nhưng mục tiêu có default !== 0
-            if (defaultTarget !== []) {
-                var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
-                    var defaultT = await DetailKPIUnit.create({
-                        name: item.name,
-                        parent: item._id,
-                        weight: 5,
-                        criteria: item.criteria,
-                        type: item.type
-                    })
-                    return defaultT._id;
-                }))
-                organizationalUnitKpi = await KPIUnit.findByIdAndUpdate(
-                    organizationalUnitKpi, { kpis: defaultTarget }, { new: true }
-                );
-            }
-        } else {
-            for (let i in list.kpis) {
-                var target = await DetailKPIUnit.create({
-                    name: list.kpis[i].name,
-                    parent: list.kpis[i].parent,
-                    weight: list.kpis[i].weight,
-                    criteria: list.kpis[i].criteria,
-                    type: list.kpis[i].type
-                })
-                organizationalUnitKpi = await KPIUnit.findByIdAndUpdate(
-                    organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-                );
-            }
+        for (let i in list.kpis) {
+            var target = await DetailKPIUnit.create({
+                name: list.kpis[i].name,
+                parent: list.kpis[i].parent,
+                weight: list.kpis[i].weight,
+                criteria: list.kpis[i].criteria,
+                type: list.kpis[i].type
+            })
+            organizationalUnitKpi = await KPIUnit.findByIdAndUpdate(
+                organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+            );
         }
-        organizationalUnitKpi = await KPIUnit.findById(organizationalUnitNewKpi).populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
-        console.log("=====", organizationalUnitKpi);
+        organizationalUnitKpi = await KPIUnit.find({ organizationalUnit: department._id })
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     }
+    console.log("=======", organizationalUnitKpi);
 
     return organizationalUnitKpi;
 }
