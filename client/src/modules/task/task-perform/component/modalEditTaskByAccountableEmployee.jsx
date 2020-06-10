@@ -14,7 +14,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
 
-        var userId = getStorage("userId");
+        let userId = getStorage("userId");
 
 
         let { tasks } = this.props;
@@ -34,12 +34,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
             if(taskInfo[i].type === "Date"){
                 if(taskInfo[i].value){
                     taskInfo[i].value = this.formatDate(taskInfo[i].value);
-                } else taskInfo[i].value = this.formatDate(Date.now());
+                } 
+                else taskInfo[i].value = this.formatDate(Date.now());
+            }
+            else if(taskInfo[i].type === "SetOfValues"){
+                let splitter = taskInfo[i].extra.split('\n');
+
+                // if(taskInfo[i].value){
+                    taskInfo[i].value = taskInfo[i].value === undefined ? [splitter[0]] : [taskInfo[i].value];
+                // }
             }
             info[`${taskInfo[i].code}`] = {
                 value: taskInfo[i].value,
                 code: taskInfo[i].code,
-                type: ''
+                type: taskInfo[i].type
             }
             
         }
@@ -63,12 +71,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
             consultedEmployees: consultedEmployees,
             informedEmployees: informedEmployees,
             inactiveEmployees: inactiveEmployees
-        }        
+        }    
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -84,7 +92,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -96,8 +104,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     } 
 
     handleChangeNumberInfo = async (e) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -116,8 +124,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     } 
 
     handleChangeTextInfo = async (e) => {
-        var value = e.target.value;
-        var name = e.target.name;
+        let value = e.target.value;
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -167,7 +175,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleInfoBooleanChange  = (event) => {
-        var {name, value} = event.target;
+        let {name, value} = event.target;
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -204,7 +212,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateNumberInfo = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         
         if (isNaN(value)) {
@@ -226,7 +234,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validatePoint = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -238,7 +246,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleChangeActiveEmployees = async (value) =>{
-        // var {name, value} = e.target;
+        // let {name, value} = e.target;
         // console.log('e===========================================', e.target, e.target.value);
         await this.setState(state=>{
             return {
@@ -321,7 +329,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     isFormValidated = () => {
-        return this.validateTaskName(this.state.taskName, false)
+        var {info} = this.state;
+        var check = true;
+        for(let i in info) {
+            if(info[i].value === undefined ) {
+                check = false;
+                break;
+            }
+        }
+        return check && this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
             && this.validateTaskProgress(this.state.taskProgress, false);
     }
@@ -385,10 +401,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     save = () => {
 
-        var evaluations, taskId;
+        let evaluations, taskId;
         taskId = this.props.id;
         // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
-        var data = {
+        let data = {
             name: this.state.taskName,
             description: this.state.taskDescription,
             status: this.state.statusOptions,
@@ -444,14 +460,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } = this.state;
 
         const { user, tasktemplates } = this.props;
-        var departmentUsers, usercompanys;
+        let departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
 
         let priorityArr = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
         let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
-        var usersOfChildrenOrganizationalUnit;
+        let usersOfChildrenOrganizationalUnit;
         if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
@@ -546,7 +562,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
-
+                                
+                                role={this.props.role}
                                 perform ={this.props.perform}
                                 value={this.state}
                             />

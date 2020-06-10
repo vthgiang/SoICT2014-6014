@@ -141,6 +141,11 @@ const TaskSchema = new Schema({
                 type: String,
                 required: true
             },
+            type: {
+                type: String,
+                required: true,
+                enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            },
             value: { // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
                 type: Schema.Types.Mixed,
             }

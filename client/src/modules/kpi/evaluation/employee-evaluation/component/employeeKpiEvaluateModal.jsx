@@ -108,18 +108,21 @@ class ModalMemberEvaluate extends Component {
     }
 
     handleSetPointKPI = () => {
-        var date = new Date();
+        var date = this.props.date;
+        console.log("eeeee",this.props.kpimembers.tasks);
         let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
+        console.log('dataatata', data);
         for (let n in data) {
             data[n]={
                 taskId: data[n].taskId,
-                date: date.toISOString(),
+                date: date,
                 point: data[n].taskImportanceLevel,
                 employeeId: this.props.employeeId,
             }
         }
-        console.log(data);
+        console.log("efefefef",data);
         this.props.setPointKPI(this.state.content, data);
+        console.log("iddddd",this.state.content);
         this.setState({
             editing: true,
         })
@@ -160,7 +163,7 @@ class ModalMemberEvaluate extends Component {
         // if(kpimembers.result){
         //     thisKPI = kpimembers.result;
         // }
-        console.log('-------------', this.state);
+        console.log('-------------', this.props.kpimembers.tasks);
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -221,6 +224,13 @@ class ModalMemberEvaluate extends Component {
                                                 </div>
                                                 </div>
                                                }
+                                               { item.updatedAt &&
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Ngày đánh giá gần nhất: </label>
+                                                    <label >{this.formatDate(item.updatedAt)}</label>
+                                                </div>
+
+                                               }
                                                 <div className="form-inline">
                                                     <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
                                                 </div>
@@ -248,7 +258,7 @@ class ModalMemberEvaluate extends Component {
                                                         <tr>
                                                             <th title="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
-                                                            <th title="Thời gian">Thời gian</th>
+                                                            <th title="Thời gian">Thời gian đánh giá</th>
                                                             <th title="Trạng thái">Trạng thái</th>
                                                             <th title="Đóng góp">Đóng góp</th>
                                                             <th title="Điểm">Điểm</th>
@@ -270,7 +280,7 @@ class ModalMemberEvaluate extends Component {
                                                                         <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                                         <td>
                                                                             <input type="range"
-                                                                                min="0"
+                                                                                min="1"
                                                                                 max='10'
                                                                                 name={`taskImportanceLevel${itemTask.taskId}`}
                                                                                 value={this.state[`taskImportanceLevel${itemTask.taskId}`]}

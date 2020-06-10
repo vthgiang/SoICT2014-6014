@@ -640,21 +640,18 @@ class ActionTab extends Component {
                                         <React.Fragment>
                                             <p className="content-level1" data-width="100%">
                                                 {item.creator?
-                                                <a href="#">{item.creator.name} </a>:
+                                                <a href="javascript:void(0)">{item.creator.name} </a>:
                                                 item.name && <b>{item.name} </b>}
                                                 {item.description}
-                                                {(this.props.role === 'responsible' && item.creator) && <div className="btn-group dropleft pull-right">
-                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
-                                                        <div className="dropdown-divider"></div>
-                                                        <button className="dropdown-item btn-primary-outline" type="button"  onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</button>
-                                                        <div className="dropdown-divider"></div>
-                                                    </div>
+                                                {(this.props.role === 'responsible' && item.creator) &&
+                                                <div className="btn-group pull-right">
+                                                    <span data-toggle="dropdown">
+                                                        <i className="fa fa-ellipsis-h"></i>
+                                                    </span>
+                                                    <ul className="dropdown-menu">
+                                                        <li><a href="javascript:void(0)" onClick={() => this.handleEditAction(item._id)} >Sửa hành động</a></li>
+                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteTaskAction(item._id, task._id)} >Xóa hành động</a></li>
+                                                    </ul>
                                                 </div>}                 
                                             </p>
 
@@ -664,12 +661,12 @@ class ActionTab extends Component {
 
                                                 
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
-                                                <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
+                                                <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
 
                                                 {/* Các chức năng tương tác với action */}
                                                 {item.creator &&
                                                 <React.Fragment>
-                                                    <li><a href="#" className="link-black text-sm" onClick={()=>{this.handleShowEvaluations(item._id)}}><i className="fa fa-thumbs-o-up margin-r-5"></i>Đánh giá ({item.evaluations && item.evaluations.length})</a></li>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={()=>{this.handleShowEvaluations(item._id)}}><i className="fa fa-thumbs-o-up margin-r-5"></i>Đánh giá ({item.evaluations && item.evaluations.length})</a></li>
 
                                                     {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                     <li style={{display:"inline-table"}} className="list-inline">
@@ -699,11 +696,11 @@ class ActionTab extends Component {
 
                                                     {item.files && item.files.length >0 && // Chỉ hiện show file khi có file đính kèm
                                                     <li style={{display:"inline-table"}}>
-                                                        <a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
+                                                        <a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
                                                     </li>
                                                     }
 
-                                                    <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
                                                 </React.Fragment>
                                                 }
                                             </ul>
@@ -734,7 +731,7 @@ class ActionTab extends Component {
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <div>
                                                         {item.files.map(elem => {
-                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
+                                                            return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                         })}
                                                     </div>
                                                 }
@@ -751,9 +748,9 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentAction[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
-                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
-                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
                                                 </ul>
                                         
                                             </div>}
@@ -769,23 +766,18 @@ class ActionTab extends Component {
                                                         {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                         <div>
                                                             <p className="content-level2">
-                                                                <a href="#">{child.creator.name} </a>
+                                                                <a href="javascript:void(0)">{child.creator.name} </a>
                                                                 {child.description}
 
-                                                                {child.creator._id === currentUser && 
-                                                                <div className="btn-group dropleft pull-right">
-                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        
-                                                                    </div>
+                                                                {child.creator._id === currentUser &&
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a href="javascript:void(0)" onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteActionComment(child._id, task._id)} >Xóa bình luận</a></li>
+                                                                    </ul>
                                                                 </div>}
                                                             </p>
                                                             {/* <div className="tool-level2">
@@ -794,11 +786,11 @@ class ActionTab extends Component {
                                                             <ul className="list-inline tool-level2">
                                                                     <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                                     <li style={{display:"inline-table"}}>
-                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                                    <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
+                                                                            return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
@@ -820,9 +812,9 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
-                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
-                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
+                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
+                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
                                                                 <div className="tool-level2">
                                                                 </div>
@@ -838,6 +830,7 @@ class ActionTab extends Component {
                                                         src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"
                                                     />
                                                     <ContentMaker
+                                                        inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                         onFilesChange={this.onCommentFilesChange}
                                                         onFilesError={this.onFilesError}
                                                         files={this.state.newCommentOfAction.files}
@@ -863,6 +856,7 @@ class ActionTab extends Component {
                             <React.Fragment>
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
                                 <ContentMaker
+                                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                     onFilesChange={this.onActionFilesChange}
                                     onFilesError={this.onFilesError}
                                     files={this.state.newAction.files}
@@ -891,22 +885,17 @@ class ActionTab extends Component {
                                         { editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                         <React.Fragment>
                                             <p className="content-level1">
-                                                <a href="#">{item.creator.name} </a>
+                                                <a href="javascript:void(0)">{item.creator.name} </a>
                                                 {item.description}
-                                                {item.creator._id === currentUser && 
-                                                <div className="btn-group dropleft pull-right">
-                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
-                                                        <div className="dropdown-divider"></div>
-                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</button>
-                                                        <div className="dropdown-divider"></div>
-                                
-                                                    </div>
+                                                {item.creator._id === currentUser &&
+                                                <div className="btn-group pull-right">
+                                                    <span data-toggle="dropdown">
+                                                        <i className="fa fa-ellipsis-h"></i>
+                                                    </span>
+                                                    <ul className="dropdown-menu">
+                                                        <li><a href="javascript:void(0)" onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</a></li>
+                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteTaskComment(item._id, task._id)} >Xóa bình luận</a></li>
+                                                    </ul>
                                                 </div>}
                                             </p>
 
@@ -914,14 +903,14 @@ class ActionTab extends Component {
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                                 
-                                                <li><a href="#" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
+                                                <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
                                                 {item.files.length> 0 &&
                                                 <React.Fragment>
                                                 <li style={{display:"inline-table"}}>
-                                                <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
+                                                <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <li style={{display:"inline-table"}}>{item.files.map(elem => {
-                                                        return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
+                                                        return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                     })}</li>
                                                 }
                                                 </React.Fragment>
@@ -939,9 +928,9 @@ class ActionTab extends Component {
                                                         ref={input => this.newContentTaskComment[item._id] = input}
                                                     />
                                                 </div>
-                                                <ul className="list-inline tool-level1 pull-right">
-                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</a></li>
-                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
+                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</a></li>
+                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</a></li>
                                                 </ul>
                                                 <div className="tool-level1">
                                                    
@@ -958,22 +947,18 @@ class ActionTab extends Component {
                                                         {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                         <div>
                                                             <p className="content-level2">
-                                                                <a href="#">{child.creator.name} </a>
+                                                                <a href="javascript:void(0)">{child.creator.name} </a>
                                                                 {child.description}
 
                                                                 {child.creator._id === currentUser &&
-                                                                <div className="btn-group dropleft pull-right">
-                                                                    <button className="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" >
-                                                                        <svg className="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                        <button className="dropdown-item btn-primary-outline" type="button" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</button>
-                                                                        <div className="dropdown-divider"></div>
-                                                                    </div>
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a href="javascript:void(0)" onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >Xóa bình luận</a></li>
+                                                                    </ul>
                                                                 </div>}
                                                             </p>
                                                             <ul className="list-inline tool-level2">
@@ -981,11 +966,11 @@ class ActionTab extends Component {
                                                                     {child.files.length> 0 &&
                                                                     <React.Fragment>
                                                                     <li style={{display:"inline-table"}}>
-                                                                    <div><a href="#" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                                    <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                                     {this.state.showfile.some(obj => obj === child._id ) &&
                                                                         <li style={{display:"inline-table"}}>
                                                                         {child.files.map(elem => {
-                                                                            return <div><a href="#" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
+                                                                            return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
                                                                         })}
                                                                         </li>
                                                                     }
@@ -1003,9 +988,9 @@ class ActionTab extends Component {
                                                                         ref={input => this.newContentCommentOfTaskComment[child._id] = input}
                                                                     />
                                                                 </div>
-                                                                <ul className="list-inline tool-level2 pull-right">
-                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa </a></li>
-                                                                    <li><a href="#" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
+                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
+                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa </a></li>
+                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</a></li>
                                                                 </ul>
                                                                 <div className="tool-level2">
                                                                     
@@ -1020,6 +1005,7 @@ class ActionTab extends Component {
                                                 <div>
                                                     <img className="user-img-level2" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"/>
                                                     <ContentMaker
+                                                        inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                         onFilesChange={this.onCommentOfTaskCommentFilesChange}
                                                         onFilesError={this.onFilesError}
                                                         files={this.state.newCommentOfTaskComment.files}
@@ -1044,6 +1030,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="User Image" />
                             <ContentMaker
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={this.state.newTaskComment.files}
@@ -1063,7 +1050,7 @@ class ActionTab extends Component {
                             </div>
                             <div className="tool-level1">
                                     <div style={{textAlign: "right"}}>
-                                        <a href="#" className="link-black text-sm" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm hoạt động</a>
+                                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm hoạt động</a>
                                     </div>
                                     <Files
                                         ref='filesAddComment'
@@ -1076,7 +1063,7 @@ class ActionTab extends Component {
                                         minFileSize={0}
                                         clickable={false}>  
                                         <div className='files-list'>
-                                            <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddComment.openFileChooser()}>
+                                            <a href="javascript:void(0)" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddComment.openFileChooser()}>
                                                 <i class="material-icons">attach_file</i>
                                             </a>
                                             <span>Drop files here</span>
@@ -1089,7 +1076,7 @@ class ActionTab extends Component {
                                                     </React.Fragment>    
                                                     : 
                                                     <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                        <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddComment.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                        <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddComment.removeFile(file)}}><i className="fa fa-times"></i></a>
                                                     </div>
                                                     <div className='files-list-item-content'>
                                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
@@ -1113,7 +1100,7 @@ class ActionTab extends Component {
                                     return(
                                     <div style={{marginBottom: 20}}>                                      
                                         <div><strong>{item.creator.name} - </strong>{item.description}</div>
-                                        <a href="#" onClick={(e)=>this.requestDownloadFile(e,item.url,item.name)} >{item.name}</a>  
+                                        <a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,item.url,item.name)} >{item.name}</a>  
                                     </div>
                                     )
                                 })
@@ -1131,7 +1118,7 @@ class ActionTab extends Component {
                             </div>
                             <div className="tool-level1">
                                 <div style={{textAlign: "right"}}>
-                                    <a href="#" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
+                                    <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
                                 </div>           
                                 <Files
                                     ref='filesAddTask'
@@ -1144,7 +1131,7 @@ class ActionTab extends Component {
                                     minFileSize={0}
                                     clickable={false}>  
                                     <div className='files-list'>
-                                        <a href="#" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
+                                        <a href="javascript:void(0)" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
                                             <i class="material-icons">attach_file</i>
                                         </a>
                                         <span>Drop files here</span>
@@ -1157,7 +1144,7 @@ class ActionTab extends Component {
                                                 </React.Fragment>    
                                                 : 
                                                 <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                    <a href="#" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                                    <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
                                                 </div>
                                                 <div className='files-list-item-content'>
                                                     <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
@@ -1182,7 +1169,7 @@ class ActionTab extends Component {
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map(item =>
                                 <div key={item._id} style={{marginBottom: 20}}>
-                                    <a style={{fontWeight: 700}} href="#">{item.creator.name} - </a>
+                                    <a style={{fontWeight: 700}} href="javascript:void(0)">{item.creator.name} - </a>
                                     Tổng thời gian {moment.utc(item.duration, "x").format('HH:mm:ss')} - &nbsp;
                                     {item.description? item.description: "Không có mô tả"}
                                     <div>{moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")} </div>
