@@ -166,7 +166,7 @@ exports.getTaskById = async (data) => {
     //data :kpis_id, emloyeeId, date
     var date = data.date.split("-");
     //console.log("dateeee",date);
-    var daykpi = 30;
+    //var daykpi = 30;
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
     // tìm kiếm các công việc cần được đánh giá trong tháng
@@ -174,6 +174,11 @@ exports.getTaskById = async (data) => {
     var priority;
     // tính điểm taskImportanceLevel:2
     for(var element of task){
+        var date1 = element.preEvaDate;
+        var date2 = element.date;
+        var Difference_In_Time = date2.getTime() - date1.getTime(); 
+        var daykpi = Difference_In_Time / (1000 * 3600 * 24); 
+        console.log('daykpi = ', daykpi);
         element.taskImportanceLevelCal = Math.round(3*(element.priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
         if(element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
          element.taskImportanceLevel = element.taskImportanceLevelCal;

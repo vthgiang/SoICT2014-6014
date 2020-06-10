@@ -103,7 +103,7 @@ class ModalMemberEvaluate extends Component {
                 taskId: data[n].taskId,
                 date: date,
                 point: data[n].taskImportanceLevel,
-                employeeId: this.props.employeeKpiSet.employeeId,
+                employeeId: this.props.employeeKpiSet.creator._id,
             }
         }
         console.log("efefefef",data);
@@ -240,6 +240,7 @@ class ModalMemberEvaluate extends Component {
                                     <tr>
                                         <th title="STT" style={{ width: "50px" }} className="col-fixed">Stt</th>
                                         <th title="Tên công việc">Tên công việc</th>
+                                        <th title="Thời gian">Thời gian thực hiện</th>
                                         <th title="Thời gian">Thời gian đánh giá</th>
                                         <th title="Trạng thái">Trạng thái</th>
                                         <th title="Đóng góp">Đóng góp</th>
@@ -256,6 +257,7 @@ class ModalMemberEvaluate extends Component {
                                                     <td>{index + 1}</td>
                                                     <td>{itemTask.name}</td>
                                                     <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
+                                                    <td>{this.formatDate(itemTask.preEvaDate) + "->\n" + this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
                                                     <td>{itemTask.contribution}</td>
                                                     <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
