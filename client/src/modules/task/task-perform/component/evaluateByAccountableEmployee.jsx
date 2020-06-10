@@ -6,34 +6,80 @@ import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
 import { getStorage } from '../../../../config';
+import moment from 'moment'
 
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
-
-        var idUser = getStorage("userId");
-        var {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
         
-        var evaluations;
-        var dateOfEval = new Date();
-        var monthOfEval = dateOfEval.getMonth();
-        var yearOfEval = dateOfEval.getFullYear();
+        let date = this.formatDate(new Date());
+        let data = this.getData(date);
+
+        this.state={
+            task: data.task,
+            userId: data.userId,
+            info: data.info,
+            results: data.results,
+            empPoint: data.empPoint,
+            status: data.statusOptions,
+            progress: data.task.progress,
+            autoPoint: data.automaticPoint,
+            date: data.date
+        }
+        // console.log('-----------------------------------------', this.state);
+    }
+    
+
+    getData = (dateParam) => {
+        let idUser = getStorage("userId");
+        let {tasks} = this.props;
+        let task = (tasks && tasks.task) && tasks.task.info;
+
+        let evaluations;
+        
+        let splitter = dateParam.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
+
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
-        var date = this.formatDate(new Date());
-        var point = 0;
-        var info = {};
-        // const { date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, } = this.state;
+        let date = this.formatDate(new Date()); 
+        if(this.props.perform === "stop"){
+            date = this.formatDate(new Date()); 
+        }
+        else if(this.props.perform === "evaluate"){
+            date = this.formatDate(new Date()); 
+            // date = moment().endOf("month").format('DD-MM-YYYY');
+        }
+        let info = {};
+        
+        let infoEval = task.taskInformations;
+        for(let i in infoEval){
+            if(infoEval[i].type === "Date"){
+                if(infoEval[i].value){
+                    infoEval[i].value = this.formatDate(infoEval[i].value);
+                } else infoEval[i].value = this.formatDate(Date.now());
+            }
+            else if(infoEval[i].type === "SetOfValues"){
+                if(infoEval[i].value){
+                    infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
+                }
+            }
+            info[`${infoEval[i].code}`] = {
+                value: infoEval[i].value,
+                code: infoEval[i].code,
+                type: infoEval[i].type
+            }
+                
+        }
 
-        // approvedPointConsulted5ed68e90ec0683397cbdf9fd: {value: 1, employee: "5ed68e90ec0683397cbdf9fd", role: "Consulted", target: "Point"}
-        // contributeResponsible5ed68e90ec0683397cbdf9fe: {value: 1, employee: "5ed68e90ec0683397cbdf9fe", role: "Responsible", target: "Contribution"}
-        var empPoint = {}, results = {};
+        let empPoint = {}, results = {};
         if(evaluations){
             if(evaluations.results.length !== 0) {
-                var listResult = evaluations.results;
+                let listResult = evaluations.results;
                 for(let i in listResult){
                     if(listResult[i].role === "Responsible"){
                         empPoint[`responsible${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
@@ -65,8 +111,6 @@ class EvaluateByAccountableEmployee extends Component {
                             target: "Contribution"
                         }
                     }
-                    // approvedPoint5ed68e90ec0683397cbdf9fc: {value: 1, employee: "5ed68e90ec0683397cbdf9fc", role: "Accountable", target: "Point"}
-                    // contributeAccountable5ed68e90ec0683397cbdf9fc: {value: 1, employee: "5ed68e90ec0683397cbdf9fc", role: "Accountable", target: "Contribution"}
                     else if(listResult[i].role === "Accountable"){
                         empPoint[`accountable${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
                         results[`approvedPoint${listResult[i].employee._id}`] ={
@@ -85,45 +129,74 @@ class EvaluateByAccountableEmployee extends Component {
                     
                     
                 }
-                // var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable" ));
-                // if(res) point = res.employeePoint ? res.employeePoint : 0;
+                
             }
             
+
             let infoEval = evaluations.taskInformations;
-            for(let i in infoEval){
-                if(infoEval[i].type === "Date"){
-                    if(infoEval[i].value){
-                        infoEval[i].value = this.formatDate(infoEval[i].value);
-                    } else infoEval[i].value = this.formatDate(Date.now());
+            let chkHasInfo = false;
+            for(let i in infoEval) {
+                if(infoEval[i].value !== undefined) {
+                    chkHasInfo = true; 
+                    break;
                 }
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: ''
+            }
+
+            if(chkHasInfo){
+                for(let i in infoEval){
+                    if(infoEval[i].type === "Date"){
+                        if(infoEval[i].value){
+                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                        } else infoEval[i].value = this.formatDate(new Date());
+                        
+                    }
+                    else if(infoEval[i].type === "SetOfValues"){
+                        if(infoEval[i].value){
+                            infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
+                        }
+                    }
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    
                 }
                 
             }
+            if(this.props.perform === "stop"){
+                if(chkHasInfo) {
+                    date = this.formatDate(evaluations.date);
+                }
+                else date = this.formatDate(new Date());
+            }
+            else if(this.props.perform === "evaluate"){
+                
+                // if(chkHasInfo) date = this.formatDate(evaluations.date);
+                date = this.formatDate(evaluations.date);
 
-            date = this.formatDate(evaluations.date);                
+            }
+                          
         }
 
         let statusOptions = []; statusOptions.push(task && task.status);
-        
-        this.state={
+
+        return {
             info: info,
+            date: date,
             results: results,
+            task: task,
+            userId: idUser,
             empPoint: empPoint,
-            status: statusOptions,
-            progress: task.progress,
-            autoPoint: automaticPoint,
-            date: date
+            results: results,
+            automaticPoint: automaticPoint,
+            statusOptions: statusOptions
         }
-        console.log('-----------------------------------------', this.state);
     }
-    
+
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -136,12 +209,12 @@ class EvaluateByAccountableEmployee extends Component {
         return [day, month, year].join('-');
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.getTaskById(this.props.id);
     }
 
     handleChangePoint = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -152,7 +225,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeProgress = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -167,8 +240,8 @@ class EvaluateByAccountableEmployee extends Component {
 // ====================================================================
 
     handleChangeAccountablePoint = async (e, id) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name
+        let value = parseInt(e.target.value);
+        let name = e.target.name
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -187,8 +260,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeAccountableContribution = async(e, id)=>{
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -205,8 +278,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeApprovedPointForResponsible = async (e, id) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name
+        let value = parseInt(e.target.value);
+        let name = e.target.name
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -223,8 +296,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeResponsibleContribution = async(e, id)=>{
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -241,8 +314,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeApprovedPointForConsulted = async (e, id) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name
+        let value = parseInt(e.target.value);
+        let name = e.target.name
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -260,8 +333,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleChangeConsultedContribution = async(e, id)=>{
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.results[`${name}`] = {
                 value: value,
@@ -280,7 +353,7 @@ class EvaluateByAccountableEmployee extends Component {
 // ==============================================================
     
     handleChangeMyPoint = async(e)=>{
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -291,7 +364,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     onContributeChange = async (e, id)=>{
-        var {name, value} = e.target;
+        let {name, value} = e.target;
         await this.setState(state=>{
             state.results[`${name}`] = {
                 value: value,
@@ -305,7 +378,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     onApprovedPointChange = async (e, id)=>{
-        var {name, value} = e.target;
+        let {name, value} = e.target;
         await this.setState(state=>{
             state.results[`${name}`] = {
                 value: value,
@@ -322,8 +395,8 @@ class EvaluateByAccountableEmployee extends Component {
 // ==========================BEGIN HANDLE INFORMATION TASK=========================================
 
     handleChangeNumberInfo = async (e) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -342,8 +415,8 @@ class EvaluateByAccountableEmployee extends Component {
     } 
 
     handleChangeTextInfo = async (e) => {
-        var value = e.target.value;
-        var name = e.target.name;
+        let value = e.target.value;
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -362,7 +435,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleDateChange = (value) => {
-        // var value = e.target.value;
+        // let value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -391,7 +464,7 @@ class EvaluateByAccountableEmployee extends Component {
 
 
     handleInfoBooleanChange  = (event) => {
-        var {name, value} = event.target;
+        let {name, value} = event.target;
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -427,7 +500,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     validatePoint = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -439,7 +512,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     validateNumberInfo = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         
         if (isNaN(value)) {
@@ -478,7 +551,7 @@ class EvaluateByAccountableEmployee extends Component {
 // ==========================END HANDLE INFORMATION TASK=========================================
 
     // validatePoint = (value) => {
-    //     var { translate } = this.props;
+    //     let { translate } = this.props;
     //     let msg = undefined;
     //     if (value < 0 || value > 100) {
     //         msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -500,12 +573,21 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleDateChange = (value) => {
-        // var value = e.target.value;
+        // let value = e.target.value;
+        let data = this.getData(value);
+       
         this.setState(state => {
                 return {
                     ...state,
                     errorOnDate: this.validateDate(value),
                     date: value,
+                    info: data.info,
+                    results: data.results,
+                    status: data.statusOptions,
+                    empPoint: data.empPoint,
+                    autoPoint: data.automaticPoint,
+                    task: data.task,
+                    userId: data.userId,
                 }
             });
         
@@ -522,19 +604,27 @@ class EvaluateByAccountableEmployee extends Component {
     isFormValidated = () => {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
-        return (errorOnDate === undefined && errorOnPoint === undefined &&  errorOnProgress === undefined 
+        var {info} = this.state;
+        var check = true;
+        for(let i in info) {
+            if(info[i].value === undefined ) {
+                check = false;
+                break;
+            }
+        }
+        return ( check && errorOnDate === undefined && errorOnPoint === undefined &&  errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined 
                 && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined
                 && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined)?true:false;
     }
     
     save = () => {
-        var {tasks} = this.props;
+        let {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
 
-        var evaluations, taskId;
+        let evaluations, taskId;
         taskId = this.props.id;
-        var data = {
+        let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
             automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : parseInt(this.state.progress),
@@ -582,7 +672,7 @@ class EvaluateByAccountableEmployee extends Component {
         const { date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
                 errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
-        var task = (tasks && tasks.task)&& tasks.task.info;
+        let task = (tasks && tasks.task)&& tasks.task.info;
 
         return (
             <React.Fragment>
@@ -635,6 +725,7 @@ class EvaluateByAccountableEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
+                            role={this.props.role}
                             perform={this.props.perform}
                             value={this.state}
                         />

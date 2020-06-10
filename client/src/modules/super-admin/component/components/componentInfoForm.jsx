@@ -20,8 +20,6 @@ class ComponentInfoForm extends Component {
                     modalID="modal-edit-component"
                     formID="form-edit-component"
                     title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-edit-component">

@@ -586,41 +586,29 @@ exports.createTask = async (task) => {
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
-    var email,userId,user,users;
+    var email,userId,user,users,userIds;
 
-    userId = task.responsibleEmployees;  // lấy id người thực hiện
-    user = await User.find({
-        _id : { $in: userId }
-    })
-
+    userIds = task.responsibleEmployees;  // lấy id người thực hiện
     userId = task.accountableEmployees;  // lấy id người phê duyệt
-    users = await User.find({
-        _id : { $in: userId }
-    })
-    user.push(...users);  // thêm dánh sách người phê duyệt
-
+    userIds.push(...userId);            
     userId = task.consultedEmployees;  // lấy id người hỗ trợ
-    users = await User.find({
-        _id : { $in: userId }
-    })
-    user.push(...users); // thêm danh sách người hỗ trợ
-
+    userIds.push(...userId);
     userId = task.informedEmployees;  // lấy id người quan sát
-    users = await User.find({
-        _id : { $in: userId }
-    })
-    user.push(...users);  // thêm danh sách người quan sát
+    userIds.push(...userId);  // lấy ra id của tất cả người dùng có nhiệm vụ
 
-    email = user.map( item => item.email); // Lấy ra tất cả email của người dùng
-    // Loại bỏ các giá trị email trùng nhau
-    email = email.map(mail => mail.toString());
-    for(let i = 0, max = email.length; i < max; i++) {
-        if(email.indexOf(email[i]) != email.lastIndexOf(email[i])) {
-            email.splice(email.indexOf(email[i]), 1);
+    // loại bỏ các id trùng nhau
+    userIds = userIds.map(u => u.toString());
+    for(let i = 0, max = userIds.length; i < max; i++) {
+        if(userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
+            userIds.splice(userIds.indexOf(userIds[i]), 1);
             i--;
         }
     }
-    email.push('trinhhong102@gmail.com');
+    user = await User.find({
+        _id : { $in: userIds }
+    })  
+
+    email = user.map( item => item.email); // Lấy ra tất cả email của người dùng
 
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
@@ -632,20 +620,8 @@ exports.createTask = async (task) => {
     }
     transporter.sendMail(mainOptions);
     
-    // Tạo thông báo
-    let notifications = user.map(user => {
-        return {
-            title: "Tạo mới công việc",
-            level: "general",
-            content: "Bạn được giao nhiệm vụ mới trong công việc ",
-            sender:task.organizationalUnit.name,
-            user
-        }
-    });
-    Notification.insertMany(notifications);
-    
 
-    return task;
+    return {task : task, user : userIds };
 }
 
 /**
@@ -739,6 +715,7 @@ async function checkEvaluations(date, taskId, storeDate) {
             _id: initTask.taskInformations[i]._id,
             name: initTask.taskInformations[i].name,
             code: initTask.taskInformations[i].code,
+            type: initTask.taskInformations[i].type,
         }
     }
 
@@ -942,12 +919,12 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
 
     // var newTask = await this.getTask(taskId).info;
     var newTask = await Task.findById(taskId).populate([
-        {path: "parent", select: "name"},
-        {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
-        {path: "evaluations.results.employee", select: "name email _id"},
-        {path: "evaluations.kpis.employee", select: "name email _id"},
-        {path: "evaluations.kpis.kpis"},
+        { path: "parent", select: "name"},
+        { path: "organizationalUnit", model: OrganizationalUnit},
+        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "evaluations.results.employee", select: "name email _id"},
+        { path: "evaluations.kpis.employee", select: "name email _id"},
+        { path: "evaluations.kpis.kpis"},
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '},
