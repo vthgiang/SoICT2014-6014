@@ -124,31 +124,47 @@ exports.getChildTargetByParentId = async (data) => {
     var childTarget = [], target = [];
     for (let i in kpiunits) {
         var arrtarget = [];
-        for (let j in kpiunits[i].target) {
-            var employeekpiset = await EmployeeKPISet.findOne({
-                kpis: kpiunits[i].target[j]._id
-            }).populate("organizationalUnit creator").select("organizationalUnit creator");
-            target = {
-                organizationalUnit: employeekpiset.organizationalUnit,
-                creator: employeekpiset.creator,
-                target: kpiunits[i].target[j]
-            }
-
-            arrtarget.push(target)
+        if (kpiunits[i].target.length == 0) {
             childTarget[i] = {
-                _id: kpiunits[i].target[j]._id,
-                status: kpiunits[i].target[j].status,
-                automaticPoint: kpiunits[i].target[j].automaticPoint,
-                employeePoint: kpiunits[i].target[j].employeePoint,
-                approvedPoint: kpiunits[i].target[j].approvedPoint,
-                name: kpiunits[i].target[j].name,
-                parent: kpiunits[i].target[j].parent,
-                criteria: kpiunits[i].target[j].criteria,
-                weight: kpiunits[i].target[j].weight,
+                _id: kpiunits[i].kpis._id,
+                status: kpiunits[i].kpis.status,
+                automaticPoint: kpiunits[i].kpis.automaticPoint,
+                employeePoint: kpiunits[i].kpis.employeePoint,
+                approvedPoint: kpiunits[i].kpis.approvedPoint,
+                name: kpiunits[i].kpis.name,
+                parent: kpiunits[i].kpis.parent,
+                criteria: kpiunits[i].kpis.criteria,
+                weight: kpiunits[i].kpis.weight,
                 arrtarget: arrtarget
             };
+        } else {
+            for (let j in kpiunits[i].target) {
+                var employeekpiset = await EmployeeKPISet.findOne({
+                    kpis: kpiunits[i].target[j]._id
+                }).populate("organizationalUnit creator").select("organizationalUnit creator");
+                target = {
+                    organizationalUnit: employeekpiset.organizationalUnit,
+                    creator: employeekpiset.creator,
+                    target: kpiunits[i].target[j]
+                }
+
+                arrtarget.push(target)
+                childTarget[i] = {
+                    _id: kpiunits[i].kpis._id,
+                    status: kpiunits[i].kpis.status,
+                    automaticPoint: kpiunits[i].kpis.automaticPoint,
+                    employeePoint: kpiunits[i].kpis.employeePoint,
+                    approvedPoint: kpiunits[i].kpis.approvedPoint,
+                    name: kpiunits[i].kpis.name,
+                    parent: kpiunits[i].kpis.parent,
+                    criteria: kpiunits[i].kpis.criteria,
+                    weight: kpiunits[i].kpis.weight,
+                    arrtarget: arrtarget
+                };
+            }
         }
     }
+
     return childTarget;
 }
 
@@ -217,7 +233,7 @@ exports.copyKPI = async (data) => {
     var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: department._id })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    var check = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));    
+    var check = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
     if (check == undefined) {
         var list = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
         var organizationalUnitNewKpi = await KPIUnit.create({
@@ -259,7 +275,7 @@ exports.copyKPI = async (data) => {
                 );
             }
         }
-        organizationalUnitKpi = await KPIUnit.findById(organizationalUnitNewKpi) .populate("organizationalUnit creator")
+        organizationalUnitKpi = await KPIUnit.findById(organizationalUnitNewKpi).populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } });
         console.log("=====", organizationalUnitKpi);
     }
