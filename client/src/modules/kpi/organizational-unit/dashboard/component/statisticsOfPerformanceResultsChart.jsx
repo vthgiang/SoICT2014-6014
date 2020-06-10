@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
+import { SelectBox } from '../../../../../common-components/index';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -13,20 +15,32 @@ class StatisticsOfPerformanceResultsChart extends Component {
         super(props);
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-
+        this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
         this.today = new Date();
 
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.QUERYING,
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
         };
 
         // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
         this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, this.state.month);
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if(nextState.kindOfPoint !== this.state.kindOfPoint) {
+            await this.setState(state =>{
+                return {
+                    ...state,
+                    kindOfPoint: nextState.kindOfPoint,
+                };
+            });
+            
+            this.columnChart();
+        }
+
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
             // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, this.state.month);
@@ -65,6 +79,15 @@ class StatisticsOfPerformanceResultsChart extends Component {
         return false;
     }
 
+    handleSelectKindOfPoint = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                kindOfPoint: Number(value[0])
+            }
+        })
+    }
+
     // Lọc và đếm số người có cùng điểm
     filterAndCountEmployeeWithTheSamePoint = (arrayPoint) => {
         var point = Array.from(new Set(arrayPoint));
@@ -101,7 +124,7 @@ class StatisticsOfPerformanceResultsChart extends Component {
     setDataColumnChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
         var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
-        var employeeWithTheSameAutomaticPoints;
+        var employeeWithTheSamePoints, textLabel;
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
@@ -114,9 +137,21 @@ class StatisticsOfPerformanceResultsChart extends Component {
             })
         }
 
-        employeeWithTheSameAutomaticPoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
+        if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
+            textLabel = 'Giá trị điểm hệ thống đánh giá'
+        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(employeePoint);
+            textLabel = 'Giá trị điểm cá nhân tự đánh giá'
+        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
+            textLabel = 'Giá trị điểm quản lý đánh giá'
+        }
 
-        return employeeWithTheSameAutomaticPoints;
+        return {
+            'employeeWithTheSamePoints': employeeWithTheSamePoints,
+            'textLabel': textLabel
+        };
     }
 
     removePreviosChart = () => {
@@ -129,11 +164,21 @@ class StatisticsOfPerformanceResultsChart extends Component {
     columnChart = () => {
         this.removePreviosChart();
 
-        var dataChart = this.setDataColumnChart();
+        var dataPoints, dataChart, textLabel;
+
+        dataPoints = this.setDataColumnChart();
+        dataChart = dataPoints.employeeWithTheSamePoints;
+        textLabel = dataPoints.textLabel;
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
+            padding: {                              // Căn lề biểu đồ
+                top: 20,
+                bottom: 20,
+                right: 20
+            },
+            
             data: {
                 x: 'x',
                 columns: dataChart,
@@ -142,14 +187,14 @@ class StatisticsOfPerformanceResultsChart extends Component {
 
             bar: {
                 width: {
-                    ratio: 0.5 // this makes bar width 50% of length between ticks
+                    ratio: 0.1 
                 }
             },
 
             axis: {
                 x: {
                     label: {
-                        text: 'Giá trị điểm hệ thống đánh giá',
+                        text: textLabel,
                         position: 'outer-center'
                         // inner-right : default
                         // inner-center
@@ -157,6 +202,12 @@ class StatisticsOfPerformanceResultsChart extends Component {
                         // outer-right
                         // outer-center
                         // outer-left
+                    },
+                    max: 100,
+                    min: 0,
+                    padding: {
+                        right: 10,
+                        left: 10
                     }
                 },
                 y: {
@@ -169,6 +220,10 @@ class StatisticsOfPerformanceResultsChart extends Component {
                         // outer-top
                         // outer-middle
                         // outer-bottom
+                    },
+                    padding: {
+                        right: 10,
+                        left: 10
                     }
                 }
             },
@@ -180,9 +235,45 @@ class StatisticsOfPerformanceResultsChart extends Component {
     }
 
     render() {
+        var kindOfPoint;
+
+        kindOfPoint = [
+            {
+                text: 'Automatic Point',
+                value: 1
+            },
+            {
+                text: 'Employee Point',
+                value: 2
+            },
+            {
+                text: 'Approved Point',
+                value: 3
+            }
+        ];
+
         return (
             <React.Fragment>
                 <div ref="chart"></div>
+                <div className='box-tools pull-right'>
+                    <button type="button" data-toggle="collapse" data-target="#kind-point-statistics-of-performance" className="pull-right" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                    <div id="kind-point-statistics-of-performance" className="box collapse setting-table">
+                        <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
+
+                        <div className = "form-group">
+                            <label>Loại điểm</label>
+                            <SelectBox
+                                id={`kindOfPointStatisticsOfPerformance`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={kindOfPoint}
+                                multiple={false}
+                                onChange={this.handleSelectKindOfPoint}
+                                value={kindOfPoint[0].value}
+                            />
+                        </div> 
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

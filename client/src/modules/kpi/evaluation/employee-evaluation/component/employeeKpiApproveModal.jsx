@@ -5,6 +5,8 @@ import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import moment from 'moment'
 
+import { withTranslate } from 'react-redux-multilingual';
+
 import {
     getStorage
 } from '../../../../../config';
@@ -53,13 +55,10 @@ class ModalMemberApprove extends Component {
     }
     handleEdit = async (id) => {
         await this.setState(state => {
-            // console.log('weight 1: =================== ' + this.state.weight);
-
             return {
                 ...state,
                 editing: true,
                 edit: state.edit ===id ? "" : id,
-                // weight: this.state.weight
             }
         })
     }
@@ -72,12 +71,9 @@ class ModalMemberApprove extends Component {
                 newTarget: {
                     ...target,
                     weight: parseInt(this.newWeight[target._id].value)                
-                    // weight: parseInt(this.newWeight[target._id].value)                
                 },            
             }
         })
-        // console.log('weight 2 ===================' + this.state.weight);
-        // console.log('this.newWeight[target._id]'+ this.newWeight[target._id] );
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
             this.props.editTarget(target._id, newTarget);
@@ -214,10 +210,24 @@ class ModalMemberApprove extends Component {
             this.props.approveKPIMember(id);
         }
     }
+
+    handleCheckEmployeeKpiStatus = (employeeKpiStatus) => {
+        const { translate } = this.props;
+        if (employeeKpiStatus === null) {
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_approved');
+        } else if (employeeKpiStatus === 0) {
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.edit_request');
+        } else if (employeeKpiStatus === 1) {
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.activated');
+        } else if (employeeKpiStatus === 2) {
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_finished')
+        }
+    }
+
     render() {
         var kpimember;
         var kpimembercmp ;
-        const { kpimembers } = this.props;
+        const { translate, kpimembers } = this.props;
         const { errorOnDate, date,currentUser} = this.state;
         var month;
         if (kpimembers.currentKPI) {
@@ -240,126 +250,135 @@ class ModalMemberApprove extends Component {
             <React.Fragment>
                 <DialogModal
                 modalID={`modal-approve-KPI-member`}
-                title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name}`}
+                title={`Phê duyệt KPI nhân viên ${kpimember && kpimember.creator.name} - Tháng ${kpimember && month[1]}/${kpimember && month[0]}`}
                 hasSaveButton ={false}
-                size={100}
-                >
-                        <div className="box" >
-                            <div className="box-body qlcv">
-                            
-                                {this.state.checkWeight&&<div className="col-sm-12" style={{color: "red"}}><label>Trọng số đang không thỏa mãn!</label></div>}
-                                <div className="form-inline">
-                                
-                                {this.state.compare ? <button className=" btn btn-success pull-right"  onClick={() => this.handleCompare()}>Tắt so sánh</button>
-                                        : <button className=" btn btn-success pull-right"  onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button> }
-                                        <button className=" btn btn-success pull-right"  onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>  
-                                
-                              </div>  
-                              <br/>
-                            {this.state.compare &&
-                                <div>
-                                    <div className="form-inline">
-                                            <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                                <label style={{width:"auto", fontSize:"18px"}} >Chọn tháng so sánh:</label>
-                                                    <DatePicker
-                                                        id="create_date"
-                                                        dateFormat="month-year"
-                                                        value={date}
-                                                        onChange={this.handleDateChange}
-                                                    />
-                                                <ErrorLabel content={errorOnDate} />
-                                            
-                                           </div>
-                                            <div className="form-group" >
-                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>Tìm kiếm</button>
-                                        </div>
-                                    </div>
-                                    <table className="table table-bordered table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
-                                                <th title="Tên mục tiêu">Tên mục tiêu</th>
-                                                <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                {/* <th title="Thời gian">Thời gian</th> */}
-                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
-                                                <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
-                                                <th title="Trọng số">Trọng số</th>
-                                                <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody >
-                                            { kpimembercmp ?
-                                                kpimembercmp.kpis.map((item, index) =>
-                                                    <tr >
-                                                        <td>{index+1}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.parent && item.parent.name }</td>
-                                                        {/* <td>{this.formatDate(kpimembercmp.date)}</td> */}
-                                                        {/* <td>{kpimembercmp.kpis.length}</td> */}
-                                                        <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                        <td>{item.approvedPoint}</td>
-                                                        
-                                                    </tr>
-                                                ) : <tr><td colSpan={6}>Không có dữ liệu phù hợp</td></tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                                }
+                size={100}>
+                        
+                    <div className="qlcv">
+                        <div className="form-inline pull-right">
+                            {this.state.compare ?
+                            <button className=" btn btn-primary"  onClick={() => this.handleCompare()}>Tắt so sánh</button>:
+                            <button className=" btn btn-primary"  onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>
+                            }
+                            <button className=" btn btn-success"  onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>  
+                        </div>
+                
+                        <br/>
+                        {this.state.compare &&
+                        <div>
                             <div className="form-inline">
-                                <h4 ><b>KPI tháng {kpimember && month[1]}</b></h4>
-                                <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
-                                columnArr={[ 'STT', 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Kết quả đánh giá' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
-                                <table id ="kpiApprove" className="table table-bordered table-striped table-hover">
-                                <thead>
-                                            <tr>
-                                                <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
-                                                <th title="Tên mục tiêu">Tên mục tiêu</th>
-                                                <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
-                                                {/* <th title="Thời gian">Thời gian</th> */}
-                                                {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
-                                                <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
-                                                <th title="Trọng số">Trọng số</th>
-                                                <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                                <th title="Hành động" className="col-fixed" style={{width: 100}}>Hành động</th>
+                                <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
+                                    <label style={{width: "140px"}}>Chọn tháng so sánh</label>
+                                    <DatePicker
+                                        id="create_date"
+                                        dateFormat="month-year"
+                                        value={date}
+                                        onChange={this.handleDateChange}
+                                    />
+                                    <ErrorLabel content={errorOnDate} />
+                                </div>
+                                <div className="form-group" >
+                                    <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>Tìm kiếm</button>
+                                </div>
+                            </div>
 
+                            <table className="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
+                                        <th title="Tên mục tiêu">Tên mục tiêu</th>
+                                        <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
+                                        {/* <th title="Thời gian">Thời gian</th> */}
+                                        {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
+                                        <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
+                                        <th title="Trọng số">Trọng số</th>
+                                        <th title="Kết quả đánh giá">Kết quả đánh giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    { kpimembercmp ?
+                                        kpimembercmp.kpis.map((item, index) =>
+                                            <tr >
+                                                <td>{index+1}</td>
+                                                <td>{item.name}</td>
+                                                <td>{item.parent && item.parent.name }</td>
+                                                {/* <td>{this.formatDate(kpimembercmp.date)}</td> */}
+                                                {/* <td>{kpimembercmp.kpis.length}</td> */}
+                                                <td>{item.criteria}</td>
+                                                <td>{this.state.edit === item._id ? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                <td>{item.approvedPoint}</td>
+                                                
                                             </tr>
-                                        </thead>
-                                    <tbody>
-                                        {kpimember &&
-                                            kpimember.kpis.map((item, index) =>
-                                                <tr >
-                                                        <td>{index+1}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.parent && item.parent.name}</td>
-                                                        {/* <td>{this.formatDate(kpimember.date)}</td> */}
-                                                        {/* <td>{kpimember.kpis.length}</td> */}
-                                                        <td>{item.criteria}</td>
-                                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref={input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                        <td>{item.approvedPoint}</td>
-                                                        <td>
-                                                        {this.state.edit === item._id?<a href="#edit" className="approve" title="Lưu kết quả" onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
-                                                        :<a href="#edit" className="edit" title="Chỉnh sửa mục tiêu này" onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
-                                                        <a href="#edit" className="add_circle" title="Đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check_circle</i></a>
-                                                        <a href="#abc" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">cancel</i></a>
-                                                    </td>
-                                                    </tr>
-                                                ) 
-                                            }
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            </div>
-                </div>
-                
-                <Comments id={this.props.id}></Comments>
-                
-            </DialogModal>
-        </React.Fragment>
+                                        ) : <tr><td colSpan={6}>Không có dữ liệu phù hợp</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        }
+                        
+                        
+                        
+                        
+                        
+                        <br></br>
+                        <br></br>
+                        {this.state.checkWeight && <p className="text-danger" style={{fontWeight: 900}}>Trọng số đang không thỏa mãn!</p>}
+                        <table id ="kpi-approve-table" className="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
+                                    <th title="Tên mục tiêu">Tên mục tiêu</th>
+                                    <th title="Mục tiêu đơn vị">Mục tiêu đơn vị</th>
+                                    {/* <th title="Thời gian">Thời gian</th> */}
+                                    {/* <th title="Số mục tiêu">Số mục tiêu</th> */}
+                                    <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
+                                    <th title="Trọng số">Trọng số</th>
+                                    <th title="Trạng thái">Trạng thái</th>
+                                    <th title="Kết quả đánh giá">Kết quả đánh giá</th>
+                                    <th title="Hành động" className="col-fixed" style={{width: 130}}>
+                                        Hành động
+                                        <DataTableSetting class="pull-right" tableId="kpi-approve-table"
+                                            columnArr={[ 
+                                                'STT',
+                                                'Tên mục tiêu'
+                                                ,'Mục tiêu đơn vị',
+                                                'Tiêu chí đánh giá',
+                                                'Trọng số',
+                                                'Trạng thái',
+                                                'Kết quả đánh giá',
+                                                'Hành động']}
+                                            limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true}
+                                        />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {kpimember && kpimember.kpis.map((item, index) =>
+                                    <tr >
+                                        <td>{index+1}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.parent && item.parent.name}</td>
+                                        {/* <td>{this.formatDate(kpimember.date)}</td> */}
+                                        {/* <td>{kpimember.kpis.length}</td> */}
+                                        <td>{item.criteria}</td>
+                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref={input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                        <td>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
+                                        <td>{item.approvedPoint}</td>
+                                        <td>
+                                        {this.state.edit === item._id?<a href="#" className="approve" title="Lưu kết quả" onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
+                                        :<a href="#" className="edit" title="Chỉnh sửa mục tiêu này" onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
+                                        <a href="#" className="add_circle" title="Đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check</i></a>
+                                        <a href="#" className="delete" title="Không đạt" onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Comments id={this.props.id}></Comments>
+                </DialogModal>
+            </React.Fragment>
         );
-        
     }
 }
 
@@ -375,5 +394,5 @@ const actionCreators = {
     approveKPIMember: kpiMemberActions.approveKPIMember,
     editTarget: kpiMemberActions.editTargetKPIMember
 };
-const connectedModalMemberApprove = connect(mapState, actionCreators)(ModalMemberApprove);
+const connectedModalMemberApprove = connect(mapState, actionCreators)(withTranslate(ModalMemberApprove));
 export { connectedModalMemberApprove as ModalMemberApprove };

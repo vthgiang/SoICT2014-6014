@@ -189,7 +189,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <dt>{translate('task_template.no_data')}</dt> :
                                                 taskTemplate.taskInformations.map((item, index) =>
                                                     <React.Fragment key={index}>
-                                                        <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "-" `${translate('task_template.manager_fill')}` : ""}</dt>
+                                                        <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
                                                 )

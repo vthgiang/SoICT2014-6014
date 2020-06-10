@@ -26,12 +26,14 @@ class TaskInformationForm extends Component {
             return null;
         }
     }
+
     render() {
         // const { errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.props;
         const { value } = this.props;
-
+        
         var task = this.props.task
-        console.log('vlueeee', value);
+        
+        // console.log('taskkkkkkkkkkkkk', task);
 
         return (
             <React.Fragment>
@@ -58,20 +60,22 @@ class TaskInformationForm extends Component {
                                 (task && task.taskInformations.length !== 0) &&
                                 task.taskInformations.map((info, index)=> 
                                 {
-                                   
-                                
                                     if (info.type === 'Text'){
                                         // return <div className={`form-group ${value.errorOnTextInfo === undefined ? "" : "has-error"}`}>
                                         return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
-                                            <input 
-                                                className="form-control"
-                                                type="text" 
-                                                name={info.code}
-                                                placeholder={85}
-                                                onChange={this.props.handleChangeTextInfo}
-                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
-                                            />
+                                            {
+                                                <input 
+                                                    className="form-control"
+                                                    type="text" 
+                                                    name={info.code}
+                                                    placeholder={'Nhập giá trị'}
+                                                    onChange={this.props.handleChangeTextInfo}
+                                                    disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
+                                                    value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) ? value.info[`${info.code}`].value  : '' }
+                                                />
+                                            }
+                                                
                                             {/* <ErrorLabel content={value.errorOnTextInfo}/> */}
                                         </div>
                                     } 
@@ -85,9 +89,10 @@ class TaskInformationForm extends Component {
                                                 className="form-control"
                                                 type="number" 
                                                 name={info.code}
-                                                placeholder={85}
+                                                placeholder={'Nhập giá trị'}
                                                 onChange={this.props.handleChangeNumberInfo}
-                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
+                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
+                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value }
                                             />
                                             {/* <ErrorLabel content={value.errorOnNumberInfo}/> */}
                                         </div>
@@ -98,8 +103,9 @@ class TaskInformationForm extends Component {
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <DatePicker
                                                 id={`info_date_${this.props.perform}_${index}_${info.code}`}
-                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
+                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value }
                                                 onChange={(value)=>this.props.handleInfoDateChange(value, info.code)}
+                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
                                         </div>
@@ -114,7 +120,8 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={true}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={value.info[`${info.code}`] && value.info[`${info.code}`].value === "true"}
+                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value === "true" }
+                                                    disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                 /> Đúng
                                             </label>
                                             <label class="radio-inline">
@@ -123,7 +130,8 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={false}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={value.info[`${info.code}`] && value.info[`${info.code}`].value === "false"}
+                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value === "false" }
+                                                    disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                 /> Sai
                                             </label>
                                         </div>
@@ -139,7 +147,9 @@ class TaskInformationForm extends Component {
                                                 items = {info.extra.split('\n').map(x => { return { value: x, text: x } })}
                                                 onChange={(value)=>this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
-                                                value={value.info[`${info.code}`] && value.info[`${info.code}`].value}
+                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
+                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value } 
+                                                // : [info.extra[0].value]
                                             />
                                         </div>
                                     }}

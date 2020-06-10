@@ -18,11 +18,11 @@ router.delete('/:id', auth, TaskManagementController.deleteTask);
 router.patch('/:id', auth, TaskManagementController.editTaskStatus);
 router.patch('/archived/:id', auth, TaskManagementController.editArchivedOfTask);
 router.get('/sub-task/:id', auth, TaskManagementController.getSubTask);
-router.patch('/edit/task-responsible/:id', TaskManagementController.editTaskByResponsibleEmployees);
-router.patch('/edit/task-accountable/:id', TaskManagementController.editTaskByAccountableEmployees);
+router.patch('/edit/task-responsible/:id', auth, TaskManagementController.editTaskByResponsibleEmployees);
+router.patch('/edit/task-accountable/:id', auth, TaskManagementController.editTaskByAccountableEmployees);
 
-router.patch('/evaluate/task-consulted/:id', TaskManagementController.evaluateTaskByConsultedEmployees);
-router.patch('/evaluate/task-responsible/:id', TaskManagementController.evaluateTaskByResponsibleEmployees);
-router.patch('/evaluate/task-accountable/:id', TaskManagementController.evaluateTaskByAccountableEmployees);
+router.patch('/evaluate/task-consulted/:id', auth, TaskManagementController.evaluateTaskByConsultedEmployees);
+router.patch('/evaluate/task-responsible/:id', auth, TaskManagementController.evaluateTaskByResponsibleEmployees);
+router.patch('/evaluate/task-accountable/:id', auth, TaskManagementController.evaluateTaskByAccountableEmployees);
 
 module.exports = router;

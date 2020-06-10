@@ -72,8 +72,8 @@ a:hover, a:active, a:focus {
 
 path.area { 
     stroke: none;
-	fill: #FF8C2B;
-    opacity: 0.9
+	fill: #3B38CC;
+    opacity: 0.3
 }
 
 text.c3-axis-x-label, text.c3-axis-y-label {

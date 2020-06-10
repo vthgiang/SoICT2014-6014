@@ -1,22 +1,56 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { managerServices } from '../../../organizational-unit/management/redux/services';
-import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-class ModalDetailKPIPersonal extends Component {
-    // componentDidMount() {
-    //     this.props.getAllTarget(this.state.unit);
-    // }
+//import { Slider, Tooltip} from '@material-ui/core';
+//import React, { useState } from 'react';
+// import 'rc-slider/assets/index.css';
 
+// import 'rc-tooltip/assets/bootstrap.css';
+
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
+
+import React, { Component, useState } from 'react';
+
+import ReactSlider from 'react-slider';
+
+import { connect } from 'react-redux';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
+
+
+import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
+import { PaginateBar, DataTableSetting } from '../../../../../common-components';
+import CanvasJSReact from '../../../../../chart/canvasjs.react';
+//const Handle = Slider.Handle;
+class ModalDetailKPIPersonal extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.state = {
-            unit: '5dcadf02f0343012f09c1193',
-            content: ""
+            organizationalUnit: "",
+            content: "",
+            name: "",
+            description: "",
+            point: 0,
+            status: 0,
+            value: 0,
+            valueNow : 0,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
-    componentDidUpdate() {
-        this.handleResizeColumn();
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+            } 
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.id !== this.state.id) {
+            this.props.getKPIMemberById(nextProps.id);
+            return false;
+        }
+        return true;
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -46,29 +80,7 @@ class ModalDetailKPIPersonal extends Component {
             });
         });
     }
-    handleChangeContent = async (id) => {
-        await this.setState(state => {
-            this.props.getAllTaskById(id);
-            return {
-                ...state,
-                content: id
-            }
-        });
-    }
     formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [month, year].join('-');
-    }
-    formatDay(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -81,147 +93,193 @@ class ModalDetailKPIPersonal extends Component {
 
         return [day, month, year].join('-');
     }
+    formatMonth(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
+    handleChangeContent =(id, employeeId, date) => {
+        console.log('====', id, employeeId, date);
+        console.log('date', date.getMonth());
+        var isoDate = date.toISOString();
+        this.props.getTaskById(id, employeeId, isoDate);
+        this.setState(state => {
+               return {
+                   ...state,
+                   content: id,
+               }
+           });
+    }
+
+    handleSetPointKPI = () => {
+        var date = new Date();
+        let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
+        for (let n in data) {
+            data[n]={
+                taskId: data[n].taskId,
+                date: date.toISOString(),
+                point: data[n].taskImportanceLevel,
+                employeeId: this.props.employeeId,
+            }
+        }
+        console.log(data);
+        this.props.setPointKPI(this.state.content, data);
+        this.setState({
+            editing: true,
+        })
+    }
+
+    // handleCloseModal = async (id) => {
+    //     var element = document.getElementsByTagName("BODY")[0];
+    //     element.classList.remove("modal-open");
+    //     var modal = document.getElementById(`memberEvaluate${id}`);
+    //     modal.classList.remove("in");
+    //     modal.style = "display: none;";
+    // }
+
+    setValueSlider = (e, id) => {
+        var value = e.target.value;
+        let tasks = this.props.kpimembers.tasks;
+        console.log(tasks);
+        tasks.map(x=>{
+            if(x.taskId===id){
+                x.taskImportanceLevel = value
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                tasks: tasks
+            }
+        })
+    }
     render() {
-        var list;
-        var myTask = [];
-        const { kpimembers, kpipersonal } = this.props;
-        // console.log("============", kpimembers.tasks)
-        if (typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
-        if (kpipersonal.kpis) list = kpipersonal.kpis;
+        var kpimember;
+        var list, myTask = [], thisKPI = null;
+        const { kpimembers } = this.props;
+        if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+        kpimember = kpimembers && kpimembers.kpimembers;
+        if (kpimembers.currentKPI) {
+            list = kpimembers.currentKPI.kpis;
+        }
+        // if(kpimembers.result){
+        //     thisKPI = kpimembers.result;
+        // }
+        // console.log('-------------', this.state);
         return (
-        
-            <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full modal-tasktemplate">
-                    <div className="modal-content">
-                        {/* Modal Header */}
-                        <div className="modal-header" style={{ textAlign: "center", background: "#605ca8", color: "white" }}>
-                            <button type="button" className="close" data-dismiss="modal">
-                                <span aria-hidden="true">×</span>
-                                <span className="sr-only">Close</span>
-                            </button>
-                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi cá nhân tháng {this.formatDate(kpipersonal.date)}</h3>
-                        </div>
-                        {/* Modal Body */}
+            <React.Fragment>
+                <DialogModal
+                modalID={`modal-detail-KPI-personal`}
+                title={`Chi tiết KPI nhân viên ${this.props.name}, tháng ${this.formatMonth(this.props.date)} `}
+                hasSaveButton ={false}
+                size={100}
+                >
+                    {/* <div className="qlcv"> */}
                         <div className="modal-body modal-body-perform-task" >
-                            <div className="left-modal">
-                                <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white" }}>
+                            <div className="col-sm-3">
+                                <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white",padding:"1px 15px", borderRadius:"5px" }}>
                                     <h4>Danh sách mục tiêu</h4>
                                 </div>
-                                <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
+                                <div className="content-left-modal" id="style-1" >
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
-                                            <a href="#abc" onClick={() => this.handleChangeContent(item._id)} className="list-group-item" key={index}>
-                                                {item.name}
-                                                <span className="badge">{15 + index}</span>
+                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId, new Date())} className="list-group-item" key={index}>
+                                                {item.name}&nbsp;
+                                                {/* <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small> */}
+                                                {/* <span className="badge">{15 + index}</span> */}
                                             </a>)}
                                     </div>
                                 </div>
                             </div>
-                            <div className="right-modal">
+                            <div className="col-sm-9">
                                 {
                                     list && list.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="qlcv">
-                                            <div className="header-content-right">
-                                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
-                                                    <h4>Thông tin mục tiêu</h4>
+                                                <h4>Thông tin mục tiêu</h4>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Tiêu chí đính giá:</label>
+                                                    <label >{item.criteria}</label>
                                                 </div>
-                                                <div className="form-inline">
-                                                    <label>Tiêu chí đính giá:</label>
-                                                    <label  style={{ marginLeft :"20px" }}>{item.name}</label>
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Trọng số:</label>
+                                                    <label style={{ display: "inline" }}>{item.weight}</label>
                                                 </div>
-                                                <div className="form-inline">
-                                                    <label>Điểm tối đa:</label>
-                                                    <label  style={{ marginLeft :"20px" }}>{item.weight}</label>
+                                            
+                                                { item.automaticPoint && 
+                                                <div className="row">
+                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
+                                                    <label style={{ width: "150px" }}>Điểm tự động:</label>
+                                                    <label >{item.automaticPoint}</label>
                                                 </div>
-                                                <button className="col-xs-2 pull-right btn btn-success">Tính điểm KPI</button>
-                                            </div>
+                                                <div className="col-sm-12 " style={{marginLeft: "15px"}}>
+                                                    <label style={{ width: "150px" }}>Điểm tự đánh giá:</label>
+                                                    <label >{item.employeePoint}</label>
+                                                </div>
+                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
+                                                    <label style={{ width: "150px" }}>Điểm phê duyệt:</label>
+                                                    <label >{item.approvedPoint}</label>
+                                                </div>
+                                                </div>
+                                               }
+                                                {/* <div className="form-inline">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
+                                                </div> */}
                                             </div>
                                             <div className="body-content-right">
-                                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
+                                                <div className="col-sm-12" style={{ fontWeight: "500", marginLeft:"-15px" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                <DataTableSetting class="pull-right" tableId="detailKpiModel" tableContainerId="tree-table-container" tableWidth="1300px"
-                                                columnArr={[ 
-                                                    'STT' ,
-                                                    'Tên công việc' , 
-                                                    'Đơn vị' , 
-                                                    'Thời gian thực hiện' ,
-                                                    'Người tạo' ,
-                                                    'Người phê duyệt',
-                                                    'Người hỗ trợ',
-                                                    'Trạng thái',
-                                                    'Điểm quan trọng']} 
-                                                limit={this.state.perPage} 
-                                                setLimit={this.setLimit} 
-                                                hideColumnOption={true} />
-                                                <table id="detailKpiModel" className="table table-bordered table-striped">
+
+                                                <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                    columnArr={[
+                                                        'STT',
+                                                        'Tên công việc',
+                                                        'Thời gian',
+                                                        'Trạng thái',
+                                                        'Đóng góp',
+                                                        'Điểm',
+                                                        'Độ quan trọng']}
+                                                    limit={this.state.perPage}
+                                                    setLimit={this.setLimit}
+                                                    hideColumnOption={true} />
+
+                                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th style={{ width: "20px" }} title="STT">Stt</th>
-                                                            <th title ="Tên công việc">Tên công việc</th>
-                                                            <th title ="Đơn vị">Đơn vị</th>
-                                                            <th title ="Thời gian thực hiện">Thời gian thực hiện</th>
-                                                            <th title ="Người tạo">Người tạo</th>
-                                                            <th title ="Người phê duyệt">Người phê duyệt</th>
-                                                            <th title ="Người hỗ trợ">Người hỗ trợ</th>
-                                                            <th title ="Trạng thái">Trạng thái</th>
-                                                            <th title ="Điểm quan trọng">Điểm quan trọng</th>
+                                                            <th title="STT" style={{ width: "20px" }}>Stt</th>
+                                                            <th title="Tên công việc">Tên công việc</th>
+                                                            <th title="Thời gian">Thời gian</th>
+                                                            <th title="Trạng thái">Trạng thái</th>
+                                                            <th title="Đóng góp">Đóng góp</th>
+                                                            <th title="Điểm">Điểm</th>
+                                                            <th title="Độ quan trọng">Độ quan trọng</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {/* {
-
-                                                            (typeof kpimembers.tasks !== "undefined" && kpimembers.tasks) ?
+                                                        {
+                                                            ( kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
                                                                 (kpimembers.tasks.map((itemTask, index) =>
 
                                                                     <tr key={index}>
                                                                         <td>{index + 1}</td>
                                                                         <td>{itemTask.name}</td>
-                                                                        <td>{itemTask.organizationalUnit.name}</td>
-                                                                        <td>{itemTask.description}</td>
-                                                                        <td>{itemTask.priority}</td>
-                                                                        <td>{this.formatDay(itemTask.startDate) + "-" + this.formatDay(itemTask.endDate)}</td>
-                                                                        <td>{itemTask.creator.name}</td>
-                                                                        <td>{itemTask.accountableEmployees[0].name}</td>
-                                                                        <td>{itemTask.consultedEmployees[0].name}</td>
+                                                                        <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
                                                                         <td>{itemTask.status}</td>
-                                                                        <td></td>
-                                                                    </tr>)) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
-                                                        } */}
-                                                        <tr >
-                                                            <td>1</td>
-                                                            <td>Thực hiện giao dịch với công ty đối tác</td>
-                                                            <td>Ban quản lý</td>
-                                                            <td>5-5-2020 -> 30-5-2020</td>
-                                                            <td>Vũ Thị Cúc</td>
-                                                            <td>Vũ Thị Cúc</td>
-                                                            <td>Nguyễn Văn An</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>8</td>
-                                                        </tr>
-                                                        <tr >
-                                                            <td>2</td>
-                                                            <td>Thống kê số liệu kinh doanh tháng 4</td>
-                                                            <td>Ban quản lý</td>
-                                                            <td>1-5-2020 -> 5-5-2020</td>
-                                                            <td>Vũ Thị Cúc</td>
-                                                            <td>Nguyễn Văn Danh</td>
-                                                            <td>Nguyễn Văn An</td>
-                                                            <td>Hoàn thành</td>
-                                                            <td>8</td>
-                                                        </tr>
-                                                        <tr >
-                                                            <td>3</td>
-                                                            <td>Đi thực tập bên Nhật Bản</td>
-                                                            <td>Ban hành chính</td>
-                                                            <td>10-5-2020 -> 30-7-2020</td>
-                                                            <td>Vũ Thị Cúc</td>
-                                                            <td>Nguyễn Đình Văn</td>
-                                                            <td>Trần Văn Bình</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>5</td>
-                                                        </tr>
+                                                                        <td>{itemTask.contribution}</td>
+                                                                        <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
+                                                                        <td>{itemTask.taskImportanceLevel}</td>
+                                                                    </tr>)) : <tr><td colSpan={8}>Không có dữ liệu</td></tr>
+                                                        }
+
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -229,26 +287,27 @@ class ModalDetailKPIPersonal extends Component {
                                                 </div>
                                             </div>
                                         </React.Fragment>;
-                                        
+                                        return true;
                                     })
                                 }
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    {/* </div>     */}
+                </DialogModal>
+            </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { managerKpiUnit, kpimembers } = state;
-    return { managerKpiUnit, kpimembers };
+    const { kpimembers } = state;
+    return { kpimembers };
 }
 
 const actionCreators = {
-    getAllTarget: managerServices.getAllTargetByUnitId,
-    getAllTaskById: kpiMemberActions.getTaskById
+    getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getTaskById: kpiMemberActions.getTaskById,
+    setPointKPI: kpiMemberActions.setPointKPI
 };
 const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(ModalDetailKPIPersonal);
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };

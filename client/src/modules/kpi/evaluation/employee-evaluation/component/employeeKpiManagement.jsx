@@ -25,16 +25,12 @@ class KPIMember extends Component {
             commenting: false,
             user:null,
             status:null,
-            // startDate : this.formatDateBack(Date.now()),
-            // endDate : this.formatDateBack(Date.now()),
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: null,
                 status: null,
-                // startDate: this.formatDate(Date.now()),
-                // endDate: this.formatDate(Date.now())
                 startDate: null,
                 endDate: null
             },
@@ -43,17 +39,7 @@ class KPIMember extends Component {
         };
     }
     componentDidMount() {
-        // var infosearch = {
-        //     role: localStorage.getItem("currentRole"),
-        //     // user: "all",
-        //     // status: 4,
-        //     startDate: "",
-        //     endDate: ""
-        // }
-        // Lấy tất cả nhân viên của phòng ban
-
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
         this.props.getAllKPIMemberOfUnit(this.state.infosearch);
     }
     formatDateBack(date) {
@@ -103,7 +89,6 @@ class KPIMember extends Component {
         }
     }
     handleStartDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -113,7 +98,6 @@ class KPIMember extends Component {
         
     }
     handleEndDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
                 return {
                     ...state,
@@ -140,6 +124,8 @@ class KPIMember extends Component {
     }
     
     handleSearchData = async () => {
+        if(this.state.startDate === "") this.state.startDate = null;
+        if(this.state.endDate === "") this.state.endDate = null;
         await this.setState(state => {
             return {
                 ...state,
@@ -153,22 +139,16 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-         
-        // if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            
             var startDate;
-            var startdate=null;
             var endDate;
+            var startdate=null;
             var enddate=null;
+            
             if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
             startdate = new Date(startDate[1], startDate[0], 0);}
             if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
             enddate = new Date(endDate[1], endDate[0], 28);}
-            // if(data.status) status= parseInt(data.status); 
-        // var startDate = infosearch.startDate.split("-");
-        //     var startdate = new Date(startDate[1], startDate[0], 0);
-        //     var endDate = infosearch.endDate.split("-");
-        //     var enddate = new Date(endDate[1], endDate[0], 28);
+   
             if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
@@ -179,21 +159,15 @@ class KPIMember extends Component {
             } 
             else {
                 this.props.getAllKPIMemberOfUnit(infosearch);
-                console.log("========================goi den tim kiem")
-                console.log("inforsearch", infosearch);
             }
-        // }
     }
     handleShowApproveModal = async (id) => {
-        // console.log('da goi den showApprove');
         await this.setState(state => {
             return {
                 ...state,
                 kpiId: id
             }
         })
-        // console.log('handle ============='+id);
-        // console.log('state=============', this.state.showApproveModal);
         window.$(`modal-approve-KPI-member`).modal('show')
     }
     showEvaluateModal = async (id) => {
@@ -210,10 +184,10 @@ class KPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
-        // const {startDate, endDate} = this.state;
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
         const {status,employee,startDate, endDate} = this.state;
+
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
 
@@ -221,7 +195,6 @@ class KPIMember extends Component {
         if (userdepartments) {
             unitMembers = [
                 {
-                    // text: "Chọn nhân viên",
                     value: [{text:"--Chọn nhân viên--", value: "null"}]
                 },
                 {
@@ -239,7 +212,6 @@ class KPIMember extends Component {
             ]
         }
 
-        // console.log('ifo'+ this.state);
         return (
             <React.Fragment>
                 <div className="box">
@@ -273,9 +245,7 @@ class KPIMember extends Component {
                                         {value:3, text : "Đã kết thúc"},
                                         {value:4, text : "Đang hoạt động"},
                                         {value:5, text : "Tất cả các trạng thái"},]}
-                                    // items = {items}
                                     onChange={this.handleStatusChange}
-                                    // multiple={true}
                                     value={status}
                                 />
                             </div>
@@ -330,7 +300,7 @@ class KPIMember extends Component {
                             <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                             <th title="Trạng thái KPI">Trạng thái Kpi</th>
                             <th title="Kết quả">Kết quả</th>
-                            <th title=">Phê duyệt">Phê duyệt</th>
+                            <th title=">Phê duyệt" style={{textAlign: "center"}}>Phê duyệt</th>
                             <th title="Đánh giá">Đánh giá</th>
                             </tr>
                         </thead>
@@ -345,11 +315,9 @@ class KPIMember extends Component {
                             <td title="">{this.checkStatusKPI(item.status)}</td>
                             <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                             
-                            <td>
+                            <td style={{textAlign: "center"}}>
                                 <a data-target={`#modal-approve-KPI-member`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                {/* {this.state.showApproveModal !== "" && this.state.showApproveModal === item._id && <ModalMemberApprove id={item._id} />} */}
-                                {/* {<ModalMemberApprove id={item._id} />} */}
                             </td>
                             <td>
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
@@ -366,18 +334,15 @@ class KPIMember extends Component {
                         </tbody>
                         </table>
                     </div>
-                    {/* {this.state.showApproveModal !== "" && <ModalMemberApprove id={"5ec9e97e0d402827b818761c"} />} */}
-                    
                 </div>
-            {/* </div> */}
         </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { user, kpimembers } = state;
-    return { user, kpimembers };
+    const { user, kpimembers,KPIPersonalManager } = state;
+    return { user, kpimembers,KPIPersonalManager };
 }
  
 const actionCreators = {

@@ -10,20 +10,31 @@ const generator = require("generate-password");
 exports.getAllUsers = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
-    
+    var name = query.name;
+    var keySearch = {company: company};
     if(page === undefined && limit === undefined ){
-        
-        return await User.find({ company })
+        if(name!==undefined){
+            keySearch = {...keySearch, name: {$regex: name, $options: "i"}};
+            let searchUses = await User.find(keySearch)
             .select('-password -status -deleteSoft -tokens')
             .populate([
                 { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
                 { path: 'company' }
             ]);
+            return {searchUses}
+        }else{
+            return await User.find({ company })
+            .select('-password -status -deleteSoft -tokens')
+            .populate([
+                { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+                { path: 'company' }
+            ]);
+        }
     }else{
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {};
-        
+            : {company};
+        console.log("option: ", option);
         return await User.paginate( option , { 
             page, 
             limit,
@@ -121,7 +132,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
     });
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
-        to: email,
+        to: newEmail,
         subject: 'Xác thực thay đổi email',
         text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
         html:   

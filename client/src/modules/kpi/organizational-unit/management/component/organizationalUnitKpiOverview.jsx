@@ -114,7 +114,15 @@ class KPIUnitManager extends Component {
             }
         })
         const { infosearch } = this.state;
-        console.log("inforsearch", infosearch);
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate == undefined && infosearch.endDate !== undefined){
+            this.props.getKPIUnits(infosearch);
+        }
+        if(infosearch.role && infosearch.status && infosearch.startDate !== undefined && infosearch.endDate == undefined){
+            this.props.getKPIUnits(infosearch);
+        }
         if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
             var startDate = infosearch.startDate.split("-");
             var startDate =new Date(startDate[1], startDate[0]);
@@ -274,7 +282,7 @@ class KPIUnitManager extends Component {
                                 <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
-                                <td>{item.approvedPoint}-{item.automaticPoint}-{item.employeePoint}{item.approvedPoint=== null ? "Chưa đánh giá" : item.result}</td>
+                                <td>{item.approvedPoint=== null ? "Chưa đánh giá" : `${item.approvedPoint}-${item.automaticPoint}-${item.employeePoint}`}</td>
                                 <td>
                                     <a href={`#dataResultTask`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
