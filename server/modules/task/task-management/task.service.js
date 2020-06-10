@@ -959,12 +959,14 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
+        // console.log('=============TYPEOF=====================', typeof(info[i].type), info[i].type);
         if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
         else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
         else if (info[i].type === "Date") {
             var splitter = info[i].value.split("-");
             var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
             info[i].value = infoDate;
+            // console.log('dateeeeeeeee', infoDate);
         }
     }
 
