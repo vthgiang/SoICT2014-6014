@@ -14,7 +14,6 @@ class AgePyramidChart extends Component {
             id: 'keyId'
         }
     }
-
     componentDidMount() {
         this.props.getAllEmployee({ status: 'active' });
     }
@@ -141,7 +140,7 @@ class AgePyramidChart extends Component {
             data1: data1AgePyramid,
             data2: data2AgePyramid,
         }
-        this.renderChart(data);
+        listAllEmployees.length !== 0 && this.renderChart(data);
         return (
             <React.Fragment>
                 <div ref="chart"></div>

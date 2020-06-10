@@ -26,7 +26,6 @@ exports.getActiveTimesheetLog = async (params) => {
         {"timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.user), "stoppedAt": null } } },
         {"timesheetLogs" : 1, '_id': 1, 'name': 1 }
     );
-    
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(element => !(element.stoppedAt));
         return timerStatus;
@@ -47,13 +46,11 @@ exports.startTimesheetLog = async (body) => {
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, "fields": {"timesheetLogs" : 1, '_id': 1, 'name': 1 } }
     );
-    
     timer.timesheetLogs = timer.timesheetLogs.find(element => !(element.stoppedAt));
-
     return timer;
 }
 /**
- * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
+ * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (body) => {
     var timer = await Task.findOneAndUpdate(
@@ -70,7 +67,6 @@ exports.stopTimesheetLog = async (body) => {
     
     return timer.timesheetLogs;
 }
-
 /**
  * Thêm bình luận của hoạt động
  */

@@ -8,7 +8,7 @@ class SelectBox extends Component {
     }
 
     componentDidMount() {
-        let { id, onChange, options = { open: true, minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
+        let { id, onChange, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
         if (changeSearch !== undefined && changeSearch !== false) {
             options = {
                 ...options, ajax: {
@@ -39,6 +39,12 @@ class SelectBox extends Component {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
         });
+    }
+    componentDidUpdate() {
+        let { id, options = {}, changeSearch, } = this.props;
+        if (changeSearch === undefined || changeSearch === false) {
+            window.$("#" + id).select2(options);
+        }
     }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
@@ -84,7 +90,7 @@ class SelectBox extends Component {
             !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
 
             if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-                let { id, options = { open: true, minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
+                let { id, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
                 if (changeSearch !== undefined && changeSearch !== false) {
                     options = {
                         ...options, ajax: {

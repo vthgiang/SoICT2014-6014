@@ -25,42 +25,38 @@ class OrganizationalUnitKpiDashboard extends Component {
         this.state = {
             currentMonth: new Date().getMonth() + 1,
             currentYear: new Date().getFullYear(),
-            currentRole: localStorage.getItem("currentRole"),
+            currentRole: null,
             organizationalUnitId: null,
-            dataStatus: this.DATA_STATUS.AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
-        this.props.getAllKPIUnit(this.state.currentRole);
-        this.props.getChildrenOfOrganizationalUnitsAsTree(this.state.currentRole)
-    }
-
-    componentDidUpdate = async () => {
-        if (this.state.currentRole !== localStorage.getItem('currentRole')) {
-            this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
-            this.setState(state => {
-                return {
-                    ...state,
-                    currentRole: localStorage.getItem('currentRole')
-                }
-            })
-        }
+        this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+        this.setState(state => {
+            return {
+                ...state,
+                currentRole: localStorage.getItem('currentRole')
+            }
+        })
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log("999", this.state.currentRole, localStorage.getItem('currentRole'), nextState.currentRole)
-        if (this.state.currentRole !== nextState.currentRole) {
+        if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-            console.log("****", nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit, this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit)
+            await this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    organizationalUnitId: null
                 }
             });
 
+            return false;
         }
 
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {

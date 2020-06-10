@@ -188,9 +188,6 @@ class TaskPerformanceResultsOfOrganizationalUnitChart extends Component {
 
     }
 
-    preventDefault = (event) => {
-        // event.preventDefault();
-    }
     render() {
         var kindOfPoint;
 
@@ -211,26 +208,34 @@ class TaskPerformanceResultsOfOrganizationalUnitChart extends Component {
 
         return (
             <React.Fragment>
-                <div className='box-tools pull-right'>
-                    <button type="button" data-toggle="collapse" data-target="#kind-point-task-performance" className="pull-right" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }} onClick={this.preventDefault()}></i></button>
-                    <div id="kind-point-task-performance" className="box collapse setting-table">
-                        <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
+                <div className="box">
+                    <div className="box-header with-border">
+                        <h3 className="box-title">sdfsádà</h3>
+                    </div>
+                    <div className="box-body dashboard_box_body">
+                        <div className='box-tools pull-right'>
+                            <button type="button" data-toggle="collapse" data-target="#kind-point-task-performance" className="pull-right" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                            <div id="kind-point-task-performance" className="box collapse setting-table">
+                                <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
 
-                        <div className = "form-group">
-                            <label>Loại điểm</label>
-                            <SelectBox
-                                id={`kindOfPointTaskPerformance`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={kindOfPoint}
-                                multiple={false}
-                                onChange={this.handleSelectKindOfPoint}
-                                value={kindOfPoint[0].value}
-                            />
-                        </div> 
+                                <div className = "form-group">
+                                    <label>Loại điểm</label>
+                                    <SelectBox
+                                        id={`kindOfPointTaskPerformance`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={kindOfPoint}
+                                        multiple={false}
+                                        onChange={this.handleSelectKindOfPoint}
+                                        value={kindOfPoint[0].value}
+                                    />
+                                </div> 
+                            </div>
+                        </div>
+                        
+                        <div ref="chart"></div>
                     </div>
                 </div>
-                <div ref="chart"></div>
             </React.Fragment>
         )
     }
