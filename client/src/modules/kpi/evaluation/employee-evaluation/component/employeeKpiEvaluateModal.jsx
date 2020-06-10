@@ -253,8 +253,8 @@ class ModalMemberEvaluate extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{itemTask.name}</td>
-                                                    <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
-                                                    <td>{this.formatDate(itemTask.preEvaDate) + "->\n" + this.formatDate(itemTask.date)}</td>
+                                                    <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
+                                                    <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
                                                     <td>{itemTask.contribution}</td>
                                                     <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>

@@ -76,7 +76,7 @@ class ContentMaker extends Component {
                 </Files>
                 <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm files&nbsp;&nbsp;</a>
+                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm tệp&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a href="javascript:void(0)" className="link-black text-sm" onClick={(e)=>{
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
