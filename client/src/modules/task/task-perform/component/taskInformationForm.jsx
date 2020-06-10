@@ -155,7 +155,7 @@ class TaskInformationForm extends Component {
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <DatePicker
                                                 id={`info_date_${this.props.perform}_${index}_${info.code}`}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value }
+                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) ? value.info[`${info.code}`].value : undefined}
                                                 onChange={(value)=>this.props.handleInfoDateChange(value, info.code)}
                                                 disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                             />
