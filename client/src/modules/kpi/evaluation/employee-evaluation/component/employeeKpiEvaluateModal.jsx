@@ -238,7 +238,7 @@ class ModalMemberEvaluate extends Component {
                             <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th title="STT" style={{ width: "90px" }} className="col-fixed">Stt</th>
+                                        <th title="STT" style={{ width: "50px" }} className="col-fixed">Stt</th>
                                         <th title="Tên công việc">Tên công việc</th>
                                         <th title="Thời gian">Thời gian đánh giá</th>
                                         <th title="Trạng thái">Trạng thái</th>
