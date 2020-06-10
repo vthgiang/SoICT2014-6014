@@ -18,14 +18,14 @@ class EvaluateByResponsibleEmployee extends Component {
         
         super(props);
 
-        var date = this.formatDate(new Date());
-        var data = this.getData(date);
+        let date = this.formatDate(new Date());
+        let data = this.getData(date);
 
         this.state={
             task: data.task,
             idUser: data.idUser,
             info: data.info,
-            autoPoint: data.automaticPoint,
+            autoPoint: data.autoPoint,
             date: data.date,
             kpi: data.kpi,
             point: data.point,
@@ -35,49 +35,111 @@ class EvaluateByResponsibleEmployee extends Component {
         
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
-        var idUser = getStorage("userId");
-        var {tasks} = this.props;
+        let idUser = getStorage("userId");
+        let {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
-        var evaluations;
+        let evaluations;
         
-        var splitter = dateParam.split("-");
-        var dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
-        var monthOfEval = dateOfEval.getMonth();
-        var yearOfEval = dateOfEval.getFullYear();
+        let splitter = dateParam.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
-        var date = this.formatDate(new Date());
-        var point = 0;
-        var info = {};
-        var cloneKpi = [];
+        let date = this.formatDate(new Date());
+        if(this.props.perform === "stop"){
+            date = this.formatDate(new Date()); 
+        }
+        else if(this.props.perform === "evaluate"){
+            date = this.formatDate(new Date()); 
+            // date = moment().endOf("month").format('DD-MM-YYYY');
+        }
+
+        let point = 0;
+        let info = {};
+        let cloneKpi = [];
+
+        let infoTask = task.taskInformations;
+        for(let i in infoTask){
+            if(infoTask[i].type === "Date"){
+                if(infoTask[i].value){
+                    infoTask[i].value = this.formatDate(infoTask[i].value);
+                } else infoTask[i].value = this.formatDate(new Date());
+            }
+            else if(infoTask[i].type === "SetOfValues"){
+                let splitter = infoTask[i].extra.split('\n');
+
+                // if(infoTask[i].value){
+                    infoTask[i].value = infoTask[i].value === undefined ? [splitter[0]] : [infoTask[i].value];
+                // }
+            }
+            
+            info[`${infoTask[i].code}`] = {
+                value: infoTask[i].value,
+                code: infoTask[i].code,
+                type: infoTask[i].type
+            }
+        }
+        
+
         if(evaluations){
             if(evaluations.results.length !== 0) {
-                var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
+                let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
                 if(res) point = res.employeePoint ? res.employeePoint : 0;
             }
             let infoEval = evaluations.taskInformations;
-            for(let i in infoEval){
-                if(infoEval[i].type === "Date"){
-                    if(infoEval[i].value){
-                        infoEval[i].value = this.formatDate(infoEval[i].value);
-                    } else infoEval[i].value = this.formatDate(Date.now());
+            let chkHasInfo = false;
+            for(let i in infoEval) {
+                if(infoEval[i].value !== undefined) {
+                    chkHasInfo = true; 
+                    break;
                 }
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: ''
-                }
-                
             }
 
-            date = this.formatDate(evaluations.date);
+            if(chkHasInfo){
+                for(let i in infoEval){
+                    if(infoEval[i].type === "Date"){
+                        if(infoEval[i].value){
+                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                        } else infoEval[i].value = this.formatDate(new Date());
+                        
+                    }
+                    else if(infoEval[i].type === "SetOfValues"){
+                        let splitter = infoEval[i].extra.split('\n');
+
+                        infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+
+                        // if(infoEval[i].value){
+                        //     infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
+                        // }
+                    }
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                }
+            }
+
+            if(this.props.perform === "stop"){
+                if(chkHasInfo) {
+                    date = this.formatDate(evaluations.date);
+                }
+                else date = this.formatDate(new Date());
+            }
+            else if(this.props.perform === "evaluate"){
+                
+                // if(chkHasInfo) date = this.formatDate(evaluations.date);
+                date = this.formatDate(evaluations.date);
+
+            }
            
             let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
             if (tmp){
-                var kpi = tmp.kpis;
+                let kpi = tmp.kpis;
             
                 for(let i in kpi){
                     cloneKpi.push(kpi[i]._id);
@@ -98,7 +160,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -112,9 +174,9 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     componentDidMount() {
-        var { task, idUser } = this.state;
-        var date = this.formatDate(new Date());
-        var department = task.organizationalUnit._id;
+        let { task, idUser } = this.state;
+        let date = this.formatDate(new Date());
+        let department = task.organizationalUnit._id;
 
         this.props.getTaskById(this.props.id);
         this.props.getEmployeeKpiSet();
@@ -123,7 +185,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -146,10 +208,10 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleDateChange = (value) => {
-        // var value = e.target.value;
-        var {idUser, task} = this.state;
+        // let value = e.target.value;
+        let {idUser, task} = this.state;
 
-        var data = this.getData(value);
+        let data = this.getData(value);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, task.organizationalUnit._id, value);
 
         this.setState(state => {
@@ -159,7 +221,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 date: value,
                 info: data.info, 
                 kpi: data.kpi,
-                autoPoint: data.automaticPoint,
+                autoPoint: data.autoPoint,
                 point: data.point
             }
         });
@@ -167,7 +229,7 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleChangePoint = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -181,7 +243,7 @@ class EvaluateByResponsibleEmployee extends Component {
     // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -194,8 +256,8 @@ class EvaluateByResponsibleEmployee extends Component {
     } 
     
     handleChangeNumberInfo = async (e) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -214,8 +276,8 @@ class EvaluateByResponsibleEmployee extends Component {
     } 
 
     handleChangeTextInfo = async (e) => {
-        var value = e.target.value;
-        var name = e.target.name;
+        let value = e.target.value;
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -265,7 +327,7 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleInfoBooleanChange  = (event) => {
-        var {name, value} = event.target;
+        let {name, value} = event.target;
         this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -302,7 +364,7 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     validateNumberInfo = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         
         if (isNaN(value)) {
@@ -324,7 +386,7 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     validatePoint = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -338,14 +400,22 @@ class EvaluateByResponsibleEmployee extends Component {
     isFormValidated = () => {
         const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnTextInfo, errorOnNumberInfo } = this.state;
-        return ( errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
+        var {info} = this.state;
+        var check = true;
+        for(let i in info) {
+            if(info[i].value === undefined ) {
+                check = false;
+                break;
+            }
+        }
+        return ( check && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
     
     save = () => {
-        var taskId;
+        let taskId;
         taskId = this.props.id;
-        var data = {
+        let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
             // automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
@@ -388,11 +458,11 @@ class EvaluateByResponsibleEmployee extends Component {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
         const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
-        // var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
-        var listKpi = [];
+        // let items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
+        let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
-        var task = (tasks && tasks.task)&& tasks.task.info;
+        let task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
             <DialogModal
@@ -440,6 +510,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             handleChangeNumberInfo={this.handleChangeNumberInfo}
                             handleChangeTextInfo={this.handleChangeTextInfo}
 
+                            role={this.props.role}
                             perform={this.props.perform}
                             value={this.state}
                         />

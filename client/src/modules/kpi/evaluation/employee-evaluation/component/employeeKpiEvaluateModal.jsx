@@ -108,18 +108,21 @@ class ModalMemberEvaluate extends Component {
     }
 
     handleSetPointKPI = () => {
-        var date = new Date();
+        var date = this.props.date;
+        console.log("eeeee",this.props.kpimembers.tasks);
         let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
+        console.log('dataatata', data);
         for (let n in data) {
             data[n]={
                 taskId: data[n].taskId,
-                date: date.toISOString(),
+                date: date,
                 point: data[n].taskImportanceLevel,
                 employeeId: this.props.employeeId,
             }
         }
-        console.log(data);
+        console.log("efefefef",data);
         this.props.setPointKPI(this.state.content, data);
+        console.log("iddddd",this.state.content);
         this.setState({
             editing: true,
         })
@@ -160,7 +163,7 @@ class ModalMemberEvaluate extends Component {
         // if(kpimembers.result){
         //     thisKPI = kpimembers.result;
         // }
-        console.log('-------------', this.state);
+        console.log('-------------', this.props.kpimembers.tasks);
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -220,6 +223,13 @@ class ModalMemberEvaluate extends Component {
                                                     <label >{item.approvedPoint}</label>
                                                 </div>
                                                 </div>
+                                               }
+                                               { item.updatedAt &&
+                                                <div className="col-sm-12">
+                                                    <label style={{ width: "150px" }}>Ngày đánh giá gần nhất: </label>
+                                                    <label >{this.formatDate(item.updatedAt)}</label>
+                                                </div>
+
                                                }
                                                 <div className="form-inline">
                                                     <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>

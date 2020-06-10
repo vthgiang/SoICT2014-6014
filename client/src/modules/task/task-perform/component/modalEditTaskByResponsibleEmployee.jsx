@@ -15,8 +15,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     constructor(props) {
         super(props);
 
-        var date = this.formatDate(new Date());
-        var data = this.getData(date);
+        let date = this.formatDate(new Date());
+        let data = this.getData(date);
 
         this.state={
             task: data.task,
@@ -29,53 +29,65 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             kpi: data.kpi,
             progress: data.task.progress
         }   
+        console.log('-------------------\n\n', this.state);
+
     }
 
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
-        var idUser = getStorage("userId");
-        var {tasks} = this.props;
+        let idUser = getStorage("userId");
+        let {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
         
-        var evaluations;
+        let evaluations;
         
-        var splitter = dateParam.split("-");
-        var dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
-        var monthOfEval = dateOfEval.getMonth();
-        var yearOfEval = dateOfEval.getFullYear();
+        let splitter = dateParam.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        var automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
-        var date = this.formatDate(new Date());
-        var point = 0;
-        var info = {};
-        var cloneKpi = [];
+        let date = this.formatDate(new Date());
+        let point = 0;
+        let info = {};
+        let cloneKpi = [];
+        
+        let infoEval = task.taskInformations;
+        for(let i in infoEval){
+            if(infoEval[i].type === "Date"){
+                if(infoEval[i].value){
+                    infoEval[i].value = this.formatDate(infoEval[i].value);
+                } 
+                else infoEval[i].value = this.formatDate(Date.now());
+            }
+            else if(infoEval[i].type === "SetOfValues"){
+                let splitter = infoEval[i].extra.split('\n');
+
+                // if(infoEval[i].value){
+                    infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+                // }
+            }
+            info[`${infoEval[i].code}`] = {
+                value: infoEval[i].value,
+                code: infoEval[i].code,
+                type: infoEval[i].type
+            }
+                
+        }
         if(evaluations){
             if(evaluations.results.length !== 0) {
-                var res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
+                let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
                 if(res) point = res.employeePoint ? res.employeePoint : 0;
             }
-            let infoEval = evaluations.taskInformations;
-            for(let i in infoEval){
-                if(infoEval[i].type === "Date"){
-                    if(infoEval[i].value){
-                        infoEval[i].value = this.formatDate(infoEval[i].value);
-                    } else infoEval[i].value = this.formatDate(Date.now());
-                }
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: ''
-                }
-                
-            }
-
+            
+            
             date = this.formatDate(evaluations.date);
            
             let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
             if (tmp){
-                var kpi = tmp.kpis;
+                let kpi = tmp.kpis;
             
                 for(let i in kpi){
                     cloneKpi.push(kpi[i]._id);
@@ -95,7 +107,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -110,7 +122,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
-        var value = parseInt(e.target.value);
+        let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
@@ -122,8 +134,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     } 
     
     handleChangeNumberInfo = async (e) => {
-        var value = parseInt(e.target.value);
-        var name = e.target.name;
+        let value = parseInt(e.target.value);
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -138,8 +150,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     } 
 
     handleChangeTextInfo = async (e) => {
-        var value = e.target.value;
-        var name = e.target.name;
+        let value = e.target.value;
+        let name = e.target.name;
         await this.setState(state =>{
             state.info[`${name}`] = {
                 value: value,
@@ -186,7 +198,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     handleInfoBooleanChange  = (event) => {
-        var {name, value} = event.target;
+        let {name, value} = event.target;
 
         this.setState(state => {
             state.info[`${name}`] = {
@@ -221,7 +233,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     validateNumberInfo = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         
         if (isNaN(value)) {
@@ -242,7 +254,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     validatePoint = (value) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -308,15 +320,23 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
    
     isFormValidated = () => {
-        return this.validateTaskName(this.state.taskName, false)
+        var {info} = this.state;
+        var check = true;
+        for(let i in info) {
+            if(info[i].value === undefined ) {
+                check = false;
+                break;
+            }
+        }
+        return check && this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
             // && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
     save = () => {        
-        var taskId;
+        let taskId;
         taskId = this.props.id;
-        var data = {
+        let data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
@@ -333,9 +353,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     componentDidMount() {
 
-        var { task, userId } = this.state;
-        var date = this.formatDate(new Date());
-        var department = task.organizationalUnit._id;
+        let { task, userId } = this.state;
+        let date = this.formatDate(new Date());
+        let department = task.organizationalUnit._id;
 
         console.log('----------------------\n\n\n', date, userId, department);
         this.props.getTaskById(this.props.id);
@@ -346,7 +366,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     static getDerivedStateFromProps(nextProps, prevState){
         console.log('PARENT nextProps, prevState', nextProps, prevState);
         const { tasks } = nextProps;
-        var task = tasks && tasks.task && tasks.task.info;
+        let task = tasks && tasks.task && tasks.task.info;
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -368,7 +388,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         const { KPIPersonalManager } = this.props
         const {task, taskName, taskDescription, kpi} = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
-        var listKpi = [];
+        let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
         
         console.log('listKPI==========================\n\n\n', listKpi);
@@ -441,6 +461,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
 
+                                role={this.props.role}
                                 perform={this.props.perform}
                                 value={this.state}
                             
