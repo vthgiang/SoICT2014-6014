@@ -312,7 +312,15 @@ async function getResultTaskByMonth(data) {
     // data gồm : id ( id của kpi nhân viên), date(ngày hiện tại), employeeId : id của nhân viên
    // console.log("data ne", data.id);
     var date = new Date(data.date);
-   // console.log("tetete",date);
+    let kpiType;
+    if (data.kpiType === 1){
+        kpiType="Accountable";
+    } else if (data.kpitType === 2){
+        kpiType="Consulted";
+    } else {
+        kpiType="Responsible";
+    }
+    
     var monthkpi = date.getMonth()+1;
     var yearkpi = date.getFullYear();
     //console.log("month", monthkpi);
@@ -332,7 +340,7 @@ async function getResultTaskByMonth(data) {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, {month : '$month'}, {year: '$year'},{ endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
         { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} },
-        {$match : {"role": "Responsible"}},
+        {$match : {"role": kpiType}},
         {$match: {"month" : monthkpi}},
         {$match: {"year" : yearkpi}},
     ]);
