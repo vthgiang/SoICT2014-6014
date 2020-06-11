@@ -48,19 +48,29 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         this.setState({
             userRoleEmployee: this.state.userRoleEmployee.filter(user => user !== id)
         })
+
     }
     // Bắt sự kiện thêm nhân viên đơn vị
     handleAdd(e) {
         e.preventDefault();
+        let userRoleEmployee = this.state.userRoleEmployee.concat(this.state.addUserEmployee);
+        userRoleEmployee = userRoleEmployee.filter((item, index) => {
+            return userRoleEmployee.indexOf(item) === index
+        });
         this.setState({
-            userRoleEmployee: this.state.userRoleEmployee.concat(this.state.addUserEmployee),
+            userRoleEmployee: userRoleEmployee,
             addUserEmployee: [],
-        })
+        });
+        window.$(`#employee-unit-${this.state._id}`).val(null).trigger("change");
     }
     save = () => {
         var { userRoleDean, userRoleViceDean, userRoleEmployee, addUserEmployee,
             infoRoleDean, infoRoleViceDean, infoRoleEmployee } = this.state;
+
         userRoleEmployee = userRoleEmployee.concat(addUserEmployee);
+        userRoleEmployee = userRoleEmployee.filter((item, index) => {
+            return userRoleEmployee.indexOf(item) === index
+        });
 
         let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean, showAlert: false }
         let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean, showAlert: false }
@@ -104,17 +114,19 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             infoEmployee = user.list.filter(x => x._id === userRoleEmployee[n]).concat(infoEmployee)
         }
         // Lấy danh sách người dùng không phải là nhân viên của đơn vị
-        var userlist = user.list;
+        var userlist = user.list, searchUses = user.searchUses;
         if (userRoleViceDean.length !== 0) {
             for (let n in userRoleViceDean) {
-                userlist = userlist.filter(x => x._id !== userRoleViceDean[n])
+                userlist = userlist.filter(x => x._id !== userRoleViceDean[n]);
+                searchUses = searchUses.filter(x => x._id !== userRoleViceDean[n])
             }
         }
         if (userRoleDean.length !== 0) {
-            userlist = userlist.filter(x => x._id !== userRoleDean[0])
+            userlist = userlist.filter(x => x._id !== userRoleDean[0]);
+            searchUses = searchUses.filter(x => x._id !== userRoleDean[0])
         }
         for (let n in userRoleEmployee) {
-            userlist = userlist.filter(x => x._id !== userRoleEmployee[n])
+            userlist = userlist.filter(x => x._id !== userRoleEmployee[n]);
         }
         return (
             <React.Fragment>
@@ -166,7 +178,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         style={{ width: "100%" }}
                                         onChange={this.handleEmployeeChange}
                                         value={addUserEmployee}
-                                        searchItems={user.searchUses.map(x => { return { value: x._id, text: x.name } })}
+                                        searchItems={searchUses.map(x => { return { value: x._id, text: x.name } })}
                                         changeSearch={this.changeSearch}
                                         textSearch={this.state.textSearch}
                                         multiple={true}
