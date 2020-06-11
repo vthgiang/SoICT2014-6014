@@ -294,7 +294,7 @@ class KPIMember extends Component {
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                            <th title="STT">STT</th>
+                            <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
                             <th title="Thời gian">Thời gian</th>
                             <th title="Tên nhân viên">Tên nhân viên</th>
                             <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>

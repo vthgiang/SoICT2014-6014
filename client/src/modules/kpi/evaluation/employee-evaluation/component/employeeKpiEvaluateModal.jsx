@@ -230,9 +230,10 @@ class ModalMemberEvaluate extends Component {
                             columnArr={[
                                 'STT',
                                 'Tên công việc',
-                                'Thời gian',
+                                'Thời gian thực hiện',
+                                'Thời gian đánh giá',
                                 'Trạng thái',
-                                'Đóng góp',
+                                'Đóng góp (%)',
                                 'Điểm',
                                 'Độ quan trọng']}
                             limit={this.state.perPage}
@@ -247,10 +248,10 @@ class ModalMemberEvaluate extends Component {
                                     <tr>
                                         <th title="STT" style={{ width: "50px" }} className="col-fixed">Stt</th>
                                         <th title="Tên công việc">Tên công việc</th>
-                                        <th title="Thời gian">Thời gian thực hiện</th>
-                                        <th title="Thời gian">Thời gian đánh giá</th>
+                                        <th title="Thời gian thực hiện">Thời gian thực hiện</th>
+                                        <th title="Thời gian đánh giá">Thời gian đánh giá</th>
                                         <th title="Trạng thái">Trạng thái</th>
-                                        <th title="Đóng góp">Đóng góp</th>
+                                        <th title="Đóng góp (%)">Đóng góp (%)</th>
                                         <th title="Điểm">Điểm</th>
                                         <th title="Độ quan trọng">Độ quan trọng</th>
                                     </tr>
@@ -266,7 +267,7 @@ class ModalMemberEvaluate extends Component {
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
-                                                    <td>{itemTask.contribution}</td>
+                                                    <td>{itemTask.contribution}%</td>
                                                     <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                     <td>
                                                         {this.state.points && this.state.tasks &&

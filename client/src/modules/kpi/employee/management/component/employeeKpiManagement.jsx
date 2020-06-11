@@ -154,14 +154,11 @@ class KPIPersonalManager extends Component {
                 this.props.getAllKPIMemberOfUnit(infosearch);
             }
     }
-    showDetailKpiPersonal = async (name, employeeId, id, date) => {
+    showDetailKpiPersonal = async (item) => {
         await this.setState(state => {
             return {
                 ...state,
-                name: name,
-                employeeId: employeeId,
-                showDetailKpiPersonal: id,
-                date: date
+                employeeKpiSet: item
             }
         })
         window.$(`modal-detail-KPI-personal`).modal('show')
@@ -190,126 +187,127 @@ class KPIPersonalManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                <ModalDetailKPIPersonal name={this.state.name} employeeId={this.state.employeeId} id={this.state.showDetailKpiPersonal} date={this.state.date}/>
-                <div className="form-inline">
-                            <div className="form-group">
-                                <label>Nhân viên:</label>
-                                {unitMembers &&
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id={`employee-kpi-manage`}
-                                    className="form-control"
-                                    style={{width: "100%"}}
-                                    items={unitMembers}
-                                    onChange={this.handleEmployeeChange}
-                                    // multiple={true}
-                                    value={user}
-                                />}
-                            </div>
-                            <div className="form-group">
-                                <label>Trạng thái:</label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id={`status-kpi`}
-                                    // className="form-control"
-                                    style={{width: "100%"}}
-                                    items = {[
-                                        {value:"null", text : "--Chọn trạng thái--"},
-                                        {value:0, text : "Đang thiết lập"},
-                                        {value:1, text : "Chờ phê duyệt"},
-                                        {value:2, text : "Đã kích hoạt"},
-                                        {value:3, text : "Đã kết thúc"},
-                                        {value:4, text : "Đang hoạt động"},
-                                        {value:5, text : "Tất cả các trạng thái"},]}
-                                    // items = {items}
-                                    onChange={this.handleStatusChange}
-                                    // multiple={true}
-                                    value={status}
-                                />
-                            </div>
+                    <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label>Nhân viên:</label>
+                            {unitMembers &&
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`employee-kpi-manage`}
+                                className="form-control"
+                                style={{width: "100%"}}
+                                items={unitMembers}
+                                onChange={this.handleEmployeeChange}
+                                // multiple={true}
+                                value={user}
+                            />}
                         </div>
 
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>Từ tháng:</label>
-                                <DatePicker
-                                id='start_date'
-                                
-                                value = {startDate}
-                                onChange={this.handleStartDateChange}
-                                dateFormat="month-year"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Đến tháng:</label>
-                                <DatePicker
-                                id='end_date'
-                               
-                                value = {endDate}
-                                onChange={this.handleEndDateChange}
-                                dateFormat="month-year"
-                                />
-                            </div>
-                            <div className="form-group">
-                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
-                                kiếm</button>
-                            </div>
-
+                        <div className="form-group">
+                            <label>Trạng thái:</label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`status-kpi`}
+                                // className="form-control"
+                                style={{width: "100%"}}
+                                items = {[
+                                    {value:"null", text : "--Chọn trạng thái--"},
+                                    {value:0, text : "Đang thiết lập"},
+                                    {value:1, text : "Chờ phê duyệt"},
+                                    {value:2, text : "Đã kích hoạt"},
+                                    {value:3, text : "Đã kết thúc"},
+                                    {value:4, text : "Đang hoạt động"},
+                                    {value:5, text : "Tất cả các trạng thái"},]}
+                                // items = {items}
+                                onChange={this.handleStatusChange}
+                                // multiple={true}
+                                value={status}
+                            />
                         </div>
 
-                        </div>
-                                <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
-                                                columnArr={[ 
-                                                    'STT' ,
-                                                    'Thời gian' , 
-                                                    'Số lượng mục tiêu' , 
-                                                    'Hệ thống đánh giá' ,
-                                                    'Kết quả tự đánh giá' ,
-                                                    'Quản lý đánh giá',
-                                                    'Hành động']} 
-                                                limit={this.state.perPage} 
-                                                setLimit={this.setLimit} 
-                                                hideColumnOption={true} />
+                    </div>
 
-                                                <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th title="STT" style={{ width: "20px" }}>STT</th>
-                                                            <th title="Thời gian">Thời gian</th>
-                                                            <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
-                                                            <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
-                                                            <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
-                                                            <th title="Quản lý đánh giá">Quản lý đánh giá</th>
-                                                            <th title="Hành động">Hành động</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                            {(typeof kpipersonal !== "undefined" && kpipersonal.length !== 0) ?
-                                                kpipersonal.map((item, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index+1}</td>
-                                                        <td>{this.formatDate(item.date)}</td>
-                                                        <td>{item.kpis.length}</td>
-                                                        <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
-                                                        <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
-                                                        <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
-                                                        <td>
-                                                            <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item.creator.name, item.creator._id, item._id, item.date)} data-toggle="modal"
-                                                            className="copy" title="Xem chi tiết"><i className="fa fa-list"></i></a>
-                                                            <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
-                                                            className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons"></i></a>
-                                                            {this.state.showModalCopy === item._id ? 
-                                                            <ModalCopyKPIPersonal kpipersonal={item} /> : null}
-                                                        </td>
-                                                        {/* <td>
-                                                            <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
-                                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/>
-                                                            {<a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
-                                                            {this.state.showModalCopy === item._id ? <ModalCopyKPIPersonal kpipersonal={item} /> : null}
-                                                        </td> */}
-                                                    </tr>) : null
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+                            <DatePicker id='start_date'
+                            value = {startDate}
+                            onChange={this.handleStartDateChange}
+                            dateFormat="month-year"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+                            <DatePicker
+                            id='end_date'
+                            
+                            value = {endDate}
+                            onChange={this.handleEndDateChange}
+                            dateFormat="month-year"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                        <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                            kiếm</button>
+                        </div>
+
+                    </div>
+
+                    <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                    columnArr={[ 
+                        'STT' ,
+                        'Thời gian' , 
+                        'Số lượng mục tiêu' , 
+                        'Hệ thống đánh giá' ,
+                        'Kết quả tự đánh giá' ,
+                        'Quản lý đánh giá',
+                        'Hành động']} 
+                    limit={this.state.perPage} 
+                    setLimit={this.setLimit} 
+                    hideColumnOption={true} />
+
+                    <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
+                                <th title="Thời gian">Thời gian</th>
+                                <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
+                                <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
+                                <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
+                                <th title="Quản lý đánh giá">Quản lý đánh giá</th>
+                                <th title="Hành động">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {kpipersonal && kpipersonal.length!==0 && kpipersonal.map((item, index) =>
+                                <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td>{this.formatDate(item.date)}</td>
+                                    <td>{item.kpis.length}</td>
+                                    <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
+                                    <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
+                                    <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
+                                    <td>
+                                        {/* item.creator.name, item.creator._id, item._id, item.date */}
+                                        <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item)} data-toggle="modal"
+                                        title="Xem chi tiết"><i className="material-icons">view_list</i></a>
+                                        <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
+                                        className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>
+                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal kpipersonal={item} />}
+                                    </td>
+                                        {/* <td>
+                                            <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
+                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/>
+                                            {<a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
+                                            {this.state.showModalCopy === item._id ? <ModalCopyKPIPersonal kpipersonal={item} /> : null}
+                                        </td> */}
+                                </tr>)
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         )
     }
 
