@@ -551,7 +551,6 @@ class ActionTab extends Component {
                 }
             }
         })
-        console.log(this.state.taskFiles)
     }
     onFilesError = (error, file) => {
     }
@@ -1040,14 +1039,14 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.taskFiles.files}
-                                text={this.state.taskFiles.description}
+                                files={this.state.newTaskComment.files}
+                                text={this.state.newTaskComment.description}
                                 placeholder={"Nhập bình luận"}
                                 submitButtonText={"Thêm bình luận"}
                                 onTextChange={(e)=>{
                                     let value = e.target.value;
                                     this.setState(state => {
-                                        return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                        return { ...state, newTaskComment: {...state.newTaskComment, description: value}}
                                     })
                                 }}
                                 onSubmit={(e)=>{this.submitTaskComment(task._id)}}
