@@ -53,6 +53,27 @@ class ModalMemberEvaluate extends Component {
             }
             return false;
         }
+
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            if (!nextProps.kpimembers.tasks){
+                return false;
+            } else { // Dữ liệu đã về
+                let tasks = nextProps.kpimembers.tasks;
+                let importanceLevels = {};
+                tasks.forEach(element => {
+                    importanceLevels[element.taskId] = element.taskImportanceLevel;
+                });
+                this.setState(state=>{
+                    return{
+                        ...state,
+                        tasks: tasks,
+                        points: importanceLevels,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                });
+                return false;
+            }
+        }
         return true;
     }
     
@@ -82,61 +103,48 @@ class ModalMemberEvaluate extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent =(id, employeeId, date) => {
-        console.log('====', id, employeeId, date);
-        console.log('date', date.getMonth());
-        var isoDate = date.toISOString();
-        this.props.getTaskById(id, employeeId, isoDate);
+    handleChangeContent =(id, employeeId, kpiType) => {
+        let date = this.props.employeeKpiSet.date;
+        this.props.getTaskById(id, employeeId, date, kpiType);
         this.setState(state => {
                return {
                    ...state,
                    content: id,
+                   dataStatus: this.DATA_STATUS.QUERYING,
                }
            });
     }
 
     handleSetPointKPI = () => {
-        var date = this.props.employeeKpiSet.date;
-        console.log("eeeee",this.props.kpimembers.tasks);
-        let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
-        console.log('dataatata', data);
-        for (let n in data) {
-            data[n]={
-                taskId: data[n].taskId,
-                date: date,
-                point: data[n].taskImportanceLevel,
-                employeeId: this.props.employeeKpiSet.creator._id,
-            }
-        }
-        console.log("efefefef",data);
-        this.props.setPointKPI(this.state.content, data);
-        console.log("iddddd",this.state.content);
-        this.setState({
-            editing: true,
-        })
-    }
+        let date = this.props.employeeKpiSet.date;
+        let employeeId = this.props.employeeKpiSet.creator._id;
+        let tasks = this.state.tasks;
+        let points = this.state.points;
+        if (tasks && tasks.length>0){
+            let data=[];
+            tasks.forEach(element => {
+                data.push({
+                    taskId: element.taskId,
+                    date: date,
+                    point: points[element.taskId],
+                    employeeId: employeeId
+                })
+            });
 
-    handleCloseModal = async (id) => {
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.remove("modal-open");
-        var modal = document.getElementById(`memberEvaluate${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
+            this.props.setPointKPI(this.state.content, data);
+        }
     }
 
     setValueSlider = (e, id) => {
+        // this.state[`taskImportanceLevel${itemTask.taskId}`]
         var value = e.target.value;
-        let tasks = this.props.kpimembers.tasks;
-        console.log(tasks);
-        tasks.map(x=>{
-            if(x.taskId===id){
-                x.taskImportanceLevel = value
-            }
-        })
+        let points = this.state.points;
+        points[id] = value;
+
         this.setState(state => {
             return {
                 ...state,
-                tasks: tasks
+                points: points,
             }
         })
     }
@@ -166,7 +174,7 @@ class ModalMemberEvaluate extends Component {
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
                                 <li key={index} className={this.state.content===item._id && "active"}>
-                                    <a href="#abc" onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, new Date())}>
+                                    <a href="#abc" onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                         {item.name}&nbsp;
                                     </a>
                                 </li>
@@ -261,17 +269,25 @@ class ModalMemberEvaluate extends Component {
                                                     <td>{itemTask.contribution}</td>
                                                     <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
                                                     <td>
-                                                        <input type="range"
+                                                        {this.state.points && this.state.tasks &&
+                                                        <React.Fragment>
+                                                            <input type="range"
                                                             min="1"
                                                             max='10'
                                                             name={`taskImportanceLevel${itemTask.taskId}`}
-                                                            value={this.state[`taskImportanceLevel${itemTask.taskId}`]}
-                                                            defaultValue={itemTask.taskImportanceLevel}
-                                                            onChange={(e) => this.setValueSlider(e, itemTask.taskId)}
-                                                        /> 
-                                                        <div>
-                                                        Điểm tự động : {itemTask.taskImportanceLevelCal}
-                                                        </div>
+                                                            value={this.state.points[itemTask.taskId]}
+                                                            onChange={(e) => this.setValueSlider(e, itemTask.taskId)}/>
+                                                            <div>
+                                                            GT mới: {this.state.points[itemTask.taskId]}
+                                                            </div>
+                                                            <div>
+                                                            GT cũ: {itemTask.taskImportanceLevel}
+                                                            </div>
+                                                            <div>
+                                                            GT tự động: {itemTask.taskImportanceLevelCal}
+                                                            </div>
+                                                        </React.Fragment>
+                                                        }
                                                         {/*<ReactSlider
                                                             className="horizontal-slider"
                                                             thumbClassName="thumb-1"
