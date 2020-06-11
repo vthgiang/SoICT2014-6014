@@ -106,12 +106,13 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 error: action.error
-            };
-        case performTaskConstants.GET_TASKACTION_REQUEST:
+            }; 
+        case performTaskConstants.ABC:
             return {
                 ...state,
+                currentTimer: null,
                 loading: true
-            };
+            }    
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
             var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {

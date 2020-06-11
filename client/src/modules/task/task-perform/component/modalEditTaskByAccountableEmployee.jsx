@@ -33,16 +33,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
         for(let i in taskInfo){
             if(taskInfo[i].type === "Date"){
                 if(taskInfo[i].value){
+                    console.log('======================this.formatDate(taskInfo[i].value)', this.formatDate(taskInfo[i].value));
                     taskInfo[i].value = this.formatDate(taskInfo[i].value);
                 } 
-                else taskInfo[i].value = this.formatDate(Date.now());
+                else {
+                    console.log('=========ELSSE=============', this.formatDate(Date.now()));
+                    taskInfo[i].value = this.formatDate(Date.now());
+                }
             }
             else if(taskInfo[i].type === "SetOfValues"){
                 let splitter = taskInfo[i].extra.split('\n');
-
-                // if(taskInfo[i].value){
-                    taskInfo[i].value = taskInfo[i].value === undefined ? [splitter[0]] : [taskInfo[i].value];
-                // }
+                taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
             }
             info[`${taskInfo[i].code}`] = {
                 value: taskInfo[i].value,
@@ -337,7 +338,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 break;
             }
         }
-        return check && this.validateTaskName(this.state.taskName, false)
+        // check &&
+        return  this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
             && this.validateTaskProgress(this.state.taskProgress, false);
     }
@@ -472,7 +474,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-        
+        // console.log('stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.state);
         return (
             <div>
                 <React.Fragment>

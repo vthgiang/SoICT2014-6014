@@ -7,26 +7,46 @@ class SelectBox extends Component {
         this.state = {}
     }
 
-    componentDidMount() {
-        let { id, onChange, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
-        if (changeSearch !== undefined && changeSearch !== false) {
-            options = {
-                ...options, ajax: {
-                    url: function (params) {
-                        if (params.term !== undefined && params.term !== "") {
-                            changeSearch(params.term);
-                        }
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                        };
-                    },
-                }
+    setOptionsSelect2 = (id, options, changeSearch, searchItems) => {
+        function delay(callback, ms) {
+            var timer = 0;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+        return options = {
+            ...options, ajax: {
+                url: function (params) {
+                    if (params.term !== undefined && params.term !== "") {
+                        let parentSelect = window.$("#" + id).parent();
+                        let children = parentSelect.children(1);
+                        let inputSearch = children.find('span.selection input.select2-search__field');
+                        inputSearch.keyup(delay(function (e) {
+                            if (this.value === params.term)
+                                changeSearch(this.value);
+                        }, 500));
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: searchItems.map(x => { return { id: x.value, text: x.text } })
+                    };
+                },
             }
         }
+    }
 
+    componentDidMount() {
+        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
+        if (changeSearch !== undefined && changeSearch !== false) {
+            options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
+        }
         window.$("#" + id).select2(options);
+
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
             this.setState(state => {
@@ -75,7 +95,7 @@ class SelectBox extends Component {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
-                searchItems: nextProps.searchItems,
+                searchItems: nextProps.searchItems !== undefined ? nextProps.searchItems : [],
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
@@ -87,25 +107,12 @@ class SelectBox extends Component {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
         if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) ||
             (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
-            !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
+            !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
 
             if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-                let { id, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
+                let { id, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
                 if (changeSearch !== undefined && changeSearch !== false) {
-                    options = {
-                        ...options, ajax: {
-                            url: function (params) {
-                                if (params.term !== undefined && params.term !== "") {
-                                    changeSearch(params.term);
-                                }
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                                };
-                            },
-                        },
-                    }
+                    options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
                     window.$("#" + id).select2(options);
                     window.$("#" + nextProps.id).select2('open');
                 }
@@ -120,13 +127,13 @@ class SelectBox extends Component {
     }
 
     render() {
-        const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+        const { id, items = [], className, style, multiple = false, options = {}, disabled = false } = this.props;
         return (
             <React.Fragment>
                 <div className="select2">
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
                         {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
-                        {items && items.map(item => {
+                        {items.map(item => {
                             if (!(item.value instanceof Array)) { // Dạng bình thường
                                 return <option key={item.value} value={item.value}>{item.text}</option>
                             } else {

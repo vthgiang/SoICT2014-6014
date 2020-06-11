@@ -89,18 +89,18 @@ function editTaskTemplate(id, taskTemplate) {
 // Lấy các đơn vị con của một đơn vị và đơn vị đó
 function getChildrenOfOrganizationalUnitsAsTree(unitId) {
     return dispatch => {
-        dispatch({type: taskTemplateConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST});
+        dispatch({type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST});
  
         taskTemplateService.getChildrenOfOrganizationalUnitsAsTree(unitId)
             .then(res=>{ 
                 dispatch({
-                    type: taskTemplateConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS,
+                    type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: taskTemplateConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE,
+                    type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_FAILURE,
                     payload: error
                 })
             })

@@ -66,6 +66,9 @@ exports.getTask = async (id,userId) => {
             break;
         }
     }
+    if (task.creator._id.equals(userId)){
+        flag = 1;
+    }
     if (flag===0){
         return {
             "info": null
@@ -716,6 +719,8 @@ async function checkEvaluations(date, taskId, storeDate) {
             name: initTask.taskInformations[i].name,
             code: initTask.taskInformations[i].code,
             type: initTask.taskInformations[i].type,
+            extra: initTask.taskInformations[i].extra,
+            filledByAccountableEmployeesOnly: initTask.taskInformations[i].filledByAccountableEmployeesOnly
         }
     }
 
@@ -862,12 +867,14 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
 
@@ -955,18 +962,17 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     
     // var date = Date.now();
     var date = data.date;
-    // var evaluateId = await checkEvaluations(date, taskId);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        // console.log('=============TYPEOF=====================', typeof(info[i].type), info[i].type);
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
-            // console.log('dateeeeeeeee', infoDate);
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
 
@@ -1169,15 +1175,17 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined || info[i].value !== null
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
-
+   
     await Task.updateOne({_id: taskId}, {$set:{progress: progress}}, {$new: true});
     
     var task = await Task.findById(taskId);
@@ -1401,15 +1409,17 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
-
+    
     // Chuan hoa du lieu approved results
 
     var cloneResult = [];

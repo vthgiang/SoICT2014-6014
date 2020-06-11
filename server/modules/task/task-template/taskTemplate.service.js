@@ -296,7 +296,7 @@ exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
     queue.push(data);    
     while(queue.length > 0){
         var v = queue.shift();
-        if(v.children !== undefined){
+        if(v.children){
          for(var i = 0; i < v.children.length; i++){
              var u = v.children[i];
              queue.push(u);
@@ -338,11 +338,11 @@ _getAllUsersInOrganizationalUnits = async (data) => {
 
         let deans=[], viceDeans=[], employees=[];
         userRoles.forEach((item) => {
-        if (item.roleId.equals(department.dean)){
+        if (item.roleId.equals(department.dean) && item.userId){
             deans.push(item.userId);
-        } else if (item.roleId.equals(department.viceDean)){
+        } else if (item.roleId.equals(department.viceDean) && item.userId){
             viceDeans.push(item.userId);
-        } else if (item.roleId.equals(department.employee)){
+        } else if (item.roleId.equals(department.employee) &&  item.userId){
             employees.push(item.userId);
         }
         });

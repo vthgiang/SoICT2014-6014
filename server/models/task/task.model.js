@@ -141,6 +141,14 @@ const TaskSchema = new Schema({
                 type: String,
                 required: true
             },
+            filledByAccountableEmployeesOnly: { // Chỉ người phê duyệt được điền?
+                type: Boolean,
+                default: true,
+                required: true
+            },
+            extra: { // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+                type: String
+            },
             type: {
                 type: String,
                 required: true,

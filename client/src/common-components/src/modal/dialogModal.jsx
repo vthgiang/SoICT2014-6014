@@ -17,6 +17,7 @@ class DialogModal extends Component {
     }
 
     closeModal = (reset) => {
+        console.log("Clicked!!!!")
         this.setState({
             reload: this.state.reload + 1
         });
@@ -42,11 +43,11 @@ class DialogModal extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true, bodyStyle={}} = this.props;
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true,marginTop, bodyStyle={}} = this.props;
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth===undefined?{}:{maxWidth: maxWidth}}>
+                    <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth===undefined?{}:{maxWidth: maxWidth},marginTop===undefined?{}:{marginTop: marginTop}}>
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={()=> {
