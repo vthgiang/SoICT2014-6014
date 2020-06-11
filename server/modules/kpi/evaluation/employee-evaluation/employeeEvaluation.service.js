@@ -226,21 +226,31 @@ exports.setTaskImportanceLevel = async (id, data) => {
         date : data[0].date,
         employeeId : data[0].employeeId
     }
-    var task = await getResultTaskByMonth(key);
-    var autoPoint = 0;
-    var approvePoint = 0;
-    var employPoint = 0;
-    var sumTaskImportance = 0;
+    let task = await getResultTaskByMonth(key);
+    let autoPoint = 0;
+    let approvePoint = 0;
+    let employPoint = 0;
+    let sumTaskImportance = 0;
     let priority;
+    console.log('#######', task);
     // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
     for (element of task) {
         autoPoint += element.automaticPoint * element.taskImportanceLevel ;
         approvePoint += element.approvedPoint * element.taskImportanceLevel;
         employPoint += element.employeePoint * element.taskImportanceLevel;
         sumTaskImportance += element.taskImportanceLevel;
-        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.contribution / 100) + 4 * (daykpi / 30));
-        if (element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
-            element.taskImportanceLevel = element.taskImportanceLevelCal;
+        
+        // tinh so ngay thuc hien : daykpi
+        var date1 = element.preEvaDate;
+        var date2 = element.date;
+        var Difference_In_Time = date2.getTime() - date1.getTime(); 
+        var daykpi = Difference_In_Time / (1000 * 3600 * 24); 
+        console.log('daykpi = ', daykpi);
+
+        element.taskImportanceLevelCal = Math.round(3*(element.priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+        if(element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
+         element.taskImportanceLevel = element.taskImportanceLevelCal;
+
     }
     var n = task.length;
     var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
@@ -321,7 +331,8 @@ async function getResultTaskByMonth(data) {
         {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, {month : '$month'}, {year: '$year'},{ endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
-        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} }, 
+        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} },
+        {$match : {"role": "Responsible"}},
         {$match: {"month" : monthkpi}},
         {$match: {"year" : yearkpi}},
     ]);
