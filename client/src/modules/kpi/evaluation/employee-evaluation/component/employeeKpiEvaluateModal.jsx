@@ -48,7 +48,9 @@ class ModalMemberEvaluate extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.employeeKpiSet &&  nextProps.employeeKpiSet._id !== this.state.id) {
-            this.props.getKPIMemberById(nextProps.employeeKpiSet._id);
+            if (nextProps.employeeKpiSet._id){
+                this.props.getKPIMemberById(nextProps.employeeKpiSet._id);
+            }
             return false;
         }
         return true;
@@ -152,7 +154,7 @@ class ModalMemberEvaluate extends Component {
         return (
             <DialogModal
             modalID={"employee-kpi-evaluation-modal"}
-            title={employeeKpiSet && `KPI ${employeeKpiSet.creator.name}, tháng ${this.formatMonth(employeeKpiSet.date)}`}
+            title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, tháng ${this.formatMonth(employeeKpiSet.date)}`}
             hasSaveButton={false}
             size={100}>
                 <div className="col-xs-12 col-sm-4">

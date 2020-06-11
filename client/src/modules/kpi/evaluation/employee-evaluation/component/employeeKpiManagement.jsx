@@ -135,7 +135,9 @@ class KPIMember extends Component {
                     status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
-                }
+                },
+                kpiId: null,
+                employeeKpiSet: {_id: null},
             }
         })
         const { infosearch } = this.state;
