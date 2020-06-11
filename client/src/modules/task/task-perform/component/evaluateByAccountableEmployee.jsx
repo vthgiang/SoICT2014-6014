@@ -57,6 +57,7 @@ class EvaluateByAccountableEmployee extends Component {
         let info = {};
         
         let infoEval = task.taskInformations;
+        // var splitSetOfValues = [];
         for(let i in infoEval){
             if(infoEval[i].type === "Date"){
                 if(infoEval[i].value){
@@ -64,12 +65,8 @@ class EvaluateByAccountableEmployee extends Component {
                 } else infoEval[i].value = this.formatDate(Date.now());
             }
             else if(infoEval[i].type === "SetOfValues"){
-                // if(infoEval[i].value){
-                //     infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                // }
-                let splitter = infoEval[i].extra.split('\n');
-                infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
-
+                let splitSetOfValues = infoEval[i].extra.split('\n');
+                infoEval[i].value = infoEval[i].value === undefined ? [splitSetOfValues[0]] : [infoEval[i].value];
             }
             info[`${infoEval[i].code}`] = {
                 value: infoEval[i].value,
@@ -154,9 +151,9 @@ class EvaluateByAccountableEmployee extends Component {
                         
                     }
                     else if(infoEval[i].type === "SetOfValues"){
-                        let splitter = infoEval[i].extra.split('\n');
+                        let splitSetOfValues = infoEval[i].extra.split('\n');
                         // if(infoEval[i].value){
-                            infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
+                            infoEval[i].value = infoEval[i].value ? [infoEval[i].value] : [splitSetOfValues[0]];
                         // }
                     }
                     info[`${infoEval[i].code}`] = {
@@ -616,7 +613,8 @@ class EvaluateByAccountableEmployee extends Component {
                 break;
             }
         }
-        return ( check && errorOnDate === undefined && errorOnPoint === undefined &&  errorOnProgress === undefined 
+        // check &&
+        return (  errorOnDate === undefined && errorOnPoint === undefined &&  errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined 
                 && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined
                 && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined)?true:false;

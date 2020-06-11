@@ -250,7 +250,7 @@ class DashBoardKPIMember extends Component {
         var currentYear = currentDate.getFullYear();
         var currentMonth = currentDate.getMonth();
 
-        if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets !== undefined){
+        if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets){
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
 
             //Lấy các kpi set của tháng cần xem
@@ -264,7 +264,7 @@ class DashBoardKPIMember extends Component {
         }
         
 
-        if(employeeKpiSets !== undefined){
+        if(employeeKpiSets){
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
 
             totalKpi = currentMonthEmployeeKpiSets.length;
@@ -276,20 +276,20 @@ class DashBoardKPIMember extends Component {
             activatedKpi = activatedKpi.length;
         }
         
-        if(this.props.dashboardEvaluationEmployeeKpiSet.employees !== undefined){
+        if(this.props.dashboardEvaluationEmployeeKpiSet.employees){
             numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.employees.length;
         }
 
         var queue = [];
         var childrenOrganizationalUnit = [];
-        if(this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit !== undefined){
+        if(this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit){
            var currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             
            childrenOrganizationalUnit.push(currentOrganizationalUnit);
            queue.push(currentOrganizationalUnit);
            while(queue.length > 0){
                var v = queue.shift();
-               if(v.children !== undefined){
+               if(v.children){
                 for(var i = 0; i < v.children.length; i++){
                     var u = v.children[i];
                     queue.push(u);

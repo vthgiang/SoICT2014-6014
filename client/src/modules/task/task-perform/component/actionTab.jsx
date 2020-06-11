@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import {ContentMaker} from '../../../../common-components'
-
+//Showfileoption
 import {
     getStorage
 } from '../../../../config';
@@ -32,10 +32,11 @@ class ActionTab extends Component {
             valueRating:2.5,
             files: [],
             hover: {},
-            filestask:[],
-            commentfiles:[],
-            taskcommentfiles: [],
-            cmtoftaskcmtfiles: [],
+            taskFiles: {
+                creator: idUser,
+                description: '',
+                files:[]
+            },
             editAction: "",
             editTaskComment: "",
             editCommentOfTaskComment: "",
@@ -162,9 +163,14 @@ class ActionTab extends Component {
         })
         var {evaluations} = this.state;
         if(evaluations.rating){
-            
             this.props.evaluationAction(id,evaluations);
         }
+        await this.setState(state => {
+            return {
+                ...state,
+                showEvaluations: [...this.state.showEvaluations,id]
+            }
+        })
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -346,19 +352,30 @@ class ActionTab extends Component {
             }
         })
     }
-    handleUploadFile   = async (task,index,creator) => {
+    handleUploadFile   = async (task,creator) => {
         const data  = new FormData();
 
-        this.state.filestask.forEach(x => {
+        this.state.taskFiles.files.forEach(x => {
             data.append("files",x)
         })
-        data.append("description",this.descriptionFile[index].value)
+        data.append("description",this.state.taskFiles.description)
         data.append("creator",creator)
-        if(this.state.filestask){
-            this.props.uploadFile(task,data);
-                this.refs.filesAddTask.removeFiles()
+        if(this.state.taskFiles.files){
+            this.props.uploadFile(task,data); 
         }
-        this.descriptionFile[index].value = ""
+        // Reset state cho việc thêm mới bình luận
+        await this.setState(state => {
+            return {
+                ...state,
+                taskFiles: {
+                    ...state.taskFiles,
+                    description: "",
+                    files: [],
+                },
+            }
+        })
+        
+       
     }
     handleEditActionComment = async (id) => {
 
@@ -455,22 +472,6 @@ class ActionTab extends Component {
             this.props.editCommentOfTaskComment(index, newCommentOfTaskComment);
         }
     }
-    handleEvaluationAction = async (e,id,status) => {
-        e.preventDefault();
-        await this.setState(state => {
-            return {
-                ...state,
-                evaluations: {
-                    ...state.evaluations,
-                    status: status
-                }
-            }
-        })
-        var {evaluations} = this.state;
-        if(evaluations.status){
-            this.props.evaluationAction(id,evaluations);
-        }
-    }  
     handleConfirmAction = async (e,actionId,userId) => {
         e.preventDefault();
         this.props.confirmAction(actionId,userId)
@@ -540,14 +541,20 @@ class ActionTab extends Component {
             }
         })
     }  
-    onFilesTaskChange  = (filestask) => {
-        this.setState({
-            filestask:filestask
+    onTaskFilesChange  = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                taskFiles: {
+                    ...state.taskFiles,
+                    files: files,
+                }
+            }
         })
+        console.log(this.state.taskFiles)
     }
     onFilesError = (error, file) => {
     }
-
     filesRemoveOne = (file) => {
     this.refs.filesAddAction.removeFile(file)
     }
@@ -597,6 +604,7 @@ class ActionTab extends Component {
             })
         }
     }
+    //TODO href = "javascript:void(0)"
     render() {
         const { translate } = this.props;
         var type = ["actions","commentofactions","taskcomments","commentoftaskcomments"]
@@ -658,8 +666,7 @@ class ActionTab extends Component {
                                             {/* Các file đính kèm */}
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-
-                                                
+                                                <li>{item.mandatory && !item.creator && <b className="text-sm">Hoạt động bắt buộc</b>}</li>
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
                                                 <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
 
@@ -678,8 +685,8 @@ class ActionTab extends Component {
                                                                 <Rating
                                                                     
                                                                     fractions = {2}
-                                                                    emptySymbol="fa fa-star-o fa-2x"
-                                                                    fullSymbol="fa fa-star fa-2x"
+                                                                    emptySymbol="fa fa-star-o fa-2x high"
+                                                                    fullSymbol="fa fa-star fa-2x high"
                                                                     initialRating = {0}
                                                                     onClick={(value) => {
                                                                     this.setValueRating(item._id,value);
@@ -1033,62 +1040,18 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.newTaskComment.files}
-                                text={this.state.newTaskComment.description}
+                                files={this.state.taskFiles.files}
+                                text={this.state.taskFiles.description}
                                 placeholder={"Nhập bình luận"}
                                 submitButtonText={"Thêm bình luận"}
                                 onTextChange={(e)=>{
                                     let value = e.target.value;
                                     this.setState(state => {
-                                        return { ...state, newTaskComment: {...state.newTaskComment, description: value}}
+                                        return { ...state, taskFiles: {...state.taskFiles, description: value}}
                                     })
                                 }}
                                 onSubmit={(e)=>{this.submitTaskComment(task._id)}}
                             />
-                            {/* <div className="text-input-level1">
-                                <textarea placeholder="Hãy nhập nội dung trao đổi" ref={input => this.contentTaskComment[0] = input} />
-                            </div>
-                            <div className="tool-level1">
-                                    <div style={{textAlign: "right"}}>
-                                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.submitTaskComment(e, null, 0, task._id)}>Thêm hoạt động</a>
-                                    </div>
-                                    <Files
-                                        ref='filesAddComment'
-                                        className='files-dropzone-list'
-                                        onChange={this.onTaskCommentFilesChange}
-                                        onError={this.onFilesError}
-                                        multiple
-                                        maxFiles={10}
-                                        maxFileSize={10000000}
-                                        minFileSize={0}
-                                        clickable={false}>  
-                                        <div className='files-list'>
-                                            <a href="javascript:void(0)" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddComment.openFileChooser()}>
-                                                <i class="material-icons">attach_file</i>
-                                            </a>
-                                            <span>Drop files here</span>
-                                            <ul>{this.state.taskcommentfiles.map((file) =>
-                                                <li className='files-list-item' key={file.id}>
-                                                    <div className='files-list-item-preview'>
-                                                    {file.preview.type === 'image' ?  
-                                                    <React.Fragment>
-                                                        <img className='files-list-item-preview-image'src={file.preview.url} />
-                                                    </React.Fragment>    
-                                                    : 
-                                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                        <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddComment.removeFile(file)}}><i className="fa fa-times"></i></a>
-                                                    </div>
-                                                    <div className='files-list-item-content'>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
-                                                    </div>
-                                                </li>
-                                            )}
-                                            </ul>
-                                        </div> 
-                                    </Files>
-                                    
-                                </div> */}
                         </div>
 
 
@@ -1108,55 +1071,22 @@ class ActionTab extends Component {
                         </div>
                         <React.Fragment>
                             <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
-                            <div className="text-input-level1">
-                                <TextareaAutosize
-                                    placeholder="Hãy nhập mô tả"
-                                    useCacheForDOMMeasurements
-                                    minRows={3}
-                                    maxRows={20}
-                                    ref={input => this.descriptionFile[0] = input} />
-                            </div>
-                            <div className="tool-level1">
-                                <div style={{textAlign: "right"}}>
-                                    <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleUploadFile(task._id,0,currentUser)}>Upload File</a>
-                                </div>           
-                                <Files
-                                    ref='filesAddTask'
-                                    className='files-dropzone-list'
-                                    onChange={this.onFilesTaskChange}
-                                    onError={this.onFilesError}
-                                    multiple
-                                    maxFiles={10}
-                                    maxFileSize={10000000}
-                                    minFileSize={0}
-                                    clickable={false}>  
-                                    <div className='files-list'>
-                                        <a href="javascript:void(0)" className="pull-right" title="Đính kèm file" onClick={(e) => this.refs.filesAddTask.openFileChooser()}>
-                                            <i class="material-icons">attach_file</i>
-                                        </a>
-                                        <span>Drop files here</span>
-                                        <ul>{this.state.filestask.map((file) =>
-                                            <li className='files-list-item' key={file.id}>
-                                                <div className='files-list-item-preview'>
-                                                {file.preview.type === 'image' ?  
-                                                <React.Fragment>
-                                                    <img className='files-list-item-preview-image'src={file.preview.url} />
-                                                </React.Fragment>    
-                                                : 
-                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                                    <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.filesAddTask.removeFile(file)}}><i className="fa fa-times"></i></a>
-                                                </div>
-                                                <div className='files-list-item-content'>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                                    <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>  
-                                                </div>
-                                            </li>
-                                        )}
-                                        </ul>
-                                    </div> 
-                                </Files>
-                                
-                            </div>
+                            <ContentMaker
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                onFilesChange={this.onTaskFilesChange}
+                                onFilesError={this.onFilesError}
+                                files={this.state.taskFiles.files}
+                                text={this.state.taskFiles.description}
+                                placeholder={"Nhập mô tả"}
+                                submitButtonText={"Thêm tài liệu"}
+                                onTextChange={(e)=>{
+                                    let value = e.target.value;
+                                    this.setState(state => {
+                                        return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                    })
+                                }}
+                                onSubmit={(e)=>{this.handleUploadFile(task._id,currentUser)}}
+                            />
                             </React.Fragment>
                         </div>
                         {/* Chuyển qua tab công việc con */}
