@@ -21,7 +21,6 @@ class CourseCreateForm extends Component {
             endDate: "",
             cost: "",
             lecturer: "",
-            educationProgram: "",
             employeeCommitmentTime: "",
             type: "internal",
             listEmployees: [],
@@ -153,7 +152,7 @@ class CourseCreateForm extends Component {
 
     // Bắt sự kiện thay đổi thuộc chương trình đào tạo
     handleEducationProgramChange = (value) => {
-        if (value[0] !== '') {
+        if (value[0] !== 'null') {
             let educationInfo = this.props.education.listAll.filter(x => x._id === value[0]);
             this.props.getAllEmployee({ organizationalUnits: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
         }
@@ -365,7 +364,7 @@ class CourseCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={educationProgram}
-                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: '', text: 'Chọn chương trình đào tạo' }]}
+                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: 'null', text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
                                     disabled={listEmployees.length !== 0 ? true : false}
                                 />

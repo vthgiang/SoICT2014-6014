@@ -7,26 +7,46 @@ class SelectBox extends Component {
         this.state = {}
     }
 
-    componentDidMount() {
-        let { id, onChange, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
-        if (changeSearch !== undefined && changeSearch !== false) {
-            options = {
-                ...options, ajax: {
-                    url: function (params) {
-                        if (params.term !== undefined && params.term !== "") {
-                            changeSearch(params.term);
-                        }
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                        };
-                    },
-                }
+    setOptionsSelect2 = (id, options, changeSearch, searchItems) => {
+        function delay(callback, ms) {
+            var timer = 0;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+        return options = {
+            ...options, ajax: {
+                url: function (params) {
+                    if (params.term !== undefined && params.term !== "") {
+                        let parentSelect = window.$("#" + id).parent();
+                        let children = parentSelect.children(1);
+                        let inputSearch = children.find('span.selection input.select2-search__field');
+                        inputSearch.keyup(delay(function (e) {
+                            if (this.value === params.term)
+                                changeSearch(this.value);
+                        }, 500));
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: searchItems.map(x => { return { id: x.value, text: x.text } })
+                    };
+                },
             }
         }
+    }
 
+    componentDidMount() {
+        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
+        if (changeSearch !== undefined && changeSearch !== false) {
+            options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
+        }
         window.$("#" + id).select2(options);
+        
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
             this.setState(state => {
@@ -90,22 +110,9 @@ class SelectBox extends Component {
             !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
 
             if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-                let { id, options = {minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
+                let { id, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
                 if (changeSearch !== undefined && changeSearch !== false) {
-                    options = {
-                        ...options, ajax: {
-                            url: function (params) {
-                                if (params.term !== undefined && params.term !== "") {
-                                    changeSearch(params.term);
-                                }
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                                };
-                            },
-                        },
-                    }
+                    options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
                     window.$("#" + id).select2(options);
                     window.$("#" + nextProps.id).select2('open');
                 }
