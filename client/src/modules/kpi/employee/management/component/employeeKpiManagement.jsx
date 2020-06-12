@@ -128,7 +128,8 @@ class KPIPersonalManager extends Component {
                     status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
-                }
+                },
+                employeeKpiSet: {_id: null},
             }
         })
         const { infosearch } = this.state;
