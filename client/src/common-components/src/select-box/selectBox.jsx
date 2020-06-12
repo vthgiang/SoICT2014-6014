@@ -7,8 +7,49 @@ class SelectBox extends Component {
         this.state = {}
     }
 
+    setOptionsSelect2 = (id, changeSearch, searchItems, multiple = false) => {
+        function delay(callback, ms) {
+            var timer = 0;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+        return {
+            ajax: {
+                url: function (params) {
+                    if (params.term !== undefined && params.term !== "") {
+                        let inputSearch;
+                        if (multiple === true) {
+                            let parentSelect = window.$("#" + id).parent();
+                            inputSearch = parentSelect.find('input.select2-search__field');
+                        } else {
+                            let children = window.$(".select2-dropdown--below");
+                            inputSearch = children.find('input.select2-search__field');
+                        }
+                        inputSearch.keyup(delay(function (e) {
+                            if (this.value === params.term)
+                                changeSearch(this.value);
+                        }, 500));
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: searchItems.map(x => { return { id: x.value, text: x.text } })
+                    };
+                },
+            }
+        }
+    }
+
     componentDidMount() {
-        const { id, onChange, options = { minimumResultsForSearch: 15 } } = this.props;
+        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems, multiple } = this.props;
+        if (changeSearch !== undefined && changeSearch !== false) {
+            options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
+        }
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -24,14 +65,15 @@ class SelectBox extends Component {
             }
         });
     }
+    componentDidUpdate() {
+        let { id, options = {}, changeSearch, multiple, textSearch } = this.props;
+        if (changeSearch === undefined || changeSearch === false) {
+            window.$("#" + id).select2(options);
+        }
+    }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
         return this.state.value;
-    }
-
-    componentDidUpdate() {
-        const { id, options = {} } = this.props;
-        window.$("#" + id).select2(options);
     }
 
     static isEqual = (items1, items2) => {
@@ -52,11 +94,13 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) ||
+            nextProps.disabled !== prevState.disabled || !SelectBox.isEqual(nextProps.searchItems, prevState.searchItems)) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
+                searchItems: nextProps.searchItems !== undefined ? nextProps.searchItems : [],
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
@@ -66,13 +110,37 @@ class SelectBox extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) ||
+            (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
+            !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
+
+            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
+                let { id, changeSearch, searchItems, multiple } = nextProps;
+                if (changeSearch !== undefined && changeSearch !== false) {
+                    let options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
+                    window.$("#" + nextProps.id).select2('open');
+                    window.$("#" + id).select2(options);
+                    window.$("#" + nextProps.id).select2('open');
+                }
+                let inputSearch;
+                if (multiple === true) {
+                    let parentSelect = window.$("#" + id).parent();
+                    let children = parentSelect.children(1);
+                    inputSearch = children.find('input.select2-search__field')
+                    console.log(inputSearch.val());
+                } else {
+                    let children = window.$(".select2-dropdown--below");
+                    inputSearch = children.find('input.select2-search__field');
+                }
+                inputSearch.val(nextProps.textSearch);
+            }
             return true;
+        }
         return false;
     }
 
     render() {
-        const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+        const { id, items = [], className, style, multiple = false, options = {}, disabled = false } = this.props;
         return (
             <React.Fragment>
                 <div className="select2">

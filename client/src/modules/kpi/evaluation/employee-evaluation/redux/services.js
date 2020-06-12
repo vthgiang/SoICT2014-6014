@@ -82,10 +82,10 @@ function editStatusTarget(id, status) {
     }, true, true, 'kpi.evaluation');
 }
  
-function getTaskById(id, employeeId, date) {
+function getTaskById(id, employeeId, date, kpiType) {
     // console.log('############', date);
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}/${kpiType}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }

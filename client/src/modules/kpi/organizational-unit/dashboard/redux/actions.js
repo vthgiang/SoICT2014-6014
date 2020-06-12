@@ -1,10 +1,12 @@
 import { dashboardOrganizationalUnitKpiConstants } from "./constants";
 import { dashboardOrganizationalUnitKpiServices } from "./services";
+import { dashboardEmployeeKpiConstants } from "../../../evaluation/dashboard/redux/constants";
 
 export const dashboardOrganizationalUnitKpiActions = {
     getAllChildTargetOfOrganizationalUnitKpis,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
+    getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
@@ -65,6 +67,27 @@ function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
             .catch(error => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+// Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
+function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_REQUEST});
+
+        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_FAILURE,
                     payload: error
                 })
             })

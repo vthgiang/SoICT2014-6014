@@ -33,7 +33,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log("333", nextProps.organizationalUnitId, this.state.organizationalUnitId)
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
             // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
             await this.props.getAllOrganizationalUnitKpiSetEachYear(nextProps.organizationalUnitId, this.state.year);
@@ -52,7 +51,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear) {
                 return false
             }
-            console.log("9999", this.props.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear)
+
             this.setState(state => {
                 return {
                     ...state,
@@ -152,6 +151,18 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                     type : 'timeseries',
                     tick: {
                         format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                    }
+                },
+                y: {
+                    max: 100,
+                    min: 0,
+                    label: {
+                        text: 'Điểm',
+                        position: 'outer-right'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 10
                     }
                 }
             },

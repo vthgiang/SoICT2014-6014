@@ -75,7 +75,7 @@ class DataTableSetting extends Component {
     setLimit = async () => {
         await window.$(`#setting-${this.props.tableId}`).collapse("hide");
 
-        if(Number(this.props.limit) !== Number(this.record.current.value)){
+        if(this.props.setLimit && Number(this.props.limit) !== Number(this.record.current.value)){
             await this.props.setLimit(this.record.current.value);
         }
     }
@@ -97,33 +97,41 @@ class DataTableSetting extends Component {
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                <div id={`setting-${tableId}`} className="box collapse setting-table">
-                    <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-                    {
-                        hideColumnOption && columnArr.length > 0 &&
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('table.hidden_column')}</label>
-                            <SelectMulti id={`multiSelectHideColumn-${tableId}`} multiple="multiple"
-                                options={{ nonSelectedText: translate('table.choose_hidden_columns'), allSelectedText: translate('table.hide_all_columns') }}
-                                items={columnArr.map((col, i) => { return { value: i + 1, text: col } })}
-                                onChange={this.handleChangeHiddenColumns}>
-                            </SelectMulti>
+                
+                <div className="box box-primary box-solid collapse setting-table" id={`setting-${tableId}`}>
+                    <div class="box-header with-border">
+                        <h3 className="box-title">Thiết lập bảng</h3>
+                        <div className="box-tools pull-right">
+                            <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target={`#setting-${tableId}`} ><i className="fa fa-times"></i></button>
                         </div>
-                    }
-                    <div className="form-group">
-                        <label className="form-control-static">{translate('table.line_per_page')}</label>
-                        <input className="form-control" type="Number" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
                     </div>
-                    <div className="form-group">
-                        {window.$(`#${tableContainerId}`)[0] !== undefined &&
-                            <React.Fragment>
-                                <div className="checkbox">
-                                    <label><input type="checkbox" checked={this.state.useScrollBar} ref="configCheckbox" onChange={this.configTableWidth} />Dùng thanh cuộn bảng</label>
-                                </div>
-                                <SlimScroll outerComponentId={tableContainerId} innerComponentId={tableId} innerComponentWidth={tableWidth} activate={this.state.useScrollBar} />
-                            </React.Fragment>
+                    <div className="box-body">
+                        {
+                            hideColumnOption && columnArr.length > 0 &&
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('table.hidden_column')}</label>
+                                <SelectMulti id={`multiSelectHideColumn-${tableId}`} multiple="multiple"
+                                    options={{ nonSelectedText: translate('table.choose_hidden_columns'), allSelectedText: translate('table.hide_all_columns') }}
+                                    items={columnArr.map((col, i) => { return { value: i + 1, text: col } })}
+                                    onChange={this.handleChangeHiddenColumns}>
+                                </SelectMulti>
+                            </div>
                         }
-                        <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('table.line_per_page')}</label>
+                            <input className="form-control" type="Number" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
+                        </div>
+                        <div className="form-group">
+                            {window.$(`#${tableContainerId}`)[0] !== undefined &&
+                                <React.Fragment>
+                                    <div className="checkbox">
+                                        <label><input type="checkbox" checked={this.state.useScrollBar} ref="configCheckbox" onChange={this.configTableWidth} />Dùng thanh cuộn bảng</label>
+                                    </div>
+                                    <SlimScroll outerComponentId={tableContainerId} innerComponentId={tableId} innerComponentWidth={tableWidth} activate={this.state.useScrollBar} />
+                                </React.Fragment>
+                            }
+                            <button type="button" className="btn btn-primary pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>

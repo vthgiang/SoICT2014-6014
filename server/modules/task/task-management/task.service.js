@@ -25,7 +25,7 @@ exports.getTask = async (id,userId) => {
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -65,6 +65,9 @@ exports.getTask = async (id,userId) => {
             flag=1;
             break;
         }
+    }
+    if (task.creator._id.equals(userId)){
+        flag = 1;
     }
     if (flag===0){
         return {
@@ -740,6 +743,8 @@ async function checkEvaluations(date, taskId, storeDate) {
             name: initTask.taskInformations[i].name,
             code: initTask.taskInformations[i].code,
             type: initTask.taskInformations[i].type,
+            extra: initTask.taskInformations[i].extra,
+            filledByAccountableEmployeesOnly: initTask.taskInformations[i].filledByAccountableEmployeesOnly
         }
     }
 
@@ -886,12 +891,14 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
 
@@ -945,7 +952,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -979,16 +986,17 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     
     // var date = Date.now();
     var date = data.date;
-    // var evaluateId = await checkEvaluations(date, taskId);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
 
@@ -1057,7 +1065,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1142,7 +1150,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1191,15 +1199,17 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined || info[i].value !== null
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
-
+   
     await Task.updateOne({_id: taskId}, {$set:{progress: progress}}, {$new: true});
     
     var task = await Task.findById(taskId);
@@ -1384,7 +1394,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1423,23 +1433,28 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
-        if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
-        else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-        else if (info[i].type === "Date") {
-            var splitter = info[i].value.split("-");
-            var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
-            info[i].value = infoDate;
+        if(info[i].value ){ // !== undefined
+            if(info[i].type === "Number") info[i].value = parseInt(info[i].value);
+            else if(info[i].type === "SetOfValues") info[i].value = info[i].value[0];
+            else if (info[i].type === "Date") {
+                var splitter = info[i].value.split("-");
+                var infoDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+                info[i].value = infoDate;
+            }
         }
     }
-
+    
     // Chuan hoa du lieu approved results
 
     var cloneResult = [];
     for(let i in results){
         for(let j in results){
             if(i<j){
+                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu
                 if(results[i].employee === results[j].employee && results[i].role === results[j].role){
                     var point, contribute;
+
+                    // do i hoặc j có thể là point hoặc contribute nên phải kiểm tra cả 2 để tính đc point và contribute
                     if( String(results[i].target) === "Point" ) point = results[i].value;
                     else if( String(results[i].target) === "Contribution") contribute = results[i].value;
 
@@ -1466,7 +1481,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    // var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     for(let i in listResult){
@@ -1474,12 +1488,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     }
 
     for(let item in cloneResult){
-        // console.log('r.employee === cloneResult[item].employee && r.role === cloneResult[item].role', typeof(cloneResult[item].employee) , typeof(cloneResult[item].role));
         
         var check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
         
-        // console.log('check_data', check_data);
         if(check_data !== undefined){ 
             // cap nhat diem
             await Task.updateOne(
@@ -1674,7 +1686,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},

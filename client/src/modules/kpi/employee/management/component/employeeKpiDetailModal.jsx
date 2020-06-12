@@ -35,10 +35,10 @@ class ModalDetailKPIPersonal extends Component {
         };
     }
     static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== prevState.id) {
             return {
                 ...prevState,
-                id: nextProps.id,
+                id: nextProps.employeeKpiSet._id,
             } 
         } else {
             return null;
@@ -46,40 +46,31 @@ class ModalDetailKPIPersonal extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id) {
-            this.props.getKPIMemberById(nextProps.id);
+        if (nextProps.employeeKpiSet &&  nextProps.employeeKpiSet._id !== this.state.id) {
+            if (nextProps.employeeKpiSet._id){
+                this.props.getKPIMemberById(nextProps.employeeKpiSet._id);
+            }
             return false;
+        }
+
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            if (!nextProps.kpimembers.tasks){
+                return false;
+            } else { // Dữ liệu đã về
+                let tasks = nextProps.kpimembers.tasks;
+                this.setState(state=>{
+                    return{
+                        ...state,
+                        tasks: tasks,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                });
+                return false;
+            }
         }
         return true;
     }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
-    }
+    
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -106,15 +97,14 @@ class ModalDetailKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent =(id, employeeId, date) => {
-        console.log('====', id, employeeId, date);
-        console.log('date', date.getMonth());
-        var isoDate = date.toISOString();
-        this.props.getTaskById(id, employeeId, isoDate);
+    handleChangeContent =(id, employeeId, kpiType) => {
+        let date = this.props.employeeKpiSet.date;
+        this.props.getTaskById(id, employeeId, date, kpiType);
         this.setState(state => {
                return {
                    ...state,
                    content: id,
+                   dataStatus: this.DATA_STATUS.QUERYING,
                }
            });
     }
@@ -136,31 +126,7 @@ class ModalDetailKPIPersonal extends Component {
             editing: true,
         })
     }
-
-    // handleCloseModal = async (id) => {
-    //     var element = document.getElementsByTagName("BODY")[0];
-    //     element.classList.remove("modal-open");
-    //     var modal = document.getElementById(`memberEvaluate${id}`);
-    //     modal.classList.remove("in");
-    //     modal.style = "display: none;";
-    // }
-
-    setValueSlider = (e, id) => {
-        var value = e.target.value;
-        let tasks = this.props.kpimembers.tasks;
-        console.log(tasks);
-        tasks.map(x=>{
-            if(x.taskId===id){
-                x.taskImportanceLevel = value
-            }
-        })
-        this.setState(state => {
-            return {
-                ...state,
-                tasks: tasks
-            }
-        })
-    }
+    
     render() {
         var kpimember;
         var list, myTask = [], thisKPI = null;
@@ -170,129 +136,128 @@ class ModalDetailKPIPersonal extends Component {
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
-        // if(kpimembers.result){
-        //     thisKPI = kpimembers.result;
-        // }
-        // console.log('-------------', this.state);
+        
+        let {employeeKpiSet} = this.props;
+
         return (
             <React.Fragment>
                 <DialogModal
                 modalID={`modal-detail-KPI-personal`}
-                title={`Chi tiết KPI nhân viên ${this.props.name}, tháng ${this.formatMonth(this.props.date)} `}
+                title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, tháng ${this.formatMonth(employeeKpiSet.date)}`}
                 hasSaveButton ={false}
-                size={100}
-                >
-                    {/* <div className="qlcv"> */}
-                        <div className="modal-body modal-body-perform-task" >
-                            <div className="col-sm-3">
-                                <div className="header-left-modal" style={{ fontWeight: "500", background: "slateblue", color: "white",padding:"1px 15px", borderRadius:"5px" }}>
-                                    <h4>Danh sách mục tiêu</h4>
-                                </div>
-                                <div className="content-left-modal" id="style-1" >
-                                    <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
-                                        {list && list.map((item, index) =>
-                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId, new Date())} className="list-group-item" key={index}>
-                                                {item.name}&nbsp;
-                                                {/* <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small> */}
-                                                {/* <span className="badge">{15 + index}</span> */}
-                                            </a>)}
-                                    </div>
-                                </div>
+                size={100}>
+                    <div className="col-xs-12 col-sm-4">
+                        <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
+                            <div className="box-header with-border">
+                                <h3 className="box-title" style={{fontWeight: 800}}>Danh sách KPI</h3>
                             </div>
-                            <div className="col-sm-9">
-                                {
-                                    list && list.map(item => {
-                                        if (item._id === this.state.content) return <React.Fragment key={item._id}>
-                                            <div className="qlcv">
-                                                <h4>Thông tin mục tiêu</h4>
-                                                <div className="col-sm-12">
-                                                    <label style={{ width: "150px" }}>Tiêu chí đính giá:</label>
-                                                    <label >{item.criteria}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label style={{ width: "150px" }}>Trọng số:</label>
-                                                    <label style={{ display: "inline" }}>{item.weight}</label>
-                                                </div>
-                                            
-                                                { item.automaticPoint && 
-                                                <div className="row">
-                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
-                                                    <label style={{ width: "150px" }}>Điểm tự động:</label>
-                                                    <label >{item.automaticPoint}</label>
-                                                </div>
-                                                <div className="col-sm-12 " style={{marginLeft: "15px"}}>
-                                                    <label style={{ width: "150px" }}>Điểm tự đánh giá:</label>
-                                                    <label >{item.employeePoint}</label>
-                                                </div>
-                                                <div className="col-sm-12" style={{marginLeft: "15px"}}>
-                                                    <label style={{ width: "150px" }}>Điểm phê duyệt:</label>
-                                                    <label >{item.approvedPoint}</label>
-                                                </div>
-                                                </div>
-                                               }
-                                                {/* <div className="form-inline">
-                                                    <button className="btn btn-success pull-right" onClick={() => this.handleSetPointKPI()}>Tính điểm KPI</button>
-                                                </div> */}
-                                            </div>
-                                            <div className="body-content-right">
-                                                <div className="col-sm-12" style={{ fontWeight: "500", marginLeft:"-15px" }}>
-                                                    <h4>Danh sách các công việc</h4>
-                                                </div>
-
-                                                <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
-                                                    columnArr={[
-                                                        'STT',
-                                                        'Tên công việc',
-                                                        'Thời gian',
-                                                        'Trạng thái',
-                                                        'Đóng góp',
-                                                        'Điểm',
-                                                        'Độ quan trọng']}
-                                                    limit={this.state.perPage}
-                                                    setLimit={this.setLimit}
-                                                    hideColumnOption={true} />
-
-                                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th title="STT" style={{ width: "20px" }}>Stt</th>
-                                                            <th title="Tên công việc">Tên công việc</th>
-                                                            <th title="Thời gian">Thời gian</th>
-                                                            <th title="Trạng thái">Trạng thái</th>
-                                                            <th title="Đóng góp">Đóng góp</th>
-                                                            <th title="Điểm">Điểm</th>
-                                                            <th title="Độ quan trọng">Độ quan trọng</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            ( kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
-                                                                (kpimembers.tasks.map((itemTask, index) =>
-
-                                                                    <tr key={index}>
-                                                                        <td>{index + 1}</td>
-                                                                        <td>{itemTask.name}</td>
-                                                                        <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
-                                                                        <td>{itemTask.status}</td>
-                                                                        <td>{itemTask.contribution}</td>
-                                                                        <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
-                                                                        <td>{itemTask.taskImportanceLevel}</td>
-                                                                    </tr>)) : <tr><td colSpan={8}>Không có dữ liệu</td></tr>
-                                                        }
-
-                                                    </tbody>
-                                                </table>
-                                                <div className="footer-content-right">
-                                                    <button style={{ float: "right" }}>Xuất file</button>
-                                                </div>
-                                            </div>
-                                        </React.Fragment>;
-                                        return true;
-                                    })
-                                }
+                            <div className="box-body no-padding">
+                                <ul className="nav nav-pills nav-stacked">
+                                    {list && list.map((item, index) =>
+                                    <li key={index} className={this.state.content===item._id && "active"}>
+                                        <a href="#abc" onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
+                                            {item.name}&nbsp;
+                                        </a>
+                                    </li>
+                                    )}
+                                </ul>
                             </div>
                         </div>
-                    {/* </div>     */}
+                    </div>
+
+                    <div className="col-xs-12 col-sm-8 qlcv">
+                        {list && list.map(item => {
+                            if (item._id === this.state.content) return (
+                            <React.Fragment key={item._id}>
+                                <h4>{`Thông tin KPI "${item.name}"`}</h4>
+                                <div style={{lineHeight: 2}}>
+                                    <div>
+                                        <label>Tiêu chí:</label>
+                                        <span> {item.criteria}</span>
+                                    </div>
+                                    
+                                    <div>
+                                        <label>Trọng số:</label>
+                                        <span> {item.weight}/100</span>
+                                    </div>
+
+                                    <div>
+                                        <label>Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá):</label>
+                                        <span> {item.automaticPoint? item.automaticPoint: "Chưa có điểm"}</span>
+                                        <span> - {item.employeePoint? item.employeePoint: "Chưa có điểm"}</span>
+                                        <span> - {item.approvedPoint? item.approvedPoint: "Chưa có điểm"}</span>
+                                    </div>
+
+                                    { item.updatedAt &&
+                                    <div>
+                                        <label>Lần đánh giá cuối: </label>
+                                        <span> {this.formatDate(item.updatedAt)}</span>
+                                    </div>
+                                    }
+                                </div>
+                                <br/>
+                                <br/>
+
+
+                                <h4>Danh sách các công việc</h4>
+                                <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                columnArr={[
+                                    'STT',
+                                    'Tên công việc',
+                                    'Thời gian thực hiện',
+                                    'Thời gian đánh giá',
+                                    'Trạng thái',
+                                    'Đóng góp (%)',
+                                    'Điểm',
+                                    'Độ quan trọng']}
+                                limit={this.state.perPage}
+                                setLimit={this.setLimit}
+                                hideColumnOption={true} />
+
+
+                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th title="STT" style={{ width: "40px" }} className="col-fixed">Stt</th>
+                                            <th title="Tên công việc">Tên công việc</th>
+                                            <th title="Thời gian thực hiện">Thời gian thực hiện</th>
+                                            <th title="Thời gian đánh giá">Thời gian đánh giá</th>
+                                            <th title="Trạng thái">Trạng thái</th>
+                                            <th title="Đóng góp (%)">Đóng góp (%)</th>
+                                            <th title="Điểm">Điểm</th>
+                                            <th title="Độ quan trọng">Độ quan trọng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            ( kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
+                                                (kpimembers.tasks.map((itemTask, index) =>
+
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{itemTask.name}</td>
+                                                        <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
+                                                        <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
+                                                        <td>{itemTask.status}</td>
+                                                        <td>{itemTask.contribution}%</td>
+                                                        <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
+                                                        <td>
+                                                            <div>
+                                                            GT được duyệt: {itemTask.taskImportanceLevel}
+                                                            </div>
+                                                            <div>
+                                                            GT tự động: {itemTask.taskImportanceLevelCal}
+                                                            </div>
+                                                        </td>
+                                                    </tr>)) : <tr><td colSpan={8}>Không có dữ liệu</td></tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </React.Fragment>);
+                            return true;
+                        })}
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );

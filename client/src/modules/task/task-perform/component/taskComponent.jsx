@@ -7,6 +7,7 @@ import { ActionTab } from './actionTab';
 import { SubTaskTab } from './subTaskTab';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { performTaskAction } from '../redux/actions';
+import { UserActions } from "../../../super-admin/user/redux/actions";
 
 import qs from 'qs';
 import { DialogModal } from '../../../../common-components';
@@ -23,6 +24,8 @@ class TaskComponent extends Component {
          * Sau đó chạy vào shouldComponentUpdate, flag có giá trị là 2, taskID sẽ là tham số từ URL 
          */
         this.flag= 1;
+
+        this.props.getAllUserOfCompany();
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -55,6 +58,9 @@ class TaskComponent extends Component {
             }
             for (let n in informedEmployees) {
                 if (informedEmployees[n]._id === id) return true;
+            }
+            if (info.creator._id === id){
+                return true;
             }
         }
         return false;
@@ -115,6 +121,7 @@ const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
     getSubTask: taskManagementActions.getSubTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };
 
 const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));
