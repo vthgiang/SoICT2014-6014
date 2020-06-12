@@ -66,6 +66,9 @@ exports.getTask = async (id,userId) => {
             break;
         }
     }
+    if (task.creator._id.equals(userId)){
+        flag = 1;
+    }
     if (flag===0){
         return {
             "info": null

@@ -551,7 +551,6 @@ class ActionTab extends Component {
                 }
             }
         })
-        console.log(this.state.taskFiles)
     }
     onFilesError = (error, file) => {
     }
@@ -666,7 +665,7 @@ class ActionTab extends Component {
                                             {/* Các file đính kèm */}
                                             <ul className="list-inline tool-level1">
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                                <li>{item.mandatory && <b>Bắt buộc</b>}</li>
+                                                <li>{item.mandatory && !item.creator && <b className="text-sm">Hoạt động bắt buộc</b>}</li>
                                                 {((item.creator === undefined || item.creator === null) && this.props.role ==="responsible") &&
                                                 <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> Xác nhận hoàn thành</a></li>}
 
@@ -1040,14 +1039,14 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.taskFiles.files}
-                                text={this.state.taskFiles.description}
+                                files={this.state.newTaskComment.files}
+                                text={this.state.newTaskComment.description}
                                 placeholder={"Nhập bình luận"}
                                 submitButtonText={"Thêm bình luận"}
                                 onTextChange={(e)=>{
                                     let value = e.target.value;
                                     this.setState(state => {
-                                        return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                        return { ...state, newTaskComment: {...state.newTaskComment, description: value}}
                                     })
                                 }}
                                 onSubmit={(e)=>{this.submitTaskComment(task._id)}}
@@ -1072,12 +1071,13 @@ class ActionTab extends Component {
                         <React.Fragment>
                             <img className="user-img-level1" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar" />
                             <ContentMaker
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={this.state.taskFiles.files}
                                 text={this.state.taskFiles.description}
                                 placeholder={"Nhập mô tả"}
-                                submitButtonText={"Upload Files"}
+                                submitButtonText={"Thêm tài liệu"}
                                 onTextChange={(e)=>{
                                     let value = e.target.value;
                                     this.setState(state => {

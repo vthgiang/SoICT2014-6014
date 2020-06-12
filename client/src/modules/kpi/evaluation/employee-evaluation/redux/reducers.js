@@ -41,13 +41,12 @@ export function kpimembers(state = {}, action) {
     case  kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST:
       return {
         ...state,
-        loading: true,
-        isLoading: true
+        isLoading: true,
+        currentKPI: null,
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYID_SUCCESS:
       return {
         ...state,
-        loading: false,
         currentKPI: action.payload,
         isLoading: false
       };
@@ -59,13 +58,11 @@ export function kpimembers(state = {}, action) {
     case  kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
       return {
         ...state,
-        loading: true,
         isLoading: true
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_SUCCESS:
       return {
         ...state,
-        loading: false,
         kpimember: action.payload,
         isLoading: false
       };
