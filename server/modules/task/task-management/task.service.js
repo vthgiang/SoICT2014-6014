@@ -25,7 +25,7 @@ exports.getTask = async (id,userId) => {
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -925,7 +925,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -1038,7 +1038,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1123,7 +1123,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1367,7 +1367,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1423,8 +1423,11 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     for(let i in results){
         for(let j in results){
             if(i<j){
+                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu
                 if(results[i].employee === results[j].employee && results[i].role === results[j].role){
                     var point, contribute;
+
+                    // do i hoặc j có thể là point hoặc contribute nên phải kiểm tra cả 2 để tính đc point và contribute
                     if( String(results[i].target) === "Point" ) point = results[i].value;
                     else if( String(results[i].target) === "Contribution") contribute = results[i].value;
 
@@ -1451,7 +1454,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    // var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     for(let i in listResult){
@@ -1459,12 +1461,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     }
 
     for(let item in cloneResult){
-        // console.log('r.employee === cloneResult[item].employee && r.role === cloneResult[item].role', typeof(cloneResult[item].employee) , typeof(cloneResult[item].role));
         
         var check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
         
-        // console.log('check_data', check_data);
         if(check_data !== undefined){ 
             // cap nhat diem
             await Task.updateOne(
@@ -1659,7 +1659,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},

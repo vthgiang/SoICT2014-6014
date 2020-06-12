@@ -295,7 +295,7 @@ class KPIPersonalManager extends Component {
                                                             <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item.creator.name, item.creator._id, item._id, item.date)} data-toggle="modal"
                                                             className="copy" title="Xem chi tiết"><i className="fa fa-list"></i></a>
                                                             <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
-                                                            className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons"></i></a>
+                                                            className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="fa fa-clone"></i></a>
                                                             {this.state.showModalCopy === item._id ? 
                                                             <ModalCopyKPIPersonal kpipersonal={item} /> : null}
                                                         </td>
