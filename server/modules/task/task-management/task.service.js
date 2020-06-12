@@ -587,15 +587,24 @@ exports.createTask = async (task) => {
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
     var email,userId,user,users,userIds;
-
-    userIds = task.responsibleEmployees;  // lấy id người thực hiện
-    userId = task.accountableEmployees;  // lấy id người phê duyệt
-    userIds.push(...userId);            
-    userId = task.consultedEmployees;  // lấy id người hỗ trợ
-    userIds.push(...userId);
-    userId = task.informedEmployees;  // lấy id người quan sát
-    userIds.push(...userId);  // lấy ra id của tất cả người dùng có nhiệm vụ
-
+    var resId = task.responsibleEmployees;  // lấy id người thực hiện
+    // console.log("res :"+resId);
+    var res = await User.find ({ _id : { $in : resId}});
+    // console.log("res :"+res);
+    res = res.map(item => item.name);
+    console.log("res :"+res);
+    userIds=resId; 
+    // console.log(userIds);
+    var accId = task.accountableEmployees;  // lấy id người phê duyệt
+    var acc = await User.find({ _id : { $in : accId}});
+    userIds.push(...accId);            
+    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var con = await User.find({ _id : { $in : conId}})
+    userIds.push(...conId);
+    var infId = task.informedEmployees;  // lấy id người quan sát
+    var inf = await User.find({ _id : { $in : infId }})
+    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
+   
     // loại bỏ các id trùng nhau
     userIds = userIds.map(u => u.toString());
     for(let i = 0, max = userIds.length; i < max; i++) {
@@ -609,19 +618,34 @@ exports.createTask = async (task) => {
     })  
 
     email = user.map( item => item.email); // Lấy ra tất cả email của người dùng
+    email.push("trinhhong102@gmail.com");
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p> `+
+                `<h3>Thông tin công viêc</h3>`+
+                `<p>Tên công việc : ${task.name}</p>`+
+                `<p>Mô tả : ${task.description}</p>`+
+                `<p>Người thực hiện</p> ` +
+                    `<ul>${res.map((item) => {
+                        return `<li>${item}</li>`
+                    })}
+                    </ul>`+
+                `<p>Người phê duyệt</p> ` +
+                    `<ul>${acc.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`+  
+                `<p>Người hỗ trợ</p> ` +
+                    `<ul>${con.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`+
+                `<p>Người quan sát</p> ` +
+                    `<ul>${inf.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`
+    ;
 
-    var mainOptions = {
-        from: 'vnist.qlcv@gmail.com',
-        to: email,
-        subject: 'Tạo mới công việc hành công',
-        text: '',
-        html:   
-            `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-    }
-    transporter.sendMail(mainOptions);
-    
-
-    return {task : task, user : userIds };
+    return {task : task, user : userIds, email : email, html : html};
 }
 
 /**
