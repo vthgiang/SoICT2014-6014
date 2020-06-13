@@ -193,7 +193,7 @@ class DomainOfTaskResultsChart extends Component {
             data: {
                 x: 'x',
                 columns: dataChart,
-                type: 'spline'
+                type: 'area-spline'
             },
 
             // Căn lề biểu đồ
@@ -224,21 +224,6 @@ class DomainOfTaskResultsChart extends Component {
                 }
             },
         })
-
-        var indexies = d3.range( dataChart[0].length - 1 );
-        var yscale = chart.internal.y;            
-        var xscale = chart.internal.x; 
-        
-        var area = d3.area()
-            .curve(d3.curveCardinal)
-            .x(function(d) { return xscale(dataChart[0][d+1]); })
-            .y0(function(d) { return yscale(dataChart[1][d+1]); })
-            .y1(function(d) { return yscale(dataChart[2][d+1]); });  
-
-        d3.select(this.refs.chart).select("svg g").append('path')
-            .datum(indexies)
-            .attr('class', 'area')
-            .attr('d', area);
     }
 
     render() {
