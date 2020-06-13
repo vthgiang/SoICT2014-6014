@@ -38,7 +38,7 @@ function calculateAutomaticPoint(task) {
         let ad = actionRating.filter(x => x.rating > 5).length; // mấy điểm thì đạt???
 
         let formula = task.taskTemplate.formula;
-        let taskInformations = task.taskInformations;
+        let taskInformations = lastEvaluations.taskInformations;
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for(let item of taskInformations){
