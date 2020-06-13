@@ -157,7 +157,10 @@ exports.createTaskAction = async (body,files) => {
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}])
 
-    return task.taskActions ;
+    var user = await User.findOne({ _id : body.creator});
+    var tasks = await Task.findOne({ _id : body.task});
+   
+    return { taskActions: task.taskActions, tasks: tasks, user: user} ;
 }
 /**
  * Sửa hoạt động của cộng việc

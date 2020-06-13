@@ -1,5 +1,6 @@
 const TaskManagementService = require('./task.service');
 const NotificationServices = require('../../notification/notification.service');
+const { sendEmail } = require('../../../helpers/emailHelper');
 const {  LogInfo,  LogError } = require('../../../logs');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 /**
@@ -242,8 +243,11 @@ exports.createTask = async (req, res) => {
         var tasks = await TaskManagementService.createTask(req.body); 
         var task = tasks.task ;
         var user = tasks.user ;
+        var email = tasks.email ;
+        var html = tasks.html ;
         var data = {"organizationalUnits" : task.organizationalUnit.company,"title" : "Tạo mới công việc","level" : "general","content":"Bạn được giao nhiệm vụ mới trong công việc","sender": task.organizationalUnit.name,"users": user};
         NotificationServices.createNotification(task.organizationalUnit.company, data, );
+        sendEmail("vnist.qlcv@gmail.com",email,"Tạo mới công việc hành công",'',html);
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
             success:true,
