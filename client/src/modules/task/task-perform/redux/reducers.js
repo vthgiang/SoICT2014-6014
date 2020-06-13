@@ -132,7 +132,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
-            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content.taskActions}
              return {
                 ...state,
                 task : {
@@ -329,6 +329,7 @@ export function performtasks(state = {}, action) {
                 evaluating: true
             }
         case performTaskConstants.EVALUATION_ACTION_SUCCESS:
+            console.log(action)
             var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
                 ...state,
