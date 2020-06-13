@@ -329,6 +329,7 @@ export function performtasks(state = {}, action) {
                 evaluating: true
             }
         case performTaskConstants.EVALUATION_ACTION_SUCCESS:
+            console.log(action)
             var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
                 ...state,
