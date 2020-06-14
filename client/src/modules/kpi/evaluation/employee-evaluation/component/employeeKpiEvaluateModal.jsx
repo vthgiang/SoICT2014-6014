@@ -31,7 +31,8 @@ class ModalMemberEvaluate extends Component {
             status: 0,
             value: 0,
             valueNow : 0,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            type: 0
         };
     }
 
@@ -61,7 +62,7 @@ class ModalMemberEvaluate extends Component {
                 let tasks = nextProps.kpimembers.tasks;
                 let importanceLevels = {};
                 tasks.forEach(element => {
-                    importanceLevels[element.taskId] = element.taskImportanceLevel;
+                    importanceLevels[element.taskId] = element.results.taskImportanceLevel;
                 });
                 this.setState(state=>{
                     return{
@@ -110,6 +111,7 @@ class ModalMemberEvaluate extends Component {
                return {
                    ...state,
                    content: id,
+                   type : kpiType,
                    dataStatus: this.DATA_STATUS.QUERYING,
                }
            });
@@ -127,6 +129,7 @@ class ModalMemberEvaluate extends Component {
                     taskId: element.taskId,
                     date: date,
                     point: points[element.taskId],
+                    type : this.state.type,
                     employeeId: employeeId
                 })
             });
@@ -267,8 +270,8 @@ class ModalMemberEvaluate extends Component {
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
-                                                    <td>{itemTask.contribution}%</td>
-                                                    <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
+                                                    <td>{itemTask.results.contribution}%</td>
+                                                    <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                     <td>
                                                         {this.state.points && this.state.tasks &&
                                                         <React.Fragment>
@@ -282,7 +285,7 @@ class ModalMemberEvaluate extends Component {
                                                             GT mới: {this.state.points[itemTask.taskId]}
                                                             </div>
                                                             <div>
-                                                            GT cũ: {itemTask.taskImportanceLevel}
+                                                            GT cũ: {itemTask.results.taskImportanceLevel}
                                                             </div>
                                                             <div>
                                                             GT tự động: {itemTask.taskImportanceLevelCal}
