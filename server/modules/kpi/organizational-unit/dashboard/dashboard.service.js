@@ -117,43 +117,43 @@ exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, us
 
     var arrayTreeOranizationalUnit = await EvaluationDashboardService.getChildrenOfOrganizationalUnitsAsTree(companyId, userRoleId);
 
-    var childOrganizationalUnitKpiSets, childOrganizationalUnit, temporaryChild;
+    var childOrganizationalUnitKpiSets = [], childOrganizationalUnit, temporaryChild;
 
     temporaryChild = arrayTreeOranizationalUnit.children;
 
-    childOrganizationalUnit = {
+    childOrganizationalUnit = [{
         'name': arrayTreeOranizationalUnit.name,
         'id': arrayTreeOranizationalUnit.id
+    }]
+
+    while(temporaryChild) {
+        temporaryChild.map(x => {
+            childOrganizationalUnit = childOrganizationalUnit.concat({
+                'name': x.name,
+                'id': x.id
+            });
+        })
+
+        var hasNodeChild = [];
+        temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
+            x.children.map(x => {
+                hasNodeChild = hasNodeChild.concat(x)
+            })
+        });
+        
+        if(hasNodeChild.length === 0) {
+            temporaryChild = undefined;
+        } else {
+            temporaryChild = hasNodeChild
+        }
     }
 
-    // while(temporaryChild) {
-    //     temporaryChild.map(x => {
-    //         childOrganizationalUnit = childOrganizationalUnit.concat({
-    //             'name': x.name,
-    //             'id': x.id
-    //         });
-    //     })
-    //     console.log("555")
-    //     var hasNodeChild = [];
-    //     temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
-    //         x.children.map(x => {
-    //             hasNodeChild = hasNodeChild.concat(x)
-    //         })
-    //     });
-        
-    //     if(hasNodeChild.length === 0) {
-    //         temporaryChild = undefined;
-    //     } else {
-    //         temporaryChild = hasNodeChild
-    //     }
-    // }
-
-
-    // childOrganizationalUnitKpiSets = childOrganizationalUnit.map(child => {
-    //     return this.getAllOrganizationalUnitKpiSetEachYear(child._id, year);
-    // });
-
-    return childOrganizationalUnit;
+    for(var i=0; i<childOrganizationalUnit.length; i++) {
+        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetEachYear(childOrganizationalUnit[i].id, year));
+        childOrganizationalUnitKpiSets[i].unshift({ 'name': childOrganizationalUnit[i].name })
+    }
+    
+    return childOrganizationalUnitKpiSets;
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */

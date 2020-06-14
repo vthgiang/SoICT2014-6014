@@ -20,14 +20,14 @@ class EvaluateByConsultedEmployee extends Component {
         let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        console.log('--------------------', evaluations);
+        // console.log('--------------------', evaluations);
 
-        let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         
-        let point = 0;
+        let point = undefined;
         if(evaluations){
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
-            if(res) point = res.employeePoint ? res.employeePoint : 0;
+            if(res) point = res.employeePoint ? res.employeePoint : undefined;
         }
 
         this.state={
@@ -149,7 +149,7 @@ class EvaluateByConsultedEmployee extends Component {
                                 className="form-control"
                                 type="number" 
                                 name="point"
-                                placeholder={85}
+                                placeholder={"Nhập điểm tự đánh giá"}
                                 onChange={this.handleChangePoint}
                                 value={point}
                             />
@@ -167,7 +167,12 @@ class EvaluateByConsultedEmployee extends Component {
                                             {/* <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p> */}
                                             {
                                                 evaluations.taskInformations.map(info => {
-                                                    return <div>
+                                                    if(info.type === "Date"){
+                                                        return <div>
+                                                            <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? this.formatDate(info.value):"Chưa đánh giá"}</p>
+                                                        </div>
+                                                    }
+                                                    else return <div>
                                                         {/* TODO: Check date ISO */}
                                                         <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
                                                     </div>

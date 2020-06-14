@@ -8,14 +8,12 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 class AgePyramidChart extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             id: 'keyId'
         }
     }
-
     componentDidMount() {
         this.props.getAllEmployee({ status: 'active' });
     }
@@ -48,6 +46,9 @@ class AgePyramidChart extends Component {
     renderChart = (data) => {
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
+        data.data1.shift(); data.data2.shift();
+        let bigData1 = data.data1.map(x => x / 1.5);
+        let bigData2 = data.data2.map(x => x / 2);
 
         let chart = c3.generate({
             bindto: this.refs.chart,
@@ -90,24 +91,16 @@ class AgePyramidChart extends Component {
             }
         });
 
-        var addColumn = (data, delay) => {
-            var dataTmp = [data[0], 0];
-            setTimeout(function () {
-                chart.load({
-                    columns: [dataTmp]
-                });
-            }, 200);
-            data.forEach(function (value, index) {
-                setTimeout(function () {
-                    dataTmp[index] = value;
-                    chart.load({
-                        columns: [dataTmp],
-                    });
-                }, (200 + (delay / 12 * index)));
+        setTimeout(function () {
+            chart.load({
+                columns: [[data.nameData1, ...bigData1], [data.nameData2, ...bigData2]],
             });
-        }
-        addColumn(data.data1, 2200);
-        addColumn(data.data2, 2200);
+        }, 100);
+        setTimeout(function () {
+            chart.load({
+                columns: [[data.nameData1, ...data.data1], [data.nameData2, ...data.data2]],
+            });
+        }, 500);
     }
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
@@ -147,7 +140,7 @@ class AgePyramidChart extends Component {
             data1: data1AgePyramid,
             data2: data2AgePyramid,
         }
-        this.renderChart(data);
+        listAllEmployees.length !== 0 && this.renderChart(data);
         return (
             <React.Fragment>
                 <div ref="chart"></div>

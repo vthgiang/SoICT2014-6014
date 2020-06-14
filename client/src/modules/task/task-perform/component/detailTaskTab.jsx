@@ -38,14 +38,13 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
-            showModalApprove: "",
-            showEdit: "",
+            // showModalApprove: "",
+            // showEdit: "",
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
 
     }
 
-    
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
@@ -166,10 +165,6 @@ class DetailTaskTab extends Component {
         return [day, month, year].join('/');
     }
 
-
-
-    
-
     handleShowEdit = async (id, role) => {
         await this.setState(state => {
             return {
@@ -180,6 +175,7 @@ class DetailTaskTab extends Component {
         window.$(`#modal-edit-task-by-${role}-${id}`).modal('show');
 
     }
+
     handleShowEndTask = async (id, role) => {
         await this.setState(state => {
             return {
@@ -191,7 +187,6 @@ class DetailTaskTab extends Component {
 
     }
     
-
     handleShowEvaluate = async (id, role) => {
         await this.setState(state => {
             return {
@@ -203,10 +198,21 @@ class DetailTaskTab extends Component {
 
     }
 
-    refresh = () => {
+    refresh = async () => {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
+
+        await this.setState(state => {
+            return {
+                ...state,
+                showEdit: undefined,
+                showEndTask: undefined,
+                showEvaluate: undefined,
+                dataStatus: this.DATA_STATUS.QUERYING,
+            }
+        })
+
     }
 
     changeRole = (role) => {
@@ -240,6 +246,9 @@ class DetailTaskTab extends Component {
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
 
+        let checkInactive = true;
+        if(task) checkInactive = task.inactiveEmployees.indexOf(this.state.currentUser) === -1; // return true if user is active user
+
         return (
       
             <div>
@@ -248,18 +257,18 @@ class DetailTaskTab extends Component {
                         <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
                     </a>
                     
-                    { (currentRole === "responsible" || currentRole === "accountable") && 
+                    { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, currentRole)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                         </a>
                     }
                     
-                    { (currentRole !== "informed" && currentRole !== "creator") &&
+                    { (currentRole !== "informed" && currentRole !== "creator" && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
                             <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
-                    { (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") &&
+                    { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <React.Fragment>
                             <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, currentRole)} title="Kết thúc công việc">
                                 <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
@@ -329,7 +338,7 @@ class DetailTaskTab extends Component {
                                                 {
                                                     (task && task.responsibleEmployees.length !== 0) &&
                                                     task.responsibleEmployees.map(item => {
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                             return <li><u>{item.name}</u></li>
                                                         } else {
                                                             return <li>{item.name}</li>
@@ -345,7 +354,7 @@ class DetailTaskTab extends Component {
                                                 {
                                                     (task && task.accountableEmployees.length !== 0) &&
                                                     task.accountableEmployees.map(item => {
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                             return <li><u>{item.name}</u></li>
                                                         } else {
                                                             return <li>{item.name}</li>
@@ -364,7 +373,7 @@ class DetailTaskTab extends Component {
                                                         {
                                                             (task && task.consultedEmployees.length !== 0) &&
                                                             task.consultedEmployees.map(item => {
-                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                                     return <li><u>{item.name}</u></li>
                                                                 } else {
                                                                     return <li>{item.name}</li>
@@ -384,7 +393,7 @@ class DetailTaskTab extends Component {
                                                     {
                                                         (task && task.informedEmployees.length !== 0) &&
                                                         task.informedEmployees.map(item => {
-                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) {
+                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                                 return <li><u>{item.name}</u></li>
                                                             } else {
                                                                 return <li>{item.name}</li>
@@ -447,7 +456,12 @@ class DetailTaskTab extends Component {
                                                             <ul>
                                                             { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
-                                                                    return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                    if(task.inactiveEmployees.indexOf(res.employee._id) !== -1){
+                                                                        return <li><u>{res.employee.name}</u> - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                    }
+                                                                    else {
+                                                                        return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                    }
                                                                 }) : <li>Chưa có ái đánh giá công việc tháng này</li>
                                                             }
                                                             </ul>

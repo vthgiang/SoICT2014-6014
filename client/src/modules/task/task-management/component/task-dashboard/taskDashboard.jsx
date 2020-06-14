@@ -187,116 +187,6 @@ class TaskDashboard extends Component {
         return dps;
     }
     render() {
-        const options1 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            theme: "light2", //"light1", "dark1", "dark2"
-            title: {
-                text: "Thống kê kết quả thực hiện tháng 11",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            axisY: {
-                title: "Giá trị điểm",
-                includeZero: false,
-                fontWight: 13
-            },
-            axisX: {
-                title: "Số lượng người cùng điểm",
-                includeZero: false,
-                fontWight: 13
-            },
-            data: [{
-                type: "column", //change type to bar, line, area, pie, etc                
-                indexLabelFontColor: "#5A5757",
-                indexLabelPlacement: "outside",
-                dataPoints: [
-                    { x: 10, y: 75 },
-                    { x: 20, y: 85 },
-                    { x: 30, y: 80 },
-                    { x: 40, y: 65 },
-                    { x: 50, y: 70 },
-                    { x: 60, y: 90 },
-                    { x: 70, y: 95 },
-                    { x: 80, y: 97, indexLabel: "Cao nhất" },
-                    { x: 90, y: 55 },
-                    { x: 100, y: 60 },
-                    { x: 110, y: 5 },
-                    { x: 120, y: 50 }
-                ]
-            }]
-        }
-        const options2 = {
-            animationEnabled: true,	
-            exportEnabled: true,
-            title:{
-                text: "Kết quả thực hiện công việc của các đơn vị năm 2019",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            axisY : {
-                title: "Kết quả công việc",
-                includeZero: false
-            },
-            toolTip: {
-                shared: true
-            },
-            data: [{
-                type: "spline",
-                name: "Phòng đảm bảo chất lượng",
-                showInLegend: true,
-                dataPoints: [
-                    { y: 55, label: "Tháng 1" },
-                    { y: 95, label: "Tháng 2" },
-                    { y: 80, label: "Tháng 3" },
-                    { y: 78, label: "Tháng 4" },
-                    { y: 82, label: "Tháng 5" },
-                    { y: 68, label: "Tháng 6" },
-                    { y: 96, label: "Tháng 7" },
-                    { y: 75, label: "Tháng 8" },
-                    { y: 86, label: "Tháng 9" },
-                    { y: 88, label: "Tháng 10" },
-                    { y: 93, label: "Tháng 11" }
-                ]
-            },
-            {
-                type: "spline",
-                name: "Phòng sản xuất",
-                showInLegend: true,
-                dataPoints: [
-                    { y: 85, label: "Tháng 1" },
-                    { y: 90, label: "Tháng 2" },
-                    { y: 84, label: "Tháng 3" },
-                    { y: 98, label: "Tháng 4" },
-                    { y: 92, label: "Tháng 5" },
-                    { y: 88, label: "Tháng 6" },
-                    { y: 76, label: "Tháng 7" },
-                    { y: 75, label: "Tháng 8" },
-                    { y: 66, label: "Tháng 9" },
-                    { y: 78, label: "Tháng 10" },
-                    { y: 83, label: "Tháng 11" }
-                ]
-            },{
-                type: "spline",
-                name: "Phòng kinh doanh",
-                showInLegend: true,
-                dataPoints: [
-                    { y: 80, label: "Tháng 1" },
-                    { y: 80, label: "Tháng 2" },
-                    { y: 84, label: "Tháng 3" },
-                    { y: 88, label: "Tháng 4" },
-                    { y: 72, label: "Tháng 5" },
-                    { y: 58, label: "Tháng 6" },
-                    { y: 86, label: "Tháng 7" },
-                    { y: 75, label: "Tháng 8" },
-                    { y: 86, label: "Tháng 9" },
-                    { y: 70, label: "Tháng 10" },
-                    { y: 63, label: "Tháng 11" }
-                ]
-            }]
-        }
         const options3 = {
             theme: "light2", // "light1", "dark1", "dark2"
             animationEnabled: true,
@@ -384,16 +274,6 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options2} />
-                                </div>
-                            </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options1} />
-                                </div>
-                            </div>
                             <div className="col-xs-6">
                                 <div className="box box-primary">
                                     <CanvasJSReact options={options3} />

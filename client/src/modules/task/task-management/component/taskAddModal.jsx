@@ -22,6 +22,7 @@ class ModalAddTask extends Component {
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
     }
 
     constructor(props) {
@@ -371,7 +372,12 @@ class ModalAddTask extends Component {
         if(tasktemplates.usersOfChildrenOrganizationalUnit){
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
-       
+        var usersInUnitsOfCompany;
+        if(tasktemplates&&tasktemplates.usersInUnitsOfCompany){
+            usersInUnitsOfCompany = tasktemplates.usersInUnitsOfCompany;
+        }
+        
+        var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         var unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         
   
@@ -512,16 +518,12 @@ class ModalAddTask extends Component {
 
                             <div className='form-group'>
                                 <label className="control-label">Người hỗ trợ</label>
-                                {usercompanys &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`consulted-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return {value: x._id, text: x.name};
-                                            })
-                                        }
+                                        items={allUnitsMember}
                                         onChange={this.handleChangeTaskConsultedEmployees}
                                         value ={newTask.consultedEmployees}
                                         multiple={true}
@@ -531,16 +533,12 @@ class ModalAddTask extends Component {
                             </div>
                             <div className='form-group'>
                                 <label className="control-label">Người quan sát</label>
-                                {usercompanys &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`informed-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return {value: x._id, text: x.name};
-                                            })
-                                        }
+                                        items={allUnitsMember}
                                         onChange={this.handleChangeTaskInformedEmployees}
                                         value ={newTask.informedEmployees}
                                         multiple={true}
@@ -571,7 +569,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree
+    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany : taskTemplateActions.getAllUserInAllUnitsOfCompany
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

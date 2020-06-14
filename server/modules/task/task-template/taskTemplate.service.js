@@ -1,6 +1,8 @@
 const { TaskTemplate, Privilege, Role, UserRole,OrganizationalUnit } = require('../../../models').schema;
 const DashboardService = require('../../kpi/evaluation/dashboard/dashboard.service');
+const OrganizationalUnitService =require('../../super-admin/organizational-unit/organizationalUnit.service');
 const mongoose = require('mongoose');
+const arrayToTree = require('array-to-tree');
 /**
  * Lấy tất cả các mẫu công việc
  */
@@ -192,12 +194,47 @@ exports.createTaskTemplate = async (body) => {
     });
 
     // TODO: Xử lý quyển với action
-    var privilege = await Privilege.create({
-        roleId: body.readByEmployees, //id của người cấp quyền xem
-        resourceId: tasktemplate._id,
-        resourceType: "TaskTemplate",
-        action: body.readByEmployees //quyền READ
-    });
+
+    // xu ly quyen nguoi xem
+    var read = body.readByEmployees;
+    var roleId=[];
+    var role,roleParent;
+    role = await Role.find({ _id : { $in: read } }) ;
+    roleParent = role.map( item => item.parents);   // lấy ra các parent của các role
+    var flag;
+    var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
+    for (let n in reads){
+        flag = 0;                                  
+        var parent = [];
+        parent = parent.concat(roleParent[n]);
+        for (let i in parent){
+            for (let j in reads){
+                if (JSON.stringify(reads[j]) === JSON.stringify(parent[i])){  // nếu 1 role là kế thừa của role có sẵn quyền xem thì loại role đấy đi 
+                    reads[n]="";                                              // loại role
+                    flag=1;
+                    roleId.push(reads[j]);                                    // thêm vào danh sách role có quyền xem
+                }
+            }
+        }
+        if (flag === 0) roleId.push(reads[n]);    // role này không là role cha của role khác => thêm vào danh sách role có quyền xem
+    }
+    // xử lý các role trùng lặp
+    roleId = roleId.map(u => u.toString());
+    for(let i = 0, max = roleId.length; i < max; i++) {
+        if(roleId.indexOf(roleId[i]) != roleId.lastIndexOf(roleId[i])) {
+            roleId.splice(roleId.indexOf(roleId[i]), 1);
+            i--;
+        }
+    }
+    // mỗi roleId là một Document
+    for (let i in roleId){
+        var privilege = await Privilege.create({
+            roleId: roleId[i], //id của người cấp quyền xem
+            resourceId: tasktemplate._id,
+            resourceType: "TaskTemplate",
+            action: body.readByEmployees //quyền READ
+        });
+    }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
     return tasktemplate;
 }
@@ -244,16 +281,38 @@ exports.editTaskTemplate = async (data, id) => {
     return taskTemplate;
 }
 /**
- * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
+ * @getAllUserInCompany = true khi muốn lấy tất cả người dùng trong tất cả đơn vị của 1 công ty
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
+exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=false) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
-    var organizationalUnit = await OrganizationalUnit.findById(unitId);
     var data;
-    data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
-   
+
+    if(!getAllUserInCompany)
+    {
+        
+        var organizationalUnit = await OrganizationalUnit.findById(unitId);
+        data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
+    }
+    //Lấy tất nhan vien trong moi đơn vị trong công ty
+    if(getAllUserInCompany) {
+        
+        const allUnits = await OrganizationalUnit.find({ company: id });    
+        const newData = allUnits.map( department => {return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            dean:department.dean.toString(),
+            viceDean:department.viceDean.toString(),
+            employee:department.employee.toString(),
+            parent_id: department.parent !== null ? department.parent.toString() : null
+            }
+        });
+        return  _getAllUsersInOrganizationalUnits(newData);
+    }
+
     var queue=[];
     var departments = [];
     //BFS tìm tât cả đơn vị con-hàm của Đức
@@ -261,7 +320,7 @@ exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
     queue.push(data);    
     while(queue.length > 0){
         var v = queue.shift();
-        if(v.children !== undefined){
+        if(v.children){
          for(var i = 0; i < v.children.length; i++){
              var u = v.children[i];
              queue.push(u);
@@ -303,11 +362,11 @@ _getAllUsersInOrganizationalUnits = async (data) => {
 
         let deans=[], viceDeans=[], employees=[];
         userRoles.forEach((item) => {
-        if (item.roleId.equals(department.dean)){
+        if (item.roleId.equals(department.dean) && item.userId){
             deans.push(item.userId);
-        } else if (item.roleId.equals(department.viceDean)){
+        } else if (item.roleId.equals(department.viceDean) && item.userId){
             viceDeans.push(item.userId);
-        } else if (item.roleId.equals(department.employee)){
+        } else if (item.roleId.equals(department.employee) &&  item.userId){
             employees.push(item.userId);
         }
         });

@@ -12,6 +12,7 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
+    searchUses:[],
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -53,29 +54,35 @@ export function user(state = initState, action) {
             }
 
         case UserConstants.GET_USERS_SUCCESS:
-
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
-
         case UserConstants.GET_USERS_PAGINATE_SUCCESS:
-            return {
-                ...state,
-                listPaginate: action.payload.docs,
-                totalDocs: action.payload.totalDocs,
-                limit: action.payload.limit,
-                totalPages: action.payload.totalPages,
-                page: action.payload.page,
-                pagingCounter: action.payload.pagingCounter,
-                hasPrevPage: action.payload.hasPrevPage,
-                hasNextPage: action.payload.hasNextPage,
-                prevPage: action.payload.prevPage,
-                nextPage: action.payload.nextPage,
-                isLoading: false
-            };
-
+            if(action.payload.searchUses!==undefined){
+                return {
+                    ...state,
+                    searchUses: action.payload.searchUses,
+                    isLoading: false
+                };
+            }else{
+                return {
+                    ...state,
+                    listPaginate: action.payload.docs,
+                    totalDocs: action.payload.totalDocs,
+                    limit: action.payload.limit,
+                    totalPages: action.payload.totalPages,
+                    page: action.payload.page,
+                    pagingCounter: action.payload.pagingCounter,
+                    hasPrevPage: action.payload.hasPrevPage,
+                    hasNextPage: action.payload.hasNextPage,
+                    prevPage: action.payload.prevPage,
+                    nextPage: action.payload.nextPage,
+                    isLoading: false
+                };
+            }
+            
         case UserConstants.EDIT_USER_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);

@@ -2,13 +2,15 @@
 .setting-table {
     z-index: 1000;
     position: absolute;
-    right: 0px;
+    right: 10px;
     width: 250px;
-    padding: 15px;
-    background-color: rgb(249, 250, 252);
-    border: 1px solid black;
-    margin-top: 30px;
+    margin-top: 25px;
     text-align: left;
+
+
+    -webkit-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
+    box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
 }
 @media (max-width: 300px){
     .setting-table {
@@ -20,25 +22,4 @@
 }
 .setting-table div.selectmulti > div.btn-group, .setting-table div.selectmulti > div.btn-group> button{
     width: 100% !important;
-}
-
-/* Span in popup setting (dialog style)*/
-.pop-arw {
-    width: 13px!important;
-    height: 13px!important;
-    background-color: #f9fafc;
-    border: black solid 1px;
-    position: absolute;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-}
-.arwTop {
-    border-right: 0;
-    border-bottom: 0;
-    top: -7px;
-    left: 50%;
-}
-.L-auto {
-    left: auto!important;
 }
