@@ -66,40 +66,24 @@ class DashBoardKPIMember extends Component {
         this.props.getAllKPIMemberOfUnit(infosearch);
         this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
         
-        this.handleResizeColumn();
 
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
- 
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
- 
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
+    shouldComponentUpdate = (nextProps, nextState) => {
+        // Khi truy vấn lấy các đơn vị con của đơn vị hiện tại đã có kết quả, và thuộc tính đơn vị chọn ids chưa được thiết lập
+        if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
- 
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
+            return false;
+        }
+        return true;
     }
 
     formatDate(date) {
@@ -213,9 +197,11 @@ class DashBoardKPIMember extends Component {
     }
 
     handleUpdateData = () => {
-        this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
-        this.props.getAllEmployeeOfUnitByIds(this.state.ids);
-        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+        if (this.state.ids.length>0){
+            this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
+            this.props.getAllEmployeeOfUnitByIds(this.state.ids);
+            this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+        }
     }
 
     handleShowEditing = () => {
@@ -249,6 +235,8 @@ class DashBoardKPIMember extends Component {
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
         var currentMonth = currentDate.getMonth();
+
+        
 
         if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets){
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
@@ -297,7 +285,7 @@ class DashBoardKPIMember extends Component {
                 }
             }
            }
-        }        
+        }
         
         if (user.userdepartments) userdepartments = user.userdepartments;
         let unitMembers;
@@ -348,17 +336,18 @@ class DashBoardKPIMember extends Component {
         var defaultStartMonth = ['01', year].join('-');
 
         return (
-            <div className="box">
-                <div className="box-header with-border qlcv">
+            <React.Fragment>
+                <div className="qlcv" style={{textAlign: "right", marginBottom: 15}}>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className = "form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                            {childrenOrganizationalUnit &&
+                            {this.state.ids &&
                                 <SelectMulti id="multiSelectOrganizationalUnit"
                                     //value = {childrenOrganizationalUnit.map(item => {return item.id})}
                                     items = {childrenOrganizationalUnit.map(item => {return {value: item.id, text: item.name}})} 
-                                    options = {{nonSelectedText: translate('kpi.evaluation.dashboard.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit')}}
+                                    options = {{nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit')}}
                                     onChange={this.handleSelectOrganizationalUnit}
+                                    value={this.state.ids}
                                 >
                                 </SelectMulti>
                             }
@@ -366,320 +355,175 @@ class DashBoardKPIMember extends Component {
                         </div>
                     </div>
                 </div>
-
-                <div className="box-body">
-                    <div className="row">
-                        <div className="col-md-3 col-sm-6 form-inline">
-                            <div className="info-box">
-                                <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
-                                    <span className="info-box-number">{`${settingUpKpi}/${totalKpi}`}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-3 col-sm-6 form-inline">
-                            <div className="info-box">
-                                <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
-                                    <span className="info-box-number">{`${awaitingApprovalKpi}/${totalKpi}`}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="clearfix visible-sm-block" />
-                        <div className="col-md-3 col-sm-6 form-inline">
-                            <div className="info-box">
-                                <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.activated')}`}</span>
-                                    <span className="info-box-number">{`${activatedKpi}/${totalKpi}`}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-3 col-sm-6 form-inline">
-                            <div className="info-box">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
-                                    <span className="info-box-number">{numberOfEmployee}</span>
-                                </div>
+            
+                <div className="row">
+                    <div className="col-md-3 col-sm-6 form-inline">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
+                                <span className="info-box-number">{`${settingUpKpi}/${totalKpi}`}</span>
                             </div>
                         </div>
                     </div>
-
-                    <div className="row">
-                        {/* Nhân viên ưu tú */}
-                        <div className="col-md-12">
-                            <div className="box box-danger">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">{translate('kpi.evaluation.dashboard.excellent_employee')}</h3>
-                                    <div className="box-tools pull-right">
-                                        <span className="label label-danger">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</span>
-
-                                        <button type="button" data-toggle="collapse" data-target="#setting-excellent-employee" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                                        <div id="setting-excellent-employee" className="box collapse setting-table">
-                                            <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-
-                                            <div className = "form-group">
-                                                <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
-                                                <DatePicker
-                                                    id="kpi_month"      
-                                                    dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                    value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
-                                                    onChange={this.handleChangeDate}
-                                                    disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
-                                                /> 
-                                            </div> 
-
-                                            <div className="form-group">
-                                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                                <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees}/>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>                                 
-                                <div className="box-body no-parding">
-                                    <ul className="users-list clearfix">
-                                        {
-                                            (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
-                                                lastMonthEmployeeKpiSets.map((item, index) =>
-                                                    <li key={index}>
-                                                        <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
-                                                        <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
-                                                        <span className="users-list-date">{item.approvedPoint}</span>
-                                                    </li>
-                                                )
-                                            : <li>Không có dữ liệu</li>
-                                        }
-                                    </ul>
-                                </div>
+                    <div className="col-md-3 col-sm-6 form-inline">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
+                                <span className="info-box-number">{`${awaitingApprovalKpi}/${totalKpi}`}</span>
                             </div>
                         </div>
+                    </div>
+                    <div className="clearfix visible-sm-block" />
+                    <div className="col-md-3 col-sm-6 form-inline">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.activated')}`}</span>
+                                <span className="info-box-number">{`${activatedKpi}/${totalKpi}`}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3 col-sm-6 form-inline">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
+                                <span className="info-box-number">{numberOfEmployee}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-                        {/* Thống kê kết quả thực hiện mục tiêu của nhân viên */}
-                        <div className="col-md-12">
-                            <div className="box box-info">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Thống kê kết quả thực hiện mục tiêu của nhân viên</h3>
-                                    <div className="box-tools pull-right">
-                                        <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                        </button>
-                                    </div>
-                                </div>
-                                {/* /.box-header */}
+                
+                <div className="row">
+                    {/* Nhân viên ưu tú */}
+                    <div className="col-md-12">
+                        <div className="box">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" data-toggle="collapse" data-target="#setting-excellent-employee" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
 
-                                <div className="box-body qlcv">
-                                    <div className="form-inline">
-                                        <div className="col-sm-6 col-xs-12 form-group" >
-                                            <label>Từ tháng</label>
-                                            <DatePicker 
-                                                id="monthStart"      
-                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
-                                                onChange={this.handleSelectMonthStart}
-                                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                                            />
-                                        </div>
-                                        <div className="col-sm-6 col-xs-12 form-group" >
-                                            <label>Đến tháng</label>
-                                            <DatePicker 
-                                                id="monthEnd"      
-                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
-                                                onChange={this.handleSelectMonthEnd}
-                                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-inline">
-                                        {unitMembers &&
-                                            <div className="col-sm-6 col-xs-12 form-group"> 
-                                                <label>Nhân viên</label>
-                                                <SelectBox
-                                                    id={`createEmployeeKpiSet`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={unitMembers}
-                                                    multiple={false}
-                                                    onChange={this.handleSelectEmployee}
-                                                    value={this.INFO_SEARCH.userId}
-                                                />
+                                    <div className="box box-primary box-solid collapse setting-table" id={"setting-excellent-employee"}>
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title">Tùy chọn</h3>
+                                            <div className="box-tools pull-right">
+                                                <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#setting-excellent-employee" ><i className="fa fa-times"></i></button>
                                             </div>
-                                        }
-                                        <div className="col-sm-6 col-xs-12 form-group">
-                                            <label></label>
-                                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                                        </div>
+                                        <div className="box-body">
+                                        <div className = "form-group">
+                                            <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                            <DatePicker
+                                                id="kpi_month"      
+                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
+                                                onChange={this.handleChangeDate}
+                                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                            /> 
+                                        </div> 
+
+                                        <div className="form-group">
+                                            <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
+                                            <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees}/>
+                                        </div>
                                         </div>
                                     </div>
 
-                                    <div className="col-sm-12 col-xs-12">
-                                        <StatisticsOfEmployeeKpiSetChart 
-                                            userId={this.state.infosearch.userId} 
-                                            startMonth={this.state.infosearch.startMonth}
-                                            endMonth={this.state.infosearch.endMonth}
+                                </div>
+                            </div>                                 
+                            <div className="box-body no-parding">
+                                <ul className="users-list clearfix">
+                                    {
+                                        (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
+                                            lastMonthEmployeeKpiSets.map((item, index) =>
+                                                <li key={index} style={{maxWidth: 200}}>
+                                                    <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
+                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
+                                                    <span className="users-list-date">{item.approvedPoint}</span>
+                                                </li>
+                                            )
+                                        : <li>Không có dữ liệu</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {/* Thống kê kết quả thực hiện mục tiêu của nhân viên */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Thống kê kết quả thực hiện mục tiêu của nhân viên</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
+                                    </button>
+                                </div>
+                            </div>
+                            {/* /.box-header */}
+
+                            <div className="box-body qlcv">
+                                <div className="form-inline">
+                                    <div className="col-sm-6 col-xs-12 form-group" >
+                                        <label>Từ tháng</label>
+                                        <DatePicker 
+                                            id="monthStart"      
+                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                            value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
+                                            onChange={this.handleSelectMonthStart}
+                                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                        />
+                                    </div>
+                                    <div className="col-sm-6 col-xs-12 form-group" >
+                                        <label>Đến tháng</label>
+                                        <DatePicker 
+                                            id="monthEnd"      
+                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                            value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
+                                            onChange={this.handleSelectMonthEnd}
+                                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                         />
                                     </div>
                                 </div>
+                                <div className="form-inline">
+                                    {unitMembers &&
+                                        <div className="col-sm-6 col-xs-12 form-group"> 
+                                            <label>Nhân viên</label>
+                                            <SelectBox
+                                                id={`createEmployeeKpiSet`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={unitMembers}
+                                                multiple={false}
+                                                onChange={this.handleSelectEmployee}
+                                                value={this.INFO_SEARCH.userId}
+                                            />
+                                        </div>
+                                    }
+                                    <div className="col-sm-6 col-xs-12 form-group">
+                                        <label></label>
+                                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-12 col-xs-12">
+                                    <StatisticsOfEmployeeKpiSetChart 
+                                        userId={this.state.infosearch.userId} 
+                                        startMonth={this.state.infosearch.startMonth}
+                                        endMonth={this.state.infosearch.endMonth}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                        {/* Phản hồi nhân viên */}
-                        <div className="col-md-3" id="chart-member">
-                            <div className="box box-success direct-chat direct-chat-success collapsed-box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Phản hồi nhân viên</h3>
-                                    <div className="box-tools pull-right">
-                                        <span data-toggle="tooltip" title="3 New Messages" className="badge bg-green">3</span>
-                                        <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-plus" />
-                                        </button>
-                                        <button type="button" className="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
-                                            <i className="fa fa-comments" /></button>
-                                        {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" /></button> */}
-                                    </div>
-                                </div>
-                                <div className="box-body" style={{ display: "none" }}>
-                                    <div className="direct-chat-messages">
-                                        <div className="direct-chat-msg">
-                                            <div className="direct-chat-info clearfix">
-                                                <span className="direct-chat-name pull-left">Alexander Pierce</span>
-                                                <span className="direct-chat-datestamp pull-right">23 Jan 2:00 pm</span>
-                                            </div>
-                                            <img className="direct-chat-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Message Avatar User" />{/* /.direct-chat-img */}
-                                            <div className="direct-chat-text">
-                                                Is this template really for free? That's unbelievable!
-                                            </div>
-                                        </div>
-                                        <div className="direct-chat-msg right">
-                                            <div className="direct-chat-info clearfix">
-                                                <span className="direct-chat-name pull-right">Sarah Bullock</span>
-                                                <span className="direct-chat-datestamp pull-left">23 Jan 2:05 pm</span>
-                                            </div>
-                                            <img className="direct-chat-img" src="/lib/adminLTE/dist/img/user3-128x128.jpg" alt="Message Avatar User" />{/* /.direct-chat-img */}
-                                            <div className="direct-chat-text">
-                                                You better believe it!
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="direct-chat-contacts">
-                                        <ul className="contacts-list">
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">
-                                                    <img className="contacts-list-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar User" />
-                                                    <div className="contacts-list-info">
-                                                        <span className="contacts-list-name">
-                                                            Count Dracula
-                                                            <small className="contacts-list-date pull-right">2/28/2015</small>
-                                                        </span>
-                                                        <span className="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="box-footer" style={{ display: "none" }}>
-                                    <form action="#abc" method="post">
-                                        <div className="input-group">
-                                            <input type="text" name="message" placeholder="Type Message ..." className="form-control" />
-                                            <span className="input-group-btn">
-                                                <button type="submit" className="btn btn-success btn-flat">Send</button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                     </div>               
-
-            </div>
+                </div>
+            </React.Fragment>
         );
     }
 }

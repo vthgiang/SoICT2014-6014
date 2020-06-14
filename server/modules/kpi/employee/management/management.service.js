@@ -1,4 +1,6 @@
 const EmployeeKpiSet = require('../../../../models/kpi/employeeKpiSet.model');
+const EmployeeKpi = require('../../../../models/kpi/employeeKpi.model')
+const mongoose = require("mongoose");
 
 /** Lấy tất cả KPI cá nhân theo người thiết lập */
 exports.getAllEmployeeKpiSets = async (member) => { // getEmployeeKpiSets(unitID, month,iduser) // TODO:...
@@ -40,4 +42,49 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
 
     return kpiSetsByMonth;
     
+}
+
+exports.copyKPI = async (data) => {
+
+    var date = data.dateold.split("-");
+    var dateold = new Date(date[0], date[1], 0);
+    var date = data.datenew.split("-");
+    var dateNewEmployeeKPI = new Date(date[1], date[0], 0);
+    var monthOldKPI = dateold.getMonth();
+    var yearOldKPI = dateold.getFullYear();
+    var monthNewKPI = dateNewEmployeeKPI.getMonth();
+    var yearNewKPI = dateNewEmployeeKPI.getFullYear();
+    var OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id) })
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+    var check = OldEmployeeKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
+    if (check == undefined) {
+        var list = OldEmployeeKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
+        var NewEmployeeKpi = await EmployeeKpiSet.create({
+            organizationalUnit: list.organizationalUnit._id,
+            creator: list.creator._id,
+            date: dateNewEmployeeKPI,
+            kpis: [],
+            approver: list.approver,
+            
+        })
+        // console.log("Hiiiiiiii")
+        for (let i in list.kpis) {
+            var target = await EmployeeKpi.create({
+                name: list.kpis[i].name,
+                weight: list.kpis[i].weight,
+                criteria: list.kpis[i].criteria,
+                type: list.kpis[i].type,
+                parent: null,
+            });
+            EmployeeKpis = await EmployeeKpiSet.findByIdAndUpdate(
+                   NewEmployeeKpi, { $push: { kpis: target._id } }, { new: true }
+            );
+        }
+        EmployeeKpis = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id)  })
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+    }
+
+    return EmployeeKpis;
 }

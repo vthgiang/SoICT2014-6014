@@ -126,7 +126,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setExecutionTimeData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
-        var executionTimes = {}, total = 0;
+        var executionTimes = {};
         var now = new Date();
         var currentYear = now.getFullYear();
         var currentMonth = now.getMonth();
@@ -167,16 +167,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
                 temporary[parent.name] = executionTime;
                 executionTimes = Object.assign(executionTimes, temporary);
-            
-                total = total + executionTime;
-            
             })
         }
 
         executionTimes = Object.assign(
             { name: "Thời gian thực hiện (Ngày)" },
-            executionTimes,
-            { total: total }
+            executionTimes
         )
 
         return executionTimes;
@@ -186,7 +182,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setNumberOfTaskData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
-        var numberOfTasks = {}, total = 0;
+        var numberOfTasks = {};
 
         if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -210,15 +206,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 numberOfTask = listTaskByOrganizationUnitKpi[key].length;
                 temporary[parent.name] = numberOfTask;
                 numberOfTasks = Object.assign(numberOfTasks, temporary);
-            
-                total = total + numberOfTask;
             })
         }
 
         numberOfTasks = Object.assign(
             { name: "Số lượng công việc" },
-            numberOfTasks,
-            { total: total }
+            numberOfTasks
         )
 
         return numberOfTasks; 
@@ -228,7 +221,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setNumberOfParticipantData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTaskByOrganizationUnitKpi;
-        var numberOfParticipants = {}, total = 0; 
+        var numberOfParticipants = {}; 
 
         if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -264,15 +257,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 numberOfParticipant = creators1.length;
                 temporary[parent.name] = numberOfParticipant;
                 numberOfParticipants = Object.assign(numberOfParticipants, temporary);
-                
-                total = total + numberOfParticipant;
             })
         }
 
         numberOfParticipants = Object.assign(
             { name: "Người tham gia" },
-            numberOfParticipants,
-            { total: total }
+            numberOfParticipants
         )
 
         return numberOfParticipants;
@@ -282,7 +272,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setNumberOfChildKpiData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpi, listChildTarget;
-        var numberOfChildKpis = {}, total = 0;
+        var numberOfChildKpis = {};
 
         if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -301,7 +291,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                         numberOfChildKpi++;
                     })
                 }
-                total = total + numberOfChildKpi;
+
                 temporary[parent.name] = numberOfChildKpi;
                 numberOfChildKpis = Object.assign(numberOfChildKpis, temporary);
             })
@@ -309,8 +299,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         numberOfChildKpis = Object.assign(
             { name: "Số Kpi con" },
-            numberOfChildKpis,
-            { total: total }
+            numberOfChildKpis
         )
 
         return numberOfChildKpis;
@@ -320,7 +309,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setWeightData = () => {
         const { createKpiUnit } = this.props;
         var listOrganizationalUnitKpi;
-        var weight = {}, total = 0;
+        var weight = {};
 
         if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -330,7 +319,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             listOrganizationalUnitKpi.map(parent => {
                 var temporary = {};
 
-                total = total + parent.weight;
                 temporary[parent.name] = parent.weight;
                 weight = Object.assign(weight, temporary)
             })
@@ -338,8 +326,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         weight = Object.assign(
             { name: "Trọng số" },
-            weight,
-            { total: total }
+            weight
         )
 
         return weight;
@@ -390,7 +377,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             dataChart = listOrganizationalUnitKpi.map(kpis => {
                 var temporary;
                 temporary = data.map(x => {
-                    return (x[kpis.name]/x.total).toFixed(4);
+                    return x[kpis.name];
                 })
                 
                 temporary = [kpis.name].concat(temporary);
@@ -399,7 +386,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             })
         }
         dataChart.unshift(titleX);
-    
+
         // Khởi tạo biểu đồ
         this.chart = c3.generate({
             bindto: this.refs.chart,         // Đẩy chart vào thẻ div có id="barChart"        
@@ -421,7 +408,10 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 type: 'bar',
                 groups: [
                     listOrganizationalUnitKpi.map(x => x.name)
-                ]
+                ],
+                stack: {
+                    normalize: true
+                }
             },
 
             bar: {                              // Thiết lập size thanh bar
@@ -437,20 +427,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     tick: {
                         outer: true
                     }
-                },
-                y: {
-                    max: 0.91,
-                    tick: {
-                        format: d3.format('.0%')
-                    }
                 }
-            },
-
-            tooltip: {                          // Config tooltip
-                format: {
-                    value:d3.format('.2%')
-                }
-            },
+            }
         });
     }
     
