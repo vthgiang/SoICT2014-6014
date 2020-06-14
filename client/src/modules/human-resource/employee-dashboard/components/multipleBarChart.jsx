@@ -52,8 +52,11 @@ class MultipleBarChart extends Component {
     }
 
     renderChart = (data) => {
+        data.data1.shift(); data.data2.shift(); data.data3.shift();
+        let bigData1 = data.data1.map(x => 2 * x);
+        let bigData2 = data.data2.map(x => x / 2);
+        let bigData3 = data.data3.map(x => x * 1.5);
         this.removePreviousChart();
-
         let chart = c3.generate({
             bindto: this.refs.chart,
             data: {
@@ -90,25 +93,17 @@ class MultipleBarChart extends Component {
                 }
             }
         });
-        var addColumn = (ratioX, data, delay) => {
-            var dataTmp = [data[0], 0];
-            setTimeout(function () {
-                chart.load({
-                    columns: [ratioX, dataTmp]
-                });
-            }, 200);
-            data.forEach(function (value, index) {
-                setTimeout(function () {
-                    dataTmp[index] = value;
-                    chart.load({
-                        columns: [ratioX, dataTmp],
-                    });
-                }, (200 + (delay / 12 * index)));
+
+        setTimeout(function () {
+            chart.load({
+                columns: [data.ratioX, ['data1', ...bigData1], ['data2', ...bigData2], ['data3', ...bigData3]],
             });
-        }
-        addColumn(data.ratioX, data.data1, 2400);
-        addColumn(data.ratioX, data.data2, 2800);
-        addColumn(data.ratioX, data.data3, 3200);
+        }, 100);
+        setTimeout(function () {
+            chart.load({
+                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2], ['data3', ...data.data3]],
+            });
+        }, 300);
     }
     render() {
         const { lineBar, nameChart } = this.state;

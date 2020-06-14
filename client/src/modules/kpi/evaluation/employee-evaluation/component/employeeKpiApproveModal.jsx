@@ -48,7 +48,9 @@ class ModalMemberApprove extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
-            this.props.getKPIMemberById(nextProps.id);
+            if (nextProps.id){
+                this.props.getKPIMemberById(nextProps.id);
+            }
             return false;
         }
         return true;

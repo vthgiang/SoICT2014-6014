@@ -106,12 +106,13 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 error: action.error
-            };
-        case performTaskConstants.GET_TASKACTION_REQUEST:
+            }; 
+        case performTaskConstants.ABC:
             return {
                 ...state,
+                currentTimer: null,
                 loading: true
-            };
+            }    
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
             var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
@@ -131,7 +132,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
-            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content.taskActions}
              return {
                 ...state,
                 task : {
@@ -328,6 +329,7 @@ export function performtasks(state = {}, action) {
                 evaluating: true
             }
         case performTaskConstants.EVALUATION_ACTION_SUCCESS:
+            console.log(action)
             var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
                 ...state,

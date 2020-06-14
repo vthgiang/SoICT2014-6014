@@ -72,7 +72,7 @@ function getTimesheetLogs(task) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/${task}`,
         method: 'GET',
-    }, false, true, 'task.task_perform');
+    }, false, false, 'task.task_perform');
 };
 
 // get current status task
@@ -81,7 +81,7 @@ function getTimerStatusTask() { //function getTimerStatusTask(task, user)
     return  sendRequest ({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${user}`,
         method: 'GET',
-    }, false, true, 'task.task_perform');
+    }, false, false, 'task.task_perform');
 };
 // start timer task
 function startTimerTask(newTimer) {        
@@ -89,7 +89,7 @@ function startTimerTask(newTimer) {
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
         method : 'POST',
         data : newTimer,
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 
 // stop timer task

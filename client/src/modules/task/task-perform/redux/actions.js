@@ -26,7 +26,7 @@ export const performTaskAction = {
     evaluationAction,
     confirmAction,
     downloadFile,
-    uploadFile
+    uploadFile,
 };
 // Create result task
 function createResultTask(result) {

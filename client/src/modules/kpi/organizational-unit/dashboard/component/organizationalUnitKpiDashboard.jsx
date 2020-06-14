@@ -5,9 +5,6 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
-// import { ModalDetailKPI } from './ModalDetailKPI';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
-// import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
 
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
 import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
@@ -15,34 +12,72 @@ import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUn
 import { TaskPerformanceResultsOfOrganizationalUnitChart } from './taskPerformanceResultsOfOrganizationalUnitChart';
 import { StatisticsOfPerformanceResultsChart } from './statisticsOfPerformanceResultsChart';
 
+import CanvasJSReact from '../../../../../chart/canvasjs.react';
+
+import { SelectBox } from '../../../../../common-components/index';
 class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
         
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+
         this.state = {
             currentMonth: new Date().getMonth() + 1,
             currentYear: new Date().getFullYear(),
-            currentRole: localStorage.getItem("currentRole")
+            currentRole: null,
+            resultsOrganizationalUnitId: null,
+            resultsOrganizationalUnit: null,
+            organizationalUnitSelectBox: null,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
-        this.props.getAllKPIUnit(this.state.currentRole);
-        this.props.getChildrenOfOrganizationalUnitsAsTree(this.state.currentRole)
+        this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+        this.setState(state => {
+            return {
+                ...state,
+                currentRole: localStorage.getItem('currentRole')
+            }
+        })
     }
 
-    componentDidUpdate() {
+    shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
-            this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+            await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+            await this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+
             this.setState(state => {
                 return {
                     ...state,
-                    currentRole: localStorage.getItem('currentRole')
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    organizationalUnitId: null
+                }
+            });
+
+            return false;
+        }
+
+        if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if(!nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+                return false
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE
                 }
             })
+            return false;
+        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+            return true;
         }
+
+        return false;
     }
 
     formatDate(date) {
@@ -65,10 +100,21 @@ class OrganizationalUnitKpiDashboard extends Component {
         
     }
 
+    handleSelectOrganizationalUnitForResults = (value) => {
+        var organizationalUnit = this.state.organizationalUnitSelectBox.filter(x => x.value === value[0]).map(x => x.text);
+
+        this.setState(state => {
+            return {
+                ...state,
+                resultsOrganizationalUnitId: value[0],
+                resultsOrganizationalUnit: organizationalUnit[0]
+            }
+        })
+    }
+
     render() {
         
-        var childOrganizationalUnit, listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, childrenOrganizationalUnit;
-        var unitList, currentUnit;
+        var childOrganizationalUnit, targetA, targetC, targetOther, misspoint, childrenOrganizationalUnit, organizationalUnitSelectBox;
         const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet } = this.props;
 
         if(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
@@ -107,38 +153,19 @@ class OrganizationalUnitKpiDashboard extends Component {
             }
         }
 
-        if (user.organizationalUnitsOfUser) {
-            unitList = user.organizationalUnitsOfUser;
-            currentUnit = unitList.filter(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-        }
-        
-        if (managerKpiUnit.kpis) {
-            listkpi = managerKpiUnit.kpis;
-            if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
-            {
-                kpiApproved = listkpi.filter(item => item.status === 2);
-                currentKPI = listkpi.filter(item => item.status !== 2);
-                currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
+        if(childOrganizationalUnit) {
+            organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
 
-                datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.automaticPoint }
-                }).reverse();
-                targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.kpis[0].result }
-                }).reverse();
-                targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.kpis[1].result }
-                }).reverse();
-                targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
-                }).reverse();
-                misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: (100 - item.result) }
-                }).reverse();
-            };
+            if(organizationalUnitSelectBox && this.state.resultsOrganizationalUnitId === null) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        resultsOrganizationalUnitId: organizationalUnitSelectBox[0].value,
+                        resultsOrganizationalUnit: organizationalUnitSelectBox[0].text,
+                        organizationalUnitSelectBox: organizationalUnitSelectBox
+                    }
+                })
+            }
         }
         
         const options2 = {
@@ -195,11 +222,11 @@ class OrganizationalUnitKpiDashboard extends Component {
 
                             {managerKpiUnit.kpis ?
                                 <div className=" box box-primary" style={ {textAlign: 'center'}}>
-                                    <h2>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
+                                    <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
                                     <TrendsInOrganizationalUnitKpiChart/>
                                 </div>
                                 : <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h2>Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
+                                    <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
                                     <h4>Chưa khởi tạo tập Kpi đơn vị tháng {this.state.currentMonth}</h4>
                                 </div>
                             }   
@@ -208,21 +235,48 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 {childOrganizationalUnit &&
                                     <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                            <h2>Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
-                                            <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={childOrganizationalUnit[0].id}/>
+                                            <h2 class="box-title">Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
+                                            <div className="box-body dashboard_box_body">
+                                                <div style={{textAlign: "right"}}>
+                                                    <span className="label label-danger">{this.state.resultsOrganizationalUnit}</span>
+
+                                                    <button type="button" data-toggle="collapse" data-target="#resultsOrganizationalUnit" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
+                                                    <div id="resultsOrganizationalUnit" className="box collapse setting-table">
+                                                        <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
+
+                                                        <div className = "form-group">
+                                                            <label>Đơn vị</label>
+                                                            <SelectBox
+                                                                id={`resultsOrganizationalUnitSelectBox`}
+                                                                className="form-control select2"
+                                                                style={{ width: "100%" }}
+                                                                items={organizationalUnitSelectBox}
+                                                                multiple={false}
+                                                                onChange={this.handleSelectOrganizationalUnitForResults}
+                                                                value={organizationalUnitSelectBox[0].value}
+                                                            />
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                                {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
+                                                    <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.resultsOrganizationalUnitId}/>
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 }   
                                 {managerKpiUnit.kpis ?
                                     <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                            <h2>Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
-                                            <DistributionOfOrganizationalUnitKpiChart/>
+                                            <h2 class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
+                                            <div className="box-body dashboard_box_body">
+                                                <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.distributionOrganizationalUnitId}/>
+                                            </div>
                                         </div>
                                     </div>
                                     : <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                            <h2>Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
+                                            <h2 class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
                                             <h4>Chưa khởi tạo tập Kpi đơn vị tháng {this.state.currentMonth}</h4>
                                         </div>
                                     </div>
@@ -233,14 +287,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 {childOrganizationalUnit &&
                                     <div className="col-xs-6">
                                         <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                            <h2>Kết quả thực hiện công việc các đơn vị năm {this.state.currentYear}</h2>
-                                            <TaskPerformanceResultsOfOrganizationalUnitChart childrenOrganizationalUnit={childOrganizationalUnit}/>
+                                            <h2 class="box-title">Kết quả thực hiện công việc các đơn vị năm {this.state.currentYear}</h2>
+                                            <TaskPerformanceResultsOfOrganizationalUnitChart/>
                                         </div>
                                     </div>
                                 }       
                                 <div className="col-xs-6">
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h2>Thống kê kết quả thực hiện công việc tháng {this.state.currentMonth}</h2>
+                                        <h2 class="box-title">Thống kê kết quả thực hiện công việc tháng {this.state.currentMonth}</h2>
                                         <StatisticsOfPerformanceResultsChart/>
                                     </div>
                                 </div>

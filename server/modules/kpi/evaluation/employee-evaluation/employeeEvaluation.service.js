@@ -165,8 +165,8 @@ exports.getById = async (id) => {
 exports.getTaskById = async (data) => {
     //data :kpis_id, emloyeeId, date
     var date = data.date.split("-");
-    console.log("dateeee",date);
-    var daykpi = parseInt(date[2]);
+    //console.log("dateeee",date);
+    //var daykpi = 30;
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
     // tìm kiếm các công việc cần được đánh giá trong tháng
@@ -174,11 +174,16 @@ exports.getTaskById = async (data) => {
     var priority;
     // tính điểm taskImportanceLevel:2
     for(var element of task){
+        var date1 = element.preEvaDate;
+        var date2 = element.date;
+        var Difference_In_Time = date2.getTime() - date1.getTime(); 
+        var daykpi = Difference_In_Time / (1000 * 3600 * 24); 
+        console.log('daykpi = ', daykpi);
         element.taskImportanceLevelCal = Math.round(3*(element.priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
         if(element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
          element.taskImportanceLevel = element.taskImportanceLevelCal;
     }
-    console.log("----", task);
+    //console.log("----", task);
     return task;
 }
 
@@ -209,14 +214,11 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
 exports.setTaskImportanceLevel = async (id, data) => {
     // data body co taskId, date, point, employeeId
     // id là id của employee kpi
-   // console.log(data);
    console.log(data);
    var date = new Date(data[0].date);
-    console.log("tetete",date);
-    var daykpi = date.getDate();
-    console.log('dayyyy', daykpi);
+    var daykpi = 30;
     for (const element of data) {
-        var setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, element.point, element.date);
+        var setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, parseInt(element.point), element.date);
     };
     // tinh diem kpi ca nhan 
     var key = {
@@ -224,26 +226,33 @@ exports.setTaskImportanceLevel = async (id, data) => {
         date : data[0].date,
         employeeId : data[0].employeeId
     }
-  //  console.log("keyyyyyy", key);
-    var task = await getResultTaskByMonth(key);
-    var autoPoint = 0;
-    var approvePoint = 0;
-    var employPoint = 0;
-    var sumTaskImportance = 0;
+    let task = await getResultTaskByMonth(key);
+    let autoPoint = 0;
+    let approvePoint = 0;
+    let employPoint = 0;
+    let sumTaskImportance = 0;
     let priority;
+    console.log('#######', task);
     // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
-
     for (element of task) {
         autoPoint += element.automaticPoint * element.taskImportanceLevel ;
         approvePoint += element.approvedPoint * element.taskImportanceLevel;
-        employPoint += element.contribution * element.taskImportanceLevel;
+        employPoint += element.employeePoint * element.taskImportanceLevel;
         sumTaskImportance += element.taskImportanceLevel;
-        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.contribution / 100) + 4 * (daykpi / 30));
-        if (element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
-            element.taskImportanceLevel = element.taskImportanceLevelCal;
+        
+        // tinh so ngay thuc hien : daykpi
+        var date1 = element.preEvaDate;
+        var date2 = element.date;
+        var Difference_In_Time = date2.getTime() - date1.getTime(); 
+        var daykpi = Difference_In_Time / (1000 * 3600 * 24); 
+        console.log('daykpi = ', daykpi);
+
+        element.taskImportanceLevelCal = Math.round(3*(element.priority/3) + 3*(element.contribution/100)+ 4*(daykpi/30));
+        if(element.taskImportanceLevel === -1 || element.taskImportanceLevel === null)
+         element.taskImportanceLevel = element.taskImportanceLevelCal;
+
     }
     var n = task.length;
-    
     var result = await DetailKPIPersonal.findByIdAndUpdate(id,{
         $set :{
             "automaticPoint" : Math.round(autoPoint/sumTaskImportance),
@@ -260,13 +269,10 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     // id la _id tháng trong evaluation trong task
     // trong data có điểm taskImportanceLevel và id của nhân viên cần chỉnh sửa
     // find task
-    //console.log("ID ++++++++", taskId);
 
     var date = new Date(date);
-    console.log("dateeeee",date);
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
-    console.log("monthhh", month);
     // find task
     var task = await Task.aggregate([
         {
@@ -282,22 +288,23 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
         {$match : {month : month}},
         {$match : {year : year}}
     ])
-    console.log('taskkkk daayyy', task);
-    var setPoint = await Task.findOneAndUpdate(
-        {
-            "evaluations._id": task[0]._id,
-            "evaluations.results.employee": mongoose.Types.ObjectId(employeeId),
-        },
-        {
-            $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
-        },
-        {
-            arrayFilters: [
-                {
-                    "elem.employee": employeeId,
-                }
-            ]
-        });
+   // console.log('taskkkk daayyy', task);
+    if(task.length !==0){
+        var setPoint = await Task.findOneAndUpdate(
+            {
+                "evaluations._id": task[0]._id
+            },
+            {
+                $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem.employee": employeeId,
+                    }
+                ]
+            });
+    }
     return setPoint;
 }
 
@@ -305,10 +312,18 @@ async function getResultTaskByMonth(data) {
     // data gồm : id ( id của kpi nhân viên), date(ngày hiện tại), employeeId : id của nhân viên
    // console.log("data ne", data.id);
     var date = new Date(data.date);
-    console.log("tetete",date);
+    let kpiType;
+    if (data.kpiType === 1){
+        kpiType="Accountable";
+    } else if (data.kpitType === 2){
+        kpiType="Consulted";
+    } else {
+        kpiType="Responsible";
+    }
+    
     var monthkpi = date.getMonth()+1;
     var yearkpi = date.getFullYear();
-    console.log("month", monthkpi);
+    //console.log("month", monthkpi);
     var task = await Task.aggregate([
         {
             $match: { "evaluations.kpis.kpis":  mongoose.Types.ObjectId(data.id) }
@@ -324,12 +339,28 @@ async function getResultTaskByMonth(data) {
         {
             $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, {month : '$month'}, {year: '$year'},{ endDate: "$endDate" },{ date: "$date" },{ taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
         },
-        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} }, 
+        { $match: { 'employee': mongoose.Types.ObjectId(data.employeeId)} },
+        {$match : {"role": kpiType}},
         {$match: {"month" : monthkpi}},
         {$match: {"year" : yearkpi}},
-        
-
     ]);
+
+    var tasks = await task.map((x) =>{
+        let date = new Date(x.date);
+        let startDate = new Date(x.startDate);
+       // let endDate = new Date(x.endDate);
+
+        let month = date.getMonth()+1;
+        let startMonth = startDate.getMonth() +1;
+        //let endMonth = endDate.getMonth() + 1;
+        console.log('monthhhh', month);
+        console.log('startMonthhh', startMonth);
+        if(month === startMonth) x.preEvaDate = startDate;
+       // else if (month == endMonth) x.preEvaDate = endDate;
+        else x.preEvaDate = new Date(date.getFullYear(), month-1, 0);
+    });
+    //console.log('-----------', task);
+    
     
     return task;
 }

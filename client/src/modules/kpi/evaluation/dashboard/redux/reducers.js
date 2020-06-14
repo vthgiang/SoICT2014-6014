@@ -86,6 +86,8 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
 
     case  dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
       return {
+        ...state,
+        childrenOrganizationalUnit: null,
         loading: true,
         isLoading: true
       };
@@ -100,6 +102,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
 
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE:
       return { 
+        ...state,
         error: action.payload,
         isLoading: false
       };

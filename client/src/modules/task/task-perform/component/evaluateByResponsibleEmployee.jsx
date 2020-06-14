@@ -47,7 +47,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
         let date = this.formatDate(new Date());
         if(this.props.perform === "stop"){
@@ -58,23 +58,27 @@ class EvaluateByResponsibleEmployee extends Component {
             // date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
-        let point = 0;
+        let point = undefined;
         let info = {};
         let cloneKpi = [];
 
         let infoTask = task.taskInformations;
         for(let i in infoTask){
+
             if(infoTask[i].type === "Date"){
                 if(infoTask[i].value){
                     infoTask[i].value = this.formatDate(infoTask[i].value);
-                } else infoTask[i].value = this.formatDate(new Date());
+                } else if(!infoTask[i].filledByAccountableEmployeesOnly) {
+                    infoTask[i].value = this.formatDate(new Date());
+                } 
             }
             else if(infoTask[i].type === "SetOfValues"){
-                let splitter = infoTask[i].extra.split('\n');
-
-                // if(infoTask[i].value){
-                    infoTask[i].value = infoTask[i].value === undefined ? [splitter[0]] : [infoTask[i].value];
-                // }
+                let splitSetOfValues = infoTask[i].extra.split('\n');
+                if(infoTask[i].value) {
+                    infoTask[i].value = [infoTask[i].value];
+                } else if(!infoTask[i].filledByAccountableEmployeesOnly){
+                    infoTask[i].value = [splitSetOfValues[0]];
+                }
             }
             
             info[`${infoTask[i].code}`] = {
@@ -88,7 +92,7 @@ class EvaluateByResponsibleEmployee extends Component {
         if(evaluations){
             if(evaluations.results.length !== 0) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
-                if(res) point = res.employeePoint ? res.employeePoint : 0;
+                if(res) point = res.employeePoint ? res.employeePoint : undefined;
             }
             let infoEval = evaluations.taskInformations;
             let chkHasInfo = false;
@@ -101,20 +105,23 @@ class EvaluateByResponsibleEmployee extends Component {
 
             if(chkHasInfo){
                 for(let i in infoEval){
+                   
                     if(infoEval[i].type === "Date"){
                         if(infoEval[i].value){
                             infoEval[i].value = this.formatDate(infoEval[i].value);
-                        } else infoEval[i].value = this.formatDate(new Date());
-                        
+                        } 
+                        else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                            infoEval[i].value = this.formatDate(Date.now());
+                        } 
                     }
                     else if(infoEval[i].type === "SetOfValues"){
-                        let splitter = infoEval[i].extra.split('\n');
-
-                        infoEval[i].value = infoEval[i].value === undefined ? [splitter[0]] : [infoEval[i].value];
-
-                        // if(infoEval[i].value){
-                        //     infoEval[i].value = infoEval[i].value === undefined ? undefined : [infoEval[i].value];
-                        // }
+                        let splitSetOfValues = infoEval[i].extra.split('\n');
+                        if(infoEval[i].value){
+                            infoEval[i].value = [infoEval[i].value];
+                        }
+                        else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                            infoEval[i].value = [splitSetOfValues[0]];
+                        }
                     }
                     info[`${infoEval[i].code}`] = {
                         value: infoEval[i].value,
@@ -132,7 +139,6 @@ class EvaluateByResponsibleEmployee extends Component {
             }
             else if(this.props.perform === "evaluate"){
                 
-                // if(chkHasInfo) date = this.formatDate(evaluations.date);
                 date = this.formatDate(evaluations.date);
 
             }
@@ -408,7 +414,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 break;
             }
         }
-        return ( check && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
+        // check && 
+        return ( errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
     
@@ -526,7 +533,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 className="form-control"
                                 type="number" 
                                 name="point"
-                                placeholder={85}
+                                placeholder={"Nhập điểm tự đánh giá"}
                                 onChange={this.handleChangePoint}
                                 value={point}
                             />
