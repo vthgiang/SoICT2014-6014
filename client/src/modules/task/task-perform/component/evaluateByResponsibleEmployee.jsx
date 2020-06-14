@@ -13,6 +13,8 @@ import {
 } from '../../../../config';
 import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
 
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
+
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
         
@@ -253,7 +255,7 @@ class EvaluateByResponsibleEmployee extends Component {
         await this.setState(state =>{
             return {
                 ...state,
-                autoPoint: value,
+                // autoPoint: value,
                 progress: value,
                 errorOnProgress: this.validatePoint(value)
             }
@@ -419,6 +421,26 @@ class EvaluateByResponsibleEmployee extends Component {
                 && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
     
+    handleChangeAutoPoint = async () => {
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: this.state.date,
+            info: this.state.info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+        // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
+        await this.setState( state => {
+            return {
+                ...state,
+                autoPoint: automaticPoint
+            }
+        });
+    }
+
+
     save = () => {
         let taskId;
         taskId = this.props.id;
@@ -524,7 +546,8 @@ class EvaluateByResponsibleEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint !== undefined?autoPoint:"Chưa tính được"}</span></strong>
+                        <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong>
                         <br/>
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>
