@@ -1527,7 +1527,7 @@ export default {
 
                 dashboard: {
                     organizational_unit: 'Unit',
-                    select_all_units: 'Select all organizational unit',
+                    select_units: 'Select organizational unit',
                     all_unit: 'All organizational unit',
                     search: 'Search',
                     setting_up: 'Setting up',

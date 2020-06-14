@@ -222,7 +222,7 @@ exports.copyKPI = async (data) => {
     var yearOldKPI = dateold.getFullYear();
     var monthNewKPI = dateNewKPIUnit.getMonth();
     var yearNewKPI = dateNewKPIUnit.getFullYear();
-    var department = await OrganizationalUnit.findOne({
+    var department = await Department.findOne({
         $or: [
             { dean: data.id },
             { viceDean: data.id },
@@ -258,7 +258,6 @@ exports.copyKPI = async (data) => {
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     }
-    console.log("=======", organizationalUnitKpi);
 
     return organizationalUnitKpi;
 }

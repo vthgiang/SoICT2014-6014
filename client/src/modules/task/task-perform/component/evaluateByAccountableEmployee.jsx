@@ -7,6 +7,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class EvaluateByAccountableEmployee extends Component {
 
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
         let date = this.formatDate(new Date()); 
         if(this.props.perform === "stop"){
@@ -82,54 +83,51 @@ class EvaluateByAccountableEmployee extends Component {
                 let listResult = evaluations.results;
                 for(let i in listResult){
                     if(listResult[i].role === "Responsible"){
-                        empPoint[`responsible${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
-                        results[`approvedPointResponsible${listResult[i].employee._id}`] ={
-                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : 0,
+                        empPoint[`responsible${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: undefined;
+                        results[`approvedPointResponsible${listResult[i].employee._id}`] = {
+                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
                             role: "Responsible",
                             target: "Point"
                         } 
                         results[`contributeResponsible${listResult[i].employee._id}`] = {
-                            value: listResult[i].contribution ? listResult[i].contribution : 0,
+                            value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
                             role: "Responsible",
                             target: "Contribution"
                         }
                     }
                     else if(listResult[i].role === "Consulted"){
-                        empPoint[`consulted${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
-                        results[`approvedPointConsulted${listResult[i].employee._id}`] ={
-                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : 0,
+                        empPoint[`consulted${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: undefined;
+                        results[`approvedPointConsulted${listResult[i].employee._id}`] = {
+                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
                             role: "Consulted",
                             target: "Point"
                         } 
                         results[`contributeConsulted${listResult[i].employee._id}`] = {
-                            value: listResult[i].contribution ? listResult[i].contribution : 0,
+                            value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
                             role: "Consulted",
                             target: "Contribution"
                         }
                     }
                     else if(listResult[i].role === "Accountable"){
-                        empPoint[`accountable${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: 0;
-                        results[`approvedPoint${listResult[i].employee._id}`] ={
-                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : 0,
+                        empPoint[`accountable${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint: undefined;
+                        results[`approvedPoint${listResult[i].employee._id}`] = {
+                            value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
                             role: "Accountable",
                             target: "Point"
                         } 
                         results[`contributeAccountable${listResult[i].employee._id}`] = {
-                            value: listResult[i].contribution ? listResult[i].contribution : 0,
+                            value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
                             role: "Accountable",
                             target: "Contribution"
                         }
                     }
-                    
-                    
                 }
-                
             }
             
 
@@ -231,12 +229,33 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 progress: value,
-                autoPoint: value,
+                // autoPoint: value,
                 errorOnProgress: this.validatePoint(value)
             }
         })
         // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
+
+    handleChangeAutoPoint = async () => {
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: this.state.date,
+            info: this.state.info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+        // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
+        await this.setState( state => {
+            return {
+                ...state,
+                autoPoint: automaticPoint
+            }
+        });
+    }
+
+
 
 // ====================================================================
 
@@ -606,6 +625,9 @@ class EvaluateByAccountableEmployee extends Component {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
         var {info} = this.state;
+
+        // TODO: Check evaluation has both {approvedPoint, contributions} for a employee
+
         var check = true;
         for(let i in info) {
             if(info[i].value === undefined ) {
@@ -734,7 +756,9 @@ class EvaluateByAccountableEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint !== undefined?autoPoint:"Chưa tính được"}</span> </strong>
+                        <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong>
+
                         <br/>
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>
@@ -752,22 +776,22 @@ class EvaluateByAccountableEmployee extends Component {
                             
                                 {
                                     task && task.responsibleEmployees.map((item,index) => 
-                                        (
+                                        ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Responsible'}</td>
-                                                <td>{this.state.empPoint[`responsible${item._id}`]?this.state.empPoint[`responsible${item._id}`]:0}</td>
+                                                <td>{this.state.empPoint[`responsible${item._id}`]?this.state.empPoint[`responsible${item._id}`]:'Chưa đánh giá'}</td>
                                                 {/* <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td> */}
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" 
-                                                        value={this.state.results[`contributeResponsible${item._id}`] ? this.state.results[`contributeResponsible${item._id}`].value : 0} 
+                                                        value={this.state.results[`contributeResponsible${item._id}`] ? this.state.results[`contributeResponsible${item._id}`].value : undefined} 
                                                         type="number" name={`contributeResponsible${item._id}`} placeholder={"% Đóng góp"} 
                                                         onChange={(e)=>this.handleChangeResponsibleContribution(e,item._id)}
                                                     />
                                                 </td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number" 
-                                                        value={this.state.results[`approvedPointResponsible${item._id}`]? this.state.results[`approvedPointResponsible${item._id}`].value: 0} 
+                                                        value={this.state.results[`approvedPointResponsible${item._id}`]? this.state.results[`approvedPointResponsible${item._id}`].value: undefined} 
                                                         name={`approvedPointResponsible${item._id}`} placeholder={"Điểm phê duyệt"} 
                                                         onChange={(e)=>this.handleChangeApprovedPointForResponsible(e,item._id)}
                                                     />
@@ -779,22 +803,22 @@ class EvaluateByAccountableEmployee extends Component {
                                 }
                                 {
                                     task && task.consultedEmployees.map((item,index) => 
-                                        (
+                                        ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Consulted'}</td>
                                                 {/* <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td> */}
-                                                <td>{this.state.empPoint[`consulted${item._id}`]?this.state.empPoint[`consulted${item._id}`]:0}</td>
+                                                <td>{this.state.empPoint[`consulted${item._id}`]?this.state.empPoint[`consulted${item._id}`]:'Chưa đánh giá'}</td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number" 
-                                                        value={this.state.results[`contributeConsulted${item._id}`] ? this.state.results[`contributeConsulted${item._id}`].value : 0}
+                                                        value={this.state.results[`contributeConsulted${item._id}`] ? this.state.results[`contributeConsulted${item._id}`].value : undefined}
                                                         name={`contributeConsulted${item._id}`} placeholder={"% Đóng góp"} 
                                                         onChange={(e)=>this.handleChangeConsultedContribution(e,item._id)}
                                                     />
                                                 </td>
                                                 <td style={{padding: 5}}>
-                                                    <input className="form-control" type="number" 
-                                                        value={this.state.results[`approvedPointConsulted${item._id}`] ? this.state.results[`approvedPointConsulted${item._id}`].value : 0 }
+                                                    <input className={`form-control`} type="number" 
+                                                        value={this.state.results[`approvedPointConsulted${item._id}`] ? this.state.results[`approvedPointConsulted${item._id}`].value : undefined }
                                                         name={`approvedPointConsulted${item._id}`} placeholder={"Điểm phê duyệt"} 
                                                         onChange={(e)=>this.handleChangeApprovedPointForConsulted(e,item._id)}
                                                     />
@@ -806,21 +830,21 @@ class EvaluateByAccountableEmployee extends Component {
                                 }
                                 {
                                     task && task.accountableEmployees.map((item,index) => 
-                                        (
+                                        ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
                                                 <td>{'Accountable'}</td>
-                                                <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`]?this.state.empPoint[`accountable${item._id}`] : 0 }</p></td>
+                                                <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`]?this.state.empPoint[`accountable${item._id}`] : 'Chưa đánh giá' }</p></td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number"
-                                                        value={this.state.results[`contributeAccountable${item._id}`] ? this.state.results[`contributeAccountable${item._id}`].value : 0}
+                                                        value={this.state.results[`contributeAccountable${item._id}`] ? this.state.results[`contributeAccountable${item._id}`].value : undefined}
                                                         name={`contributeAccountable${item._id}`} placeholder={"% Đóng góp"} 
                                                         onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}
                                                     />
                                                 </td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number"
-                                                        value={this.state.results[`approvedPoint${item._id}`] ? this.state.results[`approvedPoint${item._id}`].value : 0 }
+                                                        value={this.state.results[`approvedPoint${item._id}`] ? this.state.results[`approvedPoint${item._id}`].value : undefined }
                                                         name={`approvedPoint${item._id}`} placeholder={"Điểm phê duyệt"} 
                                                         onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}
                                                     />

@@ -56,6 +56,24 @@ export function KPIPersonalManager(state = {}, action) {
         error: action.error,
         isLoading: false
       };
+      case managerKPIConstants.COPY_KPIPERSONALS_REQUEST:
+        return {
+          ...state,
+          adding: true,
+          isLoading: false
+        };
+      case managerKPIConstants.COPY_KPIPERSONALS_SUCCESS:
+        return {
+          ...state,
+          adding: false,
+          currentKPI: action.payload,
+          isLoading: false
+        };
+      case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:
+        return {
+          error: action.payload,
+          isLoading: false
+        };
     default:
       return state
   }

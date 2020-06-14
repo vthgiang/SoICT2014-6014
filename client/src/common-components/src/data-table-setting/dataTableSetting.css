@@ -6,6 +6,11 @@
     width: 250px;
     margin-top: 25px;
     text-align: left;
+
+
+    -webkit-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
+    box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.75);
 }
 @media (max-width: 300px){
     .setting-table {

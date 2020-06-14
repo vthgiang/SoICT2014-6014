@@ -239,7 +239,7 @@ class KPIUnitManager extends Component {
                                 
                                     id={`select-status-kpi`}
                                     className="form-control select2"
-                                    items = {[{value: 3, text: 'Tất cả trạng thái'} ,{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' } ]}
+                                    items = {[{value: 3, text: 'Tất cả trạng thái'} ,{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' },{ value: 0, text:'Chưa kích hoạt'} ]}
                                     onChange={this.handleStatus}
                                     style={{width: "100%"}}
                                     value={status}

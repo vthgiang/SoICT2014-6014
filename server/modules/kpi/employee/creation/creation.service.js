@@ -4,7 +4,13 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 
 /** Lấy tập KPI cá nhân hiện tại theo người dùng */ 
 exports.getEmployeeKpiSet = async (id) => {
-    var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 } })
+    var now = new Date();
+    var currentYear = now.getFullYear();
+    var currentMonth = now.getMonth();
+    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    var endOfLastMonth = new Date(currentYear, currentMonth);
+
+    var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } });
     return employeeKpiSet;
