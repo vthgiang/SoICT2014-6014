@@ -47,7 +47,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
         let date = this.formatDate(new Date());
         if(this.props.perform === "stop"){
@@ -58,7 +58,7 @@ class EvaluateByResponsibleEmployee extends Component {
             // date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
-        let point = 0;
+        let point = undefined;
         let info = {};
         let cloneKpi = [];
 
@@ -92,7 +92,7 @@ class EvaluateByResponsibleEmployee extends Component {
         if(evaluations){
             if(evaluations.results.length !== 0) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
-                if(res) point = res.employeePoint ? res.employeePoint : 0;
+                if(res) point = res.employeePoint ? res.employeePoint : undefined;
             }
             let infoEval = evaluations.taskInformations;
             let chkHasInfo = false;
@@ -533,7 +533,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 className="form-control"
                                 type="number" 
                                 name="point"
-                                placeholder={85}
+                                placeholder={"Nhập điểm tự đánh giá"}
                                 onChange={this.handleChangePoint}
                                 value={point}
                             />

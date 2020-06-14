@@ -322,6 +322,7 @@ exports.data = [
     { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean']},
     { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasktemplates/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasktemplates/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
 
 
     //asset type

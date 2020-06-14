@@ -1,6 +1,8 @@
 const { TaskTemplate, Privilege, Role, UserRole,OrganizationalUnit } = require('../../../models').schema;
 const DashboardService = require('../../kpi/evaluation/dashboard/dashboard.service');
+const OrganizationalUnitService =require('../../super-admin/organizational-unit/organizationalUnit.service');
 const mongoose = require('mongoose');
+const arrayToTree = require('array-to-tree');
 /**
  * Lấy tất cả các mẫu công việc
  */
@@ -279,16 +281,38 @@ exports.editTaskTemplate = async (data, id) => {
     return taskTemplate;
 }
 /**
- * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
+ * @getAllUserInCompany = true khi muốn lấy tất cả người dùng trong tất cả đơn vị của 1 công ty
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-exports.getAllChildrenOfOrganizationalUnitsAsTree = async (id, unitId) => {
+exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=false) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
-    var organizationalUnit = await OrganizationalUnit.findById(unitId);
     var data;
-    data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
-   
+
+    if(!getAllUserInCompany)
+    {
+        
+        var organizationalUnit = await OrganizationalUnit.findById(unitId);
+        data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
+    }
+    //Lấy tất nhan vien trong moi đơn vị trong công ty
+    if(getAllUserInCompany) {
+        
+        const allUnits = await OrganizationalUnit.find({ company: id });    
+        const newData = allUnits.map( department => {return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            dean:department.dean.toString(),
+            viceDean:department.viceDean.toString(),
+            employee:department.employee.toString(),
+            parent_id: department.parent !== null ? department.parent.toString() : null
+            }
+        });
+        return  _getAllUsersInOrganizationalUnits(newData);
+    }
+
     var queue=[];
     var departments = [];
     //BFS tìm tât cả đơn vị con-hàm của Đức

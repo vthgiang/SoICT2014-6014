@@ -50,7 +50,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
         let date = this.formatDate(new Date());
-        let point = 0;
+        let point = undefined;
         let info = {};
         let cloneKpi = [];
         
@@ -86,7 +86,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         if(evaluations){
             if(evaluations.results.length !== 0) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
-                if(res) point = res.employeePoint ? res.employeePoint : 0;
+                if(res) point = res.employeePoint ? res.employeePoint : undefined;
             }
             
             

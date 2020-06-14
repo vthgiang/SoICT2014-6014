@@ -22,12 +22,12 @@ class EvaluateByConsultedEmployee extends Component {
 
         // console.log('--------------------', evaluations);
 
-        let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
+        let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         
-        let point = 0;
+        let point = undefined;
         if(evaluations){
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
-            if(res) point = res.employeePoint ? res.employeePoint : 0;
+            if(res) point = res.employeePoint ? res.employeePoint : undefined;
         }
 
         this.state={
@@ -149,7 +149,7 @@ class EvaluateByConsultedEmployee extends Component {
                                 className="form-control"
                                 type="number" 
                                 name="point"
-                                placeholder={85}
+                                placeholder={"Nhập điểm tự đánh giá"}
                                 onChange={this.handleChangePoint}
                                 value={point}
                             />

@@ -140,6 +140,24 @@ export function tasktemplates(state = {}, action) {
                 error: action.payload,
                 isLoading: false
             };
+        
+
+        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST:
+            return { 
+                ...state,
+                isLoading:true
+            };
+        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS:
+            return { 
+                ...state,
+                usersInUnitsOfCompany: action.payload,
+                isLoading: false
+            };
+        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_FAILURE:
+            return { 
+                error: action.payload,
+                isLoading: false
+            };         
 
 
 

@@ -25,7 +25,7 @@ exports.getTask = async (id,userId) => {
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -590,15 +590,24 @@ exports.createTask = async (task) => {
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
     var email,userId,user,users,userIds;
-
-    userIds = task.responsibleEmployees;  // lấy id người thực hiện
-    userId = task.accountableEmployees;  // lấy id người phê duyệt
-    userIds.push(...userId);            
-    userId = task.consultedEmployees;  // lấy id người hỗ trợ
-    userIds.push(...userId);
-    userId = task.informedEmployees;  // lấy id người quan sát
-    userIds.push(...userId);  // lấy ra id của tất cả người dùng có nhiệm vụ
-
+    var resId = task.responsibleEmployees;  // lấy id người thực hiện
+    // console.log("res :"+resId);
+    var res = await User.find ({ _id : { $in : resId}});
+    // console.log("res :"+res);
+    res = res.map(item => item.name);
+    console.log("res :"+res);
+    userIds=resId; 
+    // console.log(userIds);
+    var accId = task.accountableEmployees;  // lấy id người phê duyệt
+    var acc = await User.find({ _id : { $in : accId}});
+    userIds.push(...accId);            
+    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var con = await User.find({ _id : { $in : conId}})
+    userIds.push(...conId);
+    var infId = task.informedEmployees;  // lấy id người quan sát
+    var inf = await User.find({ _id : { $in : infId }})
+    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
+   
     // loại bỏ các id trùng nhau
     userIds = userIds.map(u => u.toString());
     for(let i = 0, max = userIds.length; i < max; i++) {
@@ -612,19 +621,34 @@ exports.createTask = async (task) => {
     })  
 
     email = user.map( item => item.email); // Lấy ra tất cả email của người dùng
+    email.push("trinhhong102@gmail.com");
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p> `+
+                `<h3>Thông tin công viêc</h3>`+
+                `<p>Tên công việc : ${task.name}</p>`+
+                `<p>Mô tả : ${task.description}</p>`+
+                `<p>Người thực hiện</p> ` +
+                    `<ul>${res.map((item) => {
+                        return `<li>${item}</li>`
+                    })}
+                    </ul>`+
+                `<p>Người phê duyệt</p> ` +
+                    `<ul>${acc.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`+  
+                `<p>Người hỗ trợ</p> ` +
+                    `<ul>${con.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`+
+                `<p>Người quan sát</p> ` +
+                    `<ul>${inf.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                    </ul>`
+    ;
 
-    var mainOptions = {
-        from: 'vnist.qlcv@gmail.com',
-        to: email,
-        subject: 'Tạo mới công việc hành công',
-        text: '',
-        html:   
-            `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p>`
-    }
-    transporter.sendMail(mainOptions);
-    
-
-    return {task : task, user : userIds };
+    return {task : task, user : userIds, email : email, html : html};
 }
 
 /**
@@ -928,7 +952,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name"},
         { path: "organizationalUnit", model: OrganizationalUnit},
-        { path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         { path: "evaluations.results.employee", select: "name email _id"},
         { path: "evaluations.kpis.employee", select: "name email _id"},
         { path: "evaluations.kpis.kpis"},
@@ -1041,7 +1065,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1126,7 +1150,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1370,7 +1394,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},
@@ -1426,8 +1450,11 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     for(let i in results){
         for(let j in results){
             if(i<j){
+                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu
                 if(results[i].employee === results[j].employee && results[i].role === results[j].role){
                     var point, contribute;
+
+                    // do i hoặc j có thể là point hoặc contribute nên phải kiểm tra cả 2 để tính đc point và contribute
                     if( String(results[i].target) === "Point" ) point = results[i].value;
                     else if( String(results[i].target) === "Contribution") contribute = results[i].value;
 
@@ -1454,7 +1481,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    // var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
     var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     for(let i in listResult){
@@ -1462,12 +1488,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     }
 
     for(let item in cloneResult){
-        // console.log('r.employee === cloneResult[item].employee && r.role === cloneResult[item].role', typeof(cloneResult[item].employee) , typeof(cloneResult[item].role));
         
         var check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
         
-        // console.log('check_data', check_data);
         if(check_data !== undefined){ 
             // cap nhat diem
             await Task.updateOne(
@@ -1662,7 +1686,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     var newTask = await Task.findById(taskId).populate([
         {path: "parent", select: "name"},
         {path: "organizationalUnit", model: OrganizationalUnit},
-        {path: "inactiveEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
         {path: "evaluations.results.employee", select: "name email _id"},
         {path: "evaluations.kpis.employee", select: "name email _id"},
         {path: "evaluations.kpis.kpis"},

@@ -57,8 +57,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let accountableEmployees = task && task.accountableEmployees.map(employee => { return employee._id });
         let consultedEmployees = task && task.consultedEmployees.map(employee => { return employee._id });
         let informedEmployees = task && task.informedEmployees.map(employee => { return employee._id });
-        let inactiveEmployees = task && task.inactiveEmployees.map(employee => { return employee._id });
+        // let inactiveEmployees = task && task.inactiveEmployees.map(employee => { return employee._id });
+        let inactiveEmployees = task && task.inactiveEmployees;
+        let listInactive = {};
+        for(let i in inactiveEmployees){
+            listInactive[`${inactiveEmployees[i]}`] = {
+                value: inactiveEmployees[i],
+                role:'',
+                checked: true
+            }
+        }
+
         this.state = {
+            listInactive: listInactive,
             userId: userId,
             task: task,
             info: info,
@@ -246,15 +257,83 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    handleChangeActiveEmployees = async (value) =>{
-        // let {name, value} = e.target;
-        // console.log('e===========================================', e.target, e.target.value);
-        await this.setState(state=>{
+    changeActiveEmployees = async (listInactive) => {
+        let inactiveEmployees = [];
+        for(let i in listInactive){
+            if(listInactive[i].checked === true){
+                inactiveEmployees.push(listInactive[i].value);
+            }
+        }
+        await this.setState(state => {
             return {
                 ...state,
-                inactiveEmployees : value
+                inactiveEmployees: inactiveEmployees
             }
-        })
+        });
+    }
+
+        // if(target.checked){
+        //     console.log('-------Checked----------');
+        //     this.state.inactiveEmployees[value] = value;   
+        // }else{
+        //     console.log('------ELSE------');
+        //     this.state.inactiveEmployees.splice(value, 1);
+        // }
+        // console.log('------------this.state.inactiveEmployees--------------', this.state.inactiveEmployees);
+
+        // let listInactive = this.state.listInactive;
+        // let inactiveEmployees = [];
+        // for(let i in listInactive){
+        //     if(listInactive[i].check && listInactive[i].checked === true){
+        //         inactiveEmployees.push(listInactive[i].value);
+        //     }
+        // }
+    handleChangeActiveAccountable = async (e, id) =>{
+        let target = e.target;
+        let { value, name, checked } = target;
+        
+        await this.setState(state => {
+            state.listInactive[`${id}`] = { // accountable
+                value: value,
+                checked: checked,
+                role: 'Accountable'
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    handleChangeActiveResponsible = async (e, id) =>{
+        let target = e.target;
+        let { value, name, checked } = target;
+        
+        await this.setState(state => {
+            state.listInactive[`${id}`] = { // responsible
+                value: value,
+                checked: checked,
+                role: 'Responsible'
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    handleChangeActiveConsulted = async (e, id) =>{
+        let target = e.target;
+        let { value, name, checked } = target;
+        
+        await this.setState(state => {
+            state.listInactive[`${id}`] = { // consulted
+                value: value,
+                checked: checked,
+                role: 'Consulted'
+            }
+            return {
+                ...state,
+            }
+        });
     }
 
     handleTaskNameChange = event => {
@@ -403,9 +482,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     save = () => {
 
-        let evaluations, taskId;
+        let listInactive = this.state.listInactive, taskId, inactiveEmployees = [];
         taskId = this.props.id;
-        // evaluations = this.state.task.evaluations[this.state.task.evaluations.length-1]
+        for(let i in listInactive){
+            if(listInactive[i].checked !== undefined && listInactive[i].checked === true){
+                inactiveEmployees.push(listInactive[i].value);
+            }
+        }
         let data = {
             name: this.state.taskName,
             description: this.state.taskDescription,
@@ -420,7 +503,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             consultedEmployees: this.state.consultedEmployees,
             responsibleEmployees: this.state.responsibleEmployees,
             informedEmployees: this.state.informedEmployees,
-            inactiveEmployees: this.state.inactiveEmployees,
+            // inactiveEmployees: this.state.inactiveEmployees,
+            inactiveEmployees: inactiveEmployees,
 
             info: this.state.info,
         }
@@ -474,7 +558,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-        // console.log('stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.state);
+
         return (
             <div>
                 <React.Fragment>
@@ -651,7 +735,67 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Nhân viên không làm việc nữa</legend>
                                 <div className="form-group">
-                                    <label>Chọn người không làm việc nữa</label>
+                               
+                                    <div className="checkbox">
+                                        <strong>Người phê duyệt</strong>
+                                        {
+                                            task.accountableEmployees.map(elem => {
+                                                return <div>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            // accountable
+                                                            checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}  
+                                                            value={elem._id}
+                                                            name="accountable" onChange={(e)=>this.handleChangeActiveAccountable(e, elem._id)} 
+                                                        />{elem.name}
+                                                    </label>
+                                                    <br/>
+                                                </div>
+                                            })
+                                        }
+                                        <br/>
+                                        <strong>Người thực hiện</strong>
+                                        {
+                                            task.responsibleEmployees.map(elem => {
+                                                return <div>
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            // responsible
+                                                            checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true} 
+                                                            value={elem._id}
+                                                            name="responsible" onChange={(e)=>this.handleChangeActiveResponsible(e, elem._id)} 
+                                                        />{elem.name}
+                                                    </label>
+                                                    <br/>
+                                                </div>
+                                            })
+                                        }
+                                        <br/>
+                                        { task.consultedEmployees.length !== 0 &&
+                                            <React.Fragment>
+                                                <strong>Người hỗ trợ</strong>
+                                                {
+                                                    task.consultedEmployees.map(elem => {
+                                                        return <div>
+                                                            <label>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    // consulted
+                                                                    checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true} 
+                                                                    value={elem._id}
+                                                                    name="consulted" onChange={(e)=>this.handleChangeActiveConsulted(e,elem._id)} 
+                                                                />{elem.name}
+                                                            </label>
+                                                            <br/>
+                                                        </div>
+                                                    })
+                                                }
+                                            </React.Fragment>
+                                        }
+                                    </div>
+                                    {/* <label>Chọn người không làm việc nữa</label>
                                     {usercompanys &&
                                         <SelectBox
                                             id={`select-inactive-employee-${this.props.perform}-${this.props.role}`}
@@ -668,11 +812,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             multiple={true}
                                             value={inactiveEmployees}
                                         />
-                                    }
+                                    } */}
                                     {/* về sau nếu muốn xóa nhân viên trong mảng nhân viên phía client thì dùng splice(index,1) server thì dùng $pull */}
                                 </div>
-
-                                
                             </fieldset>
                         </form>
                     </DialogModal>
