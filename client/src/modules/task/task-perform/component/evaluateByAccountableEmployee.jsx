@@ -7,6 +7,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
@@ -228,12 +229,33 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 progress: value,
-                autoPoint: value,
+                // autoPoint: value,
                 errorOnProgress: this.validatePoint(value)
             }
         })
         // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
+
+    handleChangeAutoPoint = async () => {
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: this.state.date,
+            info: this.state.info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+        // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
+        await this.setState( state => {
+            return {
+                ...state,
+                autoPoint: automaticPoint
+            }
+        });
+    }
+
+
 
 // ====================================================================
 
@@ -734,7 +756,9 @@ class EvaluateByAccountableEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint !== undefined?autoPoint:"Chưa tính được"}</span> </strong>
+                        <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong>
+
                         <br/>
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>

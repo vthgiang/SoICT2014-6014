@@ -86,7 +86,6 @@ class ModalCopyKPIUnit extends Component {
     render() {
         const{NewDate, errorOnDate}= this.state;
         const { kpiunit } = this.props;
-        console.log("=====", kpiunit);
         return (
             <div className="modal fade" id={`copyOldKPIToNewTime${kpiunit._id}`}>
                 <div className="modal-dialog">

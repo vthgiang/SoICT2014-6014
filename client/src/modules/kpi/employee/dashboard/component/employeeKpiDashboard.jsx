@@ -10,26 +10,13 @@ class DashBoardEmployeeKpiSet extends Component {
     UNSAFE_componentWillMount() {
         this.props.getEmployeeKpiSetByMember();//localStorage.getItem("id")
     }
-    componentDidMount() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/Table.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
     constructor(props) {
         super(props);
         this.state = {
             showModalCopy: ""
         };
     }
-    // componentDidUpdate() {
-    //     let script = document.createElement('script');
-    //     script.src = '/main/js/Table.js';
-    //     script.async = true;
-    //     script.defer = true;
-    //     document.body.appendChild(script);
-    // }
+    
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
