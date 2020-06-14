@@ -3,12 +3,12 @@ const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, Emp
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-exports.getAllChildTargetOfOrganizationalUnitKpis = async (userRoleId) => {
+exports.getAllChildTargetOfOrganizationalUnitKpis = async (roleId) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': userRoleId },
-            { 'viceDean': userRoleId },
-            { 'employee': userRoleId }
+            { 'dean': roleId },
+            { 'viceDean': roleId },
+            { 'employee': roleId }
         ]
     });
 
@@ -58,13 +58,13 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (userRoleId) => {
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại*/
-exports.getAllTaskOfOrganizationalUnit = async (userRoleId) => {
+exports.getAllTaskOfOrganizationalUnit = async (roleId) => {
     
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': userRoleId },
-            { 'viceDean': userRoleId },
-            { 'employee': userRoleId }
+            { 'dean': roleId },
+            { 'viceDean': roleId },
+            { 'employee': roleId }
         ]
     });
 
@@ -113,9 +113,9 @@ exports.getAllOrganizationalUnitKpiSetEachYear = async (organizationalUnitId, ye
 }
 
 /** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, userRoleId, year) => {
+exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, roleId, year) => {
 
-    var arrayTreeOranizationalUnit = await EvaluationDashboardService.getChildrenOfOrganizationalUnitsAsTree(companyId, userRoleId);
+    var arrayTreeOranizationalUnit = await EvaluationDashboardService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
 
     var childOrganizationalUnitKpiSets = [], childOrganizationalUnit, temporaryChild;
 
@@ -157,16 +157,16 @@ exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, us
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
-exports.getAllEmployeeKpiSetInOrganizationalUnit = async (userRoleId, month) => {
+exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
 
     var beginOfCurrentMonth = new Date(month);
     var endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth()+1);
 
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': userRoleId },
-            { 'viceDean': userRoleId },
-            { 'employee': userRoleId }
+            { 'dean': roleId },
+            { 'viceDean': roleId },
+            { 'employee': roleId }
         ]
     });
 
