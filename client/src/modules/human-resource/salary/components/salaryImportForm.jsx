@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, } from '../../../../common-components';
 
-import excelToJson from 'convert-excel-to-json';
-import fs from 'fs';
 import XLSX from 'xlsx';
+
 class SalaryImportForm extends Component {
     constructor(props) {
         super(props);
