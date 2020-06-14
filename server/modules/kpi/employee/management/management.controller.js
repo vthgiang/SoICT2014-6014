@@ -63,3 +63,23 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
     }
 
 };
+
+exports.copyKPI= async (req, res) => {
+    try {
+        var kpipersonals = await overviewService.copyKPI(req.params);
+        LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['copy_KPI_success'],
+            content: kpipersonals
+        });
+    } catch (error) {
+        LogError(req.user.email, ` get all kpi personal `, req.user.company);
+        res.status(400).json({
+            success : false,
+            messages: ['copy_KPI_fail'],
+            content: error
+        })
+    }
+
+};

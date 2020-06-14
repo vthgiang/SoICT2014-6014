@@ -353,8 +353,6 @@ async function getResultTaskByMonth(data) {
         let month = date.getMonth()+1;
         let startMonth = startDate.getMonth() +1;
         //let endMonth = endDate.getMonth() + 1;
-        console.log('monthhhh', month);
-        console.log('startMonthhh', startMonth);
         if(month === startMonth) x.preEvaDate = startDate;
        // else if (month == endMonth) x.preEvaDate = endDate;
         else x.preEvaDate = new Date(date.getFullYear(), month-1, 0);
