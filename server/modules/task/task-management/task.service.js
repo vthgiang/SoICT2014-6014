@@ -962,7 +962,15 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
-    return newTask;
+
+    //xu ly gui email
+    var tasks = await Task.findById(taskId);
+    var userId = tasks.accountableEmployees;
+    var user = await User.find({ _id : { $in : userId }});
+    var email = user.map( item => item.email);
+    user = await User.findById(data.user);
+    
+    return {newTask: newTask, email: email, user: user, tasks: tasks};
 }
 
 /**
@@ -1076,7 +1084,15 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
     // console.log('newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', newTask);
-    return newTask;
+    
+    //xu ly gui email
+    var tasks = await Task.findById(taskId);
+    var userId = tasks.responsibleEmployees;
+    var user = await User.find({ _id : { $in : userId }});
+    var email = user.map( item => item.email);
+    user = await User.findById(data.user);
+
+    return {newTask: newTask, email: email, user: user, tasks: tasks};
 
 }
 
