@@ -258,7 +258,6 @@ exports.copyKPI = async (data) => {
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     }
-    console.log("=======", organizationalUnitKpi);
 
     return organizationalUnitKpi;
 }
