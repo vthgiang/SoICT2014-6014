@@ -22,7 +22,7 @@ class KPIPersonalManager extends Component {
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: null,
+                user: localStorage.getItem("userId"),
                 status: null,
                 startDate: null,
                 endDate: null
@@ -66,6 +66,19 @@ class KPIPersonalManager extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
+    }
+    showModalCopy = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showModalCopy: id
+            }
+        })
+        var element = document.getElementsByTagName("BODY")[0];
+        element.classList.add("modal-open");
+        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
+        modal.classList.add("in");
+        modal.style = "display: block; padding-right: 17px;";
     }
     checkStatusKPI = (status) => {
         if (status === 0) {
@@ -124,7 +137,6 @@ class KPIPersonalManager extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: this.state.user,
                     status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
@@ -132,7 +144,9 @@ class KPIPersonalManager extends Component {
                 employeeKpiSet: {_id: null},
             }
         })
+        
         const { infosearch } = this.state;
+        console.log("info====", this.state.user);
             var startDate;
             var startdate=null;
             var endDate;
@@ -174,23 +188,23 @@ class KPIPersonalManager extends Component {
         if ( kpimembers !== "undefined") kpipersonal =  kpimembers.kpimembers;
        
         let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    value: [{text:"--Chọn nhân viên--", value: "null"}]
-                },
+        // if (userdepartments) {
+        //     unitMembers = [
+        //         {
+        //             value: [{text:"--Chọn nhân viên--", value: "null"}]
+        //         },
                 
-                {
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
-        }
+        //         {
+        //             value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+        //         },
+        //     ]
+        // }
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
                     <div className="form-inline">
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Nhân viên:</label>
                             {unitMembers &&
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -202,7 +216,7 @@ class KPIPersonalManager extends Component {
                                 // multiple={true}
                                 value={user}
                             />}
-                        </div>
+                        </div> */}
 
                         <div className="form-group">
                             <label>Trạng thái:</label>

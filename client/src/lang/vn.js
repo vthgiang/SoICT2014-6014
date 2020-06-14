@@ -1862,7 +1862,7 @@ export default {
 
                 dashboard: {
                     organizational_unit: 'Đơn vị',
-                    select_all_units: 'Chọn tất cả đơn vị',
+                    select_units: 'Chọn đơn vị',
                     all_unit: 'Tất cả đơn vị',
                     search: 'Tìm kiếm',
                     setting_up: 'Đang thiết lập',

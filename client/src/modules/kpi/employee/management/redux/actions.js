@@ -4,7 +4,8 @@ export const managerKpiActions = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfResponsible,
     getAllKPIPersonalByUserID,
-    getAllKpiSetsOrganizationalUnitByMonth
+    getAllKpiSetsOrganizationalUnitByMonth,
+    copyEmployeeKPI
 };
 
 // Lấy tất cả KPI cá nhân
@@ -93,5 +94,24 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
                 })
             })
     };
+}
 
+function copyEmployeeKPI(id, olddate, newdate) {
+    return dispatch => {
+        dispatch({ type: managerKPIConstants.COPY_KPIPERSONALS_REQUEST});
+
+        managerKPIPerService.copyEmployeeKPI(id, olddate, newdate)
+            .then(res=>{
+                dispatch({
+                    type: managerKPIConstants.COPY_KPIPERSONALS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerKPIConstants.COPY_KPIPERSONALS_FAILURE,
+                    payload: error
+                })
+            })
+    };
 }

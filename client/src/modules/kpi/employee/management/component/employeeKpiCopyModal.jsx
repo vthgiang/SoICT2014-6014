@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { managerKpiActions } from '../redux/actions';
-
+import { ErrorLabel, DatePicker } from '../../../../../common-components';
 import {
     getStorage
 } from '../../../../../config';
@@ -16,16 +16,9 @@ class ModalCopyKPIPersonal extends Component {
                 organizationalUnit: "",
                 time: this.formatDate(Date.now()),
                 creator: "" //localStorage.getItem("id")
-                
+
             },
         };
-    }
-    componentDidMount() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
     formatDate(date) {
         var d = new Date(date),
@@ -40,10 +33,20 @@ class ModalCopyKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
+    handleNewDateChange = (value) => {
+        // var value = e.target.value;
+        this.setState(state => {
+                return {
+                    ...state,
+                    //errorOnDate: this.validateDate(value),
+                    NewDate: value,
+                }
+            });
+        
+    }
     handleSubmit = async (event, oldkpipersonal) => {
         event.preventDefault();
         var id = getStorage("userId");
-        kpipersonal.creator = id;
         await this.setState(state => {
             return {
                 ...state,
@@ -54,9 +57,10 @@ class ModalCopyKPIPersonal extends Component {
                 }
             }
         })
-        
+
         var { kpipersonal } = this.state;
-        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creator
+        this.props.copyEmployeeKPI(id, oldkpipersonal.date, this.state.NewDate);
+        if (kpipersonal.unit && kpipersonal.time) {//&& kpipersonal.creator
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                 type: 'warning',
@@ -77,14 +81,15 @@ class ModalCopyKPIPersonal extends Component {
         modal.style = "display: none;";
     }
     render() {
-        var {kpipersonal} = this.props;
+        const{NewDate, errorOnDate}= this.state;
+        var { kpipersonal } = this.props;
         return (
             <div className="modal fade" id={`copyOldKPIToNewTime${kpipersonal._id}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(kpipersonal._id)} aria-hidden="true">×</button>
-                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(kpipersonal.time)}</h3>
+                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(kpipersonal.date)}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
@@ -93,27 +98,27 @@ class ModalCopyKPIPersonal extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2">Tháng:</label>
-                                <div className='input-group col-sm-9 date has-feedback' style={{ marginLeft: "11px" }}>
-                                    <div className="input-group-addon">
-                                        <i className="fa fa-calendar" />
-                                    </div>
-                                    <input type="text" className="form-control pull-right" ref={input => this.time = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+                                <DatePicker
+                                    id="new_date"
+                                    value={NewDate}
+                                    onChange={this.handleNewDateChange}
+                                    dateFormat="month-year"
+                                />
+                                <div className="form-group" >
+                                    <label className="col-sm-12">Danh sách mục tiêu:</label>
+                                    <ul>
+                                        {typeof kpipersonal !== "undefined" && kpipersonal.kpis.length !== 0 &&
+                                            kpipersonal.kpis.map(item => {
+                                                return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
+                                            })
+                                        }
+                                    </ul>
                                 </div>
                             </div>
-                            <div className="form-group" >
-                                <label className="col-sm-12">Danh sách mục tiêu:</label>
-                                <ul>
-                                    {typeof kpipersonal !== "undefined" && kpipersonal.kpis.length !== 0 &&
-                                        kpipersonal.kpis.map(item => {
-                                            return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
-                                        })
-                                    }
-                                </ul>
+                            <div className="modal-footer">
+                                <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, kpipersonal)}>Thiết lập</button>
+                                <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(kpipersonal._id)}>Hủy bỏ</button>
                             </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, kpipersonal)}>Thiết lập</button>
-                            <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(kpipersonal._id)}>Hủy bỏ</button>
                         </div>
                     </div>
                 </div>
@@ -124,12 +129,12 @@ class ModalCopyKPIPersonal extends Component {
 
 
 function mapState(state) {
-    const { overviewKpiPersonal } = state;
-    return { overviewKpiPersonal };
+    const { overviewKpiPersonal} = state;
+    return { overviewKpiPersonal};
 }
 
 const actionCreators = {
-    addkpipersonal: managerKpiActions.addkpipersonal
+    copyEmployeeKPI: managerKpiActions.copyEmployeeKPI,
 };
 const connectedModalCopyKPIPersonal = connect(mapState, actionCreators)(ModalCopyKPIPersonal);
-export { connectedModalCopyKPIPersonal as ModalCopyKPIPersonal };
+export { connectedModalCopyKPIPersonal as ModalCopyKPIPersonal};
