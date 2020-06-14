@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SalaryCreateForm, SalaryEditForm, SalaryImportFrom } from './combinedContent';
+import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
@@ -43,6 +43,9 @@ class SalaryManagement extends Component {
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
+    }
+    importSalary = () => {
+        window.$('#modal_import_file').modal('show');
     }
 
     // Function bắt sự kiện chỉnh sửa thông tin nhân viên
@@ -112,7 +115,7 @@ class SalaryManagement extends Component {
         }
         this.props.searchSalary(this.state);
     }
-    
+
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number) => {
         await this.setState({
@@ -163,8 +166,8 @@ class SalaryManagement extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: 0 }}>
-                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('human_resource.salary.add_import')}</a></li>
-                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('human_resource.salary.add_by_hand')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>{translate('human_resource.salary.add_import')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -281,7 +284,7 @@ class SalaryManagement extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <SalaryCreateForm />
-                <SalaryImportFrom />
+                <SalaryImportForm />
                 {
                     this.state.currentRow !== undefined &&
                     <SalaryEditForm
