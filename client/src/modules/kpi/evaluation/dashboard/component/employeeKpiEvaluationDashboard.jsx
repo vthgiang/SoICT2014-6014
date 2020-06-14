@@ -440,7 +440,7 @@ class DashBoardKPIMember extends Component {
                                     {
                                         (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
                                             lastMonthEmployeeKpiSets.map((item, index) =>
-                                                <li key={index}>
+                                                <li key={index} style={{maxWidth: 200}}>
                                                     <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
                                                     <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                     <span className="users-list-date">{item.approvedPoint}</span>
