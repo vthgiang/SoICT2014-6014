@@ -172,7 +172,7 @@ class CreateForm extends Component {
                     modalID="modal-create-document"
                     formID="form-create-document"
                     title={translate('document.add')}
-                    func={this.save}
+                    func={this.save} size="100"
                 >
                     <form id="form-create-document">
                         <fieldset className="scheduler-border">

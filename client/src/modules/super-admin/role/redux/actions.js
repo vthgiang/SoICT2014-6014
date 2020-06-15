@@ -3,34 +3,17 @@ import { RoleConstants } from "./constants";
 
 export const RoleActions = {
     get,
-    getPaginate,
     edit,
     create,
     show,
     destroy
 }
 
-function get(){
-    return dispatch => {
-        dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
-        RoleServices.get()
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.GET_ROLES_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                
-                dispatch({ type: RoleConstants.GET_ROLES_FAILE});
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
-        RoleServices.getPaginate(data)
+function get(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
+            RoleServices.get(data)
             .then(res => {
                 dispatch({
                     type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
@@ -38,9 +21,25 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                
                 dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_FAILE});
             })
+        }
+    }
+    return dispatch => {
+        return dispatch => {
+            dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
+            RoleServices.get()
+                .then(res => {
+                    dispatch({
+                        type: RoleConstants.GET_ROLES_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    
+                    dispatch({ type: RoleConstants.GET_ROLES_FAILE});
+                })
+        }
     }
 }
 
