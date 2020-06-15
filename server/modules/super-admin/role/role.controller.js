@@ -3,7 +3,7 @@ const {LogInfo, LogError} = require('../../../logs');
 
 exports.getAllRoles = async (req, res) => {
     try {
-        var roles = await RoleService.getAllRoles(req.user.company._id); //truyen vao id cua cong ty
+        var roles = await RoleService.getAllRoles(req.user.company._id, req.query); //truyen vao id cua cong ty
         
         LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(200).json({
@@ -17,30 +17,6 @@ exports.getAllRoles = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_roles_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getPaginatedRoles = async (req, res) => {
-    try {
-        var { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        var roles = await RoleService.getPaginatedRoles(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
-
-        LogInfo(req.user.email, 'PAGINATE_ROLES', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_roles_success'],
-            content: roles
-        });
-    } catch (error) {
-
-        LogError(req.user.email, 'PAGINATE_ROLES', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['paginate_roles_faile'],
             content: error
         });
     }

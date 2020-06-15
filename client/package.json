@@ -17,6 +17,7 @@
     "eslint": "^6.6.0",
     "get-browser-fingerprint": "^1.0.2",
     "history": "^4.10.1",
+    "html-react-parser": "^0.13.0",
     "js-file-download": "^0.4.12",
     "moment": "^2.25.3",
     "rc-slider": "^9.2.4",

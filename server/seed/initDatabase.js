@@ -39,7 +39,7 @@ const seedDatabase = async () => {
     var salt = await bcrypt.genSaltSync(10);
     var hash = await bcrypt.hashSync(process.env.SYSTEM_ADMIN_PASSWORD, salt);
     var systemAdmin = await User.create({
-        name: process.env.SYSTEM_ADMIN_NAME,
+        name: `<h1>${process.env.SYSTEM_ADMIN_NAME}</>`,
         email: process.env.SYSTEM_ADMIN_EMAIL,
         password: hash
     });

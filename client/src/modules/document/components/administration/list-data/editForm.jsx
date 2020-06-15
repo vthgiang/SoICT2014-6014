@@ -259,6 +259,7 @@ class EditForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
+                size="100"
                     modalID="modal-edit-document"
                     formID="form-edit-document"
                     title={translate('document.add')}

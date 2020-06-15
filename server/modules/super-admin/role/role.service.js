@@ -5,35 +5,35 @@ const {OrganizationalUnit, Company, Role, RoleType, User, UserRole} = require('.
  * Lấy danh sách tất cả các role của 1 công ty
  * @company id công ty
  */
-exports.getAllRoles = async (company) => {
-    return await Role
-        .find({company})
-        .populate([
-            { path: 'users', model: UserRole},
-            { path: 'parents', model: Role },
-            { path: 'type', model: RoleType }
-        ]);
-}
+exports.getAllRoles = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Role
+            .find({company})
+            .populate([
+                { path: 'users', model: UserRole},
+                { path: 'parents', model: Role },
+                { path: 'type', model: RoleType }
+            ]);
 
-/**
- * Phân trang danh sách các role 
- * @company id công ty
- * @limit giới hạn hiển thị trên 1 bảng
- * @page trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedRoles = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await Role
-        .paginate( newData , { 
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company};
+        console.log("option: ", option);
+        return await Role.paginate( option , { 
             page, 
             limit,
             populate: [
-                { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
+                { path: 'users', model: UserRole},
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]
         });
+    }
 }
 
 
