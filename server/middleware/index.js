@@ -66,8 +66,8 @@ exports.authFunc = (checkPage=true) => {
                  * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
                  * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
                  */
-                const userToken = await User.findOne({ _id: req.user._id,  tokens: token });
-                if(userToken === null) throw ['acc_log_out'];
+                const userToken = await User.findById(req.user._id);
+                if(userToken.numberDevice === 0) throw ['acc_log_out'];
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?

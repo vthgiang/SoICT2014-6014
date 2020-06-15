@@ -384,6 +384,23 @@ const TaskSchema = new Schema({
                 }
             }],
         }],
+    }],
+    logs: [{
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        title: {
+            type: String,
+        },
+        description: {
+            type: String,
+        },
     }]
 }, {
     timestamps: true

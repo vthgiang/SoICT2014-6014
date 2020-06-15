@@ -132,7 +132,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
-            var taskactions = {...state.task.info,taskActions:action.payload.data.content.taskActions}
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
              return {
                 ...state,
                 task : {

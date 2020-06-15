@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './userEditForm';
 import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
 import UserCreateForm from './userCreateForm';
-
+import parse from 'html-react-parser';
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
@@ -84,7 +84,7 @@ class ManageUserTable extends Component {
                                 <tr
                                     key={u._id}
                                 >
-                                    <td>{u.name}</td>
+                                    <td>{parse(u.name)}</td>
                                     <td>{u.email}</td>
                                     <td><ToolTip dataTooltip={u.roles.map(role => role.roleId.name)}/></td>
                                     <td>{u.active 
@@ -145,7 +145,12 @@ class ManageUserTable extends Component {
     setLimit = (number) => {
         if (this.state.limit !== number){
             this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page };
+            const data = { 
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
             this.props.getUser(data);
         }
     }

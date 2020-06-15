@@ -236,7 +236,7 @@ exports.setTaskImportanceLevel = async (id, data) => {
     let employPoint = 0;
     let sumTaskImportance = 0;
     let priority;
-    console.log('taskkkk', task);
+   // console.log('taskkkk', task);
     //console.log('#######', task);
     // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
     for (element of task) {
@@ -251,15 +251,17 @@ exports.setTaskImportanceLevel = async (id, data) => {
         var date2 = element.date;
         var Difference_In_Time = date2.getTime() - date1.getTime();
         var daykpi = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
-        console.log('daykpi = ', daykpi);
-
+        //console.log('daykpi = ', daykpi);
+      //  if(daykpi)
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
             element.results.taskImportanceLevel = element.taskImportanceLevelCal;
         element.daykpi = daykpi;
 
     }
-    console.log('#######', task);
+    //console.log('#######', task);
+    
+    //update diem kpi  (employeeKpi)
     var n = task.length;
     var result = await DetailKPIPersonal.findByIdAndUpdate(id, {
         $set: {
@@ -268,6 +270,39 @@ exports.setTaskImportanceLevel = async (id, data) => {
             "approvedPoint": Math.round(approvePoint / sumTaskImportance),
         },
     }, { new: true });
+
+    // update diem kpi thang (employeeKpiSet)
+    /* 
+        từ kpi hiện tại  tìm ra kpi toàn tháng
+        từ kpi toàn tháng, duyệt mảng kpis để tìm các kpi trong tháng
+        từ các kpi trong tháng tính các điểm
+        nếu kpi nào chưa có điểm thì break;
+    */
+    let autoPointSet = 0;
+    let employeePointSet = 0;
+    let approvedPointSet = 0;
+    var kpiSet = await KPIPersonal.findOne({kpis : result._id});
+
+    for(let i = 0; i < kpiSet.kpis.length; i++){
+        let kpi = await DetailKPIPersonal.findById(kpiSet.kpis[i]);
+        if(kpi.automaticPoint !== 0 && kpi.automaticPoint !== null){
+            let weight = kpi.weight/100;
+            autoPointSet = kpi.automaticPoint * weight;
+            employeePointSet = kpi.employeePoint * weight;
+            approvedPointSet = kpi.approvedPoint * weight;
+        }else{
+            autoPointSet = -1;
+        }
+    };
+    if(autoPointSet !== -1){
+        var updateKpiSet = await KPIPersonal.findByIdAndUpdate(kpiSet._id, {
+            $set: {
+                "automaticPoint": Math.round(autoPointSet),
+                "employeePoint": Math.round(employeePointSet),
+                "approvedPoint": Math.round(approvedPointSet),
+            },
+        }, { new: true });
+    }
 
     return { task, result };
 
@@ -391,10 +426,7 @@ async function getResultTaskByMonth(data) {
 
             }
         }
-       // console.log('-----------', task);
-
-
-        return task;
+      return task;
 }
 
 

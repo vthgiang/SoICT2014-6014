@@ -159,8 +159,10 @@ exports.createTaskAction = async (body,files) => {
 
     var user = await User.findOne({ _id : body.creator});
     var tasks = await Task.findOne({ _id : body.task});
+    var userEmail = await User.find({ _id : {$in : tasks.accountableEmployees}});
+    var email = userEmail.map( item => item.email);
    
-    return { taskActions: task.taskActions, tasks: tasks, user: user} ;
+    return { taskActions: task.taskActions, tasks: tasks, user: user, email: email} ;
 }
 /**
  * Sửa hoạt động của cộng việc
