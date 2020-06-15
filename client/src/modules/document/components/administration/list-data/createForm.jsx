@@ -185,15 +185,15 @@ class CreateForm extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleIssuingBody}/>
+                                        <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder="VD: Cơ quan hành chính"/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber}/>
+                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder="VD: 05062020VN"/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleSigner}/>
+                                        <input type="text" className="form-control" onChange={this.handleSigner} placeholder="VD: Nguyễn Việt Anh"/>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -228,112 +228,112 @@ class CreateForm extends Component {
                                 </div>
                             </div>
                         </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
+                                            <input type="text" className="form-control" onChange={this.handleVersionName} placeholder="VD: Phiên bản 1"/>
+                                        </div>  
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id="create-document-version-issuing-date"
+                                                value={this.state.documentIssuingDate}
+                                                onChange={this.handleIssuingDate}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id="create-document-version-effective-date"
+                                                value={this.state.documentEffectiveDate}
+                                                onChange={this.handleEffectiveDate}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id="create-document-version-expired-date"
+                                                value={this.state.documentExpiredDate}
+                                                onChange={this.handleExpiredDate}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                            <input type="file" onChange={this.handleUploadFile}/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                            <input type="file" onChange={this.handleUploadFileScan}/>
+                                        </div>
+                                </fieldset>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleVersionName}/>
+                                        <label>{ translate('document.relationship.description') }</label>
+                                        <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription}/>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                        <input type="file" onChange={this.handleUploadFile}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                        <input type="file" onChange={this.handleUploadFileScan}/>
-                                    </div>  
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id="create-document-version-issuing-date"
-                                            value={this.state.documentIssuingDate}
-                                            onChange={this.handleIssuingDate}
+                                        <label>{ translate('document.relationship.list') }</label>
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id="select-documents-relationship-to-document"
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {relationshipDocs}
+                                            onChange={this.handleRelationshipDocuments}
+                                            multiple={true}
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id="create-document-version-effective-date"
-                                            value={this.state.documentEffectiveDate}
-                                            onChange={this.handleEffectiveDate}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id="create-document-version-expired-date"
-                                            value={this.state.documentExpiredDate}
-                                            onChange={this.handleExpiredDate}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
-                            <div className="form-group">
-                                <label>{ translate('document.relationship.description') }<span className="text-red">*</span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription}/>
-                            </div>
-                            <div className="form-group">
-                                <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id="select-documents-relationship-to-document"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {relationshipDocs}
-                                    onChange={this.handleRelationshipDocuments}
-                                    multiple={true}
-                                />
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.roles') }</legend>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id="select-document-users-see-permission"
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {documentRoles}
-                                onChange={this.handleRoles}
-                                multiple={true}
-                            />
-                        </fieldset>
+                                </fieldset>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{ translate('document.roles') }</legend>
+                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                        id="select-document-users-see-permission"
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items = {documentRoles}
+                                        onChange={this.handleRoles}
+                                        multiple={true}
+                                    />
+                                </fieldset>
 
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.store.title') }</legend>
-                            <div className="form-group">
-                                <label>{ translate('document.store.information') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo}/>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{ translate('document.store.title') }</legend>
+                                    <div className="form-group">
+                                        <label>{ translate('document.store.information') }</label>
+                                        <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301"/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('document.store.organizational_unit_manage') }</label>
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id="select-documents-organizational-unit-manage"
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
+                                            onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
+                                            options={{placeholder: translate('document.store.select_organizational')}}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    {/* <div className="form-group">
+                                        <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id="select-documents-user-manage"
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {userManage}
+                                            onChange={this.handleArchivedRecordPlaceManager}
+                                            options={{placeholder: translate('document.store.select_user')}}
+                                            multiple={false}
+                                        />
+                                    </div> */}
+                                </fieldset>
                             </div>
-                            <div className="form-group">
-                                <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id="select-documents-organizational-unit-manage"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
-                                    onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                    options={{placeholder: translate('document.store.select_organizational')}}
-                                    multiple={false}
-                                />
-                            </div>
-                            {/* <div className="form-group">
-                                <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id="select-documents-user-manage"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {userManage}
-                                    onChange={this.handleArchivedRecordPlaceManager}
-                                    options={{placeholder: translate('document.store.select_user')}}
-                                    multiple={false}
-                                />
-                            </div> */}
-                        </fieldset>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

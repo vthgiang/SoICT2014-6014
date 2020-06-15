@@ -14,7 +14,7 @@ exports.getAllRoles = async (company, query) => {
         return await Role
             .find({company})
             .populate([
-                { path: 'users', model: UserRole},
+                { path: 'users', model: UserRole, populate: {path: 'userId', model: User}},
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]);
@@ -28,7 +28,7 @@ exports.getAllRoles = async (company, query) => {
             page, 
             limit,
             populate: [
-                { path: 'users', model: UserRole},
+                { path: 'users', model: UserRole, populate: {path: 'userId', model: User}},
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]

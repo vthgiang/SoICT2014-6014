@@ -405,11 +405,11 @@ class EditForm extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
                             <div className="form-group">
-                                <label>{ translate('document.relationship.description') }<span className="text-red">*</span></label>
+                                <label>{ translate('document.relationship.description') }</label>
                                 <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription}/>
                             </div>
                             <div className="form-group">
-                                <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
+                                <label>{ translate('document.relationship.list') }</label>
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id="select-edit-documents-relationship-to-document"
                                     className="form-control select2"
@@ -437,11 +437,11 @@ class EditForm extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{ translate('document.store.title') }</legend>
                             <div className="form-group">
-                                <label>{ translate('document.store.information') }<span className="text-red">*</span></label>
+                                <label>{ translate('document.store.information') }</label>
                                 <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInformation} value={documentArchivedRecordPlaceInfo}/>
                             </div>
                             <div className="form-group">
-                                <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
+                                <label>{ translate('document.store.organizational_unit_manage') }</label>
                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                     id={`select-edit-documents-organizational-unit-manage${documentId}`}
                                     className="form-control select2"

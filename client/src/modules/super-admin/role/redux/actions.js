@@ -26,20 +26,18 @@ function get(data){
         }
     }
     return dispatch => {
-        return dispatch => {
-            dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
-            RoleServices.get()
-                .then(res => {
-                    dispatch({
-                        type: RoleConstants.GET_ROLES_SUCCESS,
-                        payload: res.data.content
-                    })
+        dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
+        RoleServices.get()
+            .then(res => {
+                dispatch({
+                    type: RoleConstants.GET_ROLES_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    
-                    dispatch({ type: RoleConstants.GET_ROLES_FAILE});
-                })
-        }
+            })
+            .catch(err => {
+                
+                dispatch({ type: RoleConstants.GET_ROLES_FAILE});
+            })
     }
 }
 
