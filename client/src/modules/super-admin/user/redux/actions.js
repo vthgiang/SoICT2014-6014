@@ -11,6 +11,8 @@ export const UserActions = {
     getAllUserOfDepartment,
     getAllUserSameDepartment,
     getDepartmentOfUser,
+    getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany,
 };
 
 function get(data){
@@ -204,4 +206,44 @@ function getDepartmentOfUser() {
     function request() { return { type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST} }
     function success(departments) { return { type: UserConstants.GETDEPARTMENT_OFUSER_SUCCESS, departments } }
     function failure(error) { return { type: UserConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
+}
+// Lấy người dùng các đơn vị con của một đơn vị và trong đơn vị đó
+function getChildrenOfOrganizationalUnitsAsTree(unitId) {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST});
+ 
+        UserServices.getChildrenOfOrganizationalUnitsAsTree(unitId)
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+// Lấy người dùng trong các đơn vị của 1 công ty
+function getAllUserInAllUnitsOfCompany() {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST});
+ 
+        UserServices.getAllUserInAllUnitsOfCompany()
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_FAILURE,
+                    payload: error
+                })
+            })
+    };
 }
