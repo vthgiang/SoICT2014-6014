@@ -97,6 +97,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         location: data.location,
         status: data.status,
         description: data.description,
+        detailInfo: data.detailInfo,
 
         // khấu hao
         cost: data.cost,
@@ -184,6 +185,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.location = asset.location;
     oldAsset.status = asset.status;
     oldAsset.description = asset.description;
+    oldAsset.detailInfo = asset.detailInfo;
 
     oldAsset.cost = asset.cost;
     oldAsset.usefulLife = asset.usefulLife;
