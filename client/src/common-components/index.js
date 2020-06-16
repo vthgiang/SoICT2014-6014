@@ -15,4 +15,3 @@ export * from './src/date-time-converter';
 export * from './src/tooltip';
 export * from './src/pinned-panel/pinnedPanel';
 export * from './src/content-maker/contentMaker';
-export * from './src/comment/comment'

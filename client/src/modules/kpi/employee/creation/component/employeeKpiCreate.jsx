@@ -12,7 +12,7 @@ import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 import Swal from 'sweetalert2';
 import { getStorage } from '../../../../../config'
 import { SlimScroll} from '../../../../../common-components';
-import {Comment} from './comment'
+// import {Comment} from './comment'
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 
@@ -627,7 +627,7 @@ class CreateEmployeeKpiSet extends Component {
                                 <div><h2 style={{textAlign:'center'}}>Trao đổi</h2></div>
                                 <div style={{marginTop:'60px',display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                                 <div className="col-xs-12 col-sm-12 col-md-6">
-                                    <Comment
+                                    {/* <Comment
                                         currentKPI = {currentKPI}
                                         // auth = {this.props.auth}
                                         // downloadFile ={(e,path,fileName)=>this.requestDownloadFile(e,path,fileName)}
@@ -664,7 +664,7 @@ class CreateEmployeeKpiSet extends Component {
                                         // }}
                                         
                                     >
-                                    </Comment>
+                                    </Comment> */}
             
                                 </div>
                                 </div>
