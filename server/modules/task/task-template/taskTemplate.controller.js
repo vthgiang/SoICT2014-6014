@@ -143,20 +143,38 @@ exports.editTaskTemplate = async(req, res) => {
     }
 }
 
-exports.getAllChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
+exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
     try {
-        var taskTemplate = await TaskTemplateService.getAllChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.params.id);
-        await LogInfo(req.user.email, `Get all children of this organizational unit ${req.body.name}`, req.user.company);
+        var taskTemplate = await TaskTemplateService.getAllUserInUnitAndItsSubUnits(req.user.company._id, req.params.id);
+        await LogInfo(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['get_all_childern_of_this_unit_success'],
+            messages: ['get_all_user_of_this_unit_and_its_sub_units_success'],
             content: taskTemplate
         });
     } catch (error) {
-        await LogError(req.user.email, `Get all children of this organizational unit ${req.body.name}`, req.user.company);
+        await LogError(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
         res.status(200).json({
             success: false,
-            messages: ['get_all_childern_of_this_unit_failed'],
+            messages: ['get_all_user_of_this_unit_and_its_sub_units_failed'],
+            content: error
+        });
+    }
+}
+exports.getAllUserInAllDepartmentsOfCompany = async (req, res) => {
+    try {
+        var taskTemplate = await TaskTemplateService.getAllUserInUnitAndItsSubUnits(req.user.company._id, '-1',true);
+        await LogInfo(req.user.email, `Get all user in all department of this company  ${req.user.company}`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_user_in_all_department_success'],
+            content: taskTemplate
+        });
+    } catch (error) {
+        await LogError(req.user.email, `get all user in all department of this company ${req.body.name}`, req.user.company);
+        res.status(200).json({
+            success: false,
+            messages: ['get_all_user_in_all_department_failed'],
             content: error
         });
     }

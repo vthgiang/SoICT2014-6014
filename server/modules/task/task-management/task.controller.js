@@ -1,5 +1,6 @@
 const TaskManagementService = require('./task.service');
 const NotificationServices = require('../../notification/notification.service');
+const { sendEmail } = require('../../../helpers/emailHelper');
 const {  LogInfo,  LogError } = require('../../../logs');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 /**
@@ -242,8 +243,11 @@ exports.createTask = async (req, res) => {
         var tasks = await TaskManagementService.createTask(req.body); 
         var task = tasks.task ;
         var user = tasks.user ;
+        var email = tasks.email ;
+        var html = tasks.html ;
         var data = {"organizationalUnits" : task.organizationalUnit.company,"title" : "Tạo mới công việc","level" : "general","content":"Bạn được giao nhiệm vụ mới trong công việc","sender": task.organizationalUnit.name,"users": user};
         NotificationServices.createNotification(task.organizationalUnit.company, data, );
+        sendEmail("vnist.qlcv@gmail.com",email,"Tạo mới công việc hành công",'',html);
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
             success:true,
@@ -350,11 +354,16 @@ exports.getSubTask = async( req,res) =>{
 exports.editTaskByResponsibleEmployees = async (req, res) => {
     try {
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.accountableEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task
+            content: task.newTask
         })
     } catch (error) {
         await LogError(req.user.email, ` edit task `,req.user.company);
@@ -371,11 +380,16 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
 exports.editTaskByAccountableEmployees = async (req, res) => {
     try {
         var task = await TaskManagementService.editTaskByAccountableEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.responsibleEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task
+            content: task.newTask
         })
     } catch (error) {
         await LogError(req.user.email, ` edit task `,req.user.company);

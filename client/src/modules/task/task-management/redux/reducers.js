@@ -235,7 +235,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.DELETE_TASK_REQUEST:
             return {
                 ...state,
-                items: state.items.map(task =>
+                tasks: state.tasks.map(task =>
                     task._id === action.id
                         ? { ...task, deleting: true }
                         : task
@@ -245,7 +245,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.DELETE_TASK_SUCCESS:
             return {
                 ...state,
-                items: state.items.filter(task => task._id !== action.id),
+                tasks: state.tasks.filter(task => task._id !== action.id),
                 isLoading: false
             };
         case taskManagementConstants.DELETE_TASK_FAILURE:

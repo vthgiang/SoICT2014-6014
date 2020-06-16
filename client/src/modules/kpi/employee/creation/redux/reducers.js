@@ -184,7 +184,115 @@ export function createEmployeeKpiSet(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
-
+    case createKpiSetConstants.CREATE_COMMENT_REQUEST:
+      return {
+        ...state,
+        adding: true
+      }  
+    case createKpiSetConstants.CREATE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.CREATE_COMMENT_FAILURE:
+      return {
+        error: action.payload,
+      }
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
+      return {
+        ...state,
+        adding: true
+      }  
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }      
+    case createKpiSetConstants.EDIT_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing : true
+      }
+    case createKpiSetConstants.EDIT_COMMENT_SUCCESS:
+      return {
+        ...state,
+        idLoading: false,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload,
+          
+        }
+      }    
+    case createKpiSetConstants.EDIT_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      } 
+      case createKpiSetConstants.DELETE_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing : true
+      }
+    case createKpiSetConstants.DELETE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }    
+    case createKpiSetConstants.DELETE_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing: true
+      }  
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }        
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
+      return {
+        ...state,
+        deleting: true
+      }  
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }            
     default:
       return state
   }

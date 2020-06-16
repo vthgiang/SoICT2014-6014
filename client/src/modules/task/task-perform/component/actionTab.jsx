@@ -112,10 +112,10 @@ class ActionTab extends Component {
             // return true;
             return true;
         }
-        if(nextProps.performtasks.taskActions !== this.props.performtasks.taskActions){      
-            this.props.getTaskById(nextProps.id);
-            return true;
-        }
+        // if(nextProps.performtasks.taskActions !== this.props.performtasks.taskActions){      
+        //     this.props.getTaskById(nextProps.id);
+        //     return true;
+        // }
         return true;
     }
     showEdit(event) {
@@ -150,21 +150,21 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (id,newValue) => {
+    setValueRating = async (id,newValue,index) => {
         await this.setState(state => {
             return {
                 ...state,
                 valueRating: newValue,
                 evaluations: {
                     ...state.evaluations,
-                    rating: newValue*2
+                    rating: newValue*2,
+                    type : index
                 }
             }
         })
         var {evaluations} = this.state;
-        if(evaluations.rating){
-            this.props.evaluationAction(id,evaluations);
-        }
+        console.log(evaluations)
+        this.props.evaluationAction(id,evaluations)
         await this.setState(state => {
             return {
                 ...state,
@@ -551,7 +551,6 @@ class ActionTab extends Component {
                 }
             }
         })
-        console.log(this.state.taskFiles)
     }
     onFilesError = (error, file) => {
     }
@@ -674,7 +673,6 @@ class ActionTab extends Component {
                                                 {item.creator &&
                                                 <React.Fragment>
                                                     <li><a href="javascript:void(0)" className="link-black text-sm" onClick={()=>{this.handleShowEvaluations(item._id)}}><i className="fa fa-thumbs-o-up margin-r-5"></i>Đánh giá ({item.evaluations && item.evaluations.length})</a></li>
-
                                                     {(this.props.role === "accountable" || this.props.role === "consulted" || this.props.role === "creator" || this.props.role === "informed") &&
                                                     <li style={{display:"inline-table"}} className="list-inline">
                                                         {(
@@ -682,14 +680,13 @@ class ActionTab extends Component {
                                                             (!item.evaluations || item.evaluations.length === 0)
                                                         ) &&
                                                             <React.Fragment>
-                                                                <Rating
-                                                                    
+                                                                <Rating 
                                                                     fractions = {2}
                                                                     emptySymbol="fa fa-star-o fa-2x high"
                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                     initialRating = {0}
                                                                     onClick={(value) => {
-                                                                    this.setValueRating(item._id,value);
+                                                                    this.setValueRating(item._id,value,0);
                                                                     }}
                                                                     onHover={(value)=> {                                                                                                                                                   
                                                                         this.setHover(item._id,value)
@@ -706,34 +703,61 @@ class ActionTab extends Component {
                                                         <a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i class="fa fa-paperclip" aria-hidden="true"></i> File đính kèm ({item.files && item.files.length})</a>
                                                     </li>
                                                     }
-
                                                     <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
                                                 </React.Fragment>
                                                 }
-                                            </ul>
-                                            
-                                            
+                                            </ul>     
                                             <div className="tool-level1" style={{paddingLeft: 5}}>
                                                 {/* Các kết quả đánh giá của action */}
+                                               
                                                 {showEvaluations.some(obj => obj === item._id)&&
                                                     <React.Fragment>
                                                         <div style={{marginBottom: 10}}>
-                                                            {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 &&
-                                                            item.evaluations.map(element => {
-                                                                if(task){
-                                                                    if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
-                                                                        return <div> <b>{element.creator.name} - {element.rating}/10 </b> </div>
-                                                                    }
-                                                                    if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
-                                                                        return <div> {element.creator.name} - {element.rating}/10 </div>
-                                                                    }
+                                                            <ul className="list-inline">
+                                                                <li style={{marginLeft:'0px'}}> 
+                                                                {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 &&
+                                                                    item.evaluations.map(element => {
+                                                                        if(task){
+                                                                            if(task.accountableEmployees.some(obj => obj._id === element.creator._id)){
+                                                                                return <div> 
+                                                                                    <ul className="list-inline">
+                                                                                        <li><b>{element.creator.name} - {element.rating}/10 </b></li>
+                                                                                        <li></li>
+                                                                                    </ul>
+                                                                                    
+                                                                                </div>
+                                                                            }
+                                                                            if(task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
+                                                                                return <div> {element.creator.name} - {element.rating}/10 </div>
+                                                                            }
+                                                                        }
+                                                                    })
                                                                 }
-                                                            })
-                                                            }
+                                                                </li>
+                                                                {item.evaluations.some(checkUserId) &&
+                                                                <React.Fragment>
+                                                                    <li>Đánh giá lại</li>
+                                                                    <li>
+                                                                    <Rating
+                                                                    fractions = {2}
+                                                                    emptySymbol="fa fa-star-o fa-2x high"
+                                                                    fullSymbol="fa fa-star fa-2x high"
+                                                                    initialRating = {0}
+                                                                    onClick={(value) => {
+                                                                    this.setValueRating(item._id,value,1);
+                                                                    }}
+                                                                    onHover={(value)=> {                                                                                                                                                   
+                                                                        this.setHover(item._id,value)
+                                                                    }}
+                                                                />
+                                                                <div style={{display:"inline",marginLeft:"5px"}}>{this.hover[item._id]}</div> </li>
+                                                                </React.Fragment>
+                                                                }
+                                                            </ul>
+                                                           
                                                         </div>
                                                     </React.Fragment>
                                                 }
-
                                                 {/* Các file đính kèm của action */}
                                                 {this.state.showfile.some(obj => obj === item._id ) &&
                                                     <div>
@@ -1040,15 +1064,16 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.taskFiles.files}
-                                text={this.state.taskFiles.description}
+                                files={this.state.newTaskComment.files}
+                                text={this.state.newTaskComment.description}
                                 placeholder={"Nhập bình luận"}
                                 submitButtonText={"Thêm bình luận"}
                                 onTextChange={(e)=>{
                                     let value = e.target.value;
                                     this.setState(state => {
-                                        return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                        return { ...state, newTaskComment: {...state.newTaskComment, description: value}}
                                     })
+                                    
                                 }}
                                 onSubmit={(e)=>{this.submitTaskComment(task._id)}}
                             />
@@ -1083,7 +1108,9 @@ class ActionTab extends Component {
                                     let value = e.target.value;
                                     this.setState(state => {
                                         return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                        
                                     })
+                                    console.log(this.state.taskFiles)
                                 }}
                                 onSubmit={(e)=>{this.handleUploadFile(task._id,currentUser)}}
                             />

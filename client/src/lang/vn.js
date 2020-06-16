@@ -1543,6 +1543,7 @@ export default {
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
                 edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
+                confirm_delete: 'Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!',
 
                 responsible: 'Thực hiện chính',
                 accountable: 'Phê duyệt',
@@ -1891,7 +1892,7 @@ export default {
 
                 dashboard: {
                     organizational_unit: 'Đơn vị',
-                    select_all_units: 'Chọn tất cả đơn vị',
+                    select_units: 'Chọn đơn vị',
                     all_unit: 'Tất cả đơn vị',
                     search: 'Tìm kiếm',
                     setting_up: 'Đang thiết lập',

@@ -1182,6 +1182,7 @@ export default {
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail: "Can't edit archived status of task",
+                confirm_delete: 'This task cannot be deleted because it is in progress!',
 
                 responsible: 'Responsible',
                 accountable: 'Acountable',
@@ -1527,7 +1528,7 @@ export default {
 
                 dashboard: {
                     organizational_unit: 'Unit',
-                    select_all_units: 'Select all organizational unit',
+                    select_units: 'Select organizational unit',
                     all_unit: 'All organizational unit',
                     search: 'Search',
                     setting_up: 'Setting up',

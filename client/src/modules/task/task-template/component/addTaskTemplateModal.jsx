@@ -51,6 +51,7 @@ class ModalAddTaskTemplate extends Component {
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả các role là dean 
         this.props.getDepartmentsThatUserIsDean();
+        this.props.getAllUserInAllUnitsOfCompany();
     }
     
     
@@ -305,6 +306,12 @@ class ModalAddTaskTemplate extends Component {
         if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
             usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
         }
+        var usersInUnitsOfCompany;
+        if(tasktemplates&&tasktemplates.usersInUnitsOfCompany){
+            usersInUnitsOfCompany = tasktemplates.usersInUnitsOfCompany;
+        }
+        
+        var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
@@ -423,16 +430,12 @@ class ModalAddTaskTemplate extends Component {
                             </div>
                             <div className='form-group' >
                                 <label className="ontrol-label">{translate('task_template.supporter')}</label>
-                                {usercompanys &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`consulted-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return {value: x._id, text: x.name};
-                                            })
-                                        }
+                                        items={allUnitsMember}
                                         onChange={this.handleTaskTemplateConsult}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.supporter')}`}}
@@ -441,16 +444,12 @@ class ModalAddTaskTemplate extends Component {
                             </div>
                             <div className='form-group' >
                                 <label className="control-label">{translate('task_template.observer')}</label>
-                                {usercompanys &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`informed-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return {value: x._id, text: x.name};
-                                            })
-                                        }
+                                        items={allUnitsMember}
                                         onChange={this.handleTaskTemplateInform}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.observer')}`}}
@@ -502,6 +501,7 @@ const actionCreators = {
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
     getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
     getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: taskTemplateActions.getAllUserInAllUnitsOfCompany
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalAddTaskTemplate));
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };

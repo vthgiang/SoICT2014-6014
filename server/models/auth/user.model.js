@@ -38,9 +38,10 @@ const UserSchema = new Schema({
         required: true,
         default: false
     },
-    tokens: [{
-        type: String,
-    }],
+    numberDevice: {
+        type: Number,
+        default: 0
+    },
     resetPasswordToken: {
         type: String
     },

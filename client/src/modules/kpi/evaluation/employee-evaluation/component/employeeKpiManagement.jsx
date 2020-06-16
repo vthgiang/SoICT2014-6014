@@ -80,12 +80,6 @@ class KPIMember extends Component {
             return "Chờ phê duyệt";
         } else if (status === 2) {
             return "Đã kích hoạt";
-        } else if (status === 3) {
-            return "Đã kết thúc";
-        } else if (status === 4) {
-            return "Đang hoạt động";
-        } else if (status === 5) {
-            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
@@ -135,7 +129,9 @@ class KPIMember extends Component {
                     status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
-                }
+                },
+                kpiId: null,
+                employeeKpiSet: {_id: null},
             }
         })
         const { infosearch } = this.state;
@@ -239,10 +235,7 @@ class KPIMember extends Component {
                                         {value:"null", text : "--Chọn trạng thái--"},
                                         {value:0, text : "Đang thiết lập"},
                                         {value:1, text : "Chờ phê duyệt"},
-                                        {value:2, text : "Đã kích hoạt"},
-                                        {value:3, text : "Đã kết thúc"},
-                                        {value:4, text : "Đang hoạt động"},
-                                        {value:5, text : "Tất cả các trạng thái"},]}
+                                        {value:2, text : "Đã kích hoạt"},]}
                                     onChange={this.handleStatusChange}
                                     value={status}
                                 />
@@ -292,7 +285,7 @@ class KPIMember extends Component {
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                            <th title="STT">STT</th>
+                            <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
                             <th title="Thời gian">Thời gian</th>
                             <th title="Tên nhân viên">Tên nhân viên</th>
                             <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>

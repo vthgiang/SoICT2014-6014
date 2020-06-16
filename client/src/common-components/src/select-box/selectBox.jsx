@@ -7,7 +7,7 @@ class SelectBox extends Component {
         this.state = {}
     }
 
-    setOptionsSelect2 = (id, options, changeSearch, searchItems) => {
+    setOptionsSelect2 = (id, changeSearch, searchItems, multiple = false) => {
         function delay(callback, ms) {
             var timer = 0;
             return function () {
@@ -18,13 +18,18 @@ class SelectBox extends Component {
                 }, ms || 0);
             };
         }
-        return options = {
-            ...options, ajax: {
+        return {
+            ajax: {
                 url: function (params) {
                     if (params.term !== undefined && params.term !== "") {
-                        let parentSelect = window.$("#" + id).parent();
-                        let children = parentSelect.children(1);
-                        let inputSearch = children.find('span.selection input.select2-search__field');
+                        let inputSearch;
+                        if (multiple === true) {
+                            let parentSelect = window.$("#" + id).parent();
+                            inputSearch = parentSelect.find('input.select2-search__field');
+                        } else {
+                            let children = window.$(".select2-dropdown--below");
+                            inputSearch = children.find('input.select2-search__field');
+                        }
                         inputSearch.keyup(delay(function (e) {
                             if (this.value === params.term)
                                 changeSearch(this.value);
@@ -41,9 +46,9 @@ class SelectBox extends Component {
     }
 
     componentDidMount() {
-        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = this.props;
+        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems, multiple } = this.props;
         if (changeSearch !== undefined && changeSearch !== false) {
-            options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
+            options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
         }
         window.$("#" + id).select2(options);
 
@@ -61,7 +66,7 @@ class SelectBox extends Component {
         });
     }
     componentDidUpdate() {
-        let { id, options = {}, changeSearch, } = this.props;
+        let { id, options = {}, changeSearch, multiple, textSearch } = this.props;
         if (changeSearch === undefined || changeSearch === false) {
             window.$("#" + id).select2(options);
         }
@@ -109,16 +114,24 @@ class SelectBox extends Component {
             (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
             !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
 
-            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems, this.state.searchItems)) {
-                let { id, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems } = nextProps;
+            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
+                let { id, changeSearch, searchItems, multiple } = nextProps;
                 if (changeSearch !== undefined && changeSearch !== false) {
-                    options = this.setOptionsSelect2(id, options, changeSearch, searchItems)
+                    let options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
+                    window.$("#" + nextProps.id).select2('open');
                     window.$("#" + id).select2(options);
                     window.$("#" + nextProps.id).select2('open');
                 }
-                let parentSelect = window.$("#" + id).parent();
-                let children = parentSelect.children(1);
-                let inputSearch = children.find('span.selection input.select2-search__field')
+                let inputSearch;
+                if (multiple === true) {
+                    let parentSelect = window.$("#" + id).parent();
+                    let children = parentSelect.children(1);
+                    inputSearch = children.find('input.select2-search__field')
+                    console.log(inputSearch.val());
+                } else {
+                    let children = window.$(".select2-dropdown--below");
+                    inputSearch = children.find('input.select2-search__field');
+                }
                 inputSearch.val(nextProps.textSearch);
             }
             return true;

@@ -19,13 +19,12 @@ export const kpiMemberServices = {
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
-    getAllComments,
-    createCommentOfApproveKPI,
-    editCommentOfApproveKPI,
-    deleteCommentOfApproveKPI,
-    createCommentOfComment,
-    editCommentOfComment,
-    deleteCommentOfComment
+    // createCommentOfApproveKPI,
+    // editCommentOfApproveKPI,
+    // deleteCommentOfApproveKPI,
+    // createCommentOfComment,
+    // editCommentOfComment,
+    // deleteCommentOfComment
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
@@ -82,10 +81,10 @@ function editStatusTarget(id, status) {
     }, true, true, 'kpi.evaluation');
 }
  
-function getTaskById(id, employeeId, date) {
+function getTaskById(id, employeeId, date, kpiType) {
     // console.log('############', date);
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}/${kpiType}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }
@@ -107,58 +106,4 @@ function setkpiImportantLevel(id_kpi, kpiImportantLevel){
         method: 'PUT',
         data: kpiImportantLevel
     }, true, true, 'kpi.evaluation')
-}
-
-// Lay tat ca binh luan
-function getAllComments(id_kpi){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id_kpi}`,
-        method: 'GET'
-    }, false, true, 'kpi.evaluation')
-}
-
-function createCommentOfApproveKPI(newComment){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/create`,
-        method: 'POST',
-        data: newComment
-    },true, true, 'kpi.evaluation')
-}
-
-function editCommentOfApproveKPI(id,newComment){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}`,
-        method : 'PUT',
-        data: newComment
-    },true, true, 'kpi.evaluation')
-}
-
-function deleteCommentOfApproveKPI(id,kpi){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}/${kpi}`,
-        method : 'DELETE',
-    },true, true, 'kpi.evaluation')
-}
-
-function createCommentOfComment(newComment){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/sub-comment/create`,
-        method: 'POST',
-        data: newComment
-    },true, true, 'kpi.evaluation')
-}
-
-function editCommentOfComment(id,newComment){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}`,
-        method : 'PUT',
-        data: newComment
-    },true, true, 'kpi.evaluation')
-}
-
-function deleteCommentOfComment(id,kpi){
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/comment/${id}/${kpi}`,
-        method : 'DELETE',
-    },true, true, 'kpi.evaluation')
 }

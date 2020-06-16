@@ -68,7 +68,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 85,
             employeePoint: 89,
             approvedPoint: 79,
-            status: 2
+            status: 1
         }, {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -77,7 +77,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 86,
             employeePoint: 94,
             approvedPoint: 81,
-            status: 1
+            status: 0
         },
     ]);
 
@@ -197,7 +197,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 86,
             employeePoint: 88,
             approvedPoint: 79,
-            status: 3,
+            status: 2,
         }, {
             organizationalUnit: organizationalUnit,
             creator: employee_1,
@@ -221,7 +221,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 86,
             employeePoint: 90,
             approvedPoint: 80,
-            status: 3,
+            status: 2,
         }, {
             organizationalUnit: organizationalUnit,
             creator: employee_2,
@@ -1159,7 +1159,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 88,
             employeePoint: 75,
             approvedPoint: 55,
-            status: 2
+            status: 1
         }, {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -1287,7 +1287,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 90,
             employeePoint: 77,
             approvedPoint: 57,
-            status: 3,
+            status: 2,
         }, {
             organizationalUnit: organizationalUnit,
             creator: employee,

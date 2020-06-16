@@ -13,6 +13,7 @@ export const taskTemplateService = {
     addNewTaskTemplate,
     editTaskTemplate,
     getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany,
     deleteTaskTemplateById,    
 };
 // get all task template
@@ -83,6 +84,13 @@ function editTaskTemplate(id, newTaskTemplate) {
 function getChildrenOfOrganizationalUnitsAsTree(id){
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasktemplates/organizational-units/${id}`,
+        method: 'GET',
+    }, false, true, 'task.task_template');
+}
+//get all user in organizational unit of company
+function getAllUserInAllUnitsOfCompany(){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/organizational-units/all-user/`,
         method: 'GET',
     }, false, true, 'task.task_template');
 }
