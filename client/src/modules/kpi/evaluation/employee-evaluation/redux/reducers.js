@@ -1,5 +1,5 @@
 import { kpiMemberConstants } from "./constants";
- 
+import {createKpiSetConstants} from '../../../employee/creation/redux/constants'
 export function kpimembers(state = {}, action) {
   switch (action.type) {
     case  kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
@@ -164,8 +164,6 @@ export function kpimembers(state = {}, action) {
         editing: true
         };
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
-        console.log(action.payload.result);
-        console.log(state.currentKPI);
         return {
             ...state,
             tasks: action.payload.task,
@@ -196,114 +194,116 @@ export function kpimembers(state = {}, action) {
         return { 
           error: action.payload
         };
-    //----------------------------------------------------------------
-
-    case kpiMemberConstants.GETALL_COMMENTS_REQUEST:
+    //----------------------------------------------------------------------------------------
+    case createKpiSetConstants.CREATE_COMMENT_REQUEST:
+      return {
+        ...state,
+        adding: true
+      }  
+    case createKpiSetConstants.CREATE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.CREATE_COMMENT_FAILURE:
+      return {
+        error: action.payload,
+      }
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
+      return {
+        ...state,
+        adding: true
+      }  
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }      
+    case createKpiSetConstants.EDIT_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing : true
+      }
+    case createKpiSetConstants.EDIT_COMMENT_SUCCESS:
+      return {
+        ...state,
+        idLoading: false,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload,
+          
+        }
+      }    
+    case createKpiSetConstants.EDIT_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      } 
+      case createKpiSetConstants.DELETE_COMMENT_REQUEST:
+      return {
+        ...state,
+        editing : true
+      }
+    case createKpiSetConstants.DELETE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }    
+    case createKpiSetConstants.DELETE_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
       return {
         ...state,
         editing: true
-      };
-      case kpiMemberConstants.GETALL_COMMENTS_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
-        return { 
-          error: action.payload
-        };
-    //----------------------------------
-    case kpiMemberConstants.CREATE_APPROVE_COMMENT_REQUEST:
+      }  
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
-        editing: true
-      };
-      case kpiMemberConstants.CREATE_APPROVE_COMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.CREATE_APPROVE_COMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
-    case kpiMemberConstants.EDIT_APPROVE_COMMENT_REQUEST:
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
-        editing: true
-      };
-      case kpiMemberConstants.EDIT_APPROVE_COMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.EDIT_APPROVE_COMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
-    case kpiMemberConstants.DELETE_APPROVE_COMMMENT_REQUEST:
+        error: action.payload,
+      }        
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
       return {
         ...state,
-        editing: true
-      };
-      case kpiMemberConstants.DELETE_APPROVE_COMMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.DELETE_APPROVE_COMMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
-
-    case kpiMemberConstants.CREATE_CHILD_COMMENT_REQUEST:
+        deleting: true
+      }  
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
-        editing: true
-      };
-      case kpiMemberConstants.CREATE_CHILD_COMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.CREATE_CHILD_COMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
-    case kpiMemberConstants.EDIT_CHILD_COMMENT_REQUEST:
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      } 
+    case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
-        editing: true
-      };
-      case kpiMemberConstants.EDIT_CHILD_COMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.EDIT_CHILD_COMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
-    case kpiMemberConstants.DELETE_CHILD_COMMMENT_REQUEST:
-      return {
-        ...state,
-        editing: true
-      };
-      case kpiMemberConstants.DELETE_CHILD_COMMMENT_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-        };
-      case kpiMemberConstants.DELETE_CHILD_COMMMENT_FAILURE:
-        return { 
-          error: action.payload
-        };
-//----------------------------------
+        error: action.payload,
+      }            
     default:
       return state
   }

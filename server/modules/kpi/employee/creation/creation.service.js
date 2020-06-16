@@ -1,4 +1,6 @@
-const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet } = require('../../../../models/index').schema;
+const taskCommentModel = require('../../../../models/task/taskComment.model');
+
+const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet,User } = require('../../../../models/index').schema;
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -12,7 +14,11 @@ exports.getEmployeeKpiSet = async (id) => {
 
     var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
             .populate("organizationalUnit creator approver")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate([
+                {path: 'comments.creator', model: User,select: 'name email avatar '},
+                {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+            ])
     return employeeKpiSet;
 }
 
@@ -144,3 +150,128 @@ exports.deleteEmployeeKpiSet = async (id) => {
         return [employeeKpiSet,kpis]
 }
 
+/**
+ *  thêm bình luận
+ */
+exports.createComment = async (body,files) => {
+    const commentss = {
+        description : body.description,
+        creator : body.creator,
+        files:files
+    }
+    let comment1 = await EmployeeKpiSet.update(
+        { _id: body.idKPI},
+        { $push: { comments: commentss } }, { new: true }
+    )
+    let comment = await EmployeeKpiSet.findOne({ _id: body.idKPI})
+        .populate([
+            {path: 'comments.creator', model: User,select: 'name email avatar '}
+        ])
+    return comment.comments;    
+}
+
+/**
+ *  thêm bình luận cua binh luan
+ */
+exports.createCommentOfComment = async (body,files) => {
+    let commentss = await EmployeeKpiSet.updateOne(
+        {"comments._id": body.idComment},
+        {
+            "$push": {
+                "comments.$.comments":
+                {
+                    creator: body.creator,  
+                    description: body.description,
+                    files: files
+                }
+            }
+        }
+    )
+    let comment = await EmployeeKpiSet.findOne({ "comments._id": body.idComment})
+        .populate([
+            {path: 'comments.creator', model: User,select: 'name email avatar '},
+            {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+        ])
+    return comment.comments;    
+}
+/**
+ * Sửa bình luận
+ */
+exports.editComment = async (params,body) => {
+    let commentss = await EmployeeKpiSet.updateOne(
+        {"comments._id":params.id},
+        {
+            $set : {"comments.$.description": body.description}
+        }
+    )
+    let comment = await EmployeeKpiSet.findOne({ "comments._id": params.id})
+    .populate([
+        {path: 'comments.creator', model: User,select: 'name email avatar '},
+        {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+    ])
+    return comment.comments;    
+}
+
+/**
+ * Delete comment
+ */
+exports.deleteComment = async (params) => {
+    let comments = await EmployeeKpiSet.update(
+        { "comments._id": params.id },
+        { $pull: { comments: { _id: params.id } } },
+        { safe: true })  
+    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    .populate([
+        {path: 'comments.creator', model: User,select: 'name email avatar '},
+        {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+    ])
+    return comment.comments
+}
+/**
+ * Edit comment of comment
+ */
+exports.editCommentOfComment = async (params,body) => {
+    const now = new Date()
+    var comment1 = await EmployeeKpiSet.updateOne(
+        { "comments.comments._id": params.id },
+        {
+            $set:
+            {
+                "comments.$.comments.$[elem].description": body.description,
+                "comments.$.comments.$[elem].updatedAt": now
+            }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+    )
+
+    let comment = await EmployeeKpiSet.findOne({ "comments.comments._id": params.id})
+    .populate([
+        {path: 'comments.creator', model: User,select: 'name email avatar '},
+        {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+    ])
+    return comment.comments
+}
+
+/**
+ * Delete comment of comment
+ */
+exports.deleteCommentOfComment = async (params) => {
+    let comment1 = await EmployeeKpiSet.update(
+        { "comments.comments._id": params.id },
+        { $pull: { "comments.$.comments" : {_id : params.id} } },
+        { safe: true })
+    
+    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    .populate([
+        {path: 'comments.creator', model: User,select: 'name email avatar '},
+        {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+    ])
+
+    return comment.comments
+}

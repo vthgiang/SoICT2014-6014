@@ -5,13 +5,14 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { createKpiSetActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
-
+import {performTaskAction} from '../../../../task/task-perform/redux/actions'
 import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal';
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 import Swal from 'sweetalert2';
-
-import { SlimScroll } from '../../../../../common-components';
+import { getStorage } from '../../../../../config'
+import { SlimScroll} from '../../../../../common-components';
+import {Comment} from './comment'
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 
@@ -20,14 +21,15 @@ import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common
 var translate = '';
 class CreateEmployeeKpiSet extends Component {
     componentDidMount() {
-        this.props.getDepartment();//localStorage.getItem('id');
-        this.props.getEmployeeKpiSet()//localStorage.getItem('id');
+        this.props.getDepartment();
+        this.props.getEmployeeKpiSet()
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
     constructor(props) {
         super(props);
+        var idUser = getStorage("userId");
         translate = this.props.translate;
         this.state = {
             employeeKpiSet: {
@@ -42,7 +44,20 @@ class CreateEmployeeKpiSet extends Component {
             submitted: false,
             commenting: false,
             currentRole: localStorage.getItem("currentRole"),
-            fixTableWidth: false
+            fixTableWidth: false,
+            comment : {
+                creator: idUser,
+                description: '',
+                files: [],
+            },
+            newComment : {
+                description: ''
+            },
+            commentOfComment : {
+                creator: idUser,
+                description: '',
+                files: [],
+            }
         };
     }
 
@@ -363,6 +378,88 @@ class CreateEmployeeKpiSet extends Component {
         }
     }
 
+    onFilesChange  = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                comment: {
+                    ...state.comment,
+                    files: files,
+                }
+            }
+        })
+    }
+    onCommentFilesChange  = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                commentOfComment: {
+                    ...state.commentOfComment,
+                    files: files,
+                }
+            }
+        })
+    }
+    submitComment = async (id) => {
+        var { comment } = this.state;
+        const data = new FormData();
+        data.append("idKPI", id);
+        data.append("creator", comment.creator);
+        data.append("description", comment.description);
+        comment.files && comment.files.forEach(x=>{
+            data.append("files", x);
+        })
+        console.log(comment)
+        if(comment.creator && comment.description){
+            this.props.createComment(data);
+        }
+        // Reset state cho việc thêm mới action
+        await this.setState(state => {
+            return {
+                ...state,
+                comment: {
+                    ...state.comment,
+                    description: "",
+                    files: [],
+                },
+            }
+        })
+    }
+    submitCommentOfComment = async (id) => {
+        var { commentOfComment } = this.state;
+        const data = new FormData();
+        data.append("idComment", id);
+        data.append("creator", commentOfComment.creator);
+        data.append("description", commentOfComment.description);
+        commentOfComment.files && commentOfComment.files.forEach(x=>{
+            data.append("files", x);
+        })
+        if(commentOfComment.creator && commentOfComment.description){
+            console.log("Đỗ Tiến Thành")
+            this.props.createCommentOfComment(data);
+        }
+        // Reset state cho việc thêm mới action
+        await this.setState(state => {
+            return {
+                ...state,
+                commentOfComment: {
+                    ...state.commentOfComment,
+                    description: "",
+                    files: [],
+                },
+            }
+        })
+    }
+
+    editComment = async (id) => {
+        let {newComment} = this.state;
+        if(newComment.description){
+            this.props.editComment(id,newComment)
+        }
+    }
+    handleDeleteComment = (id) => {
+        this.props.deleteComment(id,this.props.createEmployeeKpiSet.currentKPI._id)
+    }
     render() {
         var unitList, currentUnit, currentKPI, userdepartments, items;
         const { commenting, editing, editingTarget } = this.state;
@@ -375,6 +472,7 @@ class CreateEmployeeKpiSet extends Component {
                 || item.employee === this.state.currentRole
                 || item.viceDean === this.state.currentRole));
         }
+        
         if (createEmployeeKpiSet.currentKPI) currentKPI = createEmployeeKpiSet.currentKPI;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
@@ -526,31 +624,50 @@ class CreateEmployeeKpiSet extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                
-                                {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                    <div>
-                                        {commenting ? 
-                                            <div>
-                                                <button className="btn btn-danger" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.cancel_feedback')}</button>
-                                                <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.send_feedback')}</button>
-                                            </div>
-                                            : <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</button>
-                                        }
-                                    </div>
-                                }
+                                <div><h2 style={{textAlign:'center'}}>Trao đổi</h2></div>
+                                <div style={{marginTop:'60px',display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                                <div className="col-xs-12 col-sm-12 col-md-6">
+                                    <Comment
+                                        currentKPI = {currentKPI}
+                                        // auth = {this.props.auth}
+                                        // downloadFile ={(e,path,fileName)=>this.requestDownloadFile(e,path,fileName)}
+                                        // //Props cua comment
+                                        // submitComment = {()=>this.submitComment(currentKPI._id)}
+                                        // onFilesChange = {this.onFilesChange}
+                                        // editComment = {(id)=>this.editComment(id)}
+                                        // deleteComment = {(id)=>this.props.deleteComment(id,currentKPI._id)}
+                                        // files = {this.state.comment.files}
+                                        // text = {this.state.comment.description}
+                                        // onTextChange={(e)=>{
+                                        //     let value = e.target.value;
+                                        //     this.setState(state => {
+                                        //         return { ...state, comment: {...state.comment, description: value}}
+                                        //     })        
+                                        // }}
+                                        // onEditTextChange = {(e) => {
+                                        //     let value = e.target.value;
+                                        //     this.setState(state => {
+                                        //         return { ...state, newComment: {...state.newComment, description: value}}
+                                        //     })  
+                                        // }}
 
-                                {commenting && 
-                                    <div className="col-xs-12">
-                                        <form>
-                                            <div className="form-group">
-                                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</label>
-                                                <div className='form-group'>
-                                                    <textarea type="text" className='form-control' id="inputname" name="reason" />
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                }
+                                        // //Props của comment of comment
+                                        // submitCommentOfComment = {(id)=>this.submitCommentOfComment(id)}
+                                        // onCommentFilesChange = {this.onCommentFilesChange}
+                                        // commentFiles = {this.state.commentOfComment.files}
+                                        // commentText = {this.state.commentOfComment.description}
+                                        // onCommentTextChange = {(e)=> {
+                                        //     let value = e.target.value;
+                                        //     this.setState(state => {
+                                        //         return { ...state, commentOfComment: {...state.commentOfComment, description: value}}
+                                        //     })
+                                        // }}
+                                        
+                                    >
+                                    </Comment>
+            
+                                </div>
+                                </div>
                             </div>
                             : <div className="col-xs-12">
                                 <div style={{marginLeft: "-10px"}}>
@@ -586,8 +703,8 @@ class CreateEmployeeKpiSet extends Component {
 }
 
 function mapState(state) {
-    const { department, createEmployeeKpiSet, user, createKpiUnit } = state;
-    return { department, createEmployeeKpiSet, user, createKpiUnit };
+    const { department, createEmployeeKpiSet, user, createKpiUnit,auth } = state;
+    return { department, createEmployeeKpiSet, user, createKpiUnit,auth };
 }
 
 const actionCreators = {
@@ -598,8 +715,13 @@ const actionCreators = {
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
-
+    createComment : createKpiSetActions.createComment,
+    createCommentOfComment: createKpiSetActions.createCommentOfComment,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
+    editComment : createKpiSetActions.editComment,
+    deleteComment : createKpiSetActions.deleteComment,
+    downloadFile: performTaskAction.downloadFile
+    
 };
 
 const connectedCreateEmployeeKpiSet = connect( mapState, actionCreators )( withTranslate(CreateEmployeeKpiSet) );
