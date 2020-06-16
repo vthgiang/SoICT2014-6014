@@ -149,6 +149,21 @@ class DetailTaskTab extends Component {
         this.props.startTimer(timer);
     }
 
+    formatPriority = (data) => {
+        const {translate} = this.props;
+        if(data === 1) return translate('task.task_management.low');
+        if(data === 2) return translate('task.task_management.normal');
+        if(data === 3) return translate('task.task_management.high');
+    }
+
+    formatStatus = (data) => {
+        const {translate} = this.props;
+        if( data === "Inprocess" ) return translate('task.task_management.inprocess');
+        else if( data === "WaitForApproval" ) return translate('task.task_management.wait_for_approval');       
+        else if( data === "Finished" ) return translate('task.task_management.finished');       
+        else if( data === "Delayed" ) return translate('task.task_management.delayed');       
+        else if( data === "Canceled" ) return translate('task.task_management.canceled');       
+    }
 
     // convert ISODate to String dd/mm/yyyy
     formatDate(date) {
@@ -238,10 +253,6 @@ class DetailTaskTab extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-        var priority="";
-        if(task && task.priority === 3) priority ="Cao";
-        if(task && task.priority === 2) priority ="Trung bình";
-        if(task && task.priority === 1) priority ="Thấp";
         
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
@@ -307,10 +318,9 @@ class DetailTaskTab extends Component {
                 <div>
                     
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
-                        {/* <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p> */}
                         {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
-                        <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {priority}</p>
-                        <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && task.status}</p>
+                        <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
+                        <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         {/* </div>
                                 <hr />
@@ -339,7 +349,7 @@ class DetailTaskTab extends Component {
                                                     (task && task.responsibleEmployees.length !== 0) &&
                                                     task.responsibleEmployees.map(item => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <li><u>{item.name}</u></li>
+                                                            return <li><strike>{item.name}</strike></li>
                                                         } else {
                                                             return <li>{item.name}</li>
                                                         }
@@ -355,7 +365,7 @@ class DetailTaskTab extends Component {
                                                     (task && task.accountableEmployees.length !== 0) &&
                                                     task.accountableEmployees.map(item => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <li><u>{item.name}</u></li>
+                                                            return <li><strike>{item.name}</strike></li>
                                                         } else {
                                                             return <li>{item.name}</li>
                                                         }
@@ -374,7 +384,7 @@ class DetailTaskTab extends Component {
                                                             (task && task.consultedEmployees.length !== 0) &&
                                                             task.consultedEmployees.map(item => {
                                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                    return <li><u>{item.name}</u></li>
+                                                                    return <li><strike>{item.name}</strike></li>
                                                                 } else {
                                                                     return <li>{item.name}</li>
                                                                 }
@@ -394,7 +404,7 @@ class DetailTaskTab extends Component {
                                                         (task && task.informedEmployees.length !== 0) &&
                                                         task.informedEmployees.map(item => {
                                                             if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                return <li><u>{item.name}</u></li>
+                                                                return <li><strike>{item.name}</strike></li>
                                                             } else {
                                                                 return <li>{item.name}</li>
                                                             }
@@ -457,7 +467,7 @@ class DetailTaskTab extends Component {
                                                             { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
                                                                     if(task.inactiveEmployees.indexOf(res.employee._id) !== -1){
-                                                                        return <li><u>{res.employee.name}</u> - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                        return <li><strike>{res.employee.name}</strike> - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
                                                                     }
                                                                     else {
                                                                         return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>

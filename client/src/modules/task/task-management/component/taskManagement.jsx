@@ -346,10 +346,20 @@ class TaskManagement extends Component {
         })
     }
 
-    formatPriority =(data) => {
-        if(data === 1) return "Thấp";
-        if(data === 2) return "Trung bình";
-        if(data === 3) return "Cao";
+    formatPriority = (data) => {
+        const {translate} = this.props;
+        if(data === 1) return translate('task.task_management.low');
+        if(data === 2) return translate('task.task_management.normal');
+        if(data === 3) return translate('task.task_management.high');
+    }
+
+    formatStatus = (data) => {
+        const {translate} = this.props;
+        if( data === "Inprocess" ) return translate('task.task_management.inprocess');
+        else if( data === "WaitForApproval" ) return translate('task.task_management.wait_for_approval');       
+        else if( data === "Finished" ) return translate('task.task_management.finished');       
+        else if( data === "Delayed" ) return translate('task.task_management.delayed');       
+        else if( data === "Canceled" ) return translate('task.task_management.canceled');       
     }
 
     handleRoleChange = (value) => {
@@ -456,8 +466,9 @@ class TaskManagement extends Component {
         var data = [];
         if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
             var dataTemp = currentTasks;
-
+            
             for (let n in dataTemp) {
+                // "Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
@@ -465,7 +476,7 @@ class TaskManagement extends Component {
                     priority: this.formatPriority(dataTemp[n].priority),
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
-                    status: dataTemp[n].status,
+                    status: this.formatStatus(dataTemp[n].status),
                     progress: dataTemp[n].progress + "%",
                     totalLoggedTime: this.convertTime(dataTemp[n].totalLoggedTime),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
