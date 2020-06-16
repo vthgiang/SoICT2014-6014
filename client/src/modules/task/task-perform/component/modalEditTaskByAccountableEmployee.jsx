@@ -6,16 +6,15 @@ import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
-
-
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+
+
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
         super(props);
 
         let userId = getStorage("userId");
-
 
         let { tasks } = this.props;
 
@@ -539,7 +538,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
     
-    render() {
+    render() { 
         const { task } = this.state;
         const { errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
             responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
