@@ -378,9 +378,15 @@ class ModalMemberApprove extends Component {
                             </tbody>
                         </table>
                     </div>
+                    <div><h2 style={{textAlign:'center'}}>Trao đổi</h2></div>
+                    <div style={{marginTop:'60px',display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                     <Comment 
                         currentKPI={kpimembers.currentKPI}>
                     </Comment>
+                    </div>
+                    </div>
+        
                 </DialogModal>
             </React.Fragment>
         );
