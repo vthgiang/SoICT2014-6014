@@ -5,7 +5,7 @@
 // import 'rc-tooltip/assets/bootstrap.css';
 
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
-
+import {TaskDialog} from './taskImpotanceDialog';
 import React, { Component, useState } from 'react';
 
 import ReactSlider from 'react-slider';
@@ -31,7 +31,8 @@ class ModalMemberEvaluate extends Component {
             status: 0,
             value: 0,
             valueNow : 0,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            type: 0
         };
     }
 
@@ -61,7 +62,7 @@ class ModalMemberEvaluate extends Component {
                 let tasks = nextProps.kpimembers.tasks;
                 let importanceLevels = {};
                 tasks.forEach(element => {
-                    importanceLevels[element.taskId] = element.taskImportanceLevel;
+                    importanceLevels[element.taskId] = element.results.taskImportanceLevel;
                 });
                 this.setState(state=>{
                     return{
@@ -110,6 +111,7 @@ class ModalMemberEvaluate extends Component {
                return {
                    ...state,
                    content: id,
+                   type : kpiType,
                    dataStatus: this.DATA_STATUS.QUERYING,
                }
            });
@@ -127,6 +129,7 @@ class ModalMemberEvaluate extends Component {
                     taskId: element.taskId,
                     date: date,
                     point: points[element.taskId],
+                    type : this.state.type,
                     employeeId: employeeId
                 })
             });
@@ -148,6 +151,18 @@ class ModalMemberEvaluate extends Component {
             }
         })
     }
+    showDetailTaskImportanceCal = async(item) =>{
+        await this.setState(state => {
+            return {
+                ...state,
+                taskImportanceDetail: item
+            }
+        })
+
+        window.$(`#modal-taskimportance-auto`).modal('show')
+    }
+
+
     render() {
         var list, myTask = [], thisKPI = null;
         const { kpimembers } = this.props;
@@ -165,6 +180,7 @@ class ModalMemberEvaluate extends Component {
             title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, tháng ${this.formatMonth(employeeKpiSet.date)}`}
             hasSaveButton={false}
             size={100}>
+                {/* {<taskDialog task = {this.state.taskImportanceDetail}/>} */}
                 <div className="col-xs-12 col-sm-4">
                     <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
                         <div className="box-header with-border">
@@ -267,8 +283,8 @@ class ModalMemberEvaluate extends Component {
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
-                                                    <td>{itemTask.contribution}%</td>
-                                                    <td>{itemTask.automaticPoint + '-' + itemTask.employeePoint + '-' + itemTask.approvedPoint}</td>
+                                                    <td>{itemTask.results.contribution}%</td>
+                                                    <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                     <td>
                                                         {this.state.points && this.state.tasks &&
                                                         <React.Fragment>
@@ -279,13 +295,16 @@ class ModalMemberEvaluate extends Component {
                                                             value={this.state.points[itemTask.taskId]}
                                                             onChange={(e) => this.setValueSlider(e, itemTask.taskId)}/>
                                                             <div>
-                                                            GT mới: {this.state.points[itemTask.taskId]}
+                                                                GT mới: {this.state.points[itemTask.taskId]}
                                                             </div>
                                                             <div>
-                                                            GT cũ: {itemTask.taskImportanceLevel}
+                                                                GT cũ: {itemTask.results.taskImportanceLevel}
                                                             </div>
                                                             <div>
-                                                            GT tự động: {itemTask.taskImportanceLevelCal}
+                                                                <a href= "#modal-taskimportance-auto" onClick = {()=>this.showDetailTaskImportanceCal(itemTask)}>
+                                                                    GT tự động: {itemTask.taskImportanceLevelCal}
+                                                                </a>
+
                                                             </div>
                                                         </React.Fragment>
                                                         }
@@ -315,6 +334,13 @@ class ModalMemberEvaluate extends Component {
 
                                 </tbody>
                             </table>
+                            {
+                                this.state.taskImportanceDetail !== undefined && 
+                                <TaskDialog 
+                                    task = {this.state.taskImportanceDetail}
+                                />
+
+                            }
                         </React.Fragment>;
                         return true;
                     })}

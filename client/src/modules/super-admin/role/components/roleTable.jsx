@@ -14,7 +14,7 @@ class RoleTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: { $regex: '', $options: 'i' }
+            value: ''
         }
     }
 
@@ -119,33 +119,38 @@ class RoleTable extends Component {
     searchWithOption = async() => {
         const data = {
             limit: this.state.limit,
-            page: 1
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
         };
-        data[this.state.option] = this.state.value;
-        await this.props.getPaginate(data);
+        await this.props.get(data);
     }
 
-    setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.get(data);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.get(data);
     }
 
     componentDidMount(){
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
         this.props.get();
+        this.props.get({page: this.state.page, limit: this.state.limit});
         this.props.getUser();
     }
 
@@ -159,7 +164,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps =  {
     get: RoleActions.get,
-    getPaginate: RoleActions.getPaginate,
     getUser: UserActions.get,
     destroy: RoleActions.destroy
 }

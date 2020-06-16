@@ -99,7 +99,7 @@ class DataTableSetting extends Component {
                 <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
                 
                 <div className="box box-primary box-solid collapse setting-table" id={`setting-${tableId}`}>
-                    <div class="box-header with-border">
+                    <div className="box-header with-border">
                         <h3 className="box-title">Thiết lập bảng</h3>
                         <div className="box-tools pull-right">
                             <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target={`#setting-${tableId}`} ><i className="fa fa-times"></i></button>

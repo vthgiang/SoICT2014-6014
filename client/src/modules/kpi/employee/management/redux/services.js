@@ -10,7 +10,8 @@ export const managerKPIPerService = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfTask,
     getAllKPIPersonalByUserID,
-    getAllKpiSetsOrganizationalUnitByMonth
+    getAllKpiSetsOrganizationalUnitByMonth,
+    copyEmployeeKPI
 };
 
 // Lấy tất cả kpi cá nhân
@@ -50,4 +51,11 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
         url:`${LOCAL_SERVER_API}/kpipersonals/${user}/${department}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.employee.manager')
+}
+
+function copyEmployeeKPI(id, dateold, datenew){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/copykpi/${id}/${dateold}/${datenew}`,
+        method: 'POST',
+    }, true, true, 'kpi.employee.manager');
 }

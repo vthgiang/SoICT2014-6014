@@ -11,11 +11,11 @@ export const dashboardOrganizationalUnitKpiActions = {
 }
 
 // Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
-function getAllChildTargetOfOrganizationalUnitKpis(userRoleId) {
+function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpis(userRoleId)
+        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpis(roleId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS,
@@ -32,11 +32,11 @@ function getAllChildTargetOfOrganizationalUnitKpis(userRoleId) {
 }
 
 // Lấy tất cả task của organizationalUnit theo tháng hiện tại
-function getAllTaskOfOrganizationalUnit(userRoleId) {
+function getAllTaskOfOrganizationalUnit(roleId) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(userRoleId)
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(roleId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS,
@@ -74,11 +74,11 @@ function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
 }
 
 // Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
-function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year) {
+function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(roleId, year) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_REQUEST});
 
-        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year)
+        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(roleId, year)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_SUCCESS,
@@ -95,11 +95,11 @@ function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(userRoleId, year) {
 }
 
 // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
-function getAllEmployeeKpiSetInOrganizationalUnit(userRoleId, month) {
+function getAllEmployeeKpiSetInOrganizationalUnit(roleId, month) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(userRoleId, month)
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(roleId, month)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS,

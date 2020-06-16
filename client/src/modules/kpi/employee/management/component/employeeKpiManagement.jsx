@@ -22,7 +22,7 @@ class KPIPersonalManager extends Component {
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: null,
+                user: localStorage.getItem("userId"),
                 status: null,
                 startDate: null,
                 endDate: null
@@ -67,6 +67,19 @@ class KPIPersonalManager extends Component {
 
         return [month, year].join('-');
     }
+    showModalCopy = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showModalCopy: id
+            }
+        })
+        var element = document.getElementsByTagName("BODY")[0];
+        element.classList.add("modal-open");
+        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
+        modal.classList.add("in");
+        modal.style = "display: block; padding-right: 17px;";
+    }
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -74,12 +87,6 @@ class KPIPersonalManager extends Component {
             return "Chờ phê duyệt";
         } else if (status === 2) {
             return "Đã kích hoạt";
-        } else if (status === 3) {
-            return "Đã kết thúc";
-        } else if (status === 4) {
-            return "Đang hoạt động";
-        } else if (status === 5) {
-            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
@@ -124,7 +131,6 @@ class KPIPersonalManager extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: this.state.user,
                     status: this.state.status,
                     startDate: this.state.startDate,
                     endDate: this.state.endDate
@@ -132,7 +138,9 @@ class KPIPersonalManager extends Component {
                 employeeKpiSet: {_id: null},
             }
         })
+        
         const { infosearch } = this.state;
+        console.log("info====", this.state.user);
             var startDate;
             var startdate=null;
             var endDate;
@@ -174,23 +182,23 @@ class KPIPersonalManager extends Component {
         if ( kpimembers !== "undefined") kpipersonal =  kpimembers.kpimembers;
        
         let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    value: [{text:"--Chọn nhân viên--", value: "null"}]
-                },
+        // if (userdepartments) {
+        //     unitMembers = [
+        //         {
+        //             value: [{text:"--Chọn nhân viên--", value: "null"}]
+        //         },
                 
-                {
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
-        }
+        //         {
+        //             value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
+        //         },
+        //     ]
+        // }
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
                     <div className="form-inline">
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Nhân viên:</label>
                             {unitMembers &&
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -202,7 +210,7 @@ class KPIPersonalManager extends Component {
                                 // multiple={true}
                                 value={user}
                             />}
-                        </div>
+                        </div> */}
 
                         <div className="form-group">
                             <label>Trạng thái:</label>
@@ -214,10 +222,7 @@ class KPIPersonalManager extends Component {
                                     {value:"null", text : "--Chọn trạng thái--"},
                                     {value:0, text : "Đang thiết lập"},
                                     {value:1, text : "Chờ phê duyệt"},
-                                    {value:2, text : "Đã kích hoạt"},
-                                    {value:3, text : "Đã kết thúc"},
-                                    {value:4, text : "Đang hoạt động"},
-                                    {value:5, text : "Tất cả các trạng thái"},]}
+                                    {value:2, text : "Đã kích hoạt"},]}
                                 // items = {items}
                                 onChange={this.handleStatusChange}
                                 // multiple={true}
@@ -259,6 +264,7 @@ class KPIPersonalManager extends Component {
                     columnArr={[ 
                         'STT' ,
                         'Thời gian' , 
+                        "Trạng thái",
                         'Số lượng mục tiêu' , 
                         'Hệ thống đánh giá' ,
                         'Kết quả tự đánh giá' ,
@@ -273,6 +279,7 @@ class KPIPersonalManager extends Component {
                             <tr>
                                 <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
                                 <th title="Thời gian">Thời gian</th>
+                                <th title="Trạng thái">Trạng thái</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
                                 <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
@@ -285,6 +292,7 @@ class KPIPersonalManager extends Component {
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{this.formatDate(item.date)}</td>
+                                    <td>{this.checkStatusKPI(item.status)}</td>
                                     <td>{item.kpis.length}</td>
                                     <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
                                     <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>

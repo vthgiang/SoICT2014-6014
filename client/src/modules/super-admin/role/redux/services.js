@@ -3,25 +3,17 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const RoleServices = {
     get,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get() {  
+function get(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/role`,
         method: 'GET',
-    }, false, true, 'super_admin.role');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/paginate`,
-        method: 'POST',
-        data,
+        params
     }, false, true, 'super_admin.role');
 }
 

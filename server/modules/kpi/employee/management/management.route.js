@@ -11,4 +11,5 @@ router.get('/task/:member',auth, KPIPersonalController.getAllFinishedEmployeeKpi
 // get all kpi employee in department by month
 router.get('/:user/:department/:date', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
 
+router.post('/copykpi/:id/:dateold/:datenew', auth, KPIPersonalController.copyKPI);
 module.exports = router;

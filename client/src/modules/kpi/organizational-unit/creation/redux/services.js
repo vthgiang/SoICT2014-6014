@@ -22,9 +22,9 @@ export const createUnitKpiServices = {
 }
 
 // Lấy KPI đơn vị hiện tại
-function getCurrentKPIUnit(id) {
+function getCurrentKPIUnit(roleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/roles/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/roles/${roleId}`,
         method: 'GET',
     }, false, true, 'kpi.organizational_unit');
 }

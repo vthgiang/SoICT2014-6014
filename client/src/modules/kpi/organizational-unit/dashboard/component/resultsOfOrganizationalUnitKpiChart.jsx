@@ -15,7 +15,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
-            currentRole: localStorage.getItem("currentRole"),
+            organizationalUnitId: null,
             year: new Date().getFullYear(),
             dataStatus: this.DATA_STATUS.QUERYING
         };
@@ -61,7 +61,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             return false;
         } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.multiLineChart();
-
+            
             this.setState(state => {
                 return {
                     ...state,

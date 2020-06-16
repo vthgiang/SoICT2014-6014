@@ -3,6 +3,7 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
+import { Schedule } from './tasksSchedule';
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -508,13 +509,14 @@ class TaskDashboard extends Component {
                                         </div>
                                     </div>
                                 </div> */}
-                                <div className="col-md-12">
+                                {/* <div className="col-md-12">
                                     <div className="box box-primary">
                                         <div className="box-body no-padding">
                                             <div id="calendarTask" />
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
+                                <Schedule/>
                             </div>
                         </div>
                     </section>
