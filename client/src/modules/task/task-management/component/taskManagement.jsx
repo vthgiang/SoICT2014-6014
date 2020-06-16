@@ -143,24 +143,27 @@ class TaskManagement extends Component {
     // Hàm xử lý trạng thái lưu kho
     handleStore = async (id) => {
         await this.props.editArchivedOfTask(id);
+    }
 
-        var content = this.state.currentTab;
-        var { perPage } = this.state;
-        var currentPage = this.state.currentPage;
-        var { organizationalUnit, status, priority, special, name } = this.state;
+    // Hàm xóa một công việc theo id
+    handleDelete = async (id) => {
+        const { tasks, translate } = this.props;
+        let currentTasks = tasks.tasks.filter(task => task._id === id);
 
-        if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
-        } else if (content === "accountable") {
-            this.props.getAccountableTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
-        } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
-        } else if (content === "creator") {
-            this.props.getCreatorTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
-        } else {
-            this.props.getInformedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name);
+        let progress = currentTasks[0].progress;
+        let action = currentTasks[0].taskActions;
+
+        if(action.length === 0 && progress === 0){
+            await this.props.deleteTaskById(id);
         }
-
+        else{
+            Swal.fire({
+                title: translate('task.task_management.confirm_delete'),
+                // type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
     }
 
     handleGetDataPagination = async (index) => {
@@ -489,8 +492,13 @@ class TaskManagement extends Component {
             }
             
             if (this.state.currentTab === "creator" || this.state.currentTab === "informed") {
+                let del = null;
+                if(this.state.currentTab === "creator"){
+                    del = "delete";
+                }
+
                 for (let i in data) {
-                    data[i] = { ...data[i], action: ["edit", ["add", archived]] }
+                    data[i] = { ...data[i], action: ["edit", ["add", archived, del]] }
                 }
             }
             if (this.state.currentTab === "responsible" || this.state.currentTab === "consulted") {
@@ -650,7 +658,7 @@ class TaskManagement extends Component {
                             funcAdd={this.handleAddTask}
                             funcStartTimer={this.startTimer}
                             funcStore={this.handleStore}
-                            // funcDelete={this.handleDelete}
+                            funcDelete={this.handleDelete}
                         />
 
                     </div>
@@ -720,6 +728,7 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
+    deleteTaskById: taskManagementActions._delete,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export {translateTaskManagement as TaskManagement} ;

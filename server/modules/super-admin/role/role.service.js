@@ -5,35 +5,35 @@ const {OrganizationalUnit, Company, Role, RoleType, User, UserRole} = require('.
  * Lấy danh sách tất cả các role của 1 công ty
  * @company id công ty
  */
-exports.getAllRoles = async (company) => {
-    return await Role
-        .find({company})
-        .populate([
-            { path: 'users', model: UserRole},
-            { path: 'parents', model: Role },
-            { path: 'type', model: RoleType }
-        ]);
-}
+exports.getAllRoles = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Role
+            .find({company})
+            .populate([
+                { path: 'users', model: UserRole, populate: {path: 'userId', model: User}},
+                { path: 'parents', model: Role },
+                { path: 'type', model: RoleType }
+            ]);
 
-/**
- * Phân trang danh sách các role 
- * @company id công ty
- * @limit giới hạn hiển thị trên 1 bảng
- * @page trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedRoles = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await Role
-        .paginate( newData , { 
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company};
+        console.log("option: ", option);
+        return await Role.paginate( option , { 
             page, 
             limit,
             populate: [
-                { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
+                { path: 'users', model: UserRole, populate: {path: 'userId', model: User}},
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]
         });
+    }
 }
 
 
@@ -136,17 +136,15 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
  * @data dữ liệu chỉnh sửa, mặc định không truyền vào thì là {}
  */
 exports.editRole = async(id, data={}) => {
-    const role = await Role.findById(id)
-        .populate([
-            { path: 'users', model: UserRole },
-            { path: 'company', model: Company }
-        ]);
-    if(data.name !== undefined || data.name !== null || data.name !== '')
+    const role = await Role.findById(id);
+    
+    console.log("ROLE1: ", role)
+    if(data.name !== undefined && data.name !== null && data.name !== '')
         role.name = data.name;
-    if(data.parents !== undefined || data.parents !== null || data.parents !== '')
+    if(data.parents !== undefined && data.parents !== null && data.parents !== '')
         role.parents = data.parents;
-    role.save();
-
+    await role.save();
+    console.log("ROLE2: ", role)
     return role;
 }
 
@@ -194,13 +192,7 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
             userId: user
         };
     })
-    const relationshipUpdated = await UserRole.insertMany(user_role);
-    const ur2 = await UserRole.find();
-    return {
-        ur1,
-        ur2,
-        relationshipUpdated
-    };
+    return await UserRole.insertMany(user_role);
 }
 
 /**

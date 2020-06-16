@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema;;
 
 const OrganizationalUnitKpi = require('./organizationalUnitKpi.model');
 
@@ -12,7 +12,6 @@ const EmployeeKpiSchema = new Schema({
     parent: {
         type: Schema.Types.ObjectId,
         ref: OrganizationalUnitKpi,
-        replies: this
     },
     weight: {
         type: Number,

@@ -651,6 +651,7 @@ export default {
             zoom_out: 'Thu nhỏ',
             zoom_in: 'Phóng to',
             add: 'Thêm',
+            edit_title: 'Chỉnh sửa đơn vị',
             add_title: 'Thêm đơn vị mới',
             info: 'Thông tin về đơn vị',
             name: 'Tên đơn vị',
@@ -1514,6 +1515,7 @@ export default {
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
                 edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
+                confirm_delete: 'Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!',
 
                 responsible: 'Thực hiện chính',
                 accountable: 'Phê duyệt',

@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-
-const Company = require('../system-admin/company.model');
-const RoleType = require('../super-admin/roleType.model');
 const UserRole = require('./userRole.model');
 const Privilege = require('./privilege.model');
 
@@ -16,7 +13,7 @@ const RoleSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     },
     parents: [{ // các roles cha. Role này sẽ có tất cả các quyền của những role cha khai báo trong mảng này
         type: Schema.Types.ObjectId,
@@ -24,7 +21,7 @@ const RoleSchema = new Schema({
     }],
     type: {
         type: Schema.Types.ObjectId,
-        ref: RoleType
+        ref: 'role_types'
     }
 },{
     timestamps: true,

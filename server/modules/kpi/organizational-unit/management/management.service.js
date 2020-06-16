@@ -52,7 +52,7 @@ exports.getKPIUnits = async (data) => {
         organizationalUnit: department._id
 
     };
-    if (status !== 3) {
+    if (status !== -1) {
         keySearch = {
             ...keySearch,
             status: status

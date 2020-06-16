@@ -26,7 +26,7 @@ const EmployeeKpiSetSchema = new Schema({
         type: Date,
         required: true
     },
-    // 0: Đang thiết lập,1: Chờ phê duyệt, 2: Đã kích hoạt, 3: Đã kết thúc
+    // 0: Đang thiết lập,1: Chờ phê duyệt, 2: Đã kích hoạt
     status: {
         type: Number,
         default: 0
@@ -54,7 +54,7 @@ const EmployeeKpiSetSchema = new Schema({
             ref: User,
             required: true
         },
-        content: {
+        description: {
             type: String,
         },
         createdAt: {
@@ -80,7 +80,7 @@ const EmployeeKpiSetSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {

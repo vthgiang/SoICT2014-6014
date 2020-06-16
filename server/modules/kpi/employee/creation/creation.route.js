@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const EmployeeKpiSetController = require("./creation.controller");
-const {auth} = require('../../../../middleware/index');
+const {auth,uploadFile} = require('../../../../middleware/index');
 
 // Lấy tập KPI cá nhân hiện tại
 router.get('/current/:id',auth, EmployeeKpiSetController.getEmployeeKpiSet);
@@ -33,4 +33,16 @@ router.delete('/target/:kpipersonal/:id',auth, EmployeeKpiSetController.deleteEm
 // // phê duyệt tất cả mục tiêu của kpi cá nhân
 // router.put('/approve/:id',auth, KPIPersonalController.approveAllTarget);
 
+//tạo comment
+router.post('/comment',auth,uploadFile([{name:'files', path:'/files/kpisets'}], 'array'),EmployeeKpiSetController.createComment)
+//sua comment
+router.patch('/comment/:id',auth,EmployeeKpiSetController.editComment)
+router.delete('/comment/:id/:idKPI',auth,EmployeeKpiSetController.deleteComment)
+
+//tao comment cua comment
+router.post('/comment-comment',auth,uploadFile([{name:'files', path:'/files/kpisets'}], 'array'),EmployeeKpiSetController.createCommentOfComment)
+//sua comment cua comment
+router.patch('/comment-comment/:id',auth,EmployeeKpiSetController.editCommentOfComment)
+
+router.delete('/comment-comment/:id/:idKPI',auth,EmployeeKpiSetController.deleteCommentOfComment)
 module.exports = router;

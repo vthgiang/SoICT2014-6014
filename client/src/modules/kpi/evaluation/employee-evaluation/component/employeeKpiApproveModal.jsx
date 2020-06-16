@@ -10,7 +10,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import {
     getStorage
 } from '../../../../../config';
-import { Comments } from './employeeKpiComment';
+import { Comment } from './employeeKpiComment';
 // import Files from 'react-files'
 // import TextareaAutosize from 'react-textarea-autosize';
 
@@ -235,8 +235,9 @@ class ModalMemberApprove extends Component {
         if (kpimembers.currentKPI) {
             kpimember = kpimembers.currentKPI;
             month = kpimember.date.split('-');
+            var currentKPI = kpimembers.currentKPI
         }
-
+        
         if (kpimembers.kpimembers){
             var arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
@@ -377,7 +378,9 @@ class ModalMemberApprove extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <Comments id={this.props.id}></Comments>
+                    <Comment 
+                        currentKPI={kpimembers.currentKPI}>
+                    </Comment>
                 </DialogModal>
             </React.Fragment>
         );

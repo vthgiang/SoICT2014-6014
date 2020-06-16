@@ -11,7 +11,13 @@ export const createKpiSetActions = {
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
-    approveEmployeeKpiSet
+    approveEmployeeKpiSet,
+    createComment,
+    editComment,
+    deleteComment,
+    createCommentOfComment,
+    editCommentOfComment,
+    deleteCommentOfComment    
 };
 
 
@@ -228,4 +234,118 @@ function approveEmployeeKpiSet(id) {
                 })
             })
     };
+}
+
+function createComment(data) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.CREATE_COMMENT_REQUEST});
+        createKpiSetService.createComment(data)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.CREATE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.CREATE_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
+}
+
+function editComment(id,data) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.EDIT_COMMENT_REQUEST});
+        createKpiSetService.editComment(id,data)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.EDIT_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.EDIT_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
+}
+function deleteComment(id,idKPI) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.DELETE_COMMENT_REQUEST});
+        createKpiSetService.deleteComment(id,idKPI)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.DELETE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
+}
+
+
+function createCommentOfComment(data) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST});
+        createKpiSetService.createCommentOfComment(data)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
+}
+
+function editCommentOfComment(id,data) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST});
+        createKpiSetService.editCommentOfComment(id,data)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
+}
+
+function deleteCommentOfComment(id,idKPI) {
+    return dispatch => {
+        dispatch({type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST});
+        createKpiSetService.deleteCommentOfComment(id,idKPI)
+            .then(res=>{
+                dispatch({
+                    type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
+                    payload : error
+                })
+            })
+    }
 }

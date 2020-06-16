@@ -1,6 +1,7 @@
 const PerformTaskService = require('./taskPerform.service');
 const {  LogInfo,  LogError } = require('../../../logs');
 const NotificationServices = require('../../notification/notification.service');
+const { sendEmail } = require('../../../helpers/emailHelper');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
 exports.getTaskTimesheetLogs = async (req, res) => {
@@ -193,13 +194,14 @@ exports.createTaskAction = async (req,res) => {
                 
             })
         }
-        console.log("denday");
+        
         var task = await PerformTaskService.createTaskAction(req.body,files);
         var taskAction = task.taskActions;
         var tasks = task.tasks;
         var user = task.user;
-        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Phê duyệt hoạt động","level" : "general","content":`${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này `,"sender": tasks.name,"users": task.tasks.accountableEmployees};
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Phê duyệt hoạt động","level" : "general","content":`${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này `,"sender": tasks.name,"users": tasks.accountableEmployees};
         NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Phê duyệt hoạt động",'',`<p>${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await LogInfo(req.user.email, ` create task action  `,req.user.company)
         res.status(200).json({
             success: true,
