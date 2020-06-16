@@ -54,7 +54,7 @@ const EmployeeKpiSetSchema = new Schema({
             ref: User,
             required: true
         },
-        content: {
+        description: {
             type: String,
         },
         createdAt: {
@@ -80,7 +80,7 @@ const EmployeeKpiSetSchema = new Schema({
                 ref: User,
                 required: true
             },
-            content: {
+            description: {
                 type: String,
             },
             createdAt: {

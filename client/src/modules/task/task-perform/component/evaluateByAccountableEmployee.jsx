@@ -233,10 +233,11 @@ class EvaluateByAccountableEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
+        await this.handleChangeAutoPoint();
         // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
 
-    handleChangeAutoPoint = async () => {
+    calcAutomaticPoint = () => {
         let taskInfo = {
             task: this.state.task,
             progress: this.state.progress,
@@ -246,6 +247,21 @@ class EvaluateByAccountableEmployee extends Component {
 
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if(isNaN(automaticPoint)) automaticPoint = undefined
+
+        return automaticPoint;
+    }
+
+    handleChangeAutoPoint = async () => {
+        // let taskInfo = {
+        //     task: this.state.task,
+        //     progress: this.state.progress,
+        //     date: this.state.date,
+        //     info: this.state.info,
+        // };
+
+        // let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        // if(isNaN(automaticPoint)) automaticPoint = undefined
+        let automaticPoint = this.calcAutomaticPoint();
         // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
         await this.setState( state => {
             return {
@@ -414,6 +430,27 @@ class EvaluateByAccountableEmployee extends Component {
 
 // ==========================BEGIN HANDLE INFORMATION TASK=========================================
 
+    // handleChangeNumberInfo = async (e) => {
+    //     let value = parseInt(e.target.value);
+    //     let name = e.target.name;
+    //     await this.setState(state =>{
+    //         state.info[`${name}`] = {
+    //             value: value,
+    //             code: name,
+    //             type: 'Number'
+    //         }
+    //         return {
+    //             ...state,
+    //             // [name]: {
+    //             //     value: value,
+    //             //     code: name
+    //             // },
+    //             errorOnNumberInfo: this.validateNumberInfo(value)
+    //         }
+    //     })
+        
+    // } 
+
     handleChangeNumberInfo = async (e) => {
         let value = parseInt(e.target.value);
         let name = e.target.name;
@@ -425,13 +462,11 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
+        // console.log('handleChangeAutoPoint==============', this.calcAutomaticPoint());
+        await this.handleChangeAutoPoint();
     } 
 
     handleChangeTextInfo = async (e) => {
@@ -454,17 +489,17 @@ class EvaluateByAccountableEmployee extends Component {
         })
     }
 
-    handleDateChange = (value) => {
-        // let value = e.target.value;
-        this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDate: this.validateDate(value),
-                    date: value,
-                }
-            });
+    // handleDateChange = (value) => {
+    //     // let value = e.target.value;
+    //     this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 errorOnDate: this.validateDate(value),
+    //                 date: value,
+    //             }
+    //         });
         
-    }
+    // }
 
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
@@ -595,7 +630,18 @@ class EvaluateByAccountableEmployee extends Component {
     handleDateChange = (value) => {
         // let value = e.target.value;
         let data = this.getData(value);
-       
+
+        let automaticPoint = data.automaticPoint;
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: value,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+
         this.setState(state => {
                 return {
                     ...state,
@@ -605,7 +651,7 @@ class EvaluateByAccountableEmployee extends Component {
                     results: data.results,
                     status: data.statusOptions,
                     empPoint: data.empPoint,
-                    autoPoint: data.automaticPoint,
+                    autoPoint: automaticPoint,
                     task: data.task,
                     userId: data.userId,
                 }

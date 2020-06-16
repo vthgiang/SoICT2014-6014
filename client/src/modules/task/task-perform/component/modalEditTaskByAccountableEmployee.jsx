@@ -8,6 +8,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
+import Swal from 'sweetalert2'
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -60,10 +61,26 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let inactiveEmployees = task && task.inactiveEmployees;
         let listInactive = {};
         for(let i in inactiveEmployees){
-            listInactive[`${inactiveEmployees[i]}`] = {
-                value: inactiveEmployees[i],
-                role:'',
-                checked: true
+            if(accountableEmployees.indexOf(inactiveEmployees[i]) !== -1){
+                listInactive[`${inactiveEmployees[i]}`] = {
+                    value: inactiveEmployees[i],
+                    role:'Accountable',
+                    checked: true
+                }
+            }
+            else if(responsibleEmployees.indexOf(inactiveEmployees[i]) !== -1){
+                listInactive[`${inactiveEmployees[i]}`] = {
+                    value: inactiveEmployees[i],
+                    role:'Responsible',
+                    checked: true
+                }
+            }
+            else if(consultedEmployees.indexOf(inactiveEmployees[i]) !== -1){
+                listInactive[`${inactiveEmployees[i]}`] = {
+                    value: inactiveEmployees[i],
+                    role:'Consulted',
+                    checked: true
+                }
             }
         }
 
@@ -271,25 +288,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
-        // if(target.checked){
-        //     console.log('-------Checked----------');
-        //     this.state.inactiveEmployees[value] = value;   
-        // }else{
-        //     console.log('------ELSE------');
-        //     this.state.inactiveEmployees.splice(value, 1);
-        // }
-        // console.log('------------this.state.inactiveEmployees--------------', this.state.inactiveEmployees);
-
-        // let listInactive = this.state.listInactive;
-        // let inactiveEmployees = [];
-        // for(let i in listInactive){
-        //     if(listInactive[i].check && listInactive[i].checked === true){
-        //         inactiveEmployees.push(listInactive[i].value);
-        //     }
-        // }
+    
     handleChangeActiveAccountable = async (e, id) =>{
+        let {task} = this.state;
         let target = e.target;
         let { value, name, checked } = target;
+        
+        let numOfResponsible = this.state.responsibleEmployees.length;
+        let numOfAccountable = this.state.accountableEmployees.length;
         
         await this.setState(state => {
             state.listInactive[`${id}`] = { // accountable
@@ -301,12 +307,70 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 ...state,
             }
         });
+        
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        
+        for(let i in listInactive) {
+            if(listInactive[i].checked === true){
+                if(task.responsibleEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveResp = numOfInactiveResp + 1;
+                if(task.accountableEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveAcc = numOfInactiveAcc + 1;
+            }
+        }
+        
+        console.log('==========================',numOfInactiveAcc, numOfInactiveResp);
+        
+        if(numOfAccountable === numOfInactiveAcc) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người phê duyệt",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // accountable
+                        value: value,
+                        checked: false,
+                        role: 'Accountable'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        }
+        else if(numOfInactiveResp === numOfResponsible ) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người thực hiện",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // accountable
+                        value: value,
+                        checked: false,
+                        role: 'Accountable'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        }
     }
 
     handleChangeActiveResponsible = async (e, id) =>{
+        let {task} = this.state;
         let target = e.target;
         let { value, name, checked } = target;
         
+        let numOfResponsible = task.responsibleEmployees.length;
+        let numOfAccountable = task.accountableEmployees.length;
+
         await this.setState(state => {
             state.listInactive[`${id}`] = { // responsible
                 value: value,
@@ -317,12 +381,70 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 ...state,
             }
         });
+
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        
+        for(let i in listInactive) {
+            if(listInactive[i].checked === true){
+                if(task.responsibleEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveResp = numOfInactiveResp + 1;
+                if(task.accountableEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveAcc = numOfInactiveAcc + 1;
+            }
+        }
+        
+        console.log('==========================',numOfInactiveAcc, numOfInactiveResp);
+
+        if(numOfInactiveResp === numOfResponsible ) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người thực hiện",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // accountable
+                        value: value,
+                        checked: false,
+                        role: 'Responsible'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        }
+        else if(numOfAccountable === numOfInactiveAcc) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người phê duyệt",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // accountable
+                        value: value,
+                        checked: false,
+                        role: 'Responsible'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        }
     }
 
     handleChangeActiveConsulted = async (e, id) =>{
+        let {task} = this.state;
         let target = e.target;
         let { value, name, checked } = target;
         
+        let numOfResponsible = this.state.responsibleEmployees.length;
+        let numOfAccountable = this.state.accountableEmployees.length;
+
         await this.setState(state => {
             state.listInactive[`${id}`] = { // consulted
                 value: value,
@@ -333,6 +455,64 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 ...state,
             }
         });
+
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        
+        for(let i in listInactive) {
+            if(listInactive[i].checked === true){
+                if(task.responsibleEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveResp = numOfInactiveResp + 1;
+                if(task.accountableEmployees.map(e => e._id).indexOf(listInactive[i].value) !== -1) numOfInactiveAcc = numOfInactiveAcc + 1;
+            }
+        }
+        
+        console.log('==========================',numOfInactiveAcc, numOfInactiveResp);
+
+        if(numOfAccountable === numOfInactiveAcc) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người phê duyệt",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                numOfInactiveResp = numOfInactiveResp - 1;
+                numOfInactiveAcc = numOfInactiveAcc - 1;
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // 
+                        value: value,
+                        checked: false,
+                        role: 'Consulted'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        }
+        else if(numOfInactiveResp === numOfResponsible ) {
+            Swal.fire({
+                title: "Phải có tối thiểu một người thực hiện",
+                type: 'Warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "Xác nhận",
+            }).then((res) => {
+                numOfInactiveResp = numOfInactiveResp - 1;
+                numOfInactiveAcc = numOfInactiveAcc - 1;
+                this.setState(state => {
+                    state.listInactive[`${id}`] = { // 
+                        value: value,
+                        checked: false,
+                        role: 'Consulted'
+                    }
+                    return {
+                        ...state,
+                    }
+                });
+            });
+        } 
     }
 
     handleTaskNameChange = event => {
