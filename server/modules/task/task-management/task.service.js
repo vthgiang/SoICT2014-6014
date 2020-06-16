@@ -655,13 +655,14 @@ exports.createTask = async (task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (id) => {
+exports.deleteTask = async (id) => {    
     //req.params.id
-    var template = await WorkTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
-    var privileges = await Privilege.deleteMany({
-        resource: id, //id của task template
-        resourceType: "TaskTemplate"
-    });
+    var task = await Task.findByIdAndDelete(id); // xóa mẫu công việc theo id
+    // var privileges = await Privilege.deleteMany({
+    //     resource: id, //id của task template
+    //     resourceType: "TaskTemplate"
+    // });
+    return task;
 }
 
 /**

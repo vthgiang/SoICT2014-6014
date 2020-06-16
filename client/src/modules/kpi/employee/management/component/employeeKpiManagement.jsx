@@ -87,12 +87,6 @@ class KPIPersonalManager extends Component {
             return "Chờ phê duyệt";
         } else if (status === 2) {
             return "Đã kích hoạt";
-        } else if (status === 3) {
-            return "Đã kết thúc";
-        } else if (status === 4) {
-            return "Đang hoạt động";
-        } else if (status === 5) {
-            return "Tất cả các trạng thái";
         }
     }
     handleStartDateChange = (value) => {
@@ -228,10 +222,7 @@ class KPIPersonalManager extends Component {
                                     {value:"null", text : "--Chọn trạng thái--"},
                                     {value:0, text : "Đang thiết lập"},
                                     {value:1, text : "Chờ phê duyệt"},
-                                    {value:2, text : "Đã kích hoạt"},
-                                    {value:3, text : "Đã kết thúc"},
-                                    {value:4, text : "Đang hoạt động"},
-                                    {value:5, text : "Tất cả các trạng thái"},]}
+                                    {value:2, text : "Đã kích hoạt"},]}
                                 // items = {items}
                                 onChange={this.handleStatusChange}
                                 // multiple={true}
@@ -273,6 +264,7 @@ class KPIPersonalManager extends Component {
                     columnArr={[ 
                         'STT' ,
                         'Thời gian' , 
+                        "Trạng thái",
                         'Số lượng mục tiêu' , 
                         'Hệ thống đánh giá' ,
                         'Kết quả tự đánh giá' ,
@@ -287,6 +279,7 @@ class KPIPersonalManager extends Component {
                             <tr>
                                 <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
                                 <th title="Thời gian">Thời gian</th>
+                                <th title="Trạng thái">Trạng thái</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
                                 <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
@@ -299,6 +292,7 @@ class KPIPersonalManager extends Component {
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{this.formatDate(item.date)}</td>
+                                    <td>{this.checkStatusKPI(item.status)}</td>
                                     <td>{item.kpis.length}</td>
                                     <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
                                     <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>

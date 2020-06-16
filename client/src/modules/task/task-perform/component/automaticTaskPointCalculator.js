@@ -141,7 +141,7 @@ function calculateAutomaticPoint(task) {
 //     let endDate = new Date(task.endDate);
 
 //     // Số ngày quá hạn
-//     let d0 = today.getTime() - endDate.getTime() > 0 ? today.getTime() - endDate.getTime() : 0;
+//     let dO = today.getTime() - endDate.getTime() > 0 ? today.getTime() - endDate.getTime() : 0;
 
 //     // Tổng số ngày thực hiện công việc
 //     let d = endDate.getTime() - startDate.getTime();
@@ -156,7 +156,7 @@ function calculateAutomaticPoint(task) {
 //         let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
 //         reduceAction = reduceAction > 0 ? reduceAction : 0;
 
-//         automaticPoint = 100 - (d0)/(d)*100 - ( (10*3-reduceAction)/10/3 )*100;
+//         automaticPoint = 100 - (dO)/(d)*100 - ( (10*3-reduceAction)/10/3 )*100;
 //     }
 //     else{ // Công việc theo mẫu
 

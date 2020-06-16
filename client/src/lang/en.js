@@ -1182,6 +1182,7 @@ export default {
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail: "Can't edit archived status of task",
+                confirm_delete: 'This task cannot be deleted because it is in progress!',
 
                 responsible: 'Responsible',
                 accountable: 'Acountable',

@@ -1073,6 +1073,7 @@ class ActionTab extends Component {
                                     this.setState(state => {
                                         return { ...state, newTaskComment: {...state.newTaskComment, description: value}}
                                     })
+                                    
                                 }}
                                 onSubmit={(e)=>{this.submitTaskComment(task._id)}}
                             />
@@ -1107,7 +1108,9 @@ class ActionTab extends Component {
                                     let value = e.target.value;
                                     this.setState(state => {
                                         return { ...state, taskFiles: {...state.taskFiles, description: value}}
+                                        
                                     })
+                                    console.log(this.state.taskFiles)
                                 }}
                                 onSubmit={(e)=>{this.handleUploadFile(task._id,currentUser)}}
                             />
