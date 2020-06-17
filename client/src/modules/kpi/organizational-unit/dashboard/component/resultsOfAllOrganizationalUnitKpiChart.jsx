@@ -9,7 +9,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
-class TaskPerformanceResultsOfOrganizationalUnitChart extends Component {
+class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     
     constructor(props) {
         super(props);
@@ -210,28 +210,35 @@ class TaskPerformanceResultsOfOrganizationalUnitChart extends Component {
         return (
             <React.Fragment>
                 <div className="box-body dashboard_box_body">
-                    <div style={{textAlign: "right"}}>
+                    <section style={{textAlign: "right"}}>
                         <span className="label label-danger">{this.state.pointName}</span>
+                        <button type="button" data-toggle="collapse" data-target="#kind-point-kpi" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
+                        
+                        <div className="box box-primary box-solid collapse setting-table" id="kind-point-kpi">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Loại điểm</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#kind-point-kpi-performance" ><i className="fa fa-times"></i></button>
+                                </div>
+                            </div>
 
-                        <button type="button" data-toggle="collapse" data-target="#kind-point-task-performance" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
-                        <div id="kind-point-task-performance" className="box collapse setting-table">
-                            <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-
-                            <div className = "form-group">
-                                <label>Loại điểm</label>
-                                <SelectBox
-                                    id={`kindOfPointTaskPerformance`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={this.KIND_OF_POINT_SELECTBOX}
-                                    multiple={false}
-                                    onChange={this.handleSelectKindOfPoint}
-                                    value={this.KIND_OF_POINT_SELECTBOX[0].value}
-                                />
-                            </div> 
+                            <div className="box-body">
+                                <div className = "form-group">
+                                    <SelectBox
+                                        id={`kindOfPointKpi`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={this.KIND_OF_POINT_SELECTBOX}
+                                        multiple={false}
+                                        onChange={this.handleSelectKindOfPoint}
+                                        value={this.KIND_OF_POINT_SELECTBOX[0].value}
+                                    />
+                                </div> 
+                            </div>
                         </div>
-                    </div>
-                    <div ref="chart"></div>
+                    </section>
+
+                    <section ref="chart"></section>
                 </div>
             </React.Fragment>
         )
@@ -246,5 +253,5 @@ const actions = {
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetEachYearOfChildUnit
 }
 
-const connectedTaskPerformanceResultsOfOrganizationalUnitChart = connect(mapState, actions)(TaskPerformanceResultsOfOrganizationalUnitChart);
-export { connectedTaskPerformanceResultsOfOrganizationalUnitChart as TaskPerformanceResultsOfOrganizationalUnitChart };
+const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfAllOrganizationalUnitKpiChart);
+export { connectedResultsOfAllOrganizationalUnitKpiChart as ResultsOfAllOrganizationalUnitKpiChart };
