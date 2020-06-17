@@ -24,7 +24,7 @@ class DashBoardKPIMember extends Component {
         var currentMonth = currentDate.getMonth();
         
         this.INFO_SEARCH = {
-            userId: localStorage.getItem("userId"),
+            userId: null,
             startMonth: currentYear + '-' + 1,
             endMonth: currentYear + '-' + (currentMonth + 2)
         }
@@ -33,7 +33,7 @@ class DashBoardKPIMember extends Component {
             commenting: false,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                userId: localStorage.getItem("userId"),
+                userId: null,
                 status: 4,
                 startMonth: currentYear + '-' + 1,
                 endMonth: currentYear + '-' + (currentMonth + 2)
@@ -78,11 +78,16 @@ class DashBoardKPIMember extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                    ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                    infosearch: {
+                        ...state.infosearch,
+                        userId: null
+                    }
                 }
             });
             return false;
         }
+
         return true;
     }
 
@@ -109,34 +114,6 @@ class DashBoardKPIMember extends Component {
             return "Đã kích hoạt";
         } else if (status === 3) {
             return "Đã kết thúc"
-        }
-    }
-    
-    handleSearchData = async () => {
-        var startDate = this.INFO_SEARCH.startMonth.split("-");
-        var startdate = new Date(startDate[1], startDate[0], 0);
-        var endDate = this.INFO_SEARCH.endMonth.split("-");
-        var enddate = new Date(endDate[1], endDate[0], 28);
-        
-        if (Date.parse(startdate) > Date.parse(enddate)) {
-            Swal.fire({
-                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
-            })
-        } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    infosearch: {
-                        ...state.infosearch,
-                        userId: this.INFO_SEARCH.userId,
-                        startMonth: this.INFO_SEARCH.startMonth,
-                        endMonth: this.INFO_SEARCH.endMonth
-                    }
-                }
-            })
         }
     }
 
@@ -201,6 +178,17 @@ class DashBoardKPIMember extends Component {
             this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
             this.props.getAllEmployeeOfUnitByIds(this.state.ids);
             this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+            this.props.getAllUserOfDepartment(this.state.ids);
+
+            this.setState((state) => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        userId: null
+                    }
+                }
+            });
         }
     }
 
@@ -227,6 +215,34 @@ class DashBoardKPIMember extends Component {
         this.INFO_SEARCH.endMonth = month;
     }
 
+    handleSearchData = async () => {
+        var startDate = this.INFO_SEARCH.startMonth.split("-");
+        var startdate = new Date(startDate[1], startDate[0], 0);
+        var endDate = this.INFO_SEARCH.endMonth.split("-");
+        var enddate = new Date(endDate[1], endDate[0], 28);
+        
+        if (Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        userId: this.INFO_SEARCH.userId,
+                        startMonth: this.INFO_SEARCH.startMonth,
+                        endMonth: this.INFO_SEARCH.endMonth
+                    }
+                }
+            })
+        }
+    }
+
     render() {
         var employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         var { dateOfExcellentEmployees, numberOfExcellentEmployees, editing } = this.state;
@@ -235,8 +251,6 @@ class DashBoardKPIMember extends Component {
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
         var currentMonth = currentDate.getMonth();
-
-        
 
         if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets){
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
@@ -289,21 +303,39 @@ class DashBoardKPIMember extends Component {
         
         if (user.userdepartments) userdepartments = user.userdepartments;
         let unitMembers;
-        if (userdepartments) {
-            unitMembers = [
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+        if(userdepartments) {
+            if(!Array.isArray(userdepartments)) {
+                userdepartments = [userdepartments]
+            }
+            unitMembers = [];
+            userdepartments.map(userdepartment => {
+                unitMembers = unitMembers.concat([
+                    {
+                        text: userdepartment.roles.dean.name,
+                        value: userdepartment.deans.map(item => {return {text: item.name, value: item._id}})
+                    },
+                    {
+                        text: userdepartment.roles.viceDean.name,
+                        value: userdepartment.viceDeans.map(item => {return {text: item.name, value: item._id}})
+                    },
+                    {
+                        text: userdepartment.roles.employee.name,
+                        value: userdepartment.employees.map(item => {return {text: item.name, value: item._id}})
+                    },
+                ])
+            })
+
+            if(!this.state.infosearch.userId) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        infosearch: {
+                            ...state.infosearch,
+                            userId: unitMembers[2].value[0].value
+                        }
+                    }
+                })
+            }
         }
 
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
@@ -415,21 +447,21 @@ class DashBoardKPIMember extends Component {
                                             </div>
                                         </div>
                                         <div className="box-body">
-                                        <div className = "form-group">
-                                            <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
-                                            <DatePicker
-                                                id="kpi_month"      
-                                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                                value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
-                                                onChange={this.handleChangeDate}
-                                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
-                                            /> 
-                                        </div> 
+                                            <div className = "form-group">
+                                                <label className = "form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                                <DatePicker
+                                                    id="kpi_month"      
+                                                    dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                                    value={this.state.dateOfExcellentEmployees} // giá trị mặc định cho datePicker    
+                                                    onChange={this.handleChangeDate}
+                                                    disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                                /> 
+                                            </div> 
 
-                                        <div className="form-group">
-                                            <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                            <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees}/>
-                                        </div>
+                                            <div className="form-group">
+                                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
+                                                <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees}/>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -502,7 +534,7 @@ class DashBoardKPIMember extends Component {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={this.handleSelectEmployee}
-                                                value={this.INFO_SEARCH.userId}
+                                                value={unitMembers[2].value[0].value}
                                             />
                                         </div>
                                     }
@@ -513,11 +545,13 @@ class DashBoardKPIMember extends Component {
                                 </div>
 
                                 <div className="col-sm-12 col-xs-12">
-                                    <StatisticsOfEmployeeKpiSetChart 
-                                        userId={this.state.infosearch.userId} 
-                                        startMonth={this.state.infosearch.startMonth}
-                                        endMonth={this.state.infosearch.endMonth}
-                                    />
+                                    {unitMembers &&
+                                        <StatisticsOfEmployeeKpiSetChart 
+                                            userId={this.state.infosearch.userId} 
+                                            startMonth={this.state.infosearch.startMonth}
+                                            endMonth={this.state.infosearch.endMonth}
+                                        />
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -535,8 +569,11 @@ function mapState(state) {
  
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
+
     getAllEmployeeKpiSetOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeOfUnitByRole : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,

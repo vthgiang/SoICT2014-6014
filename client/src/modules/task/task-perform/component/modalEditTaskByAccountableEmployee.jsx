@@ -733,8 +733,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
         let usersOfChildrenOrganizationalUnit;
-        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
-            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        if(user && user.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
