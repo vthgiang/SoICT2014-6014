@@ -164,6 +164,7 @@ function getAllUserOfCompany() {
     function failure(error) { return { type: UserConstants.GETALLUSER_OFCOMPANY_FAILURE, error } }
 }
 
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserOfDepartment(id) {
     return dispatch => {
         dispatch(request(id));
