@@ -7,7 +7,7 @@ const TaskResultInformation = require('../../../models/task/taskResultInformatio
 const TaskResult = require('../../../models/task/taskResult.model');
 const User = require('../../../models/auth/user.model');
 const { evaluationAction } = require("./taskPerform.controller");
-
+const fs = require('fs')
 /**
  * Bấm giờ công việc
  * Lấy tất cả lịch sử bấm giờ theo công việc
@@ -125,11 +125,26 @@ exports.editCommentOfTaskAction = async (params,body) => {
  * Xóa bình luận hoạt động
  */
 exports.deleteCommentOfTaskAction = async (params) => {
+    let files = await Task.aggregate([
+        {$match: {"taskActions.comments._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$taskActions"},
+        {$replaceRoot:{newRoot:"$taskActions"}},
+        {$match: {"comments._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$comments"},
+        {$replaceRoot:{newRoot:"$comments"}},
+        {$match: {"_id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind:"$files"},
+        {$replaceRoot:{newRoot:"$files"}}
+    ])  
+
     var action = await Task.update(
         { "taskActions.comments._id": params.id },
         { $pull: { "taskActions.$.comments" : {_id : params.id} } },
         { safe: true })
-    
+    let i = 0
+    for (i=0;i<files.length;i++){
+        fs.unlinkSync(files[i].url)
+    }
     var task = await Task.findOne({_id: params.task}).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar '},
@@ -188,12 +203,27 @@ exports.editTaskAction = async (id,body) => {
  * Xóa hoạt động của công việc
  */
 exports.deleteTaskAction = async (params) => {
-    
-    var action = await Task.update(
+    let files = await Task.aggregate([
+        {$match: {"taskActions._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$taskActions"},
+        {$replaceRoot: {newRoot: "$taskActions"}},
+        {$match: {_id:mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$files"},
+        {$replaceRoot:{newRoot: "$files"}},
+    ])
+
+
+    let action = await Task.update(
         { "taskActions._id": params.id },
         { $pull: { taskActions: { _id: params.id } } },
-        { safe: true })  
-    var task = await Task.findOne({ _id: params.task }).populate([
+        { safe: true }
+    )
+    //xoa file sau khi xoa hoat dong
+    let i 
+    for(i=0; i<files.length;i++){
+        fs.unlinkSync(files[i].url)
+    }
+    let task = await Task.findOne({ _id: params.task }).populate([
     { path: "taskActions.creator", model: User,select: 'name email avatar' },
     { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
     { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
@@ -378,6 +408,19 @@ exports.editTaskComment = async (params,body) => {
  * Xóa bình luận công việc
  */
 exports.deleteTaskComment = async (params) => {
+    let files = await Task.aggregate([
+        {$match: {"taskComments._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$taskComments"},
+        {$replaceRoot: {newRoot: "$taskComments"}},
+        {$match: {_id:mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$files"},
+        {$replaceRoot:{newRoot: "$files"}},
+    ])
+    //xoa files
+    let i 
+    for(i=0; i<files.length;i++){
+        fs.unlinkSync(files[i].url)
+    }
     var action = await Task.update(
         { "taskComments._id": params.id },
         { $pull: { taskComments: { _id: params.id } } },
@@ -449,13 +492,28 @@ exports.editCommentOfTaskComment = async (params,body) => {
  * Xóa bình luận của bình luận coogn việc
  */
 exports.deleteCommentOfTaskComment = async (params) => {
-
-    var comment = await Task.update(
+    let files = await Task.aggregate([
+       {$match: {"taskComments.comments._id":mongoose.Types.ObjectId(params.id)}},
+       {$unwind:"$taskComments"},
+       {$replaceRoot:{newRoot:"$taskComments"}},
+       {$match: {"comments._id":mongoose.Types.ObjectId(params.id)}},
+       {$unwind: "$comments"},
+       {$replaceRoot:{newRoot:"$comments"}},
+       {$match: {"_id":mongoose.Types.ObjectId(params.id)}},
+       {$unwind:"$files"},
+       {$replaceRoot:{newRoot:"$files"}}
+    ])  
+    let comment = await Task.update(
         { "taskComments.comments._id": params.id },
         { $pull: { "taskComments.$.comments" : {_id : params.id} } },
         { safe: true })
 
-     var taskComment = await Task.findOne({_id: params.task}).populate([
+    //xoa file sau khi xoa binh luan    
+    let i= 0
+    for(i=0;i<files.length;i++){
+        fs.unlinkSync(files[i].url)
+    }    
+    let taskComment = await Task.findOne({_id: params.task}).populate([
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}]) 
