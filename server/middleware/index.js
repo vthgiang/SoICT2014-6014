@@ -158,8 +158,8 @@ exports.uploadFile = (arrData, type) => {
     arrData.forEach(x => {
         let dir = `./upload${x.path}`;
         if (!fs.existsSync(dir)){
-                fs.mkdirSync(dir);
-            }
+            fs.mkdirSync(dir, { recursive: true });
+        }
     })
 
     const getFile = multer({ storage: multer.diskStorage({
