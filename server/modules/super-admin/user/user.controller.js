@@ -131,6 +131,7 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
     }
 }
 
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 exports.getAllUsersInOrganizationalUnit = async (req, res) => {
     try {
         const users = await UserService.getAllUsersInOrganizationalUnit(req.params.id);

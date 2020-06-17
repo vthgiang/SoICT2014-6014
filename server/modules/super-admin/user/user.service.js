@@ -245,12 +245,26 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 
 /**
- * Lấy user trong một phòng ban
+ * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ
  */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var department = await OrganizationalUnit.findById(departmentId);
+    var departmentIds = departmentId.split(',');
 
-    return _getAllUsersInOrganizationalUnit(department);
+    if(departmentIds.length === 1) {
+        var department = await OrganizationalUnit.findById(departmentId);
+
+        return _getAllUsersInOrganizationalUnit(department);
+    } else {
+        var users = [];
+        
+        for(var i=0; i<departmentIds.length; i++) {
+            let department = await OrganizationalUnit.findById(departmentIds[i]);
+            console.log(departmentIds[i])
+            users = users.concat(await _getAllUsersInOrganizationalUnit(department));
+        }
+
+        return users;
+    }
 }
 
 /* lấy tất cả các user cùng phòng ban với user hiện tại

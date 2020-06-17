@@ -81,7 +81,7 @@ function getAllUserOfCompany() {
     }, false, true, 'super_admin.user');
 }
 
-// Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */ 
 function getAllUserOfDepartment(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
