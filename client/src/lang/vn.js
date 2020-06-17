@@ -652,6 +652,7 @@ export default {
             zoom_out: 'Thu nhỏ',
             zoom_in: 'Phóng to',
             add: 'Thêm',
+            edit_title: 'Chỉnh sửa đơn vị',
             add_title: 'Thêm đơn vị mới',
             info: 'Thông tin về đơn vị',
             name: 'Tên đơn vị',

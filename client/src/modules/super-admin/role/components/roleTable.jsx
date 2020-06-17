@@ -32,7 +32,7 @@ class RoleTable extends Component {
                         roleName={currentRow.name}
                         roleType={currentRow.type.name}
                         roleParents={currentRow.parents.map(parent => parent._id)}
-                        roleUsers={currentRow.users.map(user => user.userId._id)}
+                        roleUsers={currentRow.users.map(user => user.userId?user.userId._id:null)}
                     />
                 }
                 <SearchBar 

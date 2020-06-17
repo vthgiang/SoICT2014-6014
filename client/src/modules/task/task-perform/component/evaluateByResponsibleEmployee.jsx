@@ -24,6 +24,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let data = this.getData(date);
 
         this.state={
+            calcInfo: {},
             task: data.task,
             idUser: data.idUser,
             info: data.info,
@@ -222,6 +223,17 @@ class EvaluateByResponsibleEmployee extends Component {
         let data = this.getData(value);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, task.organizationalUnit._id, value);
 
+        let automaticPoint = data.autoPoint;
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: value,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+
         this.setState(state => {
             return {
                 ...state,
@@ -229,7 +241,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 date: value,
                 info: data.info, 
                 kpi: data.kpi,
-                autoPoint: data.autoPoint,
+                autoPoint: automaticPoint,
                 point: data.point
             }
         });
@@ -260,6 +272,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
+        await this.handleChangeAutoPoint();
         // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
     
@@ -274,13 +287,11 @@ class EvaluateByResponsibleEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
+        // console.log('handleChangeAutoPoint==============', this.calcAutomaticPoint());
+        await this.handleChangeAutoPoint();
     } 
 
     handleChangeTextInfo = async (e) => {
@@ -421,7 +432,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
     
-    handleChangeAutoPoint = async () => {
+    calcAutomaticPoint = () => {
         let taskInfo = {
             task: this.state.task,
             progress: this.state.progress,
@@ -431,6 +442,22 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if(isNaN(automaticPoint)) automaticPoint = undefined
+
+        return automaticPoint;
+    }
+
+    handleChangeAutoPoint = async () => {
+        // let taskInfo = {
+        //     task: this.state.task,
+        //     progress: this.state.progress,
+        //     date: this.state.date,
+        //     info: this.state.info,
+        // };
+
+        // let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        // if(isNaN(automaticPoint)) automaticPoint = undefined
+        // console.log('-------handleChangeAutoPoint-------', this.state.info);
+        let automaticPoint = this.calcAutomaticPoint();
         // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
         await this.setState( state => {
             return {

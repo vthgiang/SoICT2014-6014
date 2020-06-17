@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
 import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
-import { TaskPerformanceResultsOfOrganizationalUnitChart } from './taskPerformanceResultsOfOrganizationalUnitChart';
-import { StatisticsOfPerformanceResultsChart } from './statisticsOfPerformanceResultsChart';
-
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
+import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
+import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 
 import { SelectBox } from '../../../../../common-components/index';
 class OrganizationalUnitKpiDashboard extends Component {
@@ -26,13 +23,9 @@ class OrganizationalUnitKpiDashboard extends Component {
             currentYear: new Date().getFullYear(),
             currentRole: null,
 
-            resultsOrganizationalUnitId: null,
-            resultsOrganizationalUnit: null,
+            organizationalUnitId: null,
+            organizationalUnit: null,
             organizationalUnitSelectBox: null,
-
-            distributrionViceDean: null,
-            distributionOrganizationalUnit: null,
-            viceDeanSelectBox: null,
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
@@ -105,38 +98,26 @@ class OrganizationalUnitKpiDashboard extends Component {
         
     }
 
-    handleSelectOrganizationalUnitForResultsChart = (value) => {
-        var organizationalUnit = this.state.organizationalUnitSelectBox.filter(x => x.value === value[0]).map(x => x.text);
+    handleSelectOrganizationalUnitId = (value) => {
+        var organizationalUnitId = this.state.organizationalUnitSelectBox.filter(x => x.value === value[0]).map(x => x.text);
 
         this.setState(state => {
             return {
                 ...state,
-                resultsOrganizationalUnitId: value[0],
-                resultsOrganizationalUnit: organizationalUnit[0]
-            }
-        })
-    }
-
-    handleSelectViceDeanForDistributionChart = (value) => {
-        var organizationalUnit = this.state.viceDeanSelectBox.filter(x => x.value === value[0]).map(x => x.text);
-
-        this.setState(state => {
-            return {
-                ...state,
-                distributrionViceDean: value[0],
-                distributionOrganizationalUnit: organizationalUnit[0]
+                organizationalUnitId: value[0],
+                organizationalUnit: organizationalUnitId[0]
             }
         })
     }
 
     render() {
-        
-        var childOrganizationalUnit, targetA, targetC, targetOther, misspoint, childrenOrganizationalUnit, organizationalUnitSelectBox, viceDeanSelectBox;
+        var childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
         const { user, dashboardEvaluationEmployeeKpiSet } = this.props;
 
         if(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
         }
+
         if(childrenOrganizationalUnit) {
             var temporaryChild;
 
@@ -174,75 +155,52 @@ class OrganizationalUnitKpiDashboard extends Component {
 
         if(childOrganizationalUnit) {
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
-            viceDeanSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.viceDean } });
 
-            if(organizationalUnitSelectBox && this.state.resultsOrganizationalUnitId === null && viceDeanSelectBox && this.state.distributrionViceDean === null) {
+            if(organizationalUnitSelectBox && this.state.organizationalUnitId === null) {
                 this.setState(state => {
                     return {
                         ...state,
-                        resultsOrganizationalUnitId: organizationalUnitSelectBox[0].value,
-                        resultsOrganizationalUnit: organizationalUnitSelectBox[0].text,
-                        organizationalUnitSelectBox: organizationalUnitSelectBox,
-
-                        distributrionViceDean: viceDeanSelectBox[0].value,
-                        distributionOrganizationalUnit: viceDeanSelectBox[0].text,
-                        viceDeanSelectBox: viceDeanSelectBox
+                        organizationalUnitId: organizationalUnitSelectBox[0].value,
+                        organizationalUnit: organizationalUnitSelectBox[0].text,
+                        organizationalUnitSelectBox: organizationalUnitSelectBox
                     }
                 })
             }
         }
         
-        const options2 = {
-            animationEnabled: true,
-            exportEnabled: true,
-            title: {
-                text: "Biểu đồ kết quả KPI 2019",
-                fontFamily: "tahoma",
-                fontWeight: "normal",
-                fontSize: 25,
-            },
-            axisY: {
-                title: "Điểm",
-            },
-            toolTip: {
-                shared: true
-            },
-            legend: {
-                fontSize: 13
-            },
-            data: [{
-                type: "stackedColumn100",
-                showInLegend: true,
-                name: "Hoàn thành vai trò quản lý (A)",
-                dataPoints: targetA
-            },
-            {
-                type: "stackedColumn100",
-                showInLegend: true,
-                name: "Liên kết nhân viên (C)",
-                dataPoints: targetC
-            },
-            {
-                type: "stackedColumn100",
-                showInLegend: true,
-                name: "Mục tiêu khác",
-                dataPoints: targetOther
-            },
-            {
-                type: "stackedColumn100",
-                showInLegend: true,
-                name: "Điểm bị trừ",
-                dataPoints: misspoint
-            }]
-        }
-        
         return (
             <div className="table-wrapper box">
-                <section className="content">
-                    <div className="box box-primary">
-                        <CanvasJSReact options={options2} />
-                    </div>
+                {childOrganizationalUnit &&
+                    <section style={{textAlign: "right"}}>
+                        <span className="label label-danger">{this.state.organizationalUnit}</span>
+                        <button type="button" data-toggle="collapse" data-target="#organizationalUnit" style={{ border: "none", background: "none", padding: "0px 15px 0px 5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
+                        
+                        <div className="box box-primary box-solid collapse setting-table" id="organizationalUnit">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Đơn vị</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#organizationalUnit" ><i className="fa fa-times"></i></button>
+                                </div>
+                            </div>
 
+                            <div className="box-body">
+                                <div className = "form-group">
+                                    <SelectBox
+                                        id={`organizationalUnitSelectBox`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={organizationalUnitSelectBox}
+                                        multiple={false}
+                                        onChange={this.handleSelectOrganizationalUnitId}
+                                        value={organizationalUnitSelectBox[0].value}
+                                    />
+                                </div> 
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                <section className="content">
                     <div className=" box box-primary" style={ {textAlign: 'center'}}>
                         <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
                         <TrendsInOrganizationalUnitKpiChart/>
@@ -254,29 +212,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
                                     <h2 class="box-title">Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
                                     <div className="box-body dashboard_box_body">
-                                        <div style={{textAlign: "right"}}>
-                                            <span className="label label-danger">{this.state.resultsOrganizationalUnit}</span>
-
-                                            <button type="button" data-toggle="collapse" data-target="#resultsOrganizationalUnit" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
-                                            <div id="resultsOrganizationalUnit" className="box collapse setting-table">
-                                                <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-
-                                                <div className = "form-group">
-                                                    <label>Đơn vị</label>
-                                                    <SelectBox
-                                                        id={`resultsOrganizationalUnitSelectBox`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={organizationalUnitSelectBox}
-                                                        multiple={false}
-                                                        onChange={this.handleSelectOrganizationalUnitForResultsChart}
-                                                        value={organizationalUnitSelectBox[0].value}
-                                                    />
-                                                </div> 
-                                            </div>
-                                        </div>
                                         {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                            <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.resultsOrganizationalUnitId}/>
+                                            <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                                         }
                                     </div>
                                 </div>
@@ -287,29 +224,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
                                     <h2 class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
                                     <div className="box-body dashboard_box_body">
-                                        <div style={{textAlign: "right"}}>
-                                            <span className="label label-danger">{this.state.distributionOrganizationalUnit}</span>
-
-                                            <button type="button" data-toggle="collapse" data-target="#distributionViceDean" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
-                                            <div id="distributionViceDean" className="box collapse setting-table">
-                                                <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-
-                                                <div className = "form-group">
-                                                    <label>Đơn vị</label>
-                                                    <SelectBox
-                                                        id={`distributionViceDeanSelectBox`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={viceDeanSelectBox}
-                                                        multiple={false}
-                                                        onChange={this.handleSelectViceDeanForDistributionChart}
-                                                        value={viceDeanSelectBox[0].value}
-                                                    />
-                                                </div> 
-                                            </div>
-                                        </div>
                                         {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                            <DistributionOfOrganizationalUnitKpiChart viceDean={this.state.distributrionViceDean}/>
+                                            <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                                         }
                                     </div>
                                 </div>
@@ -320,15 +236,15 @@ class OrganizationalUnitKpiDashboard extends Component {
                         {childOrganizationalUnit &&
                             <div className="col-xs-6">
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h2 class="box-title">Kết quả thực hiện công việc các đơn vị năm {this.state.currentYear}</h2>
-                                    <TaskPerformanceResultsOfOrganizationalUnitChart/>
+                                    <h2 class="box-title">Kết quả KPI các đơn vị năm {this.state.currentYear}</h2>
+                                    <ResultsOfAllOrganizationalUnitKpiChart/>
                                 </div>
                             </div>
                         }       
                         <div className="col-xs-6">
                             <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                <h2 class="box-title">Thống kê kết quả thực hiện công việc tháng {this.state.currentMonth}</h2>
-                                <StatisticsOfPerformanceResultsChart/>
+                                <h2 class="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</h2>
+                                <StatisticsOfOrganizationalUnitKpiResultsChart/>
                             </div>
                         </div>
                     </div>

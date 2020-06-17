@@ -303,12 +303,12 @@ class ModalAddTaskTemplate extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
 
         var usersOfChildrenOrganizationalUnit;
-        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
-            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        if(user && user.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         var usersInUnitsOfCompany;
-        if(tasktemplates&&tasktemplates.usersInUnitsOfCompany){
-            usersInUnitsOfCompany = tasktemplates.usersInUnitsOfCompany;
+        if(user&&user.usersInUnitsOfCompany){
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
         
         var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
@@ -500,8 +500,8 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
     getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
-    getChildrenOfOrganizationalUnits: taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany: taskTemplateActions.getAllUserInAllUnitsOfCompany
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalAddTaskTemplate));
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };

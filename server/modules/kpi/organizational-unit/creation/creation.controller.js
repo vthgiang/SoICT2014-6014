@@ -2,11 +2,16 @@ const KPIUnitService = require('./creation.service');
 const { LogInfo, LogError } = require('../../../../logs');
 
 /**
- * Lấy tập KPI đơn vị của đơn vị ứng với role người dùng
+ * Lấy tập KPI đơn vị của đơn vị ứng với role người dùng(lấy bằng role hoặc bằng params: id của đơn vị)
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.id);
+        if(req.query) {
+            var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.id, req.query.organizationalUnitId);
+        } else {
+            var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.id);
+        }
+       
         LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
         res.status(200).json({
             success: true,

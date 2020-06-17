@@ -585,3 +585,24 @@ exports.uploadFile = async (params,files) => {
     ]);
     return task.files
 }
+
+/**
+ * Thêm nhật ký cho một công việc
+ */
+exports.addTaskLog = async (data) => {
+    var { taskId, creator, title, description } = data;
+    var createdAt = new Date();
+
+    var log = {
+        createdAt: createdAt,
+        creator: creator,
+        title: title,
+        description: description,
+    }
+
+    var taskLog = await Task.findByIdAndUpdate(
+        taskId, { $push: { logs: log } }, { new: true }
+    );
+            
+    return taskLog;
+}

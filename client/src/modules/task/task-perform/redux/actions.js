@@ -27,6 +27,7 @@ export const performTaskAction = {
     confirmAction,
     downloadFile,
     uploadFile,
+    addTaskLog,
 };
 // Create result task
 function createResultTask(result) {
@@ -310,6 +311,21 @@ function uploadFile(task,data) {
         .then(
             payload => dispatch({ type: performTaskConstants.UPLOAD_FILE_SUCCESS, payload }),
             error => dispatch({ type: performTaskConstants.UPLOAD_FILE_FAILURE, error })
+        );
+    }
+}
+
+// Hàm thêm nhật ký cho một công việc
+function addTaskLog(log) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.ADD_TASK_LOG_REQUEST });
+        performTaskService.addTaskLog(log)
+        .then(
+            res => dispatch({ 
+                type: performTaskConstants.ADD_TASK_LOG_SUCCESS, 
+                payload: res.data.content
+            }),
+            error => dispatch({ type: performTaskConstants.ADD_TASK_LOG_FAILURE, error })
         );
     }
 }

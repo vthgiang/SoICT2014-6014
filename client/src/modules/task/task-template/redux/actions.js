@@ -8,8 +8,6 @@ export const taskTemplateActions = {
     getTaskTemplateById,
     addTaskTemplate,
     editTaskTemplate,
-    getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany,
     _delete
 };
 
@@ -87,46 +85,7 @@ function editTaskTemplate(id, taskTemplate) {
     };
 }
 
-// Lấy người dùng các đơn vị con của một đơn vị và trong đơn vị đó
-function getChildrenOfOrganizationalUnitsAsTree(unitId) {
-    return dispatch => {
-        dispatch({type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST});
- 
-        taskTemplateService.getChildrenOfOrganizationalUnitsAsTree(unitId)
-            .then(res=>{ 
-                dispatch({
-                    type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
-// Lấy người dùng trong các đơn vị của 1 công ty
-function getAllUserInAllUnitsOfCompany() {
-    return dispatch => {
-        dispatch({type: taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST});
- 
-        taskTemplateService.getAllUserInAllUnitsOfCompany()
-            .then(res=>{ 
-                dispatch({
-                    type: taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
+
 
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {

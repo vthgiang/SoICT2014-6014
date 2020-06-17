@@ -10,7 +10,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
-class StatisticsOfPerformanceResultsChart extends Component {
+class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     constructor(props){
         super(props);
@@ -37,8 +37,8 @@ class StatisticsOfPerformanceResultsChart extends Component {
             currentRole: localStorage.getItem("currentRole"),
             month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
             dataStatus: this.DATA_STATUS.QUERYING,
-            kindOfPoint: [this.KIND_OF_POINT.AUTOMATIC],
-            pointName: [this.KIND_OF_POINT_SELECTBOX[0].text]
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
+            pointName: this.KIND_OF_POINT_SELECTBOX[0].text
         };
 
         // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
@@ -96,23 +96,19 @@ class StatisticsOfPerformanceResultsChart extends Component {
     }
 
     handleSelectKindOfPoint = (value) => {
-        var pointName = []; 
-        value.map(x => {
-            this.KIND_OF_POINT_SELECTBOX.filter(kind => kind.value === Number(x)).map(kind => { pointName.push(kind.text) });
-        })
-        value = value.map(x => Number(x));
+        var pointName = this.KIND_OF_POINT_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
 
         this.setState(state => {
             return {
                 ...state,
-                kindOfPoint: value,
+                kindOfPoint: Number(value[0]),
                 pointName: pointName
             }
         })
     }
 
     // Lọc và đếm số người có cùng điểm
-    filterAndCountEmployeeWithTheSamePoint = (arrayPoint, namePoint) => {
+    filterAndCountEmployeeWithTheSamePoint = (arrayPoint) => {
         var point = Array.from(new Set(arrayPoint));
         var employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
 
@@ -132,8 +128,8 @@ class StatisticsOfPerformanceResultsChart extends Component {
             countEmployeeWithTheSamePoint.push(theSamePoints.length);
         })
 
-        point.unshift(namePoint + ' X');
-        countEmployeeWithTheSamePoint.unshift(namePoint);
+        point.unshift('x');
+        countEmployeeWithTheSamePoint.unshift('Số người cùng điểm');
 
         employeeWithTheSamePoints = [
             point,
@@ -147,7 +143,7 @@ class StatisticsOfPerformanceResultsChart extends Component {
     setDataColumnChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
         var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
-        var employeeWithTheSamePoints = [], xs = {};
+        var employeeWithTheSamePoints, textLabel;
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
@@ -161,31 +157,21 @@ class StatisticsOfPerformanceResultsChart extends Component {
         }
 
         // Lấy dữ liệu các loại điểm mà this.state.kindOfPoint có
-        for(let i=0; i<this.state.kindOfPoint.length; i++) {
-            if(this.state.kindOfPoint[i] === this.KIND_OF_POINT.AUTOMATIC) {
-                employeeWithTheSamePoints = employeeWithTheSamePoints.concat(this.filterAndCountEmployeeWithTheSamePoint(automaticPoint, "Hệ thống đánh giá"));
-
-                var xsTemporary = {};
-                xsTemporary[employeeWithTheSamePoints[i*2+1][0]] = employeeWithTheSamePoints[i*2][0];
-                xs = Object.assign(xs, xsTemporary);
-            } else if(this.state.kindOfPoint[i] === this.KIND_OF_POINT.EMPLOYEE) {
-                employeeWithTheSamePoints = employeeWithTheSamePoints.concat(this.filterAndCountEmployeeWithTheSamePoint(employeePoint, "Cá nhân tự đánh giá"));
-
-                var xsTemporary = {};
-                xsTemporary[employeeWithTheSamePoints[i*2+1][0]] = employeeWithTheSamePoints[i*2][0];
-                xs = Object.assign(xs, xsTemporary);
-            } else if(this.state.kindOfPoint[i] === this.KIND_OF_POINT.APPROVED) {
-                employeeWithTheSamePoints = employeeWithTheSamePoints.concat(this.filterAndCountEmployeeWithTheSamePoint(approvedPoint, "Quản lý đánh giá"));
-
-                var xsTemporary = {};
-                xsTemporary[employeeWithTheSamePoints[i*2+1][0]] = employeeWithTheSamePoints[i*2][0];
-                xs = Object.assign(xs, xsTemporary);
-            }
+        if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
+            textLabel = 'Giá trị điểm hệ thống đánh giá';
+        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(employeePoint);
+            textLabel = 'Giá trị điểm cá nhân tự đánh giá';
+        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
+            employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
+            textLabel = 'Giá trị điểm quản lý đánh giá';
         }
+        
         
         return {
             'employeeWithTheSamePoints': employeeWithTheSamePoints,
-            'xs': xs
+            'textLabel': textLabel
         };
     }
 
@@ -199,11 +185,11 @@ class StatisticsOfPerformanceResultsChart extends Component {
     columnChart = () => {
         this.removePreviosChart();
 
-        var dataPoints, dataChart, xs;
+        var dataPoints, dataChart, textLabel;
 
         dataPoints = this.setDataColumnChart();
         dataChart = dataPoints.employeeWithTheSamePoints;
-        xs = dataPoints.xs;
+        textLabel = dataPoints.textLabel;
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
@@ -215,22 +201,22 @@ class StatisticsOfPerformanceResultsChart extends Component {
             },
             
             data: {
-                xs: xs,
+                x: 'x',
                 columns: dataChart,
                 type: 'bar'
             },
 
             bar: {
                 width: {
-                    width : 1
+                    ratio: 0.1
                 }
             },
 
             axis: {
                 x: {
                     label: {
-                        text: 'Giá trị điểm',
-                        position: 'outer-center'
+                        text: textLabel,
+                        position: 'outer-center',
                         // inner-right : default
                         // inner-center
                         // inner-left
@@ -246,7 +232,7 @@ class StatisticsOfPerformanceResultsChart extends Component {
                 y: {
                     label: {
                         text: 'Số người cùng điểm',
-                        position: 'outer-middle'
+                        position: 'outer-middle',
                         // inner-top : default
                         // inner-middle
                         // inner-bottom
@@ -259,46 +245,48 @@ class StatisticsOfPerformanceResultsChart extends Component {
                         left: 10
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         })
-    }
-
-    createSpanLable = () => {
-        var i = 0, span = [];
-        while(i<this.state.pointName.length) {
-            span.push(<span className='label label-danger'>{this.state.pointName[i]}</span>);
-            i++;
-        }
-
-        return span;
     }
 
     render() {
         return (
             <React.Fragment>
                 <div className="box-body dashboard_box_body">
-                    <div  style={{textAlign: "right"}}>
-                        {this.createSpanLable()}
+                    <section style={{textAlign: "right"}}>
+                        <span className="label label-danger">{this.state.pointName}</span>
+                        <button type="button" data-toggle="collapse" data-target="#kind-point-statistics-of-kpi" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
+                        
+                        <div className="box box-primary box-solid collapse setting-table" id="kind-point-statistics-of-kpi">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Loại điểm</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#kind-point-statistics-of-kpi" ><i className="fa fa-times"></i></button>
+                                </div>
+                            </div>
 
-                        <button type="button" data-toggle="collapse" data-target="#kind-point-statistics-of-performance" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
-                        <div id="kind-point-statistics-of-performance" className="box collapse setting-table">
-                            <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
-
-                            <div className = "form-group">
-                                <label>Loại điểm</label>
-                                <SelectBox
-                                    id={`kindOfPointStatisticsOfPerformance`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={this.KIND_OF_POINT_SELECTBOX}
-                                    multiple={true}
-                                    onChange={this.handleSelectKindOfPoint}
-                                    value={[this.KIND_OF_POINT_SELECTBOX[0].value]}
-                                />
-                            </div> 
+                            <div className="box-body">
+                                <div className = "form-group">
+                                    <label>Loại điểm</label>
+                                    <SelectBox
+                                        id={`kindOfPointStatisticsOfKpi`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={this.KIND_OF_POINT_SELECTBOX}
+                                        multiple={false}
+                                        onChange={this.handleSelectKindOfPoint}
+                                        value={this.KIND_OF_POINT_SELECTBOX[0].value}
+                                    />
+                                </div> 
+                            </div>
                         </div>
-                    </div>
-                    <div ref="chart"></div>
+                    </section>
+
+                    <section ref="chart"></section>
                 </div>
             </React.Fragment>
         )
@@ -313,5 +301,5 @@ const actions = {
     getAllEmployeeKpiSetInOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-const connectedStatisticsOfPerformanceResultsChart = connect(mapState, actions)(StatisticsOfPerformanceResultsChart);
-export { connectedStatisticsOfPerformanceResultsChart as StatisticsOfPerformanceResultsChart }
+const connectedStatisticsOfOrganizationalUnitKpiResultsChart = connect(mapState, actions)(StatisticsOfOrganizationalUnitKpiResultsChart);
+export { connectedStatisticsOfOrganizationalUnitKpiResultsChart as StatisticsOfOrganizationalUnitKpiResultsChart }

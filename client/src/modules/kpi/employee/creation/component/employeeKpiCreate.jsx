@@ -629,43 +629,9 @@ class CreateEmployeeKpiSet extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-6">
                                     <Comment
                                         currentKPI = {currentKPI}
-                                        // auth = {this.props.auth}
-                                        // downloadFile ={(e,path,fileName)=>this.requestDownloadFile(e,path,fileName)}
-                                        // //Props cua comment
-                                        // submitComment = {()=>this.submitComment(currentKPI._id)}
-                                        // onFilesChange = {this.onFilesChange}
-                                        // editComment = {(id)=>this.editComment(id)}
-                                        // deleteComment = {(id)=>this.props.deleteComment(id,currentKPI._id)}
-                                        // files = {this.state.comment.files}
-                                        // text = {this.state.comment.description}
-                                        // onTextChange={(e)=>{
-                                        //     let value = e.target.value;
-                                        //     this.setState(state => {
-                                        //         return { ...state, comment: {...state.comment, description: value}}
-                                        //     })        
-                                        // }}
-                                        // onEditTextChange = {(e) => {
-                                        //     let value = e.target.value;
-                                        //     this.setState(state => {
-                                        //         return { ...state, newComment: {...state.newComment, description: value}}
-                                        //     })  
-                                        // }}
-
-                                        // //Props của comment of comment
-                                        // submitCommentOfComment = {(id)=>this.submitCommentOfComment(id)}
-                                        // onCommentFilesChange = {this.onCommentFilesChange}
-                                        // commentFiles = {this.state.commentOfComment.files}
-                                        // commentText = {this.state.commentOfComment.description}
-                                        // onCommentTextChange = {(e)=> {
-                                        //     let value = e.target.value;
-                                        //     this.setState(state => {
-                                        //         return { ...state, commentOfComment: {...state.commentOfComment, description: value}}
-                                        //     })
-                                        // }}
-                                        
                                     >
                                     </Comment>
-            
+
                                 </div>
                                 </div>
                             </div>

@@ -82,6 +82,10 @@ exports.data = [
     { path: '/user/:id/organizational-units', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/same-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/users-of-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/user/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/user/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+
+
     
     { path: '/links-default-management', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/links-default-management', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -320,6 +324,8 @@ exports.data = [
     { path: '/performtask/information-task-template', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/result-task/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/result-task', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    // add task log
+    { path: '/performtask/logs', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
 
     // Module TaskTemplate
     { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -329,9 +335,7 @@ exports.data = [
     { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean']},
     { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasktemplates/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasktemplates/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-
+   
 
     //asset type
     { path: '/assettype/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},

@@ -459,6 +459,7 @@ export default {
             zoom_out: 'Zoom Out',
             zoom_in: 'Zoom In',
             add: 'Add',
+            edit_title: 'Edit organizational unit',
             add_title: 'Add new department',
             info: 'Department Information',
             name: 'Department name',
