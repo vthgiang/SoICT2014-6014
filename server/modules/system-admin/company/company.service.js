@@ -1,4 +1,4 @@
-const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole } = require('../../../models').schema;
+const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole, ImportConfiguraion } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -455,3 +455,44 @@ exports.getPaginatedCompanyComponents = async (companyId, page, limit, data={}) 
             ]
         });
 }
+
+
+/**
+ * Lấy thông tin cấu hình file import
+ * @param {*} type : thể loại file cấu hình(salary, taskTemplate);
+ * @param {*} company :id công ty
+ */
+exports.getImportConfiguraion = async (type, company) => {
+    return await ImportConfiguraion.findOne({
+        type: type,
+        company: company
+    });
+};
+
+/**
+ * Tạo thông tin cấu hình file import
+ * @param {*} data : thông tin cấu hình file import
+ * @param {*} company : id công ty
+ */
+exports.createImportConfiguraion = async (data, company) => {
+    return await ImportConfiguraion.create({
+        company: company,
+        configuration: data.configuration,
+        type: data.type
+    })
+};
+
+/**
+ * Chỉnh sửa thông tin cấu hình file import
+ * @param {*} id :id thông tin cấu hình file import cần sửa
+ * @param {*} data : dữ liệu chinhe sửa file cấu hình
+ */
+exports.editImportConfiguraion = async (id, data) => {
+    let oldImportConfiguraion = await ImportConfiguraion.findById(id);
+    console.log(oldImportConfiguraion);
+    oldImportConfiguraion.configuration = {
+        ...data.configuration
+    };
+    oldImportConfiguraion.save();
+    return await ImportConfiguraion.findById(id);
+};

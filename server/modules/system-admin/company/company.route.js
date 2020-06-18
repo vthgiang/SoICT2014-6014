@@ -26,4 +26,19 @@ router.get("/link-categories", auth, CompanyController.getAllLinkCategories);
 // Khác ----------
 router.get("/:id/links", auth, CompanyController.getCompanyLinks);
 
+/**
+ * Lấy thông tin cấu hình file import theo id
+ */
+router.get('/import-file/:type', auth, CompanyController.getImportConfiguraion);
+
+/**
+ * Tạo mới thông tin cấu hình file import
+ */
+router.post('/import-file', auth, CompanyController.createImportConfiguraion);
+
+/**
+ * Chỉnh sửa thông tin cấu hình file import theo id
+ */
+router.patch('import-file/:id', auth, CompanyController.editImportConfiguraion);
+
 module.exports = router;
