@@ -39,6 +39,6 @@ router.post('/import-file', auth, CompanyController.createImportConfiguraion);
 /**
  * Chỉnh sửa thông tin cấu hình file import theo id
  */
-router.patch('import-file/:id', auth, CompanyController.editImportConfiguraion);
+router.patch('/import-file/:id', auth, CompanyController.editImportConfiguraion);
 
 module.exports = router;

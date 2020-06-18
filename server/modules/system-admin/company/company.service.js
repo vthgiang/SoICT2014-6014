@@ -493,6 +493,6 @@ exports.editImportConfiguraion = async (id, data) => {
     oldImportConfiguraion.configuration = {
         ...data.configuration
     };
-    oldImportConfiguraion.save();
+    await oldImportConfiguraion.save();
     return await ImportConfiguraion.findById(id);
 };

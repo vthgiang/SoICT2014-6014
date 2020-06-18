@@ -216,6 +216,11 @@ export default {
                 add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
                 delete_component_for_company_success: 'Xóa component thành công',
 
+                create_import_configuration_success:"Thêm cấu hình file import thành công",
+                create_import_configuration_faile:"Thêm cấu hình file import thất bại",
+                edit_import_configuration_success:"Chỉnh sửa cấu hình file import thành công",
+                edit_import_configuration_faile:"Chỉnh sửa cấu hình file import thất bại",
+
                 email_exist: 'Email này đã được sử dụng',
                 company_not_found: 'Không tìm thấy thông tin về công ty',
                 link_exist: 'Url cho link đã tồn tại',
