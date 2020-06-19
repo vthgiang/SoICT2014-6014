@@ -55,48 +55,48 @@ function getAllTaskByRole(id, role) {
 }
 
 // get all task by Role
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name) {//param -- user,
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {//param -- user,
     var user = getStorage("userId");
     
     return sendRequest({//user = localStorage.getItem('id')
-        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
         method: 'GET',
         
     }, false, true, 'task.task_management');
 }
 
 // get all task by Role
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name) {
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
 
 // get all task by Role
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name) {
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
 
 // get all task by Role
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name) {
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
 
 // get all task by Role
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name) {
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
