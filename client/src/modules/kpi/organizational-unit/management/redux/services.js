@@ -45,9 +45,9 @@ function evaluateKPIUnit(id) {
     }, false, true, 'kpi.organizational_unit');
 }
 
-function copyKPIUnit(id, dateold, datenew){
+function copyKPIUnit(id, idunit, dateold, datenew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/copykpi/${id}/${dateold}/${datenew}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
         method: 'POST',
     }, true, true, 'kpi.organizational_unit');
 }

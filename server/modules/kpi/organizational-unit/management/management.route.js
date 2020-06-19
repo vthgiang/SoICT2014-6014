@@ -14,6 +14,6 @@ router.get('/child-target/:id/:date',auth, managerController.getChildTargetByPar
 // Cập nhật dữ liệu mới nhất cho kpi đơn vị
 router.put('/evaluate/:id',auth, managerController.evaluateKPI);
 
-router.post('/copykpi/:id/:dateold/:datenew', auth, managerController.copyKPI);
+router.post('/copykpi/:id/:idunit/:dateold/:datenew', auth, managerController.copyKPI);
 
 module.exports = router;
