@@ -60,6 +60,10 @@ exports.data = [
     { path: '/company/:id/components-list', method: 'GET', roles: ['System Admin']},
     { path: '/company/:id/components-paginate/:page/:limit', method: 'POST', roles: ['System Admin']},
 
+    { path: '/company/import-file/:type', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/company/import-file', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/company/import-file/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+
     { path: '/roles-default-management', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management/categories', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management', method: 'GET', roles: ['System Admin']},

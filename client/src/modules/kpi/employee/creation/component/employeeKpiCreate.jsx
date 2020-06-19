@@ -319,13 +319,11 @@ class CreateEmployeeKpiSet extends Component {
 
     handleCheckEmployeeKpiSetStatus = (employeeKpiSetStatus) => {
         if (employeeKpiSetStatus === 0) {
-            return <span style={{ color: "#2b035e" }}><i className="fa fa-cogs" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')}</span>;
+            return <span style={{fontWeight: "bold"}} >{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')} <i className="fa fa-cogs" style={{ fontSize: "16px"}}></i></span>;
         } else if (employeeKpiSetStatus === 1) {
-            return <span style={{ color: "#FFC107" }}><i className="fa fa-hourglass-half" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')}</span>;
+            return <span style={{fontWeight: "bold"}} className="text-danger">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')} <i className="fa fa-hourglass-half" style={{ fontSize: "16px"}}></i></span>;
         } else if (employeeKpiSetStatus === 2) {
-            return <span style={{ color: "#00EB1B" }}><i className="fa fa-check-circle" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')}</span>;
-        } else if (employeeKpiSetStatus === 3) {
-            return <span style={{ color: "#270700" }}><i className="fa fa-lock" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.finished')}</span>;
+            return <span style={{fontWeight: "bold"}} className="text-success">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')} <i className="fa fa-check-circle" style={{ fontSize: "16px"}}></i></span>;
         }
     }
 
@@ -528,8 +526,9 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 <div className="" style={{ marginBottom: "10px" }}>
-                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})</h4>
-                                    <span style={{ float: "right" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
+                                    <h4 style={{ display: "inline", fontWeight: "600" }}>
+                                        {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})
+                                    </h4>
                                 </div>
                                 
                                 {editing ? userdepartments && userdepartments.deans &&
@@ -568,19 +567,21 @@ class CreateEmployeeKpiSet extends Component {
                                 }
 
                                 {editing === false &&
-                                    <div className="form group">
-                                        <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')}: </span>
+                                    <div>
+                                        <span>{currentKPI.kpis.length} mục tiêu - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')} </span>
                                         <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                         {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
                                             <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.not_satisfied')}</span>
                                             : <span className="text-success" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.satisfied')}</span>
                                         }
+                                        <span> - </span>
+                                        {this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}
                                     </div>
                                 }
 
                                 <div>
                                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')} ({currentKPI.kpis.reduce(sum => sum + 1, 0)})</h4>
+                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
                                     }
 
                                     <SlimScroll outerComponentId="kpi_table" innerComponentId="kpipersonal_table" innerComponentWidth="992px" activate={this.state.fixTableWidth}/>
@@ -624,15 +625,11 @@ class CreateEmployeeKpiSet extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                <div><h2 style={{textAlign:'center'}}>Trao đổi</h2></div>
-                                <div style={{marginTop:'60px',display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-                                <div className="col-xs-12 col-sm-12 col-md-6">
-                                    <Comment
-                                        currentKPI = {currentKPI}
-                                    >
-                                    </Comment>
-
-                                </div>
+                                <div style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                                    <h4 style={{ display: "inline-block", fontWeight: "600"}}>Trao đổi</h4> 
+                                    <div className="col-xs-12 col-sm-12 col-md-6">
+                                        <Comment currentKPI = {currentKPI}/>
+                                    </div>
                                 </div>
                             </div>
                             : <div className="col-xs-12">

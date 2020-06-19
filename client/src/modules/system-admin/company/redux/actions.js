@@ -13,7 +13,11 @@ export const CompanyActions = {
     linksList,
     linksPaginate,
     componentsList,
-    componentsPaginate
+    componentsPaginate,
+
+    getImportConfiguration,
+    createImportConfiguration,
+    editImportConfiguration,
 };
 
 function get(){
@@ -213,6 +217,63 @@ function componentsPaginate(companyId, page, limit, data={}){
             })
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE});
+            })
+    }
+}
+
+function getImportConfiguration(data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.GET_IMPORT_CONFIGURATION_REQUEST});
+        CompanyServices.getImportConfiguration(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_IMPORT_CONFIGURATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: CompanyConstants.GET_IMPORT_CONFIGURATION_FAILE,
+                    error: err
+                });
+            })
+    }
+}
+
+function createImportConfiguration(data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.ADD_IMPORT_CONFIGURATION_REQUEST});
+        CompanyServices.createImportConfiguration(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.ADD_IMPORT_CONFIGURATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILE,
+                    error: err
+                });
+            })
+    }
+}
+
+function editImportConfiguration(data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.EDIT_IMPORT_CONFIGURATION_REQUEST});
+        CompanyServices.editImportConfiguration(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.EDIT_IMPORT_CONFIGURATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILE,
+                    error: err
+                });
             })
     }
 }
