@@ -5,20 +5,34 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /** Lấy tập KPI cá nhân hiện tại theo người dùng */ 
-exports.getEmployeeKpiSet = async (id) => {
+exports.getEmployeeKpiSet = async (id, role) => {
     var now = new Date();
     var currentYear = now.getFullYear();
     var currentMonth = now.getMonth();
     var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
     var endOfLastMonth = new Date(currentYear, currentMonth);
 
-    var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, status: { $ne: 3 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
+    var department = await OrganizationalUnit.findOne({
+        $or: [
+            { dean: role },
+            { viceDean: role },
+            { employee: role }
+        ]
+    });
+
+    if (!department){
+        return null;
+    }
+
+    var employeeKpiSet = await EmployeeKpiSet.findOne({ creator: id, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 {path: 'comments.creator', model: User,select: 'name email avatar '},
                 {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
             ])
+    
+    
     return employeeKpiSet;
 }
 
