@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { createUnitKpiActions } from '../../creation/redux/actions';
+import { createKpiSetActions } from '../../creation/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
-class DistributionOfOrganizationalUnitKpiChart extends Component {
+class DistributionOfEmployeeKpiChart extends Component {
 
     constructor(props) {
         super(props);
@@ -15,30 +15,27 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
-            organizationalUnitId: null,
             dataStatus: this.DATA_STATUS.QUERYING
         };
 
-        // Lấy Kpi của đơn vị hiện tại
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole") ,this.props.organizationalUnitId);
+        // Lấy Kpi của cá nhân hiện tại
+        this.props.getEmployeeKpiSet();
     }
-    
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), nextProps.organizationalUnitId);
-            
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+            // Lấy Kpi của cá nhân hiện tại
+            this.props.getEmployeeKpiSet();
+
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
-                }
+                };
             });
-
             return false;
-        }
-        
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.createKpiUnit.currentKPI)
+        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.createEmployeeKpiSet.currentKPI)
                 return false;
             
             this.setState(state => {
@@ -62,27 +59,16 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return false;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
-            return {
-                ...prevState,
-                organizationalUnitId: nextProps.organizationalUnitId
-            }
-        } else{
-            return null;
-        }
-    }
-
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { createKpiUnit } = this.props;
-        var listOrganizationalUnitKpi, dataPieChart;
+        const { createEmployeeKpiSet } = this.props;
+        var listEmployeeKpi, dataPieChart;
 
-        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
-            listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
+        if (createEmployeeKpiSet.currentKPI && createEmployeeKpiSet.currentKPI.kpis) {
+            listEmployeeKpi = createEmployeeKpiSet.currentKPI.kpis
         }
-        if(listOrganizationalUnitKpi){
-            dataPieChart = listOrganizationalUnitKpi.map(x => { 
+        if(listEmployeeKpi){
+            dataPieChart = listEmployeeKpi.map(x => { 
                 return [ x.name, x.weight ]
             })
         }
@@ -90,7 +76,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return dataPieChart;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
+     // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart(){
         const chart = this.refs.chart;
         while(chart.hasChildNodes()){
@@ -120,40 +106,28 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataPieChart,
                 type : 'pie',
-            },
-
-            legend: {                               // Ẩn chú thích biểu đồ
-                show: true
             }
         });
     }
 
     render() {
-        const { createKpiUnit } = this.props;
-        var currentKpi;
-
-        if(createKpiUnit) {
-            currentKpi = createKpiUnit.currentKPI
-        }
-
         return (
             <React.Fragment>
-                {currentKpi &&
-                    <div ref="chart"></div>
-                }
+                <div ref="chart"></div>
             </React.Fragment>
         )
     }
+        
 }
 
 function mapState(state) {
-    const { createKpiUnit } = state;
-    return { createKpiUnit };
+    const { createEmployeeKpiSet } = state;
+    return { createEmployeeKpiSet };
 }
 
 const actions = {
-    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit
+    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet
 }
 
-const connectedDistributionOfOrganizationalUnitKpiChart = connect(mapState, actions)(DistributionOfOrganizationalUnitKpiChart);
-export { connectedDistributionOfOrganizationalUnitKpiChart as DistributionOfOrganizationalUnitKpiChart}
+const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(DistributionOfEmployeeKpiChart);
+export { connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart}

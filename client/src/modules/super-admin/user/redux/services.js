@@ -14,6 +14,9 @@ export const UserServices = {
     getAllUserSameDepartment,
     getRoleSameDepartmentOfUser,
     getDepartmentOfUser,
+    getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany,
+    
 };
 
 function get(params) {
@@ -78,7 +81,7 @@ function getAllUserOfCompany() {
     }, false, true, 'super_admin.user');
 }
 
-// Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */ 
 function getAllUserOfDepartment(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
@@ -101,4 +104,18 @@ function getDepartmentOfUser() {
         url: `${ LOCAL_SERVER_API }/user/${id}/organizational-units`,
         method: 'GET',
     }, false, true, 'super_admin.organization_unit');
+}
+//get all children of an organizational unit and that organizational unit
+function getChildrenOfOrganizationalUnitsAsTree(id){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/user/organizational-units/${id}`,
+        method: 'GET',
+    }, false, true, 'super_admin.user');
+}
+//get all user in organizational unit of company
+function getAllUserInAllUnitsOfCompany(){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/user/organizational-units/all-user/`,
+        method: 'GET',
+    }, false, true, 'super_admin.user');
 }

@@ -13,7 +13,11 @@ export const CompanyServices = {
     linksList,
     linksPaginate,
     componentsList,
-    componentsPaginate
+    componentsPaginate,
+
+    getImportConfiguration,
+    createImportConfiguration,
+    editImportConfiguration,
 };
 
 function get() {
@@ -106,4 +110,27 @@ function componentsPaginate(companyId, page, limit, data) {
         method: 'POST',
         data,
     }, false, true, 'system_admin.company');
+}
+
+function getImportConfiguration(data) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/company/import-file/${data.type}`,
+        method: 'GET',
+    }, false, false, 'system_admin.company');
+}
+
+function createImportConfiguration(data) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/company/import-file/`,
+        method: 'POST',
+        data,
+    }, true, true, 'system_admin.company');
+}
+
+function editImportConfiguration(data) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/company/import-file/${data.id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'system_admin.company');
 }

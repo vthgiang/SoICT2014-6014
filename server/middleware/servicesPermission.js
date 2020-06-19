@@ -60,6 +60,10 @@ exports.data = [
     { path: '/company/:id/components-list', method: 'GET', roles: ['System Admin']},
     { path: '/company/:id/components-paginate/:page/:limit', method: 'POST', roles: ['System Admin']},
 
+    { path: '/company/import-file/:type', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/company/import-file', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/company/import-file/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+
     { path: '/roles-default-management', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management/categories', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management', method: 'GET', roles: ['System Admin']},
@@ -82,6 +86,10 @@ exports.data = [
     { path: '/user/:id/organizational-units', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/same-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/users-of-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/user/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/user/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+
+
     
     { path: '/links-default-management', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/links-default-management', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -271,11 +279,11 @@ exports.data = [
     { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/role/:id/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasks/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasks/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasks/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasks/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasks/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name', method: 'GET', roles:['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles:['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/archived/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -320,6 +328,8 @@ exports.data = [
     { path: '/performtask/information-task-template', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/result-task/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/result-task', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    // add task log
+    { path: '/performtask/logs', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
 
     // Module TaskTemplate
     { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -329,9 +339,7 @@ exports.data = [
     { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean']},
     { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasktemplates/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/tasktemplates/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-
+   
 
     //asset type
     { path: '/assettype/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
