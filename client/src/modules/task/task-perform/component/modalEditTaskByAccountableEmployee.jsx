@@ -6,17 +6,16 @@ import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 import Swal from 'sweetalert2'
 
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
         super(props);
 
         let userId = getStorage("userId");
-
 
         let { tasks } = this.props;
 
@@ -719,7 +718,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
     
-    render() {
+    render() { 
         const { task } = this.state;
         const { errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
             responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
@@ -734,8 +733,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
         
         let usersOfChildrenOrganizationalUnit;
-        if(tasktemplates && tasktemplates.usersOfChildrenOrganizationalUnit){
-            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        if(user && user.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 

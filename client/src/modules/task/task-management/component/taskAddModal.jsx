@@ -372,12 +372,12 @@ class ModalAddTask extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
         var usersOfChildrenOrganizationalUnit;
-        if(tasktemplates.usersOfChildrenOrganizationalUnit){
-            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        if(user.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         var usersInUnitsOfCompany;
-        if(tasktemplates&&tasktemplates.usersInUnitsOfCompany){
-            usersInUnitsOfCompany = tasktemplates.usersInUnitsOfCompany;
+        if(user&&user.usersInUnitsOfCompany){
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
         
         var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
@@ -572,8 +572,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany : taskTemplateActions.getAllUserInAllUnitsOfCompany
+    getChildrenOfOrganizationalUnits : UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany : UserActions.getAllUserInAllUnitsOfCompany
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

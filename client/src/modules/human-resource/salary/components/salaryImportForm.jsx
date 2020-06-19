@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CompanyActions } from '../../../system-admin/company/redux/actions';
 import { DialogModal, ButtonModal, } from '../../../../common-components';
 
 import XLSX from 'xlsx';
@@ -21,6 +22,9 @@ class SalaryImportForm extends Component {
                 bonus: ['Thưởng đầu hộp SanFoVet', 'Thưởng đầu hộp ViaVet', 'Thưởng quý', 'Lương CTV']
             }
         };
+    }
+    componentDidMount() {
+        this.props.getImportConfiguration({ type: "salary" });
     }
     handleChangeFile = (e) => {
         let configData = this.state.configData;
@@ -99,28 +103,6 @@ class SalaryImportForm extends Component {
                         }
                     })
                     importData = importData.concat(dataConvert);
-
-                    // data = data.map((x, index) => {
-                    //     let mainSalary = x[`${configData.mainSalary}`];
-                    //     let employeeNumber = x[`${configData.employeeNumber}`];
-                    //     let month = x[`${configData.month}`] !== undefined ? Number(x[`${configData.month}`]).toString() : '';
-                    //     let year = x[`${configData.year}`] !== undefined ? Number(x[`${configData.year}`]).toString() : '';
-                    //     let employeeName = x[`${configData.employeeName}`];
-                    //     let bonus = [];
-                    //     configData.bonus.forEach(b => {
-                    //         if (x[`${b}`] !== undefined) {
-                    //             bonus = [...bonus, { nameBonus: b, number: Number(x[`${b}`]) }]
-                    //         }
-                    //     });
-                    //     if (month.length === 2 && year !== '') {
-                    //         month = month + "-" + year;
-                    //     } else if (month.length === 1 && year !== '') {
-                    //         month = "0" + month + "-" + year;
-                    //     } else month = "";
-
-                    //     return { mainSalary, employeeNumber, month, employeeName, bonus }
-                    // })
-                    // importData = importData.concat(data);
                 })
                 this.setState({
                     importData: importData
@@ -196,7 +178,7 @@ class SalaryImportForm extends Component {
                                         <label>Tên các loại lương thưởng khác<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với các loại lương thưởng khác VD: thưởng quý, thưởng năm" />
                                     </div>
-                                    <button type="button" className="btn btn-primary pull-right" style={{marginRight:15}} onClick={this.configFileImport}>{translate('table.update')}</button>
+                                    <button type="button" className="btn btn-primary pull-right" style={{ marginRight: 15 }} onClick={this.configFileImport}>{translate('table.update')}</button>
                                 </div>
                             </div>
                             <div className="form-group col-md-8 col-xs-12" style={{ padding: 0 }}>
@@ -260,13 +242,17 @@ class SalaryImportForm extends Component {
     }
 };
 
-// function mapState(state) {
-//     const { salary, employeesManager } = state;
-//     return { salary, employeesManager };
-// };
+function mapState(state) {
+    const { salary, company } = state;
+    return { salary, company };
+};
 
-// const actionCreators = {
-// };
+const actionCreators = {
+    getImportConfiguration: CompanyActions.getImportConfiguration,
+    createImportConfiguration: CompanyActions.createImportConfiguration,
+    editImportConfiguration: CompanyActions.editImportConfiguration,
 
-const importExcel = connect(null, null)(withTranslate(SalaryImportForm));
+};
+
+const importExcel = connect(mapState, actionCreators)(withTranslate(SalaryImportForm));
 export { importExcel as SalaryImportForm };
