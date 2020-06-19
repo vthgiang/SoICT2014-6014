@@ -316,7 +316,7 @@ class ModalAddTaskTemplate extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/>
+                {/* <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/> */}
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"
