@@ -96,11 +96,11 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
     };
 }
 
-function copyEmployeeKPI(id, olddate, newdate) {
+function copyEmployeeKPI(id, idunit, olddate, newdate) {
     return dispatch => {
         dispatch({ type: managerKPIConstants.COPY_KPIPERSONALS_REQUEST});
 
-        managerKPIPerService.copyEmployeeKPI(id, olddate, newdate)
+        managerKPIPerService.copyEmployeeKPI(id, idunit, olddate, newdate)
             .then(res=>{
                 dispatch({
                     type: managerKPIConstants.COPY_KPIPERSONALS_SUCCESS,

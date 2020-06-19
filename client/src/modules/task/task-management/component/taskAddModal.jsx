@@ -20,7 +20,6 @@ class ModalAddTask extends Component {
         // get id current role
         this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany()
     }
@@ -328,7 +327,11 @@ class ModalAddTask extends Component {
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
-                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+            if (!defaultUnit && user.organizationalUnitsOfUser.length>0){ // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+
             this.setState(state =>{ // Khởi tạo giá trị cho organizationalUnit của newTask
                 return{
                     ...state,
@@ -369,12 +372,12 @@ class ModalAddTask extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
         var usersOfChildrenOrganizationalUnit;
-        if(tasktemplates.usersOfChildrenOrganizationalUnit){
-            usersOfChildrenOrganizationalUnit = tasktemplates.usersOfChildrenOrganizationalUnit;
+        if(user.usersOfChildrenOrganizationalUnit){
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         var usersInUnitsOfCompany;
-        if(tasktemplates&&tasktemplates.usersInUnitsOfCompany){
-            usersInUnitsOfCompany = tasktemplates.usersInUnitsOfCompany;
+        if(user&&user.usersInUnitsOfCompany){
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
         
         var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
@@ -569,8 +572,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getChildrenOfOrganizationalUnits : taskTemplateActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany : taskTemplateActions.getAllUserInAllUnitsOfCompany
+    getChildrenOfOrganizationalUnits : UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany : UserActions.getAllUserInAllUnitsOfCompany
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

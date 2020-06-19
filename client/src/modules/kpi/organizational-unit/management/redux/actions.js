@@ -92,11 +92,11 @@ function evaluateKPIUnit(id) {
     }
 }
 
-function copyKPIUnit(id, dateold, datenew){
+function copyKPIUnit(id, idunit, dateold, datenew){
     return dispatch => {
         dispatch({ type: managerConstants.COPY_KPIUNIT_REQUEST });
 
-        managerServices.copyKPIUnit(id, dateold, datenew)
+        managerServices.copyKPIUnit(id, idunit, dateold, datenew)
             .then(res => {
                 dispatch({
                     type: managerConstants.COPY_KPIUNIT_SUCCESS,

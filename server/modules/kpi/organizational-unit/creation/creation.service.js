@@ -3,16 +3,22 @@ const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = 
 /**
  * Lấy tập KPI đơn vị của đơn vị ứng với role người dùng
  * @id Id của role người dùng
+ * @organizationalUnitId params Id đơn vị
  */
-exports.getOrganizationalUnitKpiSet = async (id) => {
-    var department = await OrganizationalUnit.findOne({
-        $or: [
-            { dean: id },
-            { viceDean: id },
-            { employee: id }
-        ]
-    });
+exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId=undefined) => {
     
+    if(!organizationalUnitId) {
+        var department = await OrganizationalUnit.findOne({
+            $or: [
+                { dean: roleId },
+                { viceDean: roleId },
+                { employee: roleId }
+            ]
+        });
+    } else {
+        var department = { '_id': organizationalUnitId };
+    }
+
     var now = new Date();
     var currentYear = now.getFullYear();
     var currentMonth = now.getMonth();
