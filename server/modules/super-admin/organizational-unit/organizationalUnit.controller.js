@@ -55,9 +55,19 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        var roles = await RoleService.createRolesForOrganizationalUnit(req.body, req.user.company._id);
-        var organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( req.body, roles.dean._id, roles.viceDean._id, roles.employee.id, req.user.company._id );
-        var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
+        var roles = await RoleService
+            .createRolesForOrganizationalUnit(req.body, req.user.company._id);
+        var organizationalUnit = await OrganizationalUnitService
+            .createOrganizationalUnit( 
+                req.body, 
+                roles.deans.map(dean=>dean._id), 
+                roles.viceDeans.map(vice=>vice._id), 
+                roles.employees.map(em=>em._id), 
+                req.user.company._id 
+            );
+        var tree = await OrganizationalUnitService
+            .getOrganizationalUnitsAsTree(req.user.company._id);
+
         organizationalUnit.dean = roles.dean;
         organizationalUnit.viceDean = roles.viceDean;
         organizationalUnit.employee = roles.employee;
@@ -69,7 +79,7 @@ exports.createOrganizationalUnit = async (req, res) => {
             content: { department: organizationalUnit, tree }
         });
     } catch (error) {
-        
+        console.log('eerrror:', error)
         await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -103,12 +113,19 @@ exports.getOrganizationalUnit = async (req, res) => {
 exports.editOrganizationalUnit = async (req, res) => {
     try {
         var department = await OrganizationalUnitService.editOrganizationalUnit(req.params.id, req.body);
-        var dean = await RoleService.editRole(department.dean, {name: req.body.dean});
-        var viceDean = await RoleService.editRole(department.viceDean, {name: req.body.viceDean});
-        var employee = await RoleService.editRole(department.employee, {name: req.body.employee});
-        department.dean = dean;
-        department.viceDean = viceDean;
-        department.employee = employee;
+        for (let i = 0; i < department.deans.length; i++) {
+            const dean = department.deans[i]._id;
+            await RoleService.editRole(dean, {name: req.body.deans[i]});
+        }
+        for (let i = 0; i < department.viceDeans.length; i++) {
+            const vdean = department.viceDeans[i]._id;
+            await RoleService.editRole(vdean, {name: req.body.viceDeans[i]});
+        }
+        for (let i = 0; i < department.employees.length; i++) {
+            const em = department.employees[i]._id;
+            await RoleService.editRole(em, {name: req.body.employees[i]});
+        }
+        
         var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
 
         await LogInfo(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
@@ -119,6 +136,7 @@ exports.editOrganizationalUnit = async (req, res) => {
         });
     } catch (error) {
         
+        console.log('eerrror:', error)
         await LogError(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,

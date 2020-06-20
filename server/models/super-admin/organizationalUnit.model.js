@@ -17,18 +17,18 @@ const OrganizationalUnitSchema = new Schema({
     description: {
         type: String
     },
-    dean: {
+    deans: [{
         type: Schema.Types.ObjectId,
         ref: Role  
-    },
-    viceDean: {
+    }],
+    viceDeans: [{
         type: Schema.Types.ObjectId,
         ref: Role
-    },
-    employee: {
+    }],
+    employees: [{
         type: Schema.Types.ObjectId,
         ref: Role
-    },
+    }],
     parent: {
         type: Schema.Types.ObjectId,
         replies: this

@@ -377,3 +377,21 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     }
     
 }
+
+exports.editDocumentDomain = async (id, data) => {
+    const domain = await DocumentDomain.findById(id);
+    domain.name = data.name,
+    domain.description = data.description,
+    domain.parent = data.parent
+    await domain.save();
+
+    return domain;
+}
+
+exports.deleteDocumentDomain = async (id) => {
+    const domain = await DocumentDomain.findById(id);
+    if(domain === null) throw ['document_domain_not_found']
+    await DocumentDomain.deleteOne({_id: id});
+
+    return await this.getDocumentDomains(domain.company);
+}
