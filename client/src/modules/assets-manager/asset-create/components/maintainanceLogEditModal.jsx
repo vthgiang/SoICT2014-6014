@@ -10,6 +10,23 @@ class MaintainanceLogEditModal extends Component {
         this.state = {};
     }
 
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
     // Bắt sự kiện thay đổi mã phiếu
     handleMaintainanceCodeChange = (e) => {
         let { value } = e.target;
@@ -208,7 +225,7 @@ class MaintainanceLogEditModal extends Component {
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date-${id}`}
-                                        value={createDate}
+                                        value={this.formatDate(createDate)}
                                         onChange={this.handleCreateDateChange}
                                     />
                                     <ErrorLabel content={errorOnCreateDate} />
@@ -234,7 +251,7 @@ class MaintainanceLogEditModal extends Component {
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-start-date-${id}`}
-                                        value={startDate}
+                                        value={this.formatDate(startDate)}
                                         onChange={this.handleStartDateChange}
                                     />
                                     <ErrorLabel content={errorOnStartDate} />
@@ -243,7 +260,7 @@ class MaintainanceLogEditModal extends Component {
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
                                         id={`edit-end-date-${id}`}
-                                        value={endDate}
+                                        value={this.formatDate(endDate)}
                                         onChange={this.handleEndDateChange}
                                     />
                                 </div>

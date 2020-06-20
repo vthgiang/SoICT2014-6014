@@ -5,9 +5,10 @@ import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
 import { RecommendDistributeEditForm } from './RecommendDistributeEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from "../../asset-management/redux/actions";
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
-// import { AssetDetailForm } from "../../asset-management/components/AssetDetailForm";
+import {AssetDetailForm} from '../../asset-management/components/assetDetailForm';
 
 class RecommendDistribute extends Component {
     constructor(props) {
@@ -31,8 +32,9 @@ class RecommendDistribute extends Component {
     }
     componentDidMount() {
         this.props.searchRecommendDistributes(this.state);
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getAllAsset(this.state);
-        this.props.getAllUsers();
+        this.props.getUser();
     }
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -66,6 +68,23 @@ class RecommendDistribute extends Component {
             }
         });
         window.$('#modal-edit-recommenddistribute').modal('show');
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -219,15 +238,17 @@ class RecommendDistribute extends Component {
     // }
 
     render() {
-        const { translate, recommendDistribute, assetsManager, auth } = this.props;
+        const { translate, recommendDistribute, assetsManager,assetType, user, auth } = this.props;
         var lists = "";
         var listRecommendDistributes = "";
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
 
         if (this.props.recommendDistribute.isLoading === false) {
             listRecommendDistributes = this.props.recommendDistribute.listRecommendDistributes;
         }
-        if (assetsManager.allAsset) {
-            lists = this.props.assetsManager.allAsset;
+        if (this.props.assetsManager.isLoading === false) {
+            lists = this.props.assetsManager.listAssets;
         }
         console.log('listRecommendDistributes', listRecommendDistributes);
         // asset
@@ -321,16 +342,16 @@ class RecommendDistribute extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.asset.code}</td>
-                                        <td>{x.asset.assetName}</td>
-                                        <td>{x.asset.assetType.typeName}</td>
-                                        <td>{x.asset.person !== null ? x.asset.person.name : ''}</td>
-                                        <td>{x.asset.dateStartUse}</td>
-                                        <td>{x.asset.dateEndUse}</td>
-                                        <td>{x.asset.status}</td>
+                                        <td>{x.code}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
+                                        <td>{x.assignedTo !== null && userlist.length ? userlist.filter(item => item._id === x.assignedTo).pop().name : ''}</td>
+                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
+                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
+                                        <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title="Đăng ký cấp phát thiết bị"><i className="material-icons">post_add</i></a>
+                                            <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title="Đăng ký sử dụng thiết bị"><i className="material-icons">post_add</i></a>
                                         </td>
                                     </tr>))
                             }
@@ -342,31 +363,48 @@ class RecommendDistribute extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                {/* {
+                {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView.asset._id}
-                        asset={this.state.currentRowView.asset}
-                        repairUpgrade={this.state.currentRowView.repairUpgrade}
-                        distributeTransfer={this.state.currentRowView.distributeTransfer}
-
+                        _id={this.state.currentRowView._id}
+                        avatar={this.state.currentRowView.avatar}
+                        code={this.state.currentRowView.code}
+                        assetName={this.state.currentRowView.assetName}
+                        serial={this.state.currentRowView.serial}
+                        assetType={this.state.currentRowView.assetType}
+                        purchaseDate={this.state.currentRowView.purchaseDate}
+                        warrantyExpirationDate={this.state.currentRowView.warrantyExpirationDate}
+                        managedBy={this.state.currentRowView.managedBy}
+                        assignedTo={this.state.currentRowView.assignedTo}
+                        handoverFromDate={this.state.currentRowView.handoverFromDate}
+                        handoverToDate={this.state.currentRowView.handoverToDate}
+                        location={this.state.currentRowView.location}
+                        description={this.state.currentRowView.description}
+                        status={this.state.currentRowView.status}
+                        detailInfo={this.state.currentRowView.detailInfo}
+                        cost={this.state.currentRowView.cost}
+                        residualValue={this.state.currentRowView.residualValue}
+                        startDepreciation={this.state.currentRowView.startDepreciation}
+                        usefulLife={this.state.currentRowView.usefulLife}
+                        maintainanceLogs={this.state.currentRowView.maintainanceLogs}
+                        usageLogs={this.state.currentRowView.usageLogs}
+                        incidentLogs={this.state.currentRowView.incidentLogs}
+                        archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
+                        files={this.state.currentRowView.files}
                     />
-                } */}
+                }
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendDistributeCreateForm
                         _id={this.state.currentRow._id}
-                        assetId={this.state.currentRow.asset._id}
                         asset={this.state.currentRow.asset}
-                        code={this.state.currentRow.asset.code}
-                        assetName={this.state.currentRow.asset.assetName}
                     />
                 }
                 <hr />
                 <div className="box-body qlcv">
                     {/* <RecommendDistributeCreateForm /> */}
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách phiếu đăng ký cấp phát - sử dụng tài sản: </h4>
+                        <h4 className="box-title">Danh sách phiếu đăng ký sử dụng tài sản: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -502,13 +540,14 @@ class RecommendDistribute extends Component {
 };
 
 function mapState(state) {
-    const { recommendDistribute, assetsManager, auth } = state;
-    return { recommendDistribute, assetsManager, auth };
+    const { recommendDistribute, assetsManager, assetType, user, auth } = state;
+    return { recommendDistribute, assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
-    getAllUsers: UserActions.get,
+    getUser: UserActions.get,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
 };

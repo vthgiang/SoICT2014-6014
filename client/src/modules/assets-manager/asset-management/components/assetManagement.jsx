@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
@@ -23,9 +22,24 @@ class AssetManagement extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllAsset(this.state);
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.getAllAsset(this.state);
         this.props.getUser();
+    }
+
+    // Function format ngày hiện tại thành dạnh mm-yyyy
+    formatDate2(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
     }
 
     // Function format dữ liệu Date thành string
@@ -45,27 +59,27 @@ class AssetManagement extends Component {
         } else return [day, month, year].join('-');
     }
 
-        // Bắt sự kiện click xem thông tin tài sản
-        handleView = async (value) => {
-            await this.setState(state => {
-                return {
-                    currentRowView: value
-                }
-            });
-            window.$('#modal-view-asset').modal('show');
-        }
-    
-        // Bắt sự kiện click chỉnh sửa thông tin tài sản
-        handleEdit = async (value) => {
-            console.log(value);
-            await this.setState(state => {
-                return {
-                    ...state,
-                    currentRow: value
-                }
-            });
-            window.$('#modal-edit-asset').modal('show');
-        }
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEdit = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: value
+            }
+        });
+        window.$('#modal-edit-asset').modal('show');
+    }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
@@ -141,14 +155,14 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user } = this.props;
+        var { assetsManager, assetType, translate, user, auth } = this.props;
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
-        if (assetsManager.listAssets) {
-            lists = assetsManager.listAssets;
+        if (this.props.assetsManager.isLoading === false) {
+            lists = this.props.assetsManager.listAssets;
         }
-        console.log('lists', lists);
+        console.log('assettypelist', assettypelist);
 
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(assetsManager.totalList / this.state.limit) :
@@ -183,7 +197,7 @@ class AssetManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                value={this.formatDate2(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
@@ -244,22 +258,23 @@ class AssetManagement extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.assets.map(y => y.code)}</td>
-                                        <td>{x.assets.map (y => y.assetName)}</td>
-                                        <td>{x.assets.map(y=>y.assetType !== null ? assettypelist.filter(item => item._id === y.assetType).pop().typeName : '')}</td>
-                                        <td>{this.formatDate(x.assets.map(y => y.purchaseDate))}</td>
-                                        <td>{x.assets.map(y=>y.managedBy !== null ? userlist.filter(item => item._id === y.managedBy).pop().name : '')}</td>
-                                        <td>{x.assets.map(y=>y.assignedTo !== null ? userlist.filter(item => item._id === y.assignedTo).pop().name : '')}</td>
-                                        <td>{this.formatDate(x.assets.map(y => y.handoverFromDate))}</td>
-                                        <td>{x.assets.map(y => y.status)}</td>
+                                        <td>{x.code}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType)  ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
+                                        <td>{this.formatDate(x.purchaseDate)}</td>
+                                        <td>{x.managedBy !== null && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
+                                        <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
+                                        {/*<td>{x.assignedTo !== null && userlist.length ? userlist.filter(item => item._id === x.assignedTo).pop().name : ''}</td>*/}
+                                        <td>{this.formatDate(x.handoverFromDate)}</td>
+                                        <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xóa thông tin tài sản"
                                                 data={{
-                                                    id: x.assets.map(y => y._id),
-                                                    info: x.assets.map(y => y.code) + " - " + x.assets.map(y => y.assetName)
+                                                    id: x._id,
+                                                    info: x.code + " - " + x.assetName
                                                 }}
                                                 func={this.props.deleteAsset}
                                             />
@@ -277,8 +292,31 @@ class AssetManagement extends Component {
                 {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView.assets[0]._id}
-                        assets={this.state.currentRowView.assets}
+                        _id={this.state.currentRowView._id}
+                        avatar={this.state.currentRowView.avatar}
+                        code={this.state.currentRowView.code}
+                        assetName={this.state.currentRowView.assetName}
+                        serial={this.state.currentRowView.serial}
+                        assetType={this.state.currentRowView.assetType}
+                        purchaseDate={this.state.currentRowView.purchaseDate}
+                        warrantyExpirationDate={this.state.currentRowView.warrantyExpirationDate}
+                        managedBy={this.state.currentRowView.managedBy}
+                        assignedTo={this.state.currentRowView.assignedTo}
+                        handoverFromDate={this.state.currentRowView.handoverFromDate}
+                        handoverToDate={this.state.currentRowView.handoverToDate}
+                        location={this.state.currentRowView.location}
+                        description={this.state.currentRowView.description}
+                        status={this.state.currentRowView.status}
+                        detailInfo={this.state.currentRowView.detailInfo}
+                        cost={this.state.currentRowView.cost}
+                        residualValue={this.state.currentRowView.residualValue}
+                        startDepreciation={this.state.currentRowView.startDepreciation}
+                        usefulLife={this.state.currentRowView.usefulLife}
+                        maintainanceLogs={this.state.currentRowView.maintainanceLogs}
+                        usageLogs={this.state.currentRowView.usageLogs}
+                        incidentLogs={this.state.currentRowView.incidentLogs}
+                        archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
+                        files={this.state.currentRowView.files}
 
                     />
                 }
@@ -286,8 +324,31 @@ class AssetManagement extends Component {
                 {
                     this.state.currentRow !== undefined &&
                     <AssetEditForm
-                        _id={this.state.currentRow.assets[0]._id}
-                        assets={this.state.currentRow.assets}
+                        _id={this.state.currentRow._id}
+                        avatar={this.state.currentRow.avatar}
+                        code={this.state.currentRow.code}
+                        assetName={this.state.currentRow.assetName}
+                        serial={this.state.currentRow.serial}
+                        assetType={this.state.currentRow.assetType}
+                        purchaseDate={this.state.currentRow.purchaseDate}
+                        warrantyExpirationDate={this.state.currentRow.warrantyExpirationDate}
+                        managedBy={this.state.currentRow.managedBy}
+                        assignedTo={this.state.currentRow.assignedTo}
+                        handoverFromDate={this.state.currentRow.handoverFromDate}
+                        handoverToDate={this.state.currentRow.handoverToDate}
+                        location={this.state.currentRow.location}
+                        description={this.state.currentRow.description}
+                        status={this.state.currentRow.status}
+                        detailInfo={this.state.currentRow.detailInfo}
+                        cost={this.state.currentRow.cost}
+                        residualValue={this.state.currentRow.residualValue}
+                        startDepreciation={this.state.currentRow.startDepreciation}
+                        usefulLife={this.state.currentRow.usefulLife}
+                        maintainanceLogs={this.state.currentRow.maintainanceLogs}
+                        usageLogs={this.state.currentRow.usageLogs}
+                        incidentLogs={this.state.currentRow.incidentLogs}
+                        archivedRecordNumber={this.state.currentRow.archivedRecordNumber}
+                        files={this.state.currentRow.files}
 
                     />
                 }
@@ -297,8 +358,8 @@ class AssetManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user } = state;
-    return { assetsManager, assetType, user };
+    const { assetsManager, assetType, user, auth } = state;
+    return { assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
@@ -306,7 +367,7 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
-    
+
 };
 
 const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetManagement));

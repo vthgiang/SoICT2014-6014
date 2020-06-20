@@ -5,7 +5,7 @@ import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
-// import { MaintainanceActions } from '../redux/actions';
+import { MaintainanceActions } from '../redux/actions';
 
 class MaintainanceManagement extends Component {
     constructor(props) {
@@ -28,8 +28,8 @@ class MaintainanceManagement extends Component {
             assetType: null,
             month: null,
             status: "",
-            page: 0,
-            limit: 5,
+            page: "",
+            limit: "",
         });
     }
 
@@ -42,6 +42,23 @@ class MaintainanceManagement extends Component {
             }
         });
         window.$('#modal-edit-maintainance').modal('show');
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -136,12 +153,27 @@ class MaintainanceManagement extends Component {
         this.props.searchMaintainances(this.state);
     }
 
+    deleteMaintainance = (assetId, maintainanceId) => {
+        this.props.deleteMaintainance(assetId, maintainanceId).then(({response}) => {
+            if (response.data.success) {
+                this.props.getAllAsset({
+                    code: "",
+                    assetName: "",
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                });
+            }
+        });
+    }
+
     render() {
         const { translate, assetsManager } = this.props;
-        var listMaintainances = "";
+        var lists = "";
         var formater = new Intl.NumberFormat();
         if (this.props.assetsManager.isLoading === false) {
-            listMaintainances = this.props.assetsManager.listMaintainances;
+            lists = this.props.assetsManager.listAssets;
         }
         var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(this.props.assetsManager.totalList / this.state.limit) :
@@ -243,17 +275,18 @@ class MaintainanceManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listMaintainances !== 'undefined' && listMaintainances.length !== 0) &&
-                                listMaintainances.map((x, index) => (
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                                lists.map(asset => {
+                                    return asset.maintainanceLogs.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.maintainanceCode}</td>
-                                        <td>{x.createDate}</td>
+                                        <td>{this.formatDate2(x.createDate)}</td>
                                         <td>{x.type}</td>
-                                        <td>{x.code}</td>
-                                        <td>{x.assetName}</td>
+                                        <td>{asset.code}</td>
+                                        <td>{asset.assetName}</td>
                                         <td>{x.description}</td>
-                                        <td>{x.startDate}</td>
-                                        <td>{x.endDate}</td>
+                                        <td>{this.formatDate2(x.startDate)}</td>
+                                        <td>{this.formatDate2(x.endDate)}</td>
                                         <td>{formater.format(parseInt(x.expense))} VNĐ</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -265,16 +298,17 @@ class MaintainanceManagement extends Component {
                                                     id: x._id,
                                                     info: x.maintainanceCode + " - " + x.createDate.replace(/-/gi, "/")
                                                 }}
-                                                func={this.props.deleteMaintainance}
+                                                func={() => this.deleteMaintainance(asset._id, x._id)}
                                             />
                                         </td>
                                     </tr>))
-                            }
+                            })
+                        }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listMaintainances === 'undefined' || listMaintainances.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -287,7 +321,6 @@ class MaintainanceManagement extends Component {
                         createDate={this.state.currentRow.createDate}
                         type={this.state.currentRow.type}
                         asset={this.state.currentRow.asset}
-                        assetName={this.state.currentRow.asset && this.state.currentRow.asset.assetName}
                         description={this.state.currentRow.description}
                         startDate={this.state.currentRow.startDate}
                         endDate={this.state.currentRow.endDate}
@@ -306,9 +339,10 @@ function mapState(state) {
 };
 
 const actionCreators = {
+    deleteMaintainance: MaintainanceActions.deleteMaintainance,
     getAllAsset: AssetManagerActions.getAllAsset,
     // searchMaintainances: MaintainanceActions.searchMaintainances,
-    // deleteMaintainance: MaintainanceActions.deleteMaintainance,
+
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));

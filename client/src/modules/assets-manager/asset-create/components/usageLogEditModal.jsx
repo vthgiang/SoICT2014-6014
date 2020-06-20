@@ -11,6 +11,23 @@ class UsageLogEditModal extends Component {
         this.state = {};
     }
 
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
     // //6. Bắt sự kiện thay đổi "Người sử dụng"
     // handleUsedByChange = (e) => {
     //     const selectedIndex = e.target.options.selectedIndex;
@@ -186,7 +203,7 @@ class UsageLogEditModal extends Component {
                                 <label>Thời gian bắt đầu sử dụng</label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
-                                    value={startDate}
+                                    value={this.formatDate(startDate)}
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
@@ -195,7 +212,7 @@ class UsageLogEditModal extends Component {
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
-                                    value={endDate}
+                                    value={this.formatDate(endDate)}
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>

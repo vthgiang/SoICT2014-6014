@@ -89,7 +89,7 @@ class RecommendProcureDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                 <strong>Người phê duyệt:&emsp; </strong>
-                                    {approver.name}
+                                    {approver !== null ? approver.name: ''}
                                 </div>
                                 <div className="form-group">
                                 <strong>Chức vụ người phê duyệt:&emsp; </strong>

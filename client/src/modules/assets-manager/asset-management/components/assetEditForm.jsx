@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { LOCAL_SERVER_API } from '../../../../env';
-import {DialogModal} from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
-
+import moment from 'moment';
 import {
-        GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, FileTab
-        } from '../../asset-create/components/combinedContent';
-import {AssetManagerActions} from '../redux/actions';
+    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, FileTab
+} from '../../asset-create/components/combinedContent';
+import { AssetManagerActions } from '../redux/actions';
 
 class AssetEditForm extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class AssetEditForm extends Component {
         this.state = {};
     }
 
-    // Function upload avatar 
+    // Function upload avatar
     handleUpload = (img, avatar) => {
         this.setState({
             img: img,
@@ -27,16 +27,12 @@ class AssetEditForm extends Component {
 
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        const { asset } = this.state;
-        if(name==='purchaseDate'||name==='warrantyExpirationDate'||name==='handoverFromDate'||name==='handoverToDate'){
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation') {
             var partValue = value.split('-');
-            value = [partValue[2],partValue[1], partValue[0]].join('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         this.setState({
-            asset: {
-                ...asset,
-                [name]: value
-            }
+            [name]: value
         });
     }
 
@@ -168,7 +164,7 @@ class AssetEditForm extends Component {
         }
     }
 
-    // TODO: function 
+    // TODO: function
     handleChangeCourse = (data) => {
         const { assetNew } = this.state;
         this.setState({
@@ -180,7 +176,7 @@ class AssetEditForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== undefined && value.trim() !== '') {
+        if (value !== undefined && value.toString().trim() !== '') {
             return true;
         }
         return false;
@@ -188,20 +184,23 @@ class AssetEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        if (this.state.asset !== undefined) {
-            let result = this.validatorInput(this.state.asset.code) && this.validatorInput(this.state.asset.assetName) &&
-                this.validatorInput(this.state.asset.serial) && this.validatorInput(this.state.asset.purchaseDate) &&
-                this.validatorInput(this.state.asset.warrantyExpirationDate) && this.validatorInput(this.state.asset.location) &&
-                this.validatorInput(this.state.asset.status) && this.validatorInput(this.state.asset.cost.toString()) &&
-                this.validatorInput(this.state.asset.usefulLife.toString()) && this.validatorInput(this.state.asset.residualValue.toString());
+        if (this.state !== {}) {
+            let result =
+                this.validatorInput(this.state.code) && this.validatorInput(this.state.assetName) &&
+                this.validatorInput(this.state.serial) && this.validatorInput(this.state.purchaseDate) &&
+                this.validatorInput(this.state.warrantyExpirationDate) && this.validatorInput(this.state.location) &&
+                this.validatorInput(this.state.status) && this.validatorInput(this.state.cost) &&
+                this.validatorInput(this.state.usefulLife) && this.validatorInput(this.state.residualValue) &&
+                this.validatorInput(this.state.startDepreciation);
             return result;
         }
         return true;
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs,  files} = this.state;
+        let { maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
         await this.setState({
+            img: "",
             createMaintainanceLogs: maintainanceLogs.filter(x => x._id === undefined),
             createUsageLogs: usageLogs.filter(x => x._id === undefined),
             createIncidentLogs: incidentLogs.filter(x => x._id === undefined),
@@ -237,13 +236,32 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.assets[0].avatar,
+                img: LOCAL_SERVER_API + nextProps.avatar,
                 avatar: "",
-                asset: nextProps.assets[0],
-                usageLogs: nextProps.assets[0].usageLogs,
-                maintainanceLogs: nextProps.assets[0].maintainanceLogs,
-                incidentLogs: nextProps.assets[0].incidentLogs,
-                files: nextProps.assets[0].files,
+                avatar: nextProps.avatar,
+                code: nextProps.code,
+                assetName: nextProps.assetName,
+                serial: nextProps.serial,
+                assetType: nextProps.assetType,
+                purchaseDate: nextProps.purchaseDate,
+                warrantyExpirationDate: nextProps.warrantyExpirationDate,
+                managedBy: nextProps.managedBy,
+                assignedTo: nextProps.assignedTo,
+                handoverFromDate: nextProps.handoverFromDate,
+                handoverToDate: nextProps.handoverToDate,
+                location: nextProps.location,
+                description: nextProps.description,
+                status: nextProps.status,
+                detailInfo: nextProps.detailInfo,
+                cost: nextProps.cost,
+                residualValue: nextProps.residualValue,
+                startDepreciation: nextProps.startDepreciation,
+                usefulLife: nextProps.usefulLife,
+                maintainanceLogs: nextProps.maintainanceLogs,
+                usageLogs: nextProps.usageLogs,
+                incidentLogs: nextProps.incidentLogs,
+                archivedRecordNumber: nextProps.archivedRecordNumber,
+                files: nextProps.files,
 
                 editUsageLogs: [],
                 deleteUsageLogs: [],
@@ -254,6 +272,18 @@ class AssetEditForm extends Component {
                 editFiles: [],
                 deleteFiles: [],
 
+                errorOnCode: undefined,
+                errorOnAssetName: undefined,
+                errorOnSerial: undefined,
+                errorOnAssetType: undefined,
+                errorOnLocation: undefined,
+                errorOnPurchaseDate: undefined,
+                errorOnWarrantyExpirationDate: undefined,
+                errorOnManagedBy: undefined,
+                errorOnAssignedTo: undefined,
+                errorOnNameField: undefined,
+                errorOnValue: undefined,
+
             }
         } else {
             return null;
@@ -261,9 +291,8 @@ class AssetEditForm extends Component {
     }
 
     render() {
-        const {translate, assetsManager} = this.props;
-        const {_id} = this.state;
-        console.log('this.state', this.state);
+        const { translate, assetsManager } = this.props;
+        const { _id } = this.state;
 
         return (
             <React.Fragment>
@@ -275,7 +304,7 @@ class AssetEditForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-edit-asset"> */}
-                    <div className="nav-tabs-custom" style={{marginTop: '-15px'}}>
+                    <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
                             <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#edit_maintainance${_id}`}>Thông tin bảo trì</a></li>
@@ -290,7 +319,21 @@ class AssetEditForm extends Component {
                                 img={this.state.img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
-                                asset={this.state.asset}
+                                avatar={this.state.avatar}
+                                code={this.state.code}
+                                assetName={this.state.assetName}
+                                serial={this.state.serial}
+                                assetTypes={this.state.assetType}
+                                purchaseDate={this.state.purchaseDate}
+                                warrantyExpirationDate={this.state.warrantyExpirationDate}
+                                managedBy={this.state.managedBy}
+                                assignedTo={this.state.assignedTo}
+                                handoverFromDate={this.state.handoverFromDate}
+                                handoverToDate={this.state.handoverToDate}
+                                location={this.state.location}
+                                description={this.state.description}
+                                status={this.state.status}
+                                detailInfo={this.state.detailInfo}
                             />
                             <MaintainanceLogTab
                                 id={`edit_maintainance${_id}`}
@@ -309,8 +352,11 @@ class AssetEditForm extends Component {
 
                             <DepreciationTab
                                 id={`edit_depreciation${_id}`}
-                                asset={this.state.asset}
                                 handleChange={this.handleChange}
+                                cost={this.state.cost}
+                                residualValue={this.state.residualValue}
+                                startDepreciation={moment(this.state.startDepreciation).format('DD-MM-YYYY')}
+                                usefulLife={this.state.usefulLife}
                             />
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
@@ -322,12 +368,12 @@ class AssetEditForm extends Component {
 
                             <FileTab
                                 id={`edit_attachments${_id}`}
-                                files={this.state.files}
-                                asset={this.state.asset}
                                 handleChange={this.handleChange}
                                 handleAddFile={this.handleCreateFile}
                                 handleEditFile={this.handleEditFile}
                                 handleDeleteFile={this.handleDeleteFile}
+                                archivedRecordNumber={this.state.archivedRecordNumber}
+                                files={this.state.files}
                             />
                         </div>
                     </div>
@@ -339,12 +385,12 @@ class AssetEditForm extends Component {
 };
 
 function mapState(state) {
-    const {assetsInfo, assetsManager} = state;
-    return {assetsInfo, assetsManager};
+    const { assetsInfo, assetsManager } = state;
+    return { assetsInfo, assetsManager };
 };
 
 const actionCreators = {
     updateInformationAsset: AssetManagerActions.updateInformationAsset,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
-export {editForm as AssetEditForm};
+export { editForm as AssetEditForm };

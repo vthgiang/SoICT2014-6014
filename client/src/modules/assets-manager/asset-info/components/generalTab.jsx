@@ -30,21 +30,21 @@ class GeneralTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                avatar: nextProps.asset.avatar,
-                code: nextProps.asset.code,
-                assetName: nextProps.asset.assetName,
-                serial: nextProps.asset.serial,
-                assetType: nextProps.asset.assetType,
-                purchaseDate: nextProps.asset.purchaseDate,
-                warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
-                managedBy: nextProps.asset.managedBy,
-                assignedTo: nextProps.asset.assignedTo,
-                handoverFromDate: nextProps.asset.handoverFromDate,
-                handoverToDate: nextProps.asset.handoverToDate,
-                location: nextProps.asset.location,
-                description: nextProps.asset.description,
-                status: nextProps.asset.status,
-                detailInfo: nextProps.asset.detailInfo,
+                avatar: nextProps.avatar,
+                code: nextProps.code,
+                assetName: nextProps.assetName,
+                serial: nextProps.serial,
+                assetType: nextProps.assetType,
+                purchaseDate: nextProps.purchaseDate,
+                warrantyExpirationDate: nextProps.warrantyExpirationDate,
+                managedBy: nextProps.managedBy,
+                assignedTo: nextProps.assignedTo,
+                handoverFromDate: nextProps.handoverFromDate,
+                handoverToDate: nextProps.handoverToDate,
+                location: nextProps.location,
+                description: nextProps.description,
+                status: nextProps.status,
+                detailInfo: nextProps.detailInfo,
             }
         } else {
             return null;
@@ -55,11 +55,9 @@ class GeneralTab extends Component {
         const { id, translate } = this.props;
 
         const {
-                img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
-                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo
-            } = this.state;
-        console.log('this.state', this.state);
-        console.log('code', code);
+            img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo
+        } = this.state;
         const user = this.props.user;
         const listAssetTypes = this.props.assetType;
 
@@ -70,7 +68,7 @@ class GeneralTab extends Component {
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
                                 <a href={LOCAL_SERVER_API + avatar} target="_blank">
-                                <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                                    <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
                                 </a>
                             </div>
                         </div>
@@ -107,10 +105,6 @@ class GeneralTab extends Component {
                                         <strong>Người quản lý:&emsp; </strong>
                                         {managedBy.name}
                                     </div>
-                                    {/* <div className="form-group">
-                                        <strong>Chức vụ:&emsp; </strong>
-                                        {positionManager}
-                                    </div> */}
                                 </div>
 
                                 <div className="col-md-6">
@@ -118,10 +112,6 @@ class GeneralTab extends Component {
                                         <strong>Người được giao sử dụng tài sản:&emsp; </strong>
                                         {assignedTo.name}
                                     </div>
-                                    {/* <div className="form-group">
-                                        <strong>Chức vụ:&emsp; </strong>
-                                        {positionPerson}
-                                    </div> */}
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
                                         {this.formatDate(handoverFromDate)}

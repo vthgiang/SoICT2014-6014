@@ -77,10 +77,8 @@ import IncidentManager from "../modules/assets-manager/incident-management/compo
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
-import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
 import AssetManager from "../modules/assets-manager/asset-management/components";
 import ManagerAssetCrash from "../modules/assets-manager/asset-crash-management/components";
-// import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
 import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
 import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
 
@@ -731,7 +729,7 @@ class Routes extends Component {
 
                     <PrivateRoute 
                         isLoading={ this.props.recommendDistribute.isLoading }
-                        key={ 'recommend-distribute-asset' } //recommend_distribute_asset
+                        key={ 'recommend-distribute-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/recommmend-distribute-asset', name: 'recommend_distribute_asset', icon:'' }
@@ -794,22 +792,6 @@ class Routes extends Component {
                         component={ ManagerAssetType }
                     /> 
 
-                    {/* <PrivateRoute 
-                        isLoading={ this.props.assetsManager.isLoading }
-                        key={ 'add-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/add-asset', name: 'add_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/add-asset' }
-                        path={ '/add-asset' }
-                        pageName={ 'add_asset' }
-                        layout={ Layout }
-                        component={ AssetCreatePage }
-                    />  */}
-
                     <PrivateRoute 
                         isLoading={ this.props.assetsManager.isLoading }
                         key={ 'manage-info-asset' }
@@ -828,7 +810,6 @@ class Routes extends Component {
 
 
                     <PrivateRoute 
-                        // isLoading={ this.props.maintainance.isLoading }
                         isLoading={ false }
                         key={ 'manage-maintainance-asset' }
                         arrPage={[
@@ -861,7 +842,6 @@ class Routes extends Component {
                     /> 
 
                     <PrivateRoute 
-                        // isLoading={ this.props.usage.isLoading }
                         isLoading={ false }
                         key={ 'manage-usage-asset' }
                         arrPage={[
@@ -910,7 +890,6 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        // isLoading={ this.props.incident.isLoading }
                         isLoading={ false }
                         key={ 'manage-incident-asset' }
                         arrPage={[

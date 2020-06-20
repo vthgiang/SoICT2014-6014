@@ -1,53 +1,21 @@
-import { AssetCrashConstants } from "./constants";
-import { AssetCrashService } from "./services";
-import { AssetManagerActions } from "../../asset-management/redux/actions";
+import {IncidentService} from './services';
+import {IncidentConstants} from './constants';
 
-export const AssetCrashActions = {
-    searchAssetCrashs,
-    createAssetCrash,
-    deleteAssetCrash,
-    updateAssetCrash,
-};
-
-// Lấy danh sách sự cố tài sản
-function searchAssetCrashs(data) {
-
-    return async (dispatch) => {
-        try {
-            const result = await AssetCrashService.searchAssetCrashs(data);
-
-            dispatch({
-                type: AssetCrashConstants.GET_ASSET_CRASH_SUCCESS,
-                payload: result.data.content
-            })
-
-        } catch (error) {
-            dispatch({
-                type: AssetCrashConstants.GET_ASSET_CRASH_FAILURE,
-                error: error.response.data
-            });
-        }
-    };
+export const IncidentActions = {
+    createIncident,
+    updateIncident,
+    deleteIncident
 }
 
-// Tạo mới thông tin sự cố tài sản
-function createAssetCrash(data) {
+function createIncident(id, data) {
     return async dispatch => {
         try {
             dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_REQUEST
+                type: IncidentConstants.CREATE_INCIDENT_REQUEST
             });
-            const response = await AssetCrashService.createAssetCrash(data).then(res => res);
-            dispatch(searchAssetCrashs({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
+            const response = await IncidentService.createIncident(id, data);
             dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_SUCCESS,
+                type: IncidentConstants.CREATE_INCIDENT_SUCCESS,
                 payload: response.data.content
             });
             return {
@@ -55,62 +23,45 @@ function createAssetCrash(data) {
             }
         } catch (err) {
             dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_FAILURE,
-                error: err.response.data
+                type: IncidentConstants.CREATE_INCIDENT_FAILURE,
+                error: err
             });
         }
 
-    }
+    };
 }
 
-// Xoá thông tin sự cố tài sản
-function deleteAssetCrash(id) {
+function updateIncident(id, data) {
     return dispatch => {
         dispatch({
-            type: AssetCrashConstants.DELETE_ASSET_CRASH_REQUEST,
+            type: IncidentConstants.UPDATE_INCIDENT_REQUEST
         });
-        AssetCrashService.deleteAssetCrash(id)
+
+        IncidentService.updateIncident(id, data)
             .then(res => {
-                dispatch(searchAssetCrashs({
-                    code: "",
-                    assetName: "",
-                    month: "",
-                    type: null,
-                    page: 0,
-                    limit: 5,
-                }));
                 dispatch({
-                    type: AssetCrashConstants.DELETE_ASSET_CRASH_SUCCESS,
+                    type: IncidentConstants.UPDATE_INCIDENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: AssetCrashConstants.DELETE_ASSET_CRASH_SUCCESS,
-                    error: err.response.data
+                    type: IncidentConstants.UPDATE_INCIDENT_FAILURE,
+                    error: err
                 });
             })
-    }
+    };
 }
 
-// cập nhật thông tin sự cố tài sản
-function updateAssetCrash(id, infoAssetCrash) {
+function deleteIncident(assetId, incidentId) {
     return async dispatch => {
         try {
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_REQUEST
+                type: IncidentConstants.DELETE_INCIDENT_REQUEST
             });
-            const response = await AssetCrashService.updateAssetCrash(id, infoAssetCrash)
-            dispatch(searchAssetCrashs({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
+            const response = await IncidentService.deleteIncident(assetId, incidentId);
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_SUCCESS,
+                type: IncidentConstants.DELETE_INCIDENT_SUCCESS,
                 payload: response.data.content
             });
             return {
@@ -118,9 +69,10 @@ function updateAssetCrash(id, infoAssetCrash) {
             }
         } catch (err) {
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_FAILURE,
-                error: err.response.data
+                type: IncidentConstants.DELETE_INCIDENT_FAILURE,
+                error: err
             });
         }
+
     }
 }

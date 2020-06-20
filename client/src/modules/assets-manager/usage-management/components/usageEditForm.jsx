@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { UsageFormValidator } from './usageFormValidator';
-import { UsageActions } from '../redux/actions';
-import { AssetManagerActions } from '../../asset-management/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DatePicker, DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+import {UsageFormValidator} from './usageFormValidator';
+import {UsageActions} from '../redux/actions';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
+import {UserActions} from '../../../super-admin/user/redux/actions';
 
 class UsageEditForm extends Component {
     constructor(props) {
@@ -120,12 +120,20 @@ class UsageEditForm extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.updateUsage({ ...this.state, startDate: startDate, endDate: endDate });
+            let dataToSubit = {
+                usedBy: !this.state.usedBy ? this.props.user.list[0].id : this.state.usedBy,
+                startDate: startDate,
+                endDate: endDate,
+                description: this.state.description
+            }
+            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
+            return this.props.updateUsage(assetId, dataToSubit);
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
+            console.log('zooooo');
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -143,19 +151,20 @@ class UsageEditForm extends Component {
             return null;
         }
     }
-    
+
     render() {
-        const {id, translate, user, assetsManager } = this.props;
+        const {id, translate, user, assetsManager} = this.props;
         var userlist = user.list;
-        console.log(userlist, 'userlist');
+
         var assetlist = assetsManager.listAssets;
         console.log(assetlist, 'assetlist');
         const {
-            asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription } = this.state;
-            console.log(this.state, 'tungstate')
+            asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription
+        } = this.state;
+        console.log(this.state, 'tungstate')
+        console.log('asset', asset._id);
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-edit-usage`} button_name="Chỉnh sửa" title="Chỉnh sửa thông tin sử dụng tài sản" />
                 <DialogModal
                     size='50' modalID={`modal-edit-usage`} isLoading={false}
                     formID={`form-edit-usage`}
@@ -168,14 +177,14 @@ class UsageEditForm extends Component {
                             <div className={`form-group`}>
                                 <label>Tài sản</label>
                                 <div>
-                                    <div id="assetUBox">
+                                    <div id="assetBox">
                                         <SelectBox
                                             id={`edit-usage-asset${id}`}
                                             className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={assetlist.map(x => { return { value: x.assets[0]._id, text: x.assets[0].code + " - " + x.assets[0].assetName } })}
+                                            style={{width: "100%"}}
+                                            items={assetlist.map(x => ({value: x._id, text: x.code + " - " + x.assetName}))}
                                             onChange={this.handleAssetChange}
-                                            value={asset}
+                                            value={asset._id}
                                             multiple={false}
                                         />
                                     </div>
@@ -188,8 +197,10 @@ class UsageEditForm extends Component {
                                         <SelectBox
                                             id={`edit-usedBy${id}`}
                                             className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                            style={{width: "100%"}}
+                                            items={userlist.map(x => {
+                                                return {value: x._id, text: x.name + " - " + x.email}
+                                            })}
                                             onChange={this.handleUsedByChange}
                                             value={usedBy}
                                             multiple={false}
@@ -201,25 +212,25 @@ class UsageEditForm extends Component {
                                 <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date${id}`}
-                                    value={startDate}
+                                    value={this.formatDate(startDate)}
                                     onChange={this.handleStartDateChange}
                                 />
-                                <ErrorLabel content={errorOnStartDate} />
+                                <ErrorLabel content={errorOnStartDate}/>
                             </div>
 
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
                                     id={`edit-end-date${id}`}
-                                    value={endDate}
+                                    value={this.formatDate(endDate)}
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>
                             <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder="Nội dung"></textarea>
-                                <ErrorLabel content={errorOnDescription} />
+                                <textarea className="form-control" rows="3" style={{height: 34}} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                          placeholder="Nội dung"></textarea>
+                                <ErrorLabel content={errorOnDescription}/>
                             </div>
                         </div>
                     </form>
@@ -230,15 +241,15 @@ class UsageEditForm extends Component {
 };
 
 function mapState(state) {
-    var { usage, assetsManager, user } = state;
-    return { usage, assetsManager, user };
+    var {usage, assetsManager, user} = state;
+    return {usage, assetsManager, user};
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
-    // updateUsage: UsageActions.updateUsage,
+    updateUsage: UsageActions.updateUsage,
 };
 
 const editModal = connect(mapState, actionCreators)(withTranslate(UsageEditForm));
-export { editModal as UsageEditForm };
+export {editModal as UsageEditForm};

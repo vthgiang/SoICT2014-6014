@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { AssetCreateValidator } from './combinedContent';
-import { UserActions } from '../../../super-admin/user/redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+import { AssetCreateValidator } from '../../asset-create/components/assetCreateValidator';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
+import { IncidentActions } from '../redux/actions';
+// import { string2literal } from '../utils/format_data';
 
-class IncidentLogEditModal extends Component {
+class IncidentEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -30,7 +32,7 @@ class IncidentLogEditModal extends Component {
 
     // Bắt sự kiện thay đổi mã sự cố
     handleIncidentCodeChange = (e) => {
-        let {value} = e.target;
+        let { value } = e.target;
         this.validateIncidentCode(value, true);
     }
     validateIncidentCode = (value, willUpdateState = true) => {
@@ -54,6 +56,16 @@ class IncidentLogEditModal extends Component {
             ...this.state,
             type: value
         })
+    }
+
+
+    /**
+     * Bắt sự kiện thay đổi Mã tài sản
+     */
+    handleAssetChange = (value) => {
+        this.setState({
+            asset: value[0]
+        });
     }
 
     /**
@@ -84,7 +96,6 @@ class IncidentLogEditModal extends Component {
         return msg === undefined;
     }
 
-
     //8. Bắt sự kiện thay đổi "Nội dung sự cố"
     handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -113,52 +124,78 @@ class IncidentLogEditModal extends Component {
         return result;
     }
 
-    // Bắt sự kiện submit form
-    save = async () => {
-        var partDateOfIncident = this.state.dateOfIncident.split('-');
-        var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
+    save = () => {
+        var partIncident = this.state.dateOfIncident.split('-');
+        var dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, dateOfIncident: dateOfIncident});
+            let dataToSubmit = {
+                incidentCode: this.state.incidentCode,
+                type: this.state.type,
+                reportedBy: !this.state.reportedBy ? this.props.user.list[0].id : this.state.reportedBy,
+                dateOfIncident: dateOfIncident,
+                description: this.state.description,
+                status: this.state.type,
+            }
+            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
+            return this.props.updateIncident(assetId, dataToSubmit).then(({response}) => {
+                if (response.data.success) {
+                    this.props.getAllAsset({
+                        code: "",
+                        assetName: "",
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    });
+                }
+            });
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        console.log('nextProps,',nextProps);
+        console.log(prevState);
+        if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                id: nextProps.id,
-                index: nextProps.index,
+                asset: nextProps.asset,
                 incidentCode: nextProps.incidentCode,
                 type: nextProps.type,
                 reportedBy: nextProps.reportedBy,
                 dateOfIncident: nextProps.dateOfIncident,
                 description: nextProps.description,
                 errorOnIncidentCode: undefined,
+                errorOnDateOfIncident: undefined,
                 errorOnDescription: undefined,
+
             }
         } else {
             return null;
         }
+
     }
 
     render() {
-        const { translate, id, user } = this.props;
+        const {id, translate, assetsManager, user, auth} = this.props;
         var userlist = user.list;
+        var assetlist = assetsManager.listAssets;
         const {
-            incidentCode, type, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDescription } = this.state;
+            incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription
+        } = this.state;
         return (
             <React.Fragment>
+                {/* <ButtonModal modalID="modal-create-incident" button_name="Báo cáo sự cố tài sản" title="Báo cáo sự cố tài sản" /> */}
                 <DialogModal
-                    size='50' modalID={`modal-edit-incident-${id}`} isLoading={false}
-                    formID={`form-edit-incident-${id}`}
-                    title="Chỉnh sửa thông tin sự cố"
+                    size='75' modalID="modal-edit-incident"
+                    formID="form-edit-incident"
+                    title="Chỉnh sửa báo cáo sự cố tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id={`form-edit-incident-${id}`}>
-                    <div className="col-md-12">
-                            <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
+                    <form className="form-group" id="form-edit-incident">
+                        <div className="col-md-12">
+                        <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
                                 <label>Mã sự cố<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder="Mã sự cố" />
                                 <ErrorLabel content={errorOnIncidentCode} />
@@ -169,6 +206,25 @@ class IncidentLogEditModal extends Component {
                                     <option value="Hỏng hóc">Hỏng hóc</option>
                                     <option value="Mất">Mất</option>
                                 </select>
+                            </div>
+                            <div className={`form-group`}>
+                                <label>Tài sản</label>
+                                <div>
+                                    <div id="assetUBox">
+                                        <SelectBox
+                                            id={`add-incident-asset${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={assetlist.map(x => {
+                                                return { value: x._id, text: x.code + " - " + x.assetName }
+                                            })}
+                                            onChange={this.handleAssetChange}
+                                            value={asset}
+                                            multiple={false}
+                                            // disabled
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div className={`form-group`}>
                                 <label>Người báo cáo</label>
@@ -182,17 +238,19 @@ class IncidentLogEditModal extends Component {
                                             onChange={this.handleReportedByChange}
                                             value={reportedBy}
                                             multiple={false}
+                                            disabled
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-group">
-                                <label>Thời gian phát hiện sự cố</label>
+                            <div className={`form-group ${errorOnDateOfIncident === undefined ? "" : "has-error"}`}>
+                                <label>Thời gian phát hiện sự cố<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`edit-dateOfIncident-${id}`}
+                                    id={`add-dateOfIncident-${id}`}
                                     value={this.formatDate(dateOfIncident)}
                                     onChange={this.handleDateOfIncidentChange}
                                 />
+                                <ErrorLabel content={errorOnDateOfIncident}/>
                             </div>
                             <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
@@ -209,14 +267,13 @@ class IncidentLogEditModal extends Component {
 };
 
 function mapState(state) {
-    var { user } = state;
-    return { user };
+    const { assetsManager, auth, user} = state;
+    return { assetsManager, auth, user};
 };
 
 const actionCreators = {
-    getUser: UserActions.get,
+    updateIncident: IncidentActions.updateIncident,
 };
 
-
-const editModal = connect(mapState, actionCreators)(withTranslate(IncidentLogEditModal));
-export { editModal as IncidentLogEditModal };
+const editForm = connect(mapState, actionCreators)(withTranslate(IncidentEditForm));
+export {editForm as IncidentEditForm};

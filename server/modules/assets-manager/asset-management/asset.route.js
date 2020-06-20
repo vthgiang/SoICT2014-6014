@@ -30,4 +30,43 @@ router.put('/:id', auth, uploadFile(data, 'fields'), AssetController.updateAsset
  */
 router.delete('/:id', auth, AssetController.deleteAsset);
 
+/**
+ * Thêm mới thông tin sử dụng tài sản
+ */
+router.put('/createUsage/:id', auth,  AssetController.createUsage);
+
+/**
+ * Chỉnh sửa thông tin sử dụng tài sản
+ */
+router.put('/updateUsage/:id', auth,  AssetController.updateUsage);
+
+/**
+ * Xóa thông tin sử dụng tài sản
+ */
+router.delete('/deleteUsage/:id', auth,  AssetController.deleteUsage);
+
+/**
+ * Thêm mới thông tin bảo trì tài sản
+ */
+router.put('/createMaintainance/:id', auth,  AssetController.createMaintainance);
+
+/**
+ * Xóa thông tin bảo trì tài sản
+ */
+router.delete('/deleteMaintainance/:id', auth,  AssetController.deleteMaintainance);
 module.exports = router;
+
+/**
+ * Thêm mới thông tin sự cố tài sản
+ */
+router.put('/createIncident/:id', auth,  AssetController.createIncident);
+
+// /**
+//  * Chỉnh sửa thông tin sự cố tài sản
+//  */
+// router.put('/updateIncident/:id', auth,  AssetController.updateIncident);
+
+/**
+ * Xóa thông tin sự cố tài sản
+ */
+router.delete('/deleteIncident/:id', auth,  AssetController.deleteIncident);

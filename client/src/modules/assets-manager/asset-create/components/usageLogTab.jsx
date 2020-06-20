@@ -158,7 +158,7 @@ class UsageLogTab extends Component {
                                 {(typeof usageLogs !== 'undefined' && usageLogs.length !== 0) &&
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{userlist.filter(item => item._id === x.usedBy).pop().name}</td>
+                                            <td>{x.usedBy !== null && userlist.length ? userlist.filter(item => item._id === x.usedBy).pop().name : ''}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.description}</td>

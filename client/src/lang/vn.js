@@ -1362,20 +1362,6 @@ export default {
                 edit_maintainance_faile: 'Chỉnh sửa thông tin phiếu bảo trì thất bại',
             },
 
-            // Quản lý sửa chữa, thay thế, nâng cấp TODO: Xóa sau
-            repair_upgrade: {
-
-                //Thông điệp trả về từ server
-                get_repair_upgrade_success: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thành công',
-                get_repair_upgrade_faile: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thất bại',
-                create_repair_upgrade_success: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thành công',
-                create_repair_upgrade_faile: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thất bại',
-                delete_repair_upgrade_success: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thành công',
-                delete_repair_upgrade_faile: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thất bại',
-                edit_repair_upgrade_success: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thành công',
-                edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thất bại',
-            },
-
             // Quản lý sử dụng
             usage: {
 
@@ -1390,18 +1376,18 @@ export default {
                 edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
             },
 
-            // Quản lý cấp phát, điều chuyển, thu hồi TODO: Xóa sau
-            distribute_transfer: {
+            // Quản lý sự cố
+            incident: {
 
                 //Thông điệp trả về từ server
-                get_distribute_transfer_success: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thành công',
-                get_distribute_transfer_faile: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thất bại',
-                create_distribute_transfer_success: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thành công',
-                create_distribute_transfer_faile: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thất bại',
-                delete_distribute_transfer_success: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thành công',
-                delete_distribute_transfer_faile: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thất bại',
-                edit_distribute_transfer_success: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thành công',
-                edit_distribute_transfer_faile: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thất bại',
+                get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
+                get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
+                create_incident_success: 'Thêm sự cố tài sản thành công',
+                create_incident_faile: 'Thêm sự cố tài sản thất bại',
+                delete_incident_success: 'Xoá thông tin sự cố tài sản thành công',
+                delete_incident_faile: 'Xoá thông tin sự cố tài sản thất bại',
+                edit_incident_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
+                edit_incident_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
             },
 
             // Quản lý đề nghị mua sắm thiết bị
@@ -1447,7 +1433,7 @@ export default {
                 edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
-            // Đăng ký cấp phát thiết bị
+            // Đăng ký sử dụng thiết bị
             recommend_distribute: {
 
                 //Thông điệp trả về từ server
@@ -1461,24 +1447,6 @@ export default {
                 edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
-            // Quản lý thiết bị được bàn giao
-            manage_assigned: {
-
-                //Thông điệp trả về từ server
-
-            },
-
-            asset_crash: {
-                //Thông điệp trả về từ server
-                get_asset_crash_success: 'Lấy thông tin sự cố tài sản thành công',
-                get_asset_crash_faile: 'Lấy thông tin sự cố tài sản thất bại',
-                create_asset_crash_success: 'Thêm thông tin sự cố tài sản thành công',
-                create_asset_crash_faile: 'Thêm thông tin sự cố tài sản thất bại',
-                delete_asset_crash_success: 'Xóa thông tin sự cố tài sản thành công',
-                delete_asset_crash_faile: 'Xóa thông tin sự cố tài sản thất bại',
-                edit_asset_crash_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
-                edit_asset_crash_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
-            }
         },
 
 

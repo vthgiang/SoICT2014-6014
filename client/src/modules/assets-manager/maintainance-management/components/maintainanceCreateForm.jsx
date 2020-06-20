@@ -13,13 +13,12 @@ class MaintainanceCreateForm extends Component {
             maintainanceCode: "",
             createDate: this.formatDate(Date.now()),
             type: "Sửa chữa",
-            code: "",
+            asset: "",
             description: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             expense: "",
             status: "Đang thực hiện",
-            // assetIndex: ""
         };
     }
 
@@ -85,27 +84,6 @@ class MaintainanceCreateForm extends Component {
             type: value
         })
     }
-
-    // // Bắt sự kiện thay đổi "Mã tài sản"
-    // handleCodeChange = (e) => {
-    //     const selectedIndex = e.target.options.selectedIndex;
-    //     this.setState({ assetIndex: e.target.options[selectedIndex].getAttribute('data-key') });
-    //     let value = e.target.value;
-    //     this.validateCode(value, true);
-    // }
-    // validateCode = (value, willUpdateState = true) => {
-    //     let msg = MaintainanceFormValidator.validateCode(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnCode: msg,
-    //                 asset: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
 
     /**
      * Bắt sự kiện thay đổi Mã tài sản
@@ -209,7 +187,30 @@ class MaintainanceCreateForm extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.createNewMaintainance({ ...this.state, createDate: createDate, startDate: startDate, endDate: endDate });
+            let dataToSubit = {
+                maintainanceCode: this.state.maintainanceCode,
+                createDate: createDate,
+                type: this.state.type,
+                description: this.state.description,
+                startDate: startDate,
+                endDate: endDate,
+                expense: this.state.expense,
+                status: this.state.status,
+                
+            }
+            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
+            return this.props.createMaintainance(assetId,dataToSubit).then(({response}) => {
+                if (response.data.success) {
+                    this.props.getAllAsset({
+                        code: "",
+                        assetName: "",
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    });
+                }
+            });;
         }
     };
 
@@ -263,27 +264,6 @@ class MaintainanceCreateForm extends Component {
                                     </select>
                                 </div>
 
-                                {/* <div className={`form-group ${errorOnCode === undefined ? "" : "has-error"}`}> */}
-                                {/* <div className="form-group">
-                                    <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <select id="drops1" className="form-control" name="asset" defaultValue=""
-                                        placeholder="Please Select"
-                                        onChange={this.handleCodeChange}>
-                                        <option value="" disabled>Please Select</option>
-                                        {assetsManager.listAssets ? assetsManager.listAssets.map((item, index) => {
-                                            return (
-                                                <option data-key={index} key={index} value={item.assets._id}>{item.assets.code}</option>
-                                            )
-                                        }) : null}
-                                    </select>
-                                    
-                                </div>
-                                <div className="form-group">
-                                    <label>Tên tài sản</label>
-                                    <input disabled type="text" className="form-control" name="assetName"
-                                        value={this.state.assetIndex !== '' ? assetsManager.listAssets[this.state.assetIndex].asset.assetName : ''} />
-                                </div> */}
-
                                 <div className={`form-group`}>
                                     <label>Tài sản</label>
                                     <div>
@@ -292,7 +272,7 @@ class MaintainanceCreateForm extends Component {
                                                 id={`add-asset${id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={assetlist.map(x => { return { value: x.assets[0]._id, text: x.assets[0].code + " - " + x.assets[0].assetName } })}
+                                                items={assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })}
                                                 onChange={this.handleAssetChange}
                                                 value={asset}
                                                 multiple={false}
@@ -356,7 +336,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
-    // createNewMaintainance: MaintainanceActions.createNewMaintainance,
+    createMaintainance: MaintainanceActions.createMaintainance,
 
 };
 

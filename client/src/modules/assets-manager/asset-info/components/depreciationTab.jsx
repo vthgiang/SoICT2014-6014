@@ -30,13 +30,13 @@ class DepreciationTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                cost: nextProps.asset.cost,
-                residualValue: nextProps.asset.residualValue,
-                usefulLife: nextProps.asset.usefulLife,
-                startDepreciation: nextProps.asset.startDepreciation,
-                endDepreciation: nextProps.asset.endDepreciation,
-                annualDepreciationValue: nextProps.asset.annualDepreciationValue,
-                monthlyDepreciationValue: nextProps.asset.monthlyDepreciationValue,
+                cost: nextProps.cost,
+                residualValue: nextProps.residualValue,
+                usefulLife: nextProps.usefulLife,
+                startDepreciation: nextProps.startDepreciation,
+                endDepreciation: nextProps.endDepreciation,
+                annualDepreciationValue: nextProps.annualDepreciationValue,
+                monthlyDepreciationValue: nextProps.monthlyDepreciationValue,
             }
         } else {
             return null;

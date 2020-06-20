@@ -196,8 +196,9 @@ class MaintainanceEditForm extends Component {
             this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
             this.validateCreateDate(this.state.createDate, false) &&
             this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false) &&
-            this.validateExpense(this.state.expense, false)
+            this.validateStartDate(this.state.startDate, false) 
+            // &&
+            // this.validateExpense(this.state.expense, false)
         return result;
     }
 
@@ -254,7 +255,6 @@ class MaintainanceEditForm extends Component {
         console.log(this.state, 'tungstate-edit')
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-edit-maintainance" button_name="Chỉnh sửa phiếu" title="Chỉnh sửa phiếu bảo trì" />
                 <DialogModal
                     // size='75' modalID="modal-edit-maintainance" isLoading={maintainance.isLoading}
                     size='75' modalID="modal-edit-maintainance"
@@ -275,7 +275,7 @@ class MaintainanceEditForm extends Component {
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date`}
-                                        value={createDate}
+                                        value={this.formatDate(createDate)}
                                         onChange={this.handleCreateDateChange}
                                     />
                                     <ErrorLabel content={errorOnCreateDate} />
@@ -297,7 +297,7 @@ class MaintainanceEditForm extends Component {
                                                 id={`edit-asset${id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={assetlist.map(x => { return { value: x.assets[0]._id, text: x.assets[0].code + " - " + x.assets[0].assetName } })}
+                                                items={assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })}
                                                 onChange={this.handleAssetChange}
                                                 value={asset}
                                                 multiple={false}
@@ -319,7 +319,7 @@ class MaintainanceEditForm extends Component {
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-start-date${id}`}
-                                        value={startDate}
+                                        value={this.formatDate(startDate)}
                                         onChange={this.handleStartDateChange}
                                     />
                                     <ErrorLabel content={errorOnStartDate} />
@@ -328,7 +328,7 @@ class MaintainanceEditForm extends Component {
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
                                         id={`edit-end-date${id}`}
-                                        value={endDate}
+                                        value={this.formatDate(endDate)}
                                         onChange={this.handleEndDateChange}
                                     />
                                 </div>

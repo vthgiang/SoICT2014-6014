@@ -1,9 +1,6 @@
-import {
-    AssetConstants
-} from "./constants";
-import {
-    AssetService
-} from "./services";
+import {AssetConstants} from "./constants";
+import {AssetService} from "./services";
+
 export const AssetManagerActions = {
     getAllAsset,
     addNewAsset,
@@ -48,6 +45,15 @@ function addNewAsset(asset) {
 
         AssetService.addNewAsset(asset)
             .then(res => {
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }));
                 dispatch({
                     type: AssetConstants.ADDASSET_SUCCESS,
                     payload: res.data.content
@@ -64,8 +70,8 @@ function addNewAsset(asset) {
 
 /**
  * Cập nhật thông tin tài sản theo id
- * @param {*} id 
- * @param {*} data 
+ * @param {*} id
+ * @param {*} data
  */
 function updateInformationAsset(id, data) {
     return dispatch => {
@@ -75,6 +81,15 @@ function updateInformationAsset(id, data) {
 
         AssetService.updateInformationAsset(id, data)
             .then(res => {
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }));
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,
                     payload: res.data.content
@@ -101,6 +116,15 @@ function deleteAsset(id) {
 
         AssetService.deleteAsset(id)
             .then(res => {
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }));
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content

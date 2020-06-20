@@ -63,7 +63,7 @@ class FileTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 files: nextProps.files,
-                archivedRecordNumber: nextProps.asset.archivedRecordNumber,
+                archivedRecordNumber: nextProps.archivedRecordNumber,
             }
         } else {
             return null;

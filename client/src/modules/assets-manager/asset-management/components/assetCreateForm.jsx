@@ -22,6 +22,7 @@ class AssetCreateForm extends Component {
             asset: {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
                 purchaseDate: this.formatDate2(Date.now()),
+                assignedTo: null,
                 warrantyExpirationDate: this.formatDate2(Date.now()),
                 detailInfo: [],
                 status: "Sẵn sàng sử dụng",
@@ -66,7 +67,8 @@ class AssetCreateForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { asset } = this.state;
-        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate') {
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || 
+            name === 'handoverToDate' || name === 'startDepreciation') {
             var partValue = value.split('-');
             value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
@@ -129,7 +131,7 @@ class AssetCreateForm extends Component {
             this.validatorInput(this.state.asset.serial) && this.validatorInput(this.state.asset.purchaseDate) &&
             this.validatorInput(this.state.asset.warrantyExpirationDate) && this.validatorInput(this.state.asset.location) &&
             this.validatorInput(this.state.asset.status) && this.validatorInput(this.state.asset.cost) &&
-            this.validatorInput(this.state.asset.usefulLife);
+            this.validatorInput(this.state.asset.usefulLife) && this.validatorInput(this.state.asset.startDepreciation);
         return result;
     }
 
@@ -155,7 +157,6 @@ class AssetCreateForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        console.log(this.state, 'tung')
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản" />
@@ -166,7 +167,6 @@ class AssetCreateForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    {/* <form className="form-group" id="form-addAA-employee"> */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#general">Thông tin chung</a></li>
@@ -183,6 +183,7 @@ class AssetCreateForm extends Component {
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                                 asset={this.state.asset}
+                                detailInfo={this.state.asset.detailInfo}
                             />
 
                             <MaintainanceLogTab
@@ -226,7 +227,6 @@ class AssetCreateForm extends Component {
                             />
                         </div>
                     </div>
-                    {/* </form> */}
                 </DialogModal>
             </React.Fragment>
         );

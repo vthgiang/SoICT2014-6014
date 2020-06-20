@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../env';
 import { DialogModal } from '../../../../common-components';
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, AttachmentTab
@@ -15,7 +16,32 @@ class AssetDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                assets: nextProps.assets,
+                img: LOCAL_SERVER_API + nextProps.avatar,
+                avatar: "",
+                avatar: nextProps.avatar,
+                code: nextProps.code,
+                assetName: nextProps.assetName,
+                serial: nextProps.serial,
+                assetType: nextProps.assetType,
+                purchaseDate: nextProps.purchaseDate,
+                warrantyExpirationDate: nextProps.warrantyExpirationDate,
+                managedBy: nextProps.managedBy,
+                assignedTo: nextProps.assignedTo,
+                handoverFromDate: nextProps.handoverFromDate,
+                handoverToDate: nextProps.handoverToDate,
+                location: nextProps.location,
+                description: nextProps.description,
+                status: nextProps.status,
+                detailInfo: nextProps.detailInfo,
+                cost: nextProps.cost,
+                residualValue: nextProps.residualValue,
+                startDepreciation: nextProps.startDepreciation,
+                usefulLife: nextProps.usefulLife,
+                maintainanceLogs: nextProps.maintainanceLogs,
+                usageLogs: nextProps.usageLogs,
+                incidentLogs: nextProps.incidentLogs,
+                archivedRecordNumber: nextProps.archivedRecordNumber,
+                files: nextProps.files,
             }
         } else {
             return null;
@@ -23,10 +49,14 @@ class AssetDetailForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, assets } = this.state;
-        console.log('this.state', this.state);
+        const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
+                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, 
+                detailInfo, cost, residualValue, startDepreciation, usefulLife, 
+                maintainanceLogs, usageLogs, incidentLogs, archivedRecordNumber, files 
+            } = this.state;
+        console.log(this.state, 'this.state');
 
-        return (    
+        return (
             <React.Fragment>
                 <DialogModal
                     size='100' modalID="modal-view-asset" isLoading={assetsManager}
@@ -35,46 +65,60 @@ class AssetDetailForm extends Component {
                     hasSaveButton={false}
                 >
                     <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
-                        {(typeof assets !== 'undefined' && assets.length !== 0) &&
-                            assets.map((x, index) => (
-                                <div className="nav-tabs-custom" key={index}>
-                                    <ul className="nav nav-tabs">
-                                        <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
-                                        <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
-                                        <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
-                                        <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
-                                        <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
-                                        <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
-                                    </ul>
-                                    <div className="tab-content">
-                                        <GeneralTab
-                                            id={`view_general${_id}`}
-                                            asset={x}
-                                        />
-                                        <MaintainanceLogTab
-                                            id={`view_maintainance${_id}`}
-                                            maintainanceLogs={x.maintainanceLogs}
-                                        />
-                                        <UsageLogTab
-                                            id={`view_usage${_id}`}
-                                            usageLogs={x.usageLogs}
-                                        />
-                                        <DepreciationTab
-                                            id={`view_depreciation${_id}`}
-                                            asset={x}
-                                        />
-                                        <IncidentLogTab
-                                            id={`view_incident${_id}`}
-                                            incidentLogs={x.incidentLogs}
-                                        />
-                                        <AttachmentTab
-                                            id={`view_attachments${_id}`}
-                                            asset={x}
-                                            files={x.files}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="nav-tabs-custom">
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
+                                <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
+                                <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
+                                <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
+                                <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
+                                <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                <GeneralTab
+                                    id={`view_general${_id}`}
+                                    avatar={avatar}
+                                    code={code}
+                                    assetName={assetName}
+                                    serial={serial}
+                                    assetType={assetType}
+                                    purchaseDate={purchaseDate}
+                                    warrantyExpirationDate={warrantyExpirationDate}
+                                    managedBy={managedBy}
+                                    assignedTo={assignedTo}
+                                    handoverFromDate={handoverFromDate}
+                                    handoverToDate={handoverToDate}
+                                    location={location}
+                                    description={description}
+                                    status={status}
+                                    detailInfo={detailInfo}
+                                />
+                                <MaintainanceLogTab
+                                    id={`view_maintainance${_id}`}
+                                    maintainanceLogs={maintainanceLogs}
+                                />
+                                <UsageLogTab
+                                    id={`view_usage${_id}`}
+                                    usageLogs={usageLogs}
+                                />
+                                <DepreciationTab
+                                    id={`view_depreciation${_id}`}
+                                    cost={cost}
+                                    residualValue={residualValue}
+                                    startDepreciation={startDepreciation}
+                                    usefulLife={usefulLife}
+                                />
+                                <IncidentLogTab
+                                    id={`view_incident${_id}`}
+                                    incidentLogs={incidentLogs}
+                                />
+                                <AttachmentTab
+                                    id={`view_attachments${_id}`}
+                                    archivedRecordNumber={archivedRecordNumber}
+                                    files={files}
+                                />
+                            </div>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

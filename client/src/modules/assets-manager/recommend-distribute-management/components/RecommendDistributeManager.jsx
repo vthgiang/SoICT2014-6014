@@ -121,7 +121,7 @@ class RecommendDistributeManager extends Component {
                 <div className="box-body qlcv">
                     {/* <RecommendDistributeCreateForm /> */}
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách phiếu đăng ký cấp phát - sử dụng tài sản: </h4>
+                        <h4 className="box-title">Danh sách phiếu đăng ký sử dụng tài sản: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
