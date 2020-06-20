@@ -97,36 +97,48 @@ exports.createRootRole = async(data, companyID) => {
  * @data dữ liệu tạo
  */
 exports.createRolesForOrganizationalUnit = async(data, companyID) => {
-    const checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ['role_dean_exist'];
-    const checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ['role_vice_dean_exist'];
-    const checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ['role_employee_exist'];
+    //Kiểm tra các tên đã được sử dụng hay chưa
+    const checkDean = await Role.findOne({name: {$in: data.deans}, company: companyID }); if(checkDean !== null) throw ['role_dean_exist'];
+    const checkViceDean = await Role.findOne({name: {$in:data.viceDeans}, company: companyID}); if(checkViceDean !== null) throw ['role_vice_dean_exist'];
+    const checkEmployee = await Role.findOne({name: {$in: data.employees}, company: companyID }); if(checkEmployee !== null) throw ['role_employee_exist'];
 
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
     const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME });
     const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME });
     const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME });
 
-    const employee = await Role.create({
-        name: data.employee,
-        company: companyID,
-        type: roleChucDanh._id,
-        parents: [employeeAb._id]
-    });
-    const viceDean = await Role.create({
-        name: data.viceDean,
-        company: companyID,
-        type: roleChucDanh._id,
-        parents: [employee._id, viceDeanAb._id]
-    });
-    const dean = await Role.create({
-        name: data.dean,
-        company: companyID,
-        type: roleChucDanh._id,
-        parents: [employee._id, viceDean._id, deanAb._id]
-    });
+    const dataEmployee = data.employees.map(em=>{
+        return {
+            name: em,
+            company: companyID,
+            type: roleChucDanh._id,
+            parents: [employeeAb._id]
+        }
+    }); console.log("emdata:", dataEmployee)
+    const employees = await Role.insertMany(dataEmployee);
+
+    const dataViceDean = data.viceDeans.map(vice=>{
+        return {
+            name: vice,
+            company: companyID,
+            type: roleChucDanh._id,
+            parents: [...employees.map(em=>em._id), viceDeanAb._id]
+        }
+    }); console.log("dataViceDean:", dataViceDean)
+    const viceDeans = await Role.insertMany(dataViceDean);
+
+    const dataDean = data.deans.map(dean=>{
+        return {
+            name: dean,
+            company: companyID,
+            type: roleChucDanh._id,
+            parents: [...employees.map(em=>em._id), ...viceDeans.map(vice=>vice._id), deanAb._id]
+        }
+    }); console.log("deandataa:", dataDean)
+    const deans = await Role.insertMany(dataDean);
 
     return {
-        dean, viceDean, employee
+        deans, viceDeans, employees // danh sách các mảng các chức danh đã tạo
     }
 }
 

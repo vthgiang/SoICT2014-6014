@@ -17,6 +17,8 @@ export const DocumentServices = {
 
     getDocumentDomains,
     createDocumentDomain,
+    editDocumentDomain,
+    deleteDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -120,6 +122,22 @@ function createDocumentDomain(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/domains`,
         method: 'POST',
+        data,
+    }, true, true, 'document');
+}
+
+function editDocumentDomain(id, data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/domains/${id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'document');
+}
+
+function deleteDocumentDomain(id, data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/domains/${id}`,
+        method: 'DELETE',
         data,
     }, true, true, 'document');
 }
