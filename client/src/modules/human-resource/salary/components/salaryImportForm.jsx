@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, SlimScroll } from '../../../../common-components';
+import { DialogModal, SlimScroll, PaginateBar } from '../../../../common-components';
 import { configurationSalary } from './fileConfigurationImportSalary';
 
 import XLSX from 'xlsx';
@@ -13,7 +13,9 @@ class SalaryImportForm extends Component {
             rowError: [],
             importData: [],
             configData: this.convertConfigurationToString(configurationSalary),
-            importConfiguration: null
+            importConfiguration: null,
+            limit: 100,
+            page: 0
         };
     }
 
@@ -77,7 +79,7 @@ class SalaryImportForm extends Component {
                 this.convertStringToObject(value) : this.state.importConfiguration,
         })
     }
-
+    // bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
         const { importConfiguration } = this.state;
         let configData = importConfiguration !== null ? importConfiguration : configurationSalary;
@@ -86,7 +88,6 @@ class SalaryImportForm extends Component {
 
         if (file !== undefined) {
             const reader = new FileReader();
-            //reader.readAsDataURL(file);
             reader.readAsBinaryString(file);
             reader.onload = (evt) => {
                 let sheet_lists = [];
@@ -157,10 +158,18 @@ class SalaryImportForm extends Component {
                 })
 
                 importData = importData.map((x, index) => {
+                    let errorAlert = [];
                     if (x.employeeNumber === null || x.employeeName === null || x.month === null) {
                         rowError = [...rowError, index + 1]
                         x = { ...x, error: true }
                     }
+                    if (x.employeeNumber === null)
+                        errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                    if (x.employeeName === null)
+                        errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+                    if (x.month === null)
+                        errorAlert = [...errorAlert, 'Tháng và năm tính lương không được để trống'];
+                    x = { ...x, errorAlert: errorAlert }
                     return x;
                 })
                 this.setState({
@@ -171,12 +180,36 @@ class SalaryImportForm extends Component {
         }
     }
 
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+    }
+
+    isFormValidated = () => {
+        if (this.state.rowError.length === 0) {
+            return true
+        } return false
+    }
+
+    save = () => {
+
+    }
+
     render() {
         let formater = new Intl.NumberFormat();
         const { translate } = this.props;
-        const { importData, configData, importConfiguration, rowError } = this.state;
+        const { importData, configData, importConfiguration, rowError, limit, page } = this.state;
         let otherSalary = importConfiguration !== null ? importConfiguration.bonus : configurationSalary.bonus;
-        console.log(importData)
+
+        var pageTotal = (importData.length % limit === 0) ?
+            parseInt(importData.length / limit) :
+            parseInt((importData.length / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
+
+        let importDataCurrentPage = importData.slice(page, page + limit);
         return (
             <React.Fragment>
                 {/* {showButton && <ButtonModal modalID={`modal_import_file_${id}`} button_name="Import file excel" />} */}
@@ -185,13 +218,13 @@ class SalaryImportForm extends Component {
                     formID={`form_import_file`}
                     title='Thêm dữ liệu bằng việc Import file excel'
                     func={this.save}
-                    disableSubmit={false}
+                    disableSubmit={!this.isFormValidated()}
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
-                        {/* <div> */}
                         <button type="button" data-toggle="collapse" data-target="#confic_import_file" className="pull-right"
                             style={{ border: "none", background: "none", padding: 0 }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+
                         <div id="confic_import_file" className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
                             <div className="box-header with-border">
                                 <h3 className="box-title">Cấu hình file import</h3>
@@ -261,19 +294,22 @@ class SalaryImportForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="form-group col-md-8 col-xs-12" style={{ padding: 0 }}>
-                            <label>Chọn file excel cần import</label>
-                            <input type="file" className="form-control"
-                                accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                onChange={this.handleChangeFileImport} />
-                        </div>
-                        <div className="form-group col-md-4 col-xs-12">
-                            <a className='pull-right' style={{ paddingTop: '10px' }} href="" target="_blank"
-                                download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                        <div className="form-group">
+                            <div className="form-group col-md-8 col-xs-12" style={{ padding: 0 }}>
+                                <label>Chọn file excel cần import</label>
+                                <input type="file" className="form-control"
+                                    accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    onChange={this.handleChangeFileImport} />
+                            </div>
+                            <div className="form-group col-md-4 col-xs-12">
+                                <label></label>
+                                <a className='pull-right' href="" target="_blank" style={{ paddingTop: 20 }}
+                                    download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                            </div>
                         </div>
                         <div className="form-group col-md-12 col-xs-12" style={{ padding: 0 }}>
                             {
-                                importData.length !== 0 && (
+                                importDataCurrentPage.length !== 0 && (
                                     <React.Fragment>
                                         {rowError.length !== 0 && (
                                             <React.Fragment>
@@ -287,7 +323,7 @@ class SalaryImportForm extends Component {
                                                         <th>STT</th>
                                                         <th>Mã số nhân viên</th>
                                                         <th>Tên nhân viên</th>
-                                                        <th>Tháng</th>
+                                                        <th>Tháng lương</th>
                                                         <th>Tiền lương chính</th>
                                                         {otherSalary.length !== 0 &&
                                                             otherSalary.map((x, index) => (
@@ -300,10 +336,10 @@ class SalaryImportForm extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        importData.map((x, index) => {
+                                                        importDataCurrentPage.map((x, index) => {
                                                             return (
-                                                                <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }}>
-                                                                    <td>{index + 1}</td>
+                                                                <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
+                                                                    <td>{page + index + 1}</td>
                                                                     <td>{x.employeeNumber}</td>
                                                                     <td>{x.employeeName}</td>
                                                                     <td>{x.month}</td>
@@ -327,11 +363,12 @@ class SalaryImportForm extends Component {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        
+
                                     </React.Fragment>
                                 )}
                         </div>
                         <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment >
