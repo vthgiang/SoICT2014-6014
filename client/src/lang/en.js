@@ -1229,6 +1229,10 @@ export default {
 
                 name: "Name of task",
                 search_by_name: 'Search by name',
+
+                start_date: 'Start date',
+                end_date: 'End date',
+
                 search: "Search",
 
                 col_name: 'Name of task',
