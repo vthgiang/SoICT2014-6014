@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, } from '../../../../common-components';
+import { DialogModal, SlimScroll, PaginateBar } from '../../../../common-components';
+import { configurationSalary } from './fileConfigurationImportSalary';
 
 import XLSX from 'xlsx';
 
@@ -9,27 +10,84 @@ class SalaryImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            rowError: [],
             importData: [],
-            configData: {
-                rowHeader: "1",
-                sheets: ['Sheet1'],
-                employeeNumber: 'Mã số nhân viên',
-                month: 'Tháng',
-                year: 'Năm',
-                mainSalary: 'Tiền lương chính',
-                employeeName: "Họ và tên",
-                bonus: ['Thưởng đầu hộp SanFoVet', 'Thưởng đầu hộp ViaVet', 'Thưởng quý', 'Lương CTV']
-            }
+            configData: this.convertConfigurationToString(configurationSalary),
+            importConfiguration: null,
+            limit: 100,
+            page: 0
         };
     }
-    handleChangeFile = (e) => {
-        let configData = this.state.configData;
+
+    // Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea);
+    convertConfigurationToString = (data) => {
+        let sheets = data.sheets, bonus = data.bonus;
+        if (sheets.length > 1) {
+            sheets = sheets.map(x => `"${x}"`);
+            sheets = sheets.join(', ');
+        } else sheets = `"${sheets}"`
+        if (bonus.length > 1) {
+            bonus = bonus.map(x => `"${x}"`);
+            bonus = bonus.join(', ');
+        } else bonus = `"${bonus}"`
+        let stringData = `{
+            "${"Số dòng tiêu đề của bảng"}": ${data.rowHeader},
+            "${"Tên các sheet"}": [${sheets}],
+            "${"Tên tiêu đề ứng với mã số nhân viên"}": "${data.employeeNumber}",
+            "${"Tên tiêu để ứng với họ và tên"}": "${data.employeeName}",
+            "${"Tên tiêu để ứng với tháng"}": "${data.month}",
+            "${"Tên tiêu để ứng với năm"}": "${data.year}",
+            "${"Tên tiêu để ứng với tiền lương chính"}": "${data.mainSalary}",
+            "${"Tên tiêu để ứng với lương thưởng khác"}": [${bonus}]
+        }`
+        return stringData;
+    }
+
+    // Chuyển đổi dữ liệu người dùng nhập vào ở textarea thành object để xử lý logic
+    convertStringToObject = (data) => {
+        try {
+            data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
+            data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
+            data = data.join(',');
+            if (data[data.length - 1] === ',') {    // xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
+                data = data.substring(0, data.length - 1);
+            }
+            data = JSON.parse(`{${data}}`);
+            let obj = {};
+            for (let index in data) {
+                if (index === "Số dòng tiêu đề của bảng") obj = { ...obj, rowHeader: data[index] };
+                if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
+                if (index === "Tên tiêu đề ứng với mã số nhân viên") obj = { ...obj, employeeNumber: data[index] };
+                if (index === "Tên tiêu để ứng với họ và tên") obj = { ...obj, employeeName: data[index] };
+                if (index === "Tên tiêu để ứng với tháng") obj = { ...obj, month: data[index] };
+                if (index === "Tên tiêu để ứng với năm") obj = { ...obj, year: data[index] };
+                if (index === "Tên tiêu để ứng với tiền lương chính") obj = { ...obj, mainSalary: data[index] };
+                if (index === "Tên tiêu để ứng với lương thưởng khác") obj = { ...obj, bonus: data[index] };
+            }
+            return obj
+        } catch (error) {
+            return null
+        }
+    }
+
+    // bắt sự kiện thây đổi (textarea);
+    handleChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            configData: value,
+            importConfiguration: this.convertStringToObject(value) !== null ?
+                this.convertStringToObject(value) : this.state.importConfiguration,
+        })
+    }
+    // bắt xự kiện chọn file import
+    handleChangeFileImport = (e) => {
+        const { importConfiguration } = this.state;
+        let configData = importConfiguration !== null ? importConfiguration : configurationSalary;
         let sheets = configData.sheets;
         let file = e.target.files[0];
 
         if (file !== undefined) {
             const reader = new FileReader();
-            //reader.readAsDataURL(file);
             reader.readAsBinaryString(file);
             reader.onload = (evt) => {
                 let sheet_lists = [];
@@ -39,14 +97,12 @@ class SalaryImportForm extends Component {
                 let sheet_name_list = workbook.SheetNames;
                 // kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
                 for (let n in sheets) {
-                    sheet_lists = [...sheet_lists, sheet_name_list.filter(x => x === sheets[n])]
+                    sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
                 }
-                let importData = [];
-                // lấy dữ liệu từng sheet
-                sheet_lists.forEach(x => {
+                let importData = [], rowError = [];
+                sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
                     var indexEmployeeName, indexEmployeenumber, indexMonth, indexYear, indexMainSalary, indexBouns = [];
-
                     // lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {
@@ -99,45 +155,61 @@ class SalaryImportForm extends Component {
                         }
                     })
                     importData = importData.concat(dataConvert);
+                })
 
-                    // data = data.map((x, index) => {
-                    //     let mainSalary = x[`${configData.mainSalary}`];
-                    //     let employeeNumber = x[`${configData.employeeNumber}`];
-                    //     let month = x[`${configData.month}`] !== undefined ? Number(x[`${configData.month}`]).toString() : '';
-                    //     let year = x[`${configData.year}`] !== undefined ? Number(x[`${configData.year}`]).toString() : '';
-                    //     let employeeName = x[`${configData.employeeName}`];
-                    //     let bonus = [];
-                    //     configData.bonus.forEach(b => {
-                    //         if (x[`${b}`] !== undefined) {
-                    //             bonus = [...bonus, { nameBonus: b, number: Number(x[`${b}`]) }]
-                    //         }
-                    //     });
-                    //     if (month.length === 2 && year !== '') {
-                    //         month = month + "-" + year;
-                    //     } else if (month.length === 1 && year !== '') {
-                    //         month = "0" + month + "-" + year;
-                    //     } else month = "";
-
-                    //     return { mainSalary, employeeNumber, month, employeeName, bonus }
-                    // })
-                    // importData = importData.concat(data);
+                importData = importData.map((x, index) => {
+                    let errorAlert = [];
+                    if (x.employeeNumber === null || x.employeeName === null || x.month === null) {
+                        rowError = [...rowError, index + 1]
+                        x = { ...x, error: true }
+                    }
+                    if (x.employeeNumber === null)
+                        errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                    if (x.employeeName === null)
+                        errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+                    if (x.month === null)
+                        errorAlert = [...errorAlert, 'Tháng và năm tính lương không được để trống'];
+                    x = { ...x, errorAlert: errorAlert }
+                    return x;
                 })
                 this.setState({
-                    importData: importData
+                    importData: importData,
+                    rowError: rowError
                 })
             };
-
         }
     }
 
-    configFileImport = () => {
-        window.$(`#confic_import_file`).collapse("hide");
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+    }
+
+    isFormValidated = () => {
+        if (this.state.rowError.length === 0) {
+            return true
+        } return false
+    }
+
+    save = () => {
+
     }
 
     render() {
         let formater = new Intl.NumberFormat();
         const { translate } = this.props;
-        const { importData } = this.state;
+        const { importData, configData, importConfiguration, rowError, limit, page } = this.state;
+        let otherSalary = importConfiguration !== null ? importConfiguration.bonus : configurationSalary.bonus;
+
+        var pageTotal = (importData.length % limit === 0) ?
+            parseInt(importData.length / limit) :
+            parseInt((importData.length / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
+
+        let importDataCurrentPage = importData.slice(page, page + limit);
         return (
             <React.Fragment>
                 {/* {showButton && <ButtonModal modalID={`modal_import_file_${id}`} button_name="Import file excel" />} */}
@@ -146,127 +218,171 @@ class SalaryImportForm extends Component {
                     formID={`form_import_file`}
                     title='Thêm dữ liệu bằng việc Import file excel'
                     func={this.save}
-                    disableSubmit={false}
+                    disableSubmit={!this.isFormValidated()}
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
-                        <div>
-                            <button type="button" data-toggle="collapse" data-target="#confic_import_file" className="pull-right" style={{ border: "none", background: "none", padding: 0 }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                            <div id="confic_import_file" className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Cấu hình file import</h3>
-                                    <div className="box-tools pull-right">
-                                        <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target={`#confic_import_file`} ><i className="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <div className="box-body">
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Tên các sheet<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tên các sheet VD: sheet1, sheet2" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Số dòng của tiêu đề bảng<span className="text-red">*</span></label>
-                                        <input type="number" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Số dòng của tiêu đề bảng import" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Mã số nhân viên<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với mã nhân viên" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Họ và tên nhân viên<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với họ và tên nhân viên" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Tháng lương<span className="text-red">*</span></label>
-                                        <input type="number" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với tháng lương" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Năm<span className="text-red">*</span></label>
-                                        <input type="number" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với năm" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Tiền lương chính<span className="text-red">*</span></label>
-                                        <input type="number" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với tiền lương chính" />
-                                    </div>
-                                    <div className="form-group col-sm-6 col-xs-12">
-                                        <label>File import mẫu</label>
-                                        <input type="file" className="form-control" />
-                                    </div>
-                                    <div className="form-group col-sm-12 col-xs-12">
-                                        <label>Tên các loại lương thưởng khác<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="" value="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Tiêu đề cột ứng với các loại lương thưởng khác VD: thưởng quý, thưởng năm" />
-                                    </div>
-                                    <button type="button" className="btn btn-primary pull-right" style={{marginRight:15}} onClick={this.configFileImport}>{translate('table.update')}</button>
+                        <button type="button" data-toggle="collapse" data-target="#confic_import_file" className="pull-right"
+                            style={{ border: "none", background: "none", padding: 0 }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+
+                        <div id="confic_import_file" className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Cấu hình file import</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse"
+                                        data-target={`#confic_import_file`} ><i className="fa fa-times"></i></button>
                                 </div>
                             </div>
+                            <div className="box-body row">
+                                <div className="form-group col-sm-12 col-xs-12">
+                                    <textarea className="form-control" rows="10" name="reason"
+                                        value={configData} onChange={this.handleChange}></textarea>
+                                </div>
+                                <div className="form-group col-sm-12 col-xs-12">
+                                    {
+                                        importConfiguration !== null && (
+                                            <React.Fragment>
+                                                <label>Cấu hình file import của bạn như sau:</label><br />
+                                                <span>File import có</span>
+                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.rowHeader}&nbsp;</span>
+                                                <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
+                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.sheets.length > 1 ? importConfiguration.sheets.join(', ') : importConfiguration.sheets}</span>
+
+                                                <div id="croll-table" style={{ marginTop: 5 }}>
+                                                    <table id="importConfig" className="table table-bordered table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tên các thuộc tính</th>
+                                                                <th>Mã số nhân viên</th>
+                                                                <th>Tên nhân viên</th>
+                                                                <th>Tháng</th>
+                                                                <th>Năm</th>
+                                                                <th>Tiền lương chính</th>
+                                                                {importConfiguration.bonus.length !== 0 &&
+                                                                    importConfiguration.bonus.map((x, index) => (
+                                                                        <React.Fragment key={index}>
+                                                                            <th>{x}</th>
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Tiêu đề tương ứng</th>
+                                                                <td>{importConfiguration.employeeNumber}</td>
+                                                                <td>{importConfiguration.employeeName}</td>
+                                                                <td>{importConfiguration.month}</td>
+                                                                <td>{importConfiguration.year}</td>
+                                                                <td>{importConfiguration.mainSalary}</td>
+                                                                {importConfiguration.bonus.length !== 0 &&
+                                                                    importConfiguration.bonus.map((x, index) => (
+                                                                        <React.Fragment key={index}>
+                                                                            <td>{x}</td>
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                }
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </React.Fragment>
+                                        )
+                                    }
+                                    <SlimScroll outerComponentId="croll-table" innerComponentId="importConfig" innerComponentWidth={1000} activate={true} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-group">
                             <div className="form-group col-md-8 col-xs-12" style={{ padding: 0 }}>
                                 <label>Chọn file excel cần import</label>
-                                <input type="file" className="form-control" accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={this.handleChangeFile} />
+                                <input type="file" className="form-control"
+                                    accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    onChange={this.handleChangeFileImport} />
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
-                                <a className='pull-right' style={{ paddingTop: '10px' }} href="" target="_blank" download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <label></label>
+                                <a className='pull-right' href="" target="_blank" style={{ paddingTop: 20 }}
+                                    download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
-                            {
-                                importData.length !== 0 &&
-                                <table className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Mã số nhân viên</th>
-                                            <th>Tên nhân viên</th>
-                                            <th>Tháng</th>
-                                            <th>Tiền lương chính</th>
-                                            <th>Tổng lương</th>
-                                            <th>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            importData.map((x, index) => {
-                                                if (x.bonus.length !== 0) {
-                                                    var total = 0;
-                                                    for (let count in x.bonus) {
-                                                        total = total + parseInt(x.bonus[count].number)
-                                                    }
-                                                }
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.employeeNumber}</td>
-                                                        <td>{x.employeeName}</td>
-                                                        <td>{x.month}</td>
-                                                        <td>{formater.format(parseInt(x.mainSalary))}</td>
-                                                        <td>
-                                                            {
-                                                                (x.bonus.length === 0) ?
-                                                                    formater.format(parseInt(x.mainSalary)) :
-                                                                    formater.format(total + parseInt(x.mainSalary))
-                                                            }
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-
-                                    </tbody>
-                                </table>
-                            }
                         </div>
+                        <div className="form-group col-md-12 col-xs-12" style={{ padding: 0 }}>
+                            {
+                                importDataCurrentPage.length !== 0 && (
+                                    <React.Fragment>
+                                        {rowError.length !== 0 && (
+                                            <React.Fragment>
+                                                <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
+                                            </React.Fragment>
+                                        )}
+                                        <div id="croll-table-import">
+                                            <table id="importData" className="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>STT</th>
+                                                        <th>Mã số nhân viên</th>
+                                                        <th>Tên nhân viên</th>
+                                                        <th>Tháng lương</th>
+                                                        <th>Tiền lương chính</th>
+                                                        {otherSalary.length !== 0 &&
+                                                            otherSalary.map((x, index) => (
+                                                                <React.Fragment key={index}>
+                                                                    <th>{x}</th>
+                                                                </React.Fragment>
+                                                            ))
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        importDataCurrentPage.map((x, index) => {
+                                                            return (
+                                                                <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
+                                                                    <td>{page + index + 1}</td>
+                                                                    <td>{x.employeeNumber}</td>
+                                                                    <td>{x.employeeName}</td>
+                                                                    <td>{x.month}</td>
+                                                                    <td>{formater.format(parseInt(x.mainSalary))}</td>
+                                                                    {otherSalary.length !== 0 &&
+                                                                        otherSalary.map((y, index) => {
+                                                                            let number = null;
+                                                                            x.bonus.forEach(b => {
+                                                                                if (y.trim().toLowerCase() === b.nameBonus.trim().toLowerCase()) {
+                                                                                    number = formater.format(parseInt(b.number))
+                                                                                }
+                                                                            })
+                                                                            return <td>{number}</td>
+                                                                        })
+                                                                    }
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </React.Fragment>
+                                )}
+                        </div>
+                        <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 };
 
-// function mapState(state) {
-//     const { salary, employeesManager } = state;
-//     return { salary, employeesManager };
-// };
+function mapState(state) {
+    const { salary } = state;
+    return { salary };
+};
 
-// const actionCreators = {
-// };
+const actionCreators = {
+};
 
-const importExcel = connect(null, null)(withTranslate(SalaryImportForm));
+const importExcel = connect(mapState, actionCreators)(withTranslate(SalaryImportForm));
 export { importExcel as SalaryImportForm };

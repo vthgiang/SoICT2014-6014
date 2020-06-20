@@ -379,7 +379,24 @@ export function performtasks(state = {}, action) {
                     info : files
                 }
             }
-        case performTaskConstants.UPLOAD_FILE_FAILURE:                                                                                                  
+        case performTaskConstants.UPLOAD_FILE_FAILURE:
+            
+        case performTaskConstants.ADD_TASK_LOG_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.ADD_TASK_LOG_SUCCESS:            
+            return {
+                ...state,
+                adding: false,
+                // currentTask: action.payload
+            };
+        case performTaskConstants.ADD_TASK_LOG_FAILURE:
+            return {
+                error: action.error
+            };
+
         default:
             return state
     }

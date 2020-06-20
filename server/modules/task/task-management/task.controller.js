@@ -84,6 +84,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
         var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
         
@@ -117,6 +119,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(task);
@@ -151,6 +155,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var consultedTasks = await  TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(task);
@@ -184,6 +190,8 @@ exports.getPaginatedTasksCreatedByUser = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
         var creatorTasks = await  TaskManagementService.getPaginatedTasksCreatedByUser(task);
         await LogInfo(req.user.email, ` get task creator by user `,req.user.company)
@@ -216,6 +224,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(task);

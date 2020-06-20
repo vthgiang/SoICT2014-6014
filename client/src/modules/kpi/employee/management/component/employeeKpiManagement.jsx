@@ -74,11 +74,7 @@ class KPIPersonalManager extends Component {
                 showModalCopy: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
     }
     checkStatusKPI = (status) => {
         if (status === 0) {
@@ -303,14 +299,8 @@ class KPIPersonalManager extends Component {
                                         title="Xem chi tiết"><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
                                         className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>
-                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal kpipersonal={item} />}
+                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
                                     </td>
-                                        {/* <td>
-                                            <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
-                                            <ModalDetailKPIPersonal name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/>
-                                            {<a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
-                                            {this.state.showModalCopy === item._id ? <ModalCopyKPIPersonal kpipersonal={item} /> : null}
-                                        </td> */}
                                 </tr>)
                             }
                         </tbody>

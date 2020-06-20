@@ -15,17 +15,17 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
-            viceDean: null,
+            organizationalUnitId: null,
             dataStatus: this.DATA_STATUS.QUERYING
         };
 
         // Lấy Kpi của đơn vị hiện tại
-        this.props.getCurrentKPIUnit(this.props.viceDean);
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole") ,this.props.organizationalUnitId);
     }
     
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextProps.viceDean !== this.state.viceDean) {
-            await this.props.getCurrentKPIUnit(nextProps.viceDean);
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), nextProps.organizationalUnitId);
             
             this.setState(state => {
                 return {
@@ -63,10 +63,10 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.viceDean !== prevState.viceDean) {
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
             return {
                 ...prevState,
-                viceDean: nextProps.viceDean
+                organizationalUnitId: nextProps.organizationalUnitId
             }
         } else{
             return null;
@@ -78,10 +78,10 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         const { createKpiUnit } = this.props;
         var listOrganizationalUnitKpi, dataPieChart;
 
-        if (createKpiUnit.currentKPI !== undefined && createKpiUnit.currentKPI.kpis !== undefined) {
+        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        if(listOrganizationalUnitKpi !== undefined){
+        if(listOrganizationalUnitKpi){
             dataPieChart = listOrganizationalUnitKpi.map(x => { 
                 return [ x.name, x.weight ]
             })

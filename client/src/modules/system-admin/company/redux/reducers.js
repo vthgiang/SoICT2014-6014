@@ -54,7 +54,8 @@ const initState = {
             prevPage: 0,
             nextPage: 0,
         }
-    }
+    },
+    importConfiguration:{},
 }
 
 export function company(state = initState, action) {
@@ -326,7 +327,41 @@ export function company(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-
+        
+        // reducers phần import File
+        case CompanyConstants.GET_IMPORT_CONFIGURATION_REQUEST:
+        case CompanyConstants.ADD_IMPORT_CONFIGURATION_REQUEST:
+        case CompanyConstants.EDIT_IMPORT_CONFIGURATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case CompanyConstants.GET_IMPORT_CONFIGURATION_SUCCESS:
+            return {
+                ...state,
+                importConfiguration:action.payload,
+                isLoading: false
+            };
+        case CompanyConstants.ADD_IMPORT_CONFIGURATION_SUCCESS:
+            return {
+                ...state,
+                importConfiguration:action.payload,
+                isLoading: false
+            };
+        case CompanyConstants.EDIT_IMPORT_CONFIGURATION_SUCCESS:
+            return {
+                ...state,
+                importConfiguration:action.payload,
+                isLoading: false
+            };
+        case CompanyConstants.GET_IMPORT_CONFIGURATION_FAILE:
+        case CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILE:
+        case CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
         default:
             return state;
     }

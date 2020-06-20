@@ -59,8 +59,8 @@ class SalaryTab extends Component {
                     type='error'
                     title={'general.error'}
                     content={['Tháng lương đã tồn tại']}
-                />, 
-                {containerId: 'toast-notification'}
+                />,
+                { containerId: 'toast-notification' }
             );
         } else {
             await this.setState({
@@ -228,7 +228,7 @@ class SalaryTab extends Component {
                     this.state.currentRow !== undefined &&
                     <SalaryEditModal
                         id={`editSalary${this.state.currentRow.index}`}
-                        _id={this.state.currentRowSabbatical._id}
+                        _id={this.state.currentRow._id}
                         unit={this.state.currentRow.unit}
                         month={this.formatDate(this.state.currentRow.month, true)}
                         mainSalary={this.state.currentRow.mainSalary}

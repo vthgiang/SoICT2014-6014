@@ -14,15 +14,12 @@ export const createUnitKpiActions = {
 }
 
 
-// lấy kpi đơn vị hiện tại
-function getCurrentKPIUnit(id) {
+// lấy kpi đơn vị hiện tại(lấy bằng role hoặc bằng params: id của đơn vị)
+function getCurrentKPIUnit(roleId, organizationalUnitId=undefined) {
     return dispatch => {
-        dispatch({ 
-            type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST,
-            payload: id
-        });
+        dispatch({ type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST });
 
-        createUnitKpiServices.getCurrentKPIUnit(id)
+        createUnitKpiServices.getCurrentKPIUnit(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS,

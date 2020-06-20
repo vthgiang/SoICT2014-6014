@@ -539,3 +539,25 @@ exports.uploadFile = async(req,res) => {
         })
     }
 }
+
+/**
+ * Thêm nhật ký cho một công việc
+ */
+exports.addTaskLog = async(req,res) => {
+    try {
+        var task = await PerformTaskService.addTaskLog(req.body);
+        await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
+        res.status(200).json({
+            success : true,
+            messages: ["create_task_log_success"],
+            content: task
+        });
+    } catch (error) {
+        await LogError(req.user.email, ` CREATE_TASK_LOG  `,req.user.company);
+        res.status(400).json({ 
+            success: false,
+            messages: ['create_task_log_fail'],
+            content: error 
+        });
+    }
+}

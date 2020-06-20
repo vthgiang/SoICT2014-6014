@@ -9,7 +9,7 @@ class TaskInformationForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        console.log('Children nextProps, prevState', nextProps, prevState);
+        // console.log('Children nextProps, prevState', nextProps, prevState);
         if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,

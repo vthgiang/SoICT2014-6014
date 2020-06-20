@@ -108,7 +108,7 @@ exports.getTasksCreatedByUser = async (id) => {
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -176,9 +176,37 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     };
     
+    if(startDate !== 'null'){
+        let startTime = startDate.split("-");
+        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+    
+    if(endDate !== 'null'){
+        let endTime = endDate.split("-");
+        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let end = new Date(endTime[1], endTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
     responsibleTasks = await Task.find( keySearch ).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
-    
+            
     var totalCount = await Task.count(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
 
@@ -193,7 +221,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
  */
 exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
-    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var accountableTasks;
     var perPage = Number(perPage);
@@ -261,6 +289,34 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         }
     };
 
+    if(startDate !== 'null'){
+        let startTime = startDate.split("-");
+        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+    
+    if(endDate !== 'null'){
+        let endTime = endDate.split("-");
+        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let end = new Date(endTime[1], endTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
     accountableTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
     .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
@@ -277,7 +333,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var consultedTasks;
     var perPage = Number(perPage);
@@ -345,6 +401,34 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         }
     };
 
+    if(startDate !== 'null'){
+        let startTime = startDate.split("-");
+        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+    
+    if(endDate !== 'null'){
+        let endTime = endDate.split("-");
+        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let end = new Date(endTime[1], endTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
     consultedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
@@ -361,7 +445,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
  */
 exports.getPaginatedTasksCreatedByUser = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
-    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var creatorTasks;
     var perPage = Number(perPage);
@@ -429,6 +513,34 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     };
 
+    if(startDate !== 'null'){
+        let startTime = startDate.split("-");
+        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+    
+    if(endDate !== 'null'){
+        let endTime = endDate.split("-");
+        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let end = new Date(endTime[1], endTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
     creatorTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
     
@@ -445,7 +557,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
  */
 exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var { perPage, number, user, organizationalUnit, status, priority, special, name } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var informedTasks;
     var perPage = Number(perPage);
@@ -512,6 +624,34 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
             }
         }
     };
+
+    if(startDate !== 'null'){
+        let startTime = startDate.split("-");
+        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
+    
+    if(endDate !== 'null'){
+        let endTime = endDate.split("-");
+        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let end = new Date(endTime[1], endTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gt: start, 
+                $lte: end
+            }
+        }
+    }
 
     informedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
             .skip(perPage * (page - 1)).limit(perPage)
