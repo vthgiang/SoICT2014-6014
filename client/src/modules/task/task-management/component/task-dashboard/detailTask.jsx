@@ -8,13 +8,6 @@ class ModelDetailTask2 extends Component{
     constructor (props) {
         super(props);
     }
-    // componentDidMount(){
-    //     this.props.getTaskById(this.props.id);
-    // }
-    // componentDidMount() {
-    //     this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    //     this.props.getAllKPIMemberOfUnit(this.state.infosearch);
-    // }
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -30,23 +23,12 @@ class ModelDetailTask2 extends Component{
     }
     render(){
         const {tasks} = this.props;
-        // var task = tasks && tasks.tasks;
-
-        // console.log(this.props.id);
-        // console.log(tasks.responsibleTasks);
+        let {id} = this.props;
+        
         if(tasks.responsibleTasks){
-        var task = tasks.responsibleTasks.find((Obj => Obj._id === this.props.id));
-        console.log(task);
+        var task = tasks.responsibleTasks[id];
         }
-          (task && task.responsibleEmployees.length !== 0) && console.log(task.responsibleEmployees);
-            // task.responsibleEmployees.map(item => {
-            //     // if (task.inactiveEmployees.indexOf(item._id) !== -1) {
-            //         console.log(item.name)
-            //     // } else {
-            //     //     console.log(item.name); 
-            //     // }
 
-            // })
         return(
             <React.Fragment>
             <DialogModal

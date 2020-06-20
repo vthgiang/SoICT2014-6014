@@ -339,12 +339,12 @@ exports.checkUserExited = async (email) => {
  */
 exports.getOrganizationalUnitsOfUser = async (userId) => {
     const roles = await UserRole.find({ userId });
-    const newRoles = roles.map( role => role.roleId);
+    const newRoles = roles.map( role => role.roleId.toString());
     const departments = await OrganizationalUnit.find({
         $or: [
-            {'dean': { $in: newRoles }}, 
-            {'viceDean':{ $in: newRoles }}, 
-            {'employee':{ $in: newRoles }}
+            {'deans': { $in: newRoles }}, 
+            {'viceDeans':{ $in: newRoles }}, 
+            {'employees':{ $in: newRoles }}
         ]  
     });
 

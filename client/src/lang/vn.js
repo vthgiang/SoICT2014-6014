@@ -1561,6 +1561,10 @@ export default {
 
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
+
+                start_date: 'Ngày bắt đầu',
+                end_date: 'Ngày kết thúc',
+
                 search: 'Tìm kiếm',
 
                 col_name: 'Tên công việc',
@@ -1725,7 +1729,7 @@ export default {
                         target_name: 'Tên mục tiêu',
                         parents_target: 'Mục tiêu cha',
                         evaluation_criteria: 'Tiêu chí đánh giá',
-                        max_score: 'Điểm tối đa',
+                        weight: 'Trọng số',
                         status: 'Trạng thái',
                         action: 'Hành động',
                         not_initialize: 'Chưa khởi tạo KPI tháng ',

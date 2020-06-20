@@ -643,7 +643,7 @@ class TaskManagement extends Component {
                         </div>
                             
                         <div className="form-group">
-                            <label>Ngày bắt đầu</label>
+                            <label>{translate('task.task_management.start_date')}</label>
                             <DatePicker
                                 id="start-date"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -654,7 +654,7 @@ class TaskManagement extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label>Ngày kết thúc</label>
+                            <label>{translate('task.task_management.end_date')}</label>
                             <DatePicker
                                 id="end-date"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 

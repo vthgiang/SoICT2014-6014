@@ -44,7 +44,10 @@ class SalaryManagement extends Component {
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
     }
-    importSalary = () => {
+    importSalary = async () => {
+        await this.setState({
+            importSalary: true
+        })
         window.$('#modal_import_file').modal('show');
     }
 
@@ -284,7 +287,7 @@ class SalaryManagement extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <SalaryCreateForm />
-                <SalaryImportForm />
+                {this.state.importSalary && <SalaryImportForm />}
                 {
                     this.state.currentRow !== undefined &&
                     <SalaryEditForm
