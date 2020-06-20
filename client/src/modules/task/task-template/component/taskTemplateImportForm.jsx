@@ -11,6 +11,23 @@ class TaskTemplateImportForm extends Component {
         };
     }
 
+    handleChangeFile =(e) =>{
+        let configData = this.state.configData;
+        let sheets = configData.sheets;
+        let file = e.target.files[0];
+        
+        if(file !== undefined){
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            reader.onload = (evt) =>{
+                let sheet_lists = [];
+                const fileImport = evt.target.result;
+                const workbook = XLSX.read(fileImport, {type: 'binary'});
+                
+            }
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -42,12 +59,40 @@ class TaskTemplateImportForm extends Component {
                                         <input type="number" className= "form-control" name="" value="" placeholder="Số dòng của tiêu đề bảng"/>
                                     </div>
                                     <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Mã số nhân viên<span className="text-red">*</span></label>
-                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với mã nhân viên"/>
+                                        <label>Tên đơn vị<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với tên đơn vị"/>
                                     </div>
                                     <div className="form-group col-sm-6 col-xs-12">
-                                        <label>Họ tên nhân viên<span className="text-red">*</span></label>
-                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với họ và tên nhân viên"/>
+                                        <label>Người được xem<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với người được xem"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Tên mẫu<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với tên mẫu"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Độ ưu tiên<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với độ ưu tiên"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Mô tả<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với mô tả"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Người thực hiện<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với người thực hiện"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Người hỗ trợ<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với người được xem"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Người quan sát<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với người quan sát"/>
+                                    </div>
+                                    <div className="form-group col-sm-6 col-xs-12">
+                                        <label>Công thức tính điểm<span className="text-red">*</span></label>
+                                        <input type="number" className= "form-control" name="" value="" placeholder="Tiêu đề cột ứng với công thức tính điểm"/>
                                     </div>
                                 </div>
                             </div>
