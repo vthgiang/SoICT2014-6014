@@ -36,7 +36,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
 }
 
 // Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
-function getAllEmployeeOfUnitByIds(ids) {
+function getAllEmployeeOfUnitByIds(ids) {    
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/organizational-units/${ids}`,
         method: 'GET',
