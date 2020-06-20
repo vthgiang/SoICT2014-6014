@@ -1396,7 +1396,7 @@ export default {
                         target_name: 'Target name',
                         parents_target: 'Parents target',
                         evaluation_criteria: 'Evalution criteria',
-                        max_score: 'Max score',
+                        weight: 'Weight',
                         status: 'Status',
                         action: 'Action',
                         not_initialize: 'No KPI have been initialized in ',

@@ -16,27 +16,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
-        this.KIND_OF_POINT_SELECTBOX = [
-            {
-                text: 'Automatic Point',
-                value: this.KIND_OF_POINT.AUTOMATIC
-            },
-            {
-                text: 'Employee Point',
-                value: this.KIND_OF_POINT.EMPLOYEE
-            },
-            {
-                text: 'Approved Point',
-                value: this.KIND_OF_POINT.APPROVED
-            }
-        ];
 
         this.state = {
             userRoleId: localStorage.getItem("currentRole"),
             year: new Date().getFullYear(),
             dataStatus: this.DATA_STATUS.QUERYING,
-            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
-            pointName: this.KIND_OF_POINT_SELECTBOX[0].text
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
         };
 
         this.props.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(this.state.userRoleId, this.state.year);
@@ -92,15 +77,14 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     handleSelectKindOfPoint = (value) => {
-        var pointName = this.KIND_OF_POINT_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
-        
-        this.setState(state => {
-            return {
-                ...state,
-                kindOfPoint: Number(value[0]),
-                pointName: pointName
-            }
-        })
+        if(Number(value) !== this.state.kindOfPoint) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    kindOfPoint: Number(value)
+                }
+            })
+        }
     }
 
     filterAndSetDataPoint = (arrayPoint) => {
@@ -211,31 +195,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 <div className="box-body dashboard_box_body">
                     <section style={{textAlign: "right"}}>
-                        <span className="label label-danger">{this.state.pointName}</span>
-                        <button type="button" data-toggle="collapse" data-target="#kind-point-kpi" style={{ border: "none", background: "none", padding: "5px" }}><i className="fa fa-gear" style={{ fontSize: "15px" }}></i></button>
-                        
-                        <div className="box box-primary box-solid collapse setting-table" id="kind-point-kpi">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Loại điểm</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#kind-point-kpi-performance" ><i className="fa fa-times"></i></button>
-                                </div>
-                            </div>
-
-                            <div className="box-body">
-                                <div className = "form-group">
-                                    <SelectBox
-                                        id={`kindOfPointKpi`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={this.KIND_OF_POINT_SELECTBOX}
-                                        multiple={false}
-                                        onChange={this.handleSelectKindOfPoint}
-                                        value={this.KIND_OF_POINT_SELECTBOX[0].value}
-                                    />
-                                </div> 
-                            </div>
-                        </div>
+                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
+                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
+                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
                     </section>
 
                     <section ref="chart"></section>
