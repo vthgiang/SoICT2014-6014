@@ -33,10 +33,10 @@ class DashBoardKPIMember extends Component {
             commenting: false,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                userId: null,
+                userId: this.INFO_SEARCH.userId,
                 status: 4,
-                startMonth: currentYear + '-' + 1,
-                endMonth: currentYear + '-' + (currentMonth + 2)
+                startMonth: this.INFO_SEARCH.startMonth,
+                endMonth: this.INFO_SEARCH.endMonth
             },
             showApproveModal: "",
             showEvaluateModal: "",

@@ -9,9 +9,9 @@ const mongoose = require("mongoose");
 exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
         $or: [
-            { 'dean': data.role },
-            { 'viceDean': data.role },
-            { 'employee': data.role }
+            { 'deans': data.role },
+            { 'viceDeans': data.role },
+            { 'employees': data.role }
         ]
     });
 

@@ -107,7 +107,6 @@ exports.getTasksCreatedByUser = async (id) => {
  * Lấy công việc thực hiện chính theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
-    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var responsibleTasks;
@@ -220,7 +219,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
  * Lấy công việc phê duyệt theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
-    //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var accountableTasks;
@@ -332,7 +330,6 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
  * Lấy công việc hỗ trợ theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
-    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var consultedTasks;
@@ -444,7 +441,6 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
  * Lấy công việc thiết lập theo id người dùng
  */
 exports.getPaginatedTasksCreatedByUser = async (task) => {
-    //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var creatorTasks;
@@ -556,7 +552,6 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
-    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
     
     var informedTasks;
@@ -668,8 +663,6 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 /**
  * Tạo công việc mới
  */
-
-
 exports.createTask = async (task) => {
     // Lấy thông tin công việc cha
     var level = 1;

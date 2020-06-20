@@ -206,7 +206,7 @@ class OrganizationalUnitKpiCreate extends Component {
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
         
-        return (currentRole === deanCurrentUnit);
+        return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
     }
 
     checkStartKpiUnit = (currentUnit) => {
@@ -256,9 +256,9 @@ class OrganizationalUnitKpiCreate extends Component {
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
+                item.deans.includes(this.state.currentRole)
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
         }
         if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
         
@@ -270,7 +270,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 <div className="box-body">
                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) ?
                         <div>
-                            {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
+                            {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                <div style={{marginLeft: "-10px"}}>
                                     {editing ?
                                         <React.Fragment>
@@ -340,7 +340,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                             <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
                                             <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                             <th title="Trọng số" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
-                                            {this.checkPermisson(currentUnit && currentUnit[0].dean) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
+                                            {this.checkPermisson(currentUnit && currentUnit[0].deans) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -351,7 +351,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <td title={item.name}>{item.name}</td>
                                                     <td title={item.criteria}>{item.criteria}</td>
                                                     <td title={item.weight}>{item.weight}</td>
-                                                    {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
+                                                    {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
                                                             <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
@@ -381,7 +381,7 @@ class OrganizationalUnitKpiCreate extends Component {
                         </div> :
                         <div>
                             <div style={{marginLeft: "-10px"}}>
-                                {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
+                                {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                     <div>
                                         {this.checkStartKpiUnit(currentUnit) ?
                                             <React.Fragment>

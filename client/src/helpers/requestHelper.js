@@ -77,12 +77,12 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
 
+        console.log("error: ", err)
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
             else if(messages[0] === 'acc_log_out'){
                 clearStorage();
-                console.log("JDHFKLJSDLFJDK")
             }
             else{
                 showFailAlert && toast.error(
