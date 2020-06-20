@@ -273,9 +273,9 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
 exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
     var department = await OrganizationalUnit.findOne({ 
         $or:[
-            {'dean': id_role}, 
-            {'viceDean': id_role}, 
-            {'employee': id_role}
+            {'deans': id_role}, 
+            {'viceDeans': id_role}, 
+            {'employees': id_role}
         ]  
     });
     return _getAllUsersInOrganizationalUnit(department);
@@ -286,33 +286,36 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
  */
 _getAllUsersInOrganizationalUnit = async (department) => {
     var userRoles = await UserRole
-    .find({ roleId: {$in: [department.dean, department.viceDean, department.employee]}})
+    .find({ roleId: {$in: [department.deans, department.viceDeans, department.employees]}})
     .populate({path: 'userId', select: 'name'})
     
-    var tmp = await Role.find({_id: {$in: [department.dean, department.viceDean, department.employee]}}, {name: 1});
-    var roles = {};
+    var tmp = await Role.find({_id: {$in: [department.deans, department.viceDeans, department.employees]}}, {name: 1});
+    var users = {deans:{}, viceDeans:{}, employees:{}, department: department.name};
+
     tmp.forEach(item => {
-        if (item._id.equals(department.dean))
-            roles.dean = item;
-        else if (item._id.equals(department.viceDean))
-            roles.viceDean = item;
-        else if (item._id.equals(department.employee))
-            roles.employee = item;
+        let obj = {};
+        obj._id = item.id;
+        obj.name = item.name;
+        obj.members=[];
+
+        if (department.deans.includes(item._id.toString())){
+            users.deans[item._id.toString()] = obj;
+        } else if (department.viceDeans.includes(item._id.toString())){
+            users.viceDeans[item._id.toString()] = obj;
+        } else if (department.employees.includes(item._id.toString())){
+            users.employees[item._id.toString()] = obj;
+        }
     })
 
-    let deans=[], viceDeans=[], employees=[];
     userRoles.forEach((item) => {
-        if (item.roleId.equals(department.dean)){
-            deans.push(item.userId);
-        } else if (item.roleId.equals(department.viceDean)){
-            viceDeans.push(item.userId);
-        } else if (item.roleId.equals(department.employee)){
-            employees.push(item.userId);
-        }
+    if (users.deans[item.roleId.toString()] && item.userId){
+        users.deans[item.roleId.toString()].members.push(item.userId);
+    } else if (users.viceDeans[item.roleId.toString()] && item.userId){
+        users.viceDeans[item.roleId.toString()].members.push(item.userId);
+    } else if (users.employees[item.roleId.toString()] &&  item.userId){
+        users.employees[item.roleId.toString()].members.push(item.userId);
+    }
     });
-
-    var users = {deans: deans, viceDeans: viceDeans, employees: employees, roles: roles};
-
     return users;
 }
 

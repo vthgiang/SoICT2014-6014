@@ -14,9 +14,9 @@ exports.get = async (id) => {
 
     var department = await Department.findOne({
         $or: [
-            { 'dean': id },
-            { 'viceDean': id },
-            { 'employee': id }
+            { 'deans': id },
+            { 'viceDeans': id },
+            { 'employees': id }
         ]
     });
     // console.log(department);
@@ -29,9 +29,9 @@ exports.get = async (id) => {
 exports.getKPIUnits = async (data) => {
     var department = await Department.findOne({
         $or: [
-            { 'dean': data.role },
-            { 'viceDean': data.role },
-            { 'employee': data.role }
+            { 'deans': data.role },
+            { 'viceDeans': data.role },
+            { 'employees': data.role }
         ]
     });
     var status = Number(data.status);
