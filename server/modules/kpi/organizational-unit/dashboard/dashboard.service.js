@@ -6,9 +6,9 @@ const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard
 exports.getAllChildTargetOfOrganizationalUnitKpis = async (roleId) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': roleId },
-            { 'viceDean': roleId },
-            { 'employee': roleId }
+            { 'deans': roleId },
+            { 'viceDeans': roleId },
+            { 'employees': roleId }
         ]
     });
 
@@ -62,9 +62,9 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId) => {
     
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': roleId },
-            { 'viceDean': roleId },
-            { 'employee': roleId }
+            { 'deans': roleId },
+            { 'viceDeans': roleId },
+            { 'employees': roleId }
         ]
     });
 
@@ -164,33 +164,33 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
 
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': roleId },
-            { 'viceDean': roleId },
-            { 'employee': roleId }
+            { 'deans': roleId },
+            { 'viceDeans': roleId },
+            { 'employees': roleId }
         ]
     });
-
+    
     var employeeKpiSets = await OrganizationalUnit.aggregate([
         { $match: { '_id': organizationalUnit._id } },
 
         { $lookup: {
             from: 'user_roles',
-            let: { viceDean: '$viceDean', employee: '$employee' },
+            let: { viceDeans: '$viceDeans', employees: '$employees' },
             pipeline: [
                 { $match: 
                     { $expr:
                         { $or: [
-                            { $eq: [ "$roleId",  "$$viceDean" ] },
-                            { $eq: [ "$roleId",  "$$employee" ] }
+                            { $in: [ "$roleId",  "$$viceDeans" ] },
+                            { $in: [ "$roleId",  "$$employees" ] }
                         ]}
                     }
                 }
             ],
-            as: 'employees'
+            as: 'employeeInOrganizationalUnit'
         }},
 
-        { $unwind: '$employees' },
-        { $replaceRoot: { newRoot: '$employees' } },
+        { $unwind: '$employeeInOrganizationalUnit' },
+        { $replaceRoot: { newRoot: '$employeeInOrganizationalUnit' } },
 
         { $lookup: {
             from: 'employee_kpi_sets',
@@ -208,6 +208,6 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
 
         { $project: { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1 }}
     ]);
-
+    
     return employeeKpiSets;
 }

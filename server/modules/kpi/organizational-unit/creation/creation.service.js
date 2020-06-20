@@ -10,9 +10,9 @@ exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId=undefi
     if(!organizationalUnitId) {
         var department = await OrganizationalUnit.findOne({
             $or: [
-                { deans: roleId },
-                { viceDeans: roleId },
-                { employees: roleId }
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
             ]
         });
     } else {
