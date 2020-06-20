@@ -97,9 +97,9 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
             id: department._id.toString(),
             name: department.name,
             description: department.description,
-            dean: department.deans.map(item => item.toString()),
-            viceDean: department.viceDeans.map(item => item.toString()),
-            employee: department.employees.map(item => item.toString()),
+            deans: department.deans.map(item => item.toString()),
+            viceDeans: department.viceDeans.map(item => item.toString()),
+            employees: department.employees.map(item => item.toString()),
             parent_id: department.parent !== null ? department.parent.toString() : null
         }
     });
