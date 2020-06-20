@@ -122,42 +122,7 @@ export function tasktemplates(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
-        case  taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST:
-            return {
-                ...state,
-                isLoading: true
-            };
         
-        case taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS:      
-            return {
-                ...state,
-                usersOfChildrenOrganizationalUnit: action.payload,
-                isLoading: false
-            };
-        
-        case taskTemplateConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_FAILURE:
-            return { 
-                error: action.payload,
-                isLoading: false
-            };
-        
-
-        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST:
-            return { 
-                ...state,
-                isLoading:true
-            };
-        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS:
-            return { 
-                ...state,
-                usersInUnitsOfCompany: action.payload,
-                isLoading: false
-            };
-        case taskTemplateConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_FAILURE:
-            return { 
-                error: action.payload,
-                isLoading: false
-            };         
 
 
 

@@ -19,6 +19,8 @@ export const DocumentActions = {
 
     getDocumentDomains,
     createDocumentDomain,
+    editDocumentDomain,
+    deleteDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -272,6 +274,41 @@ function createDocumentDomain(data){
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.CREATE_DOCUMENT_DOMAIN_FAILE});
+            })
+    }
+}
+
+function editDocumentDomain(id, data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_DOMAIN_REQUEST});
+        DocumentServices.editDocumentDomain(id, data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.EDIT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.EDIT_DOCUMENT_DOMAIN_FAILE});
+            })
+    }
+}
+
+function deleteDocumentDomain(id, data){
+    return dispatch => {
+        dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_REQUEST});
+        DocumentServices.deleteDocumentDomain(id, data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: {
+                        id, 
+                        tree: res.data.content
+                    }
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_FAILE});
             })
     }
 }

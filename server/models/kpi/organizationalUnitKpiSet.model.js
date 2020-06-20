@@ -42,7 +42,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
         type: Number,
         default: null
     },
-    // Có 3 trang thái kpi đơn vị: 0: Đang thiết lập, 1: Đã kích hoạt, 2: Đã kết thúc
+    // Trạng thái kpi đơn vị: 0: Đang thiết lập, 1: Đã kích hoạt
     status: {
         type: Number,
         default: 0

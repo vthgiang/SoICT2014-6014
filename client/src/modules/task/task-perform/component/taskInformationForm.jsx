@@ -9,7 +9,7 @@ class TaskInformationForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        console.log('Children nextProps, prevState', nextProps, prevState);
+        // console.log('Children nextProps, prevState', nextProps, prevState);
         if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,
@@ -48,7 +48,7 @@ class TaskInformationForm extends Component {
                                     className="form-control"
                                     type="number" 
                                     name="progress"
-                                    placeholder={85}
+                                    placeholder={"Nhập mức độ hoàn thành"}
                                     onChange={this.props.handleChangeProgress}
                                     value={value.progress}
                                 />

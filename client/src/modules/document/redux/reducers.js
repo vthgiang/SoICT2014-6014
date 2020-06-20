@@ -87,6 +87,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.DELETE_DOCUMENT_REQUEST:
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_REQUEST:
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.DELETE_DOCUMENT_DOMAIN_REQUEST:
         case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_REQUEST:
         case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_REQUEST:
         case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_REQUEST:
@@ -111,6 +112,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.ADD_VERSION_DOCUMENT_FAILE:
         case DocumentConstants.DELETE_DOCUMENT_FAILE:
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.DELETE_DOCUMENT_DOMAIN_FAILE:
         case DocumentConstants.EDIT_DOCUMENT_CATEGORY_FAILE:
         case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_FAILE:
         case DocumentConstants.GET_DOCUMENTS_USER_CAN_VIEW_FAILE:
@@ -334,6 +336,16 @@ export function documents(state = initState, action) {
                 isLoading: false
             };
 
+        case DocumentConstants.EDIT_DOCUMENT_DOMAIN_SUCCESS:
+            index = findIndex(state.administration.domains.list, action.payload._id);
+            if(index !== -1) state.administration.domains.list[index] = action.payload;
+            indexPaginate = findIndex(state.administration.domains.paginate, action.payload._id);
+            if(indexPaginate !== -1) state.administration.domains.paginate[indexPaginate] = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_SUCCESS:
             index = findIndex(state.administration.categories.list, action.payload._id);
             if(index !== -1) state.administration.categories.list.splice(index, 1);
@@ -342,6 +354,18 @@ export function documents(state = initState, action) {
             return {
                 ...state,
                 isLoading: false
+            };
+
+        case DocumentConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS:
+            index = findIndex(state.administration.domains.list, action.payload._id);
+            if(index !== -1) state.administration.domains.list.splice(index, 1);
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    domains: action.payload.tree
+                }
             };
 
         case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:

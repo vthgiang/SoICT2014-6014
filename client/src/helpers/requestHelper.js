@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getStorage } from '../config';
+import { getStorage, clearStorage } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
@@ -31,7 +31,6 @@ const checkErrorAuth = (code) => {
         'page_access_denied',
         'role_invalid',
         'user_role_invalid',
-        'acc_logged_out',
         'service_off',
         'fingerprint_invalid',
         'service_permisson_denied',
@@ -78,9 +77,13 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
 
+        console.log("error: ", err)
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
+            else if(messages[0] === 'acc_log_out'){
+                clearStorage();
+            }
             else{
                 showFailAlert && toast.error(
                     <ServerResponseAlert

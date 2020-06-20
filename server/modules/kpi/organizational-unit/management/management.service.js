@@ -52,7 +52,7 @@ exports.getKPIUnits = async (data) => {
         organizationalUnit: department._id
 
     };
-    if (status !== 3) {
+    if (status !== -1) {
         keySearch = {
             ...keySearch,
             status: status
@@ -222,23 +222,17 @@ exports.copyKPI = async (data) => {
     var yearOldKPI = dateold.getFullYear();
     var monthNewKPI = dateNewKPIUnit.getMonth();
     var yearNewKPI = dateNewKPIUnit.getFullYear();
-    var department = await Department.findOne({
-        $or: [
-            { dean: data.id },
-            { viceDean: data.id },
-            { employee: data.id }
-        ]
-    });
     // console.log("=========-----", department);
-    var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: department._id })
+    var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
+       
     var check = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
     if (check == undefined) {
         var list = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
         var organizationalUnitNewKpi = await KPIUnit.create({
             organizationalUnit: list.organizationalUnit._id,
-            creator: list.creator._id,
+            creator: data.id,
             date: dateNewKPIUnit,
             kpis: []
         })
@@ -254,7 +248,7 @@ exports.copyKPI = async (data) => {
                 organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
             );
         }
-        organizationalUnitKpi = await KPIUnit.find({ organizationalUnit: department._id })
+        organizationalUnitKpi = await KPIUnit.find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     }

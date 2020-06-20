@@ -1,211 +1,388 @@
 import React, { Component } from 'react';
-import readXlsxFile from 'read-excel-file';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { toast } from 'react-toastify';
-import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
-import 'react-toastify/dist/ReactToastify.css';
-import { SalaryActions } from '../redux/actions';
-class SalaryImportFrom extends Component {
+import { DialogModal, SlimScroll, PaginateBar } from '../../../../common-components';
+import { configurationSalary } from './fileConfigurationImportSalary';
+
+import XLSX from 'xlsx';
+
+class SalaryImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            rowError: [],
+            importData: [],
+            configData: this.convertConfigurationToString(configurationSalary),
+            importConfiguration: null,
+            limit: 100,
+            page: 0
         };
-        // this.fileHandler = this.fileHandler.bind(this);
-        // this.handlSubmit = this.handlSubmit.bind(this);
     }
 
-    // // function: notification the result of an action
-    // notifysuccess = (message) => toast(message);
-    // notifyerror = (message) => toast.error(message);
-    // notifywarning = (message) => toast.warning(message);
+    // Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea);
+    convertConfigurationToString = (data) => {
+        let sheets = data.sheets, bonus = data.bonus;
+        if (sheets.length > 1) {
+            sheets = sheets.map(x => `"${x}"`);
+            sheets = sheets.join(', ');
+        } else sheets = `"${sheets}"`
+        if (bonus.length > 1) {
+            bonus = bonus.map(x => `"${x}"`);
+            bonus = bonus.join(', ');
+        } else bonus = `"${bonus}"`
+        let stringData = `{
+            "${"Số dòng tiêu đề của bảng"}": ${data.rowHeader},
+            "${"Tên các sheet"}": [${sheets}],
+            "${"Tên tiêu đề ứng với mã số nhân viên"}": "${data.employeeNumber}",
+            "${"Tên tiêu để ứng với họ và tên"}": "${data.employeeName}",
+            "${"Tên tiêu để ứng với tháng"}": "${data.month}",
+            "${"Tên tiêu để ứng với năm"}": "${data.year}",
+            "${"Tên tiêu để ứng với tiền lương chính"}": "${data.mainSalary}",
+            "${"Tên tiêu để ứng với lương thưởng khác"}": [${bonus}]
+        }`
+        return stringData;
+    }
 
-    // async fileHandler(event) {
-    //     let file = event.target.files[0];
-    //     await readXlsxFile(file).then((rows) => {
-    //         var initCols = ["STT", "Tháng", "Năm", "Mã số nhân viên", "Họ tên", "Tiền lương chính"]
-    //         var cols = rows[0];
-    //         var colCheck = rows[0].slice(0, 6);
-    //         if (JSON.stringify(initCols) == JSON.stringify(colCheck)) {
-    //             rows.splice(0, 1);
-    //             this.setState({
-    //                 cols: cols,
-    //                 rows: rows,
-    //                 checkFile: true
-    //             })
-    //         } else {
-    //             this.setState({
-    //                 checkFile: false,
-    //                 cols: undefined,
-    //                 rows: undefined
-    //             })
-    //         }
-    //     })
-    //     var arrayMSNV = [], arraySalary = [];
-    //     for (let n in this.state.rows) {
-    //         let row = this.state.rows[n];
-    //         arrayMSNV[n] = row[3];
-    //         let month = "";
-    //         if (row[1].length === 2) {
-    //             month = row[1] + "-" + row[2];
-    //         } else {
-    //             month = "0" + row[1] + "-" + row[2];
-    //         }
-    //         arraySalary[n] = { employeeNumber: row[3], month: month }
-    //     }
-    //     await this.props.checkArrayMSNV({ arrayMSNV: arrayMSNV });
-    //     await this.props.checkArraySalary({ arraySalary: arraySalary });
+    // Chuyển đổi dữ liệu người dùng nhập vào ở textarea thành object để xử lý logic
+    convertStringToObject = (data) => {
+        try {
+            data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
+            data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
+            data = data.join(',');
+            if (data[data.length - 1] === ',') {    // xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
+                data = data.substring(0, data.length - 1);
+            }
+            data = JSON.parse(`{${data}}`);
+            let obj = {};
+            for (let index in data) {
+                if (index === "Số dòng tiêu đề của bảng") obj = { ...obj, rowHeader: data[index] };
+                if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
+                if (index === "Tên tiêu đề ứng với mã số nhân viên") obj = { ...obj, employeeNumber: data[index] };
+                if (index === "Tên tiêu để ứng với họ và tên") obj = { ...obj, employeeName: data[index] };
+                if (index === "Tên tiêu để ứng với tháng") obj = { ...obj, month: data[index] };
+                if (index === "Tên tiêu để ứng với năm") obj = { ...obj, year: data[index] };
+                if (index === "Tên tiêu để ứng với tiền lương chính") obj = { ...obj, mainSalary: data[index] };
+                if (index === "Tên tiêu để ứng với lương thưởng khác") obj = { ...obj, bonus: data[index] };
+            }
+            return obj
+        } catch (error) {
+            return null
+        }
+    }
 
-    // }
-    // handleCloseModal = () => {
-    //     this.setState({
-    //         checkFile: undefined,
-    //         cols: undefined,
-    //         rows: undefined
-    //     });
-    //     document.getElementById("formImportSalary").reset();
-    //     window.$(`#modal-importFileSalary`).modal("hide");
-    // }
-    // handlSubmit() {
-    //     this.props.importSalary({ rows: this.state.rows, cols: this.state.cols });
-    //     document.getElementById("formImportSalary").reset();
-    //     window.$(`#modal-importFileSalary`).modal("hide");
-    // }
+    // bắt sự kiện thây đổi (textarea);
+    handleChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            configData: value,
+            importConfiguration: this.convertStringToObject(value) !== null ?
+                this.convertStringToObject(value) : this.state.importConfiguration,
+        })
+    }
+    // bắt xự kiện chọn file import
+    handleChangeFileImport = (e) => {
+        const { importConfiguration } = this.state;
+        let configData = importConfiguration !== null ? importConfiguration : configurationSalary;
+        let sheets = configData.sheets;
+        let file = e.target.files[0];
+
+        if (file !== undefined) {
+            const reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = (evt) => {
+                let sheet_lists = [];
+                const fileImport = evt.target.result;
+                const workbook = XLSX.read(fileImport, { type: 'binary' });
+                //lấy danh sách các sheet của file import
+                let sheet_name_list = workbook.SheetNames;
+                // kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
+                for (let n in sheets) {
+                    sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
+                }
+                let importData = [], rowError = [];
+                sheet_lists.length !== 0 && sheet_lists.forEach(x => {
+                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
+                    var indexEmployeeName, indexEmployeenumber, indexMonth, indexYear, indexMainSalary, indexBouns = [];
+                    // lấy index của các tiều đề cột mà người dùng muốn import
+                    for (let i = 0; i < Number(configData.rowHeader); i++) {
+                        data[i].forEach((x, index) => {
+                            if (x !== null) {
+                                if (x.trim().toLowerCase() === configData.employeeName.trim().toLowerCase())
+                                    indexEmployeeName = index;
+                                if (x.trim().toLowerCase() === configData.employeeNumber.trim().toLowerCase())
+                                    indexEmployeenumber = index;
+                                if (x.trim().toLowerCase() === configData.month.trim().toLowerCase())
+                                    indexMonth = index;
+                                if (x.trim().toLowerCase() === configData.year.trim().toLowerCase())
+                                    indexYear = index;
+                                if (x.trim().toLowerCase() === configData.mainSalary.trim().toLowerCase()) {
+                                    indexMainSalary = index;
+                                }
+                                configData.bonus.forEach((y, n) => {
+                                    if (x.trim().toLowerCase() === y.trim().toLowerCase()) {
+                                        indexBouns[n] = index
+                                    }
+                                })
+                            }
+                        }
+                        )
+                    }
+
+
+                    // convert dữ liệu thành dạng array json mong muốn để gửi lên server
+                    data.splice(0, Number(configData.rowHeader));
+                    let dataConvert = [];
+                    data.forEach(x => {
+                        if (x[indexEmployeenumber] !== null) {
+                            let mainSalary = x[indexMainSalary];
+                            let employeeNumber = x[indexEmployeenumber];
+                            let month = x[indexMonth] !== null ? Number(x[indexMonth]).toString() : null;
+                            let year = x[indexYear] !== null ? Number(x[indexYear]).toString() : null;
+                            let employeeName = x[indexEmployeeName];
+                            let bonus = [];
+                            indexBouns.forEach((y, indexs) => {
+                                if (x[y] !== null) {
+                                    bonus = [...bonus, { nameBonus: configData.bonus[indexs], number: Number(x[y]) }]
+                                }
+
+                            })
+                            if (month !== null && month.length === 2 && year !== null) {
+                                month = month + "-" + year;
+                            } else if (month !== null && month.length === 1 && year !== null) {
+                                month = "0" + month + "-" + year;
+                            } else month = null;
+                            dataConvert = [...dataConvert, { mainSalary, employeeNumber, month, employeeName, bonus }]
+                        }
+                    })
+                    importData = importData.concat(dataConvert);
+                })
+
+                importData = importData.map((x, index) => {
+                    let errorAlert = [];
+                    if (x.employeeNumber === null || x.employeeName === null || x.month === null) {
+                        rowError = [...rowError, index + 1]
+                        x = { ...x, error: true }
+                    }
+                    if (x.employeeNumber === null)
+                        errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                    if (x.employeeName === null)
+                        errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+                    if (x.month === null)
+                        errorAlert = [...errorAlert, 'Tháng và năm tính lương không được để trống'];
+                    x = { ...x, errorAlert: errorAlert }
+                    return x;
+                })
+                this.setState({
+                    importData: importData,
+                    rowError: rowError
+                })
+            };
+        }
+    }
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+    }
+
+    isFormValidated = () => {
+        if (this.state.rowError.length === 0) {
+            return true
+        } return false
+    }
+
+    save = () => {
+
+    }
+
     render() {
-        // var arrayMSNV = this.props.employeesManager.checkArrayMSNV;
-        // var arraySalary = this.props.salary.checkArraySalary;
-        // var arrayCheck = [];
-        // if (arraySalary !== [] && arrayMSNV !== []) {
-        //     arrayCheck = arraySalary.concat(arrayMSNV);
-        // }
+        let formater = new Intl.NumberFormat();
+        const { translate } = this.props;
+        const { importData, configData, importConfiguration, rowError, limit, page } = this.state;
+        let otherSalary = importConfiguration !== null ? importConfiguration.bonus : configurationSalary.bonus;
+
+        var pageTotal = (importData.length % limit === 0) ?
+            parseInt(importData.length / limit) :
+            parseInt((importData.length / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
+
+        let importDataCurrentPage = importData.slice(page, page + limit);
         return (
-            <div></div>
-    //         <div className="modal modal-full fade" id="modal-importFileSalary" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    //             <div className="modal-dialog-full">
-    //                 <div className="modal-content">
-    //                     <div className="modal-header">
-    //                         <button type="button" className="close" onClick={() => this.handleCloseModal()}>
-    //                             <span aria-hidden="true">×</span></button>
-    //                         <h4 className="modal-title">Thêm nhiều bảng lương:</h4>
-    //                     </div>
-    //                     <div className="modal-body" >
-    //                         <div className="col-md-12">
-    //                             <form id="formImportSalary">
-    //                                 <div className="form-group">
-    //                                     <label htmlFor="employeeNumber">Chọn file Import:</label>
-    //                                     <input type="file" className="form-control" accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={this.fileHandler} />
-    //                                 </div>
-    //                             </form>
-    //                             {this.state.checkFile !== undefined && this.state.checkFile === false &&
-    //                                 <span className="text-red">File đã chọn không đúng chuẩn mẫu</span>
-    //                             }
-    //                         </div>
-    //                         {
-    //                             this.state.cols !== undefined &&
-    //                             <React.Fragment>
-    //                                 <div className="box-header col-md-12" style={{ paddingLeft: 15 }}>
-    //                                     <h3 className="box-title">Danh sách bảng lương: </h3>
-    //                                 </div>
-    //                                 <div className="timekeeping col-md-12">
-    //                                     {
-    //                                         arrayCheck.length !== 0 && <span className="text-red"> Lỗi dữ liệu ở dòng: {arrayCheck.map(row => {
-    //                                             var newRow = parseInt(row) + 1;
-    //                                             return " " + newRow + ","
-    //                                         })}</span>
-    //                                     }
-    //                                     <table className="table table-striped table-bordered table-hover">
-    //                                         <thead>
-    //                                             <tr>
-    //                                                 {this.state.cols.map((col, index) => (
-    //                                                     <td key={index} style={{ width: 90 }}><b>{col}</b></td>
-    //                                                 ))}
-    //                                             </tr>
-    //                                         </thead>
-    //                                         <tbody>
-    //                                             {this.state.rows.map((row, index) => {
-    //                                                 if (arrayMSNV === [] && arraySalary === []) {
-    //                                                     return <tr key={index} className={index}>
-    //                                                         {
-    //                                                             row.map((data, indexs) => (
-    //                                                                 <td key={indexs}>{data}</td>
-    //                                                             ))
-    //                                                         }
-    //                                                     </tr>
-    //                                                 } else {
-    //                                                     var checkMSNV = false, checkSalary = false;
-    //                                                     for (let n in arrayMSNV) {
-    //                                                         if (index === arrayMSNV[n]) {
-    //                                                             checkMSNV = true;
-    //                                                         }
-    //                                                     }
-    //                                                     for (let i in arraySalary) {
-    //                                                         if (index === arraySalary[i]) {
-    //                                                             checkSalary = true;
-    //                                                         }
-    //                                                     }
-    //                                                     if (checkMSNV === true) {
-    //                                                         return <tr key={index} className={index} style={{ color: "red" }} title="Mã số nhân viên không tồn tại">
-    //                                                             {
-    //                                                                 row.map((data, indexs) => (
-    //                                                                     <td key={indexs}>{data}</td>
-    //                                                                 ))
-    //                                                             }
-    //                                                         </tr>
-    //                                                     } else if (checkSalary === true) {
-    //                                                         return <tr key={index} className={index} style={{ color: "red" }} title="Tháng lương nhân viên đã tồn tại">
-    //                                                             {
-    //                                                                 row.map((data, indexs) => (
-    //                                                                     <td key={indexs}>{data}</td>
-    //                                                                 ))
-    //                                                             }
-    //                                                         </tr>
-    //                                                     } else {
-    //                                                         return <tr key={index} className={index}>
-    //                                                             {
-    //                                                                 row.map((data, indexs) => (
-    //                                                                     <td key={indexs}>{data}</td>
-    //                                                                 ))
-    //                                                             }
-    //                                                         </tr>
-    //                                                     }
-    //                                                 }
-    //                                             }
-    //                                             )}
-    //                                         </tbody>
-    //                                     </table>
-    //                                 </div>
-    //                             </React.Fragment>
-    //                         }
+            <React.Fragment>
+                {/* {showButton && <ButtonModal modalID={`modal_import_file_${id}`} button_name="Import file excel" />} */}
+                <DialogModal
+                    modalID={`modal_import_file`} isLoading={false}
+                    formID={`form_import_file`}
+                    title='Thêm dữ liệu bằng việc Import file excel'
+                    func={this.save}
+                    disableSubmit={!this.isFormValidated()}
+                    size={75}
+                >
+                    <form className="form-group" id={`form_import_file`}>
+                        <button type="button" data-toggle="collapse" data-target="#confic_import_file" className="pull-right"
+                            style={{ border: "none", background: "none", padding: 0 }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
 
-    //                     </div>
-    //                     <div className="modal-footer">
-    //                         <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>Đóng</button>
-    //                         {
-    //                             (arrayMSNV.length === 0 && arraySalary.length === 0) ?
-    //                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={this.handlSubmit} title="Thêm nhiều bảng lương">Import</button> :
-    //                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={this.handlSubmit} title="Thêm nhiều bảng lương" disabled>Import</button>
-    //                         }
+                        <div id="confic_import_file" className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Cấu hình file import</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse"
+                                        data-target={`#confic_import_file`} ><i className="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div className="box-body row">
+                                <div className="form-group col-sm-12 col-xs-12">
+                                    <textarea className="form-control" rows="10" name="reason"
+                                        value={configData} onChange={this.handleChange}></textarea>
+                                </div>
+                                <div className="form-group col-sm-12 col-xs-12">
+                                    {
+                                        importConfiguration !== null && (
+                                            <React.Fragment>
+                                                <label>Cấu hình file import của bạn như sau:</label><br />
+                                                <span>File import có</span>
+                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.rowHeader}&nbsp;</span>
+                                                <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
+                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.sheets.length > 1 ? importConfiguration.sheets.join(', ') : importConfiguration.sheets}</span>
 
+                                                <div id="croll-table" style={{ marginTop: 5 }}>
+                                                    <table id="importConfig" className="table table-bordered table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tên các thuộc tính</th>
+                                                                <th>Mã số nhân viên</th>
+                                                                <th>Tên nhân viên</th>
+                                                                <th>Tháng</th>
+                                                                <th>Năm</th>
+                                                                <th>Tiền lương chính</th>
+                                                                {importConfiguration.bonus.length !== 0 &&
+                                                                    importConfiguration.bonus.map((x, index) => (
+                                                                        <React.Fragment key={index}>
+                                                                            <th>{x}</th>
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Tiêu đề tương ứng</th>
+                                                                <td>{importConfiguration.employeeNumber}</td>
+                                                                <td>{importConfiguration.employeeName}</td>
+                                                                <td>{importConfiguration.month}</td>
+                                                                <td>{importConfiguration.year}</td>
+                                                                <td>{importConfiguration.mainSalary}</td>
+                                                                {importConfiguration.bonus.length !== 0 &&
+                                                                    importConfiguration.bonus.map((x, index) => (
+                                                                        <React.Fragment key={index}>
+                                                                            <td>{x}</td>
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                }
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
 
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
+                                            </React.Fragment>
+                                        )
+                                    }
+                                    <SlimScroll outerComponentId="croll-table" innerComponentId="importConfig" innerComponentWidth={1000} activate={true} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <div className="form-group col-md-8 col-xs-12" style={{ padding: 0 }}>
+                                <label>Chọn file excel cần import</label>
+                                <input type="file" className="form-control"
+                                    accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    onChange={this.handleChangeFileImport} />
+                            </div>
+                            <div className="form-group col-md-4 col-xs-12">
+                                <label></label>
+                                <a className='pull-right' href="" target="_blank" style={{ paddingTop: 20 }}
+                                    download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                            </div>
+                        </div>
+                        <div className="form-group col-md-12 col-xs-12" style={{ padding: 0 }}>
+                            {
+                                importDataCurrentPage.length !== 0 && (
+                                    <React.Fragment>
+                                        {rowError.length !== 0 && (
+                                            <React.Fragment>
+                                                <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
+                                            </React.Fragment>
+                                        )}
+                                        <div id="croll-table-import">
+                                            <table id="importData" className="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>STT</th>
+                                                        <th>Mã số nhân viên</th>
+                                                        <th>Tên nhân viên</th>
+                                                        <th>Tháng lương</th>
+                                                        <th>Tiền lương chính</th>
+                                                        {otherSalary.length !== 0 &&
+                                                            otherSalary.map((x, index) => (
+                                                                <React.Fragment key={index}>
+                                                                    <th>{x}</th>
+                                                                </React.Fragment>
+                                                            ))
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        importDataCurrentPage.map((x, index) => {
+                                                            return (
+                                                                <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
+                                                                    <td>{page + index + 1}</td>
+                                                                    <td>{x.employeeNumber}</td>
+                                                                    <td>{x.employeeName}</td>
+                                                                    <td>{x.month}</td>
+                                                                    <td>{formater.format(parseInt(x.mainSalary))}</td>
+                                                                    {otherSalary.length !== 0 &&
+                                                                        otherSalary.map((y, index) => {
+                                                                            let number = null;
+                                                                            x.bonus.forEach(b => {
+                                                                                if (y.trim().toLowerCase() === b.nameBonus.trim().toLowerCase()) {
+                                                                                    number = formater.format(parseInt(b.number))
+                                                                                }
+                                                                            })
+                                                                            return <td>{number}</td>
+                                                                        })
+                                                                    }
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </React.Fragment>
+                                )}
+                        </div>
+                        <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    </form>
+                </DialogModal>
+            </React.Fragment >
         );
     }
 };
 
 function mapState(state) {
-    const { salary, employeesManager } = state;
-    return { salary, employeesManager };
+    const { salary } = state;
+    return { salary };
 };
 
 const actionCreators = {
-    // createNewSalary: SalaryActions.createNewSalary,
-    // checkArrayMSNV: EmployeeManagerActions.checkArrayMSNV,
-    // checkArraySalary: SalaryActions.checkArraySalary,
-    // importSalary: SalaryActions.importSalary,
 };
 
-const importSalary = connect(mapState, actionCreators)(withTranslate(SalaryImportFrom));
-export { importSalary as SalaryImportFrom };
+const importExcel = connect(mapState, actionCreators)(withTranslate(SalaryImportForm));
+export { importExcel as SalaryImportForm };

@@ -2,6 +2,7 @@ const { OrganizationalUnit, User, UserRole, Role } = require('../../../models').
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
+const DashboardService = require('../../kpi/evaluation/dashboard/dashboard.service');
 
 /**
  * Lấy danh sách tất cả user trong 1 công ty
@@ -244,12 +245,26 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 
 /**
- * Lấy user trong một phòng ban
+ * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ
  */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var department = await OrganizationalUnit.findById(departmentId);
+    var departmentIds = departmentId.split(',');
 
-    return _getAllUsersInOrganizationalUnit(department);
+    if(departmentIds.length === 1) {
+        var department = await OrganizationalUnit.findById(departmentId);
+
+        return _getAllUsersInOrganizationalUnit(department);
+    } else {
+        var users = [];
+        
+        for(var i=0; i<departmentIds.length; i++) {
+            let department = await OrganizationalUnit.findById(departmentIds[i]);
+            console.log(departmentIds[i])
+            users = users.concat(await _getAllUsersInOrganizationalUnit(department));
+        }
+
+        return users;
+    }
 }
 
 /* lấy tất cả các user cùng phòng ban với user hiện tại
@@ -324,14 +339,111 @@ exports.checkUserExited = async (email) => {
  */
 exports.getOrganizationalUnitsOfUser = async (userId) => {
     const roles = await UserRole.find({ userId });
-    const newRoles = roles.map( role => role.roleId);
+    const newRoles = roles.map( role => role.roleId.toString());
     const departments = await OrganizationalUnit.find({
         $or: [
-            {'dean': { $in: newRoles }}, 
-            {'viceDean':{ $in: newRoles }}, 
-            {'employee':{ $in: newRoles }}
+            {'deans': { $in: newRoles }}, 
+            {'viceDeans':{ $in: newRoles }}, 
+            {'employees':{ $in: newRoles }}
         ]  
     });
 
     return departments;
+}
+/**
+ * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
+ * @getAllUserInCompany = true khi muốn lấy tất cả người dùng trong tất cả đơn vị của 1 công ty
+ * @id Id công ty
+ * @unitID Id của của đơn vị cần lấy đơn vị con
+ */
+exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=false) => {
+    //Lấy tất cả các đơn vị con của 1 đơn vị
+    var data;
+
+    if(!getAllUserInCompany)
+    {
+        
+        var organizationalUnit = await OrganizationalUnit.findById(unitId);
+        data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
+    }
+    //Lấy tất nhan vien trong moi đơn vị trong công ty
+    if(getAllUserInCompany) {
+        
+        const allUnits = await OrganizationalUnit.find({ company: id });    
+        const newData = allUnits.map( department => {return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            dean:department.dean.toString(),
+            viceDean:department.viceDean.toString(),
+            employee:department.employee.toString(),
+            parent_id: department.parent !== null ? department.parent.toString() : null
+            }
+        });
+        return  _getAllUsersInOrganizationalUnits(newData);
+    }
+
+    var queue=[];
+    var departments = [];
+    //BFS tìm tât cả đơn vị con-hàm của Đức
+    departments.push(data);
+    queue.push(data);    
+    while(queue.length > 0){
+        var v = queue.shift();
+        if(v.children){
+         for(var i = 0; i < v.children.length; i++){
+             var u = v.children[i];
+             queue.push(u);
+             departments.push(u);
+
+         }
+     }
+    }
+    //Lấy tất cả user của từng đơn vị
+    var userArray=[];
+    userArray=await _getAllUsersInOrganizationalUnits(departments);
+    return userArray;
+   
+}
+
+/**
+ * Hàm tiện ích dùng trong service ở trên 
+ * Khác với hàm bên module User: nhận vào 1 mảng các department và trả về 1 mảng với mỗi ptu là tất cả các nhân viên trong từng 1 phòng ban
+ */
+_getAllUsersInOrganizationalUnits = async (data) => {
+    var userArray=[];
+    for(let i= 0;i<data.length;i++)
+    { 
+        var department=data[i];
+        var userRoles = await UserRole
+        .find({ roleId: {$in: [department.dean, department.viceDean, department.employee]}})
+        .populate({path: 'userId', select: 'name'})
+    
+        var tmp = await Role.find({_id: {$in: [department.dean, department.viceDean, department.employee]}}, {name: 1});
+        var roles = {};
+        tmp.forEach(item => {
+        if (item._id.equals(department.dean))
+            roles.dean = item;
+        else if (item._id.equals(department.viceDean))
+            roles.viceDean = item;
+        else if (item._id.equals(department.employee))
+            roles.employee = item;
+        })
+
+        let deans=[], viceDeans=[], employees=[];
+        userRoles.forEach((item) => {
+        if (item.roleId.equals(department.dean) && item.userId){
+            deans.push(item.userId);
+        } else if (item.roleId.equals(department.viceDean) && item.userId){
+            viceDeans.push(item.userId);
+        } else if (item.roleId.equals(department.employee) &&  item.userId){
+            employees.push(item.userId);
+        }
+        });
+
+    var users = {deans: deans, viceDeans: viceDeans, employees: employees, roles: roles,department:department.name};
+    userArray.push(users)
+    }
+     
+    return userArray;
 }

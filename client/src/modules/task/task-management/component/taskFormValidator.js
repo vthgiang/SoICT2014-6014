@@ -44,12 +44,13 @@ function validateTaskStartDate(value) {
 
     if (value.trim() === ""){
         msg = "Hãy chọn ngày bắt đầu công việc";
-    } else {
-        var pattern = /(\d{2})\-(\d{2})\-(\d{4})/; 
-        var date = new Date(value.replace(pattern,'$3-$2-$1'));
-        if (date < Date.now())
-            msg = "Thời gian bắt đầu không thể trước ngày hôm nay!";
-    }
+    } 
+    // else {
+        // var pattern = /(\d{2})\-(\d{2})\-(\d{4})/; 
+        // var date = new Date(value.replace(pattern,'$3-$2-$1'));
+        // if (date < Date.now())
+        //     msg = "Thời gian bắt đầu không thể trước ngày hôm nay!";
+    // }
     return msg;
 }
 

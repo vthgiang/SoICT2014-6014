@@ -49,6 +49,13 @@ class KPIUnitManager extends Component {
             });
         
     }
+    checkStatusKPI = (status) => {
+        if (status === 0) {
+            return "Đang thiết lập";
+        } else if (status === 1) {
+            return "Đã kích hoạt";
+        }
+    }
     handleEndDateChange = (value) => {
         // var value = e.target.value;
         this.setState(state => {
@@ -147,11 +154,8 @@ class KPIUnitManager extends Component {
                 showModalCopy: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
+
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
@@ -239,7 +243,7 @@ class KPIUnitManager extends Component {
                                 
                                     id={`select-status-kpi`}
                                     className="form-control select2"
-                                    items = {[{value: 3, text: 'Tất cả trạng thái'} ,{ value: 2, text: 'Đã kết thúc' }, { value: 1, text: 'Đang hoạt động' },{ value: 0, text:'Chưa kích hoạt'} ]}
+                                    items = {[{value: -1, text: 'Tất cả trạng thái'}, { value: 0, text:'Đang thiết lập'}, { value: 1, text: 'Đã kích hoạt' }, ]}
                                     onChange={this.handleStatus}
                                     style={{width: "100%"}}
                                     value={status}
@@ -254,7 +258,7 @@ class KPIUnitManager extends Component {
                     </div>
 
                     <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
-                        columnArr={['Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
+                        columnArr={['Người tạo', 'Thời gian', 'Trạng thái', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
                         limit={this.state.perPage}
                         setLimit={this.setLimit} hideColumnOption={true} />
                     
@@ -263,6 +267,7 @@ class KPIUnitManager extends Component {
                             <tr>
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
+                                <th title="Trạng thái">Trạng thái</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Kết quả đánh giá (Điểm phê duyệt - Điểm hệ thống- Điểm tự đánh giá)">Kết quả đánh giá</th>
                                 {/* <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
@@ -281,6 +286,7 @@ class KPIUnitManager extends Component {
                             <tr key={index+1}>
                                 <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.date)}</td>
+                                <td>{this.checkStatusKPI(item.status)}</td>
                                 <td>{item.kpis.length}</td>
                                 <td>{item.approvedPoint=== null ? "Chưa đánh giá" : `${item.approvedPoint}-${item.automaticPoint}-${item.employeePoint}`}</td>
                                 <td>
@@ -302,7 +308,7 @@ class KPIUnitManager extends Component {
                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}
                                     {this.state.showModalCopy === item._id ?
-                                    <ModalCopyKPIUnit kpiunit={item} /> : null}
+                                    <ModalCopyKPIUnit idunit={item.organizationalUnit._id} listkpi={listkpi} kpiunit={item} /> : null}
                                
                                     {/* {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a
                                         style={{ color: "navy" }} href="#abc" onClick={()=> this.props.refreshData(item._id)}

@@ -97,9 +97,9 @@ class DepartmentTreeView extends Component {
                         departmentName={currentRow.name}
                         departmentDescription={currentRow.description}
                         departmentParent={currentRow.parent_id}
-                        departmentDean={currentRow.dean}
-                        departmentViceDean={currentRow.viceDean}
-                        departmentEmployee={currentRow.employee}
+                        deans={currentRow.deans}
+                        viceDeans={currentRow.viceDeans}
+                        employees={currentRow.employees}
                     />
                 </React.Fragment>
             }
@@ -154,14 +154,14 @@ class DepartmentTreeView extends Component {
                     className="tf-nc w3-card-4 department" 
                     title={ data.name }
                 >
-                    <button style={{border: 'none', backgroundColor: 'white'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></button>
+                    <button title="Ẩn/hiện điều khiển" style={{border: 'none', backgroundColor: 'white'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></button>
                     {` ${data.name} `}
                     <div id={`department-setting-${data.id}`} className="row" style={{display: 'none', marginTop: '8px'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <a className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
+                        <a className="edit text-green" href="javascript:void(0)" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <a className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit')}><i className="material-icons">edit</i></a>
+                            <a className="edit text-yellow" href="javascript:void(0)" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">edit</i></a>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <DeleteNotification 

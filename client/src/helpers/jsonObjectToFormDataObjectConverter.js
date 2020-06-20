@@ -6,7 +6,7 @@ function buildFormData(formData, data, parentKey) {
             buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
         });
     } else {
-        const value = (data == null || data instanceof File) ? '' : data;
+        const value = (data === null || data instanceof File) ? '' : data;
         formData.append(parentKey, value);
     }
 }

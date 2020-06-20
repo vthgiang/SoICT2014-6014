@@ -16,16 +16,24 @@ export const createKpiSetService = {
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
-    approveEmployeeKpiSet
+    approveEmployeeKpiSet,
+    createComment,
+    editComment,
+    deleteComment,
+    createCommentOfComment,
+    editCommentOfComment,
+    deleteCommentOfComment
 };
 
 /** Lấy tập KPI cá nhân hiện tại */ 
 function getEmployeeKpiSet() {
     var id = getStorage("userId");
+    const role = getStorage("currentRole");
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
-        method: 'GET'
+        method: 'GET',
+        params: {role: role}
     }, false, true);
 }
 
@@ -106,4 +114,63 @@ function approveEmployeeKpiSet(id) {
         url: `${LOCAL_SERVER_API}/kpipersonals/approve/${id}`,
         method: 'PUT'
     }, true, true);
+}
+/**
+ * Tạo comment cho kpi set
+ */
+function createComment(data){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment`,
+        method:'POST',
+        data : data
+    },false,true)
+}
+/**
+ * Tạo comment cho kpi set
+ */
+function createCommentOfComment(data){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment`,
+        method:'POST',
+        data : data
+    },false,true)
+}
+
+/**
+ * Edit comment cho kpi set
+ */
+function editComment(id,data){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment/${id}`,
+        method:'PATCH',
+        data : data
+    },false,true)
+}
+/**
+ * Delete comment
+ */
+function deleteComment(id,idKPI){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment/${id}/${idKPI}`,
+        method:'DELETE',
+    },false,true)
+}
+/**
+ * Edit comment of comment
+ */
+function editCommentOfComment(id,data){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment/${id}`,
+        method: 'PATCH',
+        data: data
+    },false,true)
+}
+/**
+ * Delete comment of comment
+ */
+function deleteCommentOfComment(id,idKPI){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment/${id}/${idKPI}`,
+        method: 'DELETE',
+    },false,true)
 }

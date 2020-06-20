@@ -5,13 +5,14 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { createKpiSetActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
-
+import {performTaskAction} from '../../../../task/task-perform/redux/actions'
 import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal';
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 import Swal from 'sweetalert2';
-
-import { SlimScroll } from '../../../../../common-components';
+import { getStorage } from '../../../../../config'
+import { SlimScroll} from '../../../../../common-components';
+import {Comment} from './comment'
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 
@@ -20,14 +21,15 @@ import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common
 var translate = '';
 class CreateEmployeeKpiSet extends Component {
     componentDidMount() {
-        this.props.getDepartment();//localStorage.getItem('id');
-        this.props.getEmployeeKpiSet()//localStorage.getItem('id');
+        this.props.getDepartment();
+        this.props.getEmployeeKpiSet()
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
     constructor(props) {
         super(props);
+        var idUser = getStorage("userId");
         translate = this.props.translate;
         this.state = {
             employeeKpiSet: {
@@ -42,7 +44,20 @@ class CreateEmployeeKpiSet extends Component {
             submitted: false,
             commenting: false,
             currentRole: localStorage.getItem("currentRole"),
-            fixTableWidth: false
+            fixTableWidth: false,
+            comment : {
+                creator: idUser,
+                description: '',
+                files: [],
+            },
+            newComment : {
+                description: ''
+            },
+            commentOfComment : {
+                creator: idUser,
+                description: '',
+                files: [],
+            }
         };
     }
 
@@ -304,13 +319,11 @@ class CreateEmployeeKpiSet extends Component {
 
     handleCheckEmployeeKpiSetStatus = (employeeKpiSetStatus) => {
         if (employeeKpiSetStatus === 0) {
-            return <span style={{ color: "#2b035e" }}><i className="fa fa-cogs" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')}</span>;
+            return <span style={{fontWeight: "bold"}} >{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')} <i className="fa fa-cogs" style={{ fontSize: "16px"}}></i></span>;
         } else if (employeeKpiSetStatus === 1) {
-            return <span style={{ color: "#FFC107" }}><i className="fa fa-hourglass-half" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')}</span>;
+            return <span style={{fontWeight: "bold"}} className="text-danger">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')} <i className="fa fa-hourglass-half" style={{ fontSize: "16px"}}></i></span>;
         } else if (employeeKpiSetStatus === 2) {
-            return <span style={{ color: "#00EB1B" }}><i className="fa fa-check-circle" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')}</span>;
-        } else if (employeeKpiSetStatus === 3) {
-            return <span style={{ color: "#270700" }}><i className="fa fa-lock" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.finished')}</span>;
+            return <span style={{fontWeight: "bold"}} className="text-success">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')} <i className="fa fa-check-circle" style={{ fontSize: "16px"}}></i></span>;
         }
     }
 
@@ -363,6 +376,88 @@ class CreateEmployeeKpiSet extends Component {
         }
     }
 
+    onFilesChange  = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                comment: {
+                    ...state.comment,
+                    files: files,
+                }
+            }
+        })
+    }
+    onCommentFilesChange  = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                commentOfComment: {
+                    ...state.commentOfComment,
+                    files: files,
+                }
+            }
+        })
+    }
+    submitComment = async (id) => {
+        var { comment } = this.state;
+        const data = new FormData();
+        data.append("idKPI", id);
+        data.append("creator", comment.creator);
+        data.append("description", comment.description);
+        comment.files && comment.files.forEach(x=>{
+            data.append("files", x);
+        })
+        console.log(comment)
+        if(comment.creator && comment.description){
+            this.props.createComment(data);
+        }
+        // Reset state cho việc thêm mới action
+        await this.setState(state => {
+            return {
+                ...state,
+                comment: {
+                    ...state.comment,
+                    description: "",
+                    files: [],
+                },
+            }
+        })
+    }
+    submitCommentOfComment = async (id) => {
+        var { commentOfComment } = this.state;
+        const data = new FormData();
+        data.append("idComment", id);
+        data.append("creator", commentOfComment.creator);
+        data.append("description", commentOfComment.description);
+        commentOfComment.files && commentOfComment.files.forEach(x=>{
+            data.append("files", x);
+        })
+        if(commentOfComment.creator && commentOfComment.description){
+            console.log("Đỗ Tiến Thành")
+            this.props.createCommentOfComment(data);
+        }
+        // Reset state cho việc thêm mới action
+        await this.setState(state => {
+            return {
+                ...state,
+                commentOfComment: {
+                    ...state.commentOfComment,
+                    description: "",
+                    files: [],
+                },
+            }
+        })
+    }
+
+    editComment = async (id) => {
+        let {newComment} = this.state;
+        if(newComment.description){
+            this.props.editComment(id,newComment)
+        }
+    }
+    handleDeleteComment = (id) => {
+        this.props.deleteComment(id,this.props.createEmployeeKpiSet.currentKPI._id)
+    }
     render() {
         var unitList, currentUnit, currentKPI, userdepartments, items;
         const { commenting, editing, editingTarget } = this.state;
@@ -375,6 +470,7 @@ class CreateEmployeeKpiSet extends Component {
                 || item.employee === this.state.currentRole
                 || item.viceDean === this.state.currentRole));
         }
+        
         if (createEmployeeKpiSet.currentKPI) currentKPI = createEmployeeKpiSet.currentKPI;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
@@ -430,8 +526,9 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 <div className="" style={{ marginBottom: "10px" }}>
-                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})</h4>
-                                    <span style={{ float: "right" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
+                                    <h4 style={{ display: "inline", fontWeight: "600" }}>
+                                        {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})
+                                    </h4>
                                 </div>
                                 
                                 {editing ? userdepartments && userdepartments.deans &&
@@ -470,19 +567,21 @@ class CreateEmployeeKpiSet extends Component {
                                 }
 
                                 {editing === false &&
-                                    <div className="form group">
-                                        <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')}: </span>
+                                    <div>
+                                        <span>{currentKPI.kpis.length} mục tiêu - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')} </span>
                                         <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                         {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
                                             <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.not_satisfied')}</span>
                                             : <span className="text-success" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.satisfied')}</span>
                                         }
+                                        <span> - </span>
+                                        {this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}
                                     </div>
                                 }
 
                                 <div>
                                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')} ({currentKPI.kpis.reduce(sum => sum + 1, 0)})</h4>
+                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
                                     }
 
                                     <SlimScroll outerComponentId="kpi_table" innerComponentId="kpipersonal_table" innerComponentWidth="992px" activate={this.state.fixTableWidth}/>
@@ -494,7 +593,7 @@ class CreateEmployeeKpiSet extends Component {
                                                     <th title="Tên mục tiêu" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
                                                     <th title="Mục tiêu cha" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
                                                     <th title="Tiêu chí đánh giá" className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
-                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.max_score')}</th>
+                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
                                                     <th title="Trạng thái" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
                                                     <th title="Hành động" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
                                                 </tr>
@@ -526,31 +625,12 @@ class CreateEmployeeKpiSet extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                
-                                {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                    <div>
-                                        {commenting ? 
-                                            <div>
-                                                <button className="btn btn-danger" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.cancel_feedback')}</button>
-                                                <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.send_feedback')}</button>
-                                            </div>
-                                            : <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</button>
-                                        }
+                                <div style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                                    <h4 style={{ display: "inline-block", fontWeight: "600"}}>Trao đổi</h4> 
+                                    <div className="col-xs-12 col-sm-12 col-md-6">
+                                        <Comment currentKPI = {currentKPI}/>
                                     </div>
-                                }
-
-                                {commenting && 
-                                    <div className="col-xs-12">
-                                        <form>
-                                            <div className="form-group">
-                                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</label>
-                                                <div className='form-group'>
-                                                    <textarea type="text" className='form-control' id="inputname" name="reason" />
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                }
+                                </div>
                             </div>
                             : <div className="col-xs-12">
                                 <div style={{marginLeft: "-10px"}}>
@@ -586,8 +666,8 @@ class CreateEmployeeKpiSet extends Component {
 }
 
 function mapState(state) {
-    const { department, createEmployeeKpiSet, user, createKpiUnit } = state;
-    return { department, createEmployeeKpiSet, user, createKpiUnit };
+    const { department, createEmployeeKpiSet, user, createKpiUnit,auth } = state;
+    return { department, createEmployeeKpiSet, user, createKpiUnit,auth };
 }
 
 const actionCreators = {
@@ -598,8 +678,13 @@ const actionCreators = {
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
-
+    createComment : createKpiSetActions.createComment,
+    createCommentOfComment: createKpiSetActions.createCommentOfComment,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
+    editComment : createKpiSetActions.editComment,
+    deleteComment : createKpiSetActions.deleteComment,
+    downloadFile: performTaskAction.downloadFile
+    
 };
 
 const connectedCreateEmployeeKpiSet = connect( mapState, actionCreators )( withTranslate(CreateEmployeeKpiSet) );

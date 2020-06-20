@@ -5,7 +5,7 @@ const {  LogInfo,  LogError } = require('../../../../logs');
 /** Lấy tập KPI cá hiện hiện tại */  
 exports.getEmployeeKpiSet = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id);
+        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id, req.query.role);
         await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
         res.status(200).json({
             success: true,
@@ -190,4 +190,119 @@ exports.editEmployeeKpi = async (req, res) => {
     }
 }
 
+exports.createComment = async (req,res)=> {
+    try {
+        var files=[] ;
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comments = await EmployeeKpiSetService.createComment(req.body,files);
+        await LogInfo(req.user.email, ` create comment `,req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['create_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        
+    }
+}
 
+exports.createCommentOfComment = async (req,res)=> {
+    try {
+        var files=[] ;
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var comments = await EmployeeKpiSetService.createCommentOfComment(req.body,files);
+        await LogInfo(req.user.email, ` create comment `,req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['create_comment_of_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        //
+    }
+}
+
+exports.editComment = async (req,res)=> {
+    try {
+        var comments = await EmployeeKpiSetService.editComment(req.params,req.body);
+        console.log(comments)
+        await LogInfo(req.user.email, ` edit comment `,req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: true,
+            messages: ['edit_comment_fail'],
+            content: error
+        })
+    }
+}
+
+exports.deleteComment = async (req,res)=> {
+    try {
+        var comments = await EmployeeKpiSetService.deleteComment(req.params);
+        await LogInfo(req.user.email, ` delete comment `,req.user.company)
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_fail'],
+            content: error
+        })
+    }
+}
+
+exports.editCommentOfComment = async (req,res)=> {
+    try {
+        var comments = await EmployeeKpiSetService.editCommentOfComment(req.params,req.body);
+        await LogInfo(req.user.email, ` edit comment of comment `,req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_of_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: true,
+            messages: ['edit_comment_of_comment_fail'],
+            content: error
+        })
+    }
+}
+
+exports.deleteCommentOfComment = async (req,res)=> {
+    try {
+        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params);
+        await LogInfo(req.user.email, ` delete comment of comment `,req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_comment_of_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: true,
+            messages: ['delete_comment_of_comment_fail'],
+            content: error
+        })
+    }
+}

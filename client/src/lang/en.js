@@ -172,6 +172,11 @@ export default {
                 add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
                 delete_component_for_company_success: 'Xóa component thành công',
 
+                create_import_configuration_success:"Create import file configuration success",
+                create_import_configuration_faile:"Create import file configuration faile",
+                edit_import_configuration_success:"Edit import file configuration success",
+                edit_import_configuration_faile:"Edit import file configuration faile",
+
                 email_exist: 'Email này đã được sử dụng',
                 company_not_found: 'Không tìm thấy thông tin về công ty',
                 link_exist: 'Url cho link đã tồn tại',
@@ -459,6 +464,7 @@ export default {
             zoom_out: 'Zoom Out',
             zoom_in: 'Zoom In',
             add: 'Add',
+            edit_title: 'Edit organizational unit',
             add_title: 'Add new department',
             info: 'Department Information',
             name: 'Department name',
@@ -1182,6 +1188,7 @@ export default {
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail: "Can't edit archived status of task",
+                confirm_delete: 'This task cannot be deleted because it is in progress!',
 
                 responsible: 'Responsible',
                 accountable: 'Acountable',
@@ -1222,6 +1229,10 @@ export default {
 
                 name: "Name of task",
                 search_by_name: 'Search by name',
+
+                start_date: 'Start date',
+                end_date: 'End date',
+
                 search: "Search",
 
                 col_name: 'Name of task',
@@ -1385,7 +1396,7 @@ export default {
                         target_name: 'Target name',
                         parents_target: 'Parents target',
                         evaluation_criteria: 'Evalution criteria',
-                        max_score: 'Max score',
+                        weight: 'Weight',
                         status: 'Status',
                         action: 'Action',
                         not_initialize: 'No KPI have been initialized in ',

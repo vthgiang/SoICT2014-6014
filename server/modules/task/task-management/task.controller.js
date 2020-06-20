@@ -84,6 +84,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
         var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
         
@@ -117,6 +119,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(task);
@@ -151,6 +155,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var consultedTasks = await  TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(task);
@@ -184,6 +190,8 @@ exports.getPaginatedTasksCreatedByUser = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
         var creatorTasks = await  TaskManagementService.getPaginatedTasksCreatedByUser(task);
         await LogInfo(req.user.email, ` get task creator by user `,req.user.company)
@@ -216,6 +224,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
             priority: req.params.priority,
             special: req.params.special,
             name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
         };
 
         var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(task);
@@ -354,11 +364,16 @@ exports.getSubTask = async( req,res) =>{
 exports.editTaskByResponsibleEmployees = async (req, res) => {
     try {
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.accountableEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task
+            content: task.newTask
         })
     } catch (error) {
         await LogError(req.user.email, ` edit task `,req.user.company);
@@ -375,11 +390,16 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
 exports.editTaskByAccountableEmployees = async (req, res) => {
     try {
         var task = await TaskManagementService.editTaskByAccountableEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.responsibleEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task
+            content: task.newTask
         })
     } catch (error) {
         await LogError(req.user.email, ` edit task `,req.user.company);

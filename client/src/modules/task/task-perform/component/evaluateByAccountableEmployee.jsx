@@ -7,6 +7,8 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
+import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
@@ -228,12 +230,40 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 progress: value,
-                autoPoint: value,
+                // autoPoint: value,
                 errorOnProgress: this.validatePoint(value)
             }
         })
+        await this.handleChangeAutoPoint();
         // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
+
+    calcAutomaticPoint = () => {
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: this.state.date,
+            info: this.state.info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+
+        return automaticPoint;
+    }
+
+    handleChangeAutoPoint = async () => {
+        let automaticPoint = this.calcAutomaticPoint();
+        await this.setState( state => {
+            return {
+                ...state,
+                autoPoint: automaticPoint,
+                showAutoPointInfo: undefined
+            }
+        });
+    }
+
+
 
 // ====================================================================
 
@@ -392,6 +422,27 @@ class EvaluateByAccountableEmployee extends Component {
 
 // ==========================BEGIN HANDLE INFORMATION TASK=========================================
 
+    // handleChangeNumberInfo = async (e) => {
+    //     let value = parseInt(e.target.value);
+    //     let name = e.target.name;
+    //     await this.setState(state =>{
+    //         state.info[`${name}`] = {
+    //             value: value,
+    //             code: name,
+    //             type: 'Number'
+    //         }
+    //         return {
+    //             ...state,
+    //             // [name]: {
+    //             //     value: value,
+    //             //     code: name
+    //             // },
+    //             errorOnNumberInfo: this.validateNumberInfo(value)
+    //         }
+    //     })
+        
+    // } 
+
     handleChangeNumberInfo = async (e) => {
         let value = parseInt(e.target.value);
         let name = e.target.name;
@@ -403,13 +454,11 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
+        // console.log('handleChangeAutoPoint==============', this.calcAutomaticPoint());
+        await this.handleChangeAutoPoint();
     } 
 
     handleChangeTextInfo = async (e) => {
@@ -432,17 +481,17 @@ class EvaluateByAccountableEmployee extends Component {
         })
     }
 
-    handleDateChange = (value) => {
-        // let value = e.target.value;
-        this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDate: this.validateDate(value),
-                    date: value,
-                }
-            });
+    // handleDateChange = (value) => {
+    //     // let value = e.target.value;
+    //     this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 errorOnDate: this.validateDate(value),
+    //                 date: value,
+    //             }
+    //         });
         
-    }
+    // }
 
     handleInfoDateChange = (value, code) => {
         console.log('value', value);
@@ -573,7 +622,18 @@ class EvaluateByAccountableEmployee extends Component {
     handleDateChange = (value) => {
         // let value = e.target.value;
         let data = this.getData(value);
-       
+
+        let automaticPoint = data.automaticPoint;
+        let taskInfo = {
+            task: this.state.task,
+            progress: this.state.progress,
+            date: value,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(automaticPoint)) automaticPoint = undefined
+
         this.setState(state => {
                 return {
                     ...state,
@@ -583,7 +643,7 @@ class EvaluateByAccountableEmployee extends Component {
                     results: data.results,
                     status: data.statusOptions,
                     empPoint: data.empPoint,
-                    autoPoint: data.automaticPoint,
+                    autoPoint: automaticPoint,
                     task: data.task,
                     userId: data.userId,
                 }
@@ -620,6 +680,17 @@ class EvaluateByAccountableEmployee extends Component {
                 && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined)?true:false;
     }
     
+    handleShowAutomaticPointInfo = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showAutoPointInfo: 1
+            }
+        });
+        window.$(`#modal-automatic-point-info`).modal('show');
+
+    }
+
     save = () => {
         let {tasks} = this.props;
         let task = (tasks && tasks.task) && tasks.task.info;
@@ -734,7 +805,22 @@ class EvaluateByAccountableEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint}</span> </strong>
+                        <strong>Điểm tự động: &nbsp;
+                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                                {autoPoint !== undefined?autoPoint:"Chưa tính được"}
+                            </a> 
+                        </strong>
+                        {
+                            this.state.showAutoPointInfo === 1 && 
+                            <ModalShowAutoPointInfo
+                                task={this.state.task}
+                                progress={this.state.progress}
+                                date={this.state.date}
+                                info={this.state.info}
+                            />
+                        }
+                        {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
+
                         <br/>
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>
