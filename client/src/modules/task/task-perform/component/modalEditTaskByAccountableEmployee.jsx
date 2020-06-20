@@ -17,9 +17,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let userId = getStorage("userId");
 
-        let { tasks } = this.props;
+        let { task } = this.props;
+        // let { tasks } = this.props;
 
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let task = (tasks && tasks.task) && tasks.task.info;
 
         // khởi tạo state của task
 
@@ -33,24 +34,46 @@ class ModalEditTaskByAccountableEmployee extends Component {
         for(let i in taskInfo){
             if(taskInfo[i].type === "Date"){
                 if(taskInfo[i].value){
-                    console.log('======================this.formatDate(taskInfo[i].value)', this.formatDate(taskInfo[i].value));
-                    taskInfo[i].value = this.formatDate(taskInfo[i].value);
+                    info[`${taskInfo[i].code}`] = {
+                        value: this.formatDate(taskInfo[i].value),
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                    // taskInfo[i].value = this.formatDate(taskInfo[i].value);
                 } 
                 else {
-                    console.log('=========ELSSE=============', this.formatDate(Date.now()));
-                    taskInfo[i].value = this.formatDate(Date.now());
+                    info[`${taskInfo[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                    // taskInfo[i].value = this.formatDate(Date.now());
                 }
             }
             else if(taskInfo[i].type === "SetOfValues"){
                 let splitter = taskInfo[i].extra.split('\n');
-                taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
+                if(taskInfo[i].value){
+                    info[`${taskInfo[i].code}`] = {
+                        value: [taskInfo[i].value],
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                } else{
+                    info[`${taskInfo[i].code}`] = {
+                        value: [splitter[0]],
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                }
+                // taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
             }
-            info[`${taskInfo[i].code}`] = {
-                value: taskInfo[i].value,
-                code: taskInfo[i].code,
-                type: taskInfo[i].type
-            }
-            
+            else {
+                info[`${taskInfo[i].code}`] = {
+                    value: taskInfo[i].value,
+                    code: taskInfo[i].code,
+                    type: taskInfo[i].type
+                }
+            }            
         }
     
         let responsibleEmployees = task && task.responsibleEmployees.map(employee => { return employee._id });
@@ -693,7 +716,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     componentDidMount() {
-        this.props.getTaskById(this.props.id);
+        // this.props.getTaskById(this.props.id);
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
@@ -1009,7 +1032,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
+    // getTaskById: taskManagementActions.getTaskById,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
 }

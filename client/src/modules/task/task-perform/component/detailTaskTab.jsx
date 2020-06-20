@@ -541,6 +541,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEdit === this.props.id) && currentRole === "responsible" &&
                     <ModalEditTaskByResponsibleEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người thực hiện'
                         perform={`edit-${currentRole}`}
@@ -551,6 +552,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEdit === this.props.id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người phê duyệt'
                         perform={`edit-${currentRole}`}
@@ -561,6 +563,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người thực hiện'
                         perform='evaluate'
@@ -570,6 +573,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người phê duyệt'
                         perform='evaluate'
@@ -579,6 +583,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người hỗ trợ'
                         perform='evaluate'
@@ -590,6 +595,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEndTask === this.props.id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người thực hiện'
                         perform='stop'
@@ -599,6 +605,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEndTask === this.props.id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người phê duyệt'
                         perform='stop'
@@ -608,6 +615,7 @@ class DetailTaskTab extends Component {
                     (this.props.id && this.state.showEndTask === this.props.id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
+                        task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người hỗ trợ'
                         perform='stop'

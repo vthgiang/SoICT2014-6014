@@ -40,8 +40,9 @@ class EvaluateByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        let {task} = this.props;
+        // let {tasks} = this.props;
+        // let task = (tasks && tasks.task) && tasks.task.info;
         
         let evaluations;
         
@@ -68,27 +69,49 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let infoTask = task.taskInformations;
         for(let i in infoTask){
-
             if(infoTask[i].type === "Date"){
                 if(infoTask[i].value){
-                    infoTask[i].value = this.formatDate(infoTask[i].value);
-                } else if(!infoTask[i].filledByAccountableEmployeesOnly) {
-                    infoTask[i].value = this.formatDate(new Date());
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(infoTask[i].value),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = this.formatDate(infoTask[i].value);
+                } 
+                else if( !infoTask[i].filledByAccountableEmployeesOnly ) {
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoTask[i].type === "SetOfValues"){
                 let splitSetOfValues = infoTask[i].extra.split('\n');
-                if(infoTask[i].value) {
-                    infoTask[i].value = [infoTask[i].value];
-                } else if(!infoTask[i].filledByAccountableEmployeesOnly){
-                    infoTask[i].value = [splitSetOfValues[0]];
+                if(infoTask[i].value){
+                    info[`${infoTask[i].code}`] = {
+                        value: [infoTask[i].value],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = [infoTask[i].value];
+                }
+                else if(!infoTask[i].filledByAccountableEmployeesOnly){
+                    info[`${infoTask[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = [splitSetOfValues[0]];
                 }
             }
-            
-            info[`${infoTask[i].code}`] = {
-                value: infoTask[i].value,
-                code: infoTask[i].code,
-                type: infoTask[i].type
+            else {
+                info[`${infoTask[i].code}`] = {
+                    value: infoTask[i].value,
+                    code: infoTask[i].code,
+                    type: infoTask[i].type
+                }
             }
         }
         
@@ -112,26 +135,48 @@ class EvaluateByResponsibleEmployee extends Component {
                    
                     if(infoEval[i].type === "Date"){
                         if(infoEval[i].value){
-                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(infoEval[i].value),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(infoEval[i].value);
                         } 
                         else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
-                            infoEval[i].value = this.formatDate(Date.now());
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(Date.now()),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(Date.now());
                         } 
                     }
                     else if(infoEval[i].type === "SetOfValues"){
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if(infoEval[i].value){
-                            infoEval[i].value = [infoEval[i].value];
+                            info[`${infoEval[i].code}`] = {
+                                value: [infoEval[i].value],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [infoEval[i].value];
                         }
                         else if(!infoEval[i].filledByAccountableEmployeesOnly){
-                            infoEval[i].value = [splitSetOfValues[0]];
+                            info[`${infoEval[i].code}`] = {
+                                value: [splitSetOfValues[0]],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [splitSetOfValues[0]];
                         }
                     }
-                    info[`${infoEval[i].code}`] = {
-                        value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
+                    else {
+                        info[`${infoEval[i].code}`] = {
+                            value: infoEval[i].value,
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }         
                 }
             }
 
@@ -188,8 +233,8 @@ class EvaluateByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        this.props.getTaskById(this.props.id);
-        this.props.getEmployeeKpiSet();
+        // this.props.getTaskById(this.props.id);
+        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
     }
 
@@ -512,13 +557,13 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
+        const { task, point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // let items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
-        let task = (tasks && tasks.task)&& tasks.task.info;
+        // let task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
             <DialogModal
@@ -615,13 +660,13 @@ const mapState = (state) => {
     return { tasks, performtasks, kpimembers, KPIPersonalManager };
 }
 const getState = {
-    getTaskById: taskManagementActions.getTaskById,
-    createResult: performTaskAction.createResultTask,
-    editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask,
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    // getTaskById: taskManagementActions.getTaskById,
+    // createResult: performTaskAction.createResultTask,
+    // editResultTask: performTaskAction.editResultTask,
+    // editStatusOfTask: taskManagementActions.editStatusOfTask,
+    // getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    // getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
+    // getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
 }

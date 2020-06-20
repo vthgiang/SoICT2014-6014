@@ -34,8 +34,9 @@ class EvaluateByAccountableEmployee extends Component {
 
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let {tasks} = this.props;
+        let {task} = this.props;
+        // let task = (tasks && tasks.task) && tasks.task.info;
 
         let evaluations;
         
@@ -61,20 +62,64 @@ class EvaluateByAccountableEmployee extends Component {
         let infoEval = task.taskInformations;
         // var splitSetOfValues = [];
         for(let i in infoEval){
+            // if(infoEval[i].type === "Date"){
+            //     if(infoEval[i].value){
+            //         infoEval[i].value = this.formatDate(infoEval[i].value);
+            //     } else infoEval[i].value = this.formatDate(Date.now());
+            // }
+            // else if(infoEval[i].type === "SetOfValues"){
+            //     let splitSetOfValues = infoEval[i].extra.split('\n');
+            //     infoEval[i].value = infoEval[i].value === undefined ? [splitSetOfValues[0]] : [infoEval[i].value];
+            // }
+            // info[`${infoEval[i].code}`] = {
+            //     value: infoEval[i].value,
+            //     code: infoEval[i].code,
+            //     type: infoEval[i].type
+            // }
             if(infoEval[i].type === "Date"){
                 if(infoEval[i].value){
-                    infoEval[i].value = this.formatDate(infoEval[i].value);
-                } else infoEval[i].value = this.formatDate(Date.now());
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(infoEval[i].value),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = this.formatDate(infoEval[i].value);
+                } 
+                else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = this.formatDate(Date.now());
+                } 
             }
             else if(infoEval[i].type === "SetOfValues"){
                 let splitSetOfValues = infoEval[i].extra.split('\n');
-                infoEval[i].value = infoEval[i].value === undefined ? [splitSetOfValues[0]] : [infoEval[i].value];
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: [infoEval[i].value],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = [infoEval[i].value];
+                }
+                else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                    info[`${infoEval[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = [splitSetOfValues[0]];
+                }
             }
-            info[`${infoEval[i].code}`] = {
-                value: infoEval[i].value,
-                code: infoEval[i].code,
-                type: infoEval[i].type
-            }
+            else {
+                info[`${infoEval[i].code}`] = {
+                    value: infoEval[i].value,
+                    code: infoEval[i].code,
+                    type: infoEval[i].type
+                }
+            }         
                 
         }
 
@@ -143,24 +188,67 @@ class EvaluateByAccountableEmployee extends Component {
 
             if(chkHasInfo){
                 for(let i in infoEval){
+                    // if(infoEval[i].type === "Date"){
+                    //     if(infoEval[i].value){
+                    //         infoEval[i].value = this.formatDate(infoEval[i].value);
+                    //     } else infoEval[i].value = this.formatDate(new Date());
+                        
+                    // }
+                    // else if(infoEval[i].type === "SetOfValues"){
+                    //     let splitSetOfValues = infoEval[i].extra.split('\n');
+                    //     // if(infoEval[i].value){
+                    //         infoEval[i].value = infoEval[i].value ? [infoEval[i].value] : [splitSetOfValues[0]];
+                    //     // }
+                    // }
+                    // info[`${infoEval[i].code}`] = {
+                    //     value: infoEval[i].value,
+                    //     code: infoEval[i].code,
+                    //     type: infoEval[i].type
+                    // }
                     if(infoEval[i].type === "Date"){
                         if(infoEval[i].value){
-                            infoEval[i].value = this.formatDate(infoEval[i].value);
-                        } else infoEval[i].value = this.formatDate(new Date());
-                        
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(infoEval[i].value),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(infoEval[i].value);
+                        } 
+                        else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(Date.now()),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(Date.now());
+                        } 
                     }
                     else if(infoEval[i].type === "SetOfValues"){
                         let splitSetOfValues = infoEval[i].extra.split('\n');
-                        // if(infoEval[i].value){
-                            infoEval[i].value = infoEval[i].value ? [infoEval[i].value] : [splitSetOfValues[0]];
-                        // }
+                        if(infoEval[i].value){
+                            info[`${infoEval[i].code}`] = {
+                                value: [infoEval[i].value],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [infoEval[i].value];
+                        }
+                        else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                            info[`${infoEval[i].code}`] = {
+                                value: [splitSetOfValues[0]],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [splitSetOfValues[0]];
+                        }
                     }
-                    info[`${infoEval[i].code}`] = {
-                        value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                    
+                    else {
+                        info[`${infoEval[i].code}`] = {
+                            value: infoEval[i].value,
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }         
                 }
                 
             }
@@ -209,9 +297,9 @@ class EvaluateByAccountableEmployee extends Component {
         return [day, month, year].join('-');
     }
 
-    componentDidMount() {
-        this.props.getTaskById(this.props.id);
-    }
+    // componentDidMount() {
+    //     this.props.getTaskById(this.props.id);
+    // }
 
     handleChangePoint = async (e) => {
         let value = parseInt(e.target.value);
@@ -742,10 +830,11 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks } = this.props;
-        const { date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
+        const { task, date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
                 errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
-        let task = (tasks && tasks.task)&& tasks.task.info;
+        // let task = (tasks && tasks.task)&& tasks.task.info;
+        // let task = this.props.task;
 
         return (
             <React.Fragment>
@@ -931,10 +1020,10 @@ const mapState = (state) => {
     return { tasks, performtasks };
 }
 const getState = {
-    getTaskById: taskManagementActions.getTaskById,
-    createResult: performTaskAction.createResultTask,
-    editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask,
+    // getTaskById: taskManagementActions.getTaskById,
+    // createResult: performTaskAction.createResultTask,
+    // editResultTask: performTaskAction.editResultTask,
+    // editStatusOfTask: taskManagementActions.editStatusOfTask,
     evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees
 }
 
