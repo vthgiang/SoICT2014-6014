@@ -47,6 +47,7 @@ const TimesheetLog = require('./task/timesheetLog.model');
 const Course = require('./training/course.model');
 const EducationProgram = require('./training/educationProgram.model');
 const EmployeeCourse = require('./training/employeeCourse.model');
+const ImportConfiguraion = require('./system-admin/importConfiguration.model')
 
 //asset
 const Asset = require('./asset/asset.model'); //tài sản
@@ -93,6 +94,7 @@ exports.schema = {
     SystemComponent,
     SystemLink,
     RootRole,
+    ImportConfiguraion,
 
     Task,
     TaskComment,

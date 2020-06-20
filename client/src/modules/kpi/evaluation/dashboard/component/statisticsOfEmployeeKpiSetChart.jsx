@@ -140,6 +140,18 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                     tick: {
                         format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
                     }
+                },
+                y: {
+                    max: 100,
+                    min: 0,
+                    label: {
+                        text: 'Điểm',
+                        position: 'outer-right'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
                 }
             },
 
