@@ -1558,6 +1558,10 @@ export default {
 
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
+
+                start_date: 'Ngày bắt đầu',
+                end_date: 'Ngày kết thúc',
+
                 search: 'Tìm kiếm',
 
                 col_name: 'Tên công việc',
