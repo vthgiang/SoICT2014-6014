@@ -360,11 +360,33 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
-    if(!getAllUserInCompany)
-    {
+    if(!getAllUserInCompany) {
         
         var organizationalUnit = await OrganizationalUnit.findById(unitId);
-        data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.dean);
+        // TODO: tối ưu hóa DashboardService.getChildrenOfOrganizationalUnitsAsTree
+
+        data = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.deans[0]);
+        
+        var queue=[];
+        var departments = [];
+        //BFS tìm tât cả đơn vị con-hàm của Đức
+        departments.push(data);
+        queue.push(data);    
+        while(queue.length > 0){
+            var v = queue.shift();
+            if(v.children){
+            for(var i = 0; i < v.children.length; i++){
+                var u = v.children[i];
+                queue.push(u);
+                departments.push(u);
+
+            }
+        }
+        }
+        //Lấy tất cả user của từng đơn vị
+        var userArray=[];
+        userArray=await _getAllUsersInOrganizationalUnits(departments);
+        return userArray;
     }
     //Lấy tất nhan vien trong moi đơn vị trong công ty
     if(getAllUserInCompany) {
@@ -374,36 +396,16 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
             id: department._id.toString(),
             name: department.name,
             description: department.description,
-            dean:department.dean.toString(),
-            viceDean:department.viceDean.toString(),
-            employee:department.employee.toString(),
+            deans:department.deans.map(item => item.toString()),
+            viceDeans:department.viceDeans.map(item => item.toString()),
+            employees:department.employees.map(item => item.toString()),
             parent_id: department.parent !== null ? department.parent.toString() : null
             }
         });
-        return  _getAllUsersInOrganizationalUnits(newData);
+        
+        let tmp = await _getAllUsersInOrganizationalUnits(newData);
+        return  tmp;
     }
-
-    var queue=[];
-    var departments = [];
-    //BFS tìm tât cả đơn vị con-hàm của Đức
-    departments.push(data);
-    queue.push(data);    
-    while(queue.length > 0){
-        var v = queue.shift();
-        if(v.children){
-         for(var i = 0; i < v.children.length; i++){
-             var u = v.children[i];
-             queue.push(u);
-             departments.push(u);
-
-         }
-     }
-    }
-    //Lấy tất cả user của từng đơn vị
-    var userArray=[];
-    userArray=await _getAllUsersInOrganizationalUnits(departments);
-    return userArray;
-   
 }
 
 /**
@@ -416,34 +418,37 @@ _getAllUsersInOrganizationalUnits = async (data) => {
     { 
         var department=data[i];
         var userRoles = await UserRole
-        .find({ roleId: {$in: [department.dean, department.viceDean, department.employee]}})
+        .find({ roleId: {$in: [...department.deans, ...department.viceDeans, ...department.employees]}})
         .populate({path: 'userId', select: 'name'})
     
-        var tmp = await Role.find({_id: {$in: [department.dean, department.viceDean, department.employee]}}, {name: 1});
-        var roles = {};
+        var tmp = await Role.find({_id: {$in: [...department.deans, ...department.viceDeans, ...department.employees]}}, {name: 1});
+        var users = {deans:{}, viceDeans:{}, employees:{}, department: department.name};
         tmp.forEach(item => {
-        if (item._id.equals(department.dean))
-            roles.dean = item;
-        else if (item._id.equals(department.viceDean))
-            roles.viceDean = item;
-        else if (item._id.equals(department.employee))
-            roles.employee = item;
+            let obj = {};
+            obj._id = item.id;
+            obj.name = item.name;
+            obj.members=[];
+
+            if (department.deans.includes(item._id.toString())){
+                users.deans[item._id.toString()] = obj;
+            } else if (department.viceDeans.includes(item._id.toString())){
+                users.viceDeans[item._id.toString()] = obj;
+            } else if (department.employees.includes(item._id.toString())){
+                users.employees[item._id.toString()] = obj;
+            }
         })
 
-        let deans=[], viceDeans=[], employees=[];
         userRoles.forEach((item) => {
-        if (item.roleId.equals(department.dean) && item.userId){
-            deans.push(item.userId);
-        } else if (item.roleId.equals(department.viceDean) && item.userId){
-            viceDeans.push(item.userId);
-        } else if (item.roleId.equals(department.employee) &&  item.userId){
-            employees.push(item.userId);
+        if (users.deans[item.roleId.toString()] && item.userId){
+            users.deans[item.roleId.toString()].members.push(item.userId);
+        } else if (users.viceDeans[item.roleId.toString()] && item.userId){
+            users.viceDeans[item.roleId.toString()].members.push(item.userId);
+        } else if (users.employees[item.roleId.toString()] &&  item.userId){
+            users.employees[item.roleId.toString()].members.push(item.userId);
         }
         });
 
-    var users = {deans: deans, viceDeans: viceDeans, employees: employees, roles: roles,department:department.name};
-    userArray.push(users)
+        userArray.push(users)
     }
-     
     return userArray;
 }
