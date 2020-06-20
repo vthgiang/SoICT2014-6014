@@ -154,11 +154,8 @@ class KPIUnitManager extends Component {
                 showModalCopy: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
+
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
@@ -311,7 +308,7 @@ class KPIUnitManager extends Component {
                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}
                                     {this.state.showModalCopy === item._id ?
-                                    <ModalCopyKPIUnit kpiunit={item} /> : null}
+                                    <ModalCopyKPIUnit idunit={item.organizationalUnit._id} listkpi={listkpi} kpiunit={item} /> : null}
                                
                                     {/* {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a
                                         style={{ color: "navy" }} href="#abc" onClick={()=> this.props.refreshData(item._id)}

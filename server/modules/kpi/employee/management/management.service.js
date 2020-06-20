@@ -45,7 +45,6 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
 }
 
 exports.copyKPI = async (data) => {
-
     var date = data.dateold.split("-");
     var dateold = new Date(date[0], date[1], 0);
     var date = data.datenew.split("-");
@@ -54,7 +53,7 @@ exports.copyKPI = async (data) => {
     var yearOldKPI = dateold.getFullYear();
     var monthNewKPI = dateNewEmployeeKPI.getMonth();
     var yearNewKPI = dateNewEmployeeKPI.getFullYear();
-    var OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id) })
+    var OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id), organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     var check = OldEmployeeKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
@@ -68,7 +67,6 @@ exports.copyKPI = async (data) => {
             approver: list.approver,
             
         })
-        // console.log("Hiiiiiiii")
         for (let i in list.kpis) {
             var target = await EmployeeKpi.create({
                 name: list.kpis[i].name,

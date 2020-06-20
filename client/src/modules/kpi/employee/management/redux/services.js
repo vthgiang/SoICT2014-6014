@@ -53,9 +53,9 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
     }, false, true, 'kpi.employee.manager')
 }
 
-function copyEmployeeKPI(id, dateold, datenew){
+function copyEmployeeKPI(id, idunit, dateold, datenew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/copykpi/${id}/${dateold}/${datenew}`,
+        url: `${LOCAL_SERVER_API}/kpipersonals/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
         method: 'POST',
     }, true, true, 'kpi.employee.manager');
 }

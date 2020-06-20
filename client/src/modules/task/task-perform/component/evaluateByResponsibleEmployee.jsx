@@ -14,6 +14,7 @@ import {
 import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
 
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
+import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
@@ -447,26 +448,25 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleChangeAutoPoint = async () => {
-        // let taskInfo = {
-        //     task: this.state.task,
-        //     progress: this.state.progress,
-        //     date: this.state.date,
-        //     info: this.state.info,
-        // };
-
-        // let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        // if(isNaN(automaticPoint)) automaticPoint = undefined
-        // console.log('-------handleChangeAutoPoint-------', this.state.info);
         let automaticPoint = this.calcAutomaticPoint();
-        // console.log('automaticPoint ? automaticPoint ::::::CLIENT::::::', automaticPoint);
         await this.setState( state => {
             return {
                 ...state,
-                autoPoint: automaticPoint
+                autoPoint: automaticPoint,
+                showAutoPointInfo: undefined
             }
         });
     }
 
+    handleShowAutomaticPointInfo = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showAutoPointInfo: 1
+            }
+        });
+        window.$(`#modal-automatic-point-info`).modal('show');
+    }
 
     save = () => {
         let taskId;
@@ -573,8 +573,21 @@ class EvaluateByResponsibleEmployee extends Component {
                         
                     </div>
                     <div>
-                        <strong>Điểm tự động: &nbsp;<span id={`autoPoint-${this.props.perform}`}>{autoPoint !== undefined?autoPoint:"Chưa tính được"}</span></strong>
-                        <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong>
+                        <strong>Điểm tự động: &nbsp;
+                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                                {autoPoint !== undefined?autoPoint:"Chưa tính được"}
+                            </a>
+                        </strong>
+                        {
+                            this.state.showAutoPointInfo === 1 && 
+                            <ModalShowAutoPointInfo
+                                task={this.state.task}
+                                progress={this.state.progress}
+                                date={this.state.date}
+                                info={this.state.info}
+                            />
+                        }
+                        {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
                         <br/>
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>
