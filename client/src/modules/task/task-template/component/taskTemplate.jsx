@@ -200,10 +200,9 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.deans == localStorage.getItem("currentRole")
-                || item.viceDeans == localStorage.getItem("currentRole")
-                || item.employees == localStorage.getItem("currentRole"));
-            console.log("22"+currentUnit[0].deans);
+                item.deans.indexOf(localStorage.getItem("currentRole"))
+                || item.viceDeans.indexOf(localStorage.getItem("currentRole"))
+                || item.employees.indexOf(localStorage.getItem("currentRole")));
         }
         
         if (tasktemplates.items) {
@@ -213,8 +212,8 @@ class TaskTemplate extends Component {
         return ( 
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
-                    {/* {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>} */}
+                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
+                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
                     {<TaskTemplateImportForm />}
                     {<ModalAddTaskTemplate/>}
                         <div class = "form-inline">
