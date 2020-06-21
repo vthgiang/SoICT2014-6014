@@ -356,9 +356,9 @@ class ModalAddTaskTemplate extends Component {
                                         className="form-control select2"
                                         style={{width: "100%"}}
                                         items={[
-                                            {value: listRole.dean._id, text: listRole.dean.name},
-                                            {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                            {value: listRole.employee._id, text: listRole.employee.name},
+                                            {value: listRole.deans[0]._id, text: listRole.deans[0].name},
+                                            {value: listRole.viceDeans[0]._id, text: listRole.viceDeans[0].name},
+                                            {value: listRole.employees[0]._id, text: listRole.employees[0].name},
                                         ]}
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
