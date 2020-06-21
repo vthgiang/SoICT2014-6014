@@ -3,14 +3,19 @@ const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, Emp
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-exports.getAllChildTargetOfOrganizationalUnitKpis = async (roleId) => {
-    var organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            { 'deans': roleId },
-            { 'viceDeans': roleId },
-            { 'employees': roleId }
-        ]
-    });
+exports.getAllChildTargetOfOrganizationalUnitKpi = async (roleId, organizationalUnitId=undefined) => {
+    
+    if(!organizationalUnitId) {
+        var organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
+            ]
+        });
+    } else {
+        var organizationalUnit = { '_id': organizationalUnitId };
+    }
 
     var now = new Date();
     var currentYear = now.getFullYear();
@@ -58,15 +63,19 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (roleId) => {
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại*/
-exports.getAllTaskOfOrganizationalUnit = async (roleId) => {
+exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=undefined) => {
     
-    var organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            { 'deans': roleId },
-            { 'viceDeans': roleId },
-            { 'employees': roleId }
-        ]
-    });
+    if(!organizationalUnitId) {
+        var organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
+            ]
+        });
+    } else {
+        var organizationalUnit = await OrganizationalUnit.findOne({ '_id':  organizationalUnitId });
+    }
 
     var now = new Date();
     var currentYear = now.getFullYear();
@@ -94,7 +103,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId) => {
 
         { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 }}
     ])
-
+    
     return tasks;
 }
 

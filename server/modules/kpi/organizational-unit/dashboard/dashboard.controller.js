@@ -2,9 +2,14 @@ const { LogInfo, LogError } = require('../../../../logs');
 const DashboardOrganizationalUnitService = require('./dashboard.service');
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-exports.getAllChildTargetOfOrganizationalUnitKpis = async (req, res) => {
+exports.getAllChildTargetOfOrganizationalUnitKpi = async (req, res) => {
     try {
-        var childTargets = await DashboardOrganizationalUnitService.getAllChildTargetOfOrganizationalUnitKpis(req.params.roleId);
+        if(req.query) {
+            var childTargets = await DashboardOrganizationalUnitService.getAllChildTargetOfOrganizationalUnitKpi(req.params.roleId, req.query.organizationalUnitId);
+        } else {
+            var childTargets = await DashboardOrganizationalUnitService.getAllChildTargetOfOrganizationalUnitKpi(req.params.roleId)
+        }
+
         LogInfo(req.user.email, ' get all child target of organizational unit kpis ', req.user.company);
         res.status(200).json({
             success: true,
@@ -24,7 +29,12 @@ exports.getAllChildTargetOfOrganizationalUnitKpis = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
-        var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId);
+        if(req.query) {
+            var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId, req.query.organizationalUnitId);
+        } else {
+            var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId);
+        }
+        
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(200).json({
             success: true,

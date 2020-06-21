@@ -4,7 +4,7 @@ const DashboardOrganizationalUnitController = require("./dashboard.controller");
 const {auth} = require('../../../../middleware/index');
 
 // Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại 
-router.get('/child-targets/:roleId', auth, DashboardOrganizationalUnitController.getAllChildTargetOfOrganizationalUnitKpis);
+router.get('/child-targets/:roleId', auth, DashboardOrganizationalUnitController.getAllChildTargetOfOrganizationalUnitKpi);
 
 // Lấy tất cả task của organizationalUnit theo tháng hiện tại
 router.get('/tasks/:roleId', auth, DashboardOrganizationalUnitController.getAllTaskOfOrganizationalUnit);
