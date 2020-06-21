@@ -5,10 +5,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { TaskInformationForm } from './taskInformationForm';
-import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
-// import { taskManagementActions } from "../../task-management/redux/actions";
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
@@ -37,8 +34,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     getData = (dateParam) => {
         let idUser = getStorage("userId");
         let {task} = this.props;
-        // let {tasks} = this.props;
-        // let task = (tasks && tasks.task) && tasks.task.info;
         
         let evaluations;
         
@@ -66,7 +61,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
                 else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
                     info[`${infoEval[i].code}`] = {
@@ -74,7 +68,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoEval[i].type === "SetOfValues"){
@@ -85,7 +78,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [infoEval[i].value];
                 }
                 else if(!infoEval[i].filledByAccountableEmployeesOnly){
                     info[`${infoEval[i].code}`] = {
@@ -93,7 +85,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [splitSetOfValues[0]];
                 }
             }
             else {
@@ -204,13 +195,11 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             return {
                 ...state,
                 errorOnInfoDate: this.validateDate(value),
-                // infoDate: value,
             }
         });
     }
 
     handleSetOfValueChange = async (value, code) => {
-        // console.log('value', value);
 
         this.setState(state => {
             
@@ -359,7 +348,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         // check &&
         return  this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
-            // && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
     save = () => {        
@@ -386,21 +374,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        // console.log('----------------------\n\n\n', date, userId, department);
-        // this.props.getTaskById(this.props.id);
-        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
         console.log('PARENT nextProps, prevState', nextProps, prevState);
         const { task } = nextProps;
-        // const { tasks } = nextProps;
-        // let task = tasks && tasks.task && tasks.task.info;
+        
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                // TODO: ve sau can sửa
                 id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
@@ -421,7 +404,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
         
-        // console.log('listKPI==========================\n\n\n', listKpi);
         return (
             <div>
                 <React.Fragment>
@@ -512,15 +494,11 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, kpimembers, KPIPersonalManager, createEmployeeKpiSet } = state;
-    return { tasks, kpimembers, KPIPersonalManager, createEmployeeKpiSet };
+    const { tasks, KPIPersonalManager } = state;
+    return { tasks, KPIPersonalManager };
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
-    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
 }
