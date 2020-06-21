@@ -14,14 +14,16 @@ class EducationProgramEditForm extends Component {
     // Function lưu giá trị unit vào state khi thay đổi
     handleUnitChange = (value) => {
         let position = this.state.position;
-
         this.state.organizationalUnit.forEach(u => {
             let check = value.lastIndexOf(u);
-            console.log(check);
             if (check === -1) {
                 this.props.department.list.forEach(x => {
                     if (x._id === u) {
-                        position = this.state.position.filter(p => p !== x.dean._id && p !== x.viceDean._id && p !== x.employee._id);
+                        let roleDeans = x.deans.map(y => y._id);
+                        let roleViceDeans = x.viceDeans.map(y => y._id);
+                        let roleEmployees = x.employees.map(y => y._id);
+                        let roleDepartment = roleDeans.concat(roleViceDeans).concat(roleEmployees);
+                        position = this.state.position.filter(p => roleDepartment.includes(p));
                     }
                 })
             }
@@ -123,12 +125,10 @@ class EducationProgramEditForm extends Component {
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
-                        let position = [
-                            { _id: x.dean._id, name: x.dean.name },
-                            { _id: x.viceDean._id, name: x.viceDean.name },
-                            { _id: x.employee._id, name: x.employee.name }
-                        ]
-                        listPosition = listPosition.concat(position)
+                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
+                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
                     }
                 })
             })
