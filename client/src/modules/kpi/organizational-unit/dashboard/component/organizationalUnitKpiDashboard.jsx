@@ -207,7 +207,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <div className=" box box-primary" style={ {textAlign: 'center'}}>
                             <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
                             <div className="box-body dashboard_box_body">
-                                <TrendsInOrganizationalUnitKpiChart/>
+                                <TrendsInOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                             </div>
                         </div>
                             
