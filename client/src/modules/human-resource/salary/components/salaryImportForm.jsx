@@ -204,7 +204,7 @@ class SalaryImportForm extends Component {
                         errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
                     } else {
                         if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                            errorAlert = [...errorAlert, 'Mã nhân viên đã tồn tại'];
+                            errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
                     };
                     if (x.employeeName === null)
                         errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];

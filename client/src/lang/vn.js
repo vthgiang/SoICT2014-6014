@@ -569,7 +569,7 @@ export default {
             list_employee: 'Quản lý thông tin nhân viên',
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
-            dashboard_employee: 'DashBoard quản lý nhân sự',
+            dashboard_employee: 'Bảng tin quản lý nhân sự',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
