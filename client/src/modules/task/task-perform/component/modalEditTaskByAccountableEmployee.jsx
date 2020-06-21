@@ -68,10 +68,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 // taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
             }
             else {
-                info[`${taskInfo[i].code}`] = {
-                    value: taskInfo[i].value,
-                    code: taskInfo[i].code,
-                    type: taskInfo[i].type
+                if(taskInfo[i].value){
+                    info[`${taskInfo[i].code}`] = {
+                        value: taskInfo[i].value,
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
                 }
             }            
         }

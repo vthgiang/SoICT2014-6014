@@ -1251,7 +1251,6 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         automaticPoint: automaticPoint,
         role: role
     }
-
     var task = await Task.findById(taskId);
 
     // console.log('task ============================== ' , task, task.evaluations);
@@ -1261,7 +1260,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
 
     // console.log('kkkkkkkkkkkk', listResult);
 
-    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role === "Consulted")));
+    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
     console.log('check_results',check_results);
     if(check_results === undefined){
         await Task.updateOne(
@@ -1587,7 +1586,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     // lấy info có value khác undefined
     var filterInfo = [];
     for(let i in info){
-        if(inf[i].value !== undefined){
+        if(info[i].value !== undefined){
             filterInfo.push(info[i]);
         }
     }
