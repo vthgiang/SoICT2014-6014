@@ -286,7 +286,7 @@ class ModalAddTaskTemplate extends Component {
     }
     
     render() {
-        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles=[];
         const { newTemplate } = this.state;
         const { department, user, translate, tasktemplates } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
@@ -298,7 +298,15 @@ class ModalAddTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) listRole = user.roledepartments;
+        if (user.roledepartments) {
+            listRole = user.roledepartments;
+            for (let x in listRole.deans)
+                listRoles[x] = listRole.deans[x];
+            for (let x in listRole.viceDeans)
+                listRoles.push(listRole.viceDeans[x]);
+            for (let x in listRole.employees)
+                listRoles.push(listRole.employees[x]);
+        }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
@@ -350,16 +358,14 @@ class ModalAddTaskTemplate extends Component {
                         <div className="col-sm-6">
                             <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
                                 <label className="control-label">{translate('task_template.permission_view')}*</label>
-                                {listRole &&
+                                {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={[
-                                            {value: listRole.deans[0]._id, text: listRole.deans[0].name},
-                                            {value: listRole.viceDeans[0]._id, text: listRole.viceDeans[0].name},
-                                            {value: listRole.employees[0]._id, text: listRole.employees[0].name},
-                                        ]}
+                                        items={
+                                            listRoles.map( x => { return { value : x._id, text : x.name}})
+                                        }
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.permission_view')}`}}
