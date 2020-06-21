@@ -71,7 +71,8 @@ class EvaluateByAccountableEmployee extends Component {
                     }
                     // infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
-                else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                // else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                else {
                     info[`${infoEval[i].code}`] = {
                         value: this.formatDate(Date.now()),
                         code: infoEval[i].code,
@@ -90,7 +91,8 @@ class EvaluateByAccountableEmployee extends Component {
                     }
                     // infoEval[i].value = [infoEval[i].value];
                 }
-                else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                // else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                else {
                     info[`${infoEval[i].code}`] = {
                         value: [splitSetOfValues[0]],
                         code: infoEval[i].code,
@@ -100,11 +102,14 @@ class EvaluateByAccountableEmployee extends Component {
                 }
             }
             else {
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: infoEval[i].type
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
                 }
+               
             }         
                 
         }
@@ -225,7 +230,7 @@ class EvaluateByAccountableEmployee extends Component {
 
             if(chkHasInfo){
                 for(let i in infoEval){
-                   
+                    
                     if(infoEval[i].type === "Date"){
                         if(infoEval[i].value){
                             info[`${infoEval[i].code}`] = {
@@ -234,7 +239,8 @@ class EvaluateByAccountableEmployee extends Component {
                                 type: infoEval[i].type
                             }
                         } 
-                        else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                        // else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                        else {
                             info[`${infoEval[i].code}`] = {
                                 value: this.formatDate(Date.now()),
                                 code: infoEval[i].code,
@@ -251,7 +257,8 @@ class EvaluateByAccountableEmployee extends Component {
                                 type: infoEval[i].type
                             }
                         }
-                        else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                        // else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                        else {
                             info[`${infoEval[i].code}`] = {
                                 value: [splitSetOfValues[0]],
                                 code: infoEval[i].code,
@@ -260,12 +267,14 @@ class EvaluateByAccountableEmployee extends Component {
                         }
                     }
                     else {
-                        info[`${infoEval[i].code}`] = {
-                            value: infoEval[i].value,
-                            code: infoEval[i].code,
-                            type: infoEval[i].type
+                        if(infoEval[i].value){
+                            info[`${infoEval[i].code}`] = {
+                                value: infoEval[i].value,
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
                         }
-                    }         
+                    }
                 }
                 
             }
