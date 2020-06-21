@@ -21,30 +21,33 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         };
 
         // Lấy Kpi của đơn vị hiện tại
-        this.props.getCurrentKPIUnit(this.state.currentRole);
+        this.props.getCurrentKPIUnit(this.state.currentRole, this.props.organizationalUnitId);
         // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
-        this.props.getAllChildTargetOfOrganizationalUnitKpis(this.state.currentRole);
+        this.props.getAllChildTargetOfOrganizationalUnitKpi(this.state.currentRole, this.props.organizationalUnitId);
         // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
-        this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole)
+        this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, this.props.organizationalUnitId)
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
             // Lấy Kpi của đơn vị hiện tại
-            this.props.getCurrentKPIUnit(this.state.currentRole);
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId);
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
-            this.props.getAllChildTargetOfOrganizationalUnitKpis(this.state.currentRole);
+            await this.props.getAllChildTargetOfOrganizationalUnitKpi(this.state.currentRole, nextProps.organizationalUnitId);
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
-            this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole)
+            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId)
 
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
-                };
+                }
             });
+
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        }
+
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             // Kiểm tra currentKPI đã được bind vào props hay chưa
             if(!nextProps.createKpiUnit.currentKPI) {
                 return false            // Đang lấy dữ liệu, ko cần render lại
@@ -54,7 +57,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             if(!nextProps.dashboardOrganizationalUnitKpi.childTargets) {
                 return false            // Đang lấy dữ liệu, ko cần render lại
             }
-
+            console.log("555", !nextProps.dashboardOrganizationalUnitKpi.tasks, nextProps.dashboardOrganizationalUnitKpi.tasks)
             // Kiểm tra tasks đã được bind vào props hay chưa
             if(!nextProps.dashboardOrganizationalUnitKpi.tasks) {
                 return false            // Đang lấy dữ liệu, ko cần render lại
@@ -79,6 +82,17 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         return false;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+            return {
+                ...prevState,
+                organizationalUnitId: nextProps.organizationalUnitId
+            }
+        } else{
+            return null;
+        }
     }
 
     // Lấy danh sách công việc theo từng Kpi đơn vị
@@ -447,7 +461,7 @@ function mapState(state) {
 }
 const actions = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    getAllChildTargetOfOrganizationalUnitKpis: dashboardOrganizationalUnitKpiActions.getAllChildTargetOfOrganizationalUnitKpis,
+    getAllChildTargetOfOrganizationalUnitKpi: dashboardOrganizationalUnitKpiActions.getAllChildTargetOfOrganizationalUnitKpi,
     getAllTaskOfOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllTaskOfOrganizationalUnit
 }
 

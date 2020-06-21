@@ -4,7 +4,7 @@ import {
 import { sendRequest} from '../../../../../helpers/requestHelper';
 
 export const dashboardOrganizationalUnitKpiServices = {
-    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllChildTargetOfOrganizationalUnitKpi,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
@@ -12,18 +12,20 @@ export const dashboardOrganizationalUnitKpiServices = {
 }
 
 /** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
+function getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/child-targets/${roleId}`,
-        method: 'GET'
+        method: 'GET',
+        params: { organizationalUnitId: organizationalUnitId }
     }, false, false)
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
-function getAllTaskOfOrganizationalUnit(roleId) {
+function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/tasks/${roleId}`,
-        method: 'GET'
+        method: 'GET',
+        params: { organizationalUnitId: organizationalUnitId }
     }, false, false)
 }
  
