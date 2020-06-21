@@ -263,8 +263,8 @@ class ModalAddTaskTemplate extends Component {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
                 item.deans.includes(this.state.currentRole)
-                || item.viceDean.includes(this.state.currentRole)
-                || item.employee.includes(this.state.currentRole));
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
             
             if (defaultUnit){
                 this.setState(state =>{
