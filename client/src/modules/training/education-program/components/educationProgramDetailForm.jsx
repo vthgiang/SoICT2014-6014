@@ -72,6 +72,7 @@ class EducationProgramDetailForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 name: nextProps.name,
+                educationProgram: nextProps._id,
                 programId: nextProps.programId,
                 listCourses: nextProps.listCourses,
                 totalList: nextProps.totalList,

@@ -22,9 +22,9 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         roles = await UserRole.find({userId: user._id}).populate([{path: 'roleId', model: Role}]);
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
-            $or: [{'dean': {$in: newRoles}},
-                {'viceDean': {$in: newRoles}},
-                {'employee': {$in: newRoles}}
+            $or: [{'deans': {$in: newRoles}},
+                {'viceDeans': {$in: newRoles}},
+                {'employees': {$in: newRoles}}
             ]
         });
     }
@@ -50,8 +50,8 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     }
     if (position === undefined) {
         units.forEach(u => {
-            let role = [u.dean, u.viceDean, u.employee];
-            roles = roles.concat(role);
+            //let role = [...u.deans, ...u.viceDeans, ...u.employees];
+            roles = roles.concat(u.deans).concat(u.viceDeans).concat(u.employees);
         })
     } else {
         roles = position
@@ -65,7 +65,6 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
 
     // Lấy email của người dùng theo phòng ban và chức danh
     let emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
-
     return emailUsers.map(user => user.email)
 }
 
