@@ -5,8 +5,8 @@ export const SalaryService = {
     createSalary,
     deleteSalary,
     updateSalary,
-    checkSalary,
-    checkArraySalary,
+    // checkSalary,
+    // checkArraySalary,
     importSalary
 }
 
@@ -65,28 +65,15 @@ function updateSalary(id, data) {
     }, true, true, 'human_resource.salary');
 }
 
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
-function checkSalary(employeeNumber, month) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salaries/checkSalary/${employeeNumber}/${month}`,
-        method: 'GET',
-    }, false, true, 'human_resource.salary');
-}
-
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
-function checkArraySalary(data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salaries/checkArraySalary`,
-        method: 'POST',
-        data: data,
-    }, false, true, 'human_resource.salary');
-}
-
-// Import lương nhân viên
+/**
+ * Import dữ liệu bảng lương
+ * @param {*} data : array thông tin bảng lương
+ */
 function importSalary(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/salaries/import`,
         method: 'POST',
         data: data,
-    }, false, true, 'human_resource.salary');
+    }, true, false, 'human_resource.salary');
 }
+

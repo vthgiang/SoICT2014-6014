@@ -5,8 +5,8 @@ export const SalaryActions = {
     createSalary,
     deleteSalary,
     updateSalary,
-    checkSalary,
-    checkArraySalary,
+    // checkSalary,
+    // checkArraySalary,
     importSalary
 };
 
@@ -111,50 +111,6 @@ function updateSalary(id, data) {
     }
 }
 
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
-function checkSalary(employeeNumber, month) {
-    return dispatch => {
-        dispatch({
-            type: SalaryConstants.CHECK_SALARY_REQUEST
-        });
-        SalaryService.checkSalary(employeeNumber, month)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.CHECK_SALARY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.CHECK_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    };
-}
-
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
-function checkArraySalary(data) {
-    return dispatch => {
-        dispatch({
-            type: SalaryConstants.CHECK_ARRAY_SALARY_REQUEST
-        });
-        SalaryService.checkArraySalary(data)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.CHECK_ARRAY_SALARY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.CHECK_ARRAY_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    };
-}
-
 // Import lương nhân viên
 function importSalary(data) {
     return dispatch => {
@@ -165,14 +121,15 @@ function importSalary(data) {
             .then(res => {
                 dispatch({
                     type: SalaryConstants.IMPORT_SALARY_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data
                 })
             })
             .catch(err => {
                 dispatch({
                     type: SalaryConstants.IMPORT_SALARY_FAILURE,
-                    error: err
+                    error: err.response.data.content
                 });
             })
     };
 }
+
