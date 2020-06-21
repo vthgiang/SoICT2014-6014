@@ -122,7 +122,6 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                     disableSubmit={false}
                 >
                     <form className="form-group" id={`form-edit-unit`}>
-
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_unit.dean_unit')}</h4></legend>
                             {roleDeans !== undefined && roleDeans.map((x, index) => (
@@ -131,9 +130,10 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     <SelectBox
                                         id={`dean-unit-${x.id}`}
                                         ref={`deans${x.id}`}
+                                        multiple={true}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={x.users[0]}
+                                        value={x.users}
                                         items={user.list.map(y => { return { value: y._id, text: y.name } })}
                                     />
                                 </div>
@@ -155,66 +155,62 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     />
                                 </div>
                             ))}
-
                         </fieldset>
-                        <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_unit.employee_unit')}</h4></legend>
-                            {roleEmployees !== undefined && roleEmployees.map((x, index) => {
-                                let infoEmployee = [], users = x.users;
-                                for (let n in users) {
-                                    infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
-                                }
-                                return (
-                                    <React.Fragment>
-                                        <div className="form-group" key={index} style={{ marginBottom: 0 }}>
-                                            <label>{x.name}</label>
-                                            <div>
-                                                <div className="employeeBox">
-                                                    <SelectBox
-                                                        id={`employee-unit-${x.id}`}
-                                                        ref={`employees${x.id}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        onChange={this.handleEmployeeChange}
-                                                        multiple={true}
-                                                        searchItems={searchUses.map(u => { return { value: u._id, text: u.name } })}
-                                                        changeSearch={this.changeSearch}
-                                                        textSearch={this.state.textSearch}
-                                                    />
-                                                </div>
-                                                <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
-                                            </div>
+                        <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('manage_unit.employee_unit')}</h4>
+                        {roleEmployees !== undefined && roleEmployees.map((x, index) => {
+                            let infoEmployee = [], users = x.users;
+                            for (let n in users) {
+                                infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
+                            }
+                            return (
+                                <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
+                                    <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{x.name}</h4></legend>
+                                    <div className="form-group" key={index} style={{ marginBottom: 0 }}>
+                                        <div className="employeeBox">
+                                            <SelectBox
+                                                id={`employee-unit-${x.id}`}
+                                                ref={`employees${x.id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                onChange={this.handleEmployeeChange}
+                                                multiple={true}
+                                                searchItems={searchUses.map(u => { return { value: u._id, text: u.name } })}
+                                                changeSearch={this.changeSearch}
+                                                textSearch={this.state.textSearch}
+                                            />
                                         </div>
-                                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                            <thead>
-                                                <tr>
-                                                    <th>{translate('table.employee_name')}</th>
-                                                    <th>{translate('manage_unit.email_employee')}</th>
-                                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    infoEmployee.length !== 0 &&
-                                                    infoEmployee.map((user, index) => (
-                                                        <tr key={index}>
-                                                            <td style={{ textAlign: "left" }}>{user.name}</td>
-                                                            <td style={{ textAlign: "left" }}>{user.email}</td>
-                                                            <td>
-                                                                <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id, x.id)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                }
-                                            </tbody>
-                                        </table>
-                                        {
-                                            (infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                        }
-                                    </React.Fragment>
-                                )
-                            })}
-                        </fieldset>
+                                        <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
+                                    </div>
+                                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('table.employee_name')}</th>
+                                                <th>{translate('manage_unit.email_employee')}</th>
+                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                infoEmployee.length !== 0 &&
+                                                infoEmployee.map((user, index) => (
+                                                    <tr key={index}>
+                                                        <td style={{ textAlign: "left" }}>{user.name}</td>
+                                                        <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                        <td>
+                                                            <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id, x.id)}><i className="material-icons"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </fieldset>
+                            )
+                        })}
+
                     </form>
                 </DialogModal>
             </React.Fragment>

@@ -259,7 +259,6 @@ class SalaryImportForm extends Component {
             rowError = salary.error.rowError;
             importData = salary.error.data
         }
-
         var pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);
