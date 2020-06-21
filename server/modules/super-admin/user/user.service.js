@@ -245,26 +245,12 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 
 /**
- * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ
+ * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ 
  */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var departmentIds = departmentId.split(',');
+    var departmentIds = await OrganizationalUnit.find({ _id: {$in: [...departmentId.split(',')]} });
 
-    if(departmentIds.length === 1) {
-        var department = await OrganizationalUnit.findById(departmentId);
-
-        return _getAllUsersInOrganizationalUnit(department);
-    } else {
-        var users = [];
-        
-        for(var i=0; i<departmentIds.length; i++) {
-            let department = await OrganizationalUnit.findById(departmentIds[i]);
-            console.log(departmentIds[i])
-            users = users.concat(await _getAllUsersInOrganizationalUnit(department));
-        }
-
-        return users;
-    }
+    return _getAllUsersInOrganizationalUnits(departmentIds);
 }
 
 /* lấy tất cả các user cùng phòng ban với user hiện tại
@@ -286,12 +272,11 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
  */
 _getAllUsersInOrganizationalUnit = async (department) => {
     var userRoles = await UserRole
-    .find({ roleId: {$in: [department.deans, department.viceDeans, department.employees]}})
+    .find({ roleId: {$in: [...department.deans, ...department.viceDeans, ...department.employees]}})
     .populate({path: 'userId', select: 'name'})
-    
-    var tmp = await Role.find({_id: {$in: [department.deans, department.viceDeans, department.employees]}}, {name: 1});
-    var users = {deans:{}, viceDeans:{}, employees:{}, department: department.name};
 
+    var tmp = await Role.find({_id: {$in: [...department.deans, ...department.viceDeans, ...department.employees]}}, {name: 1});
+    var users = {deans:{}, viceDeans:{}, employees:{}, department: department.name};
     tmp.forEach(item => {
         let obj = {};
         obj._id = item.id;
@@ -316,6 +301,7 @@ _getAllUsersInOrganizationalUnit = async (department) => {
         users.employees[item.roleId.toString()].members.push(item.userId);
     }
     });
+    
     return users;
 }
 
@@ -418,7 +404,7 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
 _getAllUsersInOrganizationalUnits = async (data) => {
     var userArray=[];
     for(let i= 0;i<data.length;i++)
-    { 
+    {   
         var department=data[i];
         var userRoles = await UserRole
         .find({ roleId: {$in: [...department.deans, ...department.viceDeans, ...department.employees]}})
@@ -451,7 +437,7 @@ _getAllUsersInOrganizationalUnits = async (data) => {
         }
         });
 
-        userArray.push(users)
+        userArray.push(users);
     }
     return userArray;
 }

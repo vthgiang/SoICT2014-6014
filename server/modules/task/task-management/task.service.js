@@ -1251,7 +1251,6 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         automaticPoint: automaticPoint,
         role: role
     }
-
     var task = await Task.findById(taskId);
 
     // console.log('task ============================== ' , task, task.evaluations);
@@ -1261,7 +1260,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
 
     // console.log('kkkkkkkkkkkk', listResult);
 
-    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role === "Consulted")));
+    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
     console.log('check_results',check_results);
     if(check_results === undefined){
         await Task.updateOne(
@@ -1570,7 +1569,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     // var evaluateId = data.evaluateId;
     var progress = data.progress;
     
-    var automaticPoint = data.automaticPoint;
+    var automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
     var role = data.role;
 
     var date = data.date;
@@ -1584,6 +1583,14 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     var evaluateId = await checkEvaluations(date, taskId, date);
 
+    // lấy info có value khác undefined
+    var filterInfo = [];
+    for(let i in info){
+        if(info[i].value !== undefined){
+            filterInfo.push(info[i]);
+        }
+    }
+
     // chuẩn hóa dữ liệu info
     for(let i in info){
         if(info[i].value ){ // !== undefined
@@ -1596,14 +1603,14 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
-    
+    console.log('info', info);
     // Chuan hoa du lieu approved results
 
     var cloneResult = [];
     for(let i in results){
         for(let j in results){
             if(i<j){
-                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu
+                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu ==> fixed
                 if(results[i].employee === results[j].employee && results[i].role === results[j].role){
                     var point, contribute;
 
@@ -1620,8 +1627,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                         point: point,
                         contribute: contribute
                     }
-
-                    cloneResult.push(cloneItem);
+                    if(point !== undefined || contribute !== undefined){
+                        cloneResult.push(cloneItem);
+                    }
                 }
             }
         }

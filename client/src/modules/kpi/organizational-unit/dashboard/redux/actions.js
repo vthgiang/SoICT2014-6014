@@ -3,7 +3,7 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 import { dashboardEmployeeKpiConstants } from "../../../evaluation/dashboard/redux/constants";
 
 export const dashboardOrganizationalUnitKpiActions = {
-    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllChildTargetOfOrganizationalUnitKpi,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
@@ -11,20 +11,20 @@ export const dashboardOrganizationalUnitKpiActions = {
 }
 
 // Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
-function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
+function getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId=undefined) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST });
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpis(roleId)
+        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_FAILURE,
                     payload: error
                 })
             })
@@ -32,11 +32,11 @@ function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
 }
 
 // Lấy tất cả task của organizationalUnit theo tháng hiện tại
-function getAllTaskOfOrganizationalUnit(roleId) {
+function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId=undefined) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(roleId)
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS,

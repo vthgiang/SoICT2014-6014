@@ -212,18 +212,18 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
  * @id id role hiện tại
  */
 exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
+    console.log("dẻnole");
     const roles = await OrganizationalUnit.findOne({ 
         $or:[
-            {'dean':id}, 
-            {'viceDean':id}, 
-            {'employee':id}
+            {'deans':id}, 
+            {'viceDeans':id}, 
+            {'employees':id}
         ]  
     }).populate([
-        {path:'dean'}, 
-        {path:'viceDean'}, 
-        {path:'employee'}]
+        {path:'deans'}, 
+        {path:'viceDeans'}, 
+        {path:'employees'}]
     );
-    
     return roles;
 }
 

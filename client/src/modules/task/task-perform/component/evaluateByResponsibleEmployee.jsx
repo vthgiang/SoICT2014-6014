@@ -107,10 +107,12 @@ class EvaluateByResponsibleEmployee extends Component {
                 }
             }
             else {
-                info[`${infoTask[i].code}`] = {
-                    value: infoTask[i].value,
-                    code: infoTask[i].code,
-                    type: infoTask[i].type
+                if(infoTask[i].value){
+                    info[`${infoTask[i].code}`] = {
+                        value: infoTask[i].value,
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
                 }
             }
         }
@@ -171,10 +173,12 @@ class EvaluateByResponsibleEmployee extends Component {
                         }
                     }
                     else {
-                        info[`${infoEval[i].code}`] = {
-                            value: infoEval[i].value,
-                            code: infoEval[i].code,
-                            type: infoEval[i].type
+                        if(infoEval[i].value){
+                            info[`${infoEval[i].code}`] = {
+                                value: infoEval[i].value,
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
                         }
                     }         
                 }
