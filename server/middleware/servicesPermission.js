@@ -87,7 +87,7 @@ exports.data = [
     { path: '/user/same-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/users-of-department/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/user/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/user/organizational-units/all-user/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/user/organizational-units/all/users', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
 
 
     

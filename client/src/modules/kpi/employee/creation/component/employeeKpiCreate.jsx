@@ -593,7 +593,7 @@ class CreateEmployeeKpiSet extends Component {
                                                     <th title="Tên mục tiêu" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
                                                     <th title="Mục tiêu cha" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
                                                     <th title="Tiêu chí đánh giá" className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
-                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.max_score')}</th>
+                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
                                                     <th title="Trạng thái" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
                                                     <th title="Hành động" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
                                                 </tr>

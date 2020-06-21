@@ -296,18 +296,18 @@ const sampleCompanyData = async () => {
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company: vnist._id,
-        dean: giamDoc._id,
-        viceDean: phoGiamDoc._id,
-        employee: thanhVienBGĐ._id,
+        deans: [giamDoc._id],
+        viceDeans: [phoGiamDoc._id],
+        employees: [thanhVienBGĐ._id],
         parent: null
     });
     const departments = await OrganizationalUnit.insertMany([{
         name: "Phòng kinh doanh",
         description: "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company: vnist._id,
-        dean: truongPhongHC._id,
-        viceDean: phoPhongHC._id,
-        employee: nvPhongHC._id,
+        deans: [truongPhongHC._id],
+        viceDeans: [phoPhongHC._id],
+        employees: [nvPhongHC._id],
         parent: Directorate._id
     }, ]);
     console.log('Xong! Đã tạo các phòng ban cho công ty', Directorate, departments);

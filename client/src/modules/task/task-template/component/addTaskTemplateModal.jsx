@@ -262,9 +262,9 @@ class ModalAddTaskTemplate extends Component {
         if (newTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
+                item.deans.includes(this.state.currentRole)
+                || item.viceDean.includes(this.state.currentRole)
+                || item.employee.includes(this.state.currentRole));
             
             if (defaultUnit){
                 this.setState(state =>{
@@ -316,7 +316,7 @@ class ModalAddTaskTemplate extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/>
+                {/* <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/> */}
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"

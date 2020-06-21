@@ -314,13 +314,49 @@ exports.createDocumentDomain = async (req, res) => {
 };
 
 exports.showDocumentDomain = (req, res) => {
-
+    console.log("FSDKFJSDLKFJDS")
 };
 
-exports.editDocumentDomain = (req, res) => {
+exports.editDocumentDomain = async(req, res) => {
+    try {
+        const domain = await DocumentServices.editDocumentDomain(req.params.id, req.body);
+        
+        await LogInfo(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_domain_success'],
+            content: domain
+        });
+    } catch (error) {
+        
+        await LogError(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_domain_faile'],
+            content: error
+        });
+    }
 };
 
-exports.deleteDocumentDomain = (req, res) => {
+exports.deleteDocumentDomain = async(req, res) => {
+    try {
+        const domain = await DocumentServices.deleteDocumentDomain(req.params.id);
+        
+        await LogInfo(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_domain_success'],
+            content: domain
+        });
+    } catch (error) {
+        console.log('ERERRPR"', error)
+        await LogError(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_domain_faile'],
+            content: error
+        });
+    }
 };
 
 exports.getDocumentsThatRoleCanView = async(req, res) => {

@@ -1,5 +1,6 @@
 const UserService = require('./user.service');
 const { LogInfo, LogError } = require('../../../logs');
+const { Console } = require('winston/lib/winston/transports');
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -207,7 +208,7 @@ exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
         });
     } catch (error) {
         await LogError(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
-        res.status(200).json({
+        res.status(400).json({
             success: false,
             messages: ['get_all_user_of_this_unit_and_its_sub_units_failed'],
             content: error
@@ -225,7 +226,7 @@ exports.getAllUserInAllDepartmentsOfCompany = async (req, res) => {
         });
     } catch (error) {
         await LogError(req.user.email, `get all user in all department of this company ${req.body.name}`, req.user.company);
-        res.status(200).json({
+        res.status(400).json({
             success: false,
             messages: ['get_all_user_in_all_department_failed'],
             content: error

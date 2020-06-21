@@ -1229,6 +1229,10 @@ export default {
 
                 name: "Name of task",
                 search_by_name: 'Search by name',
+
+                start_date: 'Start date',
+                end_date: 'End date',
+
                 search: "Search",
 
                 col_name: 'Name of task',
@@ -1392,7 +1396,7 @@ export default {
                         target_name: 'Target name',
                         parents_target: 'Parents target',
                         evaluation_criteria: 'Evalution criteria',
-                        max_score: 'Max score',
+                        weight: 'Weight',
                         status: 'Status',
                         action: 'Action',
                         not_initialize: 'No KPI have been initialized in ',

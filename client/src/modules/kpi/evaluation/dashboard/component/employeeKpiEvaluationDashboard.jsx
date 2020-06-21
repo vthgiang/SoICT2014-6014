@@ -14,6 +14,7 @@ import { DatePicker } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
 
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 class DashBoardKPIMember extends Component {
     constructor(props) {
@@ -33,10 +34,10 @@ class DashBoardKPIMember extends Component {
             commenting: false,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                userId: null,
+                userId: this.INFO_SEARCH.userId,
                 status: 4,
-                startMonth: currentYear + '-' + 1,
-                endMonth: currentYear + '-' + (currentMonth + 2)
+                startMonth: this.INFO_SEARCH.startMonth,
+                endMonth: this.INFO_SEARCH.endMonth
             },
             showApproveModal: "",
             showEvaluateModal: "",
@@ -307,23 +308,8 @@ class DashBoardKPIMember extends Component {
             if(!Array.isArray(userdepartments)) {
                 userdepartments = [userdepartments]
             }
-            unitMembers = [];
-            userdepartments.map(userdepartment => {
-                unitMembers = unitMembers.concat([
-                    {
-                        text: userdepartment.roles.dean.name,
-                        value: userdepartment.deans.map(item => {return {text: item.name, value: item._id}})
-                    },
-                    {
-                        text: userdepartment.roles.viceDean.name,
-                        value: userdepartment.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                    },
-                    {
-                        text: userdepartment.roles.employee.name,
-                        value: userdepartment.employees.map(item => {return {text: item.name, value: item._id}})
-                    },
-                ])
-            })
+            unitMembers = getEmployeeSelectBoxItems(userdepartments);
+            unitMembers=unitMembers[0].value;
 
             if(!this.state.infosearch.userId) {
                 this.setState(state => {
@@ -331,7 +317,7 @@ class DashBoardKPIMember extends Component {
                         ...state,
                         infosearch: {
                             ...state.infosearch,
-                            userId: unitMembers[2].value[0].value
+                            userId: unitMembers[0].value
                         }
                     }
                 })

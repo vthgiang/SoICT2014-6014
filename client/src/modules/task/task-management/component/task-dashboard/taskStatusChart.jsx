@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../redux/actions';
 
+import { SelectBox } from '../../../../../common-components/index';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -13,26 +15,62 @@ class TaskStatusChart extends Component {
         super(props);
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
+        this.ROLE_SELECTBOX = [
+            {
+                text: 'Responsible',
+                value: this.ROLE.RESPONSIBLE
+            },
+            {
+                text: 'Accountable',
+                value: this.ROLE.ACCOUNTABLE
+            },
+            {
+                text: 'Consulted',
+                value: this.ROLE.CONSULTED
+            },
+            {
+                text: 'Informed',
+                value: this.ROLE.INFORMED
+            },
+            {
+                text: 'Creator',
+                value: this.ROLE.CREATOR
+            }
+        ]
 
         this.state = {
             userId: localStorage.getItem("userId"),
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.QUERYING,
+            role: this.ROLE.RESPONSIBLE,
+            roleName: this.ROLE_SELECTBOX[0].text
         };
 
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if(nextState.role !== this.state.role) {
+            await this.setState(state =>{
+                return {
+                    ...state,
+                    role: nextState.role,
+                };
+            });
+            
+            this.pieChart();
+        }
+
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
+            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
  
             this.setState(state => {
                 return {
@@ -69,11 +107,23 @@ class TaskStatusChart extends Component {
         return false
     }
 
+    handleSelectRole = (value) => {
+        var roleName = this.ROLE_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
+
+        this.setState(state => {
+            return {
+                ...state,
+                role: Number(value[0]),
+                roleName: roleName
+            }
+        })
+    }
+
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { tasks } = this.props;
         var dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        var listTask, listTaskFilter = [], listIdTask = [], responsibleTasks, accountableTasks, consultedTasks, informedTasks, creatorTasks;
+        var listTask, listTask;
         
         var now = new Date();
         var currentYear = now.getFullYear();
@@ -82,25 +132,31 @@ class TaskStatusChart extends Component {
         var beginningOfMonth = new Date(currentYear, currentMonth);
 
         if(tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
-            responsibleTasks = tasks.responsibleTasks;
-            accountableTasks = tasks.accountableTasks;
-            consultedTasks = tasks.consultedTasks;
-            informedTasks = tasks.informedTasks;
-            creatorTasks = tasks.creatorTasks;
-        };
-
-        // Lọc các task trùng nhau
-        listTask = responsibleTasks.concat(accountableTasks).concat(consultedTasks).concat(informedTasks).concat(creatorTasks);
-        listTask.forEach(task => {
-            let id = task._id;
-            if(!(listIdTask.includes(task._id))) {
-                listIdTask.push(task._id)
-                listTaskFilter.push(task);
+            if(this.state.role === this.ROLE.RESPONSIBLE) {
+                listTask = tasks.responsibleTasks;
+            } else if(this.state.role === this.ROLE.ACCOUNTABLE) {
+                listTask = tasks.accountableTasks;
+            } else if(this.state.role === this.ROLE.CONSULTED) {
+                listTask = tasks.consultedTasks;
+            } else if(this.state.role === this.ROLE.INFORMED) {
+                listTask = tasks.informedTasks;
+            } else if(this.state.role === this.ROLE.CREATOR) {
+                listTask = tasks.creatorTasks;
             }
-        });
+        };
         
-        if(listTaskFilter) {
-            listTaskFilter.filter(task => {        // lấy công việc tháng hiện tại
+        // // Lọc các task trùng nhau
+        // listTask = responsibleTasks.concat(accountableTasks).concat(consultedTasks).concat(informedTasks).concat(creatorTasks);
+        // listTask.forEach(task => {
+        //     let id = task._id;
+        //     if(!(listIdTask.includes(task._id))) {
+        //         listIdTask.push(task._id)
+        //         listTaskFilter.push(task);
+        //     }
+        // });
+
+        if(listTask) {
+            listTask.filter(task => {        // lấy công việc tháng hiện tại
                 if(new Date(task.startDate) < beginnigOfNextMonth && new Date(task.startDate) >= beginningOfMonth){
                     return 1;
                 } else if(new Date(task.endDate) < beginnigOfNextMonth && new Date(task.endDate) >= beginningOfMonth){
@@ -180,7 +236,37 @@ class TaskStatusChart extends Component {
     render() {
         return(
             <React.Fragment>
-                <div ref="chart"></div>
+                <div className="box-body dashboard_box_body">
+                    <section style={{ textAlign: "right", fontSize: "17px" }}>
+                        <span className="label label-danger">{this.state.roleName}</span>
+                        <i className="fa fa-gear" data-toggle="collapse" data-target="#role-of-status-task" style={{ padding: "5px", cursor: "pointer" }}></i>
+                        
+                        <div className="box box-primary box-solid collapse setting-table" id="role-of-status-task">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Vai trò</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#role-of-status-task" ><i className="fa fa-times"></i></button>
+                                </div>
+                            </div>
+
+                            <div className="box-body">
+                                <div className = "form-group">
+                                    <SelectBox
+                                        id={`roleOfStatusTaskSelectBox`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={this.ROLE_SELECTBOX}
+                                        multiple={false}
+                                        onChange={this.handleSelectRole}
+                                        value={this.ROLE_SELECTBOX[0].value}
+                                    />
+                                </div> 
+                            </div>
+                        </div>
+                    </section>
+
+                    <section ref="chart"></section>
+                </div>
             </React.Fragment>
         )
     }

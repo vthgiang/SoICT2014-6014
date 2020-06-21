@@ -36,8 +36,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        let {task} = this.props;
+        // let {tasks} = this.props;
+        // let task = (tasks && tasks.task) && tasks.task.info;
         
         let evaluations;
         
@@ -54,34 +55,54 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let info = {};
         let cloneKpi = [];
         
-        let infoEval = task.taskInformations;
+        var infoEval = task.taskInformations;
+        
         for(let i in infoEval){
 
             if(infoEval[i].type === "Date"){
                 if(infoEval[i].value){
-                    infoEval[i].value = this.formatDate(infoEval[i].value);
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(infoEval[i].value),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
                 else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
-                    infoEval[i].value = this.formatDate(Date.now());
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoEval[i].type === "SetOfValues"){
                 let splitSetOfValues = infoEval[i].extra.split('\n');
                 if(infoEval[i].value){
-                    infoEval[i].value = [infoEval[i].value];
+                    info[`${infoEval[i].code}`] = {
+                        value: [infoEval[i].value],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = [infoEval[i].value];
                 }
                 else if(!infoEval[i].filledByAccountableEmployeesOnly){
-                    infoEval[i].value = [splitSetOfValues[0]];
+                    info[`${infoEval[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                    // infoEval[i].value = [splitSetOfValues[0]];
                 }
             }
-        
-            
-            info[`${infoEval[i].code}`] = {
-                value: infoEval[i].value,
-                code: infoEval[i].code,
-                type: infoEval[i].type
-            }
-                
+            else {
+                info[`${infoEval[i].code}`] = {
+                    value: infoEval[i].value,
+                    code: infoEval[i].code,
+                    type: infoEval[i].type
+                }
+            }                
         }
         if(evaluations){
             if(evaluations.results.length !== 0) {
@@ -366,15 +387,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let department = task.organizationalUnit._id;
 
         // console.log('----------------------\n\n\n', date, userId, department);
-        this.props.getTaskById(this.props.id);
-        this.props.getEmployeeKpiSet();
+        // this.props.getTaskById(this.props.id);
+        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
         console.log('PARENT nextProps, prevState', nextProps, prevState);
-        const { tasks } = nextProps;
-        let task = tasks && tasks.task && tasks.task.info;
+        const { task } = nextProps;
+        // const { tasks } = nextProps;
+        // let task = tasks && tasks.task && tasks.task.info;
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
