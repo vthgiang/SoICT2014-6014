@@ -6,6 +6,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { TaskInformationForm } from './taskInformationForm';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
+import { performTaskAction } from '../redux/actions';
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
@@ -141,6 +142,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        
+        this.props.addTaskLog({
+            createdAt: Date.now(),
+            taskId: this.props.id, 
+            creator: getStorage("userId"), 
+            title: "HiHi", 
+            description: "OkOk",
+        })
+
         let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
@@ -501,6 +512,7 @@ function mapStateToProps(state) {
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));

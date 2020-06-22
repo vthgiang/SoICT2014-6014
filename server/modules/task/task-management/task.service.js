@@ -177,7 +177,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -191,7 +191,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -289,7 +289,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -303,7 +303,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -400,7 +400,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -414,7 +414,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -511,7 +511,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -525,7 +525,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -622,7 +622,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -636,7 +636,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
