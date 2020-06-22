@@ -307,7 +307,7 @@ class ModalEditTaskTemplate extends Component {
 
 
     render() {
-        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
         var { editingTemplate } = this.state;
   
         const { department, user,translate, tasktemplates } = this.props;
@@ -320,7 +320,15 @@ class ModalEditTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) listRole = user.roledepartments;
+        if (user.roledepartments) {
+            listRole = user.roledepartments;
+            for (let x in listRole.deans)
+                listRoles[x] = listRole.deans[x];
+            for (let x in listRole.viceDeans)
+                listRoles.push(listRole.viceDeans[x]);
+            for (let x in listRole.employees)
+                listRoles.push(listRole.employees[x]);
+        }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
@@ -376,11 +384,9 @@ class ModalEditTaskTemplate extends Component {
                                     id={`edit-read-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items={[
-                                        {value: listRole.dean._id, text: listRole.dean.name},
-                                        {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                        {value: listRole.employee._id, text: listRole.employee.name},
-                                    ]}
+                                    items={
+                                        listRoles.map( x => { return { value : x._id, text : x.name}})
+                                    }
                                     onChange={this.handleTaskTemplateRead}
                                     value={editingTemplate.readByEmployees}
                                     multiple={true}

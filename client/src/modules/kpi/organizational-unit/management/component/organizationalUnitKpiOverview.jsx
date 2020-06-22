@@ -171,8 +171,8 @@ class KPIUnitManager extends Component {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
                 item.deans.includes(this.state.currentRole)
-                || item.viceDean.includes(this.state.currentRole)
-                || item.employee.includes(this.state.currentRole));
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
         }
         if (managerKpiUnit.kpis) {
             listkpi = managerKpiUnit.kpis;

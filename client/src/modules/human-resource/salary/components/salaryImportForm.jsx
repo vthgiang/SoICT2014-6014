@@ -204,7 +204,7 @@ class SalaryImportForm extends Component {
                         errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
                     } else {
                         if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                            errorAlert = [...errorAlert, 'Mã nhân viên đã tồn tại'];
+                            errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
                     };
                     if (x.employeeName === null)
                         errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
@@ -259,7 +259,6 @@ class SalaryImportForm extends Component {
             rowError = salary.error.rowError;
             importData = salary.error.data
         }
-
         var pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);

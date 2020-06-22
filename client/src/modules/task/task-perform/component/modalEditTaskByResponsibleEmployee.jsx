@@ -89,10 +89,12 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 }
             }
             else {
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: infoEval[i].type
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
                 }
             }                
         }
