@@ -67,7 +67,8 @@ class ModalApproveTask extends Component {
     confirmResult = (taskID, oldResults) => {
         var { tasks, performtasks } = this.props;
         var task;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
         var listResult = [
             {
                 automaticPoint: this.state.automaticPoint,
@@ -182,7 +183,8 @@ class ModalApproveTask extends Component {
         var { tasks, performtasks } = this.props;
         var task;
 
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
 
         var evaluate = task.evaluations;
         var evaluationDate = evaluate[evaluate.length - 1].date;
@@ -210,7 +212,8 @@ class ModalApproveTask extends Component {
         if (nextProps.taskID !== prevState.taskID) {
             var task;
             var responsiblePoint, consultedPoint, accountablePoint;
-            if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+            // if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+            if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
             // console.log("task ---->> ", task);
             // task.evaluations.forEach( x => {
             //     if(x.date.getMonth() >= task.startDate.getMonth() && x.date.getMonth() <= task.endDate.getMonth()){}

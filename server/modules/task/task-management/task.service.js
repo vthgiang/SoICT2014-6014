@@ -75,20 +75,23 @@ exports.getTask = async (id,userId) => {
             "info": null
         }
     }
-    if(task.taskTemplate === null){
-        return {
-            "info": task,
-            // "informations": task.taskInformations
-        };
-    } else {
-        var task2 = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
-        .populate({path: "taskActions.creator", model: User, select: "name email"});
-        return {
-            "info": task,
-            "informations": task2.taskInformations
-        };
-    }
+    return task;
+    // if(task.taskTemplate === null){
+        // return task;
+        // return {
+        //     "info": task,
+        //     // "informations": task.taskInformations
+        // };
+    // } 
+    // else {
+    //     var task2 = await Task.findById(id)
+    //     .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
+    //     .populate({path: "taskActions.creator", model: User, select: "name email"});
+    //     return {
+    //         "info": task,
+    //         "informations": task2.taskInformations
+    //     };
+    // }
         
 }
 

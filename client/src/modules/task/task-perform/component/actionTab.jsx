@@ -624,7 +624,8 @@ class ActionTab extends Component {
         const { showEvaluations, selected,comment, editComment, showChildComment, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment,valueRating,currentUser,hover } = this.state;
         const checkUserId = obj =>  obj.creator._id === currentUser;
         if(typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
-            task = performtasks.task.info;
+            // task = performtasks.task.info;
+            task = performtasks.task;
             taskComments = task.taskComments;
             taskActions = task.taskActions;
             files = task.files

@@ -12,6 +12,12 @@ class ModalPerform extends Component {
         
     }
 
+    // shouldComponentUpdate(nextProps, nextState){
+    //     if(nextProps.id !== nextState.id){
+    //         return true;
+    //     }
+    // }
+
     componentDidMount(){
         // this.props.getTaskById(this.props.id)
     }
@@ -20,7 +26,8 @@ class ModalPerform extends Component {
         var task;
         const { tasks} = this.props; 
         
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
         
         return (
             <React.Fragment>

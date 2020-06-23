@@ -70,14 +70,16 @@ class DetailTaskTab extends Component {
                     dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            return false;
+            // return false;
+            return true;
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
             if (!nextProps.tasks.task){
                 return false;
             } else { // Dữ liệu đã về
-                let task = nextProps.tasks.task.info;
+                // let task = nextProps.tasks.task.info;
+                let task = nextProps.tasks.task;
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
 
@@ -251,14 +253,16 @@ class DetailTaskTab extends Component {
         const { tasks, performtasks, user } = this.props;
         // task = this.props.task;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null){
-            task = tasks.task.info;
+            // task = tasks.task.info;
+            task = tasks.task;
         }
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
-        }
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.taskTemplate !== null) {
+        //     actions = tasks.task.actions;
+        //     informations = tasks.task.informations;
+        // }
         
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
