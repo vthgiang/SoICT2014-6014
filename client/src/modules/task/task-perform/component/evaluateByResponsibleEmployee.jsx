@@ -15,6 +15,7 @@ import { createKpiSetActions } from '../../../kpi/employee/creation/redux/action
 
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
+import moment from 'moment'
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
@@ -59,8 +60,8 @@ class EvaluateByResponsibleEmployee extends Component {
             date = this.formatDate(new Date()); 
         }
         else if(this.props.perform === "evaluate"){
-            date = this.formatDate(new Date()); 
-            // date = moment().endOf("month").format('DD-MM-YYYY');
+            // date = this.formatDate(new Date()); 
+            date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
         let point = undefined;
@@ -523,7 +524,6 @@ class EvaluateByResponsibleEmployee extends Component {
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            // automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
             automaticPoint: this.state.autoPoint,
             employeePoint: this.state.point,
             role: "Responsible",
@@ -623,7 +623,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint !== undefined?autoPoint:"Chưa tính được"}
                             </a>
                         </strong>
@@ -634,6 +634,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 progress={this.state.progress}
                                 date={this.state.date}
                                 info={this.state.info}
+                                autoPoint={autoPoint}
                             />
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}

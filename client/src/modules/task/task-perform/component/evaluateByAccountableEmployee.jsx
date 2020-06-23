@@ -49,12 +49,12 @@ class EvaluateByAccountableEmployee extends Component {
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
         let date = this.formatDate(new Date()); 
-        if(this.props.perform === "stop"){
+        if(this.props.perform === "stop"){ // nếu dừng thì cho ngày là ngày hiện tại
             date = this.formatDate(new Date()); 
         }
-        else if(this.props.perform === "evaluate"){
-            date = this.formatDate(new Date()); 
-            // date = moment().endOf("month").format('DD-MM-YYYY');
+        else if(this.props.perform === "evaluate"){ // nếu đánh giá thì cho ngày đánh giá là cuối tháng
+            // date = this.formatDate(new Date()); 
+            date = moment().endOf("month").format('DD-MM-YYYY');
         }
         let info = {};
         
@@ -761,8 +761,9 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     save = () => {
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let {tasks} = this.props;
+        // let task = (tasks && tasks.task) && tasks.task.info;
+        let task = this.state.task;
 
         let evaluations, taskId;
         taskId = this.props.id;
@@ -875,7 +876,7 @@ class EvaluateByAccountableEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint !== undefined?autoPoint:"Chưa tính được"}
                             </a> 
                         </strong>
@@ -886,6 +887,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 progress={this.state.progress}
                                 date={this.state.date}
                                 info={this.state.info}
+                                autoPoint={autoPoint}
                             />
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}

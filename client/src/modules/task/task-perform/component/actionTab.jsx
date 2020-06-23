@@ -95,18 +95,26 @@ class ActionTab extends Component {
 
     }
     
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id
-            }
-        }
-    }
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.id !== prevState.id) {
+    //         return {
+    //             ...prevState,
+    //             id: nextProps.id
+    //         }
+    //     }
+    // }
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
+        console.log('----------------000000------------------');
+            this.setState(state => {
+                return {
+                    ...state,
+                    id: nextProps.id
+                }
+            })
             this.props.getTimesheetLogs(nextProps.id);
-            this.props.getTaskById(nextProps.id);
+            // this.props.getTaskById(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
             this.props.getTaskLog(nextProps.id);
