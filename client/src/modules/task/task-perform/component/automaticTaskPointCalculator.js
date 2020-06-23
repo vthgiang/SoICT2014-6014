@@ -77,10 +77,10 @@ function calcAutoPoint(data) {
         let taskInformations = info;
         
         // thay các biến bằng giá trị
-        formula = formula.replace(/od/g, overdueDate);
-        formula = formula.replace(/dow/g, dayOfWork);
-        formula = formula.replace(/a/g, avgRating);
-        formula = formula.replace(/p0/g, progressTask);
+        formula = formula.replace(/overdueDate/g, overdueDate);
+        formula = formula.replace(/dayOfWork/g, dayOfWork);
+        formula = formula.replace(/avgRating/g, avgRating);
+        formula = formula.replace(/progress/g, progressTask);
         
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for(let i in taskInformations){

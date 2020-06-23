@@ -28,19 +28,27 @@ class TaskComponent extends Component {
         this.props.getAllUserOfCompany();
     }
 
+    componentDidMount() {
+        if(this.props.id){
+            this.props.getTaskById(this.props.id);
+        }
+    }
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
-            if (taskId && this.flag ==1) {
+            if (taskId && this.flag == 1) {
                 this.flag = 2;
+                this.props.getTaskById(taskId);
                 return true;
             }
         }
         return true;
     }
+
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
-        var task, info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+        var info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
         if (tasks.task) info = tasks.task.info;
         if (typeof info !== 'undefined' && info !== null) {
             responsibleEmployees = info.responsibleEmployees;
@@ -77,6 +85,7 @@ class TaskComponent extends Component {
 
     render = () => {
         let taskId = this.props.id;;
+        let task;
 
         if (this.props.location){
             if (this.flag !== 1){
@@ -85,6 +94,7 @@ class TaskComponent extends Component {
         }
         
         const { tasks } = this.props;
+        if (tasks.task) task = tasks.task.info;
         if (tasks.task && !this.checkPermission(tasks)) {
             return (
                 <div>
@@ -97,7 +107,9 @@ class TaskComponent extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
 
                     <DetailTaskTab
-                        id={taskId} onChangeTaskRole={this.onChangeTaskRole}
+                        id={taskId} 
+                        onChangeTaskRole={this.onChangeTaskRole} 
+                        task={task && task}
                     />
                 </div>
 
@@ -105,6 +117,7 @@ class TaskComponent extends Component {
                     <ActionTab
                         id={taskId}
                         role={this.state.role}
+                        task={task && task}
                     />
                 </div>
 
@@ -119,8 +132,8 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    getSubTask: taskManagementActions.getSubTask,
-    getTimesheetLogs: performTaskAction.getTimesheetLogs,
+    // getSubTask: taskManagementActions.getSubTask,
+    // getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };
 
