@@ -14,7 +14,7 @@ class TimeSheetsManagement extends Component {
         super(props);
         this.state = {
             position: null,
-            month: null,
+            month: this.formatDate(Date.now(), true),
             employeeNumber: "",
             organizationalUnit: null,
             page: 0,
@@ -42,6 +42,21 @@ class TimeSheetsManagement extends Component {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
     }
+
+    getAllDayOfMonth = (month) => {
+        let partMonth = month.split('-');
+        let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);
+        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        for (let i = 1; i <= lastDayOfmonth.getDate(); i++) {
+            let day = i;
+            if (i.toString().length < 2)
+                day = '0' + i;
+            let date = new Date([partMonth[1], partMonth[0], day]);
+            arrayDay = [...arrayDay, { day: days[date.getDay()], date: date.getDate() }]
+        }
+        return arrayDay
+    }
+
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
     handleMSNVChange = (event) => {
@@ -76,8 +91,7 @@ class TimeSheetsManagement extends Component {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
-        let partMonth = value.split('-');
-        value = [partMonth[1], partMonth[0]].join('-');
+
         this.setState({
             ...this.state,
             month: value
@@ -86,14 +100,14 @@ class TimeSheetsManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        if (this.state.month === null) {
-            let partMonth = this.formatDate(Date.now(), true).split('-');
-            let month = [partMonth[1], partMonth[0]].join('-');
-            await this.setState({
-                ...this.state,
-                month: month
-            })
-        }
+        // if (this.state.month === null) {
+        //     let partMonth = this.formatDate(Date.now(), true).split('-');
+        //     let month = [partMonth[1], partMonth[0]].join('-');
+        //     await this.setState({
+        //         ...this.state,
+        //         month: month
+        //     })
+        // }
         //this.props.searchSalary(this.state);
     }
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -113,8 +127,11 @@ class TimeSheetsManagement extends Component {
         //this.props.searchSalary(this.state);
     }
     render() {
+        const { month } = this.state;
+        let allDayOfMonth = this.getAllDayOfMonth(month);
         const { list } = this.props.department;
         const { translate } = this.props;
+
         var listTimesheets = "", listPosition = [];
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
@@ -189,10 +206,10 @@ class TimeSheetsManagement extends Component {
 
                     </div>
                     <div id="croll-table" className="form-inline">
-                        <div className = "sticky col-lg-3 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
+                        <div className="sticky col-lg-3 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
                             <table className="keeping table table-bordered">
                                 <thead>
-                                    <tr style={{ height: 42 }}>
+                                    <tr style={{ height: 58 }}>
                                         <th >Mã nhân viên</th>
                                         <th style={{ width: "55%" }}>Tên nhân viên</th>
                                     </tr>
@@ -212,40 +229,12 @@ class TimeSheetsManagement extends Component {
                             </table>
                         </div>
                         <div className="col-lg-9 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
-                            <table id="timesheets" className="timekeeping table table table-striped table-bordered table-hover" style={{marginLeft:-1}}>
+                            <table id="timesheets" className="timekeeping table table table-striped table-bordered table-hover" style={{ marginLeft: -1 }}>
                                 <thead>
-                                    <tr>
-                                        <th>1</th>
-                                        <th>2</th>
-                                        <th>3</th>
-                                        <th>4</th>
-                                        <th>5</th>
-                                        <th>6</th>
-                                        <th>7</th>
-                                        <th>8</th>
-                                        <th>9</th>
-                                        <th>10</th>
-                                        <th>11</th>
-                                        <th>12</th>
-                                        <th>13</th>
-                                        <th>14</th>
-                                        <th>15</th>
-                                        <th>16</th>
-                                        <th>17</th>
-                                        <th>18</th>
-                                        <th>19</th>
-                                        <th>20</th>
-                                        <th>21</th>
-                                        <th>22</th>
-                                        <th>23</th>
-                                        <th>24</th>
-                                        <th>25</th>
-                                        <th>26</th>
-                                        <th>27</th>
-                                        <th>28</th>
-                                        <th>29</th>
-                                        <th>30</th>
-                                        <th style={{ width: 45 }}>31</th>
+                                    <tr style={{ height: 58 }}>
+                                        {allDayOfMonth.map((x, index) => (
+                                            <th key={index}>{x.day}&nbsp; {x.date}</th>
+                                        ))}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -280,7 +269,6 @@ class TimeSheetsManagement extends Component {
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                     </tr>
                                     <tr>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
@@ -305,7 +293,6 @@ class TimeSheetsManagement extends Component {
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
@@ -347,7 +334,6 @@ class TimeSheetsManagement extends Component {
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                     </tr>
                                     <tr>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
@@ -380,9 +366,7 @@ class TimeSheetsManagement extends Component {
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                         <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
                                     </tr>
-
                                 </tbody>
                             </table>
                         </div>

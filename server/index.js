@@ -79,6 +79,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/upload/human-resource/avatars', express.static('upload/human-resource/avatars'));
+app.use('/upload/human-resource/templateImport', express.static('upload/human-resource/templateImport'));
 app.use('/upload/avatars', express.static('upload/avatars'));
  
 
