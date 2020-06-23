@@ -55,12 +55,12 @@ class SalaryImportForm extends Component {
             bonus = bonus.join(', ');
         } else bonus = `"${bonus}"`
         let stringData = `{
-            "${"Số dòng tiêu đề của bảng"}": ${data.rowHeader},
-            "${"Tên các sheet"}": [${sheets}],
-            "${"Tên tiêu đề ứng với mã số nhân viên"}": "${data.employeeNumber}",
-            "${"Tên tiêu để ứng với họ và tên"}": "${data.employeeName}",
-            "${"Tên tiêu để ứng với tiền lương chính"}": "${data.mainSalary}",
-            "${"Tên tiêu để ứng với lương thưởng khác"}": [${bonus}]
+            "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
+            "${'Tên các sheet'}": [${sheets}],
+            "${'Tên tiêu đề ứng với mã số nhân viên'}": "${data.employeeNumber}",
+            "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
+            "${'Tên tiêu để ứng với tiền lương chính'}": "${data.mainSalary}",
+            "${'Tên tiêu để ứng với lương thưởng khác'}": [${bonus}]
         }`
         return stringData;
     }

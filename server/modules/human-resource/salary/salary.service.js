@@ -116,18 +116,18 @@ exports.updateSalary = async (id, data, company) => {
 
 
 
-formatDate = (date) => {
-    var d = new Date(date),
-        month = (d.getMonth() + 1),
-        //day = d.getDate(),
-        year = d.getFullYear();
-        console.log("====",d);
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    return [year,month].join('-');
-}
+// formatDate = (date) => {
+//     var d = new Date(date),
+//         month = (d.getMonth() + 1),
+//         //day = d.getDate(),
+//         year = d.getFullYear();
+//         console.log("====",d);
+//     if (month.length < 2)
+//         month = '0' + month;
+//     if (day.length < 2)
+//         day = '0' + day;
+//     return [year,month].join('-');
+// }
 
 /**
  * import dữ liệu bảng lương 
