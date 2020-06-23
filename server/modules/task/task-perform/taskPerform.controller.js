@@ -561,3 +561,25 @@ exports.addTaskLog = async(req,res) => {
         });
     }
 }
+
+/**
+ * Lấy tất cả nhật ký của một công việc
+ */
+exports.getTaskLog = async(req,res) => {
+    try {
+        var taskLog = await PerformTaskService.getTaskLog(req.params.id);
+        await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
+        res.status(200).json({
+            success : true,
+            messages: ["get_task_log_success"],
+            content: taskLog
+        });
+    } catch (error) {
+        await LogError(req.user.email, ` GET_TASK_LOG  `,req.user.company);
+        res.status(400).json({ 
+            success: false,
+            messages: ['get_task_log_fail'],
+            content: error 
+        });
+    }
+}

@@ -73,7 +73,8 @@ class SelectBox extends Component {
     }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
-        return this.state.value;
+        let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+        return value;
     }
 
     static isEqual = (items1, items2) => {

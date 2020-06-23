@@ -129,7 +129,12 @@ class TaskTemplate extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
-        return (JSON.stringify(currentRole) === JSON.stringify(deanCurrentUnit));
+        for (let i in deanCurrentUnit){
+            if (currentRole === deanCurrentUnit[i]){
+                return true;
+            }
+        }
+        return false;
     }
     
     checkHasComponent = (name) => {
@@ -195,9 +200,9 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.dean === localStorage.getItem("currentRole")
-                || item.viceDean === localStorage.getItem("currentRole")
-                || item.employee === localStorage.getItem("currentRole"));
+                item.deans.indexOf(localStorage.getItem("currentRole"))
+                || item.viceDeans.indexOf(localStorage.getItem("currentRole"))
+                || item.employees.indexOf(localStorage.getItem("currentRole")));
         }
         
         if (tasktemplates.items) {
@@ -207,8 +212,8 @@ class TaskTemplate extends Component {
         return ( 
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
-                    {/* {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>} */}
+                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
+                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
                     {<TaskTemplateImportForm />}
                     {<ModalAddTaskTemplate/>}
                         <div class = "form-inline">
@@ -280,9 +285,9 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
                                             <td>
                                                 <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
-                                                {this.checkPermisson(item.organizationalUnit.dean) &&
+                                                {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
                                                         <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
                                                             <i className="material-icons">edit</i>

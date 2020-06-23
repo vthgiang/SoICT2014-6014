@@ -390,11 +390,28 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 adding: false,
-                // currentTask: action.payload
+                logs: action.payload
             };
         case performTaskConstants.ADD_TASK_LOG_FAILURE:
             return {
                 error: action.error
+            };
+
+        case performTaskConstants.GET_TASK_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.GET_TASK_LOG_SUCCESS:            
+            return {
+                ...state,
+                isLoading: false,
+                logs: action.payload
+            };
+        case performTaskConstants.GET_TASK_LOG_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
             };
 
         default:

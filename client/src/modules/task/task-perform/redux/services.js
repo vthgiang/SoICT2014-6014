@@ -34,6 +34,7 @@ export const performTaskService = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    getTaskLog,
 };
 /**
  * // example for axios
@@ -241,8 +242,16 @@ function uploadFile(task,data) {
 // Hàm thêm nhật ký cho một công việc
 function addTaskLog(log) {    
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/logs`,
+        url:`${LOCAL_SERVER_API}/performtask/logs/history`,
         method : 'POST',
         data : log
-    }, true, true, 'task.task_perform');
+    }, false, false, 'task.task_perform');
+};
+
+// Hàm thêm nhật ký cho một công việc
+function getTaskLog(id) {    
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/logs/${id}`,
+        method : 'GET',
+    }, false, false, 'task.task_perform');
 };

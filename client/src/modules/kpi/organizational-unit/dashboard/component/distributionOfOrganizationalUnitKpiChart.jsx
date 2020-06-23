@@ -20,7 +20,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         };
 
         // Lấy Kpi của đơn vị hiện tại
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole") ,this.props.organizationalUnitId);
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
     }
     
     shouldComponentUpdate = async (nextProps, nextState) => {

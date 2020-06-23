@@ -648,8 +648,7 @@ exports.uploadFile = async (params,files) => {
  * Thêm nhật ký cho một công việc
  */
 exports.addTaskLog = async (data) => {
-    var { taskId, creator, title, description } = data;
-    var createdAt = new Date();
+    var { taskId, creator, title, description, createdAt } = data;
 
     var log = {
         createdAt: createdAt,
@@ -658,9 +657,19 @@ exports.addTaskLog = async (data) => {
         description: description,
     }
 
-    var taskLog = await Task.findByIdAndUpdate(
+    var task = await Task.findByIdAndUpdate(
         taskId, { $push: { logs: log } }, { new: true }
-    );
-            
+    ).populate("logs.creator");
+    var taskLog = task.logs;
+
     return taskLog;
+}
+
+/**
+ * Thêm nhật ký cho một công việc
+ */
+exports.getTaskLog = async (id) => {
+    var task = await Task.findById(id).populate("logs.creator")
+    
+    return task.logs;
 }

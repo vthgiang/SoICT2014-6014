@@ -12,21 +12,21 @@ const initState = {
 
 export function dashboardOrganizationalUnitKpi (state = initState, action){
     switch (action.type) {
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_REQUEST:
             return {
                 ...state,
                 childTargets: null,
                 loading: true,
                 isLoading: false
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isLoading: false,
                 childTargets: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_FAILURE:
             return {
                 ...state,
                 isLoading: false,

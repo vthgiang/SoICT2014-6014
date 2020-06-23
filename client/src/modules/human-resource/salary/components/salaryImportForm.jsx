@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, SlimScroll, PaginateBar, DatePicker } from '../../../../common-components';
 import { configurationSalary } from './fileConfigurationImportSalary';
+import { LOCAL_SERVER_API } from '../../../../env';
 
 import XLSX from 'xlsx';
 import { SalaryActions } from '../redux/actions';
@@ -88,7 +89,7 @@ class SalaryImportForm extends Component {
             return null
         }
     }
-    
+
     // bắt sự kiện thay đổi tháng lương
     handleMonthChange = (value) => {
         const { salary } = this.props;
@@ -204,7 +205,7 @@ class SalaryImportForm extends Component {
                         errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
                     } else {
                         if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                            errorAlert = [...errorAlert, 'Mã nhân viên đã tồn tại'];
+                            errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
                     };
                     if (x.employeeName === null)
                         errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
@@ -259,7 +260,6 @@ class SalaryImportForm extends Component {
             rowError = salary.error.rowError;
             importData = salary.error.data
         }
-
         var pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);
@@ -361,8 +361,8 @@ class SalaryImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right' href="" target="_blank" style={{ paddingTop: 15 }}
-                                    download=""><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right' href={LOCAL_SERVER_API + configurationSalary.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
+                                    download={configurationSalary.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
 
                             <div className="form-group col-md-12 col-xs-12">
