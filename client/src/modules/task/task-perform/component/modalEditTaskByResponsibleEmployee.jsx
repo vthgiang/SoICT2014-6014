@@ -355,7 +355,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     handleAddTaskLog = (taskId) => {
         console.log('');
-        // let tasks = this.props.tasks.tasks.filter(item => item._id === taskId); // cái này phải là this.props.tasks.task thôi, ko có 's'
+        // let tasks = this.props.tasks.tasks.filter(item => item._id === taskId); 
         // let currentTask = tasks[0];
         let currentTask = this.state.task;
 
