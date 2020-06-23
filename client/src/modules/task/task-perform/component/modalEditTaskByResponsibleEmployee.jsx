@@ -6,6 +6,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { TaskInformationForm } from './taskInformationForm';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
+import { performTaskAction } from '../redux/actions';
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
@@ -352,9 +353,68 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             && this.validateTaskDescription(this.state.taskDescription, false)
     }
 
-    save = () => {        
+    handleAddTaskLog = (taskId) => {
+        let tasks = this.props.tasks.tasks.filter(item => item._id === taskId);
+        let currentTask = tasks[0];
+
+        let title = '';
+        let description = '';
+
+        if(this.state.taskName !== currentTask.name || this.state.taskDescription !== currentTask.description){
+            title = title + 'Chỉnh sửa thông tin cơ bản';
+
+            if(this.state.taskName !== currentTask.name){
+                description = description + 'Tên công việc mới: ' + this.state.taskName;
+            }
+            
+            if(this.state.taskDescription !== currentTask.description){
+                description = description === '' ? description + 'Mô tả công việc mới: ' + this.state.taskDescription : description + '. ' + 'Mô tả công việc mới: ' + this.state.taskDescription;
+            }
+        }
+
+        let date = this.formatDate(new Date());
+        let info = this.getData(date);
+        let kpi = info.kpi;
+
+        let listKpi;
+        const { KPIPersonalManager } = this.props
+        if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+
+        if(JSON.stringify(kpi) !== JSON.stringify(this.state.kpi)){
+            title = title === '' ? title + 'Chỉnh sửa liên kết KPI' : title + '. ' + 'Chỉnh sửa liên kết KPI';
+            
+            let newKpi = [];
+            for(const element of this.state.kpi){
+                let a = listKpi.filter(item => item._id === element);
+                newKpi.push(a[0].name);
+            }
+            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(this.state.kpi);
+        }
+
+        if(currentTask.progress !== this.state.progress){
+            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress;
+        }
+
+        console.log("*******************", title, "|||" , description);
+        
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        
+        this.props.addTaskLog({
+            createdAt: Date.now(),
+            taskId: taskId, 
+            creator: getStorage("userId"), 
+            title: title, 
+            description: description,
+        })
+    }   
+
+    save = () => {            
         let taskId;
         taskId = this.props.id;
+
+        this.handleAddTaskLog(taskId);
+        
         let data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
@@ -503,6 +563,7 @@ function mapStateToProps(state) {
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));
