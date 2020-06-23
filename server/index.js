@@ -21,6 +21,7 @@ const disciplines = require('./modules/human-resource/discipline/discipline.rout
 const holidays = require('./modules/human-resource/holiday/holiday.route');
 const profile = require('./modules/human-resource/profile/profile.route');
 const salaries = require('./modules/human-resource/salary/salary.route');
+const EmployeeService = require('./modules/human-resource/profile/profile.service');
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -110,8 +111,16 @@ Logger.findOne({
     })
     .catch(err => console.log("message: ", err));
 
-
-
+/**
+ * Thông báo sinh nhật cho người dùng vào 8h hàng ngày
+ */
+setInterval(async()=>{
+    let date = new Date();
+    if(date.getHours()===8){
+        console.log(date.getHours());
+        await EmployeeService.getEmployeesHaveBrithdayCurrent();
+    } 
+},59*60*1000);
 
 
 app.use("/auth", auth);
