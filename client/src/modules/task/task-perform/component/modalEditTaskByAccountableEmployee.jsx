@@ -687,7 +687,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleAddTaskLog = (inactiveEmployees) => {
         let currentTask = this.state.task;
         let { taskName, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
-
+        console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", currentTask);
+        
         let title = '';
         let description = '';
 
@@ -705,11 +706,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         if (statusOptions !== currentTask.status || 
             priorityOptions !== currentTask.priority || 
-            JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees) || 
-            JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees) || 
-            JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees) ||
-            JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees) ||
-            JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees)
+            JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) || 
+            JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) || 
+            JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id })) ||
+            JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id })) ||
+            JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))
             ){
             const { user } = this.props;
             let usercompanys;
@@ -717,18 +718,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 
             title = title === '' ? title + 'Chỉnh sửa thông tin chi tiết' : title + '. ' + 'Chỉnh sửa thông tin chi tiết';
             
-            if(statusOptions !== currentTask.status){
-                console.log("OOOOOOOOOOOOOOOOOOOOOO", statusOptions, this.formatStatus(statusOptions));
-                
+            if(statusOptions[0] !== currentTask.status){
                 description = description === '' ? description + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]) : description + '. ' + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]);
             }
 
-            if(priorityOptions !== currentTask.priority){
-                console.log("OOOOOOOOOOOOOOOOOOOOOO", priorityOptions, this.formatStatus(priorityOptions));
+            if(priorityOptions[0] !== currentTask.priority){
                 description = description === '' ? description + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0]));
             }
 
-            if(JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees)){
+            if(JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))){
                 let responsibleEmployeesArr = [];
                 for(const element of responsibleEmployees){
                     let a = usercompanys.filter(item => item._id === element);
@@ -737,7 +735,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 description = description === '' ? description + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr) : description + '. ' + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr);
             }
 
-            if(JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees)){
+            if(JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id }))){
                 let accountableEmployeesArr = [];
                 for(const element of accountableEmployees){
                     let a = usercompanys.filter(item => item._id === element);
@@ -746,7 +744,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 description = description === '' ? description + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr) : description + '. ' + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr);
             }
 
-            if(JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees)){
+            if(JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id }))){
                 let consultedEmployeesArr = [];
                 for(const element of consultedEmployees){
                     let a = usercompanys.filter(item => item._id === element);
@@ -755,7 +753,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 description = description === '' ? description + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr);
             }
 
-            if(JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees)){
+            if(JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id }))){
                 let informedEmployeesArr = [];
                 for(const element of informedEmployees){
                     let a = usercompanys.filter(item => item._id === element);
@@ -764,7 +762,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 description = description === '' ? description + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr) : description + '. ' + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr);
             }
 
-            if(JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees)){
+            if(JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))){
                 let inactiveEmployeesArr = [];
                 for(const element of inactiveEmployees){
                     let a = usercompanys.filter(item => item._id === element);
