@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { Schedule } from './tasksSchedule';
+import { taskManagementActions } from '../../redux/actions';
+
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -14,6 +18,11 @@ class TaskDashboard extends Component {
     }
     componentDidMount() {
         this.handleLoadDataCalendar();
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
     }
     handleLoadDataCalendar = () => {
         window.$(function () {
@@ -187,6 +196,7 @@ class TaskDashboard extends Component {
         return dps;
     }
     render() {
+        const {tasks} =this.props;
         const options3 = {
             theme: "light2", // "light1", "dark1", "dark2"
             animationEnabled: true,
@@ -206,6 +216,62 @@ class TaskDashboard extends Component {
                 dataPoints: this.generateDataPoints(500)
             }]
         }
+        
+        var amountResponsibleTask=0;
+        if(tasks&&tasks.responsibleTasks){
+            let task=tasks.responsibleTasks;
+            let i;
+            for(i in task){
+                if(task[i].status === "Inprocess")
+                    amountResponsibleTask ++;
+                
+            }               
+        }
+        // Tinh so luong tat ca cac task 
+        var amountResponsibleTask=0;
+        if(tasks&&tasks.responsibleTasks){
+            let task=tasks.responsibleTasks;
+            let i;
+            for(i in task){
+                if(task[i].status === "Inprocess")
+                    amountResponsibleTask ++;
+                
+            }               
+        }
+        // tính số lượng task mà người này là creator
+        var amountTaskCreated=0;
+        if(tasks&&tasks.creatorTasks){
+            let task=tasks.creatorTasks;
+            let i;
+            for(i in task){
+                if(task[i].status === "Inprocess")
+                    amountTaskCreated ++;
+                
+            }               
+        }
+         // tính số lượng task mà người này cần phê duyệt
+         var amountAccountableTasks=0;
+         if(tasks&&tasks.accountableTasks){
+             let task=tasks.accountableTasks;
+             let i;
+             for(i in task){
+                 if(task[i].status === "Inprocess")
+                     amountAccountableTasks ++;                 
+             }               
+         }
+         // tính số lượng task mà người này là người hỗ trợ
+         var amountConsultedTasks=0;
+         if(tasks&&tasks.consultedTasks){
+             let task=tasks.consultedTasks;
+             let i;
+             for(i in task){
+                 if(task[i].status === "Inprocess")
+                     amountConsultedTasks ++;                 
+             }               
+         }
+
+
+
         return (
             <div className="table-wrapper">
                 {/* <div className="content-wrapper">
@@ -223,28 +289,28 @@ class TaskDashboard extends Component {
                         <div className="row">
                             <div className="col-md-3 col-sm-6 col-xs-12">
                                 <div className="info-box">
-                                    <span className="info-box-icon bg-aqua"><i className="ion ion-ios-gear-outline" /></span>
+                                    <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Đã tạo</span>
-                                        <span className="info-box-number">7/7</span>
+                                        <span className="info-box-number">{amountTaskCreated}/{amountResponsibleTask}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-3 col-sm-6 col-xs-12">
                                 <div className="info-box">
-                                    <span className="info-box-icon bg-green"><i className="ion ion-ios-people-outline" /></span>
+                                    <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần thực hiện</span>
-                                        <span className="info-box-number">7/7</span>
+                                        <span className="info-box-number">{amountResponsibleTask}/{amountResponsibleTask}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-3 col-sm-6 col-xs-12">
                                 <div className="info-box">
-                                    <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
+                                    <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần phê duyệt</span>
-                                        <span className="info-box-number">0/7</span>
+                                        <span className="info-box-number">{amountAccountableTasks}/{amountResponsibleTask}</span>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +320,7 @@ class TaskDashboard extends Component {
                                     <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần hỗ trợ</span>
-                                        <span className="info-box-number">0/7</span>
+                                        <span className="info-box-number">{amountConsultedTasks}/{amountResponsibleTask}</span>
                                     </div>
                                 </div>
                             </div>
@@ -525,5 +591,18 @@ class TaskDashboard extends Component {
         );
     }
 }
-
-export { TaskDashboard };
+function mapState(state) {
+    const {tasks} = state;
+    return {tasks};
+}
+const actionCreators = {
+    getAllTaskByRole: taskManagementActions.getAllTaskByRole,
+    getResponsibleTaskByUser:taskManagementActions.getResponsibleTaskByUser,
+    getAccountableTaskByUser:taskManagementActions.getAccountableTaskByUser,
+    getConsultedTaskByUser:taskManagementActions.getConsultedTaskByUser,
+    getInformedTaskByUser:taskManagementActions.getInformedTaskByUser,
+    getCreatorTaskByUser:taskManagementActions.getCreatorTaskByUser
+ 
+};
+const connectedTaskDashboard = connect(mapState, actionCreators)(TaskDashboard);
+export { connectedTaskDashboard as TaskDashboard };
