@@ -22,6 +22,7 @@ class ModelDetailTask2 extends Component{
         return [day, month, year].join('/');
     }
     render(){
+        console.log('===============');
         const {tasks} = this.props;
         let {id} = this.props;
         

@@ -1152,8 +1152,10 @@ class ActionTab extends Component {
                                 <div key={item._id} style={{marginBottom: 20}}>
                                     <a style={{fontWeight: 700}} href="javascript:void(0)">{item.creator.name} - </a>
                                     Thời gian {moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")}
-                                    <div style={{marginLeft: 10}}>{item.title? item.title: "Không có tiêu đề"} </div>
-                                    <div style={{marginLeft: 10}}>{item.description? item.description: "Không có mô tả"} </div>
+                                    <ul>
+                                        <li> {item.title? item.title: "Không có tiêu đề"} </li>
+                                        <li> {item.description? item.description: "Không có mô tả"} </li>
+                                    </ul>
                                 </div>
                             )}
                         </div>
