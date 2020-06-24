@@ -12,7 +12,8 @@ class EvaluateByConsultedEmployee extends Component {
 
         let idUser = getStorage("userId");
         let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let task = (tasks && tasks.task) && tasks.task.info;
+        let task = tasks && tasks.task;
         
         let evaluations;
         let dateOfEval = new Date();

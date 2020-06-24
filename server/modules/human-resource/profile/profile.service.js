@@ -8,7 +8,8 @@ const {
     UserRole,
     User,
     Role,
-    EmployeeCourse
+    EmployeeCourse,
+    ManualNotification
 } = require('../../../models').schema;
 
 /**
@@ -50,7 +51,6 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     }
     if (position === undefined) {
         units.forEach(u => {
-            //let role = [...u.deans, ...u.viceDeans, ...u.employees];
             roles = roles.concat(u.deans).concat(u.viceDeans).concat(u.employees);
         })
     } else {
@@ -575,4 +575,74 @@ exports.checkEmployeeCompanyEmailExisted = async (email) => {
         checkEmail = true
     }
     return checkEmail;
+}
+
+/**
+ * Hàm tiện ích dùng cho các function bên dưới
+ * Format dữ liệu date thành dạng string dd-mm
+ */
+exports.formatDate = (date) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate();
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+    return [day, month].join('-');
+}
+/**
+ * Lấy danh sách các nhân viên có ngày sinh trùng với ngày hiện tại
+ */
+exports.getEmployeesHaveBrithdayCurrent = async ()=>{
+    let employees = await Employee.find({},{birthdate: 1, emailInCompany: 1});
+    employees = employees.filter(x=>this.formatDate(x.birthdate)===this.formatDate(new Date()));
+    emails = employees.map(x=> x.emailInCompany);
+    users = await User.find({email:{$in: emails}}, {_id: 1,company: 1, email: 1, name:1});
+
+    // Tạo thông báo cho người có ngày sinh nhật trùng với ngày hiện tại
+    let notifications = users.map(user => {
+        return {
+            company:user.company,
+            title: "Thông báo sinh nhật",
+            level: "info",
+            content: "Chúc bạn có một ngày sinh nhật vui vẻ",
+            sender: "VNIST-Việc",
+            user:user._id,
+            manualNotification: undefined
+        }
+    });
+    
+    // Tạo thông báo cho nhân viên cùng phòng ban với người có sinh nhật là ngày hiện tại
+    for(let n in users){
+        // lấy id phòng ban của nhân viên có sinh nhật là hôm nay
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(users[n].email);
+        let unitId = value.organizationalUnits;
+        let roles =[];
+        unitId.forEach(x=>{
+            roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
+        })
+        // lấy danh sách nhân viên cùng phòng ban với người
+        let usersArr = await UserRole.find({roleId: {$in: roles}},{userId:1});
+        usersArr = usersArr.map(x=>x.userId.toString());
+        for(let i = 0, max = usersArr.length; i < max; i++) {
+            if(usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])||usersArr[i]===users[n]._id.toString()) {
+                usersArr.splice(usersArr.indexOf(usersArr[i]), 1);
+                i--;
+            }
+        }
+        let notificationsArr =usersArr.map(x=>{
+            return {
+                company:users[n].company,
+                title: "Thông báo sinh nhật",
+                level: "info",
+                content: `Hôm nay là sinh nhật của ${users[n].name}. Hãy gửi những lời chúc đến ${users[n].name}`,
+                sender: "VNIST-Việc",
+                user: x,
+                manualNotification: undefined
+            }
+        }) 
+        notifications = notifications.concat(notificationsArr)
+    }
+    await Notification.insertMany(notifications);
 }

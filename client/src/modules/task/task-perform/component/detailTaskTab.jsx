@@ -46,37 +46,40 @@ class DetailTaskTab extends Component {
     }
 
 
-    static getDerivedStateFromProps(nextProps, prevState) {
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     console.log('vào get derived--------------', prevState);
+    //     if (nextProps.id !== prevState.id) {
 
-        if (nextProps.id !== prevState.id) {
-
-            return {
-                ...prevState,
-                id: nextProps.id
-            }
-        }
-        return true;
-    }
+    //         return {
+    //             ...prevState,
+    //             id: nextProps.id
+    //         }
+    //     }
+    //     return true;
+    // }
     shouldComponentUpdate = (nextProps, nextState) => {
 
         if (nextProps.id !== this.state.id) {
-            this.props.getTaskById(nextProps.id);
+            // this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
-            this.props.getTimesheetLogs(nextProps.id);
+            // this.props.getTimesheetLogs(nextProps.id);
             this.setState(state=>{
                 return{
                     ...state,
+                    id: nextProps.id,
                     dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            return false;
+            // return false;
+            return true;
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
             if (!nextProps.tasks.task){
                 return false;
             } else { // Dữ liệu đã về
-                let task = nextProps.tasks.task.info;
+                // let task = nextProps.tasks.task.info;
+                let task = nextProps.tasks.task;
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
 
@@ -241,18 +244,25 @@ class DetailTaskTab extends Component {
     }
     
     render() {
+        // console.log('stateeeeeee\n\n', this.state);
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
         const{currentUser}= this.state
         
         const { tasks, performtasks, user } = this.props;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
+        // task = this.props.task;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null){
+            // task = tasks.task.info;
+            task = tasks.task;
         }
+        
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.taskTemplate !== null) {
+        //     actions = tasks.task.actions;
+        //     informations = tasks.task.informations;
+        // }
         
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
@@ -274,7 +284,7 @@ class DetailTaskTab extends Component {
                         </a>
                     }
                     
-                    { (currentRole !== "informed" && currentRole !== "creator" && checkInactive ) &&
+                    { ((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
                             <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
@@ -322,14 +332,10 @@ class DetailTaskTab extends Component {
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
-                        {/* </div>
-                                <hr />
-                            </div>
-
-                            <br /> */}
+                        
                         <br />
                         <div className="row">
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border" style={{ /*border: "1px solid #fff" */ }}>
                                     <legend className="scheduler-border">Thông tin chung</legend>
 
@@ -441,7 +447,7 @@ class DetailTaskTab extends Component {
                                     </div>
                                 </fieldset>
                             </div>
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">Đánh giá công việc</legend>
 

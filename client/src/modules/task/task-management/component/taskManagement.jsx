@@ -713,7 +713,7 @@ class TaskManagement extends Component {
 
                     </div>
                     {
-                        // this.state.showModal !== undefined &&
+                        this.state.currentTaskId !== undefined &&
 
                         <ModalPerform
                             id={this.state.currentTaskId}
