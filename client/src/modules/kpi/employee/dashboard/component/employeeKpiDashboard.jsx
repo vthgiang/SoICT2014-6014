@@ -59,7 +59,7 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-6">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                                <div class="box-title">Phân bố KPI cá nhân năm {this.state.currentYear}</div>
+                                <div class="box-title">KPI cá nhân năm {this.state.currentYear}</div>
                             </div>
                             <div className="box-body">
                                 <ResultsOfEmployeeKpiChart/>
