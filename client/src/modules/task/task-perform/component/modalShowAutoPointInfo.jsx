@@ -25,6 +25,7 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     render() {
+        console.log("task in props",this.props.task);
         const { task, progress, date, info} = this.props; 
         
         let taskInformations = task.taskInformations;

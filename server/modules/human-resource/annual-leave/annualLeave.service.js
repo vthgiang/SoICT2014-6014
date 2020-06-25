@@ -21,16 +21,27 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
         var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {...keySearch, employee: {$in: employee}}
     }
+
+    let totalListOfYear = 0; 
     //Bắt sựu kiện tháng tìm kiếm khác "", undefined
     if (month !== undefined && month.length !== 0) {
         var date = new Date(month);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        let firstDayOfYear = new Date(date.getFullYear()-1, 12, 1);
+        let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
+        totalListOfYear = await AnnualLeave.count({...keySearch,startDate: {"$gt": firstDayOfYear, "$lte": lastDayOfYear}});
         keySearch = {...keySearch,"$or": [{startDate: {"$gt": firstDay, "$lte": lastDay}}, {endDate: {"$gt": firstDay, "$lte": lastDay}}]}
+    } else {
+        let date = new Date();
+        let firstDayOfYear = new Date(date.getFullYear()-1, 12, 1);
+        let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
+        totalListOfYear = await AnnualLeave.count({...keySearch, startDate: {"$gt": firstDayOfYear, "$lte": lastDayOfYear}});
+        keySearch = {...keySearch, startDate: {"$gt": firstDayOfYear, "$lte": lastDayOfYear}}
     };
 
     var totalList = await AnnualLeave.count(keySearch);
-    return {totalList};
+    return {totalList, totalListOfYear};
 }
 
 /**

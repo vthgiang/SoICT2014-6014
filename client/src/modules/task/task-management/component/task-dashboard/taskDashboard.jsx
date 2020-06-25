@@ -269,8 +269,28 @@ class TaskDashboard extends Component {
                      amountConsultedTasks ++;                 
              }               
          }
+         // Tinh tong so luong cong viec co trang thai Inprogess
+         var numTask =[];
+         var totalTasks=0;
+        if(tasks){
+            let tempObj={};
+            if(tasks.responsibleTasks)
+            numTask=numTask.concat(tasks.responsibleTasks);
+            if(tasks.creatorTasks)
+            numTask=numTask.concat(tasks.creatorTasks);
+            if(tasks.accountableTasks)
+            numTask=numTask.concat(tasks.accountableTasks);
+            if(tasks.consultedTasks)
+            numTask=numTask.concat(tasks.consultedTasks);
+            let i;
+            for(i in numTask){
+                if(numTask[i].status ==="Inprocess")
+                tempObj[numTask[i]._id]=numTask[i].name;
+            }
 
-
+            totalTasks=Object.keys(tempObj).length;
+           
+        }
 
         return (
             <div className="table-wrapper">
@@ -292,7 +312,7 @@ class TaskDashboard extends Component {
                                     <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Đã tạo</span>
-                                        <span className="info-box-number">{amountTaskCreated}/{amountResponsibleTask}</span>
+                                        <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
                                     </div>
                                 </div>
                             </div>
@@ -301,7 +321,7 @@ class TaskDashboard extends Component {
                                     <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần thực hiện</span>
-                                        <span className="info-box-number">{amountResponsibleTask}/{amountResponsibleTask}</span>
+                                        <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
                                     </div>
                                 </div>
                             </div>
@@ -310,7 +330,7 @@ class TaskDashboard extends Component {
                                     <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần phê duyệt</span>
-                                        <span className="info-box-number">{amountAccountableTasks}/{amountResponsibleTask}</span>
+                                        <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
                                     </div>
                                 </div>
                             </div>
@@ -320,7 +340,7 @@ class TaskDashboard extends Component {
                                     <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Cần hỗ trợ</span>
-                                        <span className="info-box-number">{amountConsultedTasks}/{amountResponsibleTask}</span>
+                                        <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
                                     </div>
                                 </div>
                             </div>

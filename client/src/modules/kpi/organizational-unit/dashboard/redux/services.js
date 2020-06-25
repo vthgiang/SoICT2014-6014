@@ -4,17 +4,17 @@ import {
 import { sendRequest} from '../../../../../helpers/requestHelper';
 
 export const dashboardOrganizationalUnitKpiServices = {
-    getAllChildTargetOfOrganizationalUnitKpi,
+    getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-function getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId) {
+/** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
+function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-targets/${roleId}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-in-organizational-unit/${roleId}`,
         method: 'GET',
         params: { organizationalUnitId: organizationalUnitId }
     }, false, false)

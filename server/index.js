@@ -11,6 +11,7 @@ require('dotenv').config();
 
 
 // Application Modules
+const schedulerController = require('./modules/scheduler/scheduler.controller');
 const auth = require('./modules/auth/auth.route');
 
 const documents = require('./modules/document/document.route');
@@ -111,17 +112,8 @@ Logger.findOne({
     })
     .catch(err => console.log("message: ", err));
 
-/**
- * Thông báo sinh nhật cho người dùng vào 8h hàng ngày
- */
-setInterval(async()=>{
-    let date = new Date();
-    if(date.getHours()===8){
-        console.log(date.getHours());
-        await EmployeeService.getEmployeesHaveBrithdayCurrent();
-    } 
-},59*60*1000);
-
+// Function gọi Api vào thời gian xác định
+schedulerController.chedulesCallApi();
 
 app.use("/auth", auth);
 
