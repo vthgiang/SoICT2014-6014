@@ -687,7 +687,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleAddTaskLog = (inactiveEmployees) => {
         let currentTask = this.state.task;
         let { taskName, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
-        console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", currentTask);
         
         let title = '';
         let description = '';
@@ -704,14 +703,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
 
-        if (statusOptions !== currentTask.status || 
-            priorityOptions !== currentTask.priority || 
+        if (statusOptions[0] !== currentTask.status || 
+            priorityOptions[0] !== currentTask.priority || 
             JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) || 
             JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) || 
             JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))
-            ){
+        ){
             const { user } = this.props;
             let usercompanys;
             if (user.usercompanys) usercompanys = user.usercompanys;

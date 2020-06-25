@@ -42,32 +42,40 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        // var content = this.state.currentTab;
-        // if (content === "responsible") {
-            this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null);
-        // } else if (content === "accountable") {
-        //     this.props.getAccountableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
-        // } else if (content === "consulted") {
-        //     this.props.getConsultedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
-        // } else if (content === "creator") {
-        //     this.props.getCreatorTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
-        // } else {
-        //     this.props.getInformedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
-        // }
+        this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null);
     }
 
-    componentDidUpdate(prevProps, prevState) {        
-        if(prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length){
-            this.handleUpdateData();
+    shouldComponentUpdate(nextProps, nextState) {
+        let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state; 
+
+        if (currentTab != nextState.currentTab ||
+            organizationalUnit != nextState.organizationalUnit ||
+            status != nextState.status ||
+            priority != nextState.priority ||
+            special != nextState.special ||
+            name != nextState.name ||
+            startDate != nextState.startDate ||
+            endDate != nextState.endDate
+        ){
+            return false;
         }
+
+        return true;
     }
     
+
     UNSAFE_componentWillUpdate() {
         let script = document.createElement('script');
         script.src = '../lib/main/js/GridTableVers1.js';//fix /lib/...
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+    }
+
+    componentDidUpdate(prevProps, prevState) {        
+        if(prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length){
+            this.handleUpdateData();
+        }
     }
 
     formatDate(date) {
