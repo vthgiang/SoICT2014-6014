@@ -1,55 +1,78 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import Timeline from 'react-calendar-timeline'
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
+
+import Timeline from "react-calendar-timeline";
+import { taskManagementActions } from '../../../task-management/redux/actions';
 import {ModelDetailTask2} from './detailTask'
 
 class Schedule extends Component{
     constructor(props){
         super(props);
-        // let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Week);
+   
+    const defaultTimeStart = moment()
+      .startOf("month")
+      .toDate();
+    const defaultTimeEnd = moment()
+      .startOf("month")
+      .add(1, "month")
+      .toDate();
+    const now = moment();
+    this.state = {
+      defaultTimeStart,
+      defaultTimeEnd,
+    //   currentMonth: (new Date()).getMonth(),
+      month: (new Date()).getMonth()
+    };
+    // console.log(this.state.month);
+  }
+   getDaysOfMonth(year, month) {
+
+    return new Date(year, month + 1, 0).getDate();
+    
     }
     
-     getTasksName(){
-        const {tasks} = this.props;
-        const taskList = tasks && tasks.responsibleTasks;
-        var tasksName = [];
-        // console.log(tasks);
-        if(taskList) for(let i = 1; i<= taskList.length; i++){
-            tasksName.push({ id: i, title: taskList[i-1].name })
-        }
-    //    console.log(tasksName);
-        // const group = [{ id: 1, title: 'group 1' }, { id: 2, title: 'group 2' }, { id: 3, title: 'group 3' }, { id: 4, title: 'group 4' }]
-        return tasksName;
-    }
-
+    
     getDurations(){
         const {tasks} = this.props;
+        const {now} = this.state;
         const taskList = tasks && tasks.responsibleTasks;
         var durations=[];
-        
-          
+
         if(taskList) {
-          for(let i = 1; i<= taskList.length; i++){
-              let start_time = moment(parseInt((new Date(taskList[i-1].startDate).getTime())));
-              let end_time = moment(parseInt((new Date(taskList[i-1].endDate).getTime())));
-            
-            durations.push({ 
-                id: i,
-                group: i,
+          for(var i = 1; i<= taskList.length; i++){
+              var start_time = moment(new Date(taskList[i-1].startDate));
+        //     //   console.log(moment(new Date(taskList[i-1].startDate)));
+            //   var end_time = moment(parseInt((new Date(taskList[i-1].endDate).getTime())));
+              var end_time = moment(new Date(taskList[i-1].endDate)) ;
+        //     // console.log( start_time);
+        //     // console.log(moment().add(-start_time,'millisecond'));
+       
+            durations.push({
+                id: parseInt(i),
+                group: 1,
                 title: `${taskList[i-1].name} - ${taskList[i-1].progress}%`,
                 canMove: false,
-                selectedBgColor: 'rgb(0, 0, 244)',
+                
                 start_time: start_time,
-                end_time: end_time
-            })
-        }}
-        console.log(durations);
-        
+                end_time: end_time,
+                
+                itemProps:{
+                    style:{
+                    backgroundColor: "dodgeblue",
+                    // selectedBgColor: "black",
+                    borderStyle: "solid",
+                    borderWidth:1,
+                    borderRadius: 3}}
+                  }
+            )
+        }
+    }
         return durations;
     }
     handleItemClick = async(itemId) => {
+        
         await this.setState(state => {
             return {
                 ...state,
@@ -58,32 +81,105 @@ class Schedule extends Component{
         })
         window.$(`#modal-detail-task`).modal('show')
       }
-    render(){
-        const timeDefault = Date.now();
-        return(
-            <div className ="box">
-                <div className="box-body qlcv">
-                <h4>Lịch thực hiện công việc</h4>
-                <Timeline
-                groups={this.getTasksName()}
-                items={this.getDurations()}
-                itemTouchSendsClick = {false}
-                traditionalZoom = {true}
-                onItemClick={this.handleItemClick}
-                // visibleTimeStart={moment(timeDefault).add(-1, 'year')}
-                // visibleTimeEnd={moment(timeDefault).add(1, 'year')}
-                sidebarWidth = {0}
-                defaultTimeStart={moment(timeDefault).add(-15, 'day')}
-                defaultTimeEnd={moment(timeDefault).add(15, 'day')}
-                />
-                
-                {<ModelDetailTask2 id={this.state && this.state.detailTask}/>}
-            </div>
-            </div>
-            )
-    }
-
+  animateScroll = invert => {
+    var month = this.state.month;
     
+    let calc =  this.getDaysOfMonth(new Date().getFullYear(), month+1); 
+    let prev = this.getDaysOfMonth(new Date().getFullYear(),month ); 
+    const width = (invert ? -1 : 1) * parseFloat(this.scrollRef.style.width); 
+    const duration = 1200;
+    console.log('calc', calc);
+    const startTime = performance.now();
+    
+    let lastWidth = 0;
+    const animate = () => {
+      let normalizedTime = (performance.now() - startTime) / duration;
+      if (normalizedTime > 1) {
+        
+        normalizedTime = 1;
+      }
+
+      const calculatedWidth = width * 0.5 * (1 + Math.cos(Math.PI * (normalizedTime - 1)))*prev/calc*15/14;
+      console.log('width', calculatedWidth);
+      this.scrollRef.scrollLeft += calculatedWidth - lastWidth;
+    //   this.scrollRef.scrollLeft += width - lastWidth;
+      lastWidth = calculatedWidth;
+    //   lastWidth = width;
+    //   console.log('startTime, width ,normalizedTime, calculatedWidth\n\n\n',this.scrollRef.style, startTime, width ,normalizedTime, calculatedWidth);
+      if (normalizedTime < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  };
+
+  onPrevClick = () => {
+    this.animateScroll(true);
+    
+    this.decreaseMonth(this.state.month);
+  };
+
+  onNextClick = () => {
+    this.increaseMonth(this.state.month);
+   
+    this.animateScroll(false);
+  };
+   increaseMonth = async(month) => {
+       console.log('increase', month);
+    await this.setState ( state => {
+        return {
+            ...state,
+            month : (month + 1) % 13
+        }
+    })
+    
+  }
+   decreaseMonth = async(month) => {
+    console.log('decrease', month);
+    await this.setState ( state => {
+        return {
+            ...state,
+            month : (month - 1)%13
+        }
+    })
+    
+  }
+  render() {
+    const { defaultTimeStart, defaultTimeEnd } = this.state;
+
+    return (
+        <React.Fragment>
+      <div className='box'>
+          <div className="box-body qlcv">
+              <h4>Lịch công việc chi tiết</h4>
+              <ModelDetailTask2 id={this.state.detailTask}/>
+              {/* <ModalMemberApprove id={this.state.kpiId} /> */}
+            <Timeline
+                scrollRef={el => (this.scrollRef = el)}
+                items={this.getDurations()}
+                groups={[{ id: 1, title: 'group' }]}
+                itemsSorted
+                itemTouchSendsClick={false}
+                stackItems
+                sidebarWidth = {0}
+                itemHeightRatio={0.8}
+                onItemClick = {this.handleItemClick}
+                canMove={false}
+                canResize={false}
+                defaultTimeStart={defaultTimeStart}
+                defaultTimeEnd={defaultTimeEnd}
+            />
+            <div className="form-inline">
+              
+                <button className='btn-google pull-right' onClick={this.onNextClick}>{"Next >"}</button>
+                <button className='btn-google pull-right' onClick={this.onPrevClick}>{"< Prev"}</button>
+            </div>
+            
+        </div>
+      </div>
+      </React.Fragment>
+    )
+  }
 }
 
 function mapState(state){
@@ -91,7 +187,6 @@ function mapState(state){
     return {tasks}
 }
 const actions = {
-
 }
 const connectedSchedule = connect(mapState, actions) (Schedule)
 export {connectedSchedule as Schedule}

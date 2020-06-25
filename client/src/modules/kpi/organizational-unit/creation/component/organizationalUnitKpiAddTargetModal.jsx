@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/CombineActions';
-import { createUnitKpiActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+
+import { createUnitKpiActions } from '../redux/actions';
+
+import { UserFormValidator } from '../../../../super-admin/user/components/userFormValidator';
 
 class OrganizationalUnitKpiAddTargetModal extends Component {
-    componentDidMount() {
-        // get all parent target of unit
-        this.props.getParentTarget(localStorage.getItem("currentRole"));
-    }
     constructor(props) {
         super(props);
         this.state = {
@@ -20,16 +17,19 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
             weight: "",
             criteria: "",
             organizationalUnitKpiSetId: "",
+            
+            adding: false,
+            submitted: false,
 
             errorOnName: undefined,
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
-            adding: false,
-            submitted: false
         };
+    }
 
-        this.onAddItem = this.onAddItem.bind(this);
-
+    componentDidMount() {
+        // Get all parent target of unit
+        this.props.getParentTarget(localStorage.getItem("currentRole"));
     }
 
     onAddItem = async () => {
@@ -37,20 +37,23 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         let items;
         let parent = null;
         const { createKpiUnit } = this.props;
-        if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
-        if(this.state.parent === null){
-            if(parentKPI === null){
+
+        if (createKpiUnit.parent) {
+            parentKPI = createKpiUnit.parent;
+        }
+
+        if (!this.state.parent) {
+            if (!parentKPI){
                 parent = null;
-            }
-            else{    
+            } else {    
                 items = parentKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
-                return {value: x._id, text: x.name} });
+                    return {value: x._id, text: x.name}
+                });
 
                 parent = items[0].value;
             }    
-        }
-        else{
-            parent = this.state.parent
+        } else {
+            parent = this.state.parent;
         }
         
         if (this.isFormValidated()){
@@ -61,8 +64,6 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                 criteria: this.state.criteria,
                 organizationalUnitKpiSetId: this.props.organizationalUnitKpiSetId, 
             });
-
-            //window.$("#modal-add-target").modal("hide");
         }
     }
 
@@ -70,6 +71,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         let value = e.target.value;
         this.validateName(value, true);
     }
+
     validateName = (value, willUpdateState=true) => {
         let msg = UserFormValidator.validateName(value);
         if (willUpdateState){
@@ -115,21 +117,22 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         return msg === undefined;
     }
 
+
     handleWeightChange = (e) => {
         let value = e.target.value;
         this.validateWeight(value, true);
     }
     validateWeight = (value, willUpdateState=true) => {
         let msg = undefined;
-        if (value.trim() === ""){
+        if (value.trim() === "") {
             msg = "Trọng số không được để trống";
-        } else if(value < 0){
+        } else if (value < 0){
             msg = "Trọng số không được nhỏ hơn 0";
-        } else if(value > 100){
+        } else if (value > 100){
             msg = "Trọng số không được lớn hơn 100";
         } 
         
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -150,29 +153,27 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
     }
 
     render() {
-        var parentKPI;
-        const { adding } = this.state;
-        const { createKpiUnit, organizationalUnit } = this.props;
-        if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
+        const { name, adding, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
+        const { createKpiUnit } = this.props; // Redux
+        const { organizationalUnit } = this.props; // Truyền từ component cha
+        const { translate } = this.props; // Hàm để chuyển sang song ngữ
 
-        const{ name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight} = this.state;
+        let parentKPI;
+        if (createKpiUnit.parent) {
+            parentKPI = createKpiUnit.parent;
+        }
 
-        var items;
+        let items;
         if(parentKPI === undefined){
             items = [];
-        }
-        else{    
+        } else {    
             items = parentKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
-            return {value: x._id, text: x.name} });
+                return {value: x._id, text: x.name};
+            });
         }
-
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
-
         
         return (
             <React.Fragment>
-                {/* <ModalButton modalID="modal-add-target" button_name={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.add_target')} title={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.add_title')}/> */}
                 <DialogModal
                     modalID="modal-add-target" isLoading={adding}
                     formID="form-add-target"
@@ -180,37 +181,41 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                     msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success')}
                     msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.failure')}
                     func={this.onAddItem}
-                    disableSubmit={!this.isFormValidated()}
-                >
+                    disableSubmit={!this.isFormValidated()}>
+                    
+                    {/* Form thêm mục tiêu */}
                     <form id="form-add-target" onSubmit={() => this.onAddItem(translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success'))}>
-                        <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
+                        {/* Tên mục tiêu */}
+                        <div className={`form-group ${errorOnName===undefined? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
-                        {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
-                                (items.length !== 0) &&
-                                    <div className="form-group">
-                                    <label>{ translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents') }</label>
-                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                        id={`parent-target-add`}
-                                        className="form-control select2"
-                                        style={{width: "100%"}}
-                                        items = {items}
-                                        onChange={this.handleParentChange}
-                                        multiple={false}
-                                    />
-                                
-                            </div>}
+                        {/* Mục tiêu cha */}
+                        {(organizationalUnit && organizationalUnit.parent) && (items.length !== 0) && // unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                            <div className="form-group">
+                                <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents')}</label>
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id={`parent-target-add`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {items}
+                                    onChange={this.handleParentChange}
+                                    multiple={false}
+                                />
+                            </div>
+                        }
 
-                        <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
+                        {/* Tiêu chí đánh giá */}
+                        <div className={`form-group ${!errorOnCriteria? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <textarea rows={4} className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
-                        <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
+                        {/* Trọng số */}
+                        <div className={`form-group ${!errorOnWeight? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
@@ -230,7 +235,8 @@ function mapState(state) {
 
 const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
-    addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit
+    addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit,
 };
+
 const connectedOrganizationalUnitKpiAddTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiAddTargetModal));
 export { connectedOrganizationalUnitKpiAddTargetModal as OrganizationalUnitKpiAddTargetModal };

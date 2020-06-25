@@ -3,28 +3,28 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 import { dashboardEmployeeKpiConstants } from "../../../evaluation/dashboard/redux/constants";
 
 export const dashboardOrganizationalUnitKpiActions = {
-    getAllChildTargetOfOrganizationalUnitKpi,
+    getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-// Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
-function getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId=undefined) {
+// Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
+function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId=undefined) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_REQUEST });
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpi(roleId, organizationalUnitId)
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_FAILURE,
                     payload: error
                 })
             })

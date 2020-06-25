@@ -29,12 +29,13 @@ class TaskComponent extends Component {
     }
 
     componentDidMount() {
-        if(this.props.id){
-            this.props.getTaskById(this.props.id);
-        }
+        // if(this.props.id){
+        //     this.props.getTaskById(this.props.id);
+        // }
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
+        console.log('nextProps, nextState, this.state', nextProps, nextState, this.state);
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId && this.flag == 1) {
@@ -43,13 +44,24 @@ class TaskComponent extends Component {
                 return true;
             }
         }
+        if(nextProps.id !== this.state.id){
+            this.props.getTaskById(this.props.id);
+            this.setState(state=>{
+                return{
+                    ...state,
+                    id: nextProps.id,
+                }
+            });
+            return true;
+        }
         return true;
     }
 
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
         var info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-        if (tasks.task) info = tasks.task.info;
+        // if (tasks.task) info = tasks.task.info;
+        if (tasks.task) info = tasks.task;
         if (typeof info !== 'undefined' && info !== null) {
             responsibleEmployees = info.responsibleEmployees;
             accountableEmployees = info.accountableEmployees;
@@ -94,7 +106,8 @@ class TaskComponent extends Component {
         }
         
         const { tasks } = this.props;
-        if (tasks.task) task = tasks.task.info;
+        // if (tasks.task) task = tasks.task.info;
+        if (tasks.task) task = tasks.task;
         if (tasks.task && !this.checkPermission(tasks)) {
             return (
                 <div>

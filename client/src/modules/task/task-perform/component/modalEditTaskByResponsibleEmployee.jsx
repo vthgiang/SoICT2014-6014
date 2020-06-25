@@ -353,10 +353,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             && this.validateTaskDescription(this.state.taskDescription, false)
     }
 
-    handleAddTaskLog = (taskId) => {
-        console.log('');
-        // let tasks = this.props.tasks.tasks.filter(item => item._id === taskId); // cái này phải là this.props.tasks.task thôi, ko có 's'
-        // let currentTask = tasks[0];
+    handleAddTaskLog = () => {
         let currentTask = this.state.task;
 
         let title = '';
@@ -395,16 +392,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         if(currentTask.progress !== this.state.progress){
             title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress;
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
         }
 
         console.log("*******************", title, "|||" , description);
-        
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        
+                
         this.props.addTaskLog({
             createdAt: Date.now(),
-            taskId: taskId, 
+            taskId: currentTask._id, 
             creator: getStorage("userId"), 
             title: title, 
             description: description,

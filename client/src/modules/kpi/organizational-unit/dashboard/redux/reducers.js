@@ -1,7 +1,7 @@
 import { dashboardOrganizationalUnitKpiConstants } from "./constants";
 
 const initState = {
-    childTargets: null,
+    employeeKpis: null,
     tasks: null,
     organizationalUnitKpiSetsEachYear: null,
     employeeKpiSets: null,
@@ -12,21 +12,21 @@ const initState = {
 
 export function dashboardOrganizationalUnitKpi (state = initState, action){
     switch (action.type) {
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_REQUEST:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
-                childTargets: null,
+                employeeKpis: null,
                 loading: true,
                 isLoading: false
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_SUCCESS:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isLoading: false,
-                childTargets: action.payload
+                employeeKpis: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPI_FAILURE:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -37,7 +37,6 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 ...state,
                 tasks: null,
                 loading: true,
-                tasks: null,
                 isLoading: false
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS:
