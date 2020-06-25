@@ -167,9 +167,7 @@ class Schedule extends Component{
         <React.Fragment>
       <div className='box box-primary'>
         <div className="box-header with-border">
-          <div className="box-title">
-          <h3 style={{textAlign:"center", margin:"0px"}}>Lịch công việc chi tiết</h3>
-          </div>
+          <div className="box-title">Lịch công việc chi tiết</div>
         </div>
           <div className="box-body qlcv">
               

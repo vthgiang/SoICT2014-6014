@@ -285,34 +285,19 @@ class DomainOfTaskResultsChart extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="box-body dashboard_box_body">
-                    <section style={{ textAlign: "right", fontSize: "17px" }}>
-                        <span className="label label-danger">{this.state.roleName}</span>
-                        <i className="fa fa-gear" data-toggle="collapse" data-target="#role-of-results-task" style={{ padding: "5px", cursor: "pointer" }}></i>
-                        
-                        <div className="box box-primary box-solid collapse setting-table" id="role-of-results-task">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Vai trò</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#role-of-results-task" ><i className="fa fa-times"></i></button>
-                                </div>
-                            </div>
-
-                            <div className="box-body">
-                                <div className = "form-group">
-                                    <SelectBox
-                                        id={`roleOfResultsTaskSelectBox`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={this.ROLE_SELECTBOX}
-                                        multiple={false}
-                                        onChange={this.handleSelectRole}
-                                        value={this.ROLE_SELECTBOX[0].value}
-                                    />
-                                </div> 
-                            </div>
-                        </div>
-                    </section>
+                <div className="box-body qlcv">
+                    <div className="form-inline">
+                        <label style={{width: "auto"}}>Vai trò</label>
+                        <SelectBox
+                            id={`roleOfResultsTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={this.ROLE_SELECTBOX}
+                            multiple={false}
+                            onChange={this.handleSelectRole}
+                            value={this.ROLE_SELECTBOX[0].value}
+                        />
+                    </div>
 
                     <section ref="chart"></section>
                 </div>
