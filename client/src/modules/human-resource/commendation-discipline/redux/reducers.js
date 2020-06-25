@@ -2,9 +2,9 @@ import { DisciplineConstants } from './constants';
 
 const initState = {
     isLoading: false,
-    totalListDiscipline: "",
+    totalListDiscipline: 0,
     listDisciplines: [],
-    totalListPraise: "",
+    totalListCommendation: 0,
     totalListDisciplineOfYear: 0,
     totalListCommendationOfYear: 0,
     listCommendations: [],

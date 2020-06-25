@@ -3,9 +3,9 @@ import {
 } from './constants';
 const initState = {
     isLoading: false,
-    totalList: '',
-    totalEmployeeOfOrganizationalUnits: '',
-    totalAllEmployee:'',
+    totalList: 0,
+    totalEmployeeOfOrganizationalUnits: 0,
+    totalAllEmployee: 0,
 
     listEmployees: [],
     listEmployeesOfOrganizationalUnits: [],
