@@ -46,6 +46,7 @@ class CourseDetailForm extends Component {
                     hasSaveButton={false}
                     size={75}
                     maxWidth={850}
+                    hasNote= {false}
                 >
                     <form className="form-group" id="form-view-course" >
                         <div className="form-group">
