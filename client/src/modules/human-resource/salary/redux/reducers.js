@@ -2,10 +2,9 @@ import { SalaryConstants } from './constants';
 const initState = {
     isLoading: false,
     listSalarys: [],
-    totalList: "",
-    importSalary:"",
-    checkSalary: "",
-    checkArraySalary: [],
+    totalList: 0,
+    importSalary: [],
+    importStatus: false,
     error:"",
 }
 export function salary(state = initState, action) {
@@ -15,8 +14,6 @@ export function salary(state = initState, action) {
         case SalaryConstants.UPDATE_SALARY_REQUEST:
         case SalaryConstants.DELETE_SALARY_REQUEST:
         case SalaryConstants.IMPORT_SALARY_REQUEST:
-        case SalaryConstants.CHECK_ARRAY_SALARY_REQUEST:
-        case SalaryConstants.CHECK_SALARY_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -54,28 +51,14 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                importSalary: action.payload,  
-            };
-
-        case SalaryConstants.CHECK_SALARY_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                checkSalary: action.payload,
-            };
-        case SalaryConstants.CHECK_ARRAY_SALARY_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                checkArraySalary: [...action.payload],
+                importStatus: true,
+                importSalary: action.payload.content,
             };
         case SalaryConstants.GET_SALARY_FAILURE:
         case SalaryConstants.CREATE_SALARY_FAILURE:
         case SalaryConstants.UPDATE_SALARY_FAILURE:
         case SalaryConstants.DELETE_SALARY_FAILURE:
         case SalaryConstants.IMPORT_SALARY_FAILURE:
-        case SalaryConstants.CHECK_ARRAY_SALARY_FAILURE:
-        case SalaryConstants.CHECK_SALARY_FAILURE:
             return {
                 ...state,
                 isLoading: false,

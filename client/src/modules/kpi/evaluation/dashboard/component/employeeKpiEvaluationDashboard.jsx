@@ -14,6 +14,7 @@ import { DatePicker } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
 
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 class DashBoardKPIMember extends Component {
     constructor(props) {
@@ -307,23 +308,8 @@ class DashBoardKPIMember extends Component {
             if(!Array.isArray(userdepartments)) {
                 userdepartments = [userdepartments]
             }
-            unitMembers = [];
-            userdepartments.map(userdepartment => {
-                unitMembers = unitMembers.concat([
-                    {
-                        text: userdepartment.roles.dean.name,
-                        value: userdepartment.deans.map(item => {return {text: item.name, value: item._id}})
-                    },
-                    {
-                        text: userdepartment.roles.viceDean.name,
-                        value: userdepartment.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                    },
-                    {
-                        text: userdepartment.roles.employee.name,
-                        value: userdepartment.employees.map(item => {return {text: item.name, value: item._id}})
-                    },
-                ])
-            })
+            unitMembers = getEmployeeSelectBoxItems(userdepartments);
+            unitMembers = [...unitMembers];
 
             if(!this.state.infosearch.userId) {
                 this.setState(state => {
@@ -331,7 +317,7 @@ class DashBoardKPIMember extends Component {
                         ...state,
                         infosearch: {
                             ...state.infosearch,
-                            userId: unitMembers[2].value[0].value
+                            userId: unitMembers[0].value[2].value
                         }
                     }
                 })
@@ -383,7 +369,7 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Phân tích</button>
                         </div>
                     </div>
                 </div>
@@ -534,7 +520,7 @@ class DashBoardKPIMember extends Component {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={this.handleSelectEmployee}
-                                                value={unitMembers[2].value[0].value}
+                                                value={unitMembers[0].value[2].value}
                                             />
                                         </div>
                                     }

@@ -4,26 +4,28 @@ import {
 import { sendRequest} from '../../../../../helpers/requestHelper';
 
 export const dashboardOrganizationalUnitKpiServices = {
-    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
     getAllOrganizationalUnitKpiSetEachYear,
     getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
-function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
+/** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
+function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-targets/${roleId}`,
-        method: 'GET'
+        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-in-organizational-unit/${roleId}`,
+        method: 'GET',
+        params: { organizationalUnitId: organizationalUnitId }
     }, false, false)
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
-function getAllTaskOfOrganizationalUnit(roleId) {
+function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/tasks/${roleId}`,
-        method: 'GET'
+        method: 'GET',
+        params: { organizationalUnitId: organizationalUnitId }
     }, false, false)
 }
  

@@ -2,6 +2,14 @@ div.selectmulti div.btn-group {
     width: 100%;
 }
 
+button.multiselect {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+
 div.selectmulti div.btn-group>button {
     width: 100%;
     text-align: left;

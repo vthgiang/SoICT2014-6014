@@ -16,6 +16,9 @@ import {
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { Comments } from './employeeKpiComment';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
+
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -185,23 +188,8 @@ class KPIMember extends Component {
 
         let unitMembers;
         if (userdepartments) {
-            unitMembers = [
-                {
-                    value: [{text:"--Chọn nhân viên--", value: "null"}]
-                },
-                {
-                    text: userdepartments.roles.dean.name,
-                    value: userdepartments.deans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.viceDean.name,
-                    value: userdepartments.viceDeans.map(item => {return {text: item.name, value: item._id}})
-                },
-                {
-                    text: userdepartments.roles.employee.name,
-                    value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-                },
-            ]
+            unitMembers = getEmployeeSelectBoxItems([userdepartments]);
+            unitMembers = [{text:"--Chọn nhân viên--", value: "null"}, ...unitMembers[0].value];
         }
 
         return (

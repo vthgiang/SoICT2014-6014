@@ -15,17 +15,38 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
-            organizationalUnitId: null,
+            currentRole: null,
             dataStatus: this.DATA_STATUS.QUERYING
-        };
-
-        // Lấy Kpi của đơn vị hiện tại
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole") ,this.props.organizationalUnitId);
+        }; 
     }
-    
+
+    componentDidMount = () => {
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+
+        this.setState(state => {
+            return {
+                ...state,
+                currentRole: localStorage.getItem("currentRole")
+            }
+        })
+    }
+
     shouldComponentUpdate = async (nextProps, nextState) => {
+        if(this.state.currentRole !== localStorage.getItem("currentRole")) {
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+
+            return false;
+        }
+
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), nextProps.organizationalUnitId);
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId);
             
             this.setState(state => {
                 return {
@@ -47,6 +68,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                     dataStatus: this.DATA_STATUS.AVAILABLE,
                 };
             });
+
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
             this.pieChart();

@@ -1,0 +1,58 @@
+  
+  .react-calendar-timeline {
+    border: 1px solid #bbb;
+  }
+  .rct-dateHeader-primary{
+    background-color: green;
+    color: #fff;
+  }
+   .react-calendar-timeline .rct-dateHeader {
+    border: 1px solid #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    margin :0;
+  }
+  .react-calendar-timeline .rct-header-root {
+      background: #bbb;
+      border: 0px solid #bbb;
+  } 
+      
+  .react-calendar-timeline  .rct-dateHeader-primary { 
+        background-color: green;
+        border-left: 1px solid #bbb;
+        border-right: 1px solid #bbb;
+        color: #fff;
+  }
+
+  .rct-outer {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      padding-left: 1.5px;
+  }
+  .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-vl-first {
+    border-left-width: 1px;
+  }
+  .react-calendar-timeline .rct-vertical-lines .rct-vl {
+    position: absolute;
+    border-right: 1px solid #bbb;
+    z-index: 30;
+  }
+  /* .react-calendar-timeline  */
+  .rct-header-root {
+    background: #bbb;
+    border-bottom: 1px solid #bbb;
+}
+.datepicker{
+  z-index: 100 !important;
+}
+.flex-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}

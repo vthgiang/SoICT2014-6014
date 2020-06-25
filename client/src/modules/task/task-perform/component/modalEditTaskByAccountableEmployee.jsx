@@ -7,7 +7,7 @@ import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-
+import { performTaskAction } from '../redux/actions';
 import Swal from 'sweetalert2'
 
 class ModalEditTaskByAccountableEmployee extends Component {
@@ -17,9 +17,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let userId = getStorage("userId");
 
-        let { tasks } = this.props;
+        let { task } = this.props;
+        // let { tasks } = this.props;
 
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let task = (tasks && tasks.task) && tasks.task.info;
 
         // khởi tạo state của task
 
@@ -33,24 +34,48 @@ class ModalEditTaskByAccountableEmployee extends Component {
         for(let i in taskInfo){
             if(taskInfo[i].type === "Date"){
                 if(taskInfo[i].value){
-                    console.log('======================this.formatDate(taskInfo[i].value)', this.formatDate(taskInfo[i].value));
-                    taskInfo[i].value = this.formatDate(taskInfo[i].value);
+                    info[`${taskInfo[i].code}`] = {
+                        value: this.formatDate(taskInfo[i].value),
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                    // taskInfo[i].value = this.formatDate(taskInfo[i].value);
                 } 
                 else {
-                    console.log('=========ELSSE=============', this.formatDate(Date.now()));
-                    taskInfo[i].value = this.formatDate(Date.now());
+                    info[`${taskInfo[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                    // taskInfo[i].value = this.formatDate(Date.now());
                 }
             }
             else if(taskInfo[i].type === "SetOfValues"){
                 let splitter = taskInfo[i].extra.split('\n');
-                taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
+                if(taskInfo[i].value){
+                    info[`${taskInfo[i].code}`] = {
+                        value: [taskInfo[i].value],
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                } else{
+                    info[`${taskInfo[i].code}`] = {
+                        value: [splitter[0]],
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                }
+                // taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
             }
-            info[`${taskInfo[i].code}`] = {
-                value: taskInfo[i].value,
-                code: taskInfo[i].code,
-                type: taskInfo[i].type
-            }
-            
+            else {
+                if(taskInfo[i].value){
+                    info[`${taskInfo[i].code}`] = {
+                        value: taskInfo[i].value,
+                        code: taskInfo[i].code,
+                        type: taskInfo[i].type
+                    }
+                }
+            }            
         }
     
         let responsibleEmployees = task && task.responsibleEmployees.map(employee => { return employee._id });
@@ -659,8 +684,107 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
-    save = () => {
+    handleAddTaskLog = (inactiveEmployees) => {
+        let currentTask = this.state.task;
+        let { taskName, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
+        
+        let title = '';
+        let description = '';
 
+        if(taskName !== currentTask.name || taskDescription !== currentTask.description){
+            title = title + 'Chỉnh sửa thông tin cơ bản';
+
+            if(taskName !== currentTask.name){
+                description = description + 'Tên công việc mới: ' + taskName;
+            }
+            
+            if(taskDescription !== currentTask.description){
+                description = description === '' ? description + 'Mô tả công việc mới: ' + taskDescription : description + '. ' + 'Mô tả công việc mới: ' + taskDescription;
+            }
+        }
+
+        if (statusOptions[0] !== currentTask.status || 
+            priorityOptions[0] !== currentTask.priority || 
+            JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) || 
+            JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) || 
+            JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id })) ||
+            JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id })) ||
+            JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))
+        ){
+            const { user } = this.props;
+            let usercompanys;
+            if (user.usercompanys) usercompanys = user.usercompanys;
+                
+            title = title === '' ? title + 'Chỉnh sửa thông tin chi tiết' : title + '. ' + 'Chỉnh sửa thông tin chi tiết';
+            
+            if(statusOptions[0] !== currentTask.status){
+                description = description === '' ? description + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]) : description + '. ' + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]);
+            }
+
+            if(priorityOptions[0] !== currentTask.priority){
+                description = description === '' ? description + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0]));
+            }
+
+            if(JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))){
+                let responsibleEmployeesArr = [];
+                for(const element of responsibleEmployees){
+                    let a = usercompanys.filter(item => item._id === element);
+                    responsibleEmployeesArr.push(a[0].name)
+                }
+                description = description === '' ? description + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr) : description + '. ' + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr);
+            }
+
+            if(JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id }))){
+                let accountableEmployeesArr = [];
+                for(const element of accountableEmployees){
+                    let a = usercompanys.filter(item => item._id === element);
+                    accountableEmployeesArr.push(a[0].name)
+                }
+                description = description === '' ? description + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr) : description + '. ' + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr);
+            }
+
+            if(JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id }))){
+                let consultedEmployeesArr = [];
+                for(const element of consultedEmployees){
+                    let a = usercompanys.filter(item => item._id === element);
+                    consultedEmployeesArr.push(a[0].name)
+                }
+                description = description === '' ? description + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr);
+            }
+
+            if(JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id }))){
+                let informedEmployeesArr = [];
+                for(const element of informedEmployees){
+                    let a = usercompanys.filter(item => item._id === element);
+                    informedEmployeesArr.push(a[0].name)
+                }
+                description = description === '' ? description + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr) : description + '. ' + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr);
+            }
+
+            if(JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))){
+                let inactiveEmployeesArr = [];
+                for(const element of inactiveEmployees){
+                    let a = usercompanys.filter(item => item._id === element);
+                    inactiveEmployeesArr.push(a[0].name)
+                }
+                description = description === '' ? description + 'Những người không tham giá công việc nữa: ' +  JSON.stringify(inactiveEmployeesArr) : description + '. ' + 'Những người không tham giá công việc nữa: ' +  JSON.stringify(inactiveEmployeesArr);
+            }
+        }
+        if(progress !== currentTask.progress){
+            title = title === '' ? title + 'Chỉnh sửa thông tin đánh giá công việc tháng này' : title + '. ' + 'Chỉnh sửa thông tin đánh giá công việc tháng này';
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' +  progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' +  progress + "%";
+        }
+
+        this.props.addTaskLog({
+            createdAt: Date.now(),
+            taskId: currentTask._id, 
+            creator: getStorage("userId"), 
+            title: title, 
+            description: description,
+        })
+    }
+    
+    save = () => {
         let listInactive = this.state.listInactive, taskId, inactiveEmployees = [];
         taskId = this.props.id;
         for(let i in listInactive){
@@ -690,10 +814,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         console.log('data', data, taskId);
         this.props.editTaskByAccountableEmployees(data, taskId);
+
+        this.handleAddTaskLog(inactiveEmployees);
     }
 
     componentDidMount() {
-        this.props.getTaskById(this.props.id);
+        // this.props.getTaskById(this.props.id);
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
@@ -717,27 +843,54 @@ class ModalEditTaskByAccountableEmployee extends Component {
             return null;
         }
     }
+
+    formatPriority = (data) => {
+        const {translate} = this.props;
+        if(data === 1) return translate('task.task_management.low');
+        if(data === 2) return translate('task.task_management.normal');
+        if(data === 3) return translate('task.task_management.high');
+    }
+
+    formatStatus = (data) => {
+        const {translate} = this.props;
+        if( data === "Inprocess" ) return translate('task.task_management.inprocess');
+        else if( data === "WaitForApproval" ) return translate('task.task_management.wait_for_approval');       
+        else if( data === "Finished" ) return translate('task.task_management.finished');       
+        else if( data === "Delayed" ) return translate('task.task_management.delayed');       
+        else if( data === "Canceled" ) return translate('task.task_management.canceled');       
+    }
     
     render() { 
+        
         const { task } = this.state;
         const { errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
             responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
-        const { user, tasktemplates } = this.props;
+        const { user, tasktemplates, translate } = this.props;
         let departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
 
-        let priorityArr = [{value: 3, text: "Cao"}, {value: 2, text:"Trung bình"}, {value: 1, text:"Thấp"}];
-        let statusArr = [{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}];
+        let priorityArr = [
+            {value: 1, text: translate('task.task_management.low')},
+            {value: 2, text:translate('task.task_management.normal')}, 
+            {value: 3, text:translate('task.task_management.high')}
+        ];
+        let statusArr = [
+            {value: "Inprocess", text: translate('task.task_management.inprocess')},
+            {value: "WaitForApproval", text:translate('task.task_management.wait_for_approval')}, 
+            {value: "Finished", text:translate('task.task_management.finished')}, 
+            {value: "Delayed", text:translate('task.task_management.delayed')}, 
+            {value: "Canceled", text:translate('task.task_management.canceled')}
+        ];
         
         let usersOfChildrenOrganizationalUnit;
         if(user && user.usersOfChildrenOrganizationalUnit){
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
+        
         return (
             <div>
                 <React.Fragment>
@@ -769,7 +922,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>Mô tả công việc<span className="text-red">*</span></label>
                                         <input type="text"
-                                            //    value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
                                                value={taskDescription}
                                                className="form-control" onChange={this.handleTaskDescriptionChange}/>
                                         <ErrorLabel content={errorTaskDescription}/>
@@ -974,24 +1126,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             </React.Fragment>
                                         }
                                     </div>
-                                    {/* <label>Chọn người không làm việc nữa</label>
-                                    {usercompanys &&
-                                        <SelectBox
-                                            id={`select-inactive-employee-${this.props.perform}-${this.props.role}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            // items = {task && task.responsibleEmployees.map(employee => { return { value: employee._id, text: employee.name } })}
-                                            items = {
-                                                usercompanys.map(x => {
-                                                    return {value: x._id, text: x.name};
-                                                })
-                                            }
-                                            // items = {[{value:1, text: "n1" }, {value:2, text: "n2" }, {value:3, text: "n3" }, {value:4, text: "n4" }, {value:5, text: "n5" }, {value:5, text: "n5" }, ]}
-                                            onChange={this.handleChangeActiveEmployees}
-                                            multiple={true}
-                                            value={inactiveEmployees}
-                                        />
-                                    } */}
+                                    
                                     {/* về sau nếu muốn xóa nhân viên trong mảng nhân viên phía client thì dùng splice(index,1) server thì dùng $pull */}
                                 </div>
                             </fieldset>
@@ -1009,9 +1144,9 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const modalEditTaskByAccountableEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByAccountableEmployee));

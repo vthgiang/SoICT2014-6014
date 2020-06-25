@@ -15,9 +15,10 @@ exports.searchCourses = async (req, res) => {
         } else {
             let params = {
                 courseId: req.query.courseId,
+                educationProgram: req.query.educationProgram,
                 type: req.query.type,
-                page: req.query.page !==undefined ? Number(req.query.page) : 0,
-                limit: req.query.limit !==undefined ? Number(req.query.limit) :100,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
             }
             data = await CourseService.searchCourses(params, req.user.company._id); 
         } 

@@ -51,7 +51,7 @@ class TableComponent extends Component {
                     search={this.searchWithOption}
                 />
                 
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-component">
                     <thead>
                         <tr>
                             <th>{ translate('manage_component.name') }</th>
@@ -69,6 +69,7 @@ class TableComponent extends Component {
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
+                                    tableId="table-manage-component"
                                 />
                             </th>
                         </tr>

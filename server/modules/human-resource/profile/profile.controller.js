@@ -42,7 +42,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
     try {
         let data;
         if(req.query.page === undefined && req.query.limit === undefined ){
-            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false);
+            data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,

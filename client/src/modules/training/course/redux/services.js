@@ -25,6 +25,7 @@ function getListCourse(data) {
             type: data !== undefined ? data.type : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
+            educationProgram: data !== undefined ? data.educationProgram : data,
             organizationalUnits: data !== undefined ? data.organizationalUnits : data,
             positions: data !== undefined ? data.positions : data,
         }

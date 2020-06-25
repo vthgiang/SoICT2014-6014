@@ -204,9 +204,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload     
-                }
+                // task: {
+                //     info : action.payload     
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE:
             return {
@@ -279,9 +280,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload
-                }
+                // task: {
+                //     info : action.payload
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
@@ -297,9 +299,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload
-                }
+                // task: {
+                //     info : action.payload
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
             return {
@@ -315,9 +318,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload
-                }
+                // task: {
+                //     info : action.payload
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
@@ -333,9 +337,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload
-                }
+                // task: {
+                //     info : action.payload
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
             return {
@@ -351,9 +356,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: {
-                    info : action.payload
-                }
+                // task: {
+                //     info : action.payload
+                // }
+                task: action.payload
             };
         case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {

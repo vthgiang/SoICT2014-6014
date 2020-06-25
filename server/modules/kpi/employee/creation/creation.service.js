@@ -14,9 +14,9 @@ exports.getEmployeeKpiSet = async (id, role) => {
 
     var department = await OrganizationalUnit.findOne({
         $or: [
-            { dean: role },
-            { viceDean: role },
-            { employee: role }
+            { deans: role },
+            { viceDeans: role },
+            { employees: role }
         ]
     });
 

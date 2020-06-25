@@ -15,6 +15,7 @@ import { createKpiSetActions } from '../../../kpi/employee/creation/redux/action
 
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
+import moment from 'moment'
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
@@ -40,8 +41,9 @@ class EvaluateByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        let {task} = this.props;
+        // let {tasks} = this.props;
+        // let task = (tasks && tasks.task) && tasks.task.info;
         
         let evaluations;
         
@@ -58,8 +60,8 @@ class EvaluateByResponsibleEmployee extends Component {
             date = this.formatDate(new Date()); 
         }
         else if(this.props.perform === "evaluate"){
-            date = this.formatDate(new Date()); 
-            // date = moment().endOf("month").format('DD-MM-YYYY');
+            // date = this.formatDate(new Date()); 
+            date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
         let point = undefined;
@@ -68,27 +70,51 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let infoTask = task.taskInformations;
         for(let i in infoTask){
-
             if(infoTask[i].type === "Date"){
                 if(infoTask[i].value){
-                    infoTask[i].value = this.formatDate(infoTask[i].value);
-                } else if(!infoTask[i].filledByAccountableEmployeesOnly) {
-                    infoTask[i].value = this.formatDate(new Date());
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(infoTask[i].value),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = this.formatDate(infoTask[i].value);
+                } 
+                else if( !infoTask[i].filledByAccountableEmployeesOnly ) {
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoTask[i].type === "SetOfValues"){
                 let splitSetOfValues = infoTask[i].extra.split('\n');
-                if(infoTask[i].value) {
-                    infoTask[i].value = [infoTask[i].value];
-                } else if(!infoTask[i].filledByAccountableEmployeesOnly){
-                    infoTask[i].value = [splitSetOfValues[0]];
+                if(infoTask[i].value){
+                    info[`${infoTask[i].code}`] = {
+                        value: [infoTask[i].value],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = [infoTask[i].value];
+                }
+                else if(!infoTask[i].filledByAccountableEmployeesOnly){
+                    info[`${infoTask[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                    // infoTask[i].value = [splitSetOfValues[0]];
                 }
             }
-            
-            info[`${infoTask[i].code}`] = {
-                value: infoTask[i].value,
-                code: infoTask[i].code,
-                type: infoTask[i].type
+            else {
+                if(infoTask[i].value){
+                    info[`${infoTask[i].code}`] = {
+                        value: infoTask[i].value,
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
             }
         }
         
@@ -112,26 +138,50 @@ class EvaluateByResponsibleEmployee extends Component {
                    
                     if(infoEval[i].type === "Date"){
                         if(infoEval[i].value){
-                            infoEval[i].value = this.formatDate(infoEval[i].value);
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(infoEval[i].value),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(infoEval[i].value);
                         } 
                         else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
-                            infoEval[i].value = this.formatDate(Date.now());
+                            info[`${infoEval[i].code}`] = {
+                                value: this.formatDate(Date.now()),
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = this.formatDate(Date.now());
                         } 
                     }
                     else if(infoEval[i].type === "SetOfValues"){
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if(infoEval[i].value){
-                            infoEval[i].value = [infoEval[i].value];
+                            info[`${infoEval[i].code}`] = {
+                                value: [infoEval[i].value],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [infoEval[i].value];
                         }
                         else if(!infoEval[i].filledByAccountableEmployeesOnly){
-                            infoEval[i].value = [splitSetOfValues[0]];
+                            info[`${infoEval[i].code}`] = {
+                                value: [splitSetOfValues[0]],
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                            // infoEval[i].value = [splitSetOfValues[0]];
                         }
                     }
-                    info[`${infoEval[i].code}`] = {
-                        value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
+                    else {
+                        if(infoEval[i].value){
+                            info[`${infoEval[i].code}`] = {
+                                value: infoEval[i].value,
+                                code: infoEval[i].code,
+                                type: infoEval[i].type
+                            }
+                        }
+                    }         
                 }
             }
 
@@ -188,8 +238,8 @@ class EvaluateByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        this.props.getTaskById(this.props.id);
-        this.props.getEmployeeKpiSet();
+        // this.props.getTaskById(this.props.id);
+        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
     }
 
@@ -474,7 +524,6 @@ class EvaluateByResponsibleEmployee extends Component {
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            // automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
             automaticPoint: this.state.autoPoint,
             employeePoint: this.state.point,
             role: "Responsible",
@@ -512,13 +561,13 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
+        const { task, point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // let items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
-        let task = (tasks && tasks.task)&& tasks.task.info;
+        // let task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
             <DialogModal
@@ -574,7 +623,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint !== undefined?autoPoint:"Chưa tính được"}
                             </a>
                         </strong>
@@ -585,6 +634,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 progress={this.state.progress}
                                 date={this.state.date}
                                 info={this.state.info}
+                                autoPoint={autoPoint}
                             />
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
@@ -615,13 +665,13 @@ const mapState = (state) => {
     return { tasks, performtasks, kpimembers, KPIPersonalManager };
 }
 const getState = {
-    getTaskById: taskManagementActions.getTaskById,
-    createResult: performTaskAction.createResultTask,
-    editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask,
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
+    // getTaskById: taskManagementActions.getTaskById,
+    // createResult: performTaskAction.createResultTask,
+    // editResultTask: performTaskAction.editResultTask,
+    // editStatusOfTask: taskManagementActions.editStatusOfTask,
+    // getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    // getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
+    // getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
 }

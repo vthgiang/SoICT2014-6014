@@ -54,28 +54,30 @@ class DashBoardEmployeeKpiSet extends Component {
 
     render() {
         return (
-            <div className="table-wrapper box">
-                <section className="content">
-                    <div className="row">
-                        <div className="col-xs-6">
-                            <div className=" box box-primary" style={ {textAlign: 'center'} }>
-                                <h2 class="box-title">Phân bố KPI cá nhân năm {this.state.currentYear}</h2>
-                                <div className="box-body dashboard_box_body">
-                                    <ResultsOfEmployeeKpiChart/>
-                                </div>
+            <React.Fragment>
+                <div className="row">
+                    <div className="col-xs-6">
+                        <div className=" box box-primary">
+                            <div className="box-header with-border">
+                                <div class="box-title">KPI cá nhân năm {this.state.currentYear}</div>
                             </div>
-                        </div>
-                        <div className="col-xs-6">
-                            <div className=" box box-primary" style={ {textAlign: 'center'} }>
-                                <h2 class="box-title">Phân bố KPI cá nhân tháng {this.state.currentMonth}</h2>
-                                <div className="box-body dashboard_box_body">
-                                    <DistributionOfEmployeeKpiChart/>
-                                </div>
+                            <div className="box-body">
+                                <ResultsOfEmployeeKpiChart/>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
+                    <div className="col-xs-6">
+                        <div className=" box box-primary">
+                            <div className="box-header with-border">
+                                <div class="box-title">Phân bố KPI cá nhân tháng {this.state.currentMonth}</div>
+                            </div>
+                            <div className="box-body">
+                                <DistributionOfEmployeeKpiChart/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
         );
     }
 }

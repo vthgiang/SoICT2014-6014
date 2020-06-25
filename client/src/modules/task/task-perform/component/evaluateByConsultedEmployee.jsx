@@ -12,7 +12,8 @@ class EvaluateByConsultedEmployee extends Component {
 
         let idUser = getStorage("userId");
         let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        // let task = (tasks && tasks.task) && tasks.task.info;
+        let task = tasks && tasks.task;
         
         let evaluations;
         let dateOfEval = new Date();
@@ -53,9 +54,9 @@ class EvaluateByConsultedEmployee extends Component {
         return [day, month, year].join('-');
     }
     
-    componentWillMount() {
-        this.props.getTaskById(this.props.id);
-    }
+    // componentDidMount() {
+    //     this.props.getTaskById(this.props.id);
+    // }
 
     validatePoint = (value) => {
         let { translate } = this.props;
@@ -126,9 +127,9 @@ class EvaluateByConsultedEmployee extends Component {
 
     render() {
         let { point, errorOnPoint, evaluations, automaticPoint } = this.state;
-        let { id, role } = this.props;
-        let { tasks } = this.props;
-        let task = tasks.task.info;
+        let { id, role, task } = this.props;
+        // let { tasks } = this.props;
+        // let task = tasks.task.info;
 
         return (
             <React.Fragment>
@@ -213,10 +214,10 @@ const mapState = (state) => {
     return { tasks, performtasks }; 
 }
 const getState = {
-    getTaskById: taskManagementActions.getTaskById,
-    createResult: performTaskAction.createResultTask,
-    editResultTask: performTaskAction.editResultTask,
-    editStatusOfTask: taskManagementActions.editStatusOfTask,
+    // getTaskById: taskManagementActions.getTaskById,
+    // createResult: performTaskAction.createResultTask,
+    // editResultTask: performTaskAction.editResultTask,
+    // editStatusOfTask: taskManagementActions.editStatusOfTask,
     evaluateTaskByConsultedEmployees: taskManagementActions.evaluateTaskByConsultedEmployees, 
 }
 

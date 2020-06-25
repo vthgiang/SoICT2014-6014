@@ -113,47 +113,32 @@ exports.updateSalary = async (req, res) => {
     }
 }
 
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
-exports.checkSalaryExisted = async (req, res) => {
-    try {
-        var checkSalary = await SalaryService.checkSalaryExisted(req.params.employeeNumber,req.params.month, req.user.company._id);
-        res.status(200).json({
-            messages: "success",
-            content: checkSalary
-        });
-    } catch (error) {
-        res.status(400).json({
-            messages: error,
-        });
-    }
-}
-
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array truyền vào
-exports.checkSalariesExisted = async (req, res) => {
-    try {
-        var checkArraySalary = await SalaryService.checkSalariesExisted(req.body, req.user.company._id);
-        res.status(200).json({
-            messages: "success",
-            content: checkArraySalary
-        });
-    } catch (error) {
-        res.status(400).json({
-            messages: error,
-        });
-    }
-}
-
 // Import dữ liệu bảng lương
 exports.importSalaries = async (req, res) => {
     try {
-        var importSalary = await SalaryService.importSalaries(req.body, req.user.company._id);
-        res.status(200).json({
-            messages: "success",
-            content: importSalary
-        });
+        var data = await SalaryService.importSalaries(req.body, req.user.company._id);
+        console.log(data);
+        if(data.rowError!==undefined){
+            await LogError(req.user.email, 'IMPORT_SARALY', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages:["import_salary_faile"],
+                content: data
+            });
+        }else{
+            await LogInfo(req.user.email, 'IMPORT_SARALY', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages:["import_salary_success"],
+                content: data
+            });
+        }
     } catch (error) {
+        await LogError(req.user.email, 'IMPORT_SARALY', req.user.company);
         res.status(400).json({
-            messages: error,
+            success: false,
+            messages:["import_salary_faile"],
+            content: {error: error}
         });
     }
 }
