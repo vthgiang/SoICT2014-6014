@@ -38,6 +38,7 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
+            // render: false,
             // showModalApprove: "",
             // showEdit: "",
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
@@ -52,7 +53,8 @@ class DetailTaskTab extends Component {
 
     //         return {
     //             ...prevState,
-    //             id: nextProps.id
+    //             // id: nextProps.id
+    //             // render: true
     //         }
     //     }
     //     return true;
@@ -79,7 +81,9 @@ class DetailTaskTab extends Component {
                 return false;
             } else { // Dữ liệu đã về
                 // let task = nextProps.tasks.task.info;
-                let task = nextProps.tasks.task;
+                let task = nextProps.task;
+                // console.log('render roleeeeeeeeeeeeeeeeeeeeee\n\n\n\nthis.props, nextProps, nextState, task',this.props, nextProps, nextState, task);
+
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
 
@@ -275,7 +279,7 @@ class DetailTaskTab extends Component {
             <div>
                 <div style={{ marginLeft: "-10px" }}>
                     <a className="btn btn-app" onClick={this.refresh} title="Refresh">
-                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
                     </a>
                     
                     { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -286,7 +290,7 @@ class DetailTaskTab extends Component {
                     
                     { ((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
+                            <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
                     { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -302,22 +306,22 @@ class DetailTaskTab extends Component {
                     }
                     {
                         (this.state.collapseInfo === false) ?
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
                         </a> :
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
                         </a>
                     }
 
                     {roles && roles.length>1 &&
-                    <div class="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
-                        <a class="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
+                    <div className="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
+                        <a className="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
                             <i className="fa fa-user" style={{ fontSize: "16px" }}></i>Chọn Vai trò
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul className="dropdown-menu">
                             {roles.map(
-                                (item, index) => {return <li className={item.value===currentRole && "active"} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
+                                (item, index) => {return <li className={item.value===currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
                             )}
                         </ul>
                     </div>
@@ -327,7 +331,7 @@ class DetailTaskTab extends Component {
                 <br />
                 <div>
                     
-                    <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
+                    <div id="info" className="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
