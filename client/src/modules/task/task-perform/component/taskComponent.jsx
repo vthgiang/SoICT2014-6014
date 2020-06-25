@@ -35,7 +35,7 @@ class TaskComponent extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        console.log('nextProps, nextState, this.state', nextProps, nextState, this.state);
+        // console.log('nextProps, nextState, this.state', nextProps, nextState, this.state);
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId && this.flag == 1) {
@@ -44,10 +44,11 @@ class TaskComponent extends Component {
                 return true;
             }
         }
-        if(nextProps.id !== this.state.id){
-            this.props.getTaskById(this.props.id);
-            this.setState(state=>{
-                return{
+        if (nextProps.id !== this.state.id) {
+            console.log('GET TASK');
+            this.props.getTaskById(nextProps.id); // this.props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+            this.setState( state => {
+                return {
                     ...state,
                     id: nextProps.id,
                 }

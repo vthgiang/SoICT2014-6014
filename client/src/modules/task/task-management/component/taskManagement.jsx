@@ -515,7 +515,7 @@ class TaskManagement extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    organization: dataTemp[n].organizationalUnit.name,
+                    organization: dataTemp[n].organizationalUnit? dataTemp[n].organizationalUnitname: "Đơn vị đã bị xóa",
                     priority: this.formatPriority(dataTemp[n].priority),
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),

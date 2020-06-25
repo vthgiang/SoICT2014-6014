@@ -206,7 +206,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                     <section className="content">
                         <div className=" box box-primary" style={ {textAlign: 'center'}}>
                             <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
-                            <div className="box-body dashboard_box_body">
+                            <div className="box-body">
                                 <TrendsInOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                             </div>
                         </div>
@@ -216,7 +216,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="col-xs-6">
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
                                         <h2 class="box-title">Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
-                                        <div className="box-body dashboard_box_body">
+                                        <div className="box-body">
                                             {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
                                                 <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                                             }
@@ -228,7 +228,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 {childOrganizationalUnit &&
                                     <div className="box box-primary" style={ {textAlign: 'center'}}>
                                         <h2 class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
-                                        <div className="box-body dashboard_box_body">
+                                        <div className="box-body">
                                             {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
                                                 <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                                             }
@@ -248,7 +248,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             }       
                             <div className="col-xs-6">
                                 <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h2 class="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</h2>
+                                    <h2 className="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</h2>
                                     <StatisticsOfOrganizationalUnitKpiResultsChart/>
                                 </div>
                             </div>
