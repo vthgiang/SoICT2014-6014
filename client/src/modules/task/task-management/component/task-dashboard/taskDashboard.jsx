@@ -291,83 +291,70 @@ class TaskDashboard extends Component {
         }
 
         return (
-            <div className="table-wrapper">
-                {/* <div className="content-wrapper">
-                    <section className="content-header">
-                        <h1>
-                            Dashboard công việc
-                        </h1>
-                        <ol className="breadcrumb">
-                            <li><a href="/"><i className="fa fa-dashboard" /> Home</a></li>
-                            <li><a href="/">Forms</a></li>
-                            <li className="active">Advanced Elements</li>
-                        </ol>
-                    </section> */}
-                    <section className="content">
-                        <div className="row">
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">Đã tạo</span>
-                                        <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">Cần thực hiện</span>
-                                        <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">Cần phê duyệt</span>
-                                        <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="clearfix visible-sm-block" />
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">Cần hỗ trợ</span>
-                                        <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
-                                    </div>
-                                </div>
+            <React.Fragment>
+                <div className="row">
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Đã tạo</span>
+                                <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">Miền kết quả công việc</div>
-                                    </div>
-                                    <DomainOfTaskResultsChart/>
-                                </div>
-                            </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">Trạng thái công việc</div>
-                                    </div>
-                                    <TaskStatusChart/>
-                                </div>
+                    </div>
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Cần thực hiện</span>
+                                <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <Schedule/>
+                    </div>
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Cần phê duyệt</span>
+                                <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
                             </div>
                         </div>
-                    </section>
-            </div>
+                    </div>
+                    <div className="clearfix visible-sm-block" />
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Cần hỗ trợ</span>
+                                <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Miền kết quả công việc</div>
+                            </div>
+                            <DomainOfTaskResultsChart/>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Trạng thái công việc</div>
+                            </div>
+                            <TaskStatusChart/>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <Schedule/>
+                    </div>
+                </div>
+            </React.Fragment>
         );
     }
 }
