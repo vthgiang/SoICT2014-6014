@@ -241,12 +241,12 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="box-body dashboard_box_body">
-                    <section style={{ textAlign: "right" }}>
-                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
-                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
-                        <button type="button" className={`btn btn-primary btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'active' : null}`} style={{ margin: "2px" }} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
-                    </section>
+                <div className="box-body" style={{ textAlign: "right" }}>
+                    <div className="btn-group">
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
+                    </div>
 
                     <section ref="chart"></section>
                 </div>
