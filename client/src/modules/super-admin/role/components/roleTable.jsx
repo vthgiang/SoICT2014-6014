@@ -44,7 +44,7 @@ class RoleTable extends Component {
                     search={this.searchWithOption}
                 />
                     
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-role">
                     <thead>
                         <tr>
                             <th>{ translate('manage_role.name') }</th>
@@ -61,6 +61,7 @@ class RoleTable extends Component {
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
+                                    tableId="table-manage-role"
                                 />
                             </th>
                         </tr>

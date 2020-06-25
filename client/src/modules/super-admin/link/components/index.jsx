@@ -44,7 +44,7 @@ class ManageLink extends Component {
                             search={this.searchWithOption}
                         />
                         
-                        <table className="table table-hover table-striped table-bordered">
+                        <table className="table table-hover table-striped table-bordered" id="table-manage-link">
                             <thead>
                                 <tr>
                                     <th>{ translate('manage_link.url') }</th>
@@ -56,11 +56,13 @@ class ManageLink extends Component {
                                         <DataTableSetting 
                                             columnArr={[
                                                 translate('manage_link.url'),
+                                                translate('manage_link.category'),
                                                 translate('manage_link.description'),
                                                 translate('manage_link.roles')
                                             ]}
                                             limit={this.state.limit}
                                             setLimit={this.setLimit}
+                                            tableId="table-manage-link"
                                         /> 
                                     </th>
                                 </tr>
