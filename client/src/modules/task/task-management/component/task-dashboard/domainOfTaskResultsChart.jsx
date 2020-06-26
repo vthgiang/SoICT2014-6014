@@ -43,8 +43,7 @@ class DomainOfTaskResultsChart extends Component {
         this.state = {
             userId: localStorage.getItem("userId"),
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            role: this.ROLE.RESPONSIBLE,
-            roleName: this.ROLE_SELECTBOX[0].text
+            role: this.ROLE.RESPONSIBLE
         };
 
         this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -108,13 +107,11 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     handleSelectRole = (value) => {
-        var roleName = this.ROLE_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
 
         this.setState(state => {
             return {
                 ...state,
-                role: Number(value[0]),
-                roleName: roleName
+                role: Number(value[0])
             }
         })
     }
