@@ -3,9 +3,9 @@ import { dashboardOrganizationalUnitKpiConstants } from "./constants";
 const initState = {
     employeeKpis: null,
     tasks: null,
-    organizationalUnitKpiSetsEachYear: null,
+    organizationalUnitKpiSets: null,
     employeeKpiSets: null,
-    organizationalUnitKpiSetEachYearOfChildUnit: null,
+    organizationalUnitKpiSetsOfChildUnit: null,
     isLoading: false,
     error: null
 }
@@ -52,41 +52,41 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 isLoading: false,
                 error: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_REQUEST:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
             return {
                 ...state,
-                organizationalUnitKpiSetsEachYear: null,
+                organizationalUnitKpiSets: null,
                 loading: true,
                 isLoading: false
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_SUCCESS:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isLoading: false,
-                organizationalUnitKpiSetsEachYear: action.payload
+                organizationalUnitKpiSets: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE:
             return {
                 ...state,
                 loading: false,
                 error: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_REQUEST:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST:
             return {
                 ...state,
-                organizationalUnitKpiSetEachYearOfChildUnit: null,
+                organizationalUnitKpiSetsOfChildUnit: null,
                 loading: true,
                 isLoading: false
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_SUCCESS:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isLoading: false,
-                organizationalUnitKpiSetEachYearOfChildUnit: action.payload
+                organizationalUnitKpiSetsOfChildUnit: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_FAILURE:
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE:
             return {
                 ...state,
                 loading: false,

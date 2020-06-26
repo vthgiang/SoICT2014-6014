@@ -17,14 +17,19 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
 
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = currentDate.getMonth();
+
         this.state = {
             userRoleId: localStorage.getItem("currentRole"),
-            year: new Date().getFullYear(),
+            startDate: currentYear + '-' + 1,
+            endDate: currentYear + '-' + (currentMonth + 2),
             dataStatus: this.DATA_STATUS.QUERYING,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
         };
 
-        this.props.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(this.state.userRoleId, this.state.year);
+        this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate);
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -41,7 +46,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             // Lấy tập KPI đơn vị theo từng năm
-            this.props.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(this.state.userRoleId, this.state.year)
+            this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate)
 
             this.setState(state => {
                 return {
@@ -51,7 +56,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             })
             return false;
         } else if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetEachYearOfChildUnit) {
+            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
                 return false
             }
 
@@ -116,15 +121,15 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
-        var organizationalUnitKpiSetEachYearOfChildUnit, point = [];
+        var organizationalUnitKpiSetsOfChildUnit, point = [];
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetEachYearOfChildUnit) {
-            organizationalUnitKpiSetEachYearOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetEachYearOfChildUnit;
+        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
+            organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
         }
 
-        if(organizationalUnitKpiSetEachYearOfChildUnit) {
-            for(let i=0; i<organizationalUnitKpiSetEachYearOfChildUnit.length; i++) {
-                point = point.concat(this.filterAndSetDataPoint(organizationalUnitKpiSetEachYearOfChildUnit[i]));
+        if(organizationalUnitKpiSetsOfChildUnit) {
+            for(let i=0; i<organizationalUnitKpiSetsOfChildUnit.length; i++) {
+                point = point.concat(this.filterAndSetDataPoint(organizationalUnitKpiSetsOfChildUnit[i]));
             }
         }
 
@@ -212,7 +217,7 @@ function mapState(state) {
     return { dashboardOrganizationalUnitKpi }
 }
 const actions = {
-    getAllOrganizationalUnitKpiSetEachYearOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetEachYearOfChildUnit
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
 }
 
 const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfAllOrganizationalUnitKpiChart);

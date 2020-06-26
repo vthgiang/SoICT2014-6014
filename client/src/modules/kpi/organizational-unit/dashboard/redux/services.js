@@ -6,8 +6,8 @@ import { sendRequest} from '../../../../../helpers/requestHelper';
 export const dashboardOrganizationalUnitKpiServices = {
     getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
-    getAllOrganizationalUnitKpiSetEachYear,
-    getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
+    getAllOrganizationalUnitKpiSetByTime,
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
@@ -23,24 +23,24 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId) {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/tasks/${roleId}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/tasks-of-organizational-unit/${roleId}`,
         method: 'GET',
         params: { organizationalUnitId: organizationalUnitId }
     }, false, false)
 }
  
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
-function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị */
+function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-each-year/${organizationalUnitId}/${year}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set/${organizationalUnitId}/${startDate}/${endDate}`,
         method: 'GET'
     }, false, false)
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(roleId, year) {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
+function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-each-year-of-child/${roleId}/${year}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-of-child-organizational-unit/${roleId}/${startDate}/${endDate}`,
         method: 'GET'
     }, false, false)
 }

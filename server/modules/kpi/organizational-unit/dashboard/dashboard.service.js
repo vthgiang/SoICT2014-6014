@@ -105,29 +105,26 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=und
     return tasks;
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
-exports.getAllOrganizationalUnitKpiSetEachYear = async (organizationalUnitId, year) => {
-
-    var beginOfYear = new Date(year);
-    var endOfYear = new Date(year, 12);
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị */
+exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, startDate, endDate) => {
     
     var organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
-        { 'organizationalUnit': organizationalUnitId, 'date': { $gte: beginOfYear, $lte: endOfYear} },
+        { 'organizationalUnit': organizationalUnitId, 'date': { $gte: startDate, $lt: endDate} },
         { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
     )
 
     return organizationalUnitKpiSets;
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, roleId, year) => {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, roleId, startDate, endDate) => {
 
     var childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
 
     for(var i=0; i<childrenOrganizationalUnits.length; i++) {
-        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetEachYear(childrenOrganizationalUnits[i].id, year));
+        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, startDate, endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
     
