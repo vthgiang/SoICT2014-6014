@@ -17,6 +17,8 @@ import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import moment from 'moment'
 
+var currentTask;
+
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
         
@@ -36,6 +38,8 @@ class EvaluateByResponsibleEmployee extends Component {
             point: data.point,
             progress: data.task.progress
         }
+
+        currentTask = data;
     }
         
     //  Hàm xử lý dữ liệu khởi tạo
@@ -560,6 +564,8 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     render() {
+        console.log("#####################", currentTask);
+        
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
         const { task, point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
