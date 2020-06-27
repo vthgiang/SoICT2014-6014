@@ -114,86 +114,53 @@ exports.updateSalary = async (id, data, company) => {
     } else return null
 }
 
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
-exports.checkSalaryExisted = async (employeeNumber,month, company) => {
-    var employeeInfo = await Employee.findOne({
-        employeeNumber: employeeNumber,
-        company:company
-    });
-    var idSalary = await Salary.find({
-        employee: employeeInfo._id,
-        company: company,
-        month:month
-    }, {field1: 1})
-    var checkSalary = false;
-    if (idSalary.length !== 0) {
-        checkSalary = true
-    }
-    return checkSalary;
-}
 
-// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
-exports.checkSalariesExisted = async (data, company) => {
-    var list=[];
-    for(let i=0; i<data.arraySalary.length; i++){
-        let employeeInfo = await Employee.findOne({
-            employeeNumber: data.arraySalary[i].employeeNumber,
-            company:company
-        },{
-            field1: 1
-        });
-        if(employeeInfo!==null){
-            let salary=await Salary.findOne({
-                employee:employeeInfo._id,
-                company: company,
-                month:data.arraySalary[i].month
-            }, {
-                field1: 1
-            })
-            if(salary!==null){
-                list.push(i);
-            }
-        }
-    }
-    return list;
-}
 
-// Import dữ liệu bảng lương
+// formatDate = (date) => {
+//     var d = new Date(date),
+//         month = (d.getMonth() + 1),
+//         //day = d.getDate(),
+//         year = d.getFullYear();
+//         console.log("====",d);
+//     if (month.length < 2)
+//         month = '0' + month;
+//     if (day.length < 2)
+//         day = '0' + day;
+//     return [year,month].join('-');
+// }
+
+/**
+ * import dữ liệu bảng lương 
+ * @param {*} data :dữ liệu import
+ * @param {*} company :id công ty
+ */
 exports.importSalaries = async (data, company) => {
-    var importSalary=[];
-    for(let n in data.rows){
-        var row = data.rows[n];
-        var employeeInfo = await Employee.findOne({
-            employeeNumber: row[3],
-            company: company
-        });
-        var mainSalary = row[5].toString();
-        unit = mainSalary.slice(mainSalary.length-3,mainSalary.length);
-        if( unit !== "VND" && unit !== "USD"){
-            mainSalary = mainSalary + "VND"
-        }
-        var month = "",bonus=[];
-            if (row[1].toString().length === 2) {
-                month = row[1].toString() + "-" + row[2].toString();
-            } else {
-                month = "0" + row[1].toString() + "-" + row[2].toString();
-            }
-            for(let i=6;i<row.length;i++){
-                if(row[i]!==null){
-                    bonus=[...bonus,{
-                        nameBonus:data.cols[i],
-                        number:row[i]
-                    }]
+    let salaryExisted = await Salary.find({month: data[0].month, company: company });
+    let employeeInfo = await Employee.find({company: company}, {employeeNumber: 1, _id: 1});
+    let rowError =[];
+    data = data.map((x, index)=>{
+        let employee = employeeInfo.filter(y=> y.employeeNumber === x.employeeNumber);
+        if(employee.length===0){
+            x = {...x, errorAlert:[...x.errorAlert, "staff_code_not_find"], error: true};
+            rowError = [...rowError, index];
+        } else {
+            x = {...x, employee: employee[0]._id, company:company};
+            if(salaryExisted.length!==0){
+                let monthSalary = new Date(x.month); 
+                let salary = salaryExisted.filter(y=> y.employee.toString() === employee[0]._id.toString() && monthSalary.toString() === y.month.toString());
+                if(salary.length!==0) {
+                    x = {...x, errorAlert:[...x.errorAlert, "month_salary_have_exist"], error: true};
+                    rowError = [...rowError, index];
                 }
             }
-        var newSalary = await Salary.create({
-            employee: employeeInfo._id,
-            company: company,
-            month: month,
-            mainSalary: mainSalary,
-            bonus: bonus
-        });
-        importSalary[n]=newSalary;
+        }
+        return x;
+    })
+
+    if(rowError.length!==0){
+        return {data, rowError}
+    }else {
+        return await Salary.insertMany(data);
     }
-    return importSalary;
 }
+

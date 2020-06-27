@@ -28,6 +28,7 @@ export const performTaskAction = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    getTaskLog,
 };
 // Create result task
 function createResultTask(result) {
@@ -326,6 +327,21 @@ function addTaskLog(log) {
                 payload: res.data.content
             }),
             error => dispatch({ type: performTaskConstants.ADD_TASK_LOG_FAILURE, error })
+        );
+    }
+}
+
+// Hàm lấy tất cả nhật ký của một công việc
+function getTaskLog(id) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.GET_TASK_LOG_REQUEST });
+        performTaskService.getTaskLog(id)
+        .then(
+            res => dispatch({ 
+                type: performTaskConstants.GET_TASK_LOG_SUCCESS, 
+                payload: res.data.content
+            }),
+            error => dispatch({ type: performTaskConstants.GET_TASK_LOG_FAILURE, error })
         );
     }
 }

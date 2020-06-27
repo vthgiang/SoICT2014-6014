@@ -3,28 +3,28 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 import { dashboardEmployeeKpiConstants } from "../../../evaluation/dashboard/redux/constants";
 
 export const dashboardOrganizationalUnitKpiActions = {
-    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
-    getAllOrganizationalUnitKpiSetEachYear,
-    getAllOrganizationalUnitKpiSetEachYearOfChildUnit,
+    getAllOrganizationalUnitKpiSetByTime,
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-// Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
-function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
+// Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
+function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId=undefined) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST });
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpis(roleId)
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_FAILURE,
                     payload: error
                 })
             })
@@ -32,11 +32,11 @@ function getAllChildTargetOfOrganizationalUnitKpis(roleId) {
 }
 
 // Lấy tất cả task của organizationalUnit theo tháng hiện tại
-function getAllTaskOfOrganizationalUnit(roleId) {
+function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId=undefined) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(roleId)
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS,
@@ -53,20 +53,20 @@ function getAllTaskOfOrganizationalUnit(roleId) {
 }
 
 // Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị 
-function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
+function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_REQUEST });
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year)
+        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE,
                     payload: error
                 })
             })
@@ -74,20 +74,20 @@ function getAllOrganizationalUnitKpiSetEachYear(organizationalUnitId, year) {
 }
 
 // Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
-function getAllOrganizationalUnitKpiSetEachYearOfChildUnit(roleId, year) {
+function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_REQUEST});
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST});
 
-        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(roleId, year)
+        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_EACH_YEAR_OF_CHILDUNIT_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE,
                     payload: error
                 })
             })

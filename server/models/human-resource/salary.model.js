@@ -26,6 +26,8 @@ const SalarySchema = new Schema({
     unit: { // Đơn vị tiền lương(VND hoặc USD)
         type: String,
         required: true,
+        enum:['VND', 'USD'],
+        default:'VND',
     },
     bonus: [{ // Tiền lương thưởng khác
         nameBonus: String,

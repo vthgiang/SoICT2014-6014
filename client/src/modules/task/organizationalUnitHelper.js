@@ -1,49 +1,63 @@
-var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit)=>{
+var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=true, includeViceDean=true, includeEmployee=true)=>{
     let unitMembers;
     let structEmployee=[];
 
     if(usersOfChildrenOrganizationalUnit){
-        let units={};
+        let units={}; // // Map: key-id nhân viên, value-phòng/ban nhân viên
         let employees={}; // Map: key-id nhân viên, value-tên nhân viên
         let roles={}; // Map: key-id nhân viên, value-các chức danh của nhân viên
           
         for (let  i=0;i< usersOfChildrenOrganizationalUnit.length;i++){
             var unit = usersOfChildrenOrganizationalUnit[i];
 
-            for( let j=0;j < unit.deans.length;j++){ // Xử lý deans
-                let dean = unit.deans[j];
-                if(employees[dean._id]){
-                    roles[dean._id] += ", " + unit.roles.dean.name;
-                } else{
-                    employees[dean._id]=dean.name;
-                    roles[dean._id]=unit.roles.dean.name;                        
-                    units[dean._id]= units[dean._id] ? units[dean._id]:unit.department;
+            if (includeDean){
+                for (let key in unit.deans){ // Xử lý deans
+                    let value = unit.deans[key];
+                    for (let j=0; j<value.members.length; j++){
+                        let member = value.members[j];
+                        if(employees[member._id]){
+                            roles[member._id] += ", " + value.name;
+                        } else{
+                            employees[member._id]=member.name;
+                            roles[member._id]=value.name;                        
+                            units[member._id]= units[member._id] ? units[member._id]:unit.department;
+                        }
+                    }
                 }
             }
 
-            for( let j=0;j < unit.viceDeans.length;j++){ // Xử lý viceDeans
-                let viceDean = unit.viceDeans[j];
-
-                if(employees[viceDean._id]){
-                    roles[viceDean._id] +=  ", "+unit.roles.viceDean.name;
-                } else{
-                    employees[viceDean._id]=viceDean.name;
-                    roles[viceDean._id]=unit.roles.viceDean.name;                        
-                    units[viceDean._id]= units[viceDean._id] ? units[viceDean._id]:unit.department;
+            if (includeViceDean){
+                for (let key in unit.viceDeans){ // Xử lý viceDeans
+                    let value = unit.viceDeans[key];
+                    for (let j=0; j<value.members.length; j++){
+                        let member = value.members[j];
+                        if(employees[member._id]){
+                            roles[member._id] += ", " + value.name;
+                        } else{
+                            employees[member._id]=member.name;
+                            roles[member._id]=value.name;                        
+                            units[member._id]= units[member._id] ? units[member._id]:unit.department;
+                        }
+                    }
                 }
             }
+            
 
-            for( let j=0;j < unit.employees.length;j++){ // Xử lý employees
-                let employee = unit.employees[j];
-                
-                if(employees[employee._id]){
-                    roles[employee._id ]+=  ", "+unit.roles.employee.name;
-                } else{
-                    employees[employee._id]=employee.name;
-                    roles[employee._id]=unit.roles.employee.name;                        
-                    units[employee._id]= units[employee._id] ? units[employee._id]:unit.department;
+            if (includeEmployee){
+                for (let key in unit.employees){ // Xử lý employees
+                    let value = unit.employees[key];
+                    for (let j=0; j<value.members.length; j++){
+                        let member = value.members[j];
+                        if(employees[member._id]){
+                            roles[member._id] += ", " + value.name;
+                        } else{
+                            employees[member._id]=member.name;
+                            roles[member._id]=value.name;                        
+                            units[member._id]= units[member._id] ? units[member._id]:unit.department;
+                        }
+                    }
                 }
-            }            
+            }
         }
 
         for (let item in employees){

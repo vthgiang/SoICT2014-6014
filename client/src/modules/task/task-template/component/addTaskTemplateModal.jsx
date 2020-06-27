@@ -262,9 +262,9 @@ class ModalAddTaskTemplate extends Component {
         if (newTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
+                item.deans.includes(this.state.currentRole)
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
             
             if (defaultUnit){
                 this.setState(state =>{
@@ -286,7 +286,7 @@ class ModalAddTaskTemplate extends Component {
     }
     
     render() {
-        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles=[];
         const { newTemplate } = this.state;
         const { department, user, translate, tasktemplates } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
@@ -298,7 +298,15 @@ class ModalAddTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) listRole = user.roledepartments;
+        if (user.roledepartments) {
+            listRole = user.roledepartments;
+            for (let x in listRole.deans)
+                listRoles[x] = listRole.deans[x];
+            for (let x in listRole.viceDeans)
+                listRoles.push(listRole.viceDeans[x]);
+            for (let x in listRole.employees)
+                listRoles.push(listRole.employees[x]);
+        }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
@@ -316,7 +324,7 @@ class ModalAddTaskTemplate extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/>
+                {/* <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/> */}
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"
@@ -350,16 +358,14 @@ class ModalAddTaskTemplate extends Component {
                         <div className="col-sm-6">
                             <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
                                 <label className="control-label">{translate('task_template.permission_view')}*</label>
-                                {listRole &&
+                                {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
                                         className="form-control select2"
                                         style={{width: "100%"}}
-                                        items={[
-                                            {value: listRole.dean._id, text: listRole.dean.name},
-                                            {value: listRole.viceDean._id, text: listRole.viceDean.name},
-                                            {value: listRole.employee._id, text: listRole.employee.name},
-                                        ]}
+                                        items={
+                                            listRoles.map( x => { return { value : x._id, text : x.name}})
+                                        }
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.permission_view')}`}}

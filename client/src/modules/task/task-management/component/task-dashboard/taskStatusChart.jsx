@@ -46,11 +46,11 @@ class TaskStatusChart extends Component {
             roleName: this.ROLE_SELECTBOX[0].text
         };
 
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
+        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -66,11 +66,11 @@ class TaskStatusChart extends Component {
         }
 
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
-            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null);
+            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
+            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
  
             this.setState(state => {
                 return {
@@ -236,34 +236,19 @@ class TaskStatusChart extends Component {
     render() {
         return(
             <React.Fragment>
-                <div className="box-body dashboard_box_body">
-                    <section style={{ textAlign: "right", fontSize: "17px" }}>
-                        <span className="label label-danger">{this.state.roleName}</span>
-                        <i className="fa fa-gear" data-toggle="collapse" data-target="#role-of-status-task" style={{ padding: "5px", cursor: "pointer" }}></i>
-                        
-                        <div className="box box-primary box-solid collapse setting-table" id="role-of-status-task">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Vai trò</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#role-of-status-task" ><i className="fa fa-times"></i></button>
-                                </div>
-                            </div>
-
-                            <div className="box-body">
-                                <div className = "form-group">
-                                    <SelectBox
-                                        id={`roleOfStatusTaskSelectBox`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={this.ROLE_SELECTBOX}
-                                        multiple={false}
-                                        onChange={this.handleSelectRole}
-                                        value={this.ROLE_SELECTBOX[0].value}
-                                    />
-                                </div> 
-                            </div>
-                        </div>
-                    </section>
+                <div className="box-body qlcv">
+                    <div className="form-inline">
+                        <label style={{width: "auto"}}>Vai trò</label>
+                        <SelectBox
+                            id={`roleOfStatusTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={this.ROLE_SELECTBOX}
+                            multiple={false}
+                            onChange={this.handleSelectRole}
+                            value={this.ROLE_SELECTBOX[0].value}
+                        />
+                    </div>
 
                     <section ref="chart"></section>
                 </div>

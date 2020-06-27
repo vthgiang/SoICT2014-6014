@@ -116,6 +116,7 @@ class SalaryManagement extends Component {
                 month: ""
             })
         }
+        console.log(this.state);
         this.props.searchSalary(this.state);
     }
 
@@ -145,12 +146,10 @@ class SalaryManagement extends Component {
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
-                        let position = [
-                            { _id: x.dean._id, name: x.dean.name },
-                            { _id: x.viceDean._id, name: x.viceDean.name },
-                            { _id: x.employee._id, name: x.employee.name }
-                        ]
-                        listPosition = listPosition.concat(position)
+                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
+                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
                     }
                 })
             })
@@ -168,9 +167,9 @@ class SalaryManagement extends Component {
                     <div className="form-inline">
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: 0 }}>
-                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>{translate('human_resource.salary.add_import')}</a></li>
-                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
+                            <ul className="dropdown-menu pull-right" style={{marginTop: 0 }}>
+                                <li><a title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>{translate('human_resource.salary.add_import')}</a></li>
+                                <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
                     </div>

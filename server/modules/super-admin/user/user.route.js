@@ -12,7 +12,7 @@ router.get("/same-department/:id", auth, UserController.getAllUsersInSameOrganiz
 router.get("/users-of-department/:id", auth, UserController.getAllUsersInOrganizationalUnit);
 router.get('/:id/organizational-units', auth, UserController.getOrganizationalUnitsOfUser);
 router.get("/download-file",auth, UserController.downloadFile);
-router.get('/organizational-units/all-user/', auth,UserController.getAllUserInAllDepartmentsOfCompany );
+router.get('/organizational-units/all/users', auth,UserController.getAllUserInAllDepartmentsOfCompany );
 router.get('/organizational-units/:id', auth, UserController.getAllUserInUnitAndItsSubUnits );
 
 module.exports = router;

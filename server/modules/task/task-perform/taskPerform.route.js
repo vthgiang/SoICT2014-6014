@@ -11,7 +11,8 @@ router.post('/log-timer/stop-timer',  PerformTaskController.stopTimesheetLog);
 router.post('/add-result/create',auth,  PerformTaskController.createResultInfoTask);
 router.post('/information-task-template/create',auth,  PerformTaskController.createTaskInformation);
 router.put('/information-task-template',auth,  PerformTaskController.editTaskInformation);
-router.post('/logs', auth,  PerformTaskController.addTaskLog);
+router.post('/logs/history', auth,  PerformTaskController.addTaskLog);
+router.get('/logs/:id',auth,  PerformTaskController.getTaskLog);
 //result task
 router.post('/:task',auth,uploadFile([{name:'files', path:'/files'}], 'array'),PerformTaskController.uploadFile)
 router.post('/result-task/create',auth, PerformTaskController.createTaskResult);

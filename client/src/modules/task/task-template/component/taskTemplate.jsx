@@ -7,6 +7,7 @@ import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+import {TaskTemplateImportForm} from './taskTemplateImportForm';
 import Swal from 'sweetalert2';
 
 class TaskTemplate extends Component {
@@ -128,7 +129,12 @@ class TaskTemplate extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
-        return (JSON.stringify(currentRole) === JSON.stringify(deanCurrentUnit));
+        for (let i in deanCurrentUnit){
+            if (currentRole === deanCurrentUnit[i]){
+                return true;
+            }
+        }
+        return false;
     }
     
     checkHasComponent = (name) => {
@@ -174,6 +180,16 @@ class TaskTemplate extends Component {
         window.$('#modal-edit-task-template').modal('show');
     }
 
+    handImportFile = (event) =>{
+        event.preventDefault();
+        console.log('opennnnn')
+        window.$('#modal_import_file').modal('show');
+    }
+    handleAddTaskTemplate = (event)=>{
+         event.preventDefault();
+        console.log('oenene');
+        window.$('#modal-add-task-template').modal('show');
+    }
 
     render() {
         const { translate } = this.props;
@@ -184,9 +200,9 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.dean === localStorage.getItem("currentRole")
-                || item.viceDean === localStorage.getItem("currentRole")
-                || item.employee === localStorage.getItem("currentRole"));
+                item.deans.indexOf(localStorage.getItem("currentRole"))
+                || item.viceDeans.indexOf(localStorage.getItem("currentRole"))
+                || item.employees.indexOf(localStorage.getItem("currentRole")));
         }
         
         if (tasktemplates.items) {
@@ -195,14 +211,21 @@ class TaskTemplate extends Component {
         
         return ( 
             <div className="box">
-
                 <div className="box-body qlcv" id="table-task-template">
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
                     {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
-
-                    <div className = "form-group">
-                        {this.checkHasComponent('create-task-template-button') && <ModalAddTaskTemplate />}
-                    </div>
+                    {<TaskTemplateImportForm />}
+                    {<ModalAddTaskTemplate/>}
+                        <div class = "form-inline">
+                            <div class ="dropdown pull-right" style={{marginBottom: 15}}>
+                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>Thêm mới</button>
+                                <ul className="dropdown-menu pull-right" style={{background:"#999", marginTop: 0}}>
+                                    <li><a href="#modal_import_file" style={{color:"#fff"}} title="ImportForm" onClick={(event)=>{this.handImportFile(event)}}>ImportFile</a></li>
+                                    <li><a href="#modal-add-task-template" style={{color:"#fff"}} title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>Add</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    
                     
                     <div className="form-inline">
                         <div className = "form-group">
@@ -262,9 +285,9 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
                                             <td>
                                                 <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
-                                                {this.checkPermisson(item.organizationalUnit.dean) &&
+                                                {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
                                                         <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
                                                             <i className="material-icons">edit</i>

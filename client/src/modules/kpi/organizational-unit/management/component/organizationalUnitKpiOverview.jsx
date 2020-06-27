@@ -159,7 +159,7 @@ class KPIUnitManager extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
-        return (currentRole === deanCurrentUnit);
+        return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
     }
     render() {
         const{startDate, endDate, status, errorOnDate, infosearch}= this.state;
@@ -170,9 +170,9 @@ class KPIUnitManager extends Component {
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
+                item.deans.includes(this.state.currentRole)
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
         }
         if (managerKpiUnit.kpis) {
             listkpi = managerKpiUnit.kpis;
@@ -303,7 +303,7 @@ class KPIUnitManager extends Component {
                                         />
                                     } */}
                                     
-                                {this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={()=>
+                                {this.checkPermisson(currentUnit && currentUnit[0].deans) && <a href="#abc" onClick={()=>
                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"
                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}

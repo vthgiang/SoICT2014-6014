@@ -1,4 +1,4 @@
-const { OrganizationalUnit, EmployeeKpiSet } = require('../../../../models').schema;
+const { OrganizationalUnit, EmployeeKpiSet, UserRole } = require('../../../../models').schema;
 const arrayToTree = require('array-to-tree');
 
 /**
@@ -9,9 +9,9 @@ exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
 
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': role },
-            { 'viceDean': role },
-            { 'employee': role }
+            {'deans': { $in: role }}, 
+            {'viceDeans':{ $in: role }}, 
+            {'employees':{ $in: role }}
         ]
     });
 
@@ -29,14 +29,14 @@ exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
 exports.getAllEmployeeOfUnitByRole = async (role) => {
         var organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
-                { 'dean': role },
-                { 'viceDean': role },
-                { 'employee': role }
+                {'deans': { $in: role }}, 
+                {'viceDeans':{ $in: role }}, 
+                {'employees':{ $in: role }}
             ]
         });
 
-        var employees = await UserRole.find({ roleId: organizationalUnit.employee}).populate('userId roleId');
-
+        var employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
+        
         return employees;
 }
 
@@ -46,7 +46,7 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
  */
 exports.getAllEmployeeKpiSetOfUnitByIds = async (id) => {
     var data = [];
-
+    
     for(var i = 0; i < id.length; i++) {
         var employeekpis = await EmployeeKpiSet.find({
             organizationalUnit: id[i]
@@ -69,7 +69,7 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
     for(var i = 0; i < id.length; i++) {
         var organizationalUnit = await OrganizationalUnit.findById(id[i]);
 
-        var employees = await UserRole.find({ roleId: organizationalUnit.employee}).populate('userId roleId');
+        var employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
 
         data = data.concat(employees);
     };
@@ -85,26 +85,27 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
 exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
-            { 'dean': role },
-            { 'viceDean': role },
-            { 'employee': role }
+            {'deans': { $in: role }}, 
+            {'viceDeans':{ $in: role }}, 
+            {'employees':{ $in: role }}
         ]
     });
     
-    const data = await OrganizationalUnit.find({ company: id })
-
+    const data = await OrganizationalUnit.find({ company: id });
+    
     const newData = data.map( department => {return {
             id: department._id.toString(),
             name: department.name,
             description: department.description,
-            dean:department.dean.toString(),
-            viceDean:department.viceDean.toString(),
-            employee:department.employee.toString(),
+            deans: department.deans.map(item => item.toString()),
+            viceDeans: department.viceDeans.map(item => item.toString()),
+            employees: department.employees.map(item => item.toString()),
             parent_id: department.parent !== null ? department.parent.toString() : null
         }
     });
+    
     const tree = await arrayToTree(newData);
-        
+    
     // BFS tìm các phòng ban con của role hiện tại
     for(var j = 0; j < tree.length; j++){
         var queue = [];
@@ -119,7 +120,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
             if(v.children !== undefined){
                 for(var i = 0; i < v.children.length; i++){
                     var u = v.children[i];
-                    if(organizationalUnit.name === u.name){
+                    if(organizationalUnit.name === u.name){                        
                         return u;
                     }
                     else{

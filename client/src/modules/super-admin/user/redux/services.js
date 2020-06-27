@@ -115,7 +115,7 @@ function getChildrenOfOrganizationalUnitsAsTree(id){
 //get all user in organizational unit of company
 function getAllUserInAllUnitsOfCompany(){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/all-user/`,
+        url: `${LOCAL_SERVER_API}/user/organizational-units/all/users`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }

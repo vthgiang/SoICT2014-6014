@@ -35,10 +35,10 @@ exports.searchCourses = async (params, company) => {
     var keySearch = {
         company: company
     }
-    if (params._id !== undefined) {
+    if (params.educationProgram !== undefined) {
         keySearch = {
             ...keySearch,
-            educationProgram: params._id
+            educationProgram: params.educationProgram
         }
     }
     // Bắt sựu kiện mã khoá đào tạo khác ""
