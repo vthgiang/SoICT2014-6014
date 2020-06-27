@@ -16,7 +16,7 @@ import {Comment} from './comment'
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 
-// sau khi gộp vào prj mới nhớ đổi đường dẫn của DepartmentActions và UserActions
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 var translate = '';
 class CreateEmployeeKpiSet extends Component {
@@ -65,17 +65,22 @@ class CreateEmployeeKpiSet extends Component {
         const { user } = this.props;
 
         // Khi truy vấn API đã có kết quả
-        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans.length>0) {
-            this.setState(state =>{
-                return{
-                    ...state,
-                    employeeKpiSet: {
-                        ...this.state.employeeKpiSet,
-                        approver: user.userdepartments.deans[0]
-                    }
-                };
-            });
-            return false; // Sẽ cập nhật lại state nên không cần render
+        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans) {
+            if (Object.keys(user.userdepartments.deans).length > 0){ // Nếu có trưởng đơn vị
+                let members = user.userdepartments.deans[Object.keys(user.userdepartments.deans)[0]].members;
+                if (members.length) {
+                    this.setState(state =>{
+                        return{
+                            ...state,
+                            employeeKpiSet: {
+                                ...this.state.employeeKpiSet,
+                                approver: members[0]
+                            }
+                        };
+                    });
+                    return false; // Sẽ cập nhật lại state nên không cần render
+                }
+            }
         }
 
         return true;
@@ -466,13 +471,18 @@ class CreateEmployeeKpiSet extends Component {
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item => (
-                item.dean === this.state.currentRole
-                || item.employee === this.state.currentRole
-                || item.viceDean === this.state.currentRole));
+                item.deans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole)
+                || item.viceDeans.includes(this.state.currentRole)));
         }
         
         if (createEmployeeKpiSet.currentKPI) currentKPI = createEmployeeKpiSet.currentKPI;
-        if (user.userdepartments) userdepartments = user.userdepartments;
+        let deans;
+        if (user.userdepartments) {
+            userdepartments = user.userdepartments;
+            deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
+        }
+        
 
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
@@ -531,16 +541,14 @@ class CreateEmployeeKpiSet extends Component {
                                     </h4>
                                 </div>
                                 
-                                {editing ? userdepartments && userdepartments.deans &&
+                                {editing ? deans &&
                                     <div className="col-sm-6 col-xs-12 form-group">
                                         <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                         <SelectBox
                                             id={`createEmployeeKpiSet`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={userdepartments.deans.map(
-                                                item =>{return {text: item.name, value: item._id}}
-                                            )}
+                                            items={deans}
                                             multiple={false}
                                             onChange={this.handleApproverChange}
                                             value={this.state.employeeKpiSet.approver}
@@ -568,11 +576,11 @@ class CreateEmployeeKpiSet extends Component {
 
                                 {editing === false &&
                                     <div>
-                                        <span>{currentKPI.kpis.length} mục tiêu - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')} </span>
+                                        <span>{currentKPI.kpis.length} mục tiêu - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
                                         <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                         {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
-                                            <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.not_satisfied')}</span>
-                                            : <span className="text-success" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.satisfied')}</span>
+                                            <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_satisfied')}</span>
+                                            : <span className="text-success" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.satisfied')}</span>
                                         }
                                         <span> - </span>
                                         {this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}
@@ -625,8 +633,7 @@ class CreateEmployeeKpiSet extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                <div style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-                                    <h4 style={{ display: "inline-block", fontWeight: "600"}}>Trao đổi</h4> 
+                                <div className="row" style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                                     <div className="col-xs-12 col-sm-12 col-md-6">
                                         <Comment currentKPI = {currentKPI}/>
                                     </div>

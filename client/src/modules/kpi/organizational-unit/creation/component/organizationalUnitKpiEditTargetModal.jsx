@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/KPIUnitActions';
-import { createUnitKpiActions } from '../redux/actions';
-
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+
+import { createUnitKpiActions } from '../redux/actions';
+
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 
 class OrganizationalUnitKpiEditTargetModal extends Component {
     componentDidMount() {
-        // get all parent target of unit
+        // Get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
     }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -25,22 +24,15 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
             weight: "",
             criteria: "",
 
+            editing: false,
+
             errorOnName: undefined,
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
-            editing: false
         };
-
-        this.handleEditTarget = this.handleEditTarget.bind(this);
     }
 
-    // function: notification the result of an action
-    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
-    notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
-    notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
-
     handleEditTarget = async () => { 
-    
         let id = this.state._id;
         var newTarget = {
             name: this.state.name,
@@ -51,15 +43,11 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         
         if (this.isFormValidated()){
             return this.props.editTargetKPIUnit(id, newTarget);
-
-            //window.$(`#editTargetKPIUnit${this.props.target._id}`).modal("hide");
         }
-       
     }
 
 
     static getDerivedStateFromProps(nextProps, prevState){
-        
         if (nextProps.target._id !== prevState._id) {
             return {
                 ...prevState,
@@ -112,11 +100,11 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
     }
     validateCriteria = (value, willUpdateState=true) => {
         let msg = undefined;
-        if (value.trim() === ""){
+        if (value.trim() === "") {
             msg = "Tiêu chí không được để trống";
         }
 
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -134,16 +122,14 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
     }
     validateWeight = (value, willUpdateState=true) => {
         let msg = undefined;
-        // if (value.trim() === ""){
-        //     msg = "Trọng số không được để trống";
-        // } else 
-        if(value < 0){
+        
+        if (value < 0) {
             msg = "Trọng số không được nhỏ hơn 0";
-        } else if(value > 100){
+        } else if (value > 100) {
             msg = "Trọng số không được lớn hơn 100";
         } 
         
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -165,24 +151,23 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
 
     render() {
-        const { createKpiUnit, target, organizationalUnit } = this.props;
-        const {editing, newTarget} = this.state;
+        const { createKpiUnit } = this.props; // Redux
+        const { target, organizationalUnit } = this.props; // Truyền từ component cha
+        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+        const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
+        
         var parentKPI;
-        if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
-
-        const{ _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight} = this.state;
+        if (createKpiUnit.parent) {
+            parentKPI = createKpiUnit.parent;
+        }
 
         var items;
-        if(parentKPI === undefined){
+        if (parentKPI === undefined) {
             items = [];
-        }
-        else{    
+        } else {    
             items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                 return {value: x._id, text: x.name} });
         }
-
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
 
         return (
             <React.Fragment>
@@ -195,6 +180,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                     func={this.handleEditTarget}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa tiêu */}
                     <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('kpi.organizational_unit.edit_target_kpi_modal.success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
@@ -202,7 +188,8 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
-                        {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        {/* Mục tiêu cha */}
+                        {(organizationalUnit && organizationalUnit.parent) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                             <div className="form-group">
                                 <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.parents')}</label>
                                 {items.length !== 0 &&
@@ -217,14 +204,16 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                                     />
                                 }
                             </div>}
-
-                        <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
+                            
+                        {/* Tiêu chí đánh giá */}
+                        <div className={`form-group ${!errorOnCriteria? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <textarea rows={4} type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
-                        <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
+                        {/* Trọng số */}
+                        <div className={`form-group ${!errorOnWeight? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>

@@ -378,8 +378,7 @@ class ModalMemberApprove extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-                        <h4 style={{ display: "inline-block", fontWeight: "600"}}>Trao đổi</h4> 
+                    <div className="row" style={{display:'flex',flex:'no-wrap',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                         <div className="col-xs-12 col-sm-12 col-md-6">
                             <Comment currentKPI = {kpimembers.currentKPI}/>
                         </div>

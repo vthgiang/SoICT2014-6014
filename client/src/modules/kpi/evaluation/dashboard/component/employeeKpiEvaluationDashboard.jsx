@@ -369,7 +369,7 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Phân tích</button>
                         </div>
                     </div>
                 </div>

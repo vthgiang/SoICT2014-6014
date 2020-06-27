@@ -6,6 +6,7 @@ import { UserActions } from '../../user/redux/actions';
 import RoleInfoForm from './roleInfoForm';
 import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
 import RoleCreateForm from './roleCreateForm';
+import {ROLE_TYPE} from '../../../../helpers/constants';
 
 class RoleTable extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class RoleTable extends Component {
                     search={this.searchWithOption}
                 />
                     
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-role">
                     <thead>
                         <tr>
                             <th>{ translate('manage_role.name') }</th>
@@ -61,6 +62,7 @@ class RoleTable extends Component {
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
+                                    tableId="table-manage-role"
                                 />
                             </th>
                         </tr>
@@ -76,7 +78,7 @@ class RoleTable extends Component {
                                     <td style={{ textAlign: 'center' }}>
                                         <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                         {
-                                            role.type.name === 'Company-Defined' && 
+                                            role.type.name === ROLE_TYPE.COMPANY_DEFINED && 
                                             <DeleteNotification 
                                                 content={translate('manage_role.delete')}
                                                 data={{id: role._id, info: role.name}}
