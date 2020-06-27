@@ -387,7 +387,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 let a = listKpi.filter(item => item._id === element);
                 newKpi.push(a[0].name);
             }
-            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(this.state.kpi);
+            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
         }
 
         if(currentTask.progress !== this.state.progress){
