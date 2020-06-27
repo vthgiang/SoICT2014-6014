@@ -86,17 +86,19 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             name: req.params.name,
             startDate: req.params.startDate,
             endDate: req.params.endDate,
+            startDateAfter: req.params.startDateAfter,
+            endDateBefore: req.params.endDateBefore
         };
         var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
         
-        await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
+        // await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
             success:true,
             messages: ['get_task_of_responsible_employee_success'],
             content: responsibleTasks
         })
     } catch (error) {        
-        await await LogError(req.user.email, ` get task responsible by user `,req.user.company)
+        // await await LogError(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(400).json({
             success:false,
             messages: ['get_task_of_responsible_employee_fail'],
@@ -244,7 +246,40 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
         })
     }
 }
-
+/**
+ * Lấy công việc theo vai trò người thực hiện chính với điều kiện thời gian
+ */
+exports.getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
+    try {
+        var task = {
+            perPage: req.params.perPage,
+            number: req.params.number,
+            user: req.params.user,
+            organizationalUnit: req.params.unit,
+            status: req.params.status,
+            priority: req.params.priority,
+            special: req.params.special,
+            name: req.params.name,
+            startDate: req.params.startDate,
+            endDate: req.params.endDate,
+        };
+        var responsibleTasks = await TaskManagementService.getTasksThatUserHasResponsibleRoleByDate(task);
+        
+        // await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
+        res.status(200).json({
+            success:true,
+            messages: ['get_task_of_responsible_employee_success'],
+            content: responsibleTasks
+        })
+    } catch (error) {        
+        // await await LogError(req.user.email, ` get task responsible by user `,req.user.company)
+        res.status(400).json({
+            success:false,
+            messages: ['get_task_of_responsible_employee_fail'],
+            content: error
+        })
+    }
+}
 /**
  * Tạo một công việc mới
  */

@@ -51,10 +51,10 @@ exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
     }
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
-exports.getAllOrganizationalUnitKpiSetEachYear = async (req, res) => {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị */
+exports.getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
     try {
-        var organizationalUnitKpiSets = await DashboardOrganizationalUnitService.getAllOrganizationalUnitKpiSetEachYear(req.params.organizationalUnitId, req.params.year);
+        var organizationalUnitKpiSets = await DashboardOrganizationalUnitService.getAllOrganizationalUnitKpiSetByTime(req.params.organizationalUnitId, req.params.startDate, req.params.endDate);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year ', req.user.company);
         res.status(200).json({
             success: true,
@@ -71,10 +71,10 @@ exports.getAllOrganizationalUnitKpiSetEachYear = async (req, res) => {
     }
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (req, res) => {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
     try {
-        var childOrganizationalUnitKpiSets = await DashboardOrganizationalUnitService.getAllOrganizationalUnitKpiSetEachYearOfChildUnit(req.user.company._id, req.params.roleId, req.params.year);
+        var childOrganizationalUnitKpiSets = await DashboardOrganizationalUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.user.company._id, req.params.roleId, req.params.startDate, req.params.endDate);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.user.company);
         res.status(200).json({
             success: true,

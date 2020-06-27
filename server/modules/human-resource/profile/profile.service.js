@@ -9,7 +9,7 @@ const {
     User,
     Role,
     EmployeeCourse,
-    ManualNotification,
+    Notification,
 } = require('../../../models').schema;
 
 /**
@@ -150,8 +150,11 @@ exports.getEmployeeInforById = async(id)=> {
  * @positions : array id chức vụ
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
-exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    let keySearch = {company: company, status: 'active'};
+exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true, status='active') => {
+    let keySearch = {company: company};
+    if (status) {
+        keySearch = {...keySearch, status: status}
+    }
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
@@ -711,6 +714,6 @@ exports.createNotificationEndOfContract = async ()=> {
             notifications = [...notifications, notification]
         })
     }
-    // await Notification.insertMany(notifications);
+    await Notification.insertMany(notifications);
    
 }

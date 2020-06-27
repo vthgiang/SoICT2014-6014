@@ -14,15 +14,20 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = currentDate.getMonth();
+
         this.state = {
             organizationalUnitId: null,
-            year: new Date().getFullYear(),
+            startDate: currentYear + '-' + 1,
+            endDate: currentYear + '-' + (currentMonth + 2),
             dataStatus: this.DATA_STATUS.QUERYING
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllOrganizationalUnitKpiSetEachYear(this.props.organizationalUnitId, this.state.year);
+        this.props.getAllOrganizationalUnitKpiSetByTime(this.props.organizationalUnitId, this.state.startDate, this.state.endDate);
 
         this.setState(state => {
             return {
@@ -35,7 +40,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
             // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            await this.props.getAllOrganizationalUnitKpiSetEachYear(nextProps.organizationalUnitId, this.state.year);
+            await this.props.getAllOrganizationalUnitKpiSetByTime(nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
             
             this.setState(state => {
                 return {
@@ -48,7 +53,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
         
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear) {
+            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
                 return false
             }
 
@@ -89,8 +94,8 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         const { dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear) {
-            listOrganizationalUnitKpiSetEachYear = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsEachYear
+        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
+            listOrganizationalUnitKpiSetEachYear = dashboardOrganizationalUnitKpi.organizationalUnitKpiSets
         }
 
         if(listOrganizationalUnitKpiSetEachYear) {
@@ -186,7 +191,7 @@ function mapState(state) {
 }
 
 const actions = {
-    getAllOrganizationalUnitKpiSetEachYear: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetEachYear
+    getAllOrganizationalUnitKpiSetByTime: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
 }
 
 const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfOrganizationalUnitKpiChart);

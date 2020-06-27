@@ -115,7 +115,7 @@ class EmployeeDashBoardHeader extends Component {
                             <div className="info-box-content">
                                 <span className="info-box-text">Số nhân viên</span>
                                 <span className="info-box-number">
-                                    {employeesManager.totalEmployeeOfOrganizationalUnits === '' ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
+                                    {employeesManager.totalEmployeeOfOrganizationalUnits === 0 ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
                                 </span>
                                 <a href={`/hr-list-employee?organizationalUnits=${organizationalUnits}`} >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>

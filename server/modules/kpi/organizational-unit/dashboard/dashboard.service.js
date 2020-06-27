@@ -4,9 +4,17 @@ const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard
 
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUnitId=undefined) => {
-    
+
+    let organizationalUnit;
+
+    let now = new Date();
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    let endOfLastMonth = new Date(currentYear, currentMonth);
+
     if(!organizationalUnitId) {
-        var organizationalUnit = await OrganizationalUnit.findOne({
+        organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
                 { 'deans': roleId },
                 { 'viceDeans': roleId },
@@ -14,16 +22,10 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             ]
         });
     } else {
-        var organizationalUnit = await OrganizationalUnit.findOne({ '_id':  organizationalUnitId });
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id':  organizationalUnitId });
     }
 
-    var now = new Date();
-    var currentYear = now.getFullYear();
-    var currentMonth = now.getMonth();
-    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    var endOfLastMonth = new Date(currentYear, currentMonth);
-
-    var employeeKpis = await OrganizationalUnitKpiSet.aggregate([
+    let employeeKpis = await OrganizationalUnitKpiSet.aggregate([
         { $match:
             { $and: [
                 { 'organizationalUnit': organizationalUnit._id },
@@ -37,6 +39,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
                 foreignField: "_id",
                 as : "organizationalUnitKpis"
         }},
+        { $unwind: "$organizationalUnitKpis"},
 
         { $lookup: {
             from: "employee_kpis",
@@ -44,27 +47,40 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             foreignField: "parent",
             as: "employeeKpis" 
         }},
-
-        { $project: { 'employeeKpis': 1, '_id': 0 } },
         { $unwind: "$employeeKpis"},
+
+        { $lookup: {
+            from: "employee_kpi_sets",
+            localField: "employeeKpis._id",
+            foreignField: "kpis",
+            as: "employee" 
+        }},
+        { $unwind: "$employee"},
+
+        { $addFields: {
+            "employeeKpis.organizationalUnitKpiParent": "$organizationalUnitKpis.parent",
+            "employeeKpis.creator": "$employee.creator"
+        }},
+
         { $replaceRoot: { newRoot: "$employeeKpis" } }
     ])
 
-    for(var i=0; i<employeeKpis.length; i++) {
-        var creators = await EmployeeKpiSet.aggregate([
-            { $unwind: "$kpis"},
-            { $match: { 'kpis': employeeKpis[i]._id}}
-        ]);
-        Object.assign(employeeKpis[i], { creator: creators[0].creator });
-    };
     return employeeKpis;   
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại*/
 exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=undefined) => {
     
+    let organizationalUnit;
+
+    let now = new Date();
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    let endOfLastMonth = new Date(currentYear, currentMonth);
+
     if(!organizationalUnitId) {
-        var organizationalUnit = await OrganizationalUnit.findOne({
+        organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
                 { 'deans': roleId },
                 { 'viceDeans': roleId },
@@ -72,16 +88,10 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=und
             ]
         });
     } else {
-        var organizationalUnit = await OrganizationalUnit.findOne({ '_id':  organizationalUnitId });
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id':  organizationalUnitId });
     }
 
-    var now = new Date();
-    var currentYear = now.getFullYear();
-    var currentMonth = now.getMonth();
-    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    var endOfLastMonth = new Date(currentYear, currentMonth);
-
-    var tasks = await Task.aggregate([
+    let tasks = await Task.aggregate([
         { $match: { 'organizationalUnit': organizationalUnit._id }},
         { $match: { 
             $or: [
@@ -105,29 +115,26 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=und
     return tasks;
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị */
-exports.getAllOrganizationalUnitKpiSetEachYear = async (organizationalUnitId, year) => {
-
-    var beginOfYear = new Date(year);
-    var endOfYear = new Date(year, 12);
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị */
+exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, startDate, endDate) => {
     
-    var organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
-        { 'organizationalUnit': organizationalUnitId, 'date': { $gte: beginOfYear, $lte: endOfYear} },
+    let organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
+        { 'organizationalUnit': organizationalUnitId, 'date': { $gte: startDate, $lt: endDate} },
         { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
     )
 
     return organizationalUnitKpiSets;
 }
 
-/** Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, roleId, year) => {
+/** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, roleId, startDate, endDate) => {
 
-    var childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
+    let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
 
-    for(var i=0; i<childrenOrganizationalUnits.length; i++) {
-        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetEachYear(childrenOrganizationalUnits[i].id, year));
+    for(let i=0; i<childrenOrganizationalUnits.length; i++) {
+        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, startDate, endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
     
@@ -137,10 +144,10 @@ exports.getAllOrganizationalUnitKpiSetEachYearOfChildUnit = async (companyId, ro
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
 
-    var beginOfCurrentMonth = new Date(month);
-    var endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth()+1);
+    let beginOfCurrentMonth = new Date(month);
+    let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth()+1);
 
-    var organizationalUnit = await OrganizationalUnit.findOne({
+    let organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': roleId },
             { 'viceDeans': roleId },
@@ -148,7 +155,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
         ]
     });
     
-    var employeeKpiSets = await OrganizationalUnit.aggregate([
+    let employeeKpiSets = await OrganizationalUnit.aggregate([
         { $match: { '_id': organizationalUnit._id } },
 
         { $lookup: {
@@ -193,9 +200,9 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
 /** Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng */
 getAllChildrenOrganizational = async (companyId, roleId) => {
 
-    var arrayTreeOranizationalUnit = await EvaluationDashboardService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
+    let arrayTreeOranizationalUnit = await EvaluationDashboardService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
 
-    var childrenOrganizationalUnits, temporaryChild, deg = 0;
+    let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     temporaryChild = arrayTreeOranizationalUnit.children;
 
@@ -214,7 +221,7 @@ getAllChildrenOrganizational = async (companyId, roleId) => {
             });
         })
 
-        var hasNodeChild = [];
+        let hasNodeChild = [];
         temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
             x.children.map(x => {
                 hasNodeChild = hasNodeChild.concat(x)
@@ -235,20 +242,12 @@ getAllChildrenOrganizational = async (companyId, roleId) => {
 /** Lấy tất cả employeeKpi thuộc các đơn vị con của đơn vị hiện tại */
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId) => {
 
-    var employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
+    let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
 
     for(let i=0; i<childrenOrganizationalUnits.length; i++) {
-        var employeeKpisInCurrentOrganizationalUnit = await this.getAllEmployeeKpiInOrganizationalUnit("null", childrenOrganizationalUnits[i].id);
-        for(let i=0; i<employeeKpisInCurrentOrganizationalUnit.length; i++){
-            var organizationalUnitKpiParent = await OrganizationalUnitKpi.findOne({
-                '_id': employeeKpisInCurrentOrganizationalUnit[i].parent
-            });
-            Object.assign(employeeKpisInCurrentOrganizationalUnit[i], { 'organizationalUnitKpiParent': organizationalUnitKpiParent.parent });
-        };
-
-        employeeKpisInChildrenOrganizationalUnit.push(employeeKpisInCurrentOrganizationalUnit);
+        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit("null", childrenOrganizationalUnits[i].id));
         employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
 
