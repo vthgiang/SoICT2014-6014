@@ -2,7 +2,7 @@ import { AnnualLeaveConstants } from './constants';
 const initState = {
     isLoading: false,
     listAnnualLeaves: [],
-    totalList: "",
+    totalList: 0,
     totalListAnnualLeavesOfYear: 0,
     error:"",
 }

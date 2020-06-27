@@ -99,8 +99,8 @@ class TasksSchedule extends Component{
   handleSearchTasks = async () => {
     if(this.state.startDateAfter === "") this.state.startDateAfter = null;
     if(this.state.endDateBefore === "") this.state.endDateBefore = null;
-    let dmm = new Date(this.state.startDateAfter);
-    console.log('dmmmmmmmmmmmmmmmmm',this.formatDate2(this.state.startDateAfter));
+    
+    // console.log('mmmmmmmmmm',this.formatDate2(this.state.startDateAfter));
     await this.setState(state => {
         return {
             ...state,
@@ -278,12 +278,12 @@ class TasksSchedule extends Component{
     const {startDateAfter, endDateBefore} = infoSearch;
     return (
         <React.Fragment>
-      <div className='box box-primary'>
-        <div className="box-header with-border">
+      {/* <div className='box box-primary'> */}
+        {/* <div className="box-header with-border">
           <div className="box-title">
           <h3 style={{textAlign:"center", margin:"0px"}}>Lịch công việc chi tiết</h3>
           </div>
-        </div>
+        </div> */}
           <div className="box-body qlcv">
               
               <ModelDetailTask2 id={this.state.detailTask}/>
@@ -338,7 +338,7 @@ class TasksSchedule extends Component{
             </div>
             
         </div>
-      </div>
+      {/* </div> */}
       </React.Fragment>
     )
   }

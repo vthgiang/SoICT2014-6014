@@ -15,10 +15,10 @@ class AgePyramidChart extends Component {
         }
     }
     componentDidMount() {
-        this.props.getAllEmployee({ status: 'active' });
+        this.props.getAllEmployee({organizationalUnits:null, status: 'active' });
     }
 
-    // Function tính tuổi nhân viện theo năm sinh nhập vào
+    // Function tính tuổi nhân viên theo năm sinh nhập vào
     getYear = (date) => {
         let dateNow = new Date(Date.now()), birthDate = new Date(date);
         let age = dateNow.getFullYear() - birthDate.getFullYear();
