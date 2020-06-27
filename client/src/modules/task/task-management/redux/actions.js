@@ -7,7 +7,6 @@ export const taskManagementActions = {
     getAccountableTaskByUser,
     getConsultedTaskByUser,
     getInformedTaskByUser,
-    getResponsibleTaskByDate,
     getCreatorTaskByUser,
     getTaskById,
     addTask,
@@ -97,31 +96,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             })
     }
 }
-/**
- * get responsible tasks of user by date
- */
-function getResponsibleTaskByDate(unit, number, perPage, status, priority, special, name, startDate, endDate) { //user, -- param
-    return dispatch => {
-        dispatch({
-            type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_REQUEST
-        });
 
-        taskManagementService.getResponsibleTaskByDate(unit, number, perPage, status, priority, special, name, startDate, endDate)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_SUCCESS,
-                    // payload: res.data.content.responsibleTasks
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_FAILURE,
-                    error
-                })
-            })
-    }
-}
 
 // Get all task by user
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {

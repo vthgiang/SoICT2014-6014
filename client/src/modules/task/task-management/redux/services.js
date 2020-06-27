@@ -15,7 +15,6 @@ export const taskManagementService = {
     getConsultedTaskByUser,
     getInformedTaskByUser,
     getCreatorTaskByUser,
-    // getResponsibleTaskByDate,
     addNewTask,
     editTask,
     editArchivedOfTask,
@@ -65,16 +64,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
         
     }, false, true, 'task.task_management');
 }
-// get all task by Responsible Role by date
-function getResponsibleTaskByDate(unit, number, perPage, status, priority, special, name, startDate, endDate) {//param -- user,
-    var user = getStorage("userId");
-    
-    return sendRequest({//user = localStorage.getItem('id')
-        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible-bydate/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
-        method: 'GET',
-        
-    }, false, true, 'task.task_management');
-}
+
 // get all task by Role
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
