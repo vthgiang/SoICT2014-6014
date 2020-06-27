@@ -1,25 +1,49 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createUnitKpiActions } from '../redux/actions.js';
-import { UserActions} from '../../../../super-admin/user/redux/actions';
-import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
-import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
-import Swal from 'sweetalert2';
-import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+
 import { DatePicker } from '../../../../../common-components';
 
-// hàm để chuyển sang song ngữ
+import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
+import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
+import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
+
+import { createUnitKpiActions } from '../redux/actions.js';
+import { UserActions} from '../../../../super-admin/user/redux/actions';
+
+// Hàm để chuyển sang song ngữ
 var translate = '';
 
 class OrganizationalUnitKpiCreate extends Component {
+    constructor(props) {
+        super(props);   
+
+        translate = this.props.translate;
+
+        this.state = {
+            organizationalUnitKpiSet: {
+                organizationalUnit: "",
+                date: this.formatDate(Date.now()),
+                creator: "" // localStorage.getItem("id")
+            },
+
+            adding: false,
+            editing: false,
+            submitted: false,
+            
+            currentRole: localStorage.getItem("currentRole")
+        };
+
+    }
+
     componentDidMount() {
-        // get department list of company
-        
+        // Get department list of company
         this.props.getDepartment();
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getKPIParent(localStorage.getItem('currentRole'));
     }
+
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
             this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
@@ -31,21 +55,6 @@ class OrganizationalUnitKpiCreate extends Component {
             })
         }
     }
-    constructor(props) {
-        super(props);   translate = this.props.translate;
-        this.state = {
-            organizationalUnitKpiSet: {
-                organizationalUnit: "",
-                date: this.formatDate(Date.now()),
-                creator: ""     //localStorage.getItem("id")
-            },
-            adding: false,
-            editing: false,
-            submitted: false,
-            currentRole: localStorage.getItem("currentRole")
-        };
-
-    }
 
     handleEditKPi = async () => {
         await this.setState(state => {
@@ -55,6 +64,7 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         })
     }
+
     saveEdit = async (id, organizationalUnit) => {
         await this.setState(state => {
             return {
@@ -68,11 +78,11 @@ class OrganizationalUnitKpiCreate extends Component {
         })
         var { organizationalUnitKpiSet } = this.state;
         
-        if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date ) {//&& kpiunit.creater
-            
+        if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date) {//&& kpiunit.creater
             this.props.editKPIUnit(id, organizationalUnitKpiSet);
         }
     }
+    
     cancelEdit = async () => {
         await this.setState(state => {
             return {
@@ -81,6 +91,7 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         })
     }
+
     cancelKPIUnit = (event, id, status) => {
         event.preventDefault();
         Swal.fire({
@@ -130,6 +141,7 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         }
     }
+
     deleteKPI = (status, id) => {
         if (status === 1) {
             Swal.fire({
@@ -153,6 +165,7 @@ class OrganizationalUnitKpiCreate extends Component {
             });
         }
     }
+
     deleteTargetKPIUnit = (status ,id, organizationalUnitKpiSetId) => {
         if (status === 1) {
             Swal.fire({
@@ -183,10 +196,13 @@ class OrganizationalUnitKpiCreate extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2){
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -213,17 +229,16 @@ class OrganizationalUnitKpiCreate extends Component {
         let parentUnit = currentUnit[0].parent; 
         let parentKpi = this.props.createKpiUnit.parent;
 
-        if(parentUnit == null){
+        if (parentUnit == null) {
             return true;
-        }
-        else{
-            if(parentKpi == null){
+        } else {
+            if (parentKpi == null) {
                 return false;
             }
-            else if(parentKpi.status !== 1){
+            else if (parentKpi.status !== 1) {
                 return false;
             }
-            else{
+            else {
                 return true;
             }
         }
@@ -231,15 +246,14 @@ class OrganizationalUnitKpiCreate extends Component {
 
     startKpiUnitError = () => {
         let parentKpi = this.props.createKpiUnit.parent;
-        if(parentKpi == null){
+        if (parentKpi == null) {
             Swal.fire({
                 title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
-        }
-        else{
+        } else {
             Swal.fire({
                 title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
                 type: 'warning',
@@ -250,25 +264,28 @@ class OrganizationalUnitKpiCreate extends Component {
     }
     
     render() {
+        const { user, createKpiUnit } = this.props; // Redux
+        const { editing, currentRole, organizationalUnitKpiSet } = this.state;
+        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+
         var unitList, currentUnit, currentKPI;
-        const { user, createKpiUnit } = this.props;
-        const { editing } = this.state;
+
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
-                item.deans.includes(this.state.currentRole)
-                || item.viceDeans.includes(this.state.currentRole)
-                || item.employees.includes(this.state.currentRole));
+                item.deans.includes(currentRole)
+                || item.viceDeans.includes(currentRole)
+                || item.employees.includes(currentRole));
         }
-        if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
-        
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
+
+        if (createKpiUnit.currentKPI) {
+            currentKPI = createKpiUnit.currentKPI;
+        }
 
         return (
             <div className="box">
                 <div className="box-body">
-                    {(typeof currentKPI !== 'undefined' && currentKPI !== null) ?
+                    {currentKPI ?
                         <div>
                             {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                <div style={{marginLeft: "-10px"}}>
@@ -304,19 +321,22 @@ class OrganizationalUnitKpiCreate extends Component {
                             }
                             <div className="">
                                 <h4 style={{ display: "inline-block", fontWeight: "600" }}>
-                                    KPI {currentKPI.organizationalUnit.name} {!editing && this.formatDate(currentKPI.date)}
+                                    KPI {currentKPI.organizationalUnit? currentKPI.organizationalUnit.name: "Đơn vị đã bị xóa"} {!editing && this.formatDate(currentKPI.date)}
                                 </h4>
+
+                                {/* Form chỉnh sửa KPI */}
                                 {editing &&
                                     <div className='input-group form-group'>
                                         <DatePicker
                                             id="month"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                            value={this.state.organizationalUnitKpiSet.date} // giá trị mặc định cho datePicker    
+                                            value={organizationalUnitKpiSet.date} // giá trị mặc định cho datePicker    
                                             onChange={this.handleChangeDate}
                                             disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                                         />
                                     </div>
                                 }
+
                                 <div className="form-group">
                                     <span>
                                         {currentKPI.kpis.reduce(sum => sum + 1, 0)} {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target')} -&nbsp;
@@ -333,6 +353,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                     }
                                 </div>
 
+                                {/* Bảng các mục tiêu của KPI */}
                                 <table className="table table-bordered table-striped table-hover">
                                     <thead>
                                         <tr>

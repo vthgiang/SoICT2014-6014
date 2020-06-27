@@ -57,7 +57,7 @@ class TaskManagement extends Component {
             name != nextState.name ||
             startDate != nextState.startDate ||
             endDate != nextState.endDate
-        ){
+        ) {
             return false;
         }
 
