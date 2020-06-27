@@ -110,7 +110,7 @@ exports.getTasksCreatedByUser = async (id) => {
  * Lấy công việc thực hiện chính theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter,endDateBefore } = task;
     
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -201,6 +201,34 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
             ...keySearch,
             endDate: {
                 $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
+    if(startDateAfter !== 'null'){
+        let startTimeAfter = startDateAfter.split("-");
+        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        // let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gte: start, 
+                // $lte: end
+            }
+        }
+    }
+    
+    if(endDateBefore !== 'null'){
+        let endTimeBefore = endDateBefore.split("-");
+        // let start = new Date(endTime[1], endTime[0] - 1, 1);
+        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                // $gt: start, 
                 $lte: end
             }
         }

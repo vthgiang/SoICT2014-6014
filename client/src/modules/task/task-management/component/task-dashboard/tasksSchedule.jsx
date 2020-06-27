@@ -1,38 +1,153 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import Swal from 'sweetalert2';
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
-
 import Timeline from "react-calendar-timeline";
 import {DatePicker} from '../../../../../common-components/index'
 import { taskManagementActions } from '../../../task-management/redux/actions';
 import {ModelDetailTask2} from './detailTask'
-import './style.css'
-class Schedule extends Component{
+import './calendar.css'
+
+
+
+//TODO: Sửa lại tham số trong componentDidMount
+//      sửa tên thuộc tính 
+//      sắp xếp lại thứ tự các hàm riêng biệt cho 2 phần calendar và search
+//      xóa service getbyDate đã thêm nhưng không dùng đến
+//      sửa lại tham số cho service lấy dữ liệu trong taskManagement.jsx
+
+
+
+
+class TasksSchedule extends Component{
     constructor(props){
         super(props);
-   
-    const defaultTimeStart = moment()
+    
+    var defaultTimeStart = moment()
       .startOf("month")
       .toDate();
-    const defaultTimeEnd = moment()
+      console.log('jfakslfalsflkasjdfljasdkgjasljaigisdf',defaultTimeStart);
+    var defaultTimeEnd = moment()
       .startOf("month")
       .add(1, "month")
       .toDate();
-    const now = moment();
+    // const now = moment();
     this.state = {
       defaultTimeStart,
       defaultTimeEnd,
       startDate: null, 
       endDate: null,
-      month: (new Date()).getMonth()
+      infoSearch: {
+          organizationalUnit: '[]',
+          currentPage: "1",
+          perPage: "1000",
+          status: '[]',
+          priority: '[]',
+          special: '[]',
+          name: null,
+          startDate: null,
+          endDate: null,
+          startDateAfter: this.formatDate(new Date()),
+          endDateBefore: null
+      },
+      // month: (new Date()).getMonth()
     };
+    // console.log('fjaslkdfjasdf', this.state.infoSearch.startDateAfter);
   }
-   getDaysOfMonth(year, month) {
+  componentDidMount() {
+    let {startDateAfter} = this.state.infoSearch;
+    this.props.getResponsibleTaskByUser("[]", "1", "1000", "[]", "[]", "[]", null, null, null,startDateAfter,null);
+    // console.log('running in componentDidMount...');
+  }
+  // formatDateBack(date) {
+  //   var d = new Date(date), month, day, year;
+  //   if(d.getMonth()===0){
+  //       month = '' + 12;
+  //       day = '' + d.getDate();
+  //       year = d.getFullYear()-1;
+  //   } else{
+  //       month = '' + (d.getMonth()+1);
+  //       day = '' + d.getDate();
+  //       year = d.getFullYear();
+  //   }
+  //   if (month.length < 2)
+  //       month = '0' + month;
+  //   if (day.length < 2)
+  //       day = '0' + day;
 
-    return new Date(year, month + 1, 0).getDate();
+  //   return [month, year].join('-');
+  // }
+  formatDate(date) {
+      var d = new Date(date),
+          month = '' + (d.getMonth()),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+      if (month.length < 2)
+          month = '0' + month;
+      if (day.length < 2)
+          day = '0' + day;
+
+      return [month, year].join('-');
+  }
+  formatDate2(date) {
+    let res = date.split("-");
+
+    return [res[1], res[0]].join(',');
+}
+  handleSearchTasks = async () => {
+    if(this.state.startDateAfter === "") this.state.startDateAfter = null;
+    if(this.state.endDateBefore === "") this.state.endDateBefore = null;
+    let dmm = new Date(this.state.startDateAfter);
+    console.log('dmmmmmmmmmmmmmmmmm',this.formatDate2(this.state.startDateAfter));
+    await this.setState(state => {
+        return {
+            ...state,
+            defaultTimeStart : new Date(this.formatDate2(this.state.startDateAfter)),
+            defaultTimeEnd : new Date(2020,10) ,
+            // defaultTimeEnd :
+            infoSearch: {
+                ...state.infoSearch,
+                // status: this.state.status,
+                startDateAfter: this.state.startDateAfter,
+                endDateBefore: this.state.endDateBefore
+            },
+            // employeeKpiSet: {_id: null},
+        }
+    })
     
-    }
+    const { infoSearch } = this.state;
+    // console.log("info====", this.state.startDate);
+        var startDateAfter;
+        var startdate_after=null;
+        var endDateBefore;
+        var enddate_before=null;
+        if(infoSearch.startDateAfter === undefined) infoSearch.startDateAfter = null;
+        if(infoSearch.endDateBefore === undefined) infoSearch.endDateBefore = null;
+        if(infoSearch.startDateAfter !== null) {startDateAfter = infoSearch.startDateAfter.split("-");
+        startdate_after = new Date(startDateAfter[1], startDateAfter[0], 0);}
+        if (infoSearch.endDateBefore !== null){endDateBefore= infoSearch.endDateBefore.split("-");
+        enddate_before = new Date(endDateBefore[1], endDateBefore[0], 28);}
+
+        if (startdate_after && enddate_before && Date.parse(startdate_after) > Date.parse(enddate_before)) {
+            Swal.fire({
+                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        } 
+        else {
+          // console.log("\n\n\n", infoSearch.startDateAfter);
+          this.props.getResponsibleTaskByUser("[]", "1", "1000", "[]", "[]", "[]", null, infoSearch.startDate, infoSearch.endDate, infoSearch.startDateAfter, infoSearch.endDateBefore);
+        }
+}
+  //  getDaysOfMonth(year, month) {
+
+  //   return new Date(year, month + 1, 0).getDate();
+    
+  //   }
     
     
     getDurations(){
@@ -42,7 +157,7 @@ class Schedule extends Component{
         var durations=[];
 
         if(taskList) {
-          for(var i = 1; i<= taskList.length; i++){
+          for(let i = 1; i<= taskList.length; i++){
               var start_time = moment(new Date(taskList[i-1].startDate));
               var end_time = moment(new Date(taskList[i-1].endDate)) ;
        
@@ -82,23 +197,23 @@ class Schedule extends Component{
   animateScroll = invert => {
     var month = this.state.month;
     
-    let calc =  this.getDaysOfMonth(new Date().getFullYear(), month+1); 
-    let prev = this.getDaysOfMonth(new Date().getFullYear(),month ); 
+    // let calc =  this.getDaysOfMonth(new Date().getFullYear(), month+1); 
+    // let prev = this.getDaysOfMonth(new Date().getFullYear(),month ); 
     const width = (invert ? -1 : 1) * parseFloat(this.scrollRef.style.width); 
     const duration = 1200;
-    console.log('calc, prev', calc, prev);
+    // console.log('calc, prev', calc, prev);
     const startTime = performance.now();
     
     let lastWidth = 0;
     const animate = () => {
       let normalizedTime = (performance.now() - startTime) / duration;
-      console.log('perform', performance.now());
+      // console.log('perform', performance.now());
       if (normalizedTime > 1) {
         normalizedTime = 1;
       }
 
       const calculatedWidth = width * 0.5 * (1 + Math.cos(Math.PI * (normalizedTime - 1)));
-      console.log('width', calculatedWidth);
+      // console.log('width', calculatedWidth);
       this.scrollRef.scrollLeft += calculatedWidth - lastWidth;
       lastWidth = calculatedWidth;
       if (normalizedTime < 1) {
@@ -123,7 +238,7 @@ class Schedule extends Component{
     this.setState(state => {
             return {
                 ...state,
-                startDate: value,
+                startDateAfter: value,
             }
         });
     
@@ -132,7 +247,7 @@ class Schedule extends Component{
       this.setState(state => {
               return {
                   ...state,
-                  endDate: value,
+                  endDateBefore: value,
               }
           });
       
@@ -157,12 +272,10 @@ class Schedule extends Component{
   //   })
     
   // }
-  handleSelectItem(itemId, e){
-    console.log('itemID, e', itemId, e);
-  }
+  
   render() {
-    const { defaultTimeStart, defaultTimeEnd, startDate, endDate } = this.state;
-
+    const { defaultTimeStart, defaultTimeEnd, infoSearch } = this.state;
+    const {startDateAfter, endDateBefore} = infoSearch;
     return (
         <React.Fragment>
       <div className='box box-primary'>
@@ -180,7 +293,7 @@ class Schedule extends Component{
                   <div className="form-group">
                     <label>Từ tháng: </label>
                     <DatePicker id='start_date'
-                            value = {startDate}
+                            value = {startDateAfter}
                             onChange={this.handleStartDateChange}
                             dateFormat="month-year"
                             />
@@ -189,13 +302,13 @@ class Schedule extends Component{
                     <label>Đến tháng: </label>
                     <DatePicker
                             id='end_date'
-                            value = {endDate}
+                            value = {endDateBefore}
                             onChange={this.handleEndDateChange}
                             dateFormat="month-year"
                             />
                   </div>
                   <div className="form-group">
-                    <button className="btn btn-success">Tìm kiếm</button>
+                    <button className="btn btn-success" onClick={this.handleSearchTasks}>Tìm kiếm</button>
                   </div>
 
                 </div>
@@ -214,7 +327,6 @@ class Schedule extends Component{
                     onItemClick = {this.handleItemClick}
                     canMove={false}
                     canResize={false}
-                    onItemSelect={this.handleSelectItem}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
                 />
@@ -237,6 +349,7 @@ function mapState(state){
     return {tasks}
 }
 const actions = {
+  getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
 }
-const connectedSchedule = connect(mapState, actions) (Schedule)
-export {connectedSchedule as Schedule}
+const connectedSchedule = connect(mapState, actions) (TasksSchedule)
+export {connectedSchedule as TasksSchedule}

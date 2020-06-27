@@ -5,7 +5,7 @@ import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { Schedule } from './tasksSchedule';
+import { TasksSchedule } from './tasksSchedule';
 import { taskManagementActions } from '../../redux/actions';
 
 
@@ -18,7 +18,7 @@ class TaskDashboard extends Component {
     }
     componentDidMount() {
         this.handleLoadDataCalendar();
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
         this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -602,7 +602,7 @@ class TaskDashboard extends Component {
                                         </div>
                                     </div>
                                 </div> */}
-                                <Schedule/>
+                                <TasksSchedule/>
                             </div>
                         </div>
                     </section>

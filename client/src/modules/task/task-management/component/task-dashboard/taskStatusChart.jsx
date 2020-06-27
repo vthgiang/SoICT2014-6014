@@ -46,7 +46,7 @@ class TaskStatusChart extends Component {
             roleName: this.ROLE_SELECTBOX[0].text
         };
 
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
         this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -66,7 +66,7 @@ class TaskStatusChart extends Component {
         }
 
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
             this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
             this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
             this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);

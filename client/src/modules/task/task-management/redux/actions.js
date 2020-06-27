@@ -7,6 +7,7 @@ export const taskManagementActions = {
     getAccountableTaskByUser,
     getConsultedTaskByUser,
     getInformedTaskByUser,
+    getResponsibleTaskByDate,
     getCreatorTaskByUser,
     getTaskById,
     addTask,
@@ -74,13 +75,13 @@ function getAllTaskByRole(id, role) {
 }
 
 // Get all task by user
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) { //user, -- param
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) { //user, -- param
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST
         });
 
-        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS,
@@ -91,6 +92,31 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+/**
+ * get responsible tasks of user by date
+ */
+function getResponsibleTaskByDate(unit, number, perPage, status, priority, special, name, startDate, endDate) { //user, -- param
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_REQUEST
+        });
+
+        taskManagementService.getResponsibleTaskByDate(unit, number, perPage, status, priority, special, name, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_SUCCESS,
+                    // payload: res.data.content.responsibleTasks
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GETTASK_RESPONSIBLE_BYDATE_FAILURE,
                     error
                 })
             })
