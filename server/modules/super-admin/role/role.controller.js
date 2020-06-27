@@ -100,7 +100,7 @@ exports.deleteRole = async (req, res) => {
             content: role
         });
     } catch (error) {
-        
+        console.log("errro:", error)
         LogError(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(400).json({
             success: false,

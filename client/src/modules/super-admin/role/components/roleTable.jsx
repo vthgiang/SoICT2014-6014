@@ -6,6 +6,7 @@ import { UserActions } from '../../user/redux/actions';
 import RoleInfoForm from './roleInfoForm';
 import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
 import RoleCreateForm from './roleCreateForm';
+import {ROLE_TYPE} from '../../../../helpers/constants';
 
 class RoleTable extends Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class RoleTable extends Component {
                                     <td style={{ textAlign: 'center' }}>
                                         <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                         {
-                                            role.type.name === 'Company-Defined' && 
+                                            role.type.name === ROLE_TYPE.COMPANY_DEFINED && 
                                             <DeleteNotification 
                                                 content={translate('manage_role.delete')}
                                                 data={{id: role._id, info: role.name}}

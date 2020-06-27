@@ -113,18 +113,7 @@ exports.getOrganizationalUnit = async (req, res) => {
 exports.editOrganizationalUnit = async (req, res) => {
     try {
         var department = await OrganizationalUnitService.editOrganizationalUnit(req.params.id, req.body);
-        for (let i = 0; i < department.deans.length; i++) {
-            const dean = department.deans[i]._id;
-            await RoleService.editRole(dean, {name: req.body.deans[i]});
-        }
-        for (let i = 0; i < department.viceDeans.length; i++) {
-            const vdean = department.viceDeans[i]._id;
-            await RoleService.editRole(vdean, {name: req.body.viceDeans[i]});
-        }
-        for (let i = 0; i < department.employees.length; i++) {
-            const em = department.employees[i]._id;
-            await RoleService.editRole(em, {name: req.body.employees[i]});
-        }
+        await OrganizationalUnitService.editRolesInOrganizationalUnit(department._id, req.body);
         
         var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
 
