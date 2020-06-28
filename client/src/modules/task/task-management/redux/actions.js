@@ -21,7 +21,9 @@ export const taskManagementActions = {
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees
+    evaluateTaskByResponsibleEmployees,
+
+    getTasksByUser,
 };
 
 // Get all task
@@ -444,6 +446,23 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+function getTasksByUser() {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_REQUEST });
+        taskManagementService.getTasksByUser()
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_BY_USER_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_FAILURE, error });
             });
     };
 }

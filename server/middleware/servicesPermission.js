@@ -275,7 +275,7 @@ exports.data = [
     { path: '/kpimembers/task/:id/:employeeId/:date/:kpiType', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/taskImportanceLevel', method: 'PUT', roles: ['Dean']},
     // Task-management
-    { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/role/:id/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate/:startDateAfter/:endDateBefore', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
