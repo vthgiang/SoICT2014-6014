@@ -28,6 +28,7 @@ export const performTaskAction = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    deleteFile
 };
 // Create result task
 function createResultTask(result) {
@@ -314,7 +315,16 @@ function uploadFile(task,data) {
         );
     }
 }
-
+function deleteFile(id,actionId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_FILE_REQUEST });
+        performTaskService.deleteFile(id,actionId)
+        .then(
+            payload => dispatch({ type: performTaskConstants.DELETE_FILE_SUCCESS, payload }),
+            error => dispatch({ type: performTaskConstants.DELETE_FILE_FAILURE, error })
+        );
+    }
+}
 // Hàm thêm nhật ký cho một công việc
 function addTaskLog(log) {
     return dispatch => {

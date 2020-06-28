@@ -53,6 +53,7 @@ exports.startTimesheetLog = async (body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (body) => {
+    console.log(body)
     var timer = await Task.findOneAndUpdate(
         { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
         {
@@ -182,14 +183,15 @@ exports.createTaskAction = async (body,files) => {
 /**
  * Sửa hoạt động của cộng việc
  */
-exports.editTaskAction = async (id,body) => {
+exports.editTaskAction = async (id,body,files) => {
     var action = await Task.updateOne(
         { "taskActions._id": id },
         {
             $set: {
                 "taskActions.$.description": body.description
             }
-        }
+        },
+        {}
     )
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
@@ -593,20 +595,6 @@ exports.evaluationAction = async (id,body) => {
     
     return task.taskActions;
 }
-// /**
-//  * Đánh giá lại hành động
-//  */
-// exports.evaluationActionAgain = async (id,body) => {
-//     console.log(body)
-//     console.log(id)
-   
-//     let task = await Task.findOne({ "taskActions._id": id }).populate([
-//         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
-//         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-//         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
-//     ]);
-//     return task.taskActions;
-// }
 /**
  * Xác nhận hành động
  */
@@ -663,4 +651,33 @@ exports.addTaskLog = async (data) => {
     );
             
     return taskLog;
+}
+
+
+/**
+ * Xóa file của công việc
+ */
+exports.deleteFile = async (params) => {
+    
+    let file = await Task.aggregate([
+        {$match: {"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$taskActions"},
+        {$replaceRoot: {newRoot: "$taskActions"}},
+        {$match: {"files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$files"},
+        {$replaceRoot:{newRoot: "$files"}},
+        {$match:{"_id":mongoose.Types.ObjectId(params.id)}}
+        ])
+    fs.unlinkSync(file[0].url)
+    let action = await Task.update(
+        { "taskActions._id": params.actionId },
+        { $pull: {"taskActions.$.files":{_id:params.id}}},
+        { safe: true }
+    )
+    let task = await Task.findOne({ "taskActions._id": params.actionId }).populate([
+    { path: "taskActions.creator", model: User,select: 'name email avatar' },
+    { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
+    console.log(task.taskActions)
+    return task.taskActions ;
 }

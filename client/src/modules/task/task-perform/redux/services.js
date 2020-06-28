@@ -34,6 +34,7 @@ export const performTaskService = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    deleteFile
 };
 /**
  * // example for axios
@@ -237,12 +238,18 @@ function uploadFile(task,data) {
         data : data
     }, false, true, 'task.task_perform');  
 };
-
+function deleteFile(id,actionId) {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/files/${id}/${actionId}`,
+        method : 'DELETE'
+    }, false, true, 'task.task_perform');  
+};
 // Hàm thêm nhật ký cho một công việc
 function addTaskLog(log) {    
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/logs`,
         method : 'POST',
-        data : log
+        data : log,
+        
     }, true, true, 'task.task_perform');
 };

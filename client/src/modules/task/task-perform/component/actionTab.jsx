@@ -7,6 +7,7 @@ import {ContentMaker} from '../../../../common-components'
 import {
     getStorage
 } from '../../../../config';
+import { DialogModal  } from '../../../../common-components/';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -18,6 +19,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { LOCAL_SERVER_API } from '../../../../env';
 import './actionTab.css';
 import { DocumentActions } from '../../../document/redux/actions'
+
 import { SubTaskTab } from './subTaskTab';
 class ActionTab extends Component {
     constructor(props) {
@@ -55,6 +57,16 @@ class ActionTab extends Component {
                 description: "",
                 files: []
             },
+            newActionEdited: {
+                creator: idUser,
+                description: "",
+                files: []
+            },
+            newCommentOfActionEdited: {
+                creator: idUser,
+                description: "",
+                files: []
+            },
             newTaskComment: {
                 creator: idUser,
                 description: "",
@@ -80,7 +92,9 @@ class ActionTab extends Component {
 			minRows: 3,
             maxRows: 25,
             showfile:[],
-            descriptionFile : ""
+            descriptionFile : "",
+            showModalDelete: '',
+            deleteFile: ''
         };
         this.hover =[];
         this.contentTaskComment= [];
@@ -404,36 +418,43 @@ class ActionTab extends Component {
         })
     }
     //Lưu hoạt động
-    handleSaveEditActionComment = async (e, index) => {
+    handleSaveEditActionComment = async (e, id) => {
         e.preventDefault();
+        let {newCommentOfActionEdited} = this.state;
+        let data = new FormData();
+        newCommentOfActionEdited.files.forEach(x=> {
+            data.append("files",x);
+        })
+        data.append("description",newCommentOfActionEdited.description);
+        data.append("creator",newCommentOfActionEdited.creator);
+        if(newCommentOfActionEdited.description){
+            this.props.editActionComment(id,data);
+        }
         await this.setState(state => {
             return {
                 ...state,
-                newCommentOfAction: {
-                    ...state.newCommentOfAction,
-                    description: this.newContentCommentOfAction[index].value,
-                },
                 editComment: ""
             }
         })
-        var { newCommentOfAction } = this.state;
-        if (newCommentOfAction.description) {
-            this.props.editActionComment(index, newCommentOfAction);
-        }
     }
-    handleSaveEditAction = async (e, index) => {
+    handleSaveEditAction = async (e,id) => {
         e.preventDefault();
-        let description = this.newContentAction[index].value;
-        if (description) {
-            this.props.editTaskAction(index, {description: description});
-            await this.setState(state => {
-                return {
-                    ...state,
-                    editAction: ""
-                }
-            })
+        let {newActionEdited} = this.state;
+        let data = new FormData();
+        newActionEdited.files.forEach(x => {
+            data.append("files",x)
+        })
+        data.append("description",newActionEdited.description)
+        data.append("creator",newActionEdited.creator)
+        if(newActionEdited.description){
+            this.props.editTaskAction(id,data);
         }
-
+        await this.setState(state => {
+            return {
+                ...state,
+                editAction: ""
+            }
+        })
     }
     handleSaveEditTaskComment = async (e,index) => {
         e.preventDefault();
@@ -503,6 +524,28 @@ class ActionTab extends Component {
                 ...state,
                 newAction: {
                     ...state.newAction,
+                    files: files,
+                }
+            }
+        })
+    }
+    onEditActionFilesChange = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    files: files,
+                }
+            }
+        })
+    }
+    onEditCommentOfActionFilesChange = (files) => {
+        this.setState((state)=>{
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
                     files: files,
                 }
             }
@@ -602,6 +645,23 @@ class ActionTab extends Component {
                 }
             })
         }
+    }
+    handleDeleteFile = async (fileId,fileName,actionId) => {
+        await this.setState(state =>{
+            return {
+                ...state,
+                showModalDelete : actionId,
+                deleteFile : {
+                    fileId : fileId,
+                    actionId: actionId,
+                    fileName: fileName
+                }
+            } 
+        });
+        window.$(`#modal-confirm-deletefile`).modal('show');
+    }
+    save = () => {   
+       this.props.deleteFile(this.state.deleteFile.fileId,this.state.deleteFile.actionId)
     }
     //TODO href = "javascript:void(0)"
     render() {
@@ -772,21 +832,50 @@ class ActionTab extends Component {
 
                                         {/*Chỉnh sửa nội dung hoạt động của công việc */}
                                         {editAction === item._id &&
+                                            <React.Fragment>
                                             <div>
-                                                <div className="text-input-level1">
-                                                    <textarea
-                                                        defaultValue={item.description}
-                                                        ref={input => this.newContentAction[item._id] = input}
-                                                    />
-                                                </div>
-                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
-                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</a></li>
-                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</a></li>
-                                                </ul>
-                                        
-                                            </div>}
-                                        
-
+                                                <ContentMaker 
+                                                    inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                    onFilesChange={this.onEditActionFilesChange}
+                                                    onFilesError={this.onFilesError}
+                                                    files={this.state.newActionEdited.files}
+                                                    defaultValue = {item.description}
+                                                    submitButtonText={"Gửi chỉnh sửa"}
+                                                    cancelButtonText= {"Hủy bỏ"}
+                                                    handleEdit = {(e) => this.handleEditAction(e)}
+                                                    onTextChange={(e)=>{
+                                                        let value = e.target.value;
+                                                        this.setState(state => {
+                                                            return { ...state, newActionEdited: {...state.newActionEdited, description: value}}
+                                                        })
+                                                    }}
+                                                    onSubmit={(e)=>{this.handleSaveEditAction(e,item._id)}}
+                                                />
+                                                {item.files.length >0 && 
+                                                <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
+                                                        {item.files.map(file => {
+                                                        return <li>
+                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id)}}><i className="fa fa-times"></i></a>
+                                                        </li>
+                                                        })}
+                                                </ul>}
+                                            {this.state.showModalDelete === item._id &&
+                                                <DialogModal
+                                                    size={75}
+                                                    maxWidth={200}
+                                                    modalID={`modal-confirm-deletefile`}
+                                                    formID={`from-confirm-deletefile`}
+                                                    title={this.props.title}
+                                                    isLoading={false}
+                                                    func={this.save}
+                                                >
+                                                    Bạn có chắc chắn muốn xóa file {this.state.deleteFile.fileName} ?
+                                                </DialogModal>
+                                                    }             
+                                            </div>
+                                            </React.Fragment>
+                                        }
+                                    
                                         {/* Hiển thị bình luận cho hoạt động */}
                                         {showChildComment === item._id &&
                                             <div>
@@ -832,24 +921,67 @@ class ActionTab extends Component {
                                                         
                                                         {/*Chỉnh sửa nội dung bình luận của hoạt động */}
                                                         {editComment === child._id &&
+                                                            // <div>
+                                                            //     <div className="text-input-level2">
+                                                            //         <textarea
+                                                            //             rows={this.state.rows}
+                                                            //             placeholder={'Enter your text here...'}
+                                                            //             className={'textarea'}
+                                                            //             onChange={this.handleChange}
+                                                            //             defaultValue={child.description}
+                                                            //             ref={input => this.newContentCommentOfAction[child._id] = input}
+                                                            //         />
+                                                            //     </div>
+                                                            //     <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
+                                                            //         <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
+                                                            //         <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
+                                                            //     </ul>
+                                                            //     <div className="tool-level2">
+                                                            //     </div>
+                                                            // </div>
+                                                            <React.Fragment>
                                                             <div>
-                                                                <div className="text-input-level2">
-                                                                    <textarea
-                                                                        rows={this.state.rows}
-                                                                        placeholder={'Enter your text here...'}
-                                                                        className={'textarea'}
-                                                                        onChange={this.handleChange}
-                                                                        defaultValue={child.description}
-                                                                        ref={input => this.newContentCommentOfAction[child._id] = input}
-                                                                    />
-                                                                </div>
-                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
-                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa </a></li>
-                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</a></li>
-                                                                </ul>
-                                                                <div className="tool-level2">
-                                                                </div>
+                                                                <ContentMaker 
+                                                                    inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                    onFilesChange={this.onEditCommentOfActionFilesChange}
+                                                                    onFilesError={this.onFilesError}
+                                                                    files={this.state.newCommentOfActionEdited.files}
+                                                                    defaultValue = {child.description}
+                                                                    submitButtonText={"Gửi chỉnh sửa"}
+                                                                    cancelButtonText= {"Hủy bỏ"}
+                                                                    handleEdit = {(e) => this.handleEditActionComment(e)}
+                                                                    onTextChange={(e)=>{
+                                                                        let value = e.target.value;
+                                                                        this.setState(state => {
+                                                                            return { ...state, newCommentOfActionEdited: {...state.newCommentOfActionEdited, description: value}}
+                                                                        })
+                                                                    }}
+                                                                    onSubmit={(e)=>{this.handleSaveEditActionComment(e,child._id)}}
+                                                                />
+                                                                {child.files.length >0 && 
+                                                                <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
+                                                                        {child.files.map(file => {
+                                                                        return <li>
+                                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,child._id)}}><i className="fa fa-times"></i></a>
+                                                                        </li>
+                                                                        })}
+                                                                </ul>}
+                                                            {this.state.showModalDelete === item._id &&
+                                                                <DialogModal
+                                                                    marginTop
+                                                                    size={75}
+                                                                    maxWidth={200}
+                                                                    modalID={`modal-confirm-deletefile`}
+                                                                    formID={`from-confirm-deletefile`}
+                                                                    title={this.props.title}
+                                                                    isLoading={false}
+                                                                    func={this.save}
+                                                                >
+                                                                    Bạn có chắc chắn muốn xóa file {this.state.deleteFile.fileName} ?
+                                                                </DialogModal>
+                                                                    }             
                                                             </div>
+                                                            </React.Fragment>
                                                         }
                                                     </div>;
                                                     return true;
@@ -1167,7 +1299,8 @@ const actionCreators = {
     confirmAction: performTaskAction.confirmAction,
     downloadFile: performTaskAction.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
-    uploadFile: performTaskAction.uploadFile
+    uploadFile: performTaskAction.uploadFile,
+    deleteFile: performTaskAction.deleteFile
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

@@ -368,7 +368,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.UPLOAD_FILE_REQUEST:
             return {
                 ...state,
-                abc : true
+                uploading : true
             }
         case performTaskConstants.UPLOAD_FILE_SUCCESS:
             var files = {...state.task.info,files: action.payload.data.content}
@@ -379,8 +379,22 @@ export function performtasks(state = {}, action) {
                     info : files
                 }
             }
-        case performTaskConstants.UPLOAD_FILE_FAILURE:
-            
+        case performTaskConstants.UPLOAD_FILE_FAILURE:    
+        case performTaskConstants.DELETE_FILE_REQUEST:
+            return {
+                ...state,
+                deleting : true
+            }
+        case performTaskConstants.DELETE_FILE_SUCCESS:
+            var taskactions = {...state.task.info,taskActions:action.payload.data.content}
+             return {
+                ...state,
+                task : {
+                    ...state.task,
+                    info : taskactions
+                }
+            }
+        case performTaskConstants.DELETE_FILE_FAILURE:    
         case performTaskConstants.ADD_TASK_LOG_REQUEST:
             return {
                 ...state,
