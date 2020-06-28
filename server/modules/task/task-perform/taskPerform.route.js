@@ -36,4 +36,12 @@ router.put('/task-comment/comment/:id',auth,PerformTaskController.editCommentOfT
 router.delete('/task-comment/comment/:id/:task',auth,PerformTaskController.deleteCommentOfTaskComment);
 // router.get("/download-file", auth, PerformTaskController.downloadFile);
 
+router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
+router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);
+
+router.patch('/evaluate/task-consulted/:id', auth, PerformTaskController.evaluateTaskByConsultedEmployees);
+router.patch('/evaluate/task-responsible/:id', auth, PerformTaskController.evaluateTaskByResponsibleEmployees);
+router.patch('/evaluate/task-accountable/:id', auth, PerformTaskController.evaluateTaskByAccountableEmployees);
+
+
 module.exports = router;

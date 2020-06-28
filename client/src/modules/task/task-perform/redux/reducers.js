@@ -444,6 +444,102 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
             };
 
+            case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
+                return {
+                    ...state,
+                    isLoading : true
+                };
+            case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    // task: {
+                    //     info : action.payload
+                    // }
+                    task: action.payload
+                };
+            case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
+                return {
+                    isLoading: false,
+                    error: action.error
+                };
+            case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST:
+                return {
+                    ...state,
+                    isLoading : true
+                };
+            case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    // task: {
+                    //     info : action.payload
+                    // }
+                    task: action.payload
+                };
+            case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
+                return {
+                    isLoading: false,
+                    error: action.error
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST:
+                return {
+                    ...state,
+                    isLoading : true
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    // task: {
+                    //     info : action.payload
+                    // }
+                    task: action.payload
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
+                return {
+                    isLoading: false,
+                    error: action.error
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+                return {
+                    ...state,
+                    isLoading : true
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    // task: {
+                    //     info : action.payload
+                    // }
+                    task: action.payload
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+                return {
+                    isLoading: false,
+                    error: action.error
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
+                return {
+                    ...state,
+                    isLoading : true
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    // task: {
+                    //     info : action.payload
+                    // }
+                    task: action.payload
+                };
+            case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
+                return {
+                    isLoading: false,
+                    error: action.error
+                };
+        
         default:
             return state
     }

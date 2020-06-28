@@ -331,6 +331,12 @@ exports.data = [
     // add task log
     { path: '/performtask/logs/history', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/logs/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    // edit task - evaluate task
+    { path: '/performtask/edit/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/edit/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/evaluate/task-consulted/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/evaluate/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/evaluate/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
 
     // Module TaskTemplate
     { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},

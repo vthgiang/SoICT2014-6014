@@ -12,12 +12,6 @@ class ModalPerform extends Component {
         
     }
 
-    // shouldComponentUpdate(nextProps, nextState){
-    //     if(nextProps.id !== nextState.id){
-    //         return true;
-    //     }
-    // }
-
     componentDidMount(){
         // this.props.getTaskById(this.props.id)
     }
