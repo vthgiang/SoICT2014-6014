@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 /**
  * Lấy tất cả các công việc
  */
- exports.getAllTasks = (req, res) => {
-    var tasks = Task.find();
+ exports.getAllTasks = async () => {
+    var tasks = await Task.find();
     return tasks;  
 }
 
@@ -75,20 +75,23 @@ exports.getTask = async (id,userId) => {
             "info": null
         }
     }
-    if(task.taskTemplate === null){
-        return {
-            "info": task,
-            // "informations": task.taskInformations
-        };
-    } else {
-        var task2 = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
-        .populate({path: "taskActions.creator", model: User, select: "name email"});
-        return {
-            "info": task,
-            "informations": task2.taskInformations
-        };
-    }
+    return task;
+    // if(task.taskTemplate === null){
+        // return task;
+        // return {
+        //     "info": task,
+        //     // "informations": task.taskInformations
+        // };
+    // } 
+    // else {
+    //     var task2 = await Task.findById(id)
+    //     .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
+    //     .populate({path: "taskActions.creator", model: User, select: "name email"});
+    //     return {
+    //         "info": task,
+    //         "informations": task2.taskInformations
+    //     };
+    // }
         
 }
 
@@ -107,7 +110,7 @@ exports.getTasksCreatedByUser = async (id) => {
  * Lấy công việc thực hiện chính theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter,endDateBefore } = task;
     
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -177,7 +180,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -191,13 +194,41 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
             ...keySearch,
             endDate: {
                 $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
+    if(startDateAfter !== 'null'){
+        let startTimeAfter = startDateAfter.split("-");
+        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        // let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gte: start, 
+                // $lte: end
+            }
+        }
+    }
+    
+    if(endDateBefore !== 'null'){
+        let endTimeBefore = endDateBefore.split("-");
+        // let start = new Date(endTime[1], endTime[0] - 1, 1);
+        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                // $gt: start, 
                 $lte: end
             }
         }
@@ -289,7 +320,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -303,7 +334,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -400,7 +431,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -414,7 +445,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -511,7 +542,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -525,7 +556,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -622,7 +653,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 
     if(startDate !== 'null'){
         let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 0);
+        let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
 
         keySearch = {
@@ -636,7 +667,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
     
     if(endDate !== 'null'){
         let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 0);
+        let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
 
         keySearch = {
@@ -1251,7 +1282,6 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         automaticPoint: automaticPoint,
         role: role
     }
-
     var task = await Task.findById(taskId);
 
     // console.log('task ============================== ' , task, task.evaluations);
@@ -1261,7 +1291,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
 
     // console.log('kkkkkkkkkkkk', listResult);
 
-    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role === "Consulted")));
+    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
     console.log('check_results',check_results);
     if(check_results === undefined){
         await Task.updateOne(
@@ -1570,7 +1600,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     // var evaluateId = data.evaluateId;
     var progress = data.progress;
     
-    var automaticPoint = data.automaticPoint;
+    var automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
     var role = data.role;
 
     var date = data.date;
@@ -1584,6 +1614,14 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     var evaluateId = await checkEvaluations(date, taskId, date);
 
+    // lấy info có value khác undefined
+    var filterInfo = [];
+    for(let i in info){
+        if(info[i].value !== undefined){
+            filterInfo.push(info[i]);
+        }
+    }
+
     // chuẩn hóa dữ liệu info
     for(let i in info){
         if(info[i].value ){ // !== undefined
@@ -1596,14 +1634,14 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
-    
+    console.log('info', info);
     // Chuan hoa du lieu approved results
 
     var cloneResult = [];
     for(let i in results){
         for(let j in results){
             if(i<j){
-                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu
+                // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu ==> fixed
                 if(results[i].employee === results[j].employee && results[i].role === results[j].role){
                     var point, contribute;
 
@@ -1620,8 +1658,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                         point: point,
                         contribute: contribute
                     }
-
-                    cloneResult.push(cloneItem);
+                    if(point !== undefined || contribute !== undefined){
+                        cloneResult.push(cloneItem);
+                    }
                 }
             }
         }
@@ -1851,4 +1890,44 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
     return newTask;
+}
+
+exports.getTasksByUser = async (data) => {
+    var tasks= await Task.find({
+        $or: [
+            {responsibleEmployees: data},
+            {accountableEmployees: data},
+            {consultedEmployees: data},
+            {informedEmployees: data}
+        ],
+        status: "Inprocess"
+    })
+    var nowdate = new Date();
+    console.log(nowdate.getTime() )
+    var tasksexpire = [], deadlineincoming= [], test;
+    for (let i in tasks){
+        var olddate = new Date(tasks[i].endDate);
+        test = nowdate - olddate;
+        if(test < 0 ){
+            test = olddate - nowdate;
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            deadlineincoming.push(tasktest);
+        }else{
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            tasksexpire.push(tasktest)
+        }
+    }
+    let tasksbyuser = {
+        expire: tasksexpire,
+        deadlineincoming: deadlineincoming,
+    }
+    return tasksbyuser;
 }

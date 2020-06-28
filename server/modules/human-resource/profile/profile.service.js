@@ -8,7 +8,8 @@ const {
     UserRole,
     User,
     Role,
-    EmployeeCourse
+    EmployeeCourse,
+    Notification,
 } = require('../../../models').schema;
 
 /**
@@ -50,7 +51,6 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     }
     if (position === undefined) {
         units.forEach(u => {
-            //let role = [...u.deans, ...u.viceDeans, ...u.employees];
             roles = roles.concat(u.deans).concat(u.viceDeans).concat(u.employees);
         })
     } else {
@@ -150,8 +150,11 @@ exports.getEmployeeInforById = async(id)=> {
  * @positions : array id chức vụ
  * @allInfor : true lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
-exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true) => {
-    let keySearch = {company: company, status: 'active'};
+exports.getEmployees = async(company, organizationalUnits, positions, allInfor=true, status='active') => {
+    let keySearch = {company: company};
+    if (status) {
+        keySearch = {...keySearch, status: status}
+    }
     if (allInfor === true) {
         if(organizationalUnits !== undefined){
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
@@ -575,4 +578,142 @@ exports.checkEmployeeCompanyEmailExisted = async (email) => {
         checkEmail = true
     }
     return checkEmail;
+}
+
+/**
+ * Hàm tiện ích dùng cho các function bên dưới
+ * Format dữ liệu date thành dạng string dd-mm
+ */
+exports.formatDate = (date, monthDay=true) => {
+    var d = new Date(date),
+        year = ''+(d.getFullYear()),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate();
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+    if (monthDay) {
+        return [day, month].join('-');
+    } else {
+        return [year, month, day].join('-');
+    }
+    
+}
+/**
+ * Tạo thông báo cho các nhân viên có ngày sinh trùng với ngày hiện tại
+ */
+exports.createNotificationForEmployeesHaveBrithdayCurrent = async ()=>{
+    let employees = await Employee.find({},{birthdate: 1, emailInCompany: 1});
+    employees = employees.filter(x=>this.formatDate(x.birthdate)===this.formatDate(new Date()));
+    emails = employees.map(x=> x.emailInCompany);
+    users = await User.find({email:{$in: emails}}, {_id: 1, company: 1, email: 1, name:1});
+
+    // Tạo thông báo cho người có ngày sinh nhật trùng với ngày hiện tại
+    let notifications = users.map(user => {
+        return {
+            company:user.company,
+            title: "Thông báo sinh nhật",
+            level: "info",
+            content: "Chúc bạn có một ngày sinh nhật vui vẻ",
+            sender: "VNIST-Việc",
+            user:user._id,
+            manualNotification: undefined
+        }
+    });
+    
+    // Tạo thông báo cho nhân viên cùng phòng ban với người có sinh nhật là ngày hiện tại
+    for(let n in users){
+        // lấy id phòng ban của nhân viên có sinh nhật là hôm nay
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(users[n].email);
+        let unitId = value.organizationalUnits;
+        let roles =[];
+        unitId.forEach(x=>{
+            roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
+        })
+        // lấy danh sách nhân viên cùng phòng ban với người
+        let usersArr = await UserRole.find({roleId: {$in: roles}},{userId:1});
+        usersArr = usersArr.map(x=>x.userId.toString());
+        for(let i = 0, max = usersArr.length; i < max; i++) {
+            if(usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])||usersArr[i]===users[n]._id.toString()) {
+                usersArr.splice(usersArr.indexOf(usersArr[i]), 1);
+                i--;
+            }
+        }
+        let notificationsArr =usersArr.map(x=>{
+            return {
+                company:users[n].company,
+                title: "Thông báo sinh nhật",
+                level: "info",
+                content: `Hôm nay là sinh nhật của ${users[n].name}. Hãy gửi những lời chúc đến ${users[n].name}`,
+                sender: "VNIST-Việc",
+                user: x,
+                manualNotification: undefined
+            }
+        }) 
+        notifications = notifications.concat(notificationsArr)
+    }
+    await Notification.insertMany(notifications);
+}
+
+/**
+ * Tạo thông báo cho nhân viên khi hết hạn ký hợp đồng làm việc
+ */
+exports.createNotificationEndOfContract = async ()=> {
+    let arrayTime =[30, 15];
+    let dateNow = new Date(this.formatDate(new Date(), false));
+    let notifications=[];
+    for(let n in arrayTime){
+        let dateCheck = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + arrayTime[n]);
+        dateCheck = new Date(this.formatDate(dateCheck, false));
+        let employees = await Employee.find(
+            {"contracts.endDate": dateCheck},
+            {emailInCompany: 1, _id: 1}
+        );
+
+        // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
+        for(let i in employees) {
+            let infoCourses = await EmployeeCourse.find({employee: employees[i]._id}, {course: 1})
+            .populate({
+                path:'course',
+                select:"endDate employeeCommitmentTime"
+            })
+            let endDateCommitmentTimes = infoCourses.map(x=> {
+                let endDateCourse = new Date(x.course.endDate);
+                let endDateCommitmentTime = new Date (endDateCourse.getFullYear(), endDateCourse.getMonth() + Number(x.course.employeeCommitmentTime), endDateCourse.getDate());
+                return endDateCommitmentTime;
+            });
+            endDateCommitmentTimes.filter(x=>x.getTime()>dateCheck.getTime());
+            let maxCommitmentTime = endDateCommitmentTimes[0];
+            if (endDateCommitmentTimes.length !== 0) {
+                endDateCommitmentTimes.forEach(x=>{
+                    if (x.getTime() > maxCommitmentTime.getTime()) {
+                        maxCommitmentTime = x
+                    }
+                })
+            }
+            employees[i]={...employees[i]._doc, endDateCommitmentTime: maxCommitmentTime}
+        }
+        
+        // Lấy thông tin tài khoản ứng với mỗi nhân viên
+        let emails = employees.map(x=>x.emailInCompany);
+        let users = await User.find({email:{$in: emails}}, {_id: 1, company: 1, email: 1, name:1});
+        // Tạo thông báo cho nhân viên
+        users.forEach((user, index)=>{
+            let notification = {
+                company: user.company,
+                title: "Thông báo hết hạn hợp đồng lao động",
+                level: "important",
+                content: `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.`+
+                        `${employees[index].endDateCommitmentTime? " Tuy nhiên bạn phải làm thêm đến ngày "+
+                        this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo.": ""}`,
+                sender: "VNIST-Việc",
+                user:user._id,
+                manualNotification: undefined
+            }
+            notifications = [...notifications, notification]
+        })
+    }
+    await Notification.insertMany(notifications);
+   
 }

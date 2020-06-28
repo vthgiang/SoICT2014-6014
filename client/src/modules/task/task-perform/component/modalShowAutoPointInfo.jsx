@@ -25,6 +25,7 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     render() {
+        console.log("task in props",this.props.task);
         const { task, progress, date, info} = this.props; 
         
         let taskInformations = task.taskInformations;
@@ -37,6 +38,11 @@ class ModalShowAutoPointInfo extends Component {
         let timeLimitOfWork = endDate.getTime() - startDate.getTime();
         let dayOfWork = evaluationsDate.getTime() - startDate.getTime();
         let overdueDate = (dayOfWork - timeLimitOfWork > 0) ? dayOfWork - timeLimitOfWork : 0;
+
+        // chuyển về đơn vị ngày
+        timeLimitOfWork = timeLimitOfWork/86400000;
+        dayOfWork = dayOfWork/86400000;
+        overdueDate = overdueDate/86400000;
 
         // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
         let taskActions = task.taskActions;
@@ -56,6 +62,34 @@ class ModalShowAutoPointInfo extends Component {
         reduceAction = reduceAction > 0 ? reduceAction : 0;
 
         let avgRating = reduceAction/a;
+        let formula = task.taskTemplate && task.taskTemplate.formula;
+        if(task.taskTemplate){
+
+            let taskInformations = info;
+            // formula = task.taskTemplate.formula;
+
+            // thay các biến bằng giá trị
+            formula = formula.replace(/overdueDate/g, overdueDate);
+            formula = formula.replace(/dayOfWork/g, dayOfWork);
+            formula = formula.replace(/avgRating/g, avgRating);
+            formula = formula.replace(/progress/g, progress);
+            
+            // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
+            for(let i in taskInformations){
+                if(taskInformations[i].type === 'Number'){
+                    let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
+                    let regex = new RegExp( stringToGoIntoTheRegex, "g");
+                    formula = formula.replace(regex, `${taskInformations[i].value}`);
+                }
+            }
+            
+            // thay tất cả các biến có dạng p0, p1, p2,... còn lại thành undefined, để nếu không có giá trị thì sẽ trả về NaN, tránh được lỗi undefined
+            for(let i = 0; i < 100; i++){
+                let stringToGoIntoTheRegex = 'p'+i;
+                let regex = new RegExp( stringToGoIntoTheRegex, "g");
+                formula = formula.replace(regex, undefined);
+            }
+        }
 
         return (
             <React.Fragment>
@@ -73,10 +107,10 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>Công thức tính: </strong>{task.taskTemplate.formula}</p>
                             <p>Trong đó: </p>
                             <ul>
-                                <li>od: Thời gian quá hạn: {overdueDate} (ms)</li>
-                                <li>dow: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ms)</li>
-                                <li>a: Trung bình cộng điểm đánh giá hoạt động: {avgRating} </li>
-                                <li>p0: Tiến độ công việc: {progress} (%)</li>
+                                <li>overdueDate: Thời gian quá hạn: {overdueDate} (ngày)</li>
+                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
+                                <li>avgRating: Trung bình cộng điểm đánh giá hoạt động: {avgRating} </li>
+                                <li>progress: Tiến độ công việc: {progress} (%)</li>
                                 {
                                     taskInformations && taskInformations.map(e => {
                                         if(e.type === 'Number'){
@@ -85,6 +119,7 @@ class ModalShowAutoPointInfo extends Component {
                                     })
                                 }
                             </ul>
+                            <p><strong>Công thức hiện tại: </strong>{formula} = {this.props.autoPoint}</p>
                         </div> 
                     }
                     {
@@ -94,9 +129,10 @@ class ModalShowAutoPointInfo extends Component {
                             <p>Trong đó: </p>
                             <ul>
                                 <li>progress: Tiến độ công việc: {progress} (%)</li>
-                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ms)</li>
-                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ms)</li>
+                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
+                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ngày)</li>
                             </ul>
+                            <p><strong>Công thức hiện tại: </strong>{progress}/({dayOfWork}/{timeLimitOfWork}) = {this.props.autoPoint}</p>
                         </div>
                     }
                     {
@@ -105,11 +141,12 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>Công thức tính: </strong> progress/(dayOfWork/timeLimitOfWork) - 0.5*(10-avgRating)*10</p>
                             <p>Trong đó: </p>
                             <ul>
-                                <li>progressTask: Tiến độ công việc: {progress} (%)</li>
+                                <li>progress: Tiến độ công việc: {progress} (%)</li>
                                 <li>avgRating: Trung bình cộng điểm đánh giá hoạt động: {avgRating}</li>
-                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ms)</li>
-                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ms)</li>
+                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
+                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ngày)</li>
                             </ul>
+                        <p><strong>Công thức hiện tại: </strong>{progress}/({dayOfWork}/{timeLimitOfWork}) - {0.5}*({10}-{avgRating})*{10} = {this.props.autoPoint}</p>
                         </div>
                     }
 

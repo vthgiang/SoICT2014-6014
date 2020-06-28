@@ -589,3 +589,141 @@ exports.addTaskLog = async(req,res) => {
         });
     }
 }
+
+/**
+ * Lấy tất cả nhật ký của một công việc
+ */
+exports.getTaskLog = async(req,res) => {
+    try {
+        var taskLog = await PerformTaskService.getTaskLog(req.params.id);
+        await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
+        res.status(200).json({
+            success : true,
+            messages: ["get_task_log_success"],
+            content: taskLog
+        });
+    } catch (error) {
+        await LogError(req.user.email, ` GET_TASK_LOG  `,req.user.company);
+        res.status(400).json({ 
+            success: false,
+            messages: ['get_task_log_fail'],
+            content: error 
+        });
+    }
+}
+
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByResponsibleEmployees = async (req, res) => {
+    // try {
+        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.accountableEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task.newTask
+        })
+    // } catch (error) {
+    //     await LogError(req.user.email, ` edit task `,req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_task_fail'],
+    //         content: error
+    //     });
+    // }
+}
+/**
+ * edit task by responsible employee
+ */
+exports.editTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body, req.params.id);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = {"organizationalUnits" : tasks.organizationalUnit,"title" : "Cập nhật thông tin công việc","level" : "general","content":`${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,"sender": tasks.name,"users": tasks.responsibleEmployees};
+        NotificationServices.createNotification(tasks.organizationalUnit, data, );
+        sendEmail("vnist.qlcv@gmail.com",task.email,"Cập nhật thông tin công việc",'',`<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_success'],
+            content: task.newTask
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by consulted employee
+ */
+exports.evaluateTaskByConsultedEmployees = async (req, res) => {
+    try {
+        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body, req.params.id);
+        await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by responsible employee
+ */
+exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
+    try {
+        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body, req.params.id);
+        await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+/**
+ * evaluate task by accountable employee
+ */
+exports.evaluateTaskByAccountableEmployees = async (req, res) => {
+    try {
+        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body, req.params.id);
+        await LogInfo(req.user.email, ` edit task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}

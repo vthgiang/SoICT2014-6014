@@ -11,8 +11,8 @@ class EvaluateByConsultedEmployee extends Component {
         super(props);
 
         let idUser = getStorage("userId");
-        let {tasks} = this.props;
-        let task = (tasks && tasks.task) && tasks.task.info;
+        let { task } = this.props;
+        // let task = tasks && tasks.task;
         
         let evaluations;
         let dateOfEval = new Date();
@@ -217,7 +217,8 @@ const getState = {
     // createResult: performTaskAction.createResultTask,
     // editResultTask: performTaskAction.editResultTask,
     // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    evaluateTaskByConsultedEmployees: taskManagementActions.evaluateTaskByConsultedEmployees, 
+    // evaluateTaskByConsultedEmployees: taskManagementActions.evaluateTaskByConsultedEmployees, 
+    evaluateTaskByConsultedEmployees: performTaskAction.evaluateTaskByConsultedEmployees, 
 }
 
 const evaluateByConsultedEmployee = connect(mapState, getState)(withTranslate(EvaluateByConsultedEmployee));

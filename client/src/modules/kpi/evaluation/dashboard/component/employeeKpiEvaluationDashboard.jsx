@@ -309,7 +309,7 @@ class DashBoardKPIMember extends Component {
                 userdepartments = [userdepartments]
             }
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
-            unitMembers=unitMembers[0].value;
+            unitMembers = [...unitMembers];
 
             if(!this.state.infosearch.userId) {
                 this.setState(state => {
@@ -317,7 +317,7 @@ class DashBoardKPIMember extends Component {
                         ...state,
                         infosearch: {
                             ...state.infosearch,
-                            userId: unitMembers[0].value
+                            userId: unitMembers[0].value[2].value
                         }
                     }
                 })
@@ -369,7 +369,7 @@ class DashBoardKPIMember extends Component {
                                 >
                                 </SelectMulti>
                             }
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Phân tích</button>
                         </div>
                     </div>
                 </div>
@@ -520,7 +520,7 @@ class DashBoardKPIMember extends Component {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={this.handleSelectEmployee}
-                                                value={unitMembers[2].value[0].value}
+                                                value={unitMembers[0].value[2].value}
                                             />
                                         </div>
                                     }

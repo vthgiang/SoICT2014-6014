@@ -38,6 +38,7 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
+            // render: false,
             // showModalApprove: "",
             // showEdit: "",
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
@@ -46,37 +47,43 @@ class DetailTaskTab extends Component {
     }
 
 
-    static getDerivedStateFromProps(nextProps, prevState) {
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     console.log('vào get derived--------------', prevState);
+    //     if (nextProps.id !== prevState.id) {
 
-        if (nextProps.id !== prevState.id) {
-
-            return {
-                ...prevState,
-                id: nextProps.id
-            }
-        }
-        return true;
-    }
+    //         return {
+    //             ...prevState,
+    //             // id: nextProps.id
+    //             // render: true
+    //         }
+    //     }
+    //     return true;
+    // }
     shouldComponentUpdate = (nextProps, nextState) => {
 
         if (nextProps.id !== this.state.id) {
-            this.props.getTaskById(nextProps.id);
+            // this.props.getTaskById(nextProps.id);
             // this.props.getTaskActions(nextProps.id);
-            this.props.getTimesheetLogs(nextProps.id);
+            // this.props.getTimesheetLogs(nextProps.id);
             this.setState(state=>{
                 return{
                     ...state,
+                    id: nextProps.id,
                     dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            return false;
+            // return false;
+            return true;
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
             if (!nextProps.tasks.task){
                 return false;
             } else { // Dữ liệu đã về
-                let task = nextProps.tasks.task.info;
+                // let task = nextProps.tasks.task.info;
+                let task = nextProps.task;
+                // console.log('render roleeeeeeeeeeeeeeeeeeeeee\n\n\n\nthis.props, nextProps, nextState, task',this.props, nextProps, nextState, task);
+
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
 
@@ -217,6 +224,7 @@ class DetailTaskTab extends Component {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
+        this.props.getTaskLog(this.state.id);
 
         await this.setState(state => {
             return {
@@ -241,18 +249,25 @@ class DetailTaskTab extends Component {
     }
     
     render() {
+        // console.log('stateeeeeee\n\n', this.state);
         const { translate } = this.props;
         var task, actions, informations;
         var statusTask;
         const{currentUser}= this.state
         
         const { tasks, performtasks, user } = this.props;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
+        // task = this.props.task;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null){
+            // task = tasks.task.info;
+            task = tasks.task;
         }
+        
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.taskTemplate !== null) {
+        //     actions = tasks.task.actions;
+        //     informations = tasks.task.informations;
+        // }
         
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
@@ -265,7 +280,7 @@ class DetailTaskTab extends Component {
             <div>
                 <div style={{ marginLeft: "-10px" }}>
                     <a className="btn btn-app" onClick={this.refresh} title="Refresh">
-                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
                     </a>
                     
                     { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -274,9 +289,9 @@ class DetailTaskTab extends Component {
                         </a>
                     }
                     
-                    { (currentRole !== "informed" && currentRole !== "creator" && checkInactive ) &&
+                    { ((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
+                            <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
                     { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -292,22 +307,22 @@ class DetailTaskTab extends Component {
                     }
                     {
                         (this.state.collapseInfo === false) ?
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
                         </a> :
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
                         </a>
                     }
 
                     {roles && roles.length>1 &&
-                    <div class="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
-                        <a class="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
+                    <div className="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
+                        <a className="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
                             <i className="fa fa-user" style={{ fontSize: "16px" }}></i>Chọn Vai trò
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul className="dropdown-menu">
                             {roles.map(
-                                (item, index) => {return <li className={item.value===currentRole && "active"} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
+                                (item, index) => {return <li className={item.value===currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
                             )}
                         </ul>
                     </div>
@@ -317,19 +332,15 @@ class DetailTaskTab extends Component {
                 <br />
                 <div>
                     
-                    <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
+                    <div id="info" className="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
-                        {/* </div>
-                                <hr />
-                            </div>
-
-                            <br /> */}
+                        
                         <br />
                         <div className="row">
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border" style={{ /*border: "1px solid #fff" */ }}>
                                     <legend className="scheduler-border">Thông tin chung</legend>
 
@@ -441,7 +452,7 @@ class DetailTaskTab extends Component {
                                     </div>
                                 </fieldset>
                             </div>
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">Đánh giá công việc</legend>
 
@@ -640,6 +651,7 @@ const actionGetState = { //dispatchActionToProps
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getTaskLog: performTaskAction.getTaskLog,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

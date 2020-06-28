@@ -110,6 +110,7 @@ class EducationProgramDetailForm extends Component {
                     hasSaveButton={false}
                     size={75}
                     maxWidth={900}
+                    hasNote= {false}
                 >
                     <form className="form-group" id="form-view-education" >
                         <div className="qlcv">

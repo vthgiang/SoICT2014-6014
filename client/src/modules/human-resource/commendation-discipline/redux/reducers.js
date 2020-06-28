@@ -2,9 +2,11 @@ import { DisciplineConstants } from './constants';
 
 const initState = {
     isLoading: false,
-    totalListDiscipline: "",
+    totalListDiscipline: 0,
     listDisciplines: [],
-    totalListPraise: "",
+    totalListCommendation: 0,
+    totalListDisciplineOfYear: 0,
+    totalListCommendationOfYear: 0,
     listCommendations: [],
     error: ""
 }
@@ -29,6 +31,7 @@ export function discipline(state = initState, action) {
                 isLoading: false,
                 listDisciplines: action.payload.listDisciplines !== undefined ? action.payload.listDisciplines : [],
                 totalListDiscipline: action.payload.totalList,
+                totalListDisciplineOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
             };
         case DisciplineConstants.CREATE_DISCIPLINE_SUCCESS:
             return {
@@ -80,6 +83,7 @@ export function discipline(state = initState, action) {
                 isLoading: false,
                 listCommendations: action.payload.listCommendations !== undefined ? action.payload.listCommendations : [],
                 totalListCommendation: action.payload.totalList,
+                totalListCommendationOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
             };
         case DisciplineConstants.CREATE_PRAISE_SUCCESS:
             return {

@@ -17,15 +17,13 @@ class ResultsOfEmployeeKpiChart extends Component {
         this.TODAY = new Date();
 
         this.state = {
-            startDate: new Date(this.TODAY.getFullYear(), 1),
-            endDate: new Date(this.TODAY.getFullYear(), this.TODAY.getMonth()+1),
             dataStatus: this.DATA_STATUS.QUERYING,
             userId: localStorage.getItem("userId")
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startDate, this.state.endDate);
+        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.props.startDate, this.props.endDate);
 
         this.setState(state => {
             return {
@@ -36,6 +34,20 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        if(nextProps.startDate !== this.state.startDate || nextProps.endDate !== this.state.endDate) {
+            // Cầ đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
+            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, nextProps.startDate, nextProps.endDate);
+       
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+
+            return false;
+        }
+
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if(!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth) {
                 return false
@@ -60,6 +72,18 @@ class ResultsOfEmployeeKpiChart extends Component {
         }
 
         return false;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.startDate !== prevState.startDate || nextProps.endDate !== prevState.endDate) {
+            return {
+                ...prevState,
+                startDate: nextProps.startDate,
+                endDate: nextProps.endDate
+            }
+        } else{
+            return null;
+        }
     }
 
     // Thiết lập dữ liệu biểu đồ
@@ -152,8 +176,10 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     render() {
-        return(
-            <div ref="chart"></div>
+        return (
+            <React.Fragment>
+                <div ref="chart"></div>
+            </React.Fragment>
         )
     }
 }

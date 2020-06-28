@@ -1,6 +1,8 @@
 const { OrganizationalUnit, UserRole, Role } = require('../../../models').schema;
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
+const RoleService = require('../role/role.service');
+const Terms = require('../../../seed/terms');
 
 /**
  * Lấy danh sách các đơn vị trong công ty
@@ -25,14 +27,13 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
         { path: 'deans', model: Role },
         { path: 'viceDeans', model: Role },
         { path: 'employees', model: Role }
-    ]);;
-    
+    ]); 
     const newData = data.map( department => {return {
             id: department._id.toString(),
             name: department.name,
-            deans: department.deans.map(dean=>dean.name),
-            viceDeans: department.viceDeans.map(viceDean=>viceDean.name),
-            employees: department.employees.map(employee=>employee.name),
+            deans: department.deans.map(dean=>{ return {_id: dean._id.toString(), name: dean.name}}),
+            viceDeans: department.viceDeans.map(viceDean=>{ return {_id: viceDean._id.toString(), name: viceDean.name}}),
+            employees: department.employees.map(employee=>{ return {_id: employee._id.toString(), name: employee.name}}),
             description: department.description,
             parent_id: department.parent !== null ? department.parent.toString() : null
         }
@@ -49,6 +50,54 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
 exports.getOrganizationalUnit = async (id) => {
 
     return await OrganizationalUnit.findById(id);
+}
+
+exports.getIndex = async(node, array) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if(node._id !== undefined && value._id !== undefined && value._id.toString() === node._id.toString()){
+            result = index;
+        }
+    });
+    return result;
+}
+
+/**
+ * phân loại các role được thêm, sửa, xóa
+ * mảng chứa các cặp giá trị {id, value} - id của role và tên role
+ */
+exports.getDiffRolesInOrganizationalUnit = async (oldArr, newArr) => {
+    let deleteRoles = [];
+    let createRoles = [];
+    let editRoles = [];
+
+    //phân loại các role xóa
+    for (let i = 0; i < oldArr.length; i++) {
+        const index = await this.getIndex(oldArr[i], newArr);
+        if(index === -1){ //ko thấy role này trong mảng mới -> role xóa
+            deleteRoles.push(oldArr[i]);//thêm vào mảng các role bị xóa
+            // console.log("index check delete: ", index, oldArr[i]._id, oldArr[i].name)
+        }
+    }
+
+    //phân loại role thêm mới
+    for (let i = 0; i < newArr.length; i++) {
+        const index = await this.getIndex(newArr[i], oldArr);
+        if(index === -1)//ko thấy role này trong mảng mới -> role xóa
+        {
+            // console.log("index check create: ", index);
+            createRoles = [...createRoles, newArr[i]];
+        }else{
+            // console.log("index check edit: ", index);
+            editRoles = [...editRoles, newArr[i]]; //thêm vào mảng các role giữ nguyên hoặc chỉnh sửa
+        } 
+    }
+
+    return {
+        createRoles,
+        editRoles,
+        deleteRoles
+    }
 }
 
 /**
@@ -81,15 +130,109 @@ exports.createOrganizationalUnit = async(data, deanArr, viceDeanArr, employeeArr
  * @data dữ liệu sửa
  */
 exports.editOrganizationalUnit = async(id, data) => {
-    const department = await OrganizationalUnit.findById(id);
+    const department = await OrganizationalUnit.findById(id).populate([
+        { path: 'deans', model: Role },
+        { path: 'viceDeans', model: Role },
+        { path: 'employees', model: Role }
+    ]);
     if(department === null) throw['department_not_found'];
+
+    //Chỉnh sửa thông tin phòng ban
     department.name = data.name;
     department.description = data.description;
-    department.parent = ObjectId.isValid(data.parent) ? data.parent : null
+    department.parent = ObjectId.isValid(data.parent) ? data.parent : null;
     await department.save();
 
     return department;
 }
+
+/**
+ * Chỉnh sửa trưởng đơn vị
+ */
+exports.editRolesInOrganizationalUnit = async(id, data) => {
+    const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
+    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME });
+    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME });
+    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME });
+    const department = await OrganizationalUnit.findById(id).populate([
+        { path: 'deans', model: Role },
+        { path: 'viceDeans', model: Role },
+        { path: 'employees', model: Role }
+    ]);
+
+    //1.Chỉnh sửa nhân viên đơn vị
+    const employees = await this.getDiffRolesInOrganizationalUnit(department.employees, data.employees);
+    console.log("EMPLOYEES CHECK:", employees)
+    for (let i = 0; i < employees.editRoles.length; i++) {
+        const updateRole = await Role.findById(employees.editRoles[i]._id);
+        updateRole.name = employees.editRoles[i].name;
+        await updateRole.save();
+    }
+    for (let j = 0; j < employees.deleteRoles.length; j++) {
+        await RoleService.deleteRole(employees.deleteRoles[j]._id);
+        await department.employees.splice(this.getIndex(employees.deleteRoles[j], department.employees), 1);
+    }
+    const newDataEmployees = employees.createRoles.map(role=>{
+        return {
+            name: role.name,
+            type: roleChucDanh._id,
+            parents: [employeeAb._id],
+            company: department.company
+        }
+    });
+    const newEmployees = await Role.insertMany(newDataEmployees);
+    const employeeIdArr = [...newEmployees.map(em=>em._id), ...department.employees.map(em=>em._id)]; //id của tất cả các employee trong đơn vị dùng để kế thừa cho vicedean
+
+    //2.Chỉnh sửa phó đơn vị
+    const viceDeans = await this.getDiffRolesInOrganizationalUnit(department.viceDeans, data.viceDeans);
+    console.log("VICEDEANS CHECK:", viceDeans)
+    for (let i = 0; i < viceDeans.editRoles.length; i++) {
+        await Role.updateOne({_id: viceDeans.editRoles[i]._id}, {name: viceDeans.editRoles[i].name});
+    }
+    for (let j = 0; j < viceDeans.deleteRoles.length; j++) {
+        await RoleService.deleteRole(viceDeans.deleteRoles[j]._id);
+        await department.viceDeans.splice(this.getIndex(viceDeans.deleteRoles[j], department.viceDeans), 1);
+    }
+    const newDataViceDeans = viceDeans.createRoles.map(role=>{
+        return {
+            name: role.name,
+            type: roleChucDanh._id,
+            parents: [viceDeanAb._id, ...employeeIdArr],
+            company: department.company
+        }
+    });
+    const newViceDeans = await Role.insertMany(newDataViceDeans);
+    const viceDeanIdArr = [...newViceDeans.map(vice=>vice._id), ...department.viceDeans.map(vice=>vice._id)]; //id của tất cả các viceDean trong đơn vị dùng để kế thừa cho dean
+
+    // //3.Chỉnh sửa trưởng đơn vị
+    const deans = await this.getDiffRolesInOrganizationalUnit(department.deans, data.deans);
+    console.log("DEANS CHECK:", deans)
+    for (let i = 0; i < deans.editRoles.length; i++) {
+        await Role.updateOne({_id: deans.editRoles[i]._id}, {name: deans.editRoles[i].name});
+    }
+    for (let j = 0; j < deans.deleteRoles.length; j++) {
+        await RoleService.deleteRole(deans.deleteRoles[j]._id);
+    }
+    const newDataDeans = deans.createRoles.map(role=>{
+        return {
+            name: role.name,
+            type: roleChucDanh._id,
+            parents: [deanAb._id, ...employeeIdArr, ...viceDeanIdArr],
+            company: department.company
+        }
+    });
+    const newDeans = await Role.insertMany(newDataDeans);
+    const deanIdArr = [...newDeans.map(dean=>dean._id), ...department.deans.map(dean=>dean._id)]; //id của tất cả các dean
+
+    const departmentSave = await OrganizationalUnit.findById(id);
+    departmentSave.deans = deanIdArr;
+    departmentSave.viceDeans = viceDeanIdArr;
+    departmentSave.employees = employeeIdArr;
+    await departmentSave.save();
+
+    return departmentSave;
+}
+
 
 /**
  * Xóa đơn vị

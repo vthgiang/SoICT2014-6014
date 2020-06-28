@@ -5,10 +5,8 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
 import { TaskInformationForm } from './taskInformationForm';
-import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
-// import { taskManagementActions } from "../../task-management/redux/actions";
+import { performTaskAction } from '../redux/actions';
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
@@ -36,9 +34,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {task} = this.props;
-        // let {tasks} = this.props;
-        // let task = (tasks && tasks.task) && tasks.task.info;
+        console.log('taskkkkk', this.props.task);
+        let { task } = this.props;
         
         let evaluations;
         
@@ -66,7 +63,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
                 else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
                     info[`${infoEval[i].code}`] = {
@@ -74,7 +70,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoEval[i].type === "SetOfValues"){
@@ -85,7 +80,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [infoEval[i].value];
                 }
                 else if(!infoEval[i].filledByAccountableEmployeesOnly){
                     info[`${infoEval[i].code}`] = {
@@ -93,14 +87,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [splitSetOfValues[0]];
                 }
             }
             else {
-                info[`${infoEval[i].code}`] = {
-                    value: infoEval[i].value,
-                    code: infoEval[i].code,
-                    type: infoEval[i].type
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
                 }
             }                
         }
@@ -204,13 +199,11 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             return {
                 ...state,
                 errorOnInfoDate: this.validateDate(value),
-                // infoDate: value,
             }
         });
     }
 
     handleSetOfValueChange = async (value, code) => {
-        // console.log('value', value);
 
         this.setState(state => {
             
@@ -359,12 +352,67 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         // check &&
         return  this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
-            // && this.validateTaskProgress(this.state.taskProgress, false);
     }
 
-    save = () => {        
+    handleAddTaskLog = () => {
+        let currentTask = this.state.task;
+
+        let title = '';
+        let description = '';
+
+        if(this.state.taskName !== currentTask.name || this.state.taskDescription !== currentTask.description){
+            title = title + 'Chỉnh sửa thông tin cơ bản';
+
+            if(this.state.taskName !== currentTask.name){
+                description = description + 'Tên công việc mới: ' + this.state.taskName;
+            }
+            
+            if(this.state.taskDescription !== currentTask.description){
+                description = description === '' ? description + 'Mô tả công việc mới: ' + this.state.taskDescription : description + '. ' + 'Mô tả công việc mới: ' + this.state.taskDescription;
+            }
+        }
+
+        let date = this.formatDate(new Date());
+        let info = this.getData(date);
+        let kpi = info.kpi;
+
+        let listKpi;
+        const { KPIPersonalManager } = this.props
+        if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+
+        if(JSON.stringify(kpi) !== JSON.stringify(this.state.kpi)){
+            title = title === '' ? title + 'Chỉnh sửa liên kết KPI' : title + '. ' + 'Chỉnh sửa liên kết KPI';
+            
+            let newKpi = [];
+            for(const element of this.state.kpi){
+                let a = listKpi.filter(item => item._id === element);
+                newKpi.push(a[0].name);
+            }
+            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
+        }
+
+        if(currentTask.progress !== this.state.progress){
+            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
+        }
+
+        console.log("*******************", title, "|||" , description);
+                
+        this.props.addTaskLog({
+            createdAt: Date.now(),
+            taskId: currentTask._id, 
+            creator: getStorage("userId"), 
+            title: title, 
+            description: description,
+        })
+    }   
+
+    save = () => {            
         let taskId;
         taskId = this.props.id;
+
+        this.handleAddTaskLog(taskId);
+        
         let data = {
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
@@ -386,21 +434,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        // console.log('----------------------\n\n\n', date, userId, department);
-        // this.props.getTaskById(this.props.id);
-        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
         console.log('PARENT nextProps, prevState', nextProps, prevState);
         const { task } = nextProps;
-        // const { tasks } = nextProps;
-        // let task = tasks && tasks.task && tasks.task.info;
+        
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                // TODO: ve sau can sửa
                 id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
@@ -416,12 +459,11 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     render() {
         const { KPIPersonalManager } = this.props
-        const {task, taskName, taskDescription, kpi} = this.state;
+        const { task, taskName, taskDescription, kpi } = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
         
-        // console.log('listKPI==========================\n\n\n', listKpi);
         return (
             <div>
                 <React.Fragment>
@@ -512,17 +554,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, kpimembers, KPIPersonalManager, createEmployeeKpiSet } = state;
-    return { tasks, kpimembers, KPIPersonalManager, createEmployeeKpiSet };
+    const { tasks, KPIPersonalManager } = state;
+    return { tasks, KPIPersonalManager };
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
-    getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    // editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));
