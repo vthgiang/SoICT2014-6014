@@ -12,8 +12,6 @@ import { managerKpiActions } from '../../management/redux/actions';
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
-
 
 class DashBoardEmployeeKpiSet extends Component {
 
