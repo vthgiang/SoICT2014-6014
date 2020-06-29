@@ -224,6 +224,7 @@ class DetailTaskTab extends Component {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
+        this.props.getTaskLog(this.state.id);
 
         await this.setState(state => {
             return {
@@ -650,6 +651,7 @@ const actionGetState = { //dispatchActionToProps
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getTaskLog: performTaskAction.getTaskLog,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

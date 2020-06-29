@@ -48,7 +48,7 @@
     background: #bbb;
     border-bottom: 1px solid #bbb;
 }
-.datepicker{
+#start_date_after, #end_date_before{
   z-index: 100 !important;
 }
 .flex-right {

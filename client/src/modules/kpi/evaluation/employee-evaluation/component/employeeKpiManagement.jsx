@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 
 import { kpiMemberActions } from '../redux/actions';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import { UserActions } from "../../../../super-admin/user/redux/actions";

@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 /**
  * Lấy tất cả các công việc
  */
- exports.getAllTasks = (req, res) => {
-    var tasks = Task.find();
+ exports.getAllTasks = async () => {
+    var tasks = await Task.find();
     return tasks;  
 }
 
@@ -1890,4 +1890,44 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
     return newTask;
+}
+
+exports.getTasksByUser = async (data) => {
+    var tasks= await Task.find({
+        $or: [
+            {responsibleEmployees: data},
+            {accountableEmployees: data},
+            {consultedEmployees: data},
+            {informedEmployees: data}
+        ],
+        status: "Inprocess"
+    })
+    var nowdate = new Date();
+    console.log(nowdate.getTime() )
+    var tasksexpire = [], deadlineincoming= [], test;
+    for (let i in tasks){
+        var olddate = new Date(tasks[i].endDate);
+        test = nowdate - olddate;
+        if(test < 0 ){
+            test = olddate - nowdate;
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            deadlineincoming.push(tasktest);
+        }else{
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            tasksexpire.push(tasktest)
+        }
+    }
+    let tasksbyuser = {
+        expire: tasksexpire,
+        deadlineincoming: deadlineincoming,
+    }
+    return tasksbyuser;
 }

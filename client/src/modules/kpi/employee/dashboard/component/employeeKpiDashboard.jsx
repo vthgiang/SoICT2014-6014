@@ -12,8 +12,6 @@ import { managerKpiActions } from '../../management/redux/actions';
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
-
 
 class DashBoardEmployeeKpiSet extends Component {
 
@@ -114,47 +112,41 @@ class DashBoardEmployeeKpiSet extends Component {
 
         return (
             <React.Fragment>
-                <section className="box">
-                    <div className="box-header with-border">
-                        <h3 className="box-title">Tìm kiếm kết quả KPI cá nhân</h3>
-                    </div>
-
-                    <div className="box-body qlcv">
-                        <div className="col-sm-6 form-inline" >
-                            <label>Từ tháng</label>
-                            <DatePicker 
-                                id="monthStart"      
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultStartDate}                 // giá trị mặc định cho datePicker    
-                                onChange={this.handleSelectMonthStart}
-                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                            />
-                        </div>
-                        <div className="col-sm-6 form-inline" >
-                            <label>Đến tháng</label>
-                            <DatePicker 
-                                id="monthEnd"      
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultEndDate}                 // giá trị mặc định cho datePicker    
-                                onChange={this.handleSelectMonthEnd}
-                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                            />
-                        </div>
-                        
-                        <div className="col-sm-6 form-inline qlcv">
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
-                        </div>
-                    </div>
-                </section>
-
                 <section className="row">
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
                                 <div class="box-title">Kết quả KPI cá nhân</div>
                             </div>
-                            <div className="box-body">
+                            <div className="box-body qlcv">
+                                <div className="form-inline">
+                                    <div className="form-group">
+                                        <label>Từ tháng</label>
+                                        <DatePicker 
+                                            id="monthStart"      
+                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                            value={defaultStartDate}                 // giá trị mặc định cho datePicker    
+                                            onChange={this.handleSelectMonthStart}
+                                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-inline">
+                                    <div className="form-group">
+                                        <label>Đến tháng</label>
+                                        <DatePicker 
+                                            id="monthEnd"      
+                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                                            value={defaultEndDate}                 // giá trị mặc định cho datePicker    
+                                            onChange={this.handleSelectMonthEnd}
+                                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                                    </div>
+                                </div>
+                                
                                 <ResultsOfEmployeeKpiChart
                                     startDate={this.state.startDate}
                                     endDate={this.state.endDate}
@@ -162,7 +154,7 @@ class DashBoardEmployeeKpiSet extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
                                 <div class="box-title">Phân bố KPI cá nhân tháng {this.state.currentMonth}</div>

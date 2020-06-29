@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 import { DialogModal } from '../../../../../common-components/index';
 //const Handle = Slider.Handle;

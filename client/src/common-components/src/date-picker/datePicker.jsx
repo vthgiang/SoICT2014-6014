@@ -7,21 +7,25 @@ class DatePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {}
+        this.zIndex = 1050;
     }
-    componentDidMount() {
+    componentDidMount = () => {
         const { id, dateFormat, onChange } = this.props;
+        let zIndex = 1050;
         
         dateFormat !== "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "dd-mm-yyyy",
                 todayHighlight: true,
+                zIndexOffset: this.zIndex,
             }):
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
+                zIndexOffset: this.zIndex,
             });
         window.$("#" + id).keyup(function (e) {
             if (e.keyCode == 8 || e.keyCode == 46) {
@@ -37,19 +41,21 @@ class DatePicker extends Component {
         });
     }
 
-    componentDidUpdate() {
+    componentDidUpdate = () => {
         const { id, dateFormat } = this.props;
         dateFormat !== "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "dd-mm-yyyy",
                 todayHighlight: true,
+                zIndexOffset: this.zIndex,
             }) :
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
+                zIndexOffset: this.zIndex,
             })
     }
 

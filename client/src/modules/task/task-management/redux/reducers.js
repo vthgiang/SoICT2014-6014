@@ -154,7 +154,7 @@ export function tasks(state = {}, action) {
                 adding: true,
                 isLoading: false
             };
-        case taskManagementConstants.ADDNEW_TASK_SUCCESS:            
+        case taskManagementConstants.ADDNEW_TASK_SUCCESS:
             return {
                 ...state,
                 tasks: [
@@ -198,7 +198,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS:
             return {
@@ -218,7 +218,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS:
             return {
@@ -226,7 +226,7 @@ export function tasks(state = {}, action) {
                 isLoading: false,
                 tasks: state.tasks.filter(task => task._id !== action.payload._id),
             };
-            
+
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
             return {
                 isLoading: false,
@@ -274,7 +274,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS:
             return {
@@ -293,7 +293,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS:
             return {
@@ -312,7 +312,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS:
             return {
@@ -331,7 +331,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
             return {
@@ -350,7 +350,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             };
         case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
             return {
@@ -366,6 +366,23 @@ export function tasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
+        case taskManagementConstants.GET_TASK_BY_USER_REQUEST:
+            return {
+                ...state,
+                tasksbyuser: null,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_TASK_BY_USER_SUCCESS:
+            return {
+                ...state,
+                tasksbyuser: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_TASK_BY_USER_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            }
         default:
             return state
     }

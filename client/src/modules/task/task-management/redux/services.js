@@ -27,7 +27,9 @@ export const taskManagementService = {
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees
+    evaluateTaskByResponsibleEmployees,
+
+    getTasksByUser,
 };
 
 // get all task
@@ -219,4 +221,15 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
         data: data,
     }, true, true, 'task.task_management');
 }
+
+function getTasksByUser() {
+    var id  = getStorage("userId")
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks`,
+        method: 'GET',
+        params: {userId: id}
+    }, false, true, 'task.task_management');
+}
+
 

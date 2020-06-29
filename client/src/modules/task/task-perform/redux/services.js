@@ -34,7 +34,15 @@ export const performTaskService = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    deleteFile,
     getTaskLog,
+
+    editTaskByAccountableEmployees,
+    editTaskByResponsibleEmployees,
+
+    evaluateTaskByAccountableEmployees,
+    evaluateTaskByConsultedEmployees,
+    evaluateTaskByResponsibleEmployees,
 };
 /**
  * // example for axios
@@ -238,7 +246,12 @@ function uploadFile(task,data) {
         data : data
     }, false, true, 'task.task_perform');  
 };
-
+function deleteFile(id,actionId) {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/files/${id}/${actionId}`,
+        method : 'DELETE'
+    }, false, true, 'task.task_perform');  
+};
 // Hàm thêm nhật ký cho một công việc
 function addTaskLog(log) {    
     return sendRequest({
@@ -255,3 +268,69 @@ function getTaskLog(id) {
         method : 'GET',
     }, false, false, 'task.task_perform');
 };
+
+/**
+ * edit Task By Responsible Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function editTaskByResponsibleEmployees(data, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/edit/task-responsible/${taskId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * edit Task By Accountable Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function editTaskByAccountableEmployees(data, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/edit/task-accountable/${taskId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * evaluate Task By Responsible Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function evaluateTaskByResponsibleEmployees(data, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-responsible/${taskId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * evaluate Task By Consulted Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function evaluateTaskByConsultedEmployees(data, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-consulted/${taskId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * evaluate Task By Accountable Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function evaluateTaskByAccountableEmployees(data, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-accountable/${taskId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_management');
+}
+
