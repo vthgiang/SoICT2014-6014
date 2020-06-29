@@ -50,9 +50,15 @@ class Login extends Component {
                 
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
-                        <a href="/index2.html"><b>VNIST</b>-QLCV</a>
+                        <a href="/"><b>VNIST</b>-Việc</a>
                     </div>
-
+                    {
+                        auth.error !== undefined && auth.error !== null &&
+                        <div className="alert alert-danger alert-dismissible">
+                            <button type="button" className="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i className="icon fa fa-ban" /> {translate(`auth.${auth.error}`)}
+                        </div>
+                    }
                     <div className="login-box-body">
                         <form onSubmit={this.handleSubmit}> 
                             <div className="form-group has-feedback">
@@ -73,7 +79,6 @@ class Login extends Component {
                                 </div>
                             </div>
                         </form>
-                        
                     </div>
                 </div>
             </div>

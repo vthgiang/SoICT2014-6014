@@ -158,6 +158,7 @@ export default {
             user_not_found: 'Không tìm thấy thông tin người dùng',
             email_invalid: 'Email không hợp lệ', email_not_found: 'Email này chưa được đăng kí trên hệ thống',
             password_invalid: 'Mật khẩu không chính xác',
+            email_password_invalid: 'Email hoặc mật khẩu không chính xác',
             acc_blocked: 'Tài khoản này đã bị tạm khóa',
             acc_have_not_role: 'Tài khoản chưa được phân quyền trên hệ thống',
             wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',

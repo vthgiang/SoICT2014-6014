@@ -21,7 +21,7 @@ async function login(user) {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user
-    }, false, true, 'auth')
+    }, false, false, 'auth')
 }
 
 function logout() {
