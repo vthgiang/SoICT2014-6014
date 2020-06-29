@@ -522,17 +522,6 @@ class EvaluateByResponsibleEmployee extends Component {
         window.$(`#modal-automatic-point-info`).modal('show');
     }
 
-    // this.state={
-    //     calcInfo: {},
-    //     task: data.task,
-    //     idUser: data.idUser,
-    //     info: data.info,
-    //     autoPoint: data.autoPoint,
-    //     date: data.date,
-    //     kpi: data.kpi,
-    //     point: data.point,
-    //     progress: data.task.progress
-    // }
     handleAddTaskLog = () => {
         let title = '';
         let description = '';
@@ -580,13 +569,15 @@ class EvaluateByResponsibleEmployee extends Component {
 
         console.log("*****111111*********", title, "|||" , description);
                 
-        this.props.addTaskLog({
-            createdAt: Date.now(),
-            taskId: this.props.id, 
-            creator: getStorage("userId"), 
-            title: title, 
-            description: description,
-        })
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: this.props.id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
     } 
 
     save = () => {

@@ -10,12 +10,15 @@ import moment from 'moment'
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 
+var currentTask;
+
 class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
         
         let date = this.formatDate(new Date());
         let data = this.getData(date);
+        currentTask = data;
 
         this.state={
             task: data.task,
@@ -760,6 +763,104 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
 
+    // this.state={
+    //     task: data.task,
+    //     userId: data.userId,
+    //     info: data.info,
+    //     results: data.results,
+    //     empPoint: data.empPoint,
+    //     status: data.statusOptions,
+    //     progress: data.task.progress,
+    //     autoPoint: data.automaticPoint,
+    //     date: data.date
+    // }
+    handleAddTaskLog = () => {
+        let title = '';
+        let description = '';
+
+        let { date, autoPoint, progress, status, results } = this.state;
+
+        console.log("@@@@@@@@@@@@@@@safa", results, currentTask.results);
+        
+        if (date !== currentTask.date || 
+            autoPoint !== currentTask.automaticPoint ||
+            status !== currentTask.statusOptions ||
+            JSON.stringify(results) !== JSON.stringify(currentTask.results) 
+        ) {
+            title = title + 'Chỉnh sửa thông tin đánh giá theo vai trò người thực hiện';
+
+            if (date !== currentTask.date) {
+                description = description + 'Ngày đánh giá mới: ' + date;
+            }
+            
+            if (JSON.stringify(results) !== JSON.stringify(currentTask.results)){
+                let inactiveEmp = currentTask.task.inactiveEmployees.map(e=>e._id);
+                
+                for(let i in currentTask.task.responsibleEmployees){
+                    if(inactiveEmp.indexOf(currentTask.task.responsibleEmployees[i]._id) === -1){
+                        if (results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value !== currentTask.results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value: description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value;
+                        }
+
+                        if (results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value !== currentTask.results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value: description + '. ' + `% đóng góp mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value;
+                        }
+                    }
+                }
+
+                for(let i in currentTask.task.consultedEmployees){
+                    if(inactiveEmp.indexOf(currentTask.task.consultedEmployees[i]._id) === -1){
+                        if (results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value: description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value;
+                        }
+
+                        if (results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value: description + '. ' + `% đóng góp mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value;
+                        }
+                    }
+                }
+
+                for(let i in currentTask.task.accountableEmployees){
+                    if(inactiveEmp.indexOf(currentTask.task.accountableEmployees[i]._id) === -1){
+                        if (results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value: description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
+                        }
+
+                        if (results[`approvedPoint${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.consultedEmployees[i]._id}`].value) {
+                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value: description + '. ' + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
+                        }
+                    }
+                }
+            }
+
+            if (autoPoint !== currentTask.automaticPoint) {                
+                description = description === '' ? description + 'Điểm chấm tự động mới: ' + autoPoint : description + '. ' + 'Điểm chấm tự động mới: ' + autoPoint;
+            }
+
+            if (status !== currentTask.statusOptions) {
+                description = description === '' ? description + 'Trạng thái công việc mới: ' + status: description + '. ' + 'Trạng thái công việc mới: ' + status;
+            }
+        }
+
+        if(currentTask.task.progress !== progress){
+            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
+        }
+
+        console.log("*****111111*********", title, "|||" , description);
+                
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: this.props.id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
+        
+    }
+
     save = () => {
         // let {tasks} = this.props;
         // let task = (tasks && tasks.task) && tasks.task.info;
@@ -781,6 +882,9 @@ class EvaluateByAccountableEmployee extends Component {
         }
 
         console.log('data', data, taskId);
+
+        this.handleAddTaskLog();
+        
         this.props.evaluateTaskByAccountableEmployees(data, taskId);
     }
 
@@ -810,6 +914,8 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     render() {
+        console.log("***333***", currentTask);
+        
         const { translate, tasks, performtasks } = this.props;
         const { task, date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
@@ -1006,7 +1112,8 @@ const getState = {
     // createResult: performTaskAction.createResultTask,
     // editResultTask: performTaskAction.editResultTask,
     // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees
+    evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const evaluateByAccountableEmployee = connect(mapState, getState)(withTranslate(EvaluateByAccountableEmployee));
