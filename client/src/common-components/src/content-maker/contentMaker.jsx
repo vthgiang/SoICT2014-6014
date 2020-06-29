@@ -39,7 +39,7 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple=true, maxFiles=10, maxFileSize=10000000, minFileSize=0, clickable=false,
             text, onTextChange, placeholder, minRows=3, maxRows=20,
             onSubmit, submitButtonText,
-            inputCssClass, controlCssClass,
+            inputCssClass, controlCssClass,defaultValue,handleEdit,cancelButtonText
         } = this.props
 
         return (
@@ -65,7 +65,9 @@ class ContentMaker extends Component {
                             onDragLeave={this.handleDragLeave}
                             onDrop={this.handleDragLeave}
                             value={text}
+                            defaultValue={defaultValue}
                             onChange={onTextChange}/>
+                            
                             
                         {this.state.showDropFileHere &&
                         <div style={{fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center"}}>
@@ -81,8 +83,9 @@ class ContentMaker extends Component {
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
                             }}>
-                            {submitButtonText}
+                            {submitButtonText}&nbsp;&nbsp;&nbsp;
                         </a>
+                        <a href="javascript:void(0)" className="link-black text-sm" onClick ={handleEdit}>{cancelButtonText}</a>
                     </div>           
                     {files && files.length>0 &&
                         <div className='files-list'>

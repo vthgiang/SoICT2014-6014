@@ -45,7 +45,7 @@ class EvaluateByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {task} = this.props;
+        let { task } = this.props;
         // let {tasks} = this.props;
         // let task = (tasks && tasks.task) && tasks.task.info;
         
@@ -731,15 +731,9 @@ const mapState = (state) => {
     return { tasks, performtasks, kpimembers, KPIPersonalManager };
 }
 const getState = {
-    // getTaskById: taskManagementActions.getTaskById,
-    // createResult: performTaskAction.createResultTask,
-    // editResultTask: performTaskAction.editResultTask,
-    // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    // getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    // getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    // getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees,
+    // evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees,
+    evaluateTaskByResponsibleEmployees: performTaskAction.evaluateTaskByResponsibleEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }
 

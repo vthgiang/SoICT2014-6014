@@ -16,8 +16,7 @@ import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../c
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
-//const Handle = Slider.Handle;
+
 class ModalDetailKPIPersonal extends Component {
     constructor(props) {
         super(props);

@@ -7,21 +7,26 @@ const {  LogInfo,  LogError } = require('../../../logs');
  * Lấy tất cả các công việc
  */
 exports.getAllTasks = async (req, res) => {
-    try {
-        var tasks = TaskManagementService.getAllTasks(req, res);
-        await LogInfo(req.user.email, ` get all tasks `,req.user.company);
-        res.status(200).json({
-            success: true, 
-            messages: ['get_all_task_success'], 
-            content: tasks
-        });
-    } catch (error) {
-        await LogError(req.user.email, ` get task by id `,req.user.company);
-        res.status(400).json({
-            success: false, 
-            messages: ['get_all_task_fail'], 
-            content: error
-        });
+    if(req.query.userId !== undefined){
+        getTasksByUser (req, res);
+    }
+    else{
+        try {
+            var task = await TaskManagementService.getAllTasks(req, res);
+            await LogInfo(req.user.email, ` get all tasks `,req.user.company);
+            res.status(200).json({
+                success: true, 
+                messages: ['get_all_task_success'], 
+                content: task
+            });
+        } catch (error) {
+            await LogError(req.user.email, ` get task by id `,req.user.company);
+            res.status(400).json({
+                success: false, 
+                messages: ['get_all_task_fail'], 
+                content: error
+            });
+        }
     }
 }
 
@@ -504,6 +509,28 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
+//lấy các công việc sắp hết hạn và quá hạn của nhân viên 
+getTasksByUser = async(req, res) => {
+    try {
+        const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
+        
+        await LogInfo(req.user.email, 'GET_TASK_BY_USER', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_by_user_success'],
+            content: tasks
+        });
+    }
+    catch (error) {
+        await LogError(req.user.email, 'GET_TASK_BY_USER', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_by_user_fail'],
             content: error
         });
     }

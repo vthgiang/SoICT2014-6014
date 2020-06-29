@@ -106,10 +106,10 @@ class TaskComponent extends Component {
             }
         }
         
-        const { tasks } = this.props;
+        const { tasks, performtasks } = this.props;
         // if (tasks.task) task = tasks.task.info;
-        if (tasks.task) task = tasks.task;
-        if (tasks.task && !this.checkPermission(tasks)) {
+        if (performtasks.task) task = performtasks.task;
+        if (performtasks.task && !this.checkPermission(performtasks)) {
             return (
                 <div>
                     <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
@@ -140,8 +140,8 @@ class TaskComponent extends Component {
     }
 }
 function mapState(state) {
-    const { tasks } = state;
-    return { tasks };
+    const { tasks, performtasks } = state;
+    return { tasks, performtasks };
 }
 
 const actionCreators = {

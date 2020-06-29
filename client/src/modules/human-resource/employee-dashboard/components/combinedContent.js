@@ -5,3 +5,4 @@ export * from './barAndLineChart';
 export * from './multipleBarChart';
 export * from './employeeDashBoardHeader';
 export * from './barChart';
+export * from './twoBarChart';

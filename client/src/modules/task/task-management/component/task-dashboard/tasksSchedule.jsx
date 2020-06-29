@@ -220,7 +220,7 @@ class TasksSchedule extends Component{
                 <div className="form-inline">
                   <div className="form-group">
                     <label>Từ tháng: </label>
-                    <DatePicker id='start_date'
+                    <DatePicker id='start_date_after'
                             value = {startDateAfter}
                             onChange={this.handleStartDateChange}
                             dateFormat="month-year"
@@ -229,7 +229,7 @@ class TasksSchedule extends Component{
                   <div className="form-group">
                     <label>Đến tháng: </label>
                     <DatePicker
-                            id='end_date'
+                            id='end_date_before'
                             value = {endDateBefore}
                             onChange={this.handleEndDateChange}
                             dateFormat="month-year"
@@ -256,8 +256,8 @@ class TasksSchedule extends Component{
                     defaultTimeEnd={defaultTimeEnd}
                 />
               <div className="form-inline pull-right" style={{marginTop:"5px"}}>
-                <button className='btn btn-danger' onClick={this.onPrevClick}>{"< Prev"}</button>
-                <button className='btn btn-danger' onClick={this.onNextClick}>{"Next >"}</button>
+                <button className='btn btn-danger' onClick={this.onPrevClick}><i class="fa fa-angle-left"></i> Prev</button>
+                <button className='btn btn-danger' onClick={this.onNextClick}>Next <i class="fa fa-angle-right"></i></button>
               </div>
           </div>
       </React.Fragment>
