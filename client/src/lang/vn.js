@@ -1693,11 +1693,9 @@ export default {
                         },
                         time: 'Thời gian',
                         approver: 'Người phê duyệt',
-                        weight: {
-                            weight_total: 'Tổng trọng số',
-                            not_satisfied: 'Chưa thỏa mãn',
-                            satisfied: 'Thỏa mãn'
-                        },
+                        weight_total: 'Tổng trọng số',
+                        not_satisfied: 'Chưa thỏa mãn',
+                        satisfied: 'Thỏa mãn',
                         initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',

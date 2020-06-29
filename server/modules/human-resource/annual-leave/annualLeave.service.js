@@ -25,9 +25,9 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
     let totalListOfYear = 0; 
     //Bắt sựu kiện tháng tìm kiếm khác "", undefined
     if (month !== undefined && month.length !== 0) {
-        var date = new Date(month);
-        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        let date = new Date(month);
+        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         let firstDayOfYear = new Date(date.getFullYear()-1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
         totalListOfYear = await AnnualLeave.count({...keySearch,startDate: {"$gt": firstDayOfYear, "$lte": lastDayOfYear}});
@@ -40,9 +40,20 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month)=>{
         keySearch = {...keySearch, startDate: {"$gt": firstDayOfYear, "$lte": lastDayOfYear}}
     };
 
-    var totalList = await AnnualLeave.count(keySearch);
-    return {totalList, totalListOfYear};
+    let totalList = await AnnualLeave.count(keySearch);
+    return {totalList, totalListOfYear };
 }
+
+/**
+ * Lấy thông tin nghỉ phép trong 6 hoặc 12 tháng gần nhất
+ * @param {*} numberMonth :Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
+ * @param {*} company :Id công ty
+ */
+exports.getAnnualLeaveOfNumberMonth=async(numberMonth, company)=>{
+    
+}
+
+
 
 /**
  * Lấy danh sách thông tin nghỉ phép

@@ -8,6 +8,9 @@ const DocumentDomainSchema = new Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String
+    },
     documents: [{ //chứa những document nào
         type: Schema.Types.ObjectId,
         ref: 'documents'

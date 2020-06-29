@@ -1139,13 +1139,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates } = state;
-    return { tasks, user, tasktemplates };
+    const { tasks, user, tasktemplates, performtasks } = state;
+    return { tasks, user, tasktemplates, performtasks };
 }
 
 const actionGetState = { //dispatchActionToProps
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
+    // editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
+    editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }
 

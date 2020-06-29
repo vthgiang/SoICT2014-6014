@@ -34,7 +34,7 @@ class EvaluateByAccountableEmployee extends Component {
     getData = (dateParam) => {
         let idUser = getStorage("userId");
         // let {tasks} = this.props;
-        let {task} = this.props;
+        let { task } = this.props;
         // let task = (tasks && tasks.task) && tasks.task.info;
 
         let evaluations;
@@ -1006,7 +1006,8 @@ const getState = {
     // createResult: performTaskAction.createResultTask,
     // editResultTask: performTaskAction.editResultTask,
     // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees
+    // evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees,
+    evaluateTaskByAccountableEmployees: performTaskAction.evaluateTaskByAccountableEmployees,
 }
 
 const evaluateByAccountableEmployee = connect(mapState, getState)(withTranslate(EvaluateByAccountableEmployee));

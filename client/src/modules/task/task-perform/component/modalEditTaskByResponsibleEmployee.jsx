@@ -34,7 +34,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {task} = this.props;
+        console.log('taskkkkk', this.props.task);
+        let { task } = this.props;
         
         let evaluations;
         
@@ -387,7 +388,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 let a = listKpi.filter(item => item._id === element);
                 newKpi.push(a[0].name);
             }
-            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(this.state.kpi);
+            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
         }
 
         if(currentTask.progress !== this.state.progress){
@@ -458,7 +459,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     render() {
         const { KPIPersonalManager } = this.props
-        const {task, taskName, taskDescription, kpi} = this.state;
+        const { task, taskName, taskDescription, kpi } = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
@@ -559,7 +560,8 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    // editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }
 

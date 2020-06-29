@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AgePyramidChart, BarAndLineChart, MultipleBarChart, EmployeeDashBoardHeader, BarChart } from './combinedContent';
+import { AgePyramidChart, BarAndLineChart, MultipleBarChart, EmployeeDashBoardHeader, BarChart, TwoBarChart } from './combinedContent';
 import './employeeDashBoard.css';
 
 class DashBoardEmployees extends Component {
@@ -27,11 +27,11 @@ class DashBoardEmployees extends Component {
                         <AgePyramidChart id={agePyramidChartId} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <BarChart nameData1='số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của tất cả nhân viên'} />
+                        <BarChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của nhân viên trong 12 tháng gần nhất'} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <BarChart nameData1='số nhân viên' nameChart={'Tình hình tăng giảm nhân sự'} />
-                    </div>
+                        <TwoBarChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự trong 12 tháng gần nhất'} />
+                    </div> 
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' nameChart={'Tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần đây'} />
                     </div>

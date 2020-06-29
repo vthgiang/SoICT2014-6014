@@ -29,7 +29,8 @@ class TaskManagement extends Component {
             name: null,
             startDate: null,
             endDate: null,
-
+            startDateAfter: null,
+            endDateBefore: null,
             startTimer: false,
             pauseTimer: false,
             timer : {
@@ -42,7 +43,7 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null);
+        this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -56,7 +57,7 @@ class TaskManagement extends Component {
             name != nextState.name ||
             startDate != nextState.startDate ||
             endDate != nextState.endDate
-        ){
+        ) {
             return false;
         }
 
@@ -178,7 +179,7 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
+        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
         var oldCurrentPage = this.state.currentPage;
         var perPage = this.state.perPage;
@@ -193,7 +194,7 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== index) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
                 this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
             } else if (content === "consulted") {
@@ -207,7 +208,7 @@ class TaskManagement extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
+        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
         var oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -220,7 +221,7 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
                 this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
             } else if (content === "consulted") {
@@ -234,7 +235,7 @@ class TaskManagement extends Component {
     }
 
     backPage = async () => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
+        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
         var oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -247,7 +248,7 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.state.currentTab;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
+                this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
                 this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
             } else if (content === "consulted") {
@@ -262,12 +263,12 @@ class TaskManagement extends Component {
 
     handleGetDataPerPage = (perPage) => {
         // this.props.getResponsibleTaskByUser( "[]", "1", "20", "[]", "[]", "[]", null);
-        var { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
+        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
         
         var content = this.state.currentTab;
         
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
+            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
         } else if (content === "consulted") {
@@ -286,13 +287,13 @@ class TaskManagement extends Component {
     }
 
     handleUpdateData = () => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
+        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
         var content = this.state.currentTab;
         var { perPage } = this.state;
 
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
+            this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
         } else if (content === "consulted") {

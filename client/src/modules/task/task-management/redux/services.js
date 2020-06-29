@@ -27,7 +27,9 @@ export const taskManagementService = {
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees
+    evaluateTaskByResponsibleEmployees,
+
+    getTasksByUser,
 };
 
 // get all task
@@ -55,11 +57,11 @@ function getAllTaskByRole(id, role) {
 }
 
 // get all task by Role
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {//param -- user,
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) {//param -- user,
     var user = getStorage("userId");
     
     return sendRequest({//user = localStorage.getItem('id')
-        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}/${startDateAfter}/${endDateBefore}`,
         method: 'GET',
         
     }, false, true, 'task.task_management');
@@ -219,4 +221,15 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
         data: data,
     }, true, true, 'task.task_management');
 }
+
+function getTasksByUser() {
+    var id  = getStorage("userId")
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks`,
+        method: 'GET',
+        params: {userId: id}
+    }, false, true, 'task.task_management');
+}
+
 

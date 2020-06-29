@@ -5,6 +5,8 @@ import { createKpiSetActions  } from '../redux/actions';
 import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 import { withTranslate } from 'react-redux-multilingual';
 
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+
 var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
     componentDidMount() {
@@ -30,17 +32,22 @@ class ModalCreateEmployeeKpiSet extends Component {
         const { user } = this.props;
 
         // Khi truy vấn API đã có kết quả
-        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans.length>0) {
-            this.setState(state =>{
-                return{
-                    ...state,
-                    employeeKpiSet: {
-                        ...this.state.employeeKpiSet,
-                        approver: user.userdepartments.deans[0]
-                    }
-                };
-            });
-            return false; // Sẽ cập nhật lại state nên không cần render
+        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans) {
+            if (Object.keys(user.userdepartments.deans).length > 0){ // Nếu có trưởng đơn vị
+                let members = user.userdepartments.deans[Object.keys(user.userdepartments.deans)[0]].members;
+                if (members.length) {
+                    this.setState(state =>{
+                        return{
+                            ...state,
+                            employeeKpiSet: {
+                                ...this.state.employeeKpiSet,
+                                approver: members[0]
+                            }
+                        };
+                    });
+                    return false; // Sẽ cập nhật lại state nên không cần render
+                }
+            }
         }
 
         return true;
@@ -109,10 +116,12 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
     
     render() {
-        var userdepartments;
+        let deans;
         const { organizationalUnit, user, translate } = this.props;
         const { _id } = this.state;
-        if (user.userdepartments) userdepartments = user.userdepartments;
+        if (user.userdepartments) {
+            deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
+        }
 
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -154,18 +163,14 @@ class ModalCreateEmployeeKpiSet extends Component {
                                 />
                             </div>
 
-                            {userdepartments &&
+                            {deans &&
                                 <div className="col-sm-6 col-xs-12 form-group">
                                     <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                     <SelectBox
                                         id={`createEmployeeKpiSet${_id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={
-                                            userdepartments.deans.map(item => {
-                                                return {text: item.name, value: item._id}
-                                            }
-                                        )}
+                                        items={deans}
                                         multiple={false}
                                         onChange={this.handleApproverChange}
                                         value={this.state.employeeKpiSet.approver}

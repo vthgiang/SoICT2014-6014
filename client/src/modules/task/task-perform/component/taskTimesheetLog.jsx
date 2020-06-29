@@ -6,7 +6,7 @@ import { DialogModal } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
-
+import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
 
@@ -14,7 +14,8 @@ class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModal:''
+            showModal:'',
+            description: ''
         }
         this.sendQuery = false;
     }
@@ -60,7 +61,15 @@ class TaskTimesheetLog extends Component {
             this.timer = null;
         }
     }
-
+    handleStopTimer = () => {
+        const {auth} = this.props;
+        this.setState(state=>{
+            return {
+                ...state,
+                showModal: auth.user.id
+            }
+        });
+    }
     stopTimer = async () => {
         const { performtasks ,auth} = this.props;
 
@@ -68,17 +77,11 @@ class TaskTimesheetLog extends Component {
             stoppedAt: Date.now(),
             duration: Date.now() - performtasks.currentTimer.timesheetLogs[0].startedAt,
             task: performtasks.currentTimer._id,
-            description: "",
+            description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
         };
-        //this.props.ABC()
         await this.props.stopTimer(timer);
-        await this.setState(state=>{
-            return {
-                ...state,
-                showModal: auth.user.id
-            }
-        });
+        
         // window.$("#modal-description-abc").modal('show')
     }   
     save = () => {
@@ -89,8 +92,6 @@ class TaskTimesheetLog extends Component {
         
         const { translate, performtasks, auth } = this.props;
         const currentTimer = performtasks.currentTimer;
-        // console.log(auth.user.id)
-        // console.log(this.state.showModal)
         return ( 
             <React.Fragment>
                 {
@@ -99,7 +100,7 @@ class TaskTimesheetLog extends Component {
                     <div className="timer info-box">
                         <span className="timer info-box-icon">
                             <a href="#" className="link-black text-lg">
-                                <i className="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onTouchEnd={this.stopTimer} onClick={this.stopTimer}></i>
+                                <i className="fa fa-stop-circle-o fa-lg" style={{color: "red"}} aria-hidden="true" title="Dừng bấm giờ" onTouchEnd={this.handleStopTimer} onClick={this.handleStopTimer}></i>
                             </a>
                         </span>
                         <div className="timer info-box-content">
@@ -113,24 +114,25 @@ class TaskTimesheetLog extends Component {
                     </div>
 
                     {this.state.showModal == auth.user.id && 
-                        <DialogModal
-                            marginTop = {"30px"}
-                            isLoading={false}
-                            size="30vh"
-                            modalID={"modal-description-abc"}
-                            formID="form-timesheet-log"
-                            title={'Mô tả bấm giờ'}
-                            bodyStyle={{padding: "15px"}}
-                            hasSaveButton={true}
-                            func= {this.save}
-                        >
-                            <form>
-                            <div class="form-group">
-                                <label for="exampleFormControlTextarea1">Nhập mô tả (*):</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                            </div>
-                            </form>
-                        </DialogModal>
+                    <React.Fragment>
+                        <div style={{width:'98%',backgroundColor:'white',border:'1px solid'}}>
+                        <h2 style={{width:'100%',textAlign:'center',fontFamily:'sans-serif'}}>Nhập mô tả</h2>
+                        <TextareaAutosize
+                            style={{width:'100%'}}
+                            placeholder='Nhập mô tả'
+                            useCacheForDOMMeasurements
+                            minRows = {3}
+                            maxRows = {20}
+                            onChange={(e)=>{
+                                let value = e.target.value;
+                                this.setState(state => {
+                                    return { ...state, description: value}
+                                })
+                                console.log(this.state.description)
+                            }}/>
+                        <button className="btn btn-primary pull-right" style={{marginBottom:'5px'}} onClick={this.stopTimer} > Dừng bấm giờ</button>
+                        </div>
+                    </React.Fragment>
                     }
                    </React.Fragment>
                 }

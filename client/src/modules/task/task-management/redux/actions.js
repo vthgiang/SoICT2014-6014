@@ -21,7 +21,9 @@ export const taskManagementActions = {
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees
+    evaluateTaskByResponsibleEmployees,
+
+    getTasksByUser,
 };
 
 // Get all task
@@ -74,13 +76,13 @@ function getAllTaskByRole(id, role) {
 }
 
 // Get all task by user
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) { //user, -- param
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) { //user, -- param
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST
         });
 
-        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS,
@@ -96,6 +98,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             })
     }
 }
+
 
 // Get all task by user
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
@@ -443,6 +446,23 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+function getTasksByUser() {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_REQUEST });
+        taskManagementService.getTasksByUser()
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_BY_USER_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_FAILURE, error });
             });
     };
 }
