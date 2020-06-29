@@ -671,7 +671,7 @@ export default {
             vice_dean_name: 'Tên chức danh cho phó đơn vị',
             vice_dean_example: 'VD: Phó phòng tài chính',
             employee_name: 'Tên chức danh cho nhân viên đơn vị',
-            employee_example: 'Nhân viên phòng tài chính',
+            employee_example: 'VD: Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
             delete: 'Xóa đơn vị',
             add_success: 'Tạo đơn vị thành công',
