@@ -9,7 +9,7 @@ const AnnualLeaveSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,

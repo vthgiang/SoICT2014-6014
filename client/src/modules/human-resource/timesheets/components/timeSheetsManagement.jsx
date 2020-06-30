@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { ModalImportTimekeeping } from './combinedContent';
-
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll } from '../../../../common-components';
+
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { TimesheetsActions } from '../redux/actions';
 import './timesheet.css';
-
-
 
 class TimeSheetsManagement extends Component {
     constructor(props) {
@@ -24,6 +24,10 @@ class TimeSheetsManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
+
+        let partMonth = this.state.month.split('-');
+        let month = [partMonth[1], partMonth[0]].join('-');
+        this.props.searchTimesheets({ ...this.state, month: month });
     }
 
     // Function format dữ liệu Date thành string
@@ -91,7 +95,6 @@ class TimeSheetsManagement extends Component {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
-
         this.setState({
             ...this.state,
             month: value
@@ -100,22 +103,20 @@ class TimeSheetsManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        // if (this.state.month === null) {
-        //     let partMonth = this.formatDate(Date.now(), true).split('-');
-        //     let month = [partMonth[1], partMonth[0]].join('-');
-        //     await this.setState({
-        //         ...this.state,
-        //         month: month
-        //     })
-        // }
-        //this.props.searchSalary(this.state);
+        let partMonth = this.state.month.split('-');
+        let month = [partMonth[1], partMonth[0]].join('-');
+        this.props.searchTimesheets({ ...this.state, month: month });
     }
+
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
         });
-        //this.props.searchSalary(this.state);
+
+        let partMonth = this.state.month.split('-');
+        let month = [partMonth[1], partMonth[0]].join('-');
+        this.props.searchTimesheets({ ...this.state, month: month });
     }
 
     // Bắt sự kiện chuyển trang
@@ -124,15 +125,19 @@ class TimeSheetsManagement extends Component {
         await this.setState({
             page: parseInt(page),
         });
-        //this.props.searchSalary(this.state);
+
+        let partMonth = this.state.month.split('-');
+        let month = [partMonth[1], partMonth[0]].join('-');
+        this.props.searchTimesheets({ ...this.state, month: month });
     }
     render() {
-        const { month } = this.state;
-        let allDayOfMonth = this.getAllDayOfMonth(month);
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, timesheets } = this.props;
 
-        var listTimesheets = "", listPosition = [];
+        const { month, limit, page } = this.state;
+
+        let allDayOfMonth = this.getAllDayOfMonth(month);
+        var listTimesheets = [], listPosition = [];
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
             organizationalUnit.forEach(u => {
@@ -146,15 +151,14 @@ class TimeSheetsManagement extends Component {
                 })
             })
         }
-        // if (salary.isLoading === false) {
-        //     listSalarys = salary.listSalarys;
-        // }
-        // var pageTotal = (salary.totalList % this.state.limit === 0) ?
-        //     parseInt(salary.totalList / this.state.limit) :
-        //     parseInt((salary.totalList / this.state.limit) + 1);
-        // var page = parseInt((this.state.page / this.state.limit) + 1);
 
-
+        if (timesheets.isLoading === false) {
+            listTimesheets = timesheets.listTimesheets;
+        }
+        let pageTotal = (timesheets.totalList % limit === 0) ?
+            parseInt(timesheets.totalList / limit) :
+            parseInt((timesheets.totalList / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -194,7 +198,8 @@ class TimeSheetsManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now(), true)}
+                                deletevalue={false}
+                                value={month}
                                 onChange={this.handleMonthChange}
                             />
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
@@ -215,15 +220,14 @@ class TimeSheetsManagement extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style={{ paddingTop: 20 }}>2015053</td>
-                                        <td style={{ paddingTop: 20 }}>Nguyen khanh linh</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingTop: 20 }}>20150698</td>
-                                        <td style={{ paddingTop: 20 }}>Nguyen van hung </td>
-                                    </tr>
+                                    {
+                                        listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
+                                            <tr key={index}>
+                                                <td style={{ paddingTop: 20 }}>{x.employee.employeeNumber}</td>
+                                                <td style={{ paddingTop: 20 }}>{x.employee.fullName}</td>
+                                            </tr>
+                                        ))
+                                    }
                                 </tbody>
 
                             </table>
@@ -238,141 +242,39 @@ class TimeSheetsManagement extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                        <td><i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i></td>
-                                    </tr>
+                                    {
+                                        listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
+                                            let workSession1 = x.workSession1, workSession2 = x.workSession2;
+                                            return (
+                                                <React.Fragment>
+                                                    <tr>{
+                                                        allDayOfMonth.map((y, indexs) => (
+                                                            <td key={indexs}>
+                                                                {workSession1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
+                                                            </td>
+                                                        ))
+                                                    }
+                                                    </tr>
+                                                    <tr>{
+                                                        allDayOfMonth.map((y, indexs) => (
+                                                            <td key={indexs}>
+                                                                {workSession2[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
+                                                            </td>
+                                                        ))
+                                                    }
+                                                    </tr>
+                                                </React.Fragment>
+                                            )
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <SlimScroll outerComponentId='croll-table' innerComponentId='timesheets' innerComponentWidth={1000} activate={true} />
-
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 <ModalImportTimekeeping />
             </div>
@@ -381,12 +283,14 @@ class TimeSheetsManagement extends Component {
 }
 
 function mapState(state) {
-    const { department } = state;
-    return { department };
+    const { department, timesheets } = state;
+    return { department, timesheets };
 };
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
+    searchTimesheets: TimesheetsActions.searchTimesheets,
+
 };
 
 const connectedTimesheets = connect(mapState, actionCreators)(withTranslate(TimeSheetsManagement));

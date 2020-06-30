@@ -16,7 +16,7 @@ function searchTimesheets(data) {
         dispatch({
             type: TimesheetsConstants.GET_TIMESHEETS_REQUEST
         });
-        TimesheetsService.searchSalary(data)
+        TimesheetsService.searchTimesheets(data)
             .then(res => {
                 dispatch({
                     type: TimesheetsConstants.GET_TIMESHEETS_SUCCESS,
