@@ -1,5 +1,9 @@
-
-const { EducationProgram, Course, OrganizationalUnit, Role } = require('../../../models').schema;
+const {
+    EducationProgram,
+    Course,
+    OrganizationalUnit,
+    Role
+} = require('../../../models').schema;
 
 /**
  * Lấy danh sách tất cả các chương trình đào tạo
@@ -24,13 +28,17 @@ exports.searchEducationPrograms = async (params, company) => {
     if (params.organizationalUnit !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForOrganizationalUnits: {$in: params.organizationalUnit}
+            applyForOrganizationalUnits: {
+                $in: params.organizationalUnit
+            }
         }
     }
     if (params.position !== undefined) {
         keySearch = {
             ...keySearch,
-            applyForPositions: {$in: params.position}
+            applyForPositions: {
+                $in: params.position
+            }
         }
     }
     var totalList = await EducationProgram.count(keySearch);
@@ -57,19 +65,27 @@ exports.searchEducationPrograms = async (params, company) => {
             totalList: total
         }
     }
-    return {totalList, listEducations}
+    return {
+        totalList,
+        listEducations
+    }
 }
 
 /**
  * Thêm mới chương trình đào tạo
- * @data : dữ liệu chương trình đào tạo cần thêm
+ * @data : Dữ liệu chương trình đào tạo cần thêm
  * @company : Id công ty
  */
 exports.createEducationProgram = async (data, company) => {
-    var isEducationProgram = await EducationProgram.findOne({programId: data.programId, company:company}, { _id: 1});
-    if(isEducationProgram !== null){
+    var isEducationProgram = await EducationProgram.findOne({
+        programId: data.programId,
+        company: company
+    }, {
+        _id: 1
+    });
+    if (isEducationProgram !== null) {
         return 'have_exist'
-    } else{
+    } else {
         var createEducation = await EducationProgram.create({
             company: company,
             name: data.name,
@@ -77,8 +93,8 @@ exports.createEducationProgram = async (data, company) => {
             applyForOrganizationalUnits: data.organizationalUnit,
             applyForPositions: data.position,
         });
-        
-        let newEducation =  await EducationProgram.findById(createEducation._id).populate([{
+
+        let newEducation = await EducationProgram.findById(createEducation._id).populate([{
             path: 'applyForOrganizationalUnits',
             model: OrganizationalUnit
         }, {
@@ -88,9 +104,12 @@ exports.createEducationProgram = async (data, company) => {
         let totalList = await Course.count({
             educationProgram: newEducation._id
         });
-        return {...newEducation._doc, totalList}
+        return {
+            ...newEducation._doc,
+            totalList
+        }
     }
-    
+
 }
 
 /**
@@ -107,7 +126,7 @@ exports.deleteEducationProgram = async (id) => {
 /**
  * Cập nhật thông tin chương trình đào tạo
  * @id : Id chương trình đào tạo cần chỉnh sửa
- * @data : dữ liệu chỉnh sửa chương trình đào tạo
+ * @data : Dữ liệu chỉnh sửa chương trình đào tạo
  */
 exports.updateEducationProgram = async (id, data) => {
     var eduacationChange = {
@@ -122,7 +141,7 @@ exports.updateEducationProgram = async (id, data) => {
         $set: eduacationChange
     });
 
-    let updateEducation= await EducationProgram.findOne({
+    let updateEducation = await EducationProgram.findOne({
         _id: id
     }).populate([{
         path: 'applyForOrganizationalUnits',
@@ -135,5 +154,8 @@ exports.updateEducationProgram = async (id, data) => {
     let totalList = await Course.count({
         educationProgram: updateEducation._id
     });
-    return {...updateEducation._doc, totalList}
+    return {
+        ...updateEducation._doc,
+        totalList
+    }
 }
