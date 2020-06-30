@@ -34,7 +34,7 @@ class Notification extends Component {
                                 {
                                     notifications.receivered.list.filter(notification => !notification.readed).map(notification => {
                                         return <li key={notification._id}>
-                                            <Link to="/notifications">
+                                            <Link to="/notifications">  
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :
                                                     notification.level === 'general' ? <i className="fa fa-bell text-green" /> :

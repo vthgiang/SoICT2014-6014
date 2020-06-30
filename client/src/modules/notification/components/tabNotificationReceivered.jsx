@@ -63,7 +63,7 @@ class TabNotificationReceivered extends Component {
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
-                    <PaginateBar pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
+                    <PaginateBar id="receivered" pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
                 </div>
             </React.Fragment>
          );

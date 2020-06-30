@@ -1,4 +1,4 @@
-const {OrganizationalUnit, UserRole, Notification, ManualNotification} = require('../../models').schema;
+const {OrganizationalUnit, UserRole, Notification, ManualNotification, Role, User} = require('../../models').schema;
 
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
@@ -59,16 +59,20 @@ exports.createManualNotification = async (data) => {
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
     var department = await OrganizationalUnit.findById(departmentId)
         .populate([
-            {path: 'dean', model: Role, populate: { path: 'users', model: UserRole}},
-            {path: 'viceDean', model: Role, populate: { path: 'users', model: UserRole}},
-            {path: 'employee', model: Role, populate: { path: 'users', model: UserRole}}
+            { path: 'deans', model: Role, populate: { path: 'users', model: UserRole}},
+            { path: 'viceDeans', model: Role, populate: { path: 'users', model: UserRole}},
+            { path: 'employees', model: Role, populate: { path: 'users', model: UserRole}}
         ]);
     var users = [];
-    users = users.concat(
-        department.dean.users.map(user => user.userId), 
-        department.viceDean.users.map(user => user.userId), 
-        department.employee.users.map(user => user.userId)
-    );
+    for (let i = 0; i < department.deans.length; i++) {
+        users = [...users, ...department.deans[i].users.map(user=>user.userId)]
+    }
+    for (let j = 0; j < department.viceDeans.length; j++) {
+        users = [...users, ...department.viceDeans[j].users.map(user=>user.userId)]
+    }
+    for (let k = 0; k < department.employees.length; k++) {
+        users = [...users, ...department.employees[k].users.map(user=>user.userId)]
+    }
 
     return users;
 }
@@ -76,11 +80,15 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
 // Tạo notification và gửi đến cho user
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
+    console.log("User nhận thông báo1:", usersArr)
     for (let i = 0; i < data.organizationalUnits.length; i++) {
         let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
         let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
         usersArr = await usersArr.concat(userArr);
     }
+
+    return usersArr;
+    console.log("User nhận thông báo2:", usersArr)
 
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());
