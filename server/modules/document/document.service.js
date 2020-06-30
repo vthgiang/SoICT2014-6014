@@ -88,7 +88,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    const doc = await Document.create({
+    const newDoc = {
         company,
         name: data.name,
         domains: data.domains,
@@ -106,16 +106,13 @@ exports.createDocument = async (company, data) => {
             file: data.file,
             scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
         }],
-
-        relationshipDescription: data.relationshipDescription !== 'undefined' ? data.relationshipDescription : undefined ,
-        relationshipDocuments: data.relationshipDocuments !== 'undefined' ? data.relationshipDocuments : undefined,
-
         roles: data.roles,
-
-        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo !== 'undefined'?data.archivedRecordPlaceInfo:undefined ,
-        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
-        archivedRecordPlaceManager: data.archivedRecordPlaceManager !== 'undefined' ? data.archivedRecordPlaceManager : undefined
-    });
+    }
+    if(data.relationshipDescription !== 'undefined') newDoc.relationshipDescription = data.relationshipDescription;
+    if(data.archivedRecordPlaceInfo !== 'undefined') newDoc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo;
+    if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined') newDoc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit;
+    
+    const doc = await Document.create(newDoc);
 
     return await Document.findById(doc._id).populate([
         { path: 'category', model: DocumentCategory},
