@@ -775,13 +775,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
             description = description === '' ? description + 'Mức độ hoàn thành mới: ' +  progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' +  progress + "%";
         }
 
-        this.props.addTaskLog({
-            createdAt: Date.now(),
-            taskId: currentTask._id, 
-            creator: getStorage("userId"), 
-            title: title, 
-            description: description,
-        })
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: currentTask._id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
     }
     
     save = () => {

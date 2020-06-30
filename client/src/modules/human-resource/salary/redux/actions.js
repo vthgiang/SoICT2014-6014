@@ -5,8 +5,6 @@ export const SalaryActions = {
     createSalary,
     deleteSalary,
     updateSalary,
-    // checkSalary,
-    // checkArraySalary,
     importSalary
 };
 
