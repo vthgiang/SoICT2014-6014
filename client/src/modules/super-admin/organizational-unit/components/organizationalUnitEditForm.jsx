@@ -18,7 +18,7 @@ class DepartmentEditForm extends Component {
 
     handleAddDean = (e) => {
         this.setState({
-            deans: [...this.state.deans, {}]
+            deans: [...this.state.deans, {name:""}]
         });
     }
 
@@ -34,7 +34,7 @@ class DepartmentEditForm extends Component {
 
     handleAddViceDean = (e) => {
         this.setState({
-            viceDeans: [...this.state.viceDeans, {}]
+            viceDeans: [...this.state.viceDeans, {name:""}]
         });
     }
 
@@ -50,7 +50,7 @@ class DepartmentEditForm extends Component {
 
     handleAddEmployee = (e) => {
         this.setState({
-            employees: [...this.state.employees, {}]
+            employees: [...this.state.employees, {name:""}]
         });
     }
 
@@ -134,7 +134,7 @@ class DepartmentEditForm extends Component {
                                                 className="form-control" 
                                                 name={`dean${index}`}
                                                 placeholder={ translate('manage_department.dean_example')}
-                                                defaultValue={dean.name}
+                                                value={dean.name}
                                                 onChange={(e)=>this.handleChangeDean(e, index)}
                                             />
                                                 <a href="#delete-dean" 
@@ -164,7 +164,7 @@ class DepartmentEditForm extends Component {
                                                 className="form-control" 
                                                 name={`vicedean${index}`}
                                                 placeholder={ translate('manage_department.vice_dean_example')}
-                                                defaultValue={vicedean.name}
+                                                value={vicedean.name}
                                                 onChange={(e)=>this.handleChangeViceDean(e, index)}
                                             />
                                                 <a href="#delete-dean" 
@@ -194,7 +194,7 @@ class DepartmentEditForm extends Component {
                                                 className="form-control" 
                                                 name={`employee${index}`}
                                                 placeholder={ translate('manage_department.employee_example')}
-                                                defaultValue={employee.name}
+                                                value={employee.name}
                                                 onChange={(e)=>this.handleChangeEmployee(e, index)}
                                             />
                                                 <a href="#delete-dean" 
