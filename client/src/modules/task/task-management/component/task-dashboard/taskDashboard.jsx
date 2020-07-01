@@ -352,59 +352,62 @@ class TaskDashboard extends Component {
                 </div>
 
                 <div className="row">
-                    {
-                        (tasks && tasks.tasksbyuser && tasks.tasksbyuser.expire.length !== 0) &&
-                        <div className="col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">Công việc quá hạn</div>
-                                </div>
-                                <div className="box-body" style={{ height: "300px" }}>
-                                    <ul className="todo-list">
-                                        {
-                                            tasks.tasksbyuser.expire.map(item =>
-                                                <li>
-                                                    <span className="handle">
-                                                        <i className="fa fa-ellipsis-v" />
-                                                        <i className="fa fa-ellipsis-v" />
-                                                    </span>
-                                                    <span className="text">{item.task.name}</span>
-                                                    <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays}days</small>
-                                                </li>
-                                            )
-                                        }
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    }
 
-                    {
-                        (tasks && tasks.tasksbyuser && tasks.tasksbyuser.deadlineincoming.length !== 0) &&
-                        <div className="col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">Công việc sắp hết hạn</div>
-                                </div>
-                                <div className="box-body" style={{ height: "300px" }}>
-                                    <ul className="todo-list">
-                                        {
-                                            tasks.tasksbyuser.deadlineincoming.map(item =>
-                                                <li>
-                                                    <span className="handle">
-                                                        <i className="fa fa-ellipsis-v" />
-                                                        <i className="fa fa-ellipsis-v" />
-                                                    </span>
-                                                    <span className="text">{item.task.name}</span>
-                                                    <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays}days</small>
-                                                </li>
-                                            )
-                                        }
-                                    </ul>
-                                </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Công việc quá hạn</div>
+                            </div>
+
+                            <div className="box-body" style={{ height: "300px" }}>
+                                {
+                                    (tasks && tasks.tasksbyuser && tasks.tasksbyuser.expire.length !== 0) ?
+                                        <ul className="todo-list">
+                                            {
+                                                tasks.tasksbyuser.expire.map(item =>
+                                                    <li>
+                                                        <span className="handle">
+                                                            <i className="fa fa-ellipsis-v" />
+                                                            <i className="fa fa-ellipsis-v" />
+                                                        </span>
+                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
+                                                        <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} days</small>
+                                                    </li>
+                                                )
+                                            }
+                                        </ul> : "Không có công việc quá hạn"
+                                }
                             </div>
                         </div>
-                    }
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Công việc sắp hết hạn</div>
+                            </div>
+                            <div className="box-body" style={{ height: "300px" }}>
+                                {
+                                    (tasks && tasks.tasksbyuser && tasks.tasksbyuser.deadlineincoming.length !== 0) ?
+                                        <ul className="todo-list">
+                                            {
+                                                tasks.tasksbyuser.deadlineincoming.map(item =>
+                                                    <li>
+                                                        <span className="handle">
+                                                            <i className="fa fa-ellipsis-v" />
+                                                            <i className="fa fa-ellipsis-v" />
+                                                        </span>
+                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                        <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} days</small>
+                                                    </li>
+                                                )
+                                            }
+                                        </ul> : "Không có công việc nào sắp hết hạn"
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
                 <div className="row">
                     <div className="col-xs-12">
