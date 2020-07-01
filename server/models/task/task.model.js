@@ -90,6 +90,9 @@ const TaskSchema = new Schema({
         date: { // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
             type: Date
         },
+        progress: {
+            type: Number,
+        },
         kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
             employee:{ // Người thực hiện A nào đó
                 type: Schema.Types.ObjectId,
