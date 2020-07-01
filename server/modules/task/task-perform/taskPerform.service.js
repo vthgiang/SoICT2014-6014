@@ -55,10 +55,12 @@ exports.startTimesheetLog = async (body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (body) => {
+    console.log(body)
     var timer = await Task.findOneAndUpdate(
         { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
         {
-            $set: {
+            $set: 
+            {
                 "timesheetLogs.$.stoppedAt": body.stoppedAt,
                 "timesheetLogs.$.duration": body.duration,
                 "timesheetLogs.$.description": body.description,
@@ -76,7 +78,8 @@ exports.createCommentOfTaskAction = async (body,files) => {
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
             {
-                "$push": {
+                "$push": 
+                {
                     "taskActions.$.comments":
                     {
                         creator: body.creator,
@@ -96,9 +99,9 @@ exports.createCommentOfTaskAction = async (body,files) => {
 /**
  * Sửa nội dung bình luận hoạt động
  */
-exports.editCommentOfTaskAction = async (params,body) => {
+exports.editCommentOfTaskAction = async (params,body,files) => {
     const now = new Date()
-    var action = await Task.updateOne(
+    let action = await Task.updateOne(
         { "taskActions.comments._id": params.id },
         {
             $set:
@@ -106,16 +109,34 @@ exports.editCommentOfTaskAction = async (params,body) => {
                 "taskActions.$.comments.$[elem].description": body.description,
                 "taskActions.$.comments.$[elem].updatedAt": now
             }
-        },
+        },    
         {
-            arrayFilters: [
+            arrayFilters: 
+            [
                 {
                     "elem._id": params.id
                 }
             ]
         }
     )
-    var task = await Task.findOne({"taskActions.comments._id": params.id}).populate([
+    let action1 =await Task.updateOne(
+        { "taskActions.comments._id": params.id },
+        {
+            $push: 
+            {
+                "taskActions.$.comments.$[elem].files": files
+            }
+        },
+        {
+            arrayFilters: 
+            [
+                {
+                    "elem._id": params.id
+                }
+            ]
+        }
+    )
+    let task = await Task.findOne({"taskActions.comments._id": params.id}).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar '},
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
@@ -166,7 +187,13 @@ exports.createTaskAction = async (body,files) => {
     }
     // var actionTaskabc = await Task.findById(req.body.task)
     var taskAction1 = await Task.findByIdAndUpdate(body.task,
-        { $push: { taskActions: actionInformation } }, { new: true }
+        { 
+            $push: 
+            { 
+                taskActions: actionInformation 
+            } 
+        }, 
+        { new: true }
     )
    
     var task = await Task.findOne({ _id: body.task }).populate([
@@ -184,14 +211,16 @@ exports.createTaskAction = async (body,files) => {
 /**
  * Sửa hoạt động của cộng việc
  */
-exports.editTaskAction = async (id,body) => {
+exports.editTaskAction = async (id,body,files) => {
     var action = await Task.updateOne(
         { "taskActions._id": id },
         {
-            $set: {
+            $set: 
+            {
                 "taskActions.$.description": body.description
             }
-        }
+        },
+        {}
     )
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
@@ -217,7 +246,12 @@ exports.deleteTaskAction = async (params) => {
 
     let action = await Task.update(
         { "taskActions._id": params.id },
-        { $pull: { taskActions: { _id: params.id } } },
+        {
+            $pull: 
+            { 
+                taskActions: { _id: params.id } 
+            } 
+        },
         { safe: true }
     )
     //xoa file sau khi xoa hoat dong
@@ -231,23 +265,6 @@ exports.deleteTaskAction = async (params) => {
     { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
 
     return task.taskActions ;
-}
-// Test insert result info task
-exports.createResultInfoTask = async (req, res) => {
-    try {
-        // Check nếu như là kiểu date thì ...
-        var resultInfoTask1 = await TaskResultInformation.create({
-            member: req.body.member,
-            infotask: req.body.infotask,
-            value: req.body.value
-        });
-        res.json({
-            message: "Thêm bình luận thành công",
-            resultInfoTask1: resultInfoTask1
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
 }
 
 /**
@@ -268,7 +285,9 @@ exports.createResultInformationTask = async (req, res) => {
             }))
             // Cập nhật thông tin công việc
             task = await Task.findByIdAndUpdate(
-                req.body.task, { resultInfo: listResultInfoTask, point: req.body.systempoint }, { new: true }
+                req.body.task, 
+                { resultInfo: listResultInfoTask, point: req.body.systempoint },
+                { new: true }
             );
         }
 
@@ -330,7 +349,8 @@ exports.createTaskResult = async (result, taskID, evaluateID, date) => {
                 // "evaluations.date": date // req.body.date // "2020-04-22T16:06:17.145Z"
             }, 
             {
-                $push: {
+                $push:
+                {
                     "evaluations.$.results": resultTask
                 } 
             }, 
@@ -354,14 +374,19 @@ exports.editTaskResult = async (listResult,taskid) => {
                     "evaluations.results._id" : item._id,
                     // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
                 },
-                { $set: {
-                    "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
-                    "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
-                    "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
-                }},
-                { arrayFilters: [{
-                        "elem._id" : item._id,
-                    }]
+                { 
+                    $set: 
+                    {
+                        "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
+                        "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
+                        "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
+                    }
+                },
+                {
+                    arrayFilters: 
+                    [
+                        { "elem._id" : item._id}
+                    ]
                 } 
             );
         })
@@ -379,7 +404,14 @@ exports.createTaskComment = async (body,files) => {
         files:files
     }
     var taskComment1 = await Task.findByIdAndUpdate(body.task,
-        { $push: { taskComments: commentInformation } }, { new: true });
+        { 
+            $push: 
+            { 
+                taskComments: commentInformation 
+            } 
+        }, 
+        { new: true }
+    );
     var task = await Task.findOne({_id: body.task}).populate([
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
@@ -394,7 +426,8 @@ exports.editTaskComment = async (params,body) => {
     var taskComment = await Task.updateOne(
         { "taskComments._id": params.id },
         {
-            $set: {
+            $set: 
+            {
                 "taskComments.$.description": body.description
             }
         }
@@ -440,7 +473,8 @@ exports.createCommentOfTaskComment = async (body,files) => {
     var taskcomment = await Task.updateOne(
         {"taskComments._id": body.id},
         {
-            "$push": {
+            "$push": 
+            {
                 "taskComments.$.comments":
                 {
                     creator: body.creator,  
@@ -475,7 +509,8 @@ exports.editCommentOfTaskComment = async (params,body) => {
             }
         },
         {
-            arrayFilters: [
+            arrayFilters:
+            [
                 {
                     "elem._id": params.id
                 }
@@ -507,7 +542,12 @@ exports.deleteCommentOfTaskComment = async (params) => {
     ])  
     let comment = await Task.update(
         { "taskComments.comments._id": params.id },
-        { $pull: { "taskComments.$.comments" : {_id : params.id} } },
+        { 
+            $pull: 
+            { 
+                "taskComments.$.comments" : {_id : params.id} 
+            } 
+        },
         { safe: true })
 
     //xoa file sau khi xoa binh luan    
@@ -529,63 +569,93 @@ exports.deleteCommentOfTaskComment = async (params) => {
 exports.evaluationAction = async (id,body) => {
     // đánh giá
     if(body.type === 0){
-        var task1 = await Task.findOne({ "taskActions._id": id })
-    let idAccountableEmployee = task1.accountableEmployees.find(elem => body.creator===elem);
-    if (idAccountableEmployee) {
-        var evaluationAction = await Task.updateOne(
-            {"taskActions._id":id},
-            {
-                "$push": {
-                    "taskActions.$.evaluations":
+        let task1 = await Task.findOne({ "taskActions._id": id })
+        let rating1= await Task.aggregate([
+            { $match: {"taskActions._id": mongoose.Types.ObjectId(id)}},
+            { $unwind: "$taskActions"},
+            { $replaceRoot: {newRoot: "$taskActions"}},
+            { $match: {"_id": mongoose.Types.ObjectId(id)}},
+            { $unwind: "$evaluations"},
+            { $replaceRoot: {newRoot: "$evaluations"}}
+        ])
+        //let rating = []
+        // rating1.forEach(x=>{
+        //     let idAccountableEmployee = task1.accountableEmployees.find(elem => x.creator===elem);
+        //     if(idAccountableEmployee){
+        //         rating.push(x.rating)
+        //     }
+        // })
+        // console.log(task1.accountableEmployees)
+        // console.log(body.creator)
+        //check xem th đấnh giá có là người phê duyệt không
+        var idAccountableEmployee = task1.accountableEmployees.some(elem =>body.creator == elem);
+        console.log(idAccountableEmployee)
+        if (idAccountableEmployee) {
+            let evaluationAction = await Task.updateOne(
+                {"taskActions._id":id},
+                {
+                    $push: 
                     {
-                        creator: body.creator,
-                        rating: body.rating,
+                        "taskActions.$.evaluations":
+                        {
+                            creator: body.creator,
+                            rating: body.rating,
+                        }
+                    },
+                },
+                {$new: true}
+            )
+            console.log(id)
+            console.log(body.rating)
+            let evaluationActionRating = await Task.updateOne(
+                {"taskActions._id":id},
+                {
+                    $set: 
+                    {
+                        "taskActions.$.rating": body.rating
                     }
                 },
-            },
-            {$new: true}
-        )
-
-        var evaluationActionRating = await Task.update(
-            {"taskActions._id":id},
-            {
-                $set: {"taskActions.$.rating": body.rating}
-            },
-            {$new: true}
-        )
-    } else {
-        var evaluationAction1 = await Task.update(
-            {"taskActions._id":id},
-            {
-                "$push": {
-                    "taskActions.$.evaluations":
+                {$new: true}
+            )
+                console.log("hihihhihihihihihi")
+        } else {
+            var evaluationAction1 = await Task.update(
+                {"taskActions._id":id},
+                {
+                    "$push": 
                     {
-                        creator: body.creator,
-                        rating: body.rating,
+                        "taskActions.$.evaluations":
+                        {
+                            creator: body.creator,
+                            rating: body.rating,
+                        }
                     }
+                },
+                {$new: true}
+            )
+        }
+        // đánh giá lại
+        }else if(body.type === 1){
+            let taskAction = await Task.update(
+                {$and: [{"taskActions._id":id},{"taskActions.evaluations.creator":body.creator}]},
+                {
+                    $set: 
+                    {
+                        "taskActions.$[item].evaluations.$[elem].rating": body.rating
+                    }
+                },
+                { arrayFilters: 
+                    [
+                        {
+                            "elem.creator": body.creator
+                        },
+                        {
+                            "item._id": id
+                        }
+                    ]
                 }
-            },
-            {$new: true}
-        )
-    }
-    // đánh giá lại
-    }else if(body.type === 1){
-        let taskAction = await Task.update(
-            {$and: [{"taskActions._id":id},{"taskActions.evaluations.creator":body.creator}]},
-            {
-                $set: {"taskActions.$[item].evaluations.$[elem].rating": body.rating}
-            },
-            { arrayFilters: [
-                    {
-                        "elem.creator": body.creator
-                    },
-                    {
-                        "item._id": id
-                    }
-                ]
-            }
-        )
-    }
+            )
+        }
 
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
@@ -595,20 +665,6 @@ exports.evaluationAction = async (id,body) => {
     
     return task.taskActions;
 }
-// /**
-//  * Đánh giá lại hành động
-//  */
-// exports.evaluationActionAgain = async (id,body) => {
-//     console.log(body)
-//     console.log(id)
-   
-//     let task = await Task.findOne({ "taskActions._id": id }).populate([
-//         { path: "taskActions.creator", model: User,select: 'name email avatar avatar ' },
-//         { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
-//         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar '}
-//     ]);
-//     return task.taskActions;
-// }
 /**
  * Xác nhận hành động
  */
@@ -662,21 +718,19 @@ exports.addTaskLog = async (data) => {
     var task = await Task.findByIdAndUpdate(
         taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
-    var taskLog = task.logs;
+    var taskLog = task.logs.reverse();
 
     return taskLog;
 }
 
 /**
- * Thêm nhật ký cho một công việc
+ * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (id) => {
     var task = await Task.findById(id).populate("logs.creator")
     
-    return task.logs;
+    return task.logs.reverse();
 }
-
-
 
 /**
  * hàm convert dateISO sang string
@@ -1521,8 +1575,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                 }
             )
             
-        } else {
-            
+        } else {          
             await Task.updateOne(
                 {
                     _id: taskId,
@@ -1703,4 +1756,31 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
     return newTask;
+}
+/**
+ * Xóa file của công việc
+ */
+exports.deleteFile = async (params) => {
+    
+    let file = await Task.aggregate([
+        {$match: {"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$taskActions"},
+        {$replaceRoot: {newRoot: "$taskActions"}},
+        {$match: {"files._id":mongoose.Types.ObjectId(params.id)}},
+        {$unwind: "$files"},
+        {$replaceRoot:{newRoot: "$files"}},
+        {$match:{"_id":mongoose.Types.ObjectId(params.id)}}
+        ])
+    fs.unlinkSync(file[0].url)
+    let action = await Task.update(
+        { "taskActions._id": params.actionId },
+        { $pull: {"taskActions.$.files":{_id:params.id}}},
+        { safe: true }
+    )
+    let task = await Task.findOne({ "taskActions._id": params.actionId }).populate([
+    { path: "taskActions.creator", model: User,select: 'name email avatar' },
+    { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
+    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
+    console.log(task.taskActions)
+    return task.taskActions ;
 }

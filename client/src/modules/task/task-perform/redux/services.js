@@ -34,6 +34,7 @@ export const performTaskService = {
     downloadFile,
     uploadFile,
     addTaskLog,
+    deleteFile,
     getTaskLog,
 
     editTaskByAccountableEmployees,
@@ -245,7 +246,12 @@ function uploadFile(task,data) {
         data : data
     }, false, true, 'task.task_perform');  
 };
-
+function deleteFile(id,actionId) {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/files/${id}/${actionId}`,
+        method : 'DELETE'
+    }, false, true, 'task.task_perform');  
+};
 // Hàm thêm nhật ký cho một công việc
 function addTaskLog(log) {    
     return sendRequest({

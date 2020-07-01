@@ -9,7 +9,7 @@ const SalarySchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -17,11 +17,11 @@ const SalarySchema = new Schema({
     },
     month: {
         type: Date,
-        require: true,
+        required: true,
     },
     mainSalary: { // Lương chính
         type: String,
-        require: true,
+        required: true,
     },
     unit: { // Đơn vị tiền lương(VND hoặc USD)
         type: String,

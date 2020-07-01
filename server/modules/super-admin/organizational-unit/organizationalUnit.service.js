@@ -108,7 +108,7 @@ exports.getDiffRolesInOrganizationalUnit = async (oldArr, newArr) => {
  * @employeeId id nhân viên đơn vị
  * @companyID id công ty
  */
-exports.createOrganizationalUnit = async(data, deanArr, viceDeanArr, employeeArr, companyId) => {
+exports.createOrganizationalUnit = async(data,companyId, deanArr=[], viceDeanArr=[], employeeArr=[]) => {
     const check = await OrganizationalUnit.findOne({name: data.name, company: companyId});
     if(check !== null) throw['department_name_exist'];
     const department = await OrganizationalUnit.create({

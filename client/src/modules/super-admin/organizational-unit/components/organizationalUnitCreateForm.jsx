@@ -11,9 +11,9 @@ class DepartmentCreateForm extends Component {
         this.state = { 
             departmentName: '',
             departmentDescription: '',
-            deans: [''],
-            viceDeans: [''],
-            employees: ['']
+            deans: [""],
+            viceDeans: [""],
+            employees: [""]
         }
     }
 
@@ -112,7 +112,7 @@ class DepartmentCreateForm extends Component {
                             <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
                             <div className={`form-group ${departmentDeanError===undefined?"":"has-error"}`}>
                                 <a href="#add-dean" className="text-green pull-right" onClick={this.handleAddDean}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
+                                <label>{ translate('manage_department.dean_name') }</label>
                                 {
                                     this.state.deans.length > 1 ?
                                     this.state.deans.map((dean, index)=>{
@@ -141,7 +141,7 @@ class DepartmentCreateForm extends Component {
 
                             <div className="form-group">
                                 <a href="#add-vicedean" className="text-green pull-right" onClick={this.handleAddViceDean}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
+                                <label>{ translate('manage_department.vice_dean_name') }</label>
                                 {
                                     this.state.viceDeans.length > 1 ?
                                     this.state.viceDeans.map((vicedean, index)=>{
@@ -170,7 +170,7 @@ class DepartmentCreateForm extends Component {
 
                             <div className="form-group">
                                 <a href="#add-employee" className="text-green pull-right" onClick={this.handleAddEmployee}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
+                                <label>{ translate('manage_department.employee_name') }</label>
                                 {
                                     this.state.employees.length > 1 ?
                                     this.state.employees.map((employee, index)=>{
@@ -190,7 +190,7 @@ class DepartmentCreateForm extends Component {
                                         </div>
                                     }): <input type="text" 
                                         className="form-control" 
-                                        placeholder={ translate('manage_department.dean_example')}
+                                        placeholder={ translate('manage_department.employee_example')}
                                         value={this.state.employees[0]}
                                         onChange={(e)=>this.handleChangeEmployee(e, 0)}
                                     />

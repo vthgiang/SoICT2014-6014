@@ -223,7 +223,15 @@ exports.editTaskAction = async (req,res) =>{
         evaluationAction(req,res);
     }else
     try {
-        var taskAction = await PerformTaskService.editTaskAction(req.query.edit,req.body);
+        var files=[] ;
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var taskAction = await PerformTaskService.editTaskAction(req.query.edit,req.body,files);
         await LogInfo(req.user.email, ` edit task action  `,req.user.company)
         res.status(200).json({
             success: true,
@@ -539,7 +547,27 @@ exports.uploadFile = async(req,res) => {
         })
     }
 }
-
+/**
+ * Xóa tài liệu công việc
+ */
+exports.deleteFile = async(req,res) => {
+    try {
+        var comment = await PerformTaskService.deleteFile(req.params);
+        await LogInfo(req.user.email, ` delete file of task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_success'],
+            content: comment
+        })
+    } catch (error) {
+        await LogError(req.user.email, `delete file of task  `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_file_fail'],
+            content: error
+        })
+    }
+}
 /**
  * Thêm nhật ký cho một công việc
  */

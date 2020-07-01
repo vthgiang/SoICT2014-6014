@@ -9,34 +9,23 @@ const TimesheetsSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: Company,
+        required: true,
     },
-    workSession1: [{
-        day: {
-            type: String,
-            require: true,
-        },
-        status: {
-            type: String,
-            require: true,
-            enum: ["true", "false", "null"],
-        }
+    month: {
+        type: Date,
+        required: true,
+    },
+    workSession1: [{ // Ca làm việc 1 (ví dụ buổi sáng), true là làm việc, false là nghỉ việc
+        type: Boolean,
     }],
-    workSession2: {
-        day: {
-            type: String,
-            require: true,
-        },
-        status: {
-            type: String,
-            require: true,
-            enum: ["true", "false", "null"],
-        }
-    },
+    workSession2: [{ // Ca làm việc 2 (ví dụ buổi chiều), true là làm việc, false là nghỉ việc
+        type: Boolean,
+    }],
 }, {
     timestamps: true,
 });

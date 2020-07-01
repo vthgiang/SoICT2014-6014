@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import TreeSelect from 'rc-tree-select';
+// import TreeSelect from 'rc-tree-select';
 
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            domainParent: []
+        }
     }
 
     handleName = (e) => {
@@ -26,23 +28,23 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ documentParent: value });
+        this.setState({ domainParent: value });
     };
 
     save = () => {
-        const {documentName, documentDescription, documentParent} = this.state;
+        const {documentName, documentDescription, domainParent} = this.state;
         this.props.createDocumentDomain({
             name: documentName,
             description: documentDescription,
-            parent: documentParent
+            parent: domainParent
         });
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.documentParent !== prevState.documentParent && nextProps.documentParent !== undefined) {
+        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined) {
             return {
                 ...prevState,
-                documentParent: nextProps.documentParent
+                domainParent: nextProps.domainParent
             } 
         } else {
             return null;
@@ -52,8 +54,7 @@ class CreateForm extends Component {
     render() {
         const {translate, documents}=this.props;
         const domains = documents.administration.domains.tree;
-        const {documentParent} = this.state;
-
+        console.log("State: ", this.state)
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
@@ -64,35 +65,19 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-document-domain">
-                                <div className="form-group">
-                                <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" onChange={this.handleName}/>
-                            </div>
                             <div className="form-group">
-                                <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                                <div>
-                                <TreeSelect
-                                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                                    style={{ width: '100%' }}
-                                    transitionName="rc-tree-select-dropdown-slide-up"
-                                    choiceTransitionName="rc-tree-select-selection__choice-zoom"
-                                    placeholder={<i>{translate('document.administration.domains.select_parent')}</i>}
-                                    showSearch
-                                    allowClear
-                                    treeLine
-                                    value={documentParent}
-                                    treeData={domains}
-                                    treeNodeFilterProp="label"
-                                    filterTreeNode={false}
-                                    onChange={this.handleParent}
-                                />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                    <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
-                                    <textarea type="text" className="form-control" onChange={this.handleDescription}/>
-                                </div>
-                                </form>
+                            <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" onChange={this.handleName}/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
+                            <TreeSelect dataTree={domains} handleChange={this.handleParent}/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
+                            <textarea style={{minHeight: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
+                        </div>
+                    </form>
                 </DialogModal>
             </React.Fragment>
          );

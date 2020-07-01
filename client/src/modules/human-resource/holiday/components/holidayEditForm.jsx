@@ -104,7 +104,7 @@ class HolidayEditForm extends Component {
 
     render() {
         const { translate, holiday } = this.props;
-        const { startDate, endDate, reason, errorOnStartDate, errorOnEndDate, errorOnReason } = this.state;
+        const { startDate, endDate, reason, errorOnStartDate, errorOnEndDate, errorOnReason, _id } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -120,7 +120,7 @@ class HolidayEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_start_date"
+                                    id={`edit_start_date${_id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -129,7 +129,7 @@ class HolidayEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_end_date"
+                                    id={`edit_end_date${_id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
