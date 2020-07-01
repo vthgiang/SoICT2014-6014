@@ -113,7 +113,7 @@ class ModalShowAutoPointInfo extends Component {
                                 {
                                     taskInformations && taskInformations.map(e => {
                                         if(e.type === 'Number'){
-                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`].value === undefined) ? "Chưa có giá trị" : info[`${e.code}`].value}</li>
+                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value: "Chưa có giá trị" }</li>
                                         }
                                     })
                                 }

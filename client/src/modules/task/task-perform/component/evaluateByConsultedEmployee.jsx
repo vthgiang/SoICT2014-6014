@@ -28,6 +28,7 @@ class EvaluateByConsultedEmployee extends Component {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
             if(res) point = res.employeePoint ? res.employeePoint : undefined;
             date = evaluations.date;
+            progress = evaluations.progress;
         }
 
         let infoEval = evaluations? evaluations.taskInformations : [];
