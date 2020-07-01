@@ -290,6 +290,7 @@ exports.getDocumentDomains = async (company) => {
             id: domain._id.toString(),
             key: domain._id.toString(),
             value: domain._id.toString(),
+            label: domain.name,
             title: domain.name,
             parent_id: domain.parent !== undefined ? domain.parent.toString() : null
         }

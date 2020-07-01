@@ -157,9 +157,9 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                                <div class="box-title">Phân bố KPI cá nhân tháng {this.state.currentMonth}</div>
+                                <div class="box-title">Phân bố KPI cá nhân</div>
                             </div>
-                            <div className="box-body">
+                            <div className="box-body qlcv">
                                 <DistributionOfEmployeeKpiChart/>
                             </div>
                         </div>
