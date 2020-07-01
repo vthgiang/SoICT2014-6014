@@ -437,17 +437,6 @@ class GeneralTab extends Component {
 
     }
 
-    // string2literal = (value) => {
-    //     var maps = {
-    //         "NaN": NaN,
-    //         "null": null,
-    //         "undefined": undefined,
-    //         "Infinity": Infinity,
-    //         "-Infinity": -Infinity
-    //     };
-    //     return ((value in maps) ? maps[value] : value);
-    // };
-
     render() {
         const { id, translate, user, assetType } = this.props;
 
@@ -501,20 +490,22 @@ class GeneralTab extends Component {
                                         <ErrorLabel content={errorOnSerial} />
                                     </div>
 
-                                    <div className={`form-group`}>
-                                        <label>Loại tài sản</label>
+                                    <div className={`form-group${errorOnAssetType === undefined ? "" : "has-error"}`}>
+                                        <label>Loại tài sản<span className="text-red">*</span></label>
                                         <div>
                                             <div id="assetTypeBox">
                                                 <SelectBox
                                                     id={`assetType${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
-                                                    items={assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })}
+                                                    items={[ { value: '', text: '---Chọn loại tài sản---' },...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
+                                                    // items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                                     onChange={this.handleAssetTypeChange}
                                                     value={assetTypes}
                                                     multiple={false}
                                                 />
                                             </div>
+                                            <ErrorLabel content={errorOnAssetType} />
                                         </div>
                                     </div>
 
@@ -538,27 +529,26 @@ class GeneralTab extends Component {
                                         <ErrorLabel content={errorOnPurchaseDate} />
                                     </div>
 
-                                    <div className={`form-group`}>
-                                        <label>Người quản lý</label>
-                                        <div>
-                                            <div id="managedByBox">
-                                                <SelectBox
-                                                    id={`managedBy${id}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
-                                                    onChange={this.handleManagedByChange}
-                                                    value={managedBy}
-                                                    multiple={false}
-                                                />
-                                            </div>
+                                    <div className={`form-group${errorOnManagedBy === undefined ? "" : "has-error"}`}>
+                                        <label>Người duy trì<span className="text-red">*</span></label>
+                                        <div id="managedByBox">
+                                            <SelectBox
+                                                id={`managedBy${id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                                onChange={this.handleManagedByChange}
+                                                value={managedBy}
+                                                multiple={false}
+                                            />
                                         </div>
+                                        <ErrorLabel content={errorOnManagedBy} />
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className={`form-group`}>
-                                        <label>Người được giao sử dụng</label>
+                                        <label>Người vận hành</label>
                                         <div>
                                             <div id="assignedToBox">
                                                 <SelectBox
@@ -611,6 +601,7 @@ class GeneralTab extends Component {
                                             <option value="Sẵn sàng sử dụng">Sẵn sàng sử dụng</option>
                                             <option value="Đang sử dụng">Đang sử dụng</option>
                                             <option value="Hỏng hóc">Hỏng hóc</option>
+                                            <option value="Hỏng hóc">Thanh lý</option>
                                             <option value="Mất">Mất</option>
                                         </select>
                                     </div>

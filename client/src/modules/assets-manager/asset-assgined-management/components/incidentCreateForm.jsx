@@ -12,7 +12,7 @@ class IncidentCreateForm extends Component {
         this.state = {
             incidentCode: "",
             type: "Hỏng hóc",//phân loại: 1. Hỏng hóc, 2. báo mất
-            asset: "",
+            // asset: "",
             reportedBy: "", //người báo cáo
             dateOfIncident: this.formatDate(Date.now()), // ngày phát hiện
             description: "",
@@ -134,6 +134,7 @@ class IncidentCreateForm extends Component {
     save = () => {
         var partIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
+        let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
         if (this.isFormValidated()) {
             let dataToSubmit = {
                 incidentCode: this.state.incidentCode,
@@ -141,9 +142,11 @@ class IncidentCreateForm extends Component {
                 reportedBy: !this.state.reportedBy ? this.props.user.list[0].id : this.state.reportedBy,
                 dateOfIncident: dateOfIncident,
                 description: this.state.description,
+                statusIncident: "Chờ xử lý",
                 status: this.state.type,
+                assetId
             }
-            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
+            // let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
             return this.props.createIncident(assetId, dataToSubmit).then(({response}) => {
                 if (response.data.success) {
                     this.props.getAllAsset({
@@ -175,7 +178,7 @@ class IncidentCreateForm extends Component {
     }
 
     render() {
-        const { id, translate, assetsManager, user } = this.props;
+        const { _id, translate, assetsManager, user, auth } = this.props;
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
         const { incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription } = this.state;
@@ -209,16 +212,14 @@ class IncidentCreateForm extends Component {
                                 <div>
                                     <div id="assetUBox">
                                         <SelectBox
-                                            id={`add-incident-asset${id}`}
+                                            id={`add-incident-asset${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={assetlist.map(x => {
-                                                return { value: x._id, text: x.code + " - " + x.assetName }
-                                            })}
+                                            items={assetlist.map(x => ({ value: x._id, text: x.code + " - " + x.assetName }))}
                                             onChange={this.handleAssetChange}
-                                            value={asset}
+                                            value={asset._id}
                                             multiple={false}
-                                            // disabled
+                                        // disabled
                                         />
                                     </div>
                                 </div>
@@ -228,13 +229,14 @@ class IncidentCreateForm extends Component {
                                 <div>
                                     <div id="reportedByBox">
                                         <SelectBox
-                                            id={`reportedBy${id}`}
+                                            id={`reportedBy${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
                                             onChange={this.handleReportedByChange}
-                                            value={reportedBy}
+                                            value={auth.user._id}
                                             multiple={false}
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -242,7 +244,7 @@ class IncidentCreateForm extends Component {
                             <div className={`form-group ${errorOnDateOfIncident === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian phát hiện sự cố<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`add-dateOfIncident-${id}`}
+                                    id={`add-dateOfIncident-${_id}`}
                                     value={dateOfIncident}
                                     onChange={this.handleDateOfIncidentChange}
                                 />
@@ -263,8 +265,8 @@ class IncidentCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, user } = state;
-    return { assetsManager, user };
+    const { assetsManager, user, auth } = state;
+    return { assetsManager, user, auth };
 };
 
 const actionCreators = {

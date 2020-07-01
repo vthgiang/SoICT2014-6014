@@ -7,7 +7,7 @@ import { DialogModal } from '../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import moment from 'moment';
 import {
-    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, FileTab
+    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../asset-create/components/combinedContent';
 import { AssetManagerActions } from '../redux/actions';
 
@@ -27,7 +27,7 @@ class AssetEditForm extends Component {
 
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation') {
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation'|| name === 'disposalDate') {
             var partValue = value.split('-');
             value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
@@ -253,13 +253,23 @@ class AssetEditForm extends Component {
                 description: nextProps.description,
                 status: nextProps.status,
                 detailInfo: nextProps.detailInfo,
+                //khấu hao
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
                 startDepreciation: nextProps.startDepreciation,
                 usefulLife: nextProps.usefulLife,
+                //thanh lý
+                disposalDate: nextProps.disposalDate,
+                disposalType: nextProps.disposalType,
+                disposalCost: nextProps.disposalCost,
+                disposalDesc: nextProps.disposalDesc,
+                //bảo trì
                 maintainanceLogs: nextProps.maintainanceLogs,
+                //sử dụng
                 usageLogs: nextProps.usageLogs,
+                //sự cố
                 incidentLogs: nextProps.incidentLogs,
+                // tài liệu tham khảo
                 archivedRecordNumber: nextProps.archivedRecordNumber,
                 files: nextProps.files,
 
@@ -311,6 +321,7 @@ class AssetEditForm extends Component {
                             <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#edit_usage${_id}`}>Thông tin sử dụng</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#edit_depreciation${_id}`}>Thông tin khấu hao</a></li>
                             <li><a title="Thông tin sự cố" data-toggle="tab" href={`#edit_incident${_id}`}>Thông tin sự cố</a></li>
+                            <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#edit_disposal${_id}`}>Thông tin thanh lý</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#edit_attachments${_id}`}>Tài liệu đính kèm</a></li>
                         </ul>
                         < div className="tab-content">
@@ -356,6 +367,7 @@ class AssetEditForm extends Component {
                                 cost={this.state.cost}
                                 residualValue={this.state.residualValue}
                                 startDepreciation={moment(this.state.startDepreciation).format('DD-MM-YYYY')}
+                                // startDepreciation={this.state.startDepreciation}
                                 usefulLife={this.state.usefulLife}
                             />
                             <IncidentLogTab
@@ -364,6 +376,15 @@ class AssetEditForm extends Component {
                                 handleAddIncident={this.handleCreateIncidentLogs}
                                 handleEditIncident={this.handleEditIncidentLogs}
                                 handleDeleteIncident={this.handleDeleteIncidentLogs}
+                            />
+                            <DisposalTab
+                                id={`edit_disposal${_id}`}
+                                handleChange={this.handleChange}
+                                // disposalDate={this.formatDate(this.state.disposalDate)}
+                                disposalDate={moment(this.state.disposalDate).format('DD-MM-YYYY')}
+                                disposalType={this.state.disposalType}
+                                disposalCost={this.state.disposalCost}
+                                disposalDesc={this.state.disposalDesc}
                             />
 
                             <FileTab

@@ -77,8 +77,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createAsset = async (data, company, fileInfo) => {
-    // console.log(data);
-    // console.log(fileInfo);
+    console.log(data);
 
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
@@ -121,6 +120,13 @@ exports.createAsset = async (data, company, fileInfo) => {
         // Lịch sử vị trí tài sản
         locationLogs: locationLogs,
 
+        // thông tin thanh lý
+        disposalDate: data.disposalDate,
+        disposalType: data.disposalType,
+        disposalCost: data.disposalCost,
+        disposalDesc: data.disposalDesc,
+
+        // tài liệu đính kèm
         archivedRecordNumber: data.archivedRecordNumber,
         files: files,
     });
@@ -136,22 +142,15 @@ exports.createAsset = async (data, company, fileInfo) => {
  * Cập nhât thông tin tài sản theo id
  */
 exports.updateAssetInformation = async (id, data, fileInfo, company) => {
-    let { 
-        //  assetName, code, serial, assetType, purchaseDate, warrantyExpirationDate,
-        // managedBy, assignedTo, handoverFromDate, handoverToDate, location, status, 
-        // description, detailInfo, cost, usefulLife, residualValue, startDepeciation, archivedRecordNumber,
+    let {
         createMaintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs,
-        createUsageLogs, editUsageLogs, deleteUsageLogs, 
+        createUsageLogs, editUsageLogs, deleteUsageLogs,
         createIncidentLogs, editIncidentLogs, deleteIncidentLogs,
         createFiles, editFiles, deleteFiles
     } = data;
-    console.log(data, 'data');
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset.findById(id);
-    console.log(oldAsset, "oldAsset");
-    console.log("AAAAAAAAAAAAAAAAA");
-    
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete !== undefined) {
@@ -179,7 +178,6 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
         ;
         return arrObject;
     }
-    console.log("BBBBBBBBBBBBBBBBBBB")
 
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
@@ -194,19 +192,24 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
     oldAsset.managedBy = data.managedBy;
-    oldAsset.assignedTo = data.assignedTo;
+    oldAsset.assignedTo = data.assignedTo!=='' ? data.assignedTo:null;
     oldAsset.handoverFromDate = data.handoverFromDate;
     oldAsset.handoverToDate = data.handoverToDate;
     oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
-
+    // khấu hao
     oldAsset.cost = data.cost;
     oldAsset.usefulLife = data.usefulLife;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
-
+    // thanh lý
+    oldAsset.disposalDate = data.disposalDate;
+    oldAsset.disposalType = data.disposalType;
+    oldAsset.disposalCost = data.disposalCost;
+    oldAsset.disposalDesc = data.disposalDesc;
+    //tài liệu tham khảo
     oldAsset.archivedRecordNumber = data.archivedRecordNumber;
 
     // Edit  thông tin tài sản
@@ -245,6 +248,30 @@ exports.deleteAsset = async (id) => {
     return asset;
 }
 
+/**
+ * Chỉnh sửa thông tin khấu hao tài sản
+ */
+exports.updateDepreciation = async (id, data) => {
+    return await Asset.update({_id: id}, {
+        cost: data.cost,
+        usefulLife: data.usefulLife,
+        startDepreciation: data.startDepreciation,
+        residualValue: data.residualValue,
+    });
+}
+
+/*
+ * Thêm mới phiếu bảo trì cho sự cố
+ */
+exports.createMaintainanceForIncident = async (id, incidentId, data) => {
+    console.log(data, 'data-maintainance')
+    return await Asset.update({_id: data.assetId, "incidentLogs._id": incidentId}, {
+        $addToSet: {maintainanceLogs: data},
+        $set:{
+            "incidentLogs.$.statusIncident": data.statusIncident,
+        }
+    });
+}
 
 //******************************** Chức năng quản lý bảo trì ****************************************/
 
@@ -266,8 +293,19 @@ exports.createMaintainance = async (id, data) => {
 /**
  * Chỉnh sửa phiếu bảo trì
  */
-exports.updateMaintainance = async (id, data, company) => {
-
+exports.updateMaintainance = async (maintainanceId, data) => {
+    return await Asset.update({_id: data.assetId, "maintainanceLogs._id":maintainanceId}, {
+        $set: {
+            "maintainanceLogs.$.maintainanceCode": data.maintainanceCode,
+            "maintainanceLogs.$.createDate": data.createDate,
+            "maintainanceLogs.$.type": data.type,
+            "maintainanceLogs.$.description": data.description,
+            "maintainanceLogs.$.startDate": data.startDate,
+            "maintainanceLogs.$.endDate": data.endDate,
+            "maintainanceLogs.$.expense": data.expense,
+            "maintainanceLogs.$.status": data.status,
+        }
+    })
 }
 
 /**
@@ -289,21 +327,20 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    // console.log(data, 'data')
     return await Asset.update({_id: id}, {
+        $addToSet: {usageLogs: data},
         assignedTo: data.assignedTo,
         handoverFromDate: data.handoverFromDate,
         handoverToDate: data.handoverToDate,
-        status: data.status,
-        $addToSet: {usageLogs: data}});
+        status: data.status
+    });
 }
 
 /**
  * Chỉnh sửa thông tin sử dụng
  */
-exports.updateUsage = async (assetId, usageId, data) => {
-    // console.log(data, 'data')
-    return await Asset.update({_id: assetId, "usageLogs._id": usageId}, {
+exports.updateUsage = async (usageId, data) => {
+    return await Asset.update({_id: data.assetId, "usageLogs._id":usageId}, {
         $set: {
             "usageLogs.$.usedBy": data.usedBy,
             "usageLogs.$.description": data.description,
@@ -326,7 +363,6 @@ exports.deleteUsage = async (assetId, usageId) => {
  * Thêm mới thông tin sự cố tài sản
  */
 exports.createIncident = async (id, data) => {
-    // console.log(data, 'data')
     return await Asset.update({_id: id}, {
         status: data.status,
         $addToSet: {incidentLogs: data}
@@ -336,18 +372,20 @@ exports.createIncident = async (id, data) => {
 /**
  * Chỉnh sửa thông tin sự cố tài sản
  */
-// exports.updateIncident = async (assetId, incidentId, data) => {
-//     console.log(data, 'data')
-//     return await Asset.update({_id: assetId, "incidentLogs._id": incidentId}, {
-//         $set: {
-//             "incidentLogs.$.incidentCode": data.incidentCode,
-//             "incidentLogs.$.type": data.type,
-//             "incidentLogs.$.reportedBy": data.reportedBy,
-//             "incidentLogs.$.dateOfIncident": data.dateOfIncident,
-//             "incidentLogs.$.description": data.description
-//         }
-//     })
-// }
+exports.updateIncident = async (incidentId, data) => {
+    console.log(data, 'data-incident')
+    return await Asset.update({_id: data.assetId, "incidentLogs._id": incidentId}, {
+        $set: {
+            "incidentLogs.$.incidentCode": data.incidentCode,
+            "incidentLogs.$.type": data.type,
+            "incidentLogs.$.reportedBy": data.reportedBy,
+            "incidentLogs.$.dateOfIncident": data.dateOfIncident,
+            "incidentLogs.$.description": data.description,
+            // "incidentLogs.$.statusIncident": data.statusIncident,
+            status: data.status
+        }
+    })
+}
 
 /**
  * Xóa thông tin sự cố tài sản

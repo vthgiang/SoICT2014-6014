@@ -18,11 +18,8 @@ const {
     //asset
     Asset,
     AssetType,
-    AssetCrash,
     RecommendProcure,
     RecommendDistribute,
-    RepairUpgrade,
-    DistributeTransfer,
 
     DocumentDomain,
     DocumentCategory
@@ -534,12 +531,12 @@ const sampleCompanyData = async () => {
 
         { //41. Quản lý đề nghị mua sắm tài sản
             url: '/manage-recommend-procure',
-            description: 'Quản lý đề nghị mua sắm tài sản',
+            description: 'Quản lý đăng ký mua sắm tài sản',
             company: vnist._id
         },
         { //42. Quản lý đề nghị cấp phát tài sản
             url: '/manage-recommend-distribute-asset',
-            description: 'Quản lý đề nghị cấp phát tài sản',
+            description: 'Quản lý đăng ký sử dụng tài sản',
             company: vnist._id
         },
 
@@ -945,41 +942,112 @@ const sampleCompanyData = async () => {
         /**
          * gán quyền quản lý tài sản tất cả mọi người trong công ty
          */
-        //role: 1
+        // //role: 1
+        // {
+        //     resourceId: links[44]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[1]._id
+        // },
+        // {
+        //     resourceId: links[45]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[1]._id
+        // },
+        // {
+        //     resourceId: links[46]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[1]._id
+        // },
+
+        // //role 2
+        // {
+        //     resourceId: links[44]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[2]._id
+        // },
+        // {
+        //     resourceId: links[45]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[2]._id
+        // },
+        // {
+        //     resourceId: links[46]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[2]._id
+        // },
+
+        // //role 3
+        // {
+        //     resourceId: links[44]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[3]._id
+        // },
+        // {
+        //     resourceId: links[45]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[3]._id
+        // },
+        // {
+        //     resourceId: links[46]._id,
+        //     resourceType: 'Link',
+        //     roleId: roles[3]._id
+        // },
+
+        //roles: dean
         {
-            resourceId: links[44]._id,
+            resourceId: links[35]._id,
             resourceType: 'Link',
             roleId: roles[1]._id
         },
         {
-            resourceId: links[45]._id,
+            resourceId: links[36]._id,
             resourceType: 'Link',
             roleId: roles[1]._id
         },
         {
-            resourceId: links[46]._id,
+            resourceId: links[37]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id
+        },
+        {
+            resourceId: links[40]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id
+        },
+        {
+            resourceId: links[41]._id,
             resourceType: 'Link',
             roleId: roles[1]._id
         },
 
-        //role 2
+        //roles: vice dean
         {
-            resourceId: links[44]._id,
+            resourceId: links[50]._id,
             resourceType: 'Link',
             roleId: roles[2]._id
         },
         {
-            resourceId: links[45]._id,
+            resourceId: links[49]._id,
             resourceType: 'Link',
             roleId: roles[2]._id
         },
         {
-            resourceId: links[46]._id,
+            resourceId: links[51]._id,
+            resourceType: 'Link',
+            roleId: roles[2]._id
+        },
+        {
+            resourceId: links[42]._id,
             resourceType: 'Link',
             roleId: roles[2]._id
         },
 
-        //role 3
+        //roles employee
+        {
+            resourceId: links[46]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id
+        },
         {
             resourceId: links[44]._id,
             resourceType: 'Link',
@@ -987,11 +1055,6 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[45]._id,
-            resourceType: 'Link',
-            roleId: roles[3]._id
-        },
-        {
-            resourceId: links[46]._id,
             resourceType: 'Link',
             roleId: roles[3]._id
         },

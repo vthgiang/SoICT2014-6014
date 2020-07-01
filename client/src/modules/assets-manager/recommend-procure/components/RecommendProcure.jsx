@@ -16,7 +16,7 @@ class RecommendProcure extends Component {
             month: "",
             status: "",
             page: 0,
-            limit: 5,
+            limit: 10,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -267,6 +267,7 @@ class RecommendProcure extends Component {
                         estimatePrice={this.state.currentRow.estimatePrice}
                         status={this.state.currentRow.status}
                         approver={this.state.currentRow.approver}
+                        note={this.state.currentRow.note}
                     />
                 }
             </div >

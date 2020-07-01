@@ -25,6 +25,21 @@ class FileTab extends Component {
         this.props.handleChange(name, value);
     }
 
+    // Function thêm tài liệu đính kèm mặc định
+    defaulteClick = async (e) => {
+        var { translate } = this.props;
+        e.preventDefault();
+        const defaulteFile = [
+            { name: "Hợp đồng mua hàng", description: "Hợp đồng mua hàng", number: "1", file: "", urlFile: "", fileUpload: "" },
+            { name: "Ảnh", description: "Ảnh của tài sản", number: "1", file: "", urlFile: "", fileUpload: "" },
+            { name: "Tài liệu hướng dẫn sử dụng", description: "Tài liệu hướng dẫn sử dụng", number: "1", file: "", urlFile: "", fileUpload: "" },
+        ]
+        await this.setState({
+            files: [...this.state.files, ...defaulteFile]
+        })
+        this.props.handleAddFile(this.state.files)
+    }
+
     // Function thêm thông tin tài liệu đính kèm
     handleAddFile = async (data) => {
         const { files } = this.state;
@@ -85,6 +100,7 @@ class FileTab extends Component {
                     <div className="col-md-12">
                         <h4 className="row col-md-6 col-xs-8">Danh sách tài liệu đính kèm:</h4>
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
+                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>

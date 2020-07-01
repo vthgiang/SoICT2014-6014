@@ -3,6 +3,7 @@ export * from './usageLogTab';
 export * from './maintainanceLogTab';
 export * from './depreciationTab';
 export * from './incidentLogTab';
+export * from './disposalTab';
 export * from './fileTab';
 
 export * from './assetCreateValidator';

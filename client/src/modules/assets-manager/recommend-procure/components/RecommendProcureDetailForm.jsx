@@ -37,7 +37,7 @@ class RecommendProcureDetailForm extends Component {
         const { translate, recommendProcure } = this.props;
         const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier,
             total, unit, estimatePrice, approver, positionApprover, status, note } = this.state;
-        console.log('this.state', this.state);
+        console.log('this.state-detail', this.state);
         return (
             <React.Fragment>
                 <DialogModal

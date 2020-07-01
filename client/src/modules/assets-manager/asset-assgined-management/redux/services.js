@@ -17,11 +17,11 @@ function createIncident(id, data) {
 }
 
 // chỉnh sửa thông tin sự cố tài sản
-function updateIncident(assetId, incidentId) {
+function updateIncident(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/updateIncident/${assetId}`,
         method: 'PUT',
-        data: {incidentId}
+        data
     }, true, true, 'asset.incident');
 }
 

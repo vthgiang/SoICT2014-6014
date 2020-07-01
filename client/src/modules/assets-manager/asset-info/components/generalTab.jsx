@@ -99,17 +99,17 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày bảo hành:&emsp; </strong>
-                                        {this.formatDate(warrantyExpirationDate)}
+                                         {this.formatDate(warrantyExpirationDate)}
                                     </div>
                                     <div className="form-group">
-                                        <strong>Người quản lý:&emsp; </strong>
+                                        <strong>Người duy trì:&emsp; </strong>
                                         {managedBy.name}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <strong>Người được giao sử dụng tài sản:&emsp; </strong>
+                                        <strong>Người vận hành:&emsp; </strong>
                                         {assignedTo.name}
                                     </div>
                                     <div className="form-group">

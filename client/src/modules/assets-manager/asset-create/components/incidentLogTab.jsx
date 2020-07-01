@@ -102,6 +102,7 @@ class IncidentLogTab extends Component {
                                     <th style={{ width: "10%" }}>Người báo cáo</th>
                                     <th style={{ width: "10%" }}>Ngày phát hiện</th>
                                     <th style={{ width: "10%" }}>Nội dung</th>
+                                    <th style={{ width: "10%" }}>Trạng thái</th>
                                     <th style={{ width: '100px', textAlign: 'center' }}>Hành động</th>
                                 </tr>
                             </thead>
@@ -114,6 +115,7 @@ class IncidentLogTab extends Component {
                                             <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
                                             <td>{this.formatDate(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>
+                                            <td>{x.statusIncident}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sự cố"><i
                                                     className="material-icons">edit</i></a>
@@ -138,8 +140,9 @@ class IncidentLogTab extends Component {
                         incidentCode={this.state.currentRow.incidentCode}
                         type={this.state.currentRow.type}
                         reportedBy={this.state.currentRow.reportedBy}
-                        dateOfIncident={this.state.currentRow.dateOfIncident}
+                        dateOfIncident={this.formatDate(this.state.currentRow.dateOfIncident)}
                         description={this.state.currentRow.description}
+                        statusIncident={this.state.currentRow.statusIncident}
                         handleChange={this.handleEditIncident}
                     />
                 }

@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti} from '../../../../common-components';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 // import {IncidentCreateForm} from './incidentCreateForm';
-import {IncidentEditForm} from './incidentEditForm';
-import {IncidentActions} from '../redux/actions';
-import {UserActions} from '../../../super-admin/user/redux/actions';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
-import {AssetTypeActions} from "../../asset-type/redux/actions";
+import { IncidentEditForm } from './incidentEditForm';
+import { IncidentActions } from '../redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 class AssetCrashManager extends Component {
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ class AssetCrashManager extends Component {
     }
 
     componentDidMount() {
-        this.props.searchAssetTypes({typeNumber: "", typeName: "", limit: 0});
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getAllAsset({
             code: "",
@@ -38,7 +38,8 @@ class AssetCrashManager extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin sự cố
-    handleEdit = async (value) => {
+    handleEdit = async (value, asset) => {
+        value.asset = asset;
         await this.setState(state => {
             return {
                 ...state,
@@ -82,7 +83,7 @@ class AssetCrashManager extends Component {
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -91,7 +92,7 @@ class AssetCrashManager extends Component {
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleAssetNameChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -124,7 +125,7 @@ class AssetCrashManager extends Component {
             ...this.state,
 
         })
-        this.props.searchIncidents(this.state);
+        this.props.getAllAsset(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -132,9 +133,9 @@ class AssetCrashManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.searchIncidents(this.state);
+        this.props.getAllAsset(this.state);
     }
-    
+
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -142,11 +143,11 @@ class AssetCrashManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.searchIncidents(this.state);
+        this.props.getAllAsset(this.state);
     }
 
     deleteIncident = (assetId, incidentId) => {
-        this.props.deleteIncident(assetId, incidentId).then(({response}) => {
+        this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
                 this.props.getAllAsset({
                     code: "",
@@ -161,7 +162,7 @@ class AssetCrashManager extends Component {
     }
 
     render() {
-        const {translate, assetsManager, assetType, user, auth} = this.props;
+        const { translate, assetsManager, assetType, user, auth } = this.props;
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
@@ -178,30 +179,29 @@ class AssetCrashManager extends Component {
         return (
             <div id="assetcrash" className="tab-pane">
                 <div className="box-body qlcv">
-                    {/* <RepairUpgradeCreateForm/> */}
                     <div className="form-group">
                         <h4 className="box-title">Danh sách sự cố thiết bị: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder="Mã phiếu" autoComplete="off"/>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType1`} multiple="multiple"
-                                         options={{nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả sự cố"}}
-                                         onChange={this.handleTypeChange}
-                                         items={[
-                                             {value: "Báo hỏng", text: "Báo hỏng"},
-                                             {value: "Báo mất", text: "Báo mất"}
-                                         ]}
+                                options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả sự cố" }}
+                                onChange={this.handleTypeChange}
+                                items={[
+                                    { value: "Báo hỏng", text: "Báo hỏng" },
+                                    { value: "Báo mất", text: "Báo mất" }
+                                ]}
                             >
                             </SelectMulti>
                         </div>
@@ -221,69 +221,72 @@ class AssetCrashManager extends Component {
                     </div>
                     <table id="incident-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th style={{width: "10%"}}>Mã tài sản</th>
-                            <th style={{width: "10%"}}>Tên tài sản</th>
-                            <th style={{width: "10%"}}>Mã sự cố</th>
-                            <th style={{width: "10%"}}>Phân loại</th>
-                            <th style={{width: "8%"}}>Người báo cáo</th>
-                            <th style={{width: "10%"}}>Thời gian phát hiện sự cố</th>
-                            <th style={{width: "10%"}}>Nội dung sự cố</th>
-                            <th style={{width: '100px', textAlign: 'center'}}>Hành động
+                            <tr>
+                                <th style={{ width: "10%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Mã sự cố</th>
+                                <th style={{ width: "10%" }}>Phân loại</th>
+                                <th style={{ width: "8%" }}>Người báo cáo</th>
+                                <th style={{ width: "10%" }}>Thời gian phát hiện sự cố</th>
+                                <th style={{ width: "10%" }}>Nội dung sự cố</th>
+                                <th style={{ width: "10%" }}>Trạng thái</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
-                                    tableId="incident-table"
-                                    columnArr={[
-                                        "Mã tài sản",
-                                        "Tên tài sản",
-                                        "Mã sự cố",
-                                        "Phân loại",
-                                        "Người báo cáo",
-                                        "Thời gian phát hiện sự cố",
-                                        "Nội dung sự cố",
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
+                                        tableId="incident-table"
+                                        columnArr={[
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Mã sự cố",
+                                            "Phân loại",
+                                            "Người báo cáo",
+                                            "Thời gian phát hiện sự cố",
+                                            "Nội dung sự cố",
+                                            "Trạng thái",
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {(typeof lists !== 'undefined' && lists.length) &&
-                        lists.filter(item => item.assignedTo === auth.user._id).map(asset => {
-                            return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
-                            // return asset.incidentLogs.map((x, index) => (
-                                <tr key={index}>
-                                    <td>{asset.code}</td>
-                                    <td>{asset.assetName}</td>
-                                    <td>{x.incidentCode}</td>
-                                    <td>{x.type}</td>
-                                    <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
-                                    <td>{this.formatDate2(x.dateOfIncident)}</td>
-                                    <td>{x.description}</td>
-                                    <td style={{textAlign: "center"}}>
-                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin sự cố tài sản"><i
-                                            className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content="Xóa thông tin sự cố của tài sản"
-                                            data={{
-                                                id: x._id,
-                                                info: asset.code + " - " + x.incidentCode
-                                            }}
-                                            func={() => this.deleteIncident(asset._id, x._id)}
-                                        />
-                                    </td>
-                                </tr>))
-                        })
+                            {(typeof lists !== 'undefined' && lists.length) &&
+                                lists.filter(item => item.assignedTo === auth.user._id).map(asset => {
+                                    return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
+                                        // return asset.incidentLogs.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{asset.code}</td>
+                                            <td>{asset.assetName}</td>
+                                            <td>{x.incidentCode}</td>
+                                            <td>{x.type}</td>
+                                            <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
+                                            <td>{this.formatDate2(x.dateOfIncident)}</td>
+                                            <td>{x.description}</td>
+                                            <td>{x.statusIncident}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sự cố tài sản"><i
+                                                    className="material-icons">edit</i></a>
+                                                <DeleteNotification
+                                                    content="Xóa thông tin sự cố của tài sản"
+                                                    data={{
+                                                        id: x._id,
+                                                        info: asset.code + " - " + x.incidentCode
+                                                    }}
+                                                    func={() => this.deleteIncident(asset._id, x._id)}
+                                                />
+                                            </td>
+                                        </tr>))
+                                })
 
-                        }
+                            }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
                 {
@@ -294,8 +297,9 @@ class AssetCrashManager extends Component {
                         incidentCode={this.state.currentRow.incidentCode}
                         type={this.state.currentRow.type}
                         reportedBy={this.state.currentRow.reportedBy}
-                        dateOfIncident={this.state.currentRow.dateOfIncident}
+                        dateOfIncident={this.formatDate2(this.state.currentRow.dateOfIncident)}
                         description={this.state.currentRow.description}
+                        statusIncident={this.state.currentRow.statusIncident}
                     />
                 }
             </div>
@@ -304,8 +308,8 @@ class AssetCrashManager extends Component {
 };
 
 function mapState(state) {
-    const {assetsManager, assetType, user, auth} = state;
-    return {assetsManager, assetType, user, auth};
+    const { assetsManager, assetType, user, auth } = state;
+    return { assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
@@ -316,4 +320,4 @@ const actionCreators = {
 };
 
 const connectedListIncident = connect(mapState, actionCreators)(withTranslate(AssetCrashManager));
-export {connectedListIncident as AssetCrashManager};
+export { connectedListIncident as AssetCrashManager };

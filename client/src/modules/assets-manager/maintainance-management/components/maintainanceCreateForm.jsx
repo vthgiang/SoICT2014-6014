@@ -215,18 +215,13 @@ class MaintainanceCreateForm extends Component {
     };
 
     render() {
-        const { id, translate, maintainance, assetsManager } = this.props;
-        // var lists = "";
-        // if (assetsManager.listAssets) {
-        //     lists = assetsManager.listAssets;
-        // }
+        const { id, translate, assetsManager } = this.props;
         var assetlist = assetsManager.listAssets;
 
         const {
-            maintainanceCode, createDate, type, asset, code, assetName, description, startDate, endDate, expense, status,
+            maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status,
             errorOnMaintainanceCode, errorOnCreateDate, errorOnCode, errorOnDescription, errorOnStartDate, errorOnExpense
         } = this.state;
-        console.log(this.state, 'tungstate')
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-maintainance" button_name="Thêm mới phiếu" title="Thêm mới phiếu bảo trì" />

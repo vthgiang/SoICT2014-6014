@@ -107,7 +107,7 @@
          enum: ["StraightLine", "SumOfTheYearsDigit", "UnitsOfProduction", "DecliningBalance", "DoubleDecliningBalance"],
          // Reducing balance chính là Declining Balance Method
      },
-     
+    
      cost: { //8. Nguyên giá
          type: Number
      },
@@ -221,6 +221,10 @@
              type: String,
              // required: true
          },
+         statusIncident: { //Nội dung
+             type: String,
+             // required: true
+         },
          createdAt: {
              type: Date,
              default: Date.now
@@ -242,16 +246,22 @@
          endDate: Date,
          description: String
      }],
- 
-     // thanh lý
-     disposal: { // Thanh lý
-         date: Date,
-         type: { // 1-phá hủy(scrapped), 2-sold, 3-gifted
-             type: Number
-         },
-         cost: Number,
-         description: String
-     },
+
+     /**************************************************************************************************
+      * Thông tin thanh lý
+      */
+    disposalDate: { // thời gian thanh lý
+        type: Date
+    },
+    disposalType: { // 1-phá hủy(scrapped), 2-sold, 3-gifted
+        type: String,
+    },  
+    disposalCost: { // giá trị thanh lý
+        type: Number,
+    },
+    disposalDesc: { // Nội dung thanh lý
+        type: String
+    },
 
      /***************************************************************************************************
       * trường dữ liệu động

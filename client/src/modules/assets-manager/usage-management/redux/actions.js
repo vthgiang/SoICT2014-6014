@@ -1,5 +1,6 @@
 import {UsageService} from './services';
 import {UsageConstants} from './constants';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 
 export const UsageActions = {
     createUsage,
@@ -39,6 +40,15 @@ function updateUsage(id, data) {
 
         UsageService.updateUsage(id, data)
             .then(res => {
+                dispatch(AssetManagerActions.getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }))
                 dispatch({
                     type: UsageConstants.UPDATE_USAGE_SUCCESS,
                     payload: res.data.content

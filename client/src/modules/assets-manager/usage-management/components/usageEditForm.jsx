@@ -116,24 +116,25 @@ class UsageEditForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        var startDate = [partStart[0], partStart[1], partStart[2]].join('-');
         var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        var endDate = [partEnd[0], partEnd[1], partEnd[2]].join('-');
+        let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
         if (this.isFormValidated()) {
             let dataToSubit = {
                 usedBy: !this.state.usedBy ? this.props.user.list[0].id : this.state.usedBy,
                 startDate: startDate,
                 endDate: endDate,
-                description: this.state.description
+                description: this.state.description,
+                assetId
             }
-            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
-            return this.props.updateUsage(assetId, dataToSubit);
+
+            return this.props.updateUsage(this.props._id, dataToSubit);
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
-            console.log('zooooo');
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -155,13 +156,11 @@ class UsageEditForm extends Component {
     render() {
         const {id, translate, user, assetsManager} = this.props;
         var userlist = user.list;
-
         var assetlist = assetsManager.listAssets;
-        console.log(assetlist, 'assetlist');
         const {
             asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription
         } = this.state;
-        console.log(this.state, 'tungstate')
+        console.log(this.props._id, 'id')
         console.log('asset', asset._id);
         return (
             <React.Fragment>

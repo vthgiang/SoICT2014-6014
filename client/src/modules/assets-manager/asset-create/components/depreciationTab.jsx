@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {AssetCreateValidator} from './assetCreateValidator';
-import {DatePicker, ErrorLabel} from '../../../../common-components';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { AssetCreateValidator } from './assetCreateValidator';
+import { DatePicker, ErrorLabel } from '../../../../common-components';
 import moment from 'moment';
 
 class DepreciationTab extends Component {
@@ -30,7 +30,7 @@ class DepreciationTab extends Component {
 
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         })
@@ -41,7 +41,7 @@ class DepreciationTab extends Component {
      * Bắt sự kiện thay đổi nguyên giá
      */
     handleCostChange = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateCost(value, true);
     }
     validateCost = (value, willUpdateState = true) => {
@@ -64,7 +64,7 @@ class DepreciationTab extends Component {
      * Bắt sự kiện thay đổi Giá trị thu hồi dự tính
      */
     handleResidualValueChange = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateResidualValue(value, true);
     }
     validateResidualValue = (value, willUpdateState = true) => {
@@ -87,7 +87,7 @@ class DepreciationTab extends Component {
      * Bắt sự kiện thay đổi Thời gian trích khấu hao
      */
     handleUsefulLifeChange = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateUsefulLife(value, true);
     }
     validateUsefulLife = (value, willUpdateState = true) => {
@@ -148,7 +148,7 @@ class DepreciationTab extends Component {
 
     addMonthToEndDepreciation = (day) => {
         if (day !== undefined) {
-            let {usefulLife} = this.state,
+            let { usefulLife } = this.state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
@@ -161,7 +161,7 @@ class DepreciationTab extends Component {
     };
 
     render() {
-        const {id, translate} = this.props;
+        const { id, translate } = this.props;
         const {
             cost, residualValue, usefulLife, startDepreciation, endDepreciation, annualDepreciationValue,
             monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnUsefulLife
@@ -170,25 +170,24 @@ class DepreciationTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
-                    {this.a}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
                         <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"} `}>
-                            <label htmlFor="cost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br/>
+                            <label htmlFor="cost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br />
                             <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
-                                   placeholder="Nguyên giá" autoComplete="off"/>
-                            <ErrorLabel content={errorOnCost}/>
+                                placeholder="Nguyên giá" autoComplete="off" />
+                            <ErrorLabel content={errorOnCost} />
                         </div>
                         <div className={`form-group`}>
-                            <label htmlFor="residualValue">Giá trị thu hồi ước tính (VNĐ)</label><br/>
+                            <label htmlFor="residualValue">Giá trị thu hồi ước tính (VNĐ)</label><br />
                             <input type="number" className="form-control" name="residualValue" value={residualValue} onChange={this.handleResidualValueChange}
-                                   placeholder="Giá trị thu hồi ước tính" autoComplete="off"/>
+                                placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                         </div>
                         <div className={`form-group ${errorOnUsefulLife === undefined ? "" : "has-error"} `}>
                             <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span> (Ghi chú: Thời gian sử dụng = Thời gian trích khấu hao)</label>
                             <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
-                                   placeholder="Thời gian trích khấu hao" autoComplete="off"/>
-                            <ErrorLabel content={errorOnUsefulLife}/>
+                                placeholder="Thời gian trích khấu hao" autoComplete="off" />
+                            <ErrorLabel content={errorOnUsefulLife} />
                         </div>
                         <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
                             <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span> (Ghi chú: giá trị default = ngày nhập tài sản)</label>
@@ -197,10 +196,10 @@ class DepreciationTab extends Component {
                                 value={startDepreciation}
                                 onChange={this.handleStartDepreciationChange}
                             />
-                            <ErrorLabel content={errorOnStartDepreciation}/>
+                            <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br/>
+                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br />
                             <input
                                 className="form-control"
                                 id={`endDepreciation-${id}`}
@@ -209,14 +208,14 @@ class DepreciationTab extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm (VNĐ/Năm)</label><br/>
+                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm (VNĐ/Năm)</label><br />
                             <input type="number" className="form-control" name="annualDepreciationValue" value={(12 * cost) / usefulLife}
-                                   placeholder="Mức độ khấu hao trung bình hằng năm = ( 12 x Nguyên giá ) / Thời gian trích khấu hao" autoComplete="off" disabled/>
+                                placeholder="Mức độ khấu hao trung bình hằng năm = ( 12 x Nguyên giá ) / Thời gian trích khấu hao" autoComplete="off" disabled />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br/>
+                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br />
                             <input type="number" className="form-control" name="monthlyDepreciationValue" value={cost / usefulLife}
-                                   placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled/>
+                                placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
                         </div>
                     </fieldset>
                 </div>
@@ -225,4 +224,4 @@ class DepreciationTab extends Component {
     }
 };
 const depreciationTab = connect(null, null)(withTranslate(DepreciationTab));
-export {depreciationTab as DepreciationTab};
+export { depreciationTab as DepreciationTab };

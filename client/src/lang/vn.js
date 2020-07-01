@@ -658,12 +658,12 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
+            manage_recommend_distribute_asset:'Quản lý đăng ký sử dụng',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            recommend_distribute_asset: 'Đăng ký sử dụng thiết bị',
             manage_assigned_asset: 'Quản lý thiết bị bàn giao',
             //******END */
         },

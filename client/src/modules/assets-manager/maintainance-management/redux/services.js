@@ -17,11 +17,11 @@ function createMaintainance(id, data) {
 }
 
 // chỉnh sửa thông tin bảo trì tài sản
-function updateMaintainance(assetId, maintainanceId) {
+function updateMaintainance(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/updateMaintainance/${assetId}`,
         method: 'PUT',
-        data: {maintainanceId}
+        data
     }, true, true, 'asset.maintainance');
 }
 

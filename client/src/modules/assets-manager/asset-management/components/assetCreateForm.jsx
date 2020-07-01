@@ -7,7 +7,7 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import {
-    GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, IncidentLogTab, FileTab
+    GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../asset-create/components/combinedContent';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -67,8 +67,8 @@ class AssetCreateForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { asset } = this.state;
-        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || 
-            name === 'handoverToDate' || name === 'startDepreciation') {
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
+            name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') {
             var partValue = value.split('-');
             value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
@@ -130,6 +130,7 @@ class AssetCreateForm extends Component {
         let result = this.validatorInput(this.state.asset.code) && this.validatorInput(this.state.asset.assetName) &&
             this.validatorInput(this.state.asset.serial) && this.validatorInput(this.state.asset.purchaseDate) &&
             this.validatorInput(this.state.asset.warrantyExpirationDate) && this.validatorInput(this.state.asset.location) &&
+            this.validatorInput(this.state.asset.assetType) && this.validatorInput(this.state.asset.managedBy) && 
             this.validatorInput(this.state.asset.status) && this.validatorInput(this.state.asset.cost) &&
             this.validatorInput(this.state.asset.usefulLife) && this.validatorInput(this.state.asset.startDepreciation);
         return result;
@@ -174,6 +175,7 @@ class AssetCreateForm extends Component {
                             <li><a title="Thông tin sử dụng" data-toggle="tab" href="#usage">Thông tin sử dụng</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href="#depreciation">Thông tin khấu hao</a></li>
                             <li><a title="Thông tin sự cố" data-toggle="tab" href="#incident">Thông tin sự cố</a></li>
+                            <li><a title="Thông tin thanh lý" data-toggle="tab" href="#disposal">Thông tin thanh lý</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#attachments">Tài liệu đính kèm</a></li>
                         </ul>
                         < div className="tab-content">
@@ -214,6 +216,12 @@ class AssetCreateForm extends Component {
                                 handleAddIncident={this.handleChangeIncidentLog}
                                 handleEditIncident={this.handleChangeIncidentLog}
                                 handleDeleteIncident={this.handleChangeIncidentLog}
+                            />
+
+                            <DisposalTab
+                                id="disposal"
+                                asset={this.state.asset}
+                                handleChange={this.handleChange}
                             />
 
                             <FileTab

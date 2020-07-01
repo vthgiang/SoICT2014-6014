@@ -34,7 +34,8 @@ class MaintainanceManagement extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
-    handleEdit = async (value) => {
+    handleEdit = async (value, asset) => {
+        value.asset = asset;
         await this.setState(state => {
             return {
                 ...state,
@@ -132,7 +133,7 @@ class MaintainanceManagement extends Component {
             ...this.state,
 
         })
-        this.props.searchMaintainances(this.state);
+        this.props.getAllAsset(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -140,7 +141,7 @@ class MaintainanceManagement extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.searchMaintainances(this.state);
+        this.props.getAllAsset(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -150,7 +151,7 @@ class MaintainanceManagement extends Component {
             page: parseInt(page),
 
         });
-        this.props.searchMaintainances(this.state);
+        this.props.getAllAsset(this.state);
     }
 
     deleteMaintainance = (assetId, maintainanceId) => {
@@ -290,7 +291,7 @@ class MaintainanceManagement extends Component {
                                         <td>{formater.format(parseInt(x.expense))} VNĐ</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
+                                            <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
                                                 className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xóa thông tin phiếu"
@@ -317,13 +318,13 @@ class MaintainanceManagement extends Component {
                     this.state.currentRow !== undefined &&
                     <MaintainanceEditForm
                         _id={this.state.currentRow._id}
-                        maintainanceCode={this.state.currentRow.maintainanceCode}
-                        createDate={this.state.currentRow.createDate}
-                        type={this.state.currentRow.type}
                         asset={this.state.currentRow.asset}
+                        maintainanceCode={this.state.currentRow.maintainanceCode}
+                        createDate={this.formatDate2(this.state.currentRow.createDate)}
+                        type={this.state.currentRow.type}
                         description={this.state.currentRow.description}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
+                        startDate={this.formatDate2(this.state.currentRow.startDate)}
+                        endDate={this.formatDate2(this.state.currentRow.endDate)}
                         expense={this.state.currentRow.expense}
                         status={this.state.currentRow.status}
                     />

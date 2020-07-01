@@ -10,8 +10,10 @@ class IncidentLogAddModal extends Component {
         super(props);
         this.state = {
             incidentCode: "",
+            type: "Hỏng hóc",
             dateOfIncident: this.formatDate(Date.now()),
             description: "",
+            statusIncident: "Chờ xử lý",
         };
     }
 
@@ -106,6 +108,15 @@ class IncidentLogAddModal extends Component {
         return msg === undefined;
     }
 
+    // Bắt sự kiện thay đổi trạng thái sự cố
+    handleStatusIncidentChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            ...this.state,
+            statusIncident: value
+        })
+    }
+
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
@@ -129,7 +140,7 @@ class IncidentLogAddModal extends Component {
         const { translate, id, user } = this.props;
         var userlist = user.list;
         const {
-            incidentCode, type, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDescription } = this.state;
+            incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
             console.log(this.state, 'this.state')
         return (
             <React.Fragment>
@@ -184,6 +195,13 @@ class IncidentLogAddModal extends Component {
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
                                 <ErrorLabel content={errorOnDescription} />
+                            </div>
+                            <div className="form-group">
+                                <label>Trạng thái</label>
+                                <select className="form-control" value={statusIncident} name="statusIncident" onChange={this.handleStatusIncidentChange}>
+                                    <option value="Chờ xử lý">Chờ xử lý</option>
+                                    <option value="Đã xử lý">Đã xử lý</option>
+                                </select>
                             </div>
                         </div>
                     </form>

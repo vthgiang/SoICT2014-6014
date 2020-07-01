@@ -48,8 +48,8 @@ class RecommendDistribute extends Component {
     }
 
     // Bắt sự kiện click đăng ký cấp phát tài sản
-    handleCreateRecommend = async (value) => {
-        console.log(value);
+    handleCreateRecommend = async (value, asset) => {
+        value.asset = asset;
         await this.setState(state => {
             return {
                 ...state,
@@ -397,7 +397,7 @@ class RecommendDistribute extends Component {
                     this.state.currentRow !== undefined &&
                     <RecommendDistributeCreateForm
                         _id={this.state.currentRow._id}
-                        asset={this.state.currentRow.asset}
+                        asset={this.state.currentRow._id}
                     />
                 }
                 <hr />
@@ -520,17 +520,12 @@ class RecommendDistribute extends Component {
                         recommendNumber={this.state.currentRowEdit.recommendNumber}
                         dateCreate={this.state.currentRowEdit.dateCreate}
                         proponent={this.state.currentRowEdit.proponent}
-                        positionProponent={this.state.currentRowEdit.positionProponent}
                         reqContent={this.state.currentRowEdit.reqContent}
-                        assetId={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset._id}
-                        code={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset.code}
                         asset={this.state.currentRowEdit.asset}
-                        assetName={this.state.currentRowEdit.asset && this.state.currentRowEdit.asset.assetName}
                         dateStartUse={this.state.currentRowEdit.dateStartUse}
                         dateEndUse={this.state.currentRowEdit.dateEndUse}
-                        approver={this.state.currentRowEdit.approver}
-                        positionApprover={this.state.currentRowEdit.positionApprover}
                         status={this.state.currentRowEdit.status}
+                        approver={this.state.currentRowEdit.approver}
                         note={this.state.currentRowEdit.note}
                     />
                 }

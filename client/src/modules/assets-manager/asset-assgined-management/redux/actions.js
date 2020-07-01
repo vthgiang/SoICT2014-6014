@@ -1,5 +1,6 @@
 import {IncidentService} from './services';
 import {IncidentConstants} from './constants';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 
 export const IncidentActions = {
     createIncident,
@@ -43,6 +44,15 @@ function updateIncident(id, data) {
                     type: IncidentConstants.UPDATE_INCIDENT_SUCCESS,
                     payload: res.data.content
                 })
+                dispatch(AssetManagerActions.getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }))
             })
             .catch(err => {
                 dispatch({

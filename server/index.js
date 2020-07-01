@@ -59,9 +59,6 @@ const courses = require('./modules/trainning/course/course.route');
 //asset
 const assetType = require('./modules/assets-manager/asset-type-management/asset-type.route');
 const asset = require('./modules/assets-manager/asset-management/asset.route');
-// const assetCrash = require('./modules/assets-manager/asset-crash-management/asset-crash.route');
-// const distributeTransfer = require('./modules/assets-manager/distribute-transfer-management/distribute-transfer.route');
-// const repairUpgrade = require('./modules/assets-manager/repair-upgrade-management/repair-upgrade.route');
 const recommendProcure = require('./modules/assets-manager/recommend-equipment-procurement/recommend-procurement.route');
 const recommendDistribute = require('./modules/assets-manager/recommend-distribute-equipment/recommend-distribute.route');
 
@@ -162,9 +159,6 @@ app.use("/courses", courses);
 //asset
 app.use("/assettype",assetType);
 app.use("/assets", asset);
-// app.use("/assetcrash", assetCrash);
-// app.use("/repairupgrade",repairUpgrade);
-// app.use("/distributetransfer",distributeTransfer);
 app.use("/recommendprocure",recommendProcure);
 app.use("/recommenddistribute",recommendDistribute);
 

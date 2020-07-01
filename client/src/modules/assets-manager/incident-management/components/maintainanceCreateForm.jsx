@@ -2,44 +2,43 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { MaintainanceFormValidator } from './maintainanceFormValidator';
-import { MaintainanceActions } from '../redux/actions';
+import { MaintainanceFormValidator } from '../../maintainance-management/components/maintainanceFormValidator';
+// import { IncidentActions } from '../redux/actions';
+import { MaintainanceActions } from '../../maintainance-management/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 
-class MaintainanceEditForm extends Component {
+class MaintainanceCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            maintainanceCode: "",
+            createDate: this.formatDate(Date.now()),
+            type: "Sửa chữa",
+            asset: "",
+            description: "",
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now()),
+            expense: "",
+            status: "Đang thực hiện",
+        };
     }
 
-    componentDidMount() {
-        this.props.getAllAsset({
-            code: "",
-            assetName: "",
-            assetType: null,
-            month: null,
-            status: "",
-            page: 0,
-            limit: 5,
-        });
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
-
-    // // Function format dữ liệu Date thành string
-    // formatDate(date, monthYear = false) {
-    //     var d = new Date(date),
-    //         month = '' + (d.getMonth() + 1),
-    //         day = '' + d.getDate(),
-    //         year = d.getFullYear();
-
-    //     if (month.length < 2)
-    //         month = '0' + month;
-    //     if (day.length < 2)
-    //         day = '0' + day;
-
-    //     if (monthYear === true) {
-    //         return [month, year].join('-');
-    //     } else return [day, month, year].join('-');
-    // }
 
     // Bắt sự kiện thay đổi mã phiếu
     handleMaintainanceCodeChange = (e) => {
@@ -175,9 +174,8 @@ class MaintainanceEditForm extends Component {
             this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
             this.validateCreateDate(this.state.createDate, false) &&
             this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false)
-        // &&
-        // this.validateExpense(this.state.expense, false)
+            this.validateStartDate(this.state.startDate, false) &&
+            this.validateExpense(this.state.expense, false)
         return result;
     }
 
@@ -201,35 +199,38 @@ class MaintainanceEditForm extends Component {
                 expense: this.state.expense,
                 status: this.state.status,
                 assetId
+                
             }
-
-            return this.props.updateMaintainance(this.props._id, dataToSubit);
+            // let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
+            return this.props.createMaintainance(assetId,dataToSubit)
+            .then(({response}) => {
+                if (response.data.success) {
+                    this.props.getAllAsset({
+                        code: "",
+                        assetName: "",
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    });
+                }
+            });
         }
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('nextProps,',nextProps);
+        console.log(prevState);
         if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                asset: nextProps.asset,
-                maintainanceCode: nextProps.maintainanceCode,
-                createDate: nextProps.createDate,
-                type: nextProps.type,
-                description: nextProps.description,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                expense: nextProps.expense,
-                status: nextProps.status,
-                errorOnMaintainanceCode: undefined,
-                errorOnCreateDate: undefined,
-                errorOnStartDate: undefined,
-                errorOnDescription: undefined,
-                errorOnExpense: undefined,
+                asset: nextProps.asset
             }
         } else {
             return null;
         }
+
     }
 
     render() {
@@ -240,18 +241,18 @@ class MaintainanceEditForm extends Component {
             maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status,
             errorOnMaintainanceCode, errorOnCreateDate, errorOnDescription, errorOnStartDate, errorOnExpense
         } = this.state;
-        console.log(this.state, 'this.state-u')
+        console.log(this.state, 'tungstate1')
         return (
             <React.Fragment>
+                {/* <ButtonModal modalID="modal-create-maintainance" button_name="Thêm mới phiếu" title="Thêm mới phiếu bảo trì" /> */}
                 <DialogModal
-                    // size='75' modalID="modal-edit-maintainance" isLoading={maintainance.isLoading}
-                    size='75' modalID="modal-edit-maintainance" isLoading={false}
+                    size='50' modalID="modal-create-maintainance"
                     formID="form-create-maintainance"
-                    title="Chỉnh sửa phiếu bảo trì"
+                    title="Thêm mới phiếu bảo trì"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-edit-maintainance">
+                    <form className="form-group" id="form-create-maintainance">
                         <div className="col-md-12">
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnMaintainanceCode === undefined ? "" : "has-error"}`}>
@@ -262,7 +263,7 @@ class MaintainanceEditForm extends Component {
                                 <div className={`form-group ${errorOnCreateDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`edit-create-date${_id}`}
+                                        id={`add-create-date${_id}`}
                                         value={createDate}
                                         onChange={this.handleCreateDateChange}
                                     />
@@ -280,12 +281,12 @@ class MaintainanceEditForm extends Component {
                                 <div className={`form-group`}>
                                     <label>Tài sản</label>
                                     <div>
-                                        <div id="edit-assetBox">
+                                        <div id="add-assetBox">
                                             <SelectBox
-                                                id={`edit-maintainance-asset${_id}`}
+                                                id={`add-asset${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={assetlist.map(x => ({ value: x._id, text: x.code + " - " + x.assetName }))}
+                                                items={assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })}
                                                 onChange={this.handleAssetChange}
                                                 value={asset._id}
                                                 multiple={false}
@@ -300,12 +301,13 @@ class MaintainanceEditForm extends Component {
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
 
+                                
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`edit-start-date${_id}`}
+                                        id={`add-start-date${_id}`}
                                         value={startDate}
                                         onChange={this.handleStartDateChange}
                                     />
@@ -314,7 +316,7 @@ class MaintainanceEditForm extends Component {
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
-                                        id={`edit-end-date${_id}`}
+                                        id={`add-end-date${_id}`}
                                         value={endDate}
                                         onChange={this.handleEndDateChange}
                                     />
@@ -348,9 +350,9 @@ function mapState(state) {
 
 const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
-    updateMaintainance: MaintainanceActions.updateMaintainance,
+    createMaintainance: MaintainanceActions.createMaintainance,
 
 };
 
-const editForm = connect(mapState, actionCreators)(withTranslate(MaintainanceEditForm));
-export { editForm as MaintainanceEditForm };
+const createForm = connect(mapState, actionCreators)(withTranslate(MaintainanceCreateForm));
+export { createForm as MaintainanceCreateForm };

@@ -17,11 +17,11 @@ function createUsage(id, data) {
 }
 
 // chỉnh sửa thông tin sử dụng tài sản
-function updateUsage(assetId, usageId) {
+function updateUsage(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/updateUsage/${assetId}`,
         method: 'PUT',
-        data: {usageId}
+        data
     }, true, true, 'asset.usage');
 }
 

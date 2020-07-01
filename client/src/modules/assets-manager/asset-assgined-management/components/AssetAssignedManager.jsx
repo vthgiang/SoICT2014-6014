@@ -40,7 +40,8 @@ class AssetAssignedManager extends Component {
     }
 
     // Bắt sự kiện click báo cáo sự cố tài sản
-    handleReport = async (value) => {
+    handleReport = async (value, asset) => {
+        value.asset = asset;
         await this.setState(state => {
             return {
                 ...state,
@@ -151,7 +152,7 @@ class AssetAssignedManager extends Component {
     }
 
     render() {
-        const { _id, translate, assetsManager, assetType, user, auth} = this.props;
+        const { id, translate, assetsManager, assetType, user, auth} = this.props;
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
@@ -251,7 +252,7 @@ class AssetAssignedManager extends Component {
                                 <td>{x.status}</td>
                                 <td style={{textAlign: "center"}}>
                                     <a onClick={() => this.handleView(x)} style={{width: '5px'}} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                    <a onClick={() => this.handleReport(x)} className="edit text-red" style={{width: '5px'}} title="Báo cáo sự cố thiết bị"><i
+                                    <a onClick={() => this.handleReport(x, x)} className="edit text-red" style={{width: '5px'}} title="Báo cáo sự cố thiết bị"><i
                                         className="material-icons">notification_important</i></a>
                                 </td>
                             </tr>))

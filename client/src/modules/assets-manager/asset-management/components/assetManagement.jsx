@@ -162,7 +162,6 @@ class AssetManagement extends Component {
         if (this.props.assetsManager.isLoading === false) {
             lists = this.props.assetsManager.listAssets;
         }
-        console.log('assettypelist', assettypelist);
 
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(assetsManager.totalList / this.state.limit) :
@@ -230,8 +229,8 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>Tên tài sản</th>
                                 <th style={{ width: "10%" }}>Loại tài sản</th>
                                 <th style={{ width: "10%" }}>Ngày nhập</th>
-                                <th style={{ width: "10%" }}>Người quản lý</th>
-                                <th style={{ width: "10%" }}>Người sử dụng</th>
+                                <th style={{ width: "10%" }}>Người duy trì</th>
+                                <th style={{ width: "10%" }}>Người vận hành</th>
                                 <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
@@ -260,11 +259,10 @@ class AssetManagement extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType)  ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
+                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy !== null && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
-                                        {/*<td>{x.assignedTo !== null && userlist.length ? userlist.filter(item => item._id === x.assignedTo).pop().name : ''}</td>*/}
                                         <td>{this.formatDate(x.handoverFromDate)}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -340,10 +338,17 @@ class AssetManagement extends Component {
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
                         detailInfo={this.state.currentRow.detailInfo}
+                        
                         cost={this.state.currentRow.cost}
                         residualValue={this.state.currentRow.residualValue}
                         startDepreciation={this.state.currentRow.startDepreciation}
                         usefulLife={this.state.currentRow.usefulLife}
+
+                        disposalDate={this.state.currentRow.disposalDate}
+                        disposalType={this.state.currentRow.disposalType}
+                        disposalCost={this.state.currentRow.disposalCost}
+                        disposalDesc={this.state.currentRow.disposalDesc}
+
                         maintainanceLogs={this.state.currentRow.maintainanceLogs}
                         usageLogs={this.state.currentRow.usageLogs}
                         incidentLogs={this.state.currentRow.incidentLogs}

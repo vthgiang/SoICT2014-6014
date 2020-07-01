@@ -96,9 +96,6 @@ exports.updateAssetInformation = async (req, res) => {
         }
         let file = req.files.file;
         let fileInfo = {file, avatar};
-        // console.log("***************",fileInfo);
-        // console.log("_________________",avatar);
-        // console.log("++++++++++++++++",req.body);
         // Kiểm tra dữ liệu truyền vào
         // if (req.body.code === undefined || req.body.code.trim()===""){
         //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
@@ -138,6 +135,31 @@ exports.deleteAsset = async (req, res) => {
         res.status(400).json({success: false, messages: ["delete_asset_false"], content: {error: error}});
     }
 }
+
+/**
+ * Chỉnh sửa thông tin khấu hao tài sản
+ */
+exports.updateDepreciation = async (req, res) => {
+    try {
+        var data = await AssetService.updateDepreciation(req.params.id, req.body);
+        res.status(200).json({success: true, messages: ["edit_depreciation_success"], content: data});
+    } catch (error) {
+        res.status(400).json({success: false, messages: ["edit_depreciation_false"], content: {error: error}});
+    }
+}
+
+/**
+ * Thêm mới thông tin bảo trì cho sự cố
+ */
+exports.createMaintainanceForIncident = async (req, res) => {
+    try {
+        var data = await AssetService.createMaintainanceForIncident(req.params.id, req.body);
+        res.status(200).json({success: true, messages: ["create_maintainance_success"], content: data});
+    } catch (error) {
+        res.status(400).json({success: false, messages: ["create_maintainance_false"], content: {error: error}});
+    }
+}
+
 
 //*****************Thông tin sử dụng************/
 /**
@@ -190,6 +212,18 @@ exports.createMaintainance = async (req, res) => {
 }
 
 /**
+ * Chỉnh sửa thông tin bảo trì tài sản
+ */
+exports.updateMaintainance = async (req, res) => {
+    try {
+        var data = await AssetService.updateMaintainance(req.params.id, req.body);
+        res.status(200).json({success: true, messages: ["edit_maintainance_success"], content: data});
+    } catch (error) {
+        res.status(400).json({success: false, messages: ["edit_maintainance_false"], content: {error: error}});
+    }
+}
+
+/**
  * Xóa thông tin bảo trì tài sản
  */
 exports.deleteMaintainance = async (req, res) => {
@@ -212,6 +246,18 @@ exports.createIncident = async (req, res) => {
         res.status(200).json({success: true, messages: ["create_incident_success"], content: data});
     } catch (error) {
         res.status(400).json({success: false, messages: ["create_incident_false"], content: {error: error}});
+    }
+}
+
+/**
+ * Chỉnh sửa thông tin sự cố tài sản
+ */
+exports.updateIncident = async (req, res) => {
+    try {
+        var data = await AssetService.updateIncident(req.params.id, req.body);
+        res.status(200).json({success: true, messages: ["edit_incident_success"], content: data});
+    } catch (error) {
+        res.status(400).json({success: false, messages: ["edit_incident_false"], content: {error: error}});
     }
 }
 

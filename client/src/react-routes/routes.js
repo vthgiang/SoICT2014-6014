@@ -74,11 +74,8 @@ import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import MaintainanceManager from "../modules/assets-manager/maintainance-management/components";
 import UsageManager from "../modules/assets-manager/usage-management/components";
 import IncidentManager from "../modules/assets-manager/incident-management/components";
-import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
-import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
 import AssetManager from "../modules/assets-manager/asset-management/components";
-import ManagerAssetCrash from "../modules/assets-manager/asset-crash-management/components";
 import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
 import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
 
@@ -823,23 +820,7 @@ class Routes extends Component {
                         pageName={ 'manage_maintainance_asset' }
                         layout={ Layout }
                         component={ MaintainanceManager }
-                    /> 
-
-                    <PrivateRoute 
-                        isLoading={ this.props.repairUpgrade.isLoading }
-                        key={ 'manage-repair-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-repair-asset', name: 'manage_repair_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/manage-repair-asset' }
-                        path={ '/manage-repair-asset' }
-                        pageName={ 'manage_repair_asset' }
-                        layout={ Layout }
-                        component={ ManagerRepairUpgrade }
-                    /> 
+                    />
 
                     <PrivateRoute 
                         isLoading={ false }
@@ -855,22 +836,6 @@ class Routes extends Component {
                         pageName={ 'manage_usage_asset' }
                         layout={ Layout }
                         component={ UsageManager }
-                    />
-
-                    <PrivateRoute 
-                        isLoading={ this.props.distributeTransfer.isLoading }
-                        key={ 'manage-distribute-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-distribute-asset', name: 'manage_distribute_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/manage-distribute-asset' } 
-                        path={ '/manage-distribute-asset' }
-                        pageName={ 'manage_distribute_asset' }
-                        layout={ Layout }
-                        component={ ManagerDistributeTransfer }
                     />
 
                     <PrivateRoute 
@@ -903,22 +868,6 @@ class Routes extends Component {
                         pageName={ 'manage_incident_asset' }
                         layout={ Layout }
                         component={ IncidentManager }
-                    />
-
-                    <PrivateRoute 
-                        isLoading={ this.props.assetCrash.isLoading }
-                        key={ 'manage-crash-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-crash-asset', name: 'manage_crash_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/manage-crash-asset' } 
-                        path={ '/manage-crash-asset' }
-                        pageName={ 'manage_crash_asset' }
-                        layout={ Layout }
-                        component={ ManagerAssetCrash }
                     />
 
                     <PrivateRoute 

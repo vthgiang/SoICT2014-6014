@@ -164,8 +164,9 @@ class RecommendDistributeCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
+        let dataToSubmit = {...this.state, proponent: this.props.auth.user._id}
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
-            return this.props.createRecommendDistribute(this.state);
+            return this.props.createRecommendDistribute(dataToSubmit);
         }
     }
 
@@ -182,12 +183,12 @@ class RecommendDistributeCreateForm extends Component {
     }
 
     render() {
-        const { id, translate, recommendDistribute, assetsManager, user, auth } = this.props;
+        const { _id, translate, recommendDistribute, assetsManager, user, auth } = this.props;
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse, approver, positionApprover, status, note,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnCode, errorOnDateStartUse, errorOnDateEndUse
+            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
         console.log(this.state, 'this.state')
         return (
@@ -223,15 +224,16 @@ class RecommendDistributeCreateForm extends Component {
                                     <div>
                                         <div id="proponentBox">
                                             <SelectBox
-                                                id={`add-proponent${id}`}
+                                                id={`add-proponent${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={userlist.map(x => {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleProponentChange}
-                                                value={proponent}
+                                                value={auth.user._id}
                                                 multiple={false}
+                                                // disabled
                                             />
                                         </div>
                                     </div>
@@ -248,7 +250,7 @@ class RecommendDistributeCreateForm extends Component {
                                     <div>
                                         <div id="assetUBox">
                                             <SelectBox
-                                                id={`asset`}
+                                                id={`asset${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={assetlist.map(x => {
@@ -279,10 +281,10 @@ class RecommendDistributeCreateForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>Trạng thái</label>
                                     <input type="text" className="form-control" name="status" value={status} disabled />
-                                </div>
+                                </div> */}
 
                             </div>
                         </div>
