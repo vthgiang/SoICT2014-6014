@@ -65,10 +65,10 @@ class AdministrationDocumentDomains extends Component {
                             <a href="#node" className="domain-tree-content"> 
                                 <i className="fa fa-folder text-yellow" onClick={()=>this.slideTreeElement(node.id)}></i> 
                                 <span onClick={()=>this.toggleDomainSetting(node.id)}>{node.title}</span> 
-                                <sup id={`domain-setting-${node.id}`} style={{display: 'none'}}>
-                                    <a className="text-orange" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
-                                </sup>
+                                <span id={`domain-setting-${node.id}`} style={{display: 'none'}}>
+                                    <a className="text-orange" href="#abc" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
+                                    <a className="text-red" href="#abc" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
+                                </span>
                             </a>
                             <ul className="domain-tree" id={`tree-element-${node.id}`} style={{display: 'none'}}>
                                 {this.drawDomainTree(node.children)}
@@ -91,7 +91,7 @@ class AdministrationDocumentDomains extends Component {
         const {translate, documents} = this.props;
         return ( 
             <React.Fragment>
-                <CreateForm documentParent={this.state.documentParent}/>
+                <CreateForm domainParent={this.state.domainParent}/>
                 {
                     this.state.currentDomain !== undefined &&
                     <EditForm

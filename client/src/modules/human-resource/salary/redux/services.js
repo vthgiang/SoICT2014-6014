@@ -5,8 +5,6 @@ export const SalaryService = {
     createSalary,
     deleteSalary,
     updateSalary,
-    // checkSalary,
-    // checkArraySalary,
     importSalary
 }
 

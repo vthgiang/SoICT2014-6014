@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../creation/redux/actions';
 
+import { DatePicker } from '../../../../../common-components';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -15,6 +17,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
+            month: undefined,
             dataStatus: this.DATA_STATUS.QUERYING
         };
 
@@ -22,10 +25,10 @@ class DistributionOfEmployeeKpiChart extends Component {
         this.props.getEmployeeKpiSet();
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            // Lấy Kpi của cá nhân hiện tại
-            this.props.getEmployeeKpiSet();
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if(nextState.month !== this.state.month) {
+            console.log("555", nextState.month)
+            await this.props.getEmployeeKpiSet(nextState.month);
 
             this.setState(state => {
                 return {
@@ -33,8 +36,11 @@ class DistributionOfEmployeeKpiChart extends Component {
                     dataStatus: this.DATA_STATUS.QUERYING,
                 };
             });
+
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        }
+    
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createEmployeeKpiSet.currentKPI)
                 return false;
             
@@ -110,10 +116,53 @@ class DistributionOfEmployeeKpiChart extends Component {
         });
     }
 
+    handleSelectMonth = async (value) => {
+        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        this.setState(state => {
+            return {
+                ...state,
+                month: month
+            }
+        })
+    }
+
     render() {
+        const { createEmployeeKpiSet } = this.props;
+        var currentEmployeeKpiSet;
+
+        if(createEmployeeKpiSet) {
+            currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
+        }
+
+        var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        var defaultDate = [month, year].join('-');
+
         return (
             <React.Fragment>
-                <div ref="chart"></div>
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>Chọn tháng</label>
+                        <DatePicker 
+                            id="monthDistributionOfEmployeeKpiChart"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultDate}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonth}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </div>
+                </section>
+
+                {currentEmployeeKpiSet &&
+                    <section ref="chart"></section>
+                }
             </React.Fragment>
         )
     }

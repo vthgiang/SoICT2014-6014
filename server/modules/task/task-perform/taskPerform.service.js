@@ -718,21 +718,19 @@ exports.addTaskLog = async (data) => {
     var task = await Task.findByIdAndUpdate(
         taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
-    var taskLog = task.logs;
+    var taskLog = task.logs.reverse();
 
     return taskLog;
 }
 
 /**
- * Thêm nhật ký cho một công việc
+ * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (id) => {
     var task = await Task.findById(id).populate("logs.creator")
     
-    return task.logs;
+    return task.logs.reverse();
 }
-
-
 
 /**
  * hàm convert dateISO sang string

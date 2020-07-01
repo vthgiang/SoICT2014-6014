@@ -10,7 +10,7 @@ const DisciplineSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const DisciplineSchema = new Schema({
     },
     decisionNumber: { // số hiệu quyết định kỷ luật
         type: String,
-        require: true,
+        required: true,
     },
     organizationalUnit: { // cấp ra quyết định
         type: Schema.Types.ObjectId,
@@ -26,19 +26,19 @@ const DisciplineSchema = new Schema({
     },
     startDate: {
         type: Date,
-        require: true,
+        required: true,
     },
     endDate: {
         type: Date,
-        require: true,
+        required: true,
     },
     type: { // hình thức kỷ luật
         type: String,
-        require: true,
+        required: true,
     },
     reason: {
         type: String,
-        require: true,
+        required: true,
     }
 }, {
     timestamps: true,

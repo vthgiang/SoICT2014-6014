@@ -1,5 +1,8 @@
 const CommendationService = require('./commendation.service');
-const { LogInfo, LogError } = require('../../../logs');
+const {
+    LogInfo,
+    LogError
+} = require('../../../logs');
 
 /**
  * Lấy danh sách khen thưởng
@@ -7,9 +10,9 @@ const { LogInfo, LogError } = require('../../../logs');
 exports.searchCommendations = async (req, res) => {
     try {
         let data = {};
-        if (req.query.page === undefined && req.query.limit === undefined ){
-            data = await CommendationService.getTotalCommendation(req.user.company._id, req.query.organizationalUnits, req.query.month )
-        } else{
+        if (req.query.page === undefined && req.query.limit === undefined) {
+            data = await CommendationService.getTotalCommendation(req.user.company._id, req.query.organizationalUnits, req.query.month)
+        } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 position: req.query.position,
@@ -20,12 +23,22 @@ exports.searchCommendations = async (req, res) => {
             }
             data = await CommendationService.searchCommendations(params, req.user.company._id);
         }
-        
+
         await LogInfo(req.user.email, 'GET_COMMENDATIONS', req.user.company);
-            res.status(200).json({ success: true, messages:["get_commendations_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["get_commendations_success"],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'GET_COMMENDATIONS', req.user.company);
-        res.status(400).json({ success: false, messages:["get_commendations_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["get_commendations_faile"],
+            content: {
+                error: error
+            }
+        });
     }
 }
 /**
@@ -33,44 +46,101 @@ exports.searchCommendations = async (req, res) => {
  */
 exports.createCommendation = async (req, res) => {
     try {
-        if (req.body.employeeNumber.trim()===""){
+        // Kiểm tra dữ liệu truyền vào
+        if (req.body.employeeNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["employee_number_required"], content:{ inputData: req.body } });
-        } else if(req.body.decisionNumber.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["employee_number_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.decisionNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["number_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.organizationalUnit.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["number_decisions_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.organizationalUnit.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["unit_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.startDate.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["unit_decisions_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.startDate.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["decisions_date_required"], content:{ inputData: req.body } });
-        } else if(req.body.type.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["decisions_date_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.type.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["type_commendations_required"], content:{ inputData: req.body } });
-        } else if(req.body.reason.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["type_commendations_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.reason.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["reason_commendations_required"], content:{ inputData: req.body } });
+            res.status(400).json({
+                success: false,
+                messages: ["reason_commendations_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
         } else {
             var createCommendation = await CommendationService.createCommendation(req.body, req.user.company._id);
-            if(createCommendation===null){
+            // Kiểm tra sự tồn tại của mã số nhân viên
+            if (createCommendation === null) {
                 await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-                res.status(404).json({ success: false, messages: ["staff_code_not_find"], content:{ inputData: req.body } });
-            } else if(createCommendation==="have_exist") {
+                res.status(404).json({
+                    success: false,
+                    messages: ["staff_code_not_find"],
+                    content: {
+                        inputData: req.body
+                    }
+                });
+            // Kiểm tra trùng lặp
+            } else if (createCommendation === "have_exist") {
                 await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-                res.status(400).json({ success: false, messages: ["number_decisions_have_exist"], content:{ inputData: req.body } });
+                res.status(400).json({
+                    success: false,
+                    messages: ["number_decisions_have_exist"],
+                    content: {
+                        inputData: req.body
+                    }
+                });
             } else {
                 await LogInfo(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
                 res.status(200).json({
                     success: true,
-                    messages:["create_commendations_success"],
+                    messages: ["create_commendations_success"],
                     content: createCommendation
                 });
             }
         }
     } catch (error) {
         await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-        res.status(400).json({success: false, messages:["create_commendations_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["create_commendations_faile"],
+            content: {
+                error: error
+            }
+        });
     }
 }
 /**
@@ -80,10 +150,20 @@ exports.deleteCommendation = async (req, res) => {
     try {
         var commendationDelete = await CommendationService.deleteCommendation(req.params.id);
         await LogInfo(req.user.email, 'DELETE_COMMENDATIONS', req.user.company);
-        res.status(200).json({ success: true, messages:["delete_commendations_success"], content: commendationDelete});
+        res.status(200).json({
+            success: true,
+            messages: ["delete_commendations_success"],
+            content: commendationDelete
+        });
     } catch (error) {
         await LogError(req.user.email, 'DELETE_COMMENDATIONS', req.user.company);
-        res.status(400).json({ success: false, messages:["delete_commendations_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["delete_commendations_faile"],
+            content: {
+                error: error
+            }
+        });
     }
 }
 /**
@@ -91,40 +171,90 @@ exports.deleteCommendation = async (req, res) => {
  */
 exports.updateCommendation = async (req, res) => {
     try {
-        if (req.body.employeeNumber.trim()===""){
+        // Kiểm tra dữ liệu truyền vào
+        if (req.body.employeeNumber.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["employee_number_required"], content:{ inputData: req.body } });
-        } else if(req.body.decisionNumber.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["employee_number_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.decisionNumber.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["number_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.organizationalUnit.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["number_decisions_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.organizationalUnit.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["unit_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.startDate.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["unit_decisions_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.startDate.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["start_date_required"], content:{ inputData: req.body } });
-        } else if(req.body.type.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["start_date_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.type.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["type_commendations_required"], content:{ inputData: req.body } });
-        } else if(req.body.reason.trim()===""){
+            res.status(400).json({
+                success: false,
+                messages: ["type_commendations_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else if (req.body.reason.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({ success: false, messages: ["reason_commendations_required"], content:{ inputData: req.body } });
-        } else {
+            res.status(400).json({
+                success: false,
+                messages: ["reason_commendations_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
+        } else { 
             var commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body, req.user.company._id);
-            if(commendationUpdate===null){
+            // Kiểm tra sự tồn tại của mã nhân viên
+            if (commendationUpdate === null) {
                 await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-                res.status(404).json({ success: false, messages: ["staff_code_not_find"], content:{ inputData: req.body } });
+                res.status(404).json({
+                    success: false,
+                    messages: ["staff_code_not_find"],
+                    content: {
+                        inputData: req.body
+                    }
+                });
             } else {
                 await LogInfo(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
                 res.status(200).json({
                     success: true,
-                    messages:["edit_commendations_success"],
+                    messages: ["edit_commendations_success"],
                     content: commendationUpdate
                 });
             }
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-        res.status(400).json({success: false, messages:["edit_commendations_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_commendations_faile"],
+            content: {
+                error: error
+            }
+        });
     }
 }

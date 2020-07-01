@@ -13,6 +13,7 @@ const Discipline = require('./human-resource/discipline.model');
 const Employee = require('./human-resource/employee.model');
 const Holiday = require('./human-resource/holiday.model');
 const Salary = require('./human-resource/salary.model');
+const Timesheets = require('./human-resource/timesheets.model');
 
 const EmployeeKpi = require('./kpi/employeeKpi.model');
 const EmployeeKpiSet = require('./kpi/employeeKpiSet.model');
@@ -74,6 +75,7 @@ exports.schema = {
     Employee,
     Holiday,
     Salary,
+    Timesheets,
 
     EmployeeKpi,
     EmployeeKpiSet,

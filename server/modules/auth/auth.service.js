@@ -21,7 +21,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             { path: 'company', model: Company, select: '_id name short_name active' }
         ]);
 
-    if(!user) throw ["email_invalid"];
+    if(!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -32,7 +32,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             throw ['wrong5_block'];
         }
         user.save();
-        throw ['password_invalid'];
+        throw ['email_password_invalid'];
     }
     if(user.roles.length < 1) throw ['acc_have_not_role'];
     if(user.roles[0].roleId.name !== 'System Admin'){ 

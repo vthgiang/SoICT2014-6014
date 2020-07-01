@@ -7,28 +7,40 @@ const {
 
 /**
  * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
- * @organizationalUnits :array id đơn vị
- * @positions : array id chức vụ
+ * @organizationalUnits : Array id đơn vị
+ * @positions : Array id chức vụ
  * @company : Id công ty
  */
 exports.getAllCourses = async (company, organizationalUnits, positions) => {
-    let listEducations =  await EducationProgram.find({
+    let listEducations = await EducationProgram.find({
         company: company,
-        applyForOrganizationalUnits: { $in: organizationalUnits},
-        applyForPositions: {$in: positions }
-    }, {_id:1})
-    listEducations = listEducations.map(x=>{ return x._id});
+        applyForOrganizationalUnits: {
+            $in: organizationalUnits
+        },
+        applyForPositions: {
+            $in: positions
+        }
+    }, {
+        _id: 1
+    })
+    listEducations = listEducations.map(x => {
+        return x._id
+    });
 
     let listCourses = await Course.find({
-        educationProgram: {$in : listEducations}
+        educationProgram: {
+            $in: listEducations
+        }
     })
-    return {listCourses}
+    return {
+        listCourses
+    }
 }
 
 
 /**
  * Lấy danh sách khoá học theo key
- * @params : dữ liệu key tìm kiếm
+ * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty
  */
 exports.searchCourses = async (params, company) => {
@@ -70,8 +82,12 @@ exports.searchCourses = async (params, company) => {
             course: listCourses[n]._id
         }).populate({
             path: 'employee',
-            model:Employee,
-            select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
+            model: Employee,
+            select: {
+                '_id': 1,
+                'fullName': 1,
+                'employeeNumber': 1
+            }
         });
         listCourses[n] = {
             ...listCourses[n]._doc,
@@ -86,14 +102,16 @@ exports.searchCourses = async (params, company) => {
 
 /**
  * Thêm mới khoá đào tạo
- * @data : dữ liệu khoá đào tạo cần thêm
- * @company : id công ty 
+ * @data : Dữ liệu khoá đào tạo cần thêm
+ * @company : Id công ty 
  */
 exports.createCourse = async (data, company) => {
     var isCourse = await Course.findOne({
         courseId: data.courseId,
         company: company
-    }, {_id: 1});
+    }, {
+        _id: 1
+    });
     if (isCourse !== null) {
         return "have_exist"
     } else {
@@ -114,8 +132,14 @@ exports.createCourse = async (data, company) => {
             educationProgram: data.educationProgram,
             employeeCommitmentTime: data.employeeCommitmentTime
         });
-        if(data.listEmployees.length !==0){
-            data.listEmployees =data.listEmployees.map(x=> {return {course: course._id, employee: x._id, result: x.result}});
+        if (data.listEmployees.length !== 0) {
+            data.listEmployees = data.listEmployees.map(x => {
+                return {
+                    course: course._id,
+                    employee: x._id,
+                    result: x.result
+                }
+            });
             await EmployeeCourse.insertMany([...data.listEmployees]);
         }
         let newCourse = await Course.findById(course._id).populate({
@@ -126,31 +150,41 @@ exports.createCourse = async (data, company) => {
             course: newCourse._id
         }).populate({
             path: 'employee',
-            model:Employee,
-            select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
+            model: Employee,
+            select: {
+                '_id': 1,
+                'fullName': 1,
+                'employeeNumber': 1
+            }
         });
-        return {...newCourse._doc, listEmployees}
+        return {
+            ...newCourse._doc,
+            listEmployees
+        }
     }
 }
 
 /**
  * Xoá khoá đào tạo
- * @id :id khoá đào tạo cần xoá
+ * @id : Id khoá đào tạo cần xoá
  */
 exports.deleteCourse = async (id) => {
     let courseDelete = await Course.findOneAndDelete({
         _id: id
     });
     let listEmployees = await EmployeeCourse.deleteMany({
-        course:id
+        course: id
     })
-    return {...courseDelete._doc, listEmployees: listEmployees };
+    return {
+        ...courseDelete._doc,
+        listEmployees: listEmployees
+    };
 }
 
 /**
  * Cập nhật thông tin khoá học
- * @id : id khoá đào tạo cần xoá
- * @data : dữ liệu chỉnh sửa khoá đào tạo
+ * @id : Id khoá đào tạo cần xoá
+ * @data : Dữ liệu chỉnh sửa khoá đào tạo
  */
 exports.updateCourse = async (id, data) => {
     var courseChange = {
@@ -168,10 +202,22 @@ exports.updateCourse = async (id, data) => {
         educationProgram: data.educationProgram,
         employeeCommitmentTime: data.employeeCommitmentTime
     };
-    await Course.findOneAndUpdate({_id: id}, {$set: courseChange});
-    await EmployeeCourse.deleteMany({course: id});
-    if(data.listEmployees.length !==0){
-        data.listEmployees = data.listEmployees.map(x=> {return {course: id, employee: x._id, result: x.result}});
+    await Course.findOneAndUpdate({
+        _id: id
+    }, {
+        $set: courseChange
+    });
+    await EmployeeCourse.deleteMany({
+        course: id
+    });
+    if (data.listEmployees.length !== 0) {
+        data.listEmployees = data.listEmployees.map(x => {
+            return {
+                course: id,
+                employee: x._id,
+                result: x.result
+            }
+        });
         await EmployeeCourse.insertMany([...data.listEmployees]);
     }
 
@@ -183,8 +229,15 @@ exports.updateCourse = async (id, data) => {
         course: id
     }).populate({
         path: 'employee',
-        model:Employee,
-        select: {'_id': 1, 'fullName': 1, 'employeeNumber': 1}
+        model: Employee,
+        select: {
+            '_id': 1,
+            'fullName': 1,
+            'employeeNumber': 1
+        }
     });
-    return {...updateCourse._doc, listEmployees}
+    return {
+        ...updateCourse._doc,
+        listEmployees
+    }
 }

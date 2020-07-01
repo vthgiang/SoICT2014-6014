@@ -233,7 +233,7 @@ class SalaryManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalarys !== 'undefined' && listSalarys.length !== 0) &&
+                            {(listSalarys !== 'undefined' && listSalarys.length !== 0) &&
                                 listSalarys.map((x, index) => {
                                     if (x.bonus.length !== 0) {
                                         var total = 0;
