@@ -29,13 +29,18 @@ export function timesheets(state = initState, action) {
             };
 
         case TimesheetsConstants.CREATE_TIMESHEETS_SUCCESS:
+            let listTimesheets;
+            if (state.listTimesheets[0].month === action.payload.month) {
+                listTimesheets = [...state.listTimesheets,
+                    action.payload
+                ]
+            } else {
+                listTimesheets = state.listTimesheets;
+            }
             return {
                 ...state,
                 isLoading: false,
-                listTimesheets: [
-                    ...state.listTimesheets,
-                    action.payload
-                ],
+                listTimesheets: listTimesheets
             };
         case TimesheetsConstants.UPDATE_TIMESHEETS_SUCCESS:
             return {

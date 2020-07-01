@@ -5,7 +5,7 @@ const {  LogInfo,  LogError } = require('../../../../logs');
 /** Lấy tập KPI cá hiện hiện tại */  
 exports.getEmployeeKpiSet = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id, req.query.role);
+        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id, req.query.role, req.query.month);
         await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
         res.status(200).json({
             success: true,

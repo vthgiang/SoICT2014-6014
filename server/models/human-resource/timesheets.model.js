@@ -9,16 +9,16 @@ const TimesheetsSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
         ref: Company,
-        require: true,
+        required: true,
     },
     month: {
         type: Date,
-        require: true,
+        required: true,
     },
     workSession1: [{ // Ca làm việc 1 (ví dụ buổi sáng), true là làm việc, false là nghỉ việc
         type: Boolean,

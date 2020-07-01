@@ -23,7 +23,7 @@ function searchTimesheets(data) {
             page: data.page,
             limit: data.limit
         }
-    }, false, true, 'human_resource.salary');
+    }, false, true, 'human_resource.timesheets');
 }
 
 /**
@@ -35,7 +35,7 @@ function createTimesheets(data) {
         url: `${ LOCAL_SERVER_API }/timesheets`,
         method: 'POST',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'human_resource.timesheets');
 }
 
 /**
@@ -46,7 +46,7 @@ function deleteTimesheets(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/timesheets/${id}`,
         method: 'DELETE',
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'human_resource.timesheets');
 }
 
 /**
@@ -59,7 +59,7 @@ function updateTimesheets(id, data) {
         url: `${ LOCAL_SERVER_API }/timesheets/${id}`,
         method: 'PATCH',
         data: data,
-    }, true, true, 'human_resource.salary');
+    }, true, true, 'human_resource.timesheets');
 }
 
 // /**

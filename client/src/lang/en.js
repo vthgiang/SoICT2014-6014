@@ -172,10 +172,10 @@ export default {
                 add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
                 delete_component_for_company_success: 'Xóa component thành công',
 
-                create_import_configuration_success:"Create import file configuration success",
-                create_import_configuration_faile:"Create import file configuration faile",
-                edit_import_configuration_success:"Edit import file configuration success",
-                edit_import_configuration_faile:"Edit import file configuration faile",
+                create_import_configuration_success: "Create import file configuration success",
+                create_import_configuration_faile: "Create import file configuration faile",
+                edit_import_configuration_success: "Edit import file configuration success",
+                edit_import_configuration_faile: "Edit import file configuration faile",
 
                 email_exist: 'Email này đã được sử dụng',
                 company_not_found: 'Không tìm thấy thông tin về công ty',
@@ -1029,7 +1029,7 @@ export default {
                     delete_employee_false: 'Delete employee false',
                     edit_employee_success: 'Edit employee success',
                     edit_employee_false: 'Edit employee false',
-                    employee_number_required: 'Employee number required',
+                    employee_number_required: 'Staff code required',
                     email_in_company_required: 'Email in company required',
                     employee_number_have_exist: 'Employee number have exist',
                     email_in_company_have_exist: 'Email in company have exist',
@@ -1050,23 +1050,42 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday : {
+            holiday: {
 
                 // Thông điệp trả về từ server
-                start_date_required:'Start date required',
-                end_date_required:'End date required',
-                reason_required:'Reason required',
+                start_date_required: 'Start date required',
+                end_date_required: 'End date required',
+                reason_required: 'Reason required',
 
-                get_holiday_success:'Get holiday success',
-                get_holiday_faile:'Get holiday faile',
-                create_holiday_success:'Create holiday success',
-                create_holiday_faile:'Create holiday faile',
-                delete_holiday_success:'Delete holiday success',
-                delete_holiday_faile:'Delete holiday faile',
-                edit_holiday_success:'Edit holiday success',
-                edit_holiday_faile:'Edit holiday faile',
+                get_holiday_success: 'Get holiday success',
+                get_holiday_faile: 'Get holiday faile',
+                create_holiday_success: 'Create holiday success',
+                create_holiday_faile: 'Create holiday faile',
+                delete_holiday_success: 'Delete holiday success',
+                delete_holiday_faile: 'Delete holiday faile',
+                edit_holiday_success: 'Edit holiday success',
+                edit_holiday_faile: 'Edit holiday faile',
 
-            }
+            },
+
+            // Quản lý chấm công nhân viên
+            timesheets: {
+                // Thông điệp trả về từ server
+                employee_number_required: "Staff code required",
+                month_timesheets_required: "Month timesheets required",
+                staff_code_not_find: "Staff code does not exist",
+                month_timesheets_have_exist: "Month timesheets have exist",
+                get_timesheets_success: "Get timesheets success",
+                get_timesheets_faile: "Get timesheets faile",
+                create_timesheets_success: "Create timesheets success",
+                create_timesheets_faile: "Create timesheets faile",
+                edit_timesheets_success: "Edit timesheets success",
+                edit_timesheets_faile: "Edit timesheets faile",
+                delete_timesheets_success: "Delete timesheets success",
+                delete_timesheets_faile: "Delete timesheets faile",
+
+
+            },
         },
 
         // Modules quản lý đào tạo
@@ -1272,15 +1291,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task successfully',
                 create_result_infomation_task_success: 'Create result infomation task successfully',
                 edit_result_infomation_task_success: 'Edit result infomation task successfully',
-                create_task_comment_success:'Create task comment success',
-                get_task_comments_success:' Get all task comments success',
-                edit_task_comment_success:' Edit task comment success',
-                delete_task_comment_success:'Delete task comment success',
-                create_comment_of_task_comment_success:'Create comment of task comment success',
-                edit_comment_of_task_comment_success:'Edit comment of task comment success',
-                delete_comment_of_task_comment_success:' Delete comment of task comment success',
-                evaluation_action_success:'Evaluation action success',
-                confirm_action_success:'Confirm action success',
+                create_task_comment_success: 'Create task comment success',
+                get_task_comments_success: ' Get all task comments success',
+                edit_task_comment_success: ' Edit task comment success',
+                delete_task_comment_success: 'Delete task comment success',
+                create_comment_of_task_comment_success: 'Create comment of task comment success',
+                edit_comment_of_task_comment_success: 'Edit comment of task comment success',
+                delete_comment_of_task_comment_success: ' Delete comment of task comment success',
+                evaluation_action_success: 'Evaluation action success',
+                confirm_action_success: 'Confirm action success',
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -1301,15 +1320,15 @@ export default {
                 create_result_info_task_success: 'Create result infomation task fail',
                 create_result_infomation_task_success: 'Create result infomation task fail',
                 edit_result_infomation_task_success: 'Edit result infomation task fail',
-                create_task_comment_fail:'Create task comment fail',
+                create_task_comment_fail: 'Create task comment fail',
                 get_task_comments_fail: 'Get all task comments fail',
-                edit_task_comment_fail:'Edit task comment fail',
-                delete_task_comment_fail:'Delete task comment fail',
-                create_comment_of_task_comment_fail:'Create comment of task comment fail',
-                edit_comment_of_task_comment_fail:'Edit comment of task comment fail',
+                edit_task_comment_fail: 'Edit task comment fail',
+                delete_task_comment_fail: 'Delete task comment fail',
+                create_comment_of_task_comment_fail: 'Create comment of task comment fail',
+                edit_comment_of_task_comment_fail: 'Edit comment of task comment fail',
                 delete_comment_of_task_comment_fail: 'Delete comment of task comment fail',
-                evaluation_action_fail:'Evaluation action fail',
-                confirm_action_fail:'Confirm action fail',
+                evaluation_action_fail: 'Evaluation action fail',
+                confirm_action_fail: 'Confirm action fail',
 
                 // modal approve task
                 modal_approve_task: {
@@ -1332,13 +1351,13 @@ export default {
                     err_empty: "Value must be filled"
                 }
             },
-            task_template: {                
-                create_task_template_success:'Create task template success !',
-                create_task_template_fail:'Create task template fail !',
-                edit_task_template_success:'Edit task template success !',
-                edit_task_template_fail:'Edit task template fail !',
-                delete_task_template_success:'Delete task template success !',
-                delete_task_template_fail:'Delete task template fail !',
+            task_template: {
+                create_task_template_success: 'Create task template success !',
+                create_task_template_fail: 'Create task template fail !',
+                edit_task_template_success: 'Edit task template success !',
+                edit_task_template_fail: 'Edit task template fail !',
+                delete_task_template_success: 'Delete task template success !',
+                delete_task_template_fail: 'Delete task template fail !',
 
             }
         },
