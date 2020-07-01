@@ -5,12 +5,28 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /** Lấy tập KPI cá nhân hiện tại theo người dùng */ 
-exports.getEmployeeKpiSet = async (id, role) => {
-    var now = new Date();
-    var currentYear = now.getFullYear();
-    var currentMonth = now.getMonth();
-    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    var endOfLastMonth = new Date(currentYear, currentMonth);
+exports.getEmployeeKpiSet = async (id, role, month) => {
+    
+    let now = new Date(month);
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    let endOfLastMonth = new Date(currentYear, currentMonth);
+
+    if(month) {
+        now = new Date(month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+    
 
     var department = await OrganizationalUnit.findOne({
         $or: [

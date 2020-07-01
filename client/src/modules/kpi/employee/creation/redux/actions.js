@@ -22,11 +22,11 @@ export const createKpiSetActions = {
 
 
 // Lấy tập KPI cá nhân hiện tại
-function getEmployeeKpiSet() {
+function getEmployeeKpiSet(month=undefined) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiSetService.getEmployeeKpiSet()
+        createKpiSetService.getEmployeeKpiSet(month)
             .then(res => {
                 dispatch({ 
                     type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS,

@@ -26,14 +26,14 @@ export const createKpiSetService = {
 };
 
 /** Lấy tập KPI cá nhân hiện tại */ 
-function getEmployeeKpiSet() {
+function getEmployeeKpiSet(month) {
     var id = getStorage("userId");
     const role = getStorage("currentRole");
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
         method: 'GET',
-        params: {role: role}
+        params: {role: role, month: month}
     }, false, true);
 }
 
