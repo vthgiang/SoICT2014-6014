@@ -158,7 +158,7 @@ class DisciplineEditForm extends Component {
 
     render() {
         const { translate, discipline, department } = this.props;
-        const { employeeNumber, startDate, endDate, reason, decisionNumber, organizationalUnit, type,
+        const { _id, employeeNumber, startDate, endDate, reason, decisionNumber, organizationalUnit, type,
             errorOnEndDate, errorOnStartDate, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
@@ -184,7 +184,7 @@ class DisciplineEditForm extends Component {
                             <div className={`right col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
                                 <SelectBox
-                                    id={`edit_discipline`}
+                                    id={`edit_discipline${_id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
@@ -198,7 +198,7 @@ class DisciplineEditForm extends Component {
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_discipline_start_date"
+                                    id={`edit_discipline_start_date${_id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -207,7 +207,7 @@ class DisciplineEditForm extends Component {
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_discipline_end_date"
+                                    id={`edit_discipline_end_date${_id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
