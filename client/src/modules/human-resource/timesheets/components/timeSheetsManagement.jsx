@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ModalImportTimekeeping, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
+import { TimesheetsImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -36,6 +36,15 @@ class TimesheetsManagement extends Component {
         let partMonth = this.state.month.split('-');
         let month = [partMonth[1], partMonth[0]].join('-');
         this.props.searchTimesheets({ ...this.state, month: month });
+    }
+    // Function bắt sự kiện thêm thông tin chấm công
+    createTimesheets = () => {
+        window.$('#modal-create-timesheets').modal('show');
+    }
+
+    // Function bắt sự kiện import thông tin chấm công
+    handleImport = () => {
+        window.$('#modal_import_file').modal('show');
     }
 
     // Function bắt sự kiện chỉnh sửa thông tin chấm công
@@ -135,10 +144,7 @@ class TimesheetsManagement extends Component {
         this.props.searchTimesheets({ ...this.state, month: month });
     }
 
-    // Function bắt sự kiện thêm thông tin chấm công
-    createTimesheets = () => {
-        window.$('#modal-create-timesheets').modal('show');
-    }
+
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number) => {
@@ -196,7 +202,7 @@ class TimesheetsManagement extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Chấm công nhân viên" >Thêm chấm công</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
-                                <li><a data-toggle="modal" data-target="#modal-importFileTimekeeping">Import file Excel</a></li>
+                                <li><a title={'Thêm mới thông tin chấm công từ file excel'} onClick={this.handleImport}>Import file Excel</a></li>
                                 <li><a title={'Thêm mới thông tin chấm công'} onClick={this.createTimesheets}>Thêm bằng tay</a></li>
                             </ul>
                         </div>
@@ -325,8 +331,9 @@ class TimesheetsManagement extends Component {
                     <SlimScroll outerComponentId='croll-table' innerComponentId='timesheets' innerComponentWidth={1000} activate={true} />
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+
                 <TimesheetsCreateForm />
-                <ModalImportTimekeeping />
+                <TimesheetsImportForm />
                 {
                     this.state.currentRow &&
                     <TimesheetsEditForm
