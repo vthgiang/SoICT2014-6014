@@ -7,7 +7,6 @@ class TaskTemplateImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
         };
     }
 
@@ -98,7 +97,6 @@ class TaskTemplateImportForm extends Component {
                             </div>
                         </div>
                     </form>
-
 
                 </DialogModal>
             </React.Fragment>

@@ -86,8 +86,6 @@ class TaskTemplate extends Component {
                 })
     }
 
-
-
     //Xoa tasktemplate theo id
     handleDelete = (id, numberOfUse) => {
         const { translate } = this.props;
@@ -186,7 +184,7 @@ class TaskTemplate extends Component {
         window.$('#modal_import_file').modal('show');
     }
     handleAddTaskTemplate = (event)=>{
-         event.preventDefault();
+        event.preventDefault();
         console.log('oenene');
         window.$('#modal-add-task-template').modal('show');
     }
@@ -225,8 +223,7 @@ class TaskTemplate extends Component {
                                 </ul>
                             </div>
                         </div>
-                    
-                    
+                                        
                     <div className="form-inline">
                         <div className = "form-group">
                             <label className = "form-control-static">{translate('task_template.name')}</label>
