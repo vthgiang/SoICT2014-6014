@@ -74,8 +74,6 @@ class InformationForm extends Component{
         });
     }
 
-
-
     // Edit information in information table
     handleEditInformation = async (information, index) => {
         this.setState((state)=> {
@@ -157,7 +155,6 @@ class InformationForm extends Component{
     // add new information in information table
     handleAddInformation = async (event) => {
         event.preventDefault(); // Ngăn không submit
-
         
         await this.setState(state => {
             const taskInformations = [...(this.state.taskInformations), state.information];
@@ -338,18 +335,18 @@ class InformationForm extends Component{
                         {
                             (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 taskInformations.map((item, index) =>
-                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.description}</td>
-                                        <td>{item.type}</td>
-                                        <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
-                                        <td>
-                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                        </td>
-                                    </tr>
-                                )
+                                <tr key={`${this.state.keyPrefix}_${index}`}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.description}</td>
+                                    <td>{item.type}</td>
+                                    <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
+                                    <td>
+                                        <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                    </td>
+                                </tr>
+                            )
                         }
                     </tbody>
                 </table>

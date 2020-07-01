@@ -46,7 +46,6 @@ class ModalAddTaskTemplate extends Component {
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
-
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả các role là dean 
@@ -264,7 +263,8 @@ class ModalAddTaskTemplate extends Component {
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
                 item.deans.includes(this.state.currentRole)
                 || item.viceDeans.includes(this.state.currentRole)
-                || item.employees.includes(this.state.currentRole));
+                || item.employees.includes(this.state.currentRole
+            ));
             
             if (defaultUnit){
                 this.setState(state =>{
@@ -281,7 +281,6 @@ class ModalAddTaskTemplate extends Component {
                 return false; // Sẽ cập nhật lại state nên không cần render
             }
         }
-
         return true;
     }
     
