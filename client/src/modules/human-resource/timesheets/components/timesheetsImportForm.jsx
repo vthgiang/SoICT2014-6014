@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, SlimScroll, PaginateBar, DatePicker } from '../../../../common-components';
-import { configurationSalary } from './fileConfigurationImportSalary';
+import { configurationTimesheets } from './fileConfigurationImportTimesheets';
 import { LOCAL_SERVER_API } from '../../../../env';
 
 import XLSX from 'xlsx';
-import { SalaryActions } from '../redux/actions';
+import { SalaryActions } from '../../salary/redux/actions';
 
-class SalaryImportForm extends Component {
+class TimesheetsImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             rowError: [],
             importData: [],
             month: null,
-            configData: this.convertConfigurationToString(configurationSalary),
+            configData: this.convertConfigurationToString(configurationTimesheets),
             importConfiguration: null,
             limit: 100,
             page: 0
         };
     }
     componentDidUpdate() {
-        const { salary } = this.props;
-        salary.importStatus && window.$(`#modal_import_file`).modal("hide");
+        const { timesheets } = this.props;
+        timesheets.importStatus && window.$(`#modal_import_file`).modal("hide");
     }
 
     // Function format dữ liệu Date thành string
@@ -45,22 +46,17 @@ class SalaryImportForm extends Component {
 
     // Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea);
     convertConfigurationToString = (data) => {
-        let sheets = data.sheets, bonus = data.bonus;
+        let sheets = data.sheets;
         if (sheets.length > 1) {
             sheets = sheets.map(x => `"${x}"`);
             sheets = sheets.join(', ');
         } else sheets = `"${sheets}"`
-        if (bonus.length > 1) {
-            bonus = bonus.map(x => `"${x}"`);
-            bonus = bonus.join(', ');
-        } else bonus = `"${bonus}"`
         let stringData = `{
             "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
             "${'Tên các sheet'}": [${sheets}],
             "${'Tên tiêu đề ứng với mã số nhân viên'}": "${data.employeeNumber}",
             "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
-            "${'Tên tiêu để ứng với tiền lương chính'}": "${data.mainSalary}",
-            "${'Tên tiêu để ứng với lương thưởng khác'}": [${bonus}]
+            "${'Tên tiêu để ứng với các ngày trong tháng'}": "${data.dateOfMonth}",
         }`
         return stringData;
     }
@@ -68,10 +64,10 @@ class SalaryImportForm extends Component {
     // Chuyển đổi dữ liệu người dùng nhập vào ở textarea thành object để xử lý logic
     convertStringToObject = (data) => {
         try {
-            data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
-            data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
+            data = data.substring(1, data.length - 1); // Xoá dấu "{" và "}"" ở đầu và cuối String
+            data = data.split(',').map(x => x.trim()); // Xoá các space dư thừa
             data = data.join(',');
-            if (data[data.length - 1] === ',') {    // xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
+            if (data[data.length - 1] === ',') {    // Xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
                 data = data.substring(0, data.length - 1);
             }
             data = JSON.parse(`{${data}}`);
@@ -81,8 +77,7 @@ class SalaryImportForm extends Component {
                 if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
                 if (index === "Tên tiêu đề ứng với mã số nhân viên") obj = { ...obj, employeeNumber: data[index] };
                 if (index === "Tên tiêu để ứng với họ và tên") obj = { ...obj, employeeName: data[index] };
-                if (index === "Tên tiêu để ứng với tiền lương chính") obj = { ...obj, mainSalary: data[index] };
-                if (index === "Tên tiêu để ứng với lương thưởng khác") obj = { ...obj, bonus: data[index] };
+                if (index === "Tên tiêu để ứng với các ngày trong tháng") obj = { ...obj, dateOfMonth: data[index] };
             }
             return obj
         } catch (error) {
@@ -90,35 +85,42 @@ class SalaryImportForm extends Component {
         }
     }
 
-    // bắt sự kiện thay đổi tháng lương
+    // Bắt sự kiện thay đổi tháng lương
     handleMonthChange = (value) => {
-        const { salary } = this.props;
-        let partMonth = value.split('-'), rowError = [], importData = [];
-        value = [partMonth[1], partMonth[0]].join('-');
-        if (salary.error.rowError !== undefined) {
-            rowError = salary.error.rowError;
-            importData = salary.error.data;
-            importData = importData.map((x, index) => {
-                if (x.errorAlert.find(y => y = "month_salary_have_exist") !== undefined) {
-                    x.errorAlert = x.errorAlert.filter(y => y !== "month_salary_have_exist");
-                    x.error = false;
-                    rowError = rowError.filter(y => y !== index);
-                }
-                return x;
-            })
-            this.setState({
-                ...this.state,
-                importData: importData,
-                rowError: rowError,
-                changeMonth: true,
-            })
+        // const { salary } = this.props;
+        // let partMonth = value.split('-'), rowError = [], importData = [];
+        // value = [partMonth[1], partMonth[0]].join('-');
+        // if (salary.error.rowError !== undefined) {
+        //     rowError = salary.error.rowError;
+        //     importData = salary.error.data;
+        //     importData = importData.map((x, index) => {
+        //         if (x.errorAlert.find(y => y = "month_salary_have_exist") !== undefined) {
+        //             x.errorAlert = x.errorAlert.filter(y => y !== "month_salary_have_exist");
+        //             x.error = false;
+        //             rowError = rowError.filter(y => y !== index);
+        //         }
+        //         return x;
+        //     })
+        //     this.setState({
+        //         ...this.state,
+        //         importData: importData,
+        //         rowError: rowError,
+        //         changeMonth: true,
+        //     })
+        // }
+        let importFile
+        if (value) {
+            importFile = true;
+        } else {
+            importFile = null;
         }
         this.setState({
             ...this.state,
             month: value,
+            importFile: importFile
         });
     }
-    // bắt sự kiện thay đổi (textarea);
+    // Bắt sự kiện thay đổi (textarea);
     handleChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -127,10 +129,10 @@ class SalaryImportForm extends Component {
                 this.convertStringToObject(value) : this.state.importConfiguration,
         })
     }
-    // bắt xự kiện chọn file import
+    // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
         const { importConfiguration } = this.state;
-        let configData = importConfiguration !== null ? importConfiguration : configurationSalary;
+        let configData = importConfiguration !== null ? importConfiguration : configurationTimesheets;
         let sheets = configData.sheets;
         let file = e.target.files[0];
 
@@ -150,46 +152,47 @@ class SalaryImportForm extends Component {
                 let importData = [], rowError = [];
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
-                    var indexEmployeeName, indexEmployeenumber, indexMainSalary, indexBouns = [];
-                    // Lấy index của các tiều đề cột mà người dùng muốn import
+                    let indexEmployeeName, indexEmployeenumber, indexDateOfMonth;
+                    
                     console.log(data);
-                    console.log(data[0]);
+                    data = data.filter(x => {
+                        let check = x.filter(y => y !== null);
+                        if (check.length === 0) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    });
+                    console.log(...data);
+                    // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
+                        console.log(data[i]);
                         data[i].forEach((x, index) => {
                             if (x !== null) {
                                 if (x.trim().toLowerCase() === configData.employeeName.trim().toLowerCase())
                                     indexEmployeeName = index;
                                 if (x.trim().toLowerCase() === configData.employeeNumber.trim().toLowerCase())
                                     indexEmployeenumber = index;
-                                if (x.trim().toLowerCase() === configData.mainSalary.trim().toLowerCase()) {
-                                    indexMainSalary = index;
+                                if (x.trim().toLowerCase() === configData.dateOfMonth.trim().toLowerCase()) {
+                                    indexDateOfMonth = index;
                                 }
-                                configData.bonus.forEach((y, n) => {
-                                    if (x.trim().toLowerCase() === y.trim().toLowerCase()) {
-                                        indexBouns[n] = index
-                                    }
-                                })
                             }
                         }
                         )
                     }
+                    console.log('indexEmployeeName', indexEmployeeName);
+                    console.log('indexEmployeenumber', indexEmployeenumber);
+                    console.log('indexDateOfMonth', indexDateOfMonth);
 
-                    // Convert dữ liệu thành dạng array json mong muốn để gửi lên server
+                    // Convert dữ liệu thành dạng array json mong muốn để gửi lên server(hiện thi ra table)
                     data.splice(0, Number(configData.rowHeader));
                     let dataConvert = [];
                     data.forEach(x => {
                         if (x[indexEmployeenumber] !== null) {
-                            let mainSalary = x[indexMainSalary];
+                            let dateOfMonth = x[indexDateOfMonth];
                             let employeeNumber = x[indexEmployeenumber];
                             let employeeName = x[indexEmployeeName];
-                            let bonus = [];
-                            indexBouns.forEach((y, indexs) => {
-                                if (x[y] !== null) {
-                                    bonus = [...bonus, { nameBonus: configData.bonus[indexs], number: Number(x[y]) }]
-                                }
-
-                            })
-                            dataConvert = [...dataConvert, { mainSalary, employeeNumber, employeeName, bonus }]
+                            dataConvert = [...dataConvert, { dateOfMonth, employeeNumber, employeeName }]
                         }
                     })
                     importData = importData.concat(dataConvert);
@@ -254,14 +257,13 @@ class SalaryImportForm extends Component {
     }
 
     render() {
-        let formater = new Intl.NumberFormat();
-        const { translate, salary } = this.props;
-        let { importData, configData, importConfiguration, rowError, limit, page, changeMonth } = this.state;
-        let otherSalary = importConfiguration !== null ? importConfiguration.bonus : configurationSalary.bonus;
-        if (salary.error.rowError !== undefined && changeMonth === false) {
-            rowError = salary.error.rowError;
-            importData = salary.error.data
-        }
+        const { translate, timesheets } = this.props;
+        let { importData, configData, importConfiguration, rowError, limit, page, importFile, changeMonth } = this.state;
+        // if (salary.error.rowError !== undefined && changeMonth === false) {
+        //     rowError = salary.error.rowError;
+        //     importData = salary.error.data
+        // }
+        console.log(importData);
         var pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);
@@ -269,7 +271,6 @@ class SalaryImportForm extends Component {
         let importDataCurrentPage = importData.slice(page, page + limit);
         return (
             <React.Fragment>
-                {/* {showButton && <ButtonModal modalID={`modal_import_file_${id}`} button_name="Import file excel" />} */}
                 <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
@@ -305,21 +306,14 @@ class SalaryImportForm extends Component {
                                             <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
                                             <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.sheets.length > 1 ? importConfiguration.sheets.join(', ') : importConfiguration.sheets}</span>
 
-                                            <div id="croll-table" style={{ marginTop: 5 }}>
-                                                <table id="importConfig" className="table table-bordered table-striped table-hover">
+                                            <div style={{ marginTop: 5 }}>
+                                                <table className="table table-bordered table-striped table-hover">
                                                     <thead>
                                                         <tr>
                                                             <th>Tên các thuộc tính</th>
                                                             <th>Mã số nhân viên</th>
                                                             <th>Tên nhân viên</th>
-                                                            <th>Tiền lương chính</th>
-                                                            {importConfiguration.bonus.length !== 0 &&
-                                                                importConfiguration.bonus.map((x, index) => (
-                                                                    <React.Fragment key={index}>
-                                                                        <th>{x}</th>
-                                                                    </React.Fragment>
-                                                                ))
-                                                            }
+                                                            <th>Các ngày trong tháng</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -327,14 +321,7 @@ class SalaryImportForm extends Component {
                                                             <th>Tiêu đề tương ứng</th>
                                                             <td>{importConfiguration.employeeNumber}</td>
                                                             <td>{importConfiguration.employeeName}</td>
-                                                            <td>{importConfiguration.mainSalary}</td>
-                                                            {importConfiguration.bonus.length !== 0 &&
-                                                                importConfiguration.bonus.map((x, index) => (
-                                                                    <React.Fragment key={index}>
-                                                                        <td>{x}</td>
-                                                                    </React.Fragment>
-                                                                ))
-                                                            }
+                                                            <td>{importConfiguration.dateOfMonth}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -342,14 +329,13 @@ class SalaryImportForm extends Component {
                                         </div>
                                     )
                                 }
-                                <SlimScroll outerComponentId="croll-table" innerComponentId="importConfig" innerComponentWidth={1000} activate={true} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="form-group col-md-4 col-xs-12">
                                 <label>Tháng lương</label>
                                 <DatePicker
-                                    id="month_Salary"
+                                    id="import_timesheets"
                                     dateFormat="month-year"
                                     value=""
                                     onChange={this.handleMonthChange}
@@ -357,14 +343,14 @@ class SalaryImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label>File excel cần import</label>
-                                <input type="file" className="form-control"
+                                <input type="file" className="form-control" disabled={importFile ? false : true}
                                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                     onChange={this.handleChangeFileImport} />
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right' href={LOCAL_SERVER_API + configurationSalary.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                    download={configurationSalary.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right' href={LOCAL_SERVER_API + configurationTimesheets.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
+                                    download={configurationTimesheets.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
 
                             <div className="form-group col-md-12 col-xs-12">
@@ -383,14 +369,6 @@ class SalaryImportForm extends Component {
                                                             <th>STT</th>
                                                             <th>Mã số nhân viên</th>
                                                             <th>Tên nhân viên</th>
-                                                            <th>Tiền lương chính</th>
-                                                            {otherSalary.length !== 0 &&
-                                                                otherSalary.map((x, index) => (
-                                                                    <React.Fragment key={index}>
-                                                                        <th>{x}</th>
-                                                                    </React.Fragment>
-                                                                ))
-                                                            }
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -401,18 +379,6 @@ class SalaryImportForm extends Component {
                                                                         <td>{page + index + 1}</td>
                                                                         <td>{x.employeeNumber}</td>
                                                                         <td>{x.employeeName}</td>
-                                                                        <td>{formater.format(parseInt(x.mainSalary))}</td>
-                                                                        {otherSalary.length !== 0 &&
-                                                                            otherSalary.map((y, index) => {
-                                                                                let number = null;
-                                                                                x.bonus.forEach(b => {
-                                                                                    if (y.trim().toLowerCase() === b.nameBonus.trim().toLowerCase()) {
-                                                                                        number = formater.format(parseInt(b.number))
-                                                                                    }
-                                                                                })
-                                                                                return <td>{number}</td>
-                                                                            })
-                                                                        }
                                                                     </tr>
                                                                 )
                                                             })
@@ -436,13 +402,13 @@ class SalaryImportForm extends Component {
 };
 
 function mapState(state) {
-    const { salary } = state;
-    return { salary };
+    const { timesheets, salary } = state;
+    return { timesheets, salary };
 };
 
 const actionCreators = {
     importSalary: SalaryActions.importSalary,
 };
 
-const importExcel = connect(mapState, actionCreators)(withTranslate(SalaryImportForm));
-export { importExcel as SalaryImportForm };
+const importExcel = connect(mapState, actionCreators)(withTranslate(TimesheetsImportForm));
+export { importExcel as TimesheetsImportForm };

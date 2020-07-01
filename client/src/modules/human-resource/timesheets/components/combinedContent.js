@@ -1,5 +1,5 @@
 
-export * from './importTimesheetsModal';
+export * from './timesheetsImportForm';
 export * from './timesheetsManagement';
 export * from './timesheetsCreateFrom';
 export * from './timesheetsEditFrom';

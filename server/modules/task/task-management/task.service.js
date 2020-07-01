@@ -1888,7 +1888,6 @@ exports.getTasksByUser = async (data) => {
         status: "Inprocess"
     })
     var nowdate = new Date();
-    console.log(nowdate.getTime() )
     var tasksexpire = [], deadlineincoming= [], test;
     for (let i in tasks){
         var olddate = new Date(tasks[i].endDate);
