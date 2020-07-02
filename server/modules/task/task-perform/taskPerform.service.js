@@ -1003,7 +1003,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
-    tasks.evaluations.reverse();
+    newTask.evaluations.reverse();
     
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 }
@@ -1127,7 +1127,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
-    tasks.evaluations.reverse();
+    newTask.evaluations.reverse();
 
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 

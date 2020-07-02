@@ -32,12 +32,13 @@ class EvaluateByResponsibleEmployee extends Component {
             task: data.task,
             idUser: data.idUser,
             info: data.info,
-            autoPoint: data.autoPoint,
+            autoPoint: data.calcAuto,
             oldAutoPoint: data.autoPoint,
             date: data.date,
             kpi: data.kpi,
             point: data.point,
-            progress: data.task.progress
+            // progress: data.task.progress
+            progress: data.progress
         }
 
         currentTask = data;
@@ -49,7 +50,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let { task } = this.props;
         // let {tasks} = this.props;
         // let task = (tasks && tasks.task) && tasks.task.info;
-        
+
         let evaluations;
         
         let splitter = dateParam.split("-");
@@ -123,8 +124,9 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         }
         
-
+        let progress = task.progress;
         if(evaluations){
+            progress = evaluations.progress;
             if(evaluations.results.length !== 0) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
                 if(res) point = res.employeePoint ? res.employeePoint : undefined;
@@ -211,6 +213,17 @@ class EvaluateByResponsibleEmployee extends Component {
                 }
             }
         }
+
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(calcAuto)) calcAuto = undefined
+
         return {
             task: task,
             idUser: idUser,
@@ -218,7 +231,9 @@ class EvaluateByResponsibleEmployee extends Component {
             info: info,
             autoPoint: automaticPoint,
             point: point,
-            date: date
+            date: date,
+            progress: progress,
+            calcAuto: calcAuto,
         }
     }
 

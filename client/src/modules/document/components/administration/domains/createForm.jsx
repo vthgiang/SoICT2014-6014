@@ -71,7 +71,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                            <TreeSelect dataTree={domains} handleChange={this.handleParent}/>
+                            <TreeSelect dataTree={domains} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>

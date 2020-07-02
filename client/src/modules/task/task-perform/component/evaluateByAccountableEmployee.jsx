@@ -27,10 +27,11 @@ class EvaluateByAccountableEmployee extends Component {
             results: data.results,
             empPoint: data.empPoint,
             status: data.statusOptions,
-            progress: data.task.progress,
-            autoPoint: data.automaticPoint,
+            // progress: data.task.progress,
+            progress: data.progress,
+            autoPoint: data.calcAuto,
             oldAutoPoint: data.automaticPoint,
-            date: data.date
+            date: data.date,
         }
     }
     
@@ -51,6 +52,7 @@ class EvaluateByAccountableEmployee extends Component {
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
+        let progress = evaluations? evaluations.progress: task.progress;
 
         let date = this.formatDate(new Date()); 
         if(this.props.perform === "stop"){ // nếu dừng thì cho ngày là ngày hiện tại
@@ -299,16 +301,28 @@ class EvaluateByAccountableEmployee extends Component {
 
         let statusOptions = []; statusOptions.push(task && task.status);
 
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(calcAuto)) calcAuto = undefined
+
         return {
             info: info,
             date: date,
+            progress: progress,
             results: results,
             task: task,
             userId: idUser,
             empPoint: empPoint,
             results: results,
             automaticPoint: automaticPoint,
-            statusOptions: statusOptions
+            statusOptions: statusOptions,
+            calcAuto: calcAuto,
         }
     }
 

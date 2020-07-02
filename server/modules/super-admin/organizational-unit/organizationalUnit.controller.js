@@ -55,30 +55,18 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        let organizationalUnit;
-        if(
-            req.body.deans.length > 0 && 
-            req.body.viceDeans.length > 0 && 
-            req.body.employees.length > 0 &&
-            req.body.deans[0].length > 0 && 
-            req.body.viceDeans[0].length > 0 && 
-            req.body.employees[0].length > 0
-        ){
-            let roles = await RoleService
-                .createRolesForOrganizationalUnit(req.body, req.user.company._id);
-            organizationalUnit = await OrganizationalUnitService
-                .createOrganizationalUnit( 
-                    req.body, req.user.company._id,
-                    roles.deans.map(dean=>dean._id), 
-                    roles.viceDeans.map(vice=>vice._id), 
-                    roles.employees.map(em=>em._id)
-                );
-        }else{
-            organizationalUnit = await OrganizationalUnitService
-                .createOrganizationalUnit( 
-                    req.body, req.user.company._id
-                );
-        }
+        let roles = await RoleService
+            .createRolesForOrganizationalUnit(
+                req.body, 
+                req.user.company._id
+            );
+        let organizationalUnit = await OrganizationalUnitService
+            .createOrganizationalUnit( 
+                req.body, req.user.company._id,
+                roles.deans.map(dean=>dean._id), 
+                roles.viceDeans.map(vice=>vice._id), 
+                roles.employees.map(em=>em._id)
+            );
         
         let tree = await OrganizationalUnitService
             .getOrganizationalUnitsAsTree(req.user.company._id);
