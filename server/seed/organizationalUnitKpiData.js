@@ -215,7 +215,7 @@ var organizationalUnitKpiData = async () => {
         {
             organizationalUnit: organizationalUnit,
             creator: employee_2,
-            approver: viceDean,
+            approver: dean,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 86,
@@ -225,7 +225,7 @@ var organizationalUnitKpiData = async () => {
         }, {
             organizationalUnit: organizationalUnit,
             creator: employee_2,
-            approver: viceDean,
+            approver: dean,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 82,

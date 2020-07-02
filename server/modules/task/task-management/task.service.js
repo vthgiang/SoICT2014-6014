@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 /**
  * Lấy tất cả các công việc
  */
- exports.getAllTasks = (req, res) => {
-    var tasks = Task.find();
+ exports.getAllTasks = async () => {
+    var tasks = await Task.find();
     return tasks;  
 }
 
@@ -75,21 +75,9 @@ exports.getTask = async (id,userId) => {
             "info": null
         }
     }
-    if(task.taskTemplate === null){
-        return {
-            "info": task,
-            // "informations": task.taskInformations
-        };
-    } else {
-        var task2 = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
-        .populate({path: "taskActions.creator", model: User, select: "name email"});
-        return {
-            "info": task,
-            "informations": task2.taskInformations
-        };
-    }
-        
+    task.evaluations.reverse();
+    return task;
+   
 }
 
 /**
@@ -107,7 +95,7 @@ exports.getTasksCreatedByUser = async (id) => {
  * Lấy công việc thực hiện chính theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter,endDateBefore } = task;
     
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -198,6 +186,34 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
             ...keySearch,
             endDate: {
                 $gt: start, 
+                $lte: end
+            }
+        }
+    }
+
+    if(startDateAfter !== 'null'){
+        let startTimeAfter = startDateAfter.split("-");
+        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        // let end = new Date(startTime[1], startTime[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gte: start, 
+                // $lte: end
+            }
+        }
+    }
+    
+    if(endDateBefore !== 'null'){
+        let endTimeBefore = endDateBefore.split("-");
+        // let start = new Date(endTime[1], endTime[0] - 1, 1);
+        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                // $gt: start, 
                 $lte: end
             }
         }
@@ -1859,4 +1875,43 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
     return newTask;
+}
+
+exports.getTasksByUser = async (data) => {
+    var tasks= await Task.find({
+        $or: [
+            {responsibleEmployees: data},
+            {accountableEmployees: data},
+            {consultedEmployees: data},
+            {informedEmployees: data}
+        ],
+        status: "Inprocess"
+    })
+    var nowdate = new Date();
+    var tasksexpire = [], deadlineincoming= [], test;
+    for (let i in tasks){
+        var olddate = new Date(tasks[i].endDate);
+        test = nowdate - olddate;
+        if(test < 0 ){
+            test = olddate - nowdate;
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            deadlineincoming.push(tasktest);
+        }else{
+            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            var tasktest = {
+                task: tasks[i],
+                totalDays: totalDays
+            }
+            tasksexpire.push(tasktest)
+        }
+    }
+    let tasksbyuser = {
+        expire: tasksexpire,
+        deadlineincoming: deadlineincoming,
+    }
+    return tasksbyuser;
 }

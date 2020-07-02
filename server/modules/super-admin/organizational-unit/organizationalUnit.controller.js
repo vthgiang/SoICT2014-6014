@@ -55,22 +55,21 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        var roles = await RoleService
-            .createRolesForOrganizationalUnit(req.body, req.user.company._id);
-        var organizationalUnit = await OrganizationalUnitService
-            .createOrganizationalUnit( 
+        let roles = await RoleService
+            .createRolesForOrganizationalUnit(
                 req.body, 
+                req.user.company._id
+            );
+        let organizationalUnit = await OrganizationalUnitService
+            .createOrganizationalUnit( 
+                req.body, req.user.company._id,
                 roles.deans.map(dean=>dean._id), 
                 roles.viceDeans.map(vice=>vice._id), 
-                roles.employees.map(em=>em._id), 
-                req.user.company._id 
+                roles.employees.map(em=>em._id)
             );
-        var tree = await OrganizationalUnitService
+        
+        let tree = await OrganizationalUnitService
             .getOrganizationalUnitsAsTree(req.user.company._id);
-
-        organizationalUnit.dean = roles.dean;
-        organizationalUnit.viceDean = roles.viceDean;
-        organizationalUnit.employee = roles.employee;
 
         await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -113,18 +112,7 @@ exports.getOrganizationalUnit = async (req, res) => {
 exports.editOrganizationalUnit = async (req, res) => {
     try {
         var department = await OrganizationalUnitService.editOrganizationalUnit(req.params.id, req.body);
-        for (let i = 0; i < department.deans.length; i++) {
-            const dean = department.deans[i]._id;
-            await RoleService.editRole(dean, {name: req.body.deans[i]});
-        }
-        for (let i = 0; i < department.viceDeans.length; i++) {
-            const vdean = department.viceDeans[i]._id;
-            await RoleService.editRole(vdean, {name: req.body.viceDeans[i]});
-        }
-        for (let i = 0; i < department.employees.length; i++) {
-            const em = department.employees[i]._id;
-            await RoleService.editRole(em, {name: req.body.employees[i]});
-        }
+        await OrganizationalUnitService.editRolesInOrganizationalUnit(department._id, req.body);
         
         var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
 

@@ -55,12 +55,12 @@ class SalaryImportForm extends Component {
             bonus = bonus.join(', ');
         } else bonus = `"${bonus}"`
         let stringData = `{
-            "${"Số dòng tiêu đề của bảng"}": ${data.rowHeader},
-            "${"Tên các sheet"}": [${sheets}],
-            "${"Tên tiêu đề ứng với mã số nhân viên"}": "${data.employeeNumber}",
-            "${"Tên tiêu để ứng với họ và tên"}": "${data.employeeName}",
-            "${"Tên tiêu để ứng với tiền lương chính"}": "${data.mainSalary}",
-            "${"Tên tiêu để ứng với lương thưởng khác"}": [${bonus}]
+            "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
+            "${'Tên các sheet'}": [${sheets}],
+            "${'Tên tiêu đề ứng với mã số nhân viên'}": "${data.employeeNumber}",
+            "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
+            "${'Tên tiêu để ứng với tiền lương chính'}": "${data.mainSalary}",
+            "${'Tên tiêu để ứng với lương thưởng khác'}": [${bonus}]
         }`
         return stringData;
     }
@@ -141,9 +141,9 @@ class SalaryImportForm extends Component {
                 let sheet_lists = [];
                 const fileImport = evt.target.result;
                 const workbook = XLSX.read(fileImport, { type: 'binary' });
-                //lấy danh sách các sheet của file import
+                // Lấy danh sách các sheet của file import
                 let sheet_name_list = workbook.SheetNames;
-                // kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
+                // Kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
                 for (let n in sheets) {
                     sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
                 }
@@ -151,7 +151,9 @@ class SalaryImportForm extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
                     var indexEmployeeName, indexEmployeenumber, indexMainSalary, indexBouns = [];
-                    // lấy index của các tiều đề cột mà người dùng muốn import
+                    // Lấy index của các tiều đề cột mà người dùng muốn import
+                    console.log(data);
+                    console.log(data[0]);
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {
                             if (x !== null) {
@@ -172,7 +174,7 @@ class SalaryImportForm extends Component {
                         )
                     }
 
-                    // convert dữ liệu thành dạng array json mong muốn để gửi lên server
+                    // Convert dữ liệu thành dạng array json mong muốn để gửi lên server
                     data.splice(0, Number(configData.rowHeader));
                     let dataConvert = [];
                     data.forEach(x => {
@@ -193,7 +195,7 @@ class SalaryImportForm extends Component {
                     importData = importData.concat(dataConvert);
                 })
 
-                // check dữ liệu import có hợp lệ hay không
+                // Check dữ liệu import có hợp lệ hay không
                 let checkImportData = importData;
                 importData = importData.map((x, index) => {
                     let errorAlert = [];

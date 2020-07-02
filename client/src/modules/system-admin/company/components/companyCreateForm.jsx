@@ -69,7 +69,8 @@ class CompanyCreateForm extends Component {
                                     <table className="table table-hover table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th></th>
+                                                <th style={{width: '32px'}}></th>
+                                                <th>{ translate('system_admin.system_link.table.category') }</th>
                                                 <th>{ translate('system_admin.system_link.table.url') }</th>
                                                 <th>{ translate('system_admin.system_link.table.description') }</th>
                                             </tr>
@@ -86,6 +87,7 @@ class CompanyCreateForm extends Component {
                                                                 checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
                                                             />
                                                         </td>
+                                                        <td>{ link.category }</td>
                                                         <td>{ link.url }</td>
                                                         <td>{ link.description }</td>
                                                     </tr> 

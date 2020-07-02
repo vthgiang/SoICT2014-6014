@@ -9,8 +9,8 @@ div.sticky {
     background-color: white;
     z-index: 3;
 }
-.timekeeping th {
-    height: 42px;
+.timekeeping td {
+    height: 37px;
 }
 
 .table {

@@ -38,47 +38,33 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
-            // showModalApprove: "",
-            // showEdit: "",
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
 
     }
 
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-
-        if (nextProps.id !== prevState.id) {
-
-            return {
-                ...prevState,
-                id: nextProps.id
-            }
-        }
-        return true;
-    }
     shouldComponentUpdate = (nextProps, nextState) => {
 
         if (nextProps.id !== this.state.id) {
-            this.props.getTaskById(nextProps.id);
-            // this.props.getTaskActions(nextProps.id);
-            this.props.getTimesheetLogs(nextProps.id);
+           
             this.setState(state=>{
                 return{
                     ...state,
+                    id: nextProps.id,
                     dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            return false;
+
+            return true;
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING){
             if (!nextProps.tasks.task){
                 return false;
             } else { // Dữ liệu đã về
-                let task = nextProps.tasks.task.info;
-                this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+                let task = nextProps.task;
 
+                this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
                 let roles = [];
                 if (task) {
@@ -217,6 +203,7 @@ class DetailTaskTab extends Component {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
+        this.props.getTaskLog(this.state.id);
 
         await this.setState(state => {
             return {
@@ -241,31 +228,34 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        const { translate } = this.props;
+        const { translate, tasks, performtasks, user } = this.props;
+        const{ currentUser }= this.state
+        const { id, showToolbar } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+        
         var task, actions, informations;
         var statusTask;
-        const{currentUser}= this.state
         
-        const { tasks, performtasks, user } = this.props;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-            actions = tasks.task.actions;
-            informations = tasks.task.informations;
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null){
+            task = tasks.task;
         }
         
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
 
         let checkInactive = true;
         if(task) checkInactive = task.inactiveEmployees.indexOf(this.state.currentUser) === -1; // return true if user is active user
 
+        let evaluations;
+        if(task && task.evaluations && task.evaluations.length !== 0 ) evaluations = task.evaluations; //.reverse()
+
         return (
-      
-            <div>
+            <React.Fragment>
+                {(showToolbar) &&
                 <div style={{ marginLeft: "-10px" }}>
                     <a className="btn btn-app" onClick={this.refresh} title="Refresh">
-                        <i class="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
                     </a>
                     
                     { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -274,9 +264,9 @@ class DetailTaskTab extends Component {
                         </a>
                     }
                     
-                    { (currentRole !== "informed" && currentRole !== "creator" && checkInactive ) &&
+                    { ((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                            <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
+                            <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
                         </a>
                     }
                     { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
@@ -292,44 +282,41 @@ class DetailTaskTab extends Component {
                     }
                     {
                         (this.state.collapseInfo === false) ?
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
                         </a> :
-                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                        <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
                         </a>
                     }
 
                     {roles && roles.length>1 &&
-                    <div class="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
-                        <a class="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
+                    <div className="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
+                        <a className="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
                             <i className="fa fa-user" style={{ fontSize: "16px" }}></i>Chọn Vai trò
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul className="dropdown-menu">
                             {roles.map(
-                                (item, index) => {return <li className={item.value===currentRole && "active"} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
+                                (item, index) => {return <li className={item.value===currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li>}
                             )}
                         </ul>
                     </div>
                     }
-                </div>   
-
+                </div>
+                }
+                   
                 <br />
                 <div>
                     
-                    <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
+                    <div id="info" className="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
                         <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
                         <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
                         <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
-                        {/* </div>
-                                <hr />
-                            </div>
-
-                            <br /> */}
+                        
                         <br />
                         <div className="row">
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border" style={{ /*border: "1px solid #fff" */ }}>
                                     <legend className="scheduler-border">Thông tin chung</legend>
 
@@ -441,15 +428,17 @@ class DetailTaskTab extends Component {
                                     </div>
                                 </fieldset>
                             </div>
-                            <div className="col-sm-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">Đánh giá công việc</legend>
 
                                     {/* Evaluations */}
                                     <div>
                                         {
-                                            (task && task.evaluations && task.evaluations.length !== 0 ) && 
-                                            task.evaluations.map(eva => {
+                                            // (task && task.evaluations && task.evaluations.length !== 0 ) && 
+                                            // task.evaluations.reverse().map(eva => {
+                                            ( evaluations ) && 
+                                            evaluations.map(eva => {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
                                                     
@@ -479,7 +468,8 @@ class DetailTaskTab extends Component {
                                                             {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
                                                             <div><strong>Thông tin công việc</strong></div>
                                                             <ul>
-                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                            {/* <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li> */}
+                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {eva.progress}%</li>
                                                             {(task && task.point && task.point !== -1) ?
                                                                 <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
                                                                 <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
@@ -497,10 +487,6 @@ class DetailTaskTab extends Component {
                                                         </div>     
                                                         }
                                                         
-
-                                                    {/* </dd>
-
-                                                    <dd> */}
                                                         {/* KPI */}
                                                         <div><strong>Liên kết KPI</strong></div>
                                                         <ul>
@@ -621,7 +607,7 @@ class DetailTaskTab extends Component {
                         perform='stop'
                     />
                 }
-            </div>
+            </React.Fragment>
         );
     }
 }
@@ -640,6 +626,7 @@ const actionGetState = { //dispatchActionToProps
     stopTimer: performTaskAction.stopTimerTask,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getTaskLog: performTaskAction.getTaskLog,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

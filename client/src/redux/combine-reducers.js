@@ -10,6 +10,7 @@ import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
 import { component } from '../modules/super-admin/component/redux/reducers';
 import { department } from '../modules/super-admin/organizational-unit/redux/reducers';
+
 import {employeesInfo} from '../modules/human-resource/profile/employee-info/redux/reducers';
 import {employeesManager} from '../modules/human-resource/profile/employee-management/redux/reducers';
 import {education} from '../modules/training/education-program/redux/reducers';
@@ -18,6 +19,8 @@ import {salary} from '../modules/human-resource/salary/redux/reducers';
 import {discipline} from '../modules/human-resource/commendation-discipline/redux/reducers';
 import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
 import {holiday} from '../modules/human-resource/holiday/redux/reducers';
+import {timesheets} from '../modules/human-resource/timesheets/redux/reducers';
+
 import {notifications} from '../modules/notification/redux/reducers';
 import {documents} from '../modules/document/redux/reducers';
 
@@ -66,14 +69,19 @@ const appReducer = combineReducers(Object.assign({
     documents,
     notifications,
     auth,
+
+    // hr-employee
     employeesInfo,
     employeesManager,
-    education,
-    course,
     salary,
     discipline,
     annualLeave,
     holiday,
+    timesheets,
+    
+    // hr-tranning
+    education,
+    course,
 
     // kpi-unit
     createKpiUnit,

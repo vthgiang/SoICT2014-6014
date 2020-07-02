@@ -88,47 +88,6 @@ class UpdateEmployee extends Component {
                 this.props.updatePersonalInformation(formData);
             }
         }
-
-        // if (informationEmployee === null && this.state.avatar === "") {
-        //     toast.warning(translate('error.no_change_data'), { containerId: 'toast-notification' });
-        // } else {
-        //     
-        //         var updateAvater = false;
-        //         
-        //             let employeeNumber = this.props.employeesInfo.employee.map(x => x.employeeNumber);
-        //             let formData = new FormData();
-        //             formData.append('fileUpload', this.state.avatar);
-        //             await this.props.uploadAvatar(employeeNumber, formData)
-        //                 .then(res => {
-        //                     updateAvater = res.success;
-        //                 }).catch(err => {
-        //                     toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
-        //                 });
-        //         } else {
-        //             updateAvater = true
-        //         }
-        //         if (informationEmployee !== null && updateAvater === true) {
-        //             this.props.updatePersonalInformation(informationEmployee)
-        //             // .then(res => {
-        //             //     toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
-        //             // }).catch(err => {
-        //             //     if (err.response.data.message) {
-        //             //         if (translate(`error.${err.response.data.message}`) !== undefined)
-        //             //             toast.warning(translate(`error.${err.response.data.message}`), { containerId: 'toast-notification' });
-        //             //         else
-        //             //             toast.warning(err.response.data.message, { containerId: 'toast-notification' });
-        //             //     } else
-        //             //         toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
-        //             // })
-        //         } else {
-        //             if (informationEmployee === null && updateAvater === true) {
-        //                 toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
-        //             }
-        //         }
-        //     } else {
-        //         
-        //     }
-        // }
     }
 
     render() {

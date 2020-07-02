@@ -10,7 +10,7 @@ const CommendationSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
-        require: true,
+        required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const CommendationSchema = new Schema({
     },
     decisionNumber: { // mã số quyết định khen thưởng
         type: String,
-        require: true,
+        required: true,
     },
     organizationalUnit: { // cấp ra quyết định
         type: Schema.Types.ObjectId,
@@ -26,15 +26,15 @@ const CommendationSchema = new Schema({
     },
     startDate: { // ngày ra quyết định
         type: Date,
-        require: true,
+        required: true,
     },
     type: { // hình thức khen thưởng: tiền, bằng khen, ...
         type: String,
-        require: true,
+        required: true,
     },
     reason: {
         type: String,
-        require: true,
+        required: true,
     }
 }, {
     timestamps: true,

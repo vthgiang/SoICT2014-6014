@@ -2,7 +2,7 @@ import { SalaryConstants } from './constants';
 const initState = {
     isLoading: false,
     listSalarys: [],
-    totalList: "",
+    totalList: 0,
     importSalary: [],
     importStatus: false,
     error:"",

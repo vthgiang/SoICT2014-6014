@@ -11,6 +11,7 @@ require('dotenv').config();
 
 
 // Application Modules
+const schedulerController = require('./modules/scheduler/scheduler.controller');
 const auth = require('./modules/auth/auth.route');
 
 const documents = require('./modules/document/document.route');
@@ -21,6 +22,8 @@ const disciplines = require('./modules/human-resource/discipline/discipline.rout
 const holidays = require('./modules/human-resource/holiday/holiday.route');
 const profile = require('./modules/human-resource/profile/profile.route');
 const salaries = require('./modules/human-resource/salary/salary.route');
+const timesheets = require('./modules/human-resource/timesheets/timesheets.route');
+const EmployeeService = require('./modules/human-resource/profile/profile.service');
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -110,9 +113,8 @@ Logger.findOne({
     })
     .catch(err => console.log("message: ", err));
 
-
-
-
+// Function gọi Api vào thời gian xác định
+schedulerController.chedulesCallApi();
 
 app.use("/auth", auth);
 
@@ -124,6 +126,7 @@ app.use("/disciplines", disciplines);
 app.use("/holidays", holidays);
 app.use("/employees", profile);
 app.use("/salaries", salaries);
+app.use("/timesheets", timesheets);
 
 app.use("/kpipersonals", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);

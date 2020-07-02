@@ -170,90 +170,85 @@ class OrganizationalUnitKpiDashboard extends Component {
         
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ marginBottom: 15 }}>
+                <div className="qlcv">
                     {childOrganizationalUnit &&
-                        <section style={{ textAlign: "right", fontSize: "20px" }}>
-                            <span className="label label-primary">{this.state.organizationalUnit}</span>
-                            <i data-toggle="collapse" data-target="#organizationalUnit" className="fa fa-gear" style={{ padding: "0px 0px 0px 5px", cursor: "pointer" }}></i>
-                            
-                            <div className="box box-primary box-solid collapse setting-table" id="organizationalUnit">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Đơn vị</h3>
-                                    <div className="box-tools pull-right">
-                                        <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#organizationalUnit" ><i className="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-
-                                <div className="box-body">
-                                    <div className = "form-group">
-                                        <SelectBox
-                                            id={`organizationalUnitSelectBox`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={organizationalUnitSelectBox}
-                                            multiple={false}
-                                            onChange={this.handleSelectOrganizationalUnitId}
-                                            value={organizationalUnitSelectBox[0].value}
-                                        />
-                                    </div> 
-                                </div>
-                            </div>
-                        </section>
+                        <div className="form-inline">
+                            <label style={{width: "auto"}}>Đơn vị</label>
+                            <SelectBox
+                                id={`organizationalUnitSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={organizationalUnitSelectBox}
+                                multiple={false}
+                                onChange={this.handleSelectOrganizationalUnitId}
+                                value={organizationalUnitSelectBox[0].value}
+                            />
+                        </div>
                     }
                 </div>
-
-                <div className="table-wrapper box">
-                    <section className="content">
-                        <div className=" box box-primary" style={ {textAlign: 'center'}}>
-                            <h2 class="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</h2>
-                            <div className="box-body dashboard_box_body">
-                                <TrendsInOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
-                            </div>
-                        </div>
-                            
-                        <div className="row">
-                            {childOrganizationalUnit &&
-                                <div className="col-xs-6">
-                                    <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h2 class="box-title">Kết quả KPI đơn vị năm {this.state.currentYear}</h2>
-                                        <div className="box-body dashboard_box_body">
-                                            {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                                <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
-                                            }
-                                        </div>
-                                    </div>
+                
+                <div className=" box box-primary">
+                    <div className="box-header with-border">
+                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</div>
+                    </div>
+                    <div className="box-body">
+                        <TrendsInOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                    </div>
+                </div>
+                    
+                <div className="row">
+                    {childOrganizationalUnit &&
+                        <div className="col-xs-6">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">Trạng thái công việc</div>
                                 </div>
-                            }   
-                            <div className="col-xs-6">
-                                {childOrganizationalUnit &&
-                                    <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h2 class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</h2>
-                                        <div className="box-body dashboard_box_body">
-                                            {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                                <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
-                                            }
-                                        </div>
-                                    </div>
-                                }   
-                            </div>
-                        </div>
-                        <div className="row">
-                            {childOrganizationalUnit &&
-                                <div className="col-xs-6">
-                                    <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                        <h2 class="box-title">Kết quả KPI các đơn vị năm {this.state.currentYear}</h2>
-                                        <ResultsOfAllOrganizationalUnitKpiChart/>
-                                    </div>
-                                </div>
-                            }       
-                            <div className="col-xs-6">
-                                <div className="box box-primary" style={ {textAlign: 'center'}}>
-                                    <h2 class="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</h2>
-                                    <StatisticsOfOrganizationalUnitKpiResultsChart/>
+                                <div className="box-body">
+                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
+                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                                    }
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    }   
+                    <div className="col-xs-6">
+                        {childOrganizationalUnit &&
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</div>
+                                </div>
+                                <div className="box-body">
+                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
+                                        <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                                    }
+                                </div>
+                            </div>
+                        }   
+                    </div>
+                </div>
+                <div className="row">
+                    {childOrganizationalUnit &&
+                        <div className="col-xs-6">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">Kết quả KPI các đơn vị năm {this.state.currentYear}</div>
+                                </div>
+                                <div className="box-body">
+                                    <ResultsOfAllOrganizationalUnitKpiChart/>
+                                </div>
+                            </div>
+                        </div>
+                    }       
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</div>
+                            </div>
+                            <div className="box-body">
+                                <StatisticsOfOrganizationalUnitKpiResultsChart/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         );

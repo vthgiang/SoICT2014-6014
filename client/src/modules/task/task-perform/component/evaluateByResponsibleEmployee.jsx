@@ -15,6 +15,9 @@ import { createKpiSetActions } from '../../../kpi/employee/creation/redux/action
 
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
+import moment from 'moment'
+
+var currentTask;
 
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
@@ -29,21 +32,25 @@ class EvaluateByResponsibleEmployee extends Component {
             task: data.task,
             idUser: data.idUser,
             info: data.info,
-            autoPoint: data.autoPoint,
+            autoPoint: data.calcAuto,
+            oldAutoPoint: data.autoPoint,
             date: data.date,
             kpi: data.kpi,
             point: data.point,
-            progress: data.task.progress
+            // progress: data.task.progress
+            progress: data.progress
         }
+
+        currentTask = data;
     }
         
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {task} = this.props;
+        let { task } = this.props;
         // let {tasks} = this.props;
         // let task = (tasks && tasks.task) && tasks.task.info;
-        
+
         let evaluations;
         
         let splitter = dateParam.split("-");
@@ -59,8 +66,8 @@ class EvaluateByResponsibleEmployee extends Component {
             date = this.formatDate(new Date()); 
         }
         else if(this.props.perform === "evaluate"){
-            date = this.formatDate(new Date()); 
-            // date = moment().endOf("month").format('DD-MM-YYYY');
+            // date = this.formatDate(new Date()); 
+            date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
         let point = undefined;
@@ -117,8 +124,9 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         }
         
-
+        let progress = task.progress;
         if(evaluations){
+            progress = evaluations.progress;
             if(evaluations.results.length !== 0) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible" ));
                 if(res) point = res.employeePoint ? res.employeePoint : undefined;
@@ -205,6 +213,17 @@ class EvaluateByResponsibleEmployee extends Component {
                 }
             }
         }
+
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(calcAuto)) calcAuto = undefined
+
         return {
             task: task,
             idUser: idUser,
@@ -212,7 +231,9 @@ class EvaluateByResponsibleEmployee extends Component {
             info: info,
             autoPoint: automaticPoint,
             point: point,
-            date: date
+            date: date,
+            progress: progress,
+            calcAuto: calcAuto,
         }
     }
 
@@ -517,13 +538,70 @@ class EvaluateByResponsibleEmployee extends Component {
         window.$(`#modal-automatic-point-info`).modal('show');
     }
 
+    handleAddTaskLog = () => {
+        let title = '';
+        let description = '';
+
+        let { date, kpi, progress, autoPoint, point } = this.state;
+
+        if (date !== currentTask.date || 
+            JSON.stringify(kpi) !== JSON.stringify(currentTask.kpi) ||
+            autoPoint !== currentTask.autoPoint ||
+            point !== currentTask.point
+        ) {
+            title = title + 'Chỉnh sửa thông tin đánh giá theo vai trò người thực hiện';
+
+            if (date !== currentTask.date) {
+                description = description + 'Ngày đánh giá mới: ' + date;
+            }
+            
+            if (JSON.stringify(kpi) !== JSON.stringify(currentTask.kpi)){
+                const { KPIPersonalManager } = this.props;
+                let listKpi = [];
+                if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+
+                let newKpi = [];
+                for(const element of kpi){
+                    let a = listKpi.filter(item => item._id === element);
+                    newKpi.push(a[0].name);
+                }
+                
+                description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
+            }
+
+            if (autoPoint !== currentTask.autoPoint) {
+                description = description === '' ? description + 'Điểm chấm tự động mới: ' + autoPoint : description + '. ' + 'Điểm chấm tự động mới: ' + autoPoint;
+            }
+
+            if (point !== currentTask.point) {
+                description = description === '' ? description + 'Điểm tự đánh giá mới: ' + point : description + '. ' + 'Điểm tự đánh giá mới: ' + point;
+            }
+        }
+
+        if(currentTask.task.progress !== progress){
+            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
+        }
+
+        console.log("*****111111*********", title, "|||" , description);
+                
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: this.props.id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
+    } 
+
     save = () => {
         let taskId;
         taskId = this.props.id;
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            // automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : this.state.progress,
             automaticPoint: this.state.autoPoint,
             employeePoint: this.state.point,
             role: "Responsible",
@@ -536,10 +614,12 @@ class EvaluateByResponsibleEmployee extends Component {
 
         console.log('data', data, taskId);
         this.props.evaluateTaskByResponsibleEmployees(data,taskId);
+
+        this.handleAddTaskLog();
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        console.log('PARENT nextProps, prevState',nextProps, prevState);
+        // console.log('PARENT nextProps, prevState',nextProps, prevState);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -560,12 +640,23 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     render() {
+        console.log("#####################", currentTask);
+        
         const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { task, point, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
+        const { task, point, oldAutoPoint, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
         // let items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+
+        let taskActions = task.taskActions;
+        let splitter = date.split('-');
+        let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let actionsNotRating = taskActions.filter(item => (
+            item.rating === -1 &&
+            new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
+            && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+        ))
 
         // let task = (tasks && tasks.task)&& tasks.task.info;
         return (
@@ -623,10 +714,28 @@ class EvaluateByResponsibleEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="#" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint !== undefined?autoPoint:"Chưa tính được"}
                             </a>
                         </strong>
+                        <br/>
+                        <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
+                            <a href="javascript:void(0)" >
+                                {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
+                            </a> 
+                        </strong>
+                        <br/>
+                        <strong>Các hoạt động chưa đánh giá tháng này: &nbsp; </strong>
+                        <ul>
+                            { actionsNotRating.length === 0 ? <li>Không có.</li>: 
+                                actionsNotRating.map( item => {
+                                    return <li>
+                                            {item.description}
+                                        </li>
+                                })
+                            }
+                        </ul>
+
                         {
                             this.state.showAutoPointInfo === 1 && 
                             <ModalShowAutoPointInfo
@@ -634,6 +743,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 progress={this.state.progress}
                                 date={this.state.date}
                                 info={this.state.info}
+                                autoPoint={autoPoint}
                             />
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
@@ -664,15 +774,10 @@ const mapState = (state) => {
     return { tasks, performtasks, kpimembers, KPIPersonalManager };
 }
 const getState = {
-    // getTaskById: taskManagementActions.getTaskById,
-    // createResult: performTaskAction.createResultTask,
-    // editResultTask: performTaskAction.editResultTask,
-    // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    // getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    // getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
-    // getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees
+    // evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees,
+    evaluateTaskByResponsibleEmployees: performTaskAction.evaluateTaskByResponsibleEmployees,
+    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const evaluateByResponsibleEmployee = connect(mapState, getState)(withTranslate(EvaluateByResponsibleEmployee));

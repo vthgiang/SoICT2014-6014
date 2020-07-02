@@ -34,7 +34,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        let {task} = this.props;
+        console.log('taskkkkk', this.props.task);
+        let { task } = this.props;
         
         let evaluations;
         
@@ -353,9 +354,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             && this.validateTaskDescription(this.state.taskDescription, false)
     }
 
-    handleAddTaskLog = (taskId) => {
-        let tasks = this.props.tasks.tasks.filter(item => item._id === taskId);
-        let currentTask = tasks[0];
+    handleAddTaskLog = () => {
+        let currentTask = this.state.task;
 
         let title = '';
         let description = '';
@@ -388,32 +388,30 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 let a = listKpi.filter(item => item._id === element);
                 newKpi.push(a[0].name);
             }
-            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(this.state.kpi);
+            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
         }
 
         if(currentTask.progress !== this.state.progress){
             title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress;
+            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
         }
 
         console.log("*******************", title, "|||" , description);
-        
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        
-        this.props.addTaskLog({
-            createdAt: Date.now(),
-            taskId: taskId, 
-            creator: getStorage("userId"), 
-            title: title, 
-            description: description,
-        })
+                
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: currentTask._id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
     }   
 
     save = () => {            
         let taskId;
         taskId = this.props.id;
-
-        this.handleAddTaskLog(taskId);
         
         let data = {
             date: this.formatDate(Date.now()),
@@ -425,9 +423,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             info: this.state.info,
         }
 
-        console.log('data', data, taskId);
         this.props.editTaskByResponsibleEmployees(data, taskId);
 
+        this.handleAddTaskLog(taskId);
     }
 
     componentDidMount() {
@@ -461,7 +459,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     render() {
         const { KPIPersonalManager } = this.props
-        const {task, taskName, taskDescription, kpi} = this.state;
+        const { task, taskName, taskDescription, kpi } = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
@@ -562,7 +560,8 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    // editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
+    editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }
 

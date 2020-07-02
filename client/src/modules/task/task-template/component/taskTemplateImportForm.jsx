@@ -469,7 +469,6 @@ class TaskTemplateImportForm extends Component {
                         </div>
                     </form>
 
-
                 </DialogModal>
             </React.Fragment>
         )

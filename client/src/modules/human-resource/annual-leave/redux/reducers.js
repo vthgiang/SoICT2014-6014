@@ -2,7 +2,8 @@ import { AnnualLeaveConstants } from './constants';
 const initState = {
     isLoading: false,
     listAnnualLeaves: [],
-    totalList: "",
+    totalList: 0,
+    totalListAnnualLeavesOfYear: 0,
     error:"",
 }
 export function annualLeave(state =initState, action) {
@@ -20,7 +21,8 @@ export function annualLeave(state =initState, action) {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
-                totalList: action.payload.totalList,   
+                totalList: action.payload.totalList,
+                totalListAnnualLeavesOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
             };
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS:
             return {

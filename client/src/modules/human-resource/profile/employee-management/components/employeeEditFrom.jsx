@@ -533,7 +533,7 @@ class EmployeeEditFrom extends Component {
                 <DialogModal
                     size='75' modalID="modal-edit-employee" isLoading={employeesManager.isLoading}
                     formID="form-edit-employee"
-                    title={translate('manage_employee.edit_diploma')}
+                    title="Chỉnh sửa thông tin nhân viên"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

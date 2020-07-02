@@ -110,6 +110,7 @@ class EducationProgramDetailForm extends Component {
                     hasSaveButton={false}
                     size={75}
                     maxWidth={900}
+                    hasNote= {false}
                 >
                     <form className="form-group" id="form-view-education" >
                         <div className="qlcv">
@@ -183,7 +184,7 @@ class EducationProgramDetailForm extends Component {
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                             (typeof listCourses === 'undefined' || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
-                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                        <PaginateBar id="detail-program" pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment>

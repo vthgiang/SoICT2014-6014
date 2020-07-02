@@ -31,7 +31,7 @@ function login(user){
                 })
             })
             .catch(err => {
-                dispatch({type: AuthConstants.LOGIN_FAILE, payload: err.response.data});
+                dispatch({type: AuthConstants.LOGIN_FAILE, payload: err.response.data.messages[0]});
             })
     }
 }

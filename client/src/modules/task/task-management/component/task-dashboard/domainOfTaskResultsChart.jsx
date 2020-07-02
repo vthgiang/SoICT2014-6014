@@ -43,11 +43,10 @@ class DomainOfTaskResultsChart extends Component {
         this.state = {
             userId: localStorage.getItem("userId"),
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            role: this.ROLE.RESPONSIBLE,
-            roleName: this.ROLE_SELECTBOX[0].text
+            role: this.ROLE.RESPONSIBLE
         };
 
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
         this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
         this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -67,7 +66,7 @@ class DomainOfTaskResultsChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
             this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
             this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
             this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -108,13 +107,11 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     handleSelectRole = (value) => {
-        var roleName = this.ROLE_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
 
         this.setState(state => {
             return {
                 ...state,
-                role: Number(value[0]),
-                roleName: roleName
+                role: Number(value[0])
             }
         })
     }
@@ -285,34 +282,19 @@ class DomainOfTaskResultsChart extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="box-body dashboard_box_body">
-                    <section style={{ textAlign: "right", fontSize: "17px" }}>
-                        <span className="label label-danger">{this.state.roleName}</span>
-                        <i className="fa fa-gear" data-toggle="collapse" data-target="#role-of-results-task" style={{ padding: "5px", cursor: "pointer" }}></i>
-                        
-                        <div className="box box-primary box-solid collapse setting-table" id="role-of-results-task">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Vai trò</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#role-of-results-task" ><i className="fa fa-times"></i></button>
-                                </div>
-                            </div>
-
-                            <div className="box-body">
-                                <div className = "form-group">
-                                    <SelectBox
-                                        id={`roleOfResultsTaskSelectBox`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={this.ROLE_SELECTBOX}
-                                        multiple={false}
-                                        onChange={this.handleSelectRole}
-                                        value={this.ROLE_SELECTBOX[0].value}
-                                    />
-                                </div> 
-                            </div>
-                        </div>
-                    </section>
+                <div className="box-body qlcv">
+                    <div className="form-inline">
+                        <label style={{width: "auto"}}>Vai trò</label>
+                        <SelectBox
+                            id={`roleOfResultsTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={this.ROLE_SELECTBOX}
+                            multiple={false}
+                            onChange={this.handleSelectRole}
+                            value={this.ROLE_SELECTBOX[0].value}
+                        />
+                    </div>
 
                     <section ref="chart"></section>
                 </div>

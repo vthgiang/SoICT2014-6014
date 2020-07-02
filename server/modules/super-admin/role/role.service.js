@@ -1,5 +1,5 @@
 const Terms = require('../../../seed/terms');
-const {OrganizationalUnit, Company, Role, RoleType, User, UserRole} = require('../../../models').schema
+const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} = require('../../../models').schema
 
 /**
  * Lấy danh sách tất cả các role của 1 công ty
@@ -97,45 +97,58 @@ exports.createRootRole = async(data, companyID) => {
  * @data dữ liệu tạo
  */
 exports.createRolesForOrganizationalUnit = async(data, companyID) => {
-    //Kiểm tra các tên đã được sử dụng hay chưa
-    const checkDean = await Role.findOne({name: {$in: data.deans}, company: companyID }); if(checkDean !== null) throw ['role_dean_exist'];
-    const checkViceDean = await Role.findOne({name: {$in:data.viceDeans}, company: companyID}); if(checkViceDean !== null) throw ['role_vice_dean_exist'];
-    const checkEmployee = await Role.findOne({name: {$in: data.employees}, company: companyID }); if(checkEmployee !== null) throw ['role_employee_exist'];
-
+    console.log("Data: ", data)
+    const filterValidRoleArray = async (array, companyId) => {
+        let resArray= [];
+        if(array.length > 0){
+            let checkRoleValid = await Role.findOne({name: {$in: data.deans}, company: companyId });
+            if(checkRoleValid !== null) throw ['role_name_exist'];
+            for (let i = 0; i < array.length; i++) {
+                if(array[i]) resArray = [...resArray, array[i]];
+            }
+            return resArray;
+        }else return [];
+    }
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
     const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME });
     const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME });
     const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME });
 
-    const dataEmployee = data.employees.map(em=>{
+    const employeeArr = await filterValidRoleArray(data.employees, companyID);
+    console.log('employeeArr:', employeeArr)
+    const dataEmployee = employeeArr.map(em=>{
         return {
             name: em,
             company: companyID,
             type: roleChucDanh._id,
             parents: [employeeAb._id]
         }
-    }); console.log("emdata:", dataEmployee)
-    const employees = await Role.insertMany(dataEmployee);
+    }); 
+    const employees = dataEmployee.length > 0 ? await Role.insertMany(dataEmployee) : [];
 
-    const dataViceDean = data.viceDeans.map(vice=>{
+    const viceDeanArr = await filterValidRoleArray(data.viceDeans, companyID);
+    console.log('viceDeanArr:', viceDeanArr)
+    const dataViceDean = viceDeanArr.map(vice=>{
         return {
             name: vice,
             company: companyID,
             type: roleChucDanh._id,
             parents: [...employees.map(em=>em._id), viceDeanAb._id]
         }
-    }); console.log("dataViceDean:", dataViceDean)
-    const viceDeans = await Role.insertMany(dataViceDean);
+    }); 
+    const viceDeans = dataViceDean.length > 0 ? await Role.insertMany(dataViceDean) : [];
 
-    const dataDean = data.deans.map(dean=>{
+    const deanArr = await filterValidRoleArray(data.deans, companyID);
+    console.log('deanArr:', deanArr)
+    const dataDean = deanArr.map(dean=>{
         return {
             name: dean,
             company: companyID,
             type: roleChucDanh._id,
             parents: [...employees.map(em=>em._id), ...viceDeans.map(vice=>vice._id), deanAb._id]
         }
-    }); console.log("deandataa:", dataDean)
-    const deans = await Role.insertMany(dataDean);
+    }); 
+    const deans = dataDean.length > 0 ? await Role.insertMany(dataDean) : [];
 
     return {
         deans, viceDeans, employees // danh sách các mảng các chức danh đã tạo
@@ -149,29 +162,54 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
  */
 exports.editRole = async(id, data={}) => {
     const role = await Role.findById(id);
-    
-    console.log("ROLE1: ", role)
     if(data.name !== undefined && data.name !== null && data.name !== '')
         role.name = data.name;
     if(data.parents !== undefined && data.parents !== null && data.parents !== '')
         role.parents = data.parents;
     await role.save();
-    console.log("ROLE2: ", role)
     return role;
 }
 
 /**
  * Xóa role theo id
  * @id id role
+ * 1. Xóa role
+ * 2. Xóa thông tin liên quan của các role kế thừa role hiện tại
+ * 3. Xóa thông tin trong UserRole
+ * 4. Xóa thông tin trong Privilege
+ * 5. Xóa thông tin trong OrganizationalUnit (nếu có)
  */
 exports.deleteRole = async(id) => {
-    const deleteRole = await Role.deleteOne({ _id: id });
-    const deleteRelationship = await UserRole.deleteMany({
-        roleId: id
-    });
-    return {
-        deleteRole, deleteRelationship
+    await Role.deleteOne({ _id: id });
+    const roles = await Role.find({parents: id});
+
+    for (let i = 0; i < roles.length; i++) {
+        const role = await Role.findById(roles[i]._id);
+        role.parents.splice(role.parents.indexOf(roles[i]._id),1);
+        await role.save();
     }
+    await UserRole.deleteMany({roleId: id});
+    await Privilege.deleteMany({roleId: id});
+    const organD = await OrganizationalUnit.findOne({deans: id});
+    if(organD !== null){
+        organD.deans.splice(organD.deans.indexOf(id));
+        await organD.save();
+    }
+
+    const organV = await OrganizationalUnit.findOne({viceDeans: id});
+    if(organV !== null){
+        organV.viceDeans.splice(organV.viceDeans.indexOf(id));
+        await organV.save();
+    }
+
+    const organE = await OrganizationalUnit.findOne({employees: id});
+    if(organE !== null){
+        organE.employees.splice(organE.employees.indexOf(id));
+        await organE.save();
+    }
+
+    return id; // trả về id của role vừa xóa
+    
 }
 
 /**

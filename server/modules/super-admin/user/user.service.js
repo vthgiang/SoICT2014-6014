@@ -137,12 +137,12 @@ exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
         subject: 'Xác thực thay đổi email',
         text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
         html:   
-                '<p>Tài khoản dùng để đăng nhập của bạn là : </p' + 
+                '<p>Tài khoản dùng để đăng nhập của bạn là : </p>' + 
                 '<ul>' + 
                     '<li>Email cũ :' + oldEmail + '</li>' +
                     '<li>Email mới :' + newEmail + '</li>' +
                 '</ul>' + 
-                '<p>Your account use to login in system : </p' + 
+                '<p>Your account use to login in system : </p>' + 
                 '<ul>' + 
                     '<li>Old email :' + oldEmail + '</li>' +
                     '<li>New email :' + newEmail + '</li>' +
@@ -169,7 +169,6 @@ exports.editUser = async (id, data) => {
     if(user.email !== data.email){
         const checkEmail = await User.findOne({email: data.email});
         if(checkEmail !== null) throw ['email_exist'];
-        user.email = data.email;
         await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
     }
     user.name = data.name;
@@ -181,6 +180,7 @@ exports.editUser = async (id, data) => {
     if(data.active !== undefined && data.active !== null) user.active = data.active;
     if(user.active === false) 
         user.tokens = [];
+    user.email = data.email;
     user.save();
 
     return user;
