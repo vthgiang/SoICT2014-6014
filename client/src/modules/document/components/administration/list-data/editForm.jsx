@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker,TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { LOCAL_SERVER_API } from '../../../../../env';
@@ -249,7 +249,7 @@ class EditForm extends Component {
         } = this.state;
         const {translate, role, documents, department, user}=this.props;
         const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
-        const domains = documents.administration.domains.list.map(domain=>{ return {value: domain._id, text: domain.name}});
+        const {tree, list} = documents.administration.domains;
         const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
@@ -259,7 +259,7 @@ class EditForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
-                size="100"
+                    size="100"
                     modalID="modal-edit-document"
                     formID="form-edit-document"
                     title={translate('document.add')}
@@ -303,15 +303,11 @@ class EditForm extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('document.domain') }<span className="text-red">*</span></label>
-                                        <SelectBox
-                                            id={`select-box-edit-document-domains-${documentId}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
+                                        <TreeSelect 
+                                            data={list} 
                                             value={documentDomains}
-                                            items = {domains}
-                                            onChange={this.handleDomains}
-                                            multiple={true}
-                                            options={{placeholder: translate('document.administration.domains.select')}}
+                                            handleChange={this.handleDomains} 
+                                            mode="hierarchical"
                                         />
                                     </div>
                                     <div className="form-group">
@@ -386,7 +382,6 @@ class EditForm extends Component {
                                             {
                                                 documentVersions !== undefined && documentVersions.length > 0 ?
                                                 documentVersions.map((version, i) => {
-                                                    console.log("version-index: ", version, i)
                                                     return <tr key={i}>
                                                         <td>{version.versionName}</td>
                                                         <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>

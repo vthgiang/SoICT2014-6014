@@ -55,10 +55,10 @@ class AdministrationDocumentDomains extends Component {
                                     <a href="#node" className="domain-tree-content"> 
                                         <i className="fa fa-folder text-gray"></i> 
                                         <span onClick={()=>this.toggleDomainSetting(node.id)}>{node.title}</span> 
-                                        <sup id={`domain-setting-${node.id}`} style={{display: 'none'}}>
-                                            <a className="text-orange" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
-                                        </sup>
+                                        <span id={`domain-setting-${node.id}`} style={{display: 'none'}}>
+                                            <a className="text-orange" href="#abc" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
+                                            <a className="text-red" href="#abc" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
+                                        </span>
                                     </a>
                                 </li>
                         return <li className="domain-tree" key={node.id} style={{paddingLeft: '0px', marginLeft: '0px'}}>

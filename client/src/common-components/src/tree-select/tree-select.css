@@ -33,13 +33,13 @@
 
 .node>label {
   cursor: pointer;
-  margin-left: 2px
+  /* margin-left: 1px; */
 }
 
 .tag-list {
   display: inline;
-  padding: 0;
-  margin: 0
+  padding: 1px;
+  margin: 1px
 }
 
 input.search {
@@ -48,12 +48,12 @@ input.search {
 
 .tag-item {
   display: inline-block;
-  margin: 4px 4px 0px 4px;
+  margin: 2px;
 }
 
 .tag-item .search {
   border: none;
-  outline: none
+  outline: none;
 }
 
 .tag-item:last-child {
@@ -63,7 +63,7 @@ input.search {
 .node {
   list-style: none;
   white-space: nowrap;
-  padding: 4px
+  padding: 2px 2px 2px 4px
 }
 
 .node.leaf.collapsed {
@@ -80,8 +80,7 @@ input.search {
 }
 
 .node.focused {
-  background-color: #f4f4f4;
-  padding: 4px
+  background-color: #cccccc;
 }
 
 .toggle {
@@ -97,13 +96,13 @@ input.search {
 .toggle.collapsed:after {
   font-family: FontAwesome;
   content: "\f067";
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .toggle.expanded:after {
   font-family: FontAwesome;
   content: "\f068";
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .searchModeOn .toggle {
@@ -113,8 +112,6 @@ input.search {
 .checkbox-item,
 .radio-item {
   vertical-align: middle;
-  color: red;
-  font-size: 50px;
 }
 
 .checkbox-item.simple-select,
@@ -135,7 +132,6 @@ input.search {
 .react-dropdown-tree-select .dropdown .dropdown-trigger {
   padding: 2px;
   min-height: 34px;
-  max-height: 300px;
   display: inline-block;
   border: 1px solid #D2D6DE;
   width: 100%;
@@ -178,8 +174,8 @@ input.search {
 }
 
 span.node-label {
-  margin-left: 5px !important;
-  margin-top: 20px !important;
+  margin-left: 2px;
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=styles.css.map*/

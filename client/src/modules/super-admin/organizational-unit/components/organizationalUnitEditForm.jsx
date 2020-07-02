@@ -78,7 +78,7 @@ class DepartmentEditForm extends Component {
             departmentViceDeanError,
             departmentEmployeeError,
         } = this.state;
-        // console.log("state: ", this.state)
+        
         return ( 
             <React.Fragment>
                 <DialogModal
