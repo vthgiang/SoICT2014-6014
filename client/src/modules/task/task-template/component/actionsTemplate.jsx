@@ -165,9 +165,7 @@ handleAddAction = async (event) => {
              taskActions:taskActions,             
              action: Object.assign({}, state.EMPTY_ACTION),
                  
-            }
-            
-            
+            }           
         })
          this.props.onDataChange(this.state.taskActions);
 }
@@ -290,15 +288,10 @@ handleDeleteAction = async (index) => {
                     }
                 </tbody>
             </table>
-        </fieldset>
-        
-            )
-
+            </fieldset>        
+        )
     }
-    
-
 }
 
 const actionForm = connect()(withTranslate(ActionForm));
 export { actionForm as ActionForm }
-// export { ActionForm as ActionForm };

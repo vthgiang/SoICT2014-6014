@@ -27,9 +27,11 @@ class EvaluateByAccountableEmployee extends Component {
             results: data.results,
             empPoint: data.empPoint,
             status: data.statusOptions,
-            progress: data.task.progress,
-            autoPoint: data.automaticPoint,
-            date: data.date
+            // progress: data.task.progress,
+            progress: data.progress,
+            autoPoint: data.calcAuto,
+            oldAutoPoint: data.automaticPoint,
+            date: data.date,
         }
     }
     
@@ -50,6 +52,7 @@ class EvaluateByAccountableEmployee extends Component {
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
+        let progress = evaluations? evaluations.progress: task.progress;
 
         let date = this.formatDate(new Date()); 
         if(this.props.perform === "stop"){ // nếu dừng thì cho ngày là ngày hiện tại
@@ -298,16 +301,28 @@ class EvaluateByAccountableEmployee extends Component {
 
         let statusOptions = []; statusOptions.push(task && task.status);
 
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if(isNaN(calcAuto)) calcAuto = undefined
+
         return {
             info: info,
             date: date,
+            progress: progress,
             results: results,
             task: task,
             userId: idUser,
             empPoint: empPoint,
             results: results,
             automaticPoint: automaticPoint,
-            statusOptions: statusOptions
+            statusOptions: statusOptions,
+            calcAuto: calcAuto,
         }
     }
 
@@ -889,7 +904,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        console.log('nextProps, prevState',nextProps, prevState);
+        // console.log('nextProps, prevState',nextProps, prevState);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -917,11 +932,18 @@ class EvaluateByAccountableEmployee extends Component {
         console.log("***333***", currentTask);
         
         const { translate, tasks, performtasks } = this.props;
-        const { task, date, status, priority, progress, accountablePoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
+        const { task, date, status, priority, progress, accountablePoint, oldAutoPoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
                 errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
-        // let task = (tasks && tasks.task)&& tasks.task.info;
-        // let task = this.props.task;
+        
+        let taskActions = task.taskActions;
+        let splitter = date.split('-');
+        let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let actionsNotRating = taskActions.filter(item => (
+            item.rating === -1 &&
+            new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
+            && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+        ))
 
         return (
             <React.Fragment>
@@ -983,9 +1005,27 @@ class EvaluateByAccountableEmployee extends Component {
                     <div>
                         <strong>Điểm tự động: &nbsp;
                             <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
-                                {autoPoint !== undefined?autoPoint:"Chưa tính được"}
+                                {autoPoint? autoPoint: "Chưa tính được"}
                             </a> 
                         </strong>
+                        <br/>
+                        <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
+                            <a href="javascript:void(0)" >
+                                {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
+                            </a> 
+                        </strong>
+                        <br/>
+                        <strong>Các hoạt động chưa đánh giá tháng này: &nbsp; </strong>
+                        <ul>
+                            { actionsNotRating.length === 0 ? <li>Không có.</li>: 
+                                actionsNotRating.map( item => {
+                                    return <li>
+                                            {item.description}
+                                        </li>
+                                })
+                            }
+                        </ul>
+
                         {
                             this.state.showAutoPointInfo === 1 && 
                             <ModalShowAutoPointInfo

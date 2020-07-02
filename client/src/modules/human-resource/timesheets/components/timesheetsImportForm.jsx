@@ -153,11 +153,20 @@ class TimesheetsImportForm extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
                     let indexEmployeeName, indexEmployeenumber, indexDateOfMonth;
-                    // Lấy index của các tiều đề cột mà người dùng muốn import
+                    
                     console.log(data);
+                    data = data.filter(x => {
+                        let check = x.filter(y => y !== null);
+                        if (check.length === 0) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    });
                     console.log(...data);
+                    // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
-                        console.log( data[i]);
+                        console.log(data[i]);
                         data[i].forEach((x, index) => {
                             if (x !== null) {
                                 if (x.trim().toLowerCase() === configData.employeeName.trim().toLowerCase())
@@ -171,9 +180,9 @@ class TimesheetsImportForm extends Component {
                         }
                         )
                     }
-                    console.log('indexEmployeeName',indexEmployeeName);
-                    console.log('indexEmployeenumber',indexEmployeenumber);
-                    console.log('indexDateOfMonth',indexDateOfMonth);
+                    console.log('indexEmployeeName', indexEmployeeName);
+                    console.log('indexEmployeenumber', indexEmployeenumber);
+                    console.log('indexDateOfMonth', indexDateOfMonth);
 
                     // Convert dữ liệu thành dạng array json mong muốn để gửi lên server(hiện thi ra table)
                     data.splice(0, Number(configData.rowHeader));
