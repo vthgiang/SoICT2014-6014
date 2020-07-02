@@ -182,6 +182,7 @@ exports.getTaskById = async (data) => {
         var date2 = await task[i].date;
         var Difference_In_Time = await date2.getTime() - date1.getTime();
         var daykpi = await Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+        if(daykpi>30) daykpi = 30;
         console.log('daykpi = ', daykpi);
         task[i].taskImportanceLevelCal = await Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
@@ -256,7 +257,7 @@ exports.setTaskImportanceLevel = async (id, data) => {
         var Difference_In_Time = date2.getTime() - date1.getTime();
         var daykpi = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
         //console.log('daykpi = ', daykpi);
-      //  if(daykpi)
+        if(daykpi > 30) daykpi = 30;
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
             element.results.taskImportanceLevel = element.taskImportanceLevelCal;
