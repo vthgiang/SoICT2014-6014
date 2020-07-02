@@ -147,7 +147,9 @@ exports.editOrganizationalUnit = async(id, data) => {
 }
 
 /**
- * Chỉnh sửa trưởng đơn vị
+ * Chỉnh sửa các chức danh của đơn vị đơn vị
+ * @id id của đơn vị
+ * @data dữ liệu về thông tin các chức danh muốn cập nhật
  */
 exports.editRolesInOrganizationalUnit = async(id, data) => {
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
@@ -187,7 +189,10 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
     const viceDeans = await this.getDiffRolesInOrganizationalUnit(department.viceDeans, data.viceDeans);
     console.log("VICEDEANS CHECK:", viceDeans)
     for (let i = 0; i < viceDeans.editRoles.length; i++) {
-        await Role.updateOne({_id: viceDeans.editRoles[i]._id}, {name: viceDeans.editRoles[i].name});
+        await Role.updateOne({_id: viceDeans.editRoles[i]._id}, {
+            name: viceDeans.editRoles[i].name,
+            parents: [viceDeanAb._id, ...employeeIdArr]
+        });
     }
     for (let j = 0; j < viceDeans.deleteRoles.length; j++) {
         await RoleService.deleteRole(viceDeans.deleteRoles[j]._id);
@@ -204,11 +209,14 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
     const newViceDeans = await Role.insertMany(newDataViceDeans);
     const viceDeanIdArr = [...newViceDeans.map(vice=>vice._id), ...department.viceDeans.map(vice=>vice._id)]; //id của tất cả các viceDean trong đơn vị dùng để kế thừa cho dean
 
-    // //3.Chỉnh sửa trưởng đơn vị
+    //3.Chỉnh sửa trưởng đơn vị
     const deans = await this.getDiffRolesInOrganizationalUnit(department.deans, data.deans);
     console.log("DEANS CHECK:", deans)
     for (let i = 0; i < deans.editRoles.length; i++) {
-        await Role.updateOne({_id: deans.editRoles[i]._id}, {name: deans.editRoles[i].name});
+        await Role.updateOne({_id: deans.editRoles[i]._id}, {
+            name: deans.editRoles[i].name,
+            parents: [deanAb._id, ...employeeIdArr, ...viceDeanIdArr]
+        });
     }
     for (let j = 0; j < deans.deleteRoles.length; j++) {
         await RoleService.deleteRole(deans.deleteRoles[j]._id);

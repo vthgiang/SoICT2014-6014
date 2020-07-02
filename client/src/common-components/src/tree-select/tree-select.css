@@ -80,7 +80,8 @@ input.search {
 }
 
 .node.focused {
-  background-color: #f4f4f4
+  background-color: #f4f4f4;
+  padding: 4px
 }
 
 .toggle {
@@ -106,18 +107,19 @@ input.search {
 }
 
 .searchModeOn .toggle {
-  display: none
+  display: block
 }
 
 .checkbox-item,
 .radio-item {
   vertical-align: middle;
-  margin: 4px
+  color: red;
+  font-size: 50px;
 }
 
 .checkbox-item.simple-select,
 .radio-item.simple-select {
-  display: none
+  display: none;
 }
 
 .hide:not(.match-in-children) {
@@ -139,7 +141,7 @@ input.search {
   width: 100%;
 }
 
-/* .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow {
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow {
   cursor: pointer
 }
 
@@ -149,11 +151,11 @@ input.search {
 
 .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.disabled.bottom:after {
   color: #b9b9b9
-} */
+}
 
 .react-dropdown-tree-select .dropdown .dropdown-content {
   position: absolute;
-  padding: 4px;
+  padding: 0px;
   background: #fff;
   border-top: 1px solid rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 5px 8px rgba(0, 0, 0, .15);
@@ -166,7 +168,7 @@ input.search {
   border: none;
   border-bottom: 1px solid #ccc;
   outline: none;
-  display: none;
+  display: block;
 }
 
 .react-dropdown-tree-select .dropdown .dropdown-content ul {
@@ -177,6 +179,7 @@ input.search {
 
 span.node-label {
   margin-left: 5px !important;
+  margin-top: 20px !important;
 }
 
 /*# sourceMappingURL=styles.css.map*/

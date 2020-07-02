@@ -17,14 +17,14 @@ class TreeSelect extends Component {
     };
 
     render() { 
-        const {dataTree, } = this.props;
+        const {dataTree, mode} = this.props;
         return ( <React.Fragment>
             <SelectTree
                 data={dataTree}
                 onChange={this.onChange}
                 texts={{ placeholder: ' ' }}
-                className="search"
-                simpleSelect={true}
+                showPartiallySelected={false}
+                mode={'hierarchical'}
             />
         </React.Fragment> );
     }
