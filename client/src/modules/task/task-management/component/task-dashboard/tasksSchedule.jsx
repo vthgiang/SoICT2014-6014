@@ -6,8 +6,9 @@ import moment from 'moment'
 import Timeline from "react-calendar-timeline";
 import {DatePicker} from '../../../../../common-components/index'
 import { taskManagementActions } from '../../../task-management/redux/actions';
-import {ModelDetailTask2} from './detailTask'
+import {ModelDetailTask} from './detailTask'
 import './calendar.css'
+import { DetailTaskTab } from '../../../task-perform/component/detailTaskTab';
 
 class TasksSchedule extends Component{
     constructor(props){
@@ -40,6 +41,7 @@ class TasksSchedule extends Component{
           startDateAfter: this.formatDate(new Date()),
           endDateBefore: null
       },
+      taskId: null
     };
   }
   /**
@@ -172,13 +174,16 @@ class TasksSchedule extends Component{
       
   }
   handleItemClick = async(itemId) => {
-      
+      let {tasks} = this.props;
+      let {taskId} = this.state;
+      let id = tasks.responsibleTasks[itemId-1]._id;
       await this.setState(state => {
           return {
               ...state,
-              detailTask: itemId-1
+              taskId: id
           }
       })
+      await this.props.getTaskById(id);
       window.$(`#modal-detail-task`).modal('show')
   }
   animateScroll = invert => {
@@ -210,12 +215,15 @@ class TasksSchedule extends Component{
   };
   
   render() {
-    const { defaultTimeStart, defaultTimeEnd, infoSearch } = this.state;
+    const { defaultTimeStart, defaultTimeEnd, infoSearch, taskId } = this.state;
     const {startDateAfter, endDateBefore} = infoSearch;
+    let {tasks} = this.props;
+    console.log('render task has id ' ,taskId);
+    let task = tasks && tasks.task;
     return (
         <React.Fragment>
           <div className="box-body qlcv">
-              <ModelDetailTask2 id={this.state.detailTask}/>
+              {<ModelDetailTask task={task}/>}
               <div className="flex-right">
                 <div className="form-inline">
                   <div className="form-group">
@@ -271,6 +279,7 @@ function mapState(state){
 }
 const actions = {
   getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
+  getTaskById: taskManagementActions.getTaskById
 }
 const connectedSchedule = connect(mapState, actions) (TasksSchedule)
 export {connectedSchedule as TasksSchedule}
