@@ -53,6 +53,7 @@ class TreeSelect extends Component {
                 onChange={this.onChange}
                 texts={{ placeholder: ' ' }}
                 mode={mode}
+                className="qlcv"
             />
         </React.Fragment> );
     }
