@@ -94,7 +94,7 @@ class AdministrationDocumentDomains extends Component {
                     {
                         dataTree.length > 0 &&
                         <Tree 
-                            id="document-domains-tree"
+                            id="qlcv-document"
                             onChanged={this.onChanged} 
                             checkNode={this.checkNode}
                             unCheckNode={this.unCheckNode}
