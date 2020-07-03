@@ -1,8 +1,9 @@
 Ví dụ sử dụng tree:
 
-<Tree id="abcdef" onChanged={(e, data)=> console.log(data)} 
-    onCheckNode={(e, data)=> console.log(data)}
-    onUncheckNode={(e, data)=> console.log(data)}
+<Tree id="abcdef" 
+    onChanged={(e, data)=> console.log(data)}
+    checkNode={(e, data)=> console.log(data)}   
+    unCheckNode={(e, data)=> console.log(data)}
     data={[
         {
         text : "Root node",

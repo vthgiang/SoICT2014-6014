@@ -17,7 +17,7 @@ class TreeSelect extends Component {
         this.props.handleChange(data);
     };
 
-    convertData = (array, value) => {
+    convertData = (array=[], value=[]) => {
         let data = [];
         for (let i = 0; i < array.length; i++) {
             if(value.indexOf(array[i].id) > -1){

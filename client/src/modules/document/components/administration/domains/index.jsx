@@ -6,20 +6,46 @@ import CreateForm from './createForm';
 import EditForm from './editForm';
 import './domains.css'
 import Swal from 'sweetalert2';
+import {Tree} from '../../../../../common-components';
+import {convertArrayToTree} from '../../../../../helpers/arrayToTree';
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
         super(props);
-        this.state = { }
+        this.state = {
+            deleteNode: []
+        }
     }
 
     componentDidMount(){
         this.props.getDocumentDomains();
     }
 
-    deleteDocumentDomain = (id, info) => {
+    onChanged = async (e, data) => {
+        await this.setState({currentDomain: data.node})
+        window.$(`#modal-edit-document-domain`).modal('show');
+    }
+
+    checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
+        this.setState({
+            deleteNode: [...data.selected, ...data.node.children_d]
+        })
+    }
+
+    unCheckNode = (e, data) => {
+        this.setState({
+            deleteNode: [...data.selected, ...data.node.children_d]
+        })
+    }
+
+    openDomainsTree = async () => {
+        console.log("open tree");
+    }
+
+    deleteDomains = () => {
         const {translate} = this.props;
+        const {deleteNode} = this.state;
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('document.administration.domains.delete')}</div> <div>"${info}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('document.administration.domains.delete')}</div>?</h4>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -27,81 +53,54 @@ class AdministrationDocumentDomains extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then((result) => {
-            if (result.value) {
-                this.props.deleteDocumentDomain(id);
+            if (result.value && deleteNode.length > 0) {
+                this.props.deleteDocumentDomain(deleteNode, "many");
             }
         })
     }
 
-    slideTreeElement = (id) => {
-        window.$(`#tree-element-${id}`).slideToggle();
-    }
-
-    toggleDomainSetting = (id) => {
-        window.$(`#domain-setting-${id}`).slideToggle();
-    }
-
-    openModalEditDomain = async(data) => {
-        await this.setState({currentDomain: data})
-        window.$(`#modal-edit-document-domain`).modal('show');
-    } 
-
-    drawDomainTree = (dataTree) => {
-        const {translate} = this.props;
-        if(dataTree.length > 0){
-            return dataTree.map(node => {
-                        if(node.children === undefined)
-                            return <li className="domain-tree" key={node.id} style={{paddingLeft: '0px', marginLeft: '0px'}}>
-                                    <a href="#node" className="domain-tree-content"> 
-                                        <i className="fa fa-folder text-gray"></i> 
-                                        <span onClick={()=>this.toggleDomainSetting(node.id)}>{node.title}</span> 
-                                        <span id={`domain-setting-${node.id}`} style={{display: 'none'}}>
-                                            <a className="text-orange" href="#abc" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" href="#abc" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
-                                        </span>
-                                    </a>
-                                </li>
-                        return <li className="domain-tree" key={node.id} style={{paddingLeft: '0px', marginLeft: '0px'}}>
-                            <a href="#node" className="domain-tree-content"> 
-                                <i className="fa fa-folder text-yellow" onClick={()=>this.slideTreeElement(node.id)}></i> 
-                                <span onClick={()=>this.toggleDomainSetting(node.id)}>{node.title}</span> 
-                                <span id={`domain-setting-${node.id}`} style={{display: 'none'}}>
-                                    <a className="text-orange" href="#abc" onClick={()=>this.openModalEditDomain(node)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" href="#abc" onClick={()=>this.deleteDocumentDomain(node.id, node.title)} title={translate('document.administration.domains.delete')}><i className="material-icons">delete</i></a>
-                                </span>
-                            </a>
-                            <ul className="domain-tree" id={`tree-element-${node.id}`} style={{display: 'none'}}>
-                                {this.drawDomainTree(node.children)}
-                            </ul>
-                        </li>
-                    })
-        }
-        return null;
-    }
-
-    displayDomainTree = (dataTree) => {
-        return <ul className="domain-tree">
-            {
-                this.drawDomainTree(dataTree)
-            }
-        </ul>
-    }
-
     render() { 
+        const {deleteNode} = this.state;
         const {translate, documents} = this.props;
+        const {list, tree} = this.props.documents.administration.domains;
+        const dataTree = list.map(node=>{
+            return {
+                ...node,
+                text: node.name,
+                parent: node.parent !== undefined ? node.parent.toString() : "#"
+            }
+        })
+
         return ( 
             <React.Fragment>
-                <CreateForm domainParent={this.state.domainParent}/>
+                <div>
+                    <button className="btn btn-primary" style={{marginRight: '4px'}} onClick={this.openDomainsTree}>Mở cây</button>
+                    {
+                        deleteNode.length > 0 && <button className="btn btn-danger" onClick={this.deleteDomains}>Xóa</button>
+                    }
+                    <CreateForm domainParent={this.state.domainParent} changedDataTree={this.changedDataTree}/>
+                </div>
                 {
                     this.state.currentDomain !== undefined &&
                     <EditForm
                         domainId={this.state.currentDomain.id}
-                        domainName={this.state.currentDomain.name}
+                        domainName={this.state.currentDomain.text}
                         domainDescription={this.state.currentDomain.description}
                         domainParent={this.state.currentDomain.parent}
                     />
                 }
-                {this.displayDomainTree(documents.administration.domains.tree)}
+                <div style={{paddingTop: '10px'}}>
+                    {
+                        dataTree.length > 0 &&
+                        <Tree 
+                            id="document-domains-tree"
+                            onChanged={this.onChanged} 
+                            checkNode={this.checkNode}
+                            unCheckNode={this.unCheckNode}
+                            data={dataTree}
+                        />
+                    }
+                </div>
             </React.Fragment>
         );
     }

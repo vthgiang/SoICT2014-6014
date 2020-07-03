@@ -13,6 +13,7 @@ router.get("/user-statistical", auth, DocumentController.getDocumentsUserStatist
 router.get("/domains", auth, DocumentController.getDocumentDomains);
 router.get("/domains/:id", auth, DocumentController.showDocumentDomain);
 router.post("/domains", auth, DocumentController.createDocumentDomain);
+router.post("/domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);
 router.patch("/domains/:id", auth, DocumentController.editDocumentDomain);
 router.delete("/domains/:id", auth, DocumentController.deleteDocumentDomain);
 
