@@ -25,8 +25,7 @@ exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId=undefi
     var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
     var endOfLastMonth = new Date(currentYear, currentMonth);
 
-    // Status khác 2 --> chưa kết thúc
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
+    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     
@@ -61,7 +60,17 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
             { 'employees': id }
         ]
     });
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department.parent, status: { $ne: 2 } })
+
+    let now = new Date();
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+    let startOfCurrentMonth = new Date(currentYear, currentMonth);
+    let startOfNextMonth = new Date(currentYear, currentMonth + 1);
+
+    var kpiunit = await OrganizationalUnitKpiSet.findOne({
+            organizationalUnit: department.parent,
+            date: { $gte: startOfCurrentMonth, $lt: startOfNextMonth }
+        })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
         return kpiunit;
