@@ -12,10 +12,13 @@ import ReactSlider from 'react-slider';
 
 import { connect } from 'react-redux';
 
+import { taskManagementActions } from '../../../../task/task-management/redux/actions';
 import { kpiMemberActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
 
 import { DialogModal } from '../../../../../common-components/index';
+// import { DetailTaskTab } from '../../../../task/task-perform/component/detailTaskTab';
+import { ModelDetailTask } from '../../../../task/task-management/component/task-dashboard/detailTask';
 //const Handle = Slider.Handle;
 class ModalMemberEvaluate extends Component {
     constructor(props) {
@@ -160,11 +163,22 @@ class ModalMemberEvaluate extends Component {
 
         window.$(`#modal-taskimportance-auto`).modal('show')
     }
-
+    handleClickTaskName = async(id) =>{
+        await this.setState(state => {
+            return {
+                ...state,
+                taskId: id
+            }
+        })
+        await this.props.getTaskInfoById(id);
+        window.$(`#modal-detail-task`).modal('show')
+    }
+    
 
     render() {
         var list, myTask = [], thisKPI = null;
-        const { kpimembers } = this.props;
+        const { kpimembers, tasks } = this.props;
+        let task = tasks && tasks.task;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
 
         if (kpimembers.currentKPI) {
@@ -278,7 +292,7 @@ class ModalMemberEvaluate extends Component {
 
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{itemTask.name}</td>
+                                                    <td><a href= "#modal-detail-task" onClick={()=> this.handleClickTaskName(item._id)}>{itemTask.name}</a></td>
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
@@ -340,6 +354,7 @@ class ModalMemberEvaluate extends Component {
                                 />
 
                             }
+                            {<ModelDetailTask task={task}/>}
                         </React.Fragment>;
                         return true;
                     })}
@@ -350,14 +365,15 @@ class ModalMemberEvaluate extends Component {
 }
 
 function mapState(state) {
-    const { kpimembers } = state;
-    return { kpimembers };
+    const { kpimembers, tasks } = state;
+    return { kpimembers, tasks };
 }
 
 const actionCreators = {
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getTaskById: kpiMemberActions.getTaskById,
-    setPointKPI: kpiMemberActions.setPointKPI
+    setPointKPI: kpiMemberActions.setPointKPI,
+    getTaskInfoById: taskManagementActions.getTaskById
 };
 const connectedModalMemberEvaluate = connect(mapState, actionCreators)(ModalMemberEvaluate);
 export { connectedModalMemberEvaluate as ModalMemberEvaluate };

@@ -28,7 +28,7 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ domainParent: value });
+        this.setState({ domainParent: value[0] });
     };
 
     save = () => {
@@ -53,8 +53,8 @@ class CreateForm extends Component {
 
     render() {
         const {translate, documents}=this.props;
-        const domains = documents.administration.domains.tree;
-        console.log("State: ", this.state)
+        const {tree, list} = documents.administration.domains;
+      
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
@@ -71,7 +71,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                            <TreeSelect dataTree={domains} handleChange={this.handleParent}/>
+                            <TreeSelect data={list} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>

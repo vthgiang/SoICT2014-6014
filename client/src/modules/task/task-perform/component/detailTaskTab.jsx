@@ -38,33 +38,15 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
-            // render: false,
-            // showModalApprove: "",
-            // showEdit: "",
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         }
 
     }
 
-
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     console.log('vào get derived--------------', prevState);
-    //     if (nextProps.id !== prevState.id) {
-
-    //         return {
-    //             ...prevState,
-    //             // id: nextProps.id
-    //             // render: true
-    //         }
-    //     }
-    //     return true;
-    // }
     shouldComponentUpdate = (nextProps, nextState) => {
 
         if (nextProps.id !== this.state.id) {
-            // this.props.getTaskById(nextProps.id);
-            // this.props.getTaskActions(nextProps.id);
-            // this.props.getTimesheetLogs(nextProps.id);
+           
             this.setState(state=>{
                 return{
                     ...state,
@@ -72,7 +54,7 @@ class DetailTaskTab extends Component {
                     dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
-            // return false;
+
             return true;
         }
 
@@ -80,12 +62,9 @@ class DetailTaskTab extends Component {
             if (!nextProps.tasks.task){
                 return false;
             } else { // Dữ liệu đã về
-                // let task = nextProps.tasks.task.info;
                 let task = nextProps.task;
-                // console.log('render roleeeeeeeeeeeeeeeeeeeeee\n\n\n\nthis.props, nextProps, nextState, task',this.props, nextProps, nextState, task);
 
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
-
 
                 let roles = [];
                 if (task) {
@@ -249,35 +228,31 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        // console.log('stateeeeeee\n\n', this.state);
-        const { translate } = this.props;
+        const { translate, tasks, performtasks, user } = this.props;
+        const{ currentUser }= this.state
+        const { id, showToolbar } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+        
         var task, actions, informations;
         var statusTask;
-        const{currentUser}= this.state
         
-        const { tasks, performtasks, user } = this.props;
-        // task = this.props.task;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null){
-            // task = tasks.task.info;
             task = tasks.task;
         }
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
-        // if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.taskTemplate !== null) {
-        //     actions = tasks.task.actions;
-        //     informations = tasks.task.informations;
-        // }
-        
+
         let roles = this.state.roles;
         let currentRole = this.state.currentRole;
 
         let checkInactive = true;
         if(task) checkInactive = task.inactiveEmployees.indexOf(this.state.currentUser) === -1; // return true if user is active user
 
+        let evaluations;
+        if(task && task.evaluations && task.evaluations.length !== 0 ) evaluations = task.evaluations; //.reverse()
+
         return (
-      
-            <div>
+            <React.Fragment>
+                {(showToolbar) &&
                 <div style={{ marginLeft: "-10px" }}>
                     <a className="btn btn-app" onClick={this.refresh} title="Refresh">
                         <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
@@ -327,8 +302,9 @@ class DetailTaskTab extends Component {
                         </ul>
                     </div>
                     }
-                </div>   
-
+                </div>
+                }
+                   
                 <br />
                 <div>
                     
@@ -459,8 +435,10 @@ class DetailTaskTab extends Component {
                                     {/* Evaluations */}
                                     <div>
                                         {
-                                            (task && task.evaluations && task.evaluations.length !== 0 ) && 
-                                            task.evaluations.map(eva => {
+                                            // (task && task.evaluations && task.evaluations.length !== 0 ) && 
+                                            // task.evaluations.reverse().map(eva => {
+                                            ( evaluations ) && 
+                                            evaluations.map(eva => {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
                                                     
@@ -490,7 +468,8 @@ class DetailTaskTab extends Component {
                                                             {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
                                                             <div><strong>Thông tin công việc</strong></div>
                                                             <ul>
-                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li>
+                                                            {/* <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li> */}
+                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {eva.progress}%</li>
                                                             {(task && task.point && task.point !== -1) ?
                                                                 <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
                                                                 <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
@@ -508,10 +487,6 @@ class DetailTaskTab extends Component {
                                                         </div>     
                                                         }
                                                         
-
-                                                    {/* </dd>
-
-                                                    <dd> */}
                                                         {/* KPI */}
                                                         <div><strong>Liên kết KPI</strong></div>
                                                         <ul>
@@ -632,7 +607,7 @@ class DetailTaskTab extends Component {
                         perform='stop'
                     />
                 }
-            </div>
+            </React.Fragment>
         );
     }
 }

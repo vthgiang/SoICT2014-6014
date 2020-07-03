@@ -33,13 +33,13 @@
 
 .node>label {
   cursor: pointer;
-  margin-left: 2px
+  /* margin-left: 1px; */
 }
 
 .tag-list {
   display: inline;
-  padding: 0;
-  margin: 0
+  padding: 1px;
+  margin: 1px
 }
 
 input.search {
@@ -48,12 +48,12 @@ input.search {
 
 .tag-item {
   display: inline-block;
-  margin: 4px 4px 0px 4px;
+  margin: 2px;
 }
 
 .tag-item .search {
   border: none;
-  outline: none
+  outline: none;
 }
 
 .tag-item:last-child {
@@ -63,7 +63,7 @@ input.search {
 .node {
   list-style: none;
   white-space: nowrap;
-  padding: 4px
+  padding: 2px 2px 2px 4px
 }
 
 .node.leaf.collapsed {
@@ -80,7 +80,7 @@ input.search {
 }
 
 .node.focused {
-  background-color: #f4f4f4
+  background-color: #cccccc;
 }
 
 .toggle {
@@ -96,28 +96,27 @@ input.search {
 .toggle.collapsed:after {
   font-family: FontAwesome;
   content: "\f067";
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .toggle.expanded:after {
   font-family: FontAwesome;
   content: "\f068";
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .searchModeOn .toggle {
-  display: none
+  display: block
 }
 
 .checkbox-item,
 .radio-item {
   vertical-align: middle;
-  margin: 4px
 }
 
 .checkbox-item.simple-select,
 .radio-item.simple-select {
-  display: none
+  display: none;
 }
 
 .hide:not(.match-in-children) {
@@ -133,13 +132,12 @@ input.search {
 .react-dropdown-tree-select .dropdown .dropdown-trigger {
   padding: 2px;
   min-height: 34px;
-  max-height: 300px;
   display: inline-block;
   border: 1px solid #D2D6DE;
   width: 100%;
 }
 
-/* .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow {
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow {
   cursor: pointer
 }
 
@@ -149,11 +147,11 @@ input.search {
 
 .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.disabled.bottom:after {
   color: #b9b9b9
-} */
+}
 
 .react-dropdown-tree-select .dropdown .dropdown-content {
   position: absolute;
-  padding: 4px;
+  padding: 0px;
   background: #fff;
   border-top: 1px solid rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 5px 8px rgba(0, 0, 0, .15);
@@ -166,7 +164,7 @@ input.search {
   border: none;
   border-bottom: 1px solid #ccc;
   outline: none;
-  display: none;
+  display: block;
 }
 
 .react-dropdown-tree-select .dropdown .dropdown-content ul {
@@ -176,7 +174,8 @@ input.search {
 }
 
 span.node-label {
-  margin-left: 5px !important;
+  margin-left: 2px;
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=styles.css.map*/

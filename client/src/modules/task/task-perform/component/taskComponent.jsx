@@ -107,7 +107,6 @@ class TaskComponent extends Component {
         }
         
         const { tasks, performtasks } = this.props;
-        // if (tasks.task) task = tasks.task.info;
         if (performtasks.task) task = performtasks.task;
         if (performtasks.task && !this.checkPermission(performtasks)) {
             return (
@@ -124,6 +123,7 @@ class TaskComponent extends Component {
                         id={taskId} 
                         onChangeTaskRole={this.onChangeTaskRole} 
                         task={task && task}
+                        showToolbar={true}
                     />
                 </div>
 
@@ -146,8 +146,6 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    // getSubTask: taskManagementActions.getSubTask,
-    // getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };
 
