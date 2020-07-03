@@ -67,6 +67,7 @@ class AdministrationDocumentDomains extends Component {
             return {
                 ...node,
                 text: node.name,
+                state : {"opened" : true },
                 parent: node.parent !== undefined ? node.parent.toString() : "#"
             }
         })
