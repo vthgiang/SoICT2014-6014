@@ -73,6 +73,7 @@ class TimesheetsManagement extends Component {
         } else return [day, month, year].join('-');
     }
 
+    // Function lấy danh sách các ngày trong tháng
     getAllDayOfMonth = (month) => {
         let partMonth = month.split('-');
         let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);

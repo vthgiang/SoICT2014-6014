@@ -54,13 +54,13 @@ export function timesheets(state = initState, action) {
                 isLoading: false,
                 listTimesheets: state.listTimesheets.filter(timesheets => (timesheets._id !== action.payload._id)),
             };
-            // case TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS:
-            //     return {
-            //         ...state,
-            //         isLoading: false,
-            //         importStatus: true,
-            //         importSalary: action.payload.content,
-            //     };
+            case TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS:
+                return {
+                    ...state,
+                    isLoading: false,
+                    importStatus: true,
+                    importTimesheets: action.payload.content,
+                };
         case TimesheetsConstants.GET_TIMESHEETS_FAILURE:
         case TimesheetsConstants.CREATE_TIMESHEETS_FAILURE:
         case TimesheetsConstants.UPDATE_TIMESHEETS_FAILURE:

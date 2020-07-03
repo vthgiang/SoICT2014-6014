@@ -5,6 +5,7 @@ export const TimesheetsActions = {
     createTimesheets,
     deleteTimesheets,
     updateTimesheets,
+    importTimesheets,
 };
 
 /**
@@ -108,25 +109,25 @@ function updateTimesheets(id, data) {
     }
 }
 
-// // Import thông tin chấm công
-// function importTimesheets(data) {
-//     return dispatch => {
-//         dispatch({
-//             type: TimesheetsConstants.IMPORT_TIMESHEETS_REQUEST
-//         });
-//         SalaryService.importSalary(data)
-//             .then(res => {
-//                 dispatch({
-//                     type: TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS,
-//                     payload: res.data
-//                 })
-//             })
-//             .catch(err => {
-//                 dispatch({
-//                     type: TimesheetsConstants.IMPORT_TIMESHEETS_FAILURE,
-//                     error: err.response.data.content
-//                 });
-//             })
-//     };
-// }
+// Import thông tin chấm công
+function importTimesheets(data) {
+    return dispatch => {
+        dispatch({
+            type: TimesheetsConstants.IMPORT_TIMESHEETS_REQUEST
+        });
+        TimesheetsService.importTimesheets(data)
+            .then(res => {
+                dispatch({
+                    type: TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: TimesheetsConstants.IMPORT_TIMESHEETS_FAILURE,
+                    error: err.response.data.content
+                });
+            })
+    };
+}
 

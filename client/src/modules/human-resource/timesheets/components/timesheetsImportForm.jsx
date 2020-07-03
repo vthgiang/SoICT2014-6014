@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, SlimScroll, PaginateBar, DatePicker } from '../../../../common-components';
-import { configurationTimesheets } from './fileConfigurationImportTimesheets';
+
 import { LOCAL_SERVER_API } from '../../../../env';
+import { configurationTimesheets } from './fileConfigurationImportTimesheets';
+
+import { TimesheetsActions } from '../redux/actions';
 
 import XLSX from 'xlsx';
-import { SalaryActions } from '../../salary/redux/actions';
 
 class TimesheetsImportForm extends Component {
     constructor(props) {
@@ -17,8 +19,8 @@ class TimesheetsImportForm extends Component {
             importData: [],
             month: null,
             configData: this.convertConfigurationToString(configurationTimesheets),
-            importConfiguration: null,
-            limit: 100,
+            importConfiguration: configurationTimesheets,
+            limit: 50,
             page: 0
         };
     }
@@ -27,21 +29,19 @@ class TimesheetsImportForm extends Component {
         timesheets.importStatus && window.$(`#modal_import_file`).modal("hide");
     }
 
-    // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+    // Function lấy danh sách các ngày trong tháng
+    getAllDayOfMonth = (month) => {
+        let partMonth = month.split('-');
+        let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);
+        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        for (let i = 1; i <= lastDayOfmonth.getDate(); i++) {
+            let day = i;
+            if (i.toString().length < 2)
+                day = '0' + i;
+            let date = new Date([partMonth[1], partMonth[0], day]);
+            arrayDay = [...arrayDay, { day: days[date.getDay()], date: date.getDate() }]
+        }
+        return arrayDay
     }
 
     // Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea);
@@ -87,38 +87,48 @@ class TimesheetsImportForm extends Component {
 
     // Bắt sự kiện thay đổi tháng lương
     handleMonthChange = (value) => {
-        // const { salary } = this.props;
-        // let partMonth = value.split('-'), rowError = [], importData = [];
-        // value = [partMonth[1], partMonth[0]].join('-');
-        // if (salary.error.rowError !== undefined) {
-        //     rowError = salary.error.rowError;
-        //     importData = salary.error.data;
-        //     importData = importData.map((x, index) => {
-        //         if (x.errorAlert.find(y => y = "month_salary_have_exist") !== undefined) {
-        //             x.errorAlert = x.errorAlert.filter(y => y !== "month_salary_have_exist");
-        //             x.error = false;
-        //             rowError = rowError.filter(y => y !== index);
-        //         }
-        //         return x;
-        //     })
-        //     this.setState({
-        //         ...this.state,
-        //         importData: importData,
-        //         rowError: rowError,
-        //         changeMonth: true,
-        //     })
-        // }
-        let importFile
-        if (value) {
-            importFile = true;
-        } else {
-            importFile = null;
+        const { timesheets, month } = this.props;
+        let rowError = [], importData = [];
+        if (timesheets.error.rowError !== undefined) {
+            rowError = timesheets.error.rowError;
+            importData = timesheets.error.data;
+            console.log(importData);
+            importData = importData.map((x, index) => {
+                if (x.errorAlert.find(y => y === "month_timesheets_have_exist") !== undefined) {
+                    console.log("adadawd")
+                    x.errorAlert = x.errorAlert.filter(y => y !== "month_timesheets_have_exist");
+                    x.error = false;
+                    rowError = rowError.filter(y => y !== index + 1);
+                }
+                return x;
+            })
+            this.setState({
+                ...this.state,
+                importData: importData,
+                rowError: rowError,
+                changeMonth: true,
+            })
         }
-        this.setState({
-            ...this.state,
-            month: value,
-            importFile: importFile
-        });
+
+        let checkImportFile;
+        if (value) {
+            checkImportFile = true;
+            let allDayOfMonth = this.getAllDayOfMonth(value);
+            this.setState({
+                ...this.state,
+                month: value,
+                allDayOfMonth: allDayOfMonth,
+                checkImportFile: checkImportFile
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                month: value,
+                checkImportFile: checkImportFile
+            });
+        }
+
+
     }
     // Bắt sự kiện thay đổi (textarea);
     handleChange = (e) => {
@@ -131,7 +141,7 @@ class TimesheetsImportForm extends Component {
     }
     // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
-        const { importConfiguration } = this.state;
+        const { importConfiguration, allDayOfMonth } = this.state;
         let configData = importConfiguration !== null ? importConfiguration : configurationTimesheets;
         let sheets = configData.sheets;
         let file = e.target.files[0];
@@ -153,8 +163,8 @@ class TimesheetsImportForm extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
                     let indexEmployeeName, indexEmployeenumber, indexDateOfMonth;
-                    
-                    console.log(data);
+
+                    // Xoá các row excel trống
                     data = data.filter(x => {
                         let check = x.filter(y => y !== null);
                         if (check.length === 0) {
@@ -163,12 +173,11 @@ class TimesheetsImportForm extends Component {
                             return true
                         }
                     });
-                    console.log(...data);
+
                     // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
-                        console.log(data[i]);
                         data[i].forEach((x, index) => {
-                            if (x !== null) {
+                            if (x !== null && typeof x === 'string') {
                                 if (x.trim().toLowerCase() === configData.employeeName.trim().toLowerCase())
                                     indexEmployeeName = index;
                                 if (x.trim().toLowerCase() === configData.employeeNumber.trim().toLowerCase())
@@ -180,19 +189,25 @@ class TimesheetsImportForm extends Component {
                         }
                         )
                     }
-                    console.log('indexEmployeeName', indexEmployeeName);
-                    console.log('indexEmployeenumber', indexEmployeenumber);
-                    console.log('indexDateOfMonth', indexDateOfMonth);
 
                     // Convert dữ liệu thành dạng array json mong muốn để gửi lên server(hiện thi ra table)
                     data.splice(0, Number(configData.rowHeader));
                     let dataConvert = [];
-                    data.forEach(x => {
-                        if (x[indexEmployeenumber] !== null) {
-                            let dateOfMonth = x[indexDateOfMonth];
-                            let employeeNumber = x[indexEmployeenumber];
-                            let employeeName = x[indexEmployeeName];
-                            dataConvert = [...dataConvert, { dateOfMonth, employeeNumber, employeeName }]
+                    data.forEach((x, indexs) => {
+                        let workSession1 = [], workSession2 = [], employeeNumber, employeeName;
+                        if (x[indexEmployeenumber] !== null || x[indexEmployeeName] !== null) {
+                            employeeNumber = x[indexEmployeenumber];
+                            employeeName = x[indexEmployeeName];
+                            allDayOfMonth.forEach((y, index) => {
+                                workSession1 = [...workSession1, x[indexDateOfMonth + index] ? true : false];
+                            })
+                            dataConvert = [...dataConvert, { workSession1, employeeNumber, employeeName }]
+                        }
+                        if (x[indexEmployeenumber] === null && x[indexEmployeeName] === null) {
+                            allDayOfMonth.forEach((y, index) => {
+                                workSession2 = [...workSession2, x[indexDateOfMonth + index] ? true : false];
+                            })
+                            dataConvert[dataConvert.length - 1] = { ...dataConvert[dataConvert.length - 1], workSession2 };
                         }
                     })
                     importData = importData.concat(dataConvert);
@@ -242,15 +257,17 @@ class TimesheetsImportForm extends Component {
             rowError = salary.error.rowError;
             importData = salary.error.data
         }
-        if (rowError.length === 0 && month !== null && importData.length !== 0) {
+        if (rowError.length === 0 && month && importData.length !== 0) {
             return true
         } return false
     }
 
     save = () => {
         let { importData, month } = this.state;
-        importData = importData.map(x => ({ ...x, month: month }));
-        this.props.importSalary(importData);
+        let partMonth = month.split('-');
+        let timesheetsMonth = [partMonth[1], partMonth[0]].join('-');
+        importData = importData.map(x => ({ ...x, month: timesheetsMonth }));
+        this.props.importTimesheets(importData);
         this.setState({
             changeMonth: false
         })
@@ -258,11 +275,11 @@ class TimesheetsImportForm extends Component {
 
     render() {
         const { translate, timesheets } = this.props;
-        let { importData, configData, importConfiguration, rowError, limit, page, importFile, changeMonth } = this.state;
-        // if (salary.error.rowError !== undefined && changeMonth === false) {
-        //     rowError = salary.error.rowError;
-        //     importData = salary.error.data
-        // }
+        let { importData, configData, importConfiguration, rowError, limit, page, checkImportFile, changeMonth, allDayOfMonth } = this.state;
+        if (timesheets.error.rowError !== undefined && changeMonth === false) {
+            rowError = timesheets.error.rowError;
+            importData = timesheets.error.data
+        }
         console.log(importData);
         var pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
@@ -337,13 +354,14 @@ class TimesheetsImportForm extends Component {
                                 <DatePicker
                                     id="import_timesheets"
                                     dateFormat="month-year"
+                                    deletevalue={false}
                                     value=""
                                     onChange={this.handleMonthChange}
                                 />
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label>File excel cần import</label>
-                                <input type="file" className="form-control" disabled={importFile ? false : true}
+                                <input type="file" className="form-control" disabled={checkImportFile ? false : true}
                                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                     onChange={this.handleChangeFileImport} />
                             </div>
@@ -367,19 +385,42 @@ class TimesheetsImportForm extends Component {
                                                     <thead>
                                                         <tr>
                                                             <th>STT</th>
-                                                            <th>Mã số nhân viên</th>
-                                                            <th>Tên nhân viên</th>
+                                                            <th style={{ width: 100 }}>Mã số nhân viên</th>
+                                                            <th style={{ width: 100 }}>Tên nhân viên</th>
+                                                            {allDayOfMonth.map((x, index) => (
+                                                                <th key={index}>{x.day}&nbsp; {x.date}</th>
+                                                            ))}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {
                                                             importDataCurrentPage.map((x, index) => {
+                                                                let workSession1 = x.workSession1, workSession2 = x.workSession2;
                                                                 return (
-                                                                    <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
-                                                                        <td>{page + index + 1}</td>
-                                                                        <td>{x.employeeNumber}</td>
-                                                                        <td>{x.employeeName}</td>
-                                                                    </tr>
+                                                                    <React.Fragment key={index}>
+                                                                        <tr style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
+                                                                            <td rowSpan="2">{page + index + 1}</td>
+                                                                            <td rowSpan="2">{x.employeeNumber}</td>
+                                                                            <td rowSpan="2">{x.employeeName}</td>
+                                                                            {
+                                                                                allDayOfMonth.map((y, indexs) => (
+                                                                                    <td key={indexs}>
+                                                                                        {workSession1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                                            <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
+                                                                                    </td>
+                                                                                ))
+                                                                            }
+                                                                        </tr>
+                                                                        <tr>{
+                                                                            allDayOfMonth.map((y, indexs) => (
+                                                                                <td key={indexs}>
+                                                                                    {workSession2[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                                        <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
+                                                                                </td>
+                                                                            ))
+                                                                        }
+                                                                        </tr>
+                                                                    </React.Fragment>
                                                                 )
                                                             })
                                                         }
@@ -391,7 +432,7 @@ class TimesheetsImportForm extends Component {
                                         </React.Fragment>
                                     )}
                             </div>
-                            <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
+                            <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1500} activate={true} />
                             <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                         </div>
                     </form>
@@ -407,7 +448,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    importSalary: SalaryActions.importSalary,
+    importTimesheets: TimesheetsActions.importTimesheets,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(TimesheetsImportForm));

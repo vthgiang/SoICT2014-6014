@@ -876,6 +876,8 @@ export default {
                 delete_salary_faile: 'Delete salary faile',
                 edit_salary_success: 'Edit salary success',
                 edit_salary_faile: 'Edit salary faile',
+                import_salary_success: 'Import salary success',
+                import_salary_faile: 'Import salary faile',
             },
 
             // Quản lý nghỉ phép
@@ -1083,7 +1085,8 @@ export default {
                 edit_timesheets_faile: "Edit timesheets faile",
                 delete_timesheets_success: "Delete timesheets success",
                 delete_timesheets_faile: "Delete timesheets faile",
-
+                import_timesheets_success: "Import timesheets success",
+                import_timesheets_faile: "Import timesheets faile",
 
             },
         },

@@ -1118,6 +1118,8 @@ export default {
                 delete_salary_faile: 'Xoá bảng lương thất bại',
                 edit_salary_success: 'Chỉnh sửa bảng lương thành công',
                 edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
+                import_salary_success: 'Import bảng lương thành công',
+                import_salary_faile: 'Import bảng lương thất bại',
             },
 
             // Quản lý nghỉ phép
@@ -1327,7 +1329,8 @@ export default {
                 edit_timesheets_faile: "Chỉnh sửa thông tin chấm công thất bại",
                 delete_timesheets_success: "Xoá thông tin chấm công thành công",
                 delete_timesheets_faile: "Xoá thông tin chấm công thất bại",
-
+                import_timesheets_success: "Import thông tin chấm công thành công",
+                import_timesheets_faile: "Import thông tin chấm công thất bại",
 
             },
 
