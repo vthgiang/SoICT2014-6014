@@ -712,10 +712,10 @@ class EvaluateByAccountableEmployee extends Component {
 
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
-            task: this.state.task,
-            progress: this.state.progress,
+            task: data.task,
+            progress: data.progress,
             date: value,
-            info: this.state.info,
+            info: data.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
@@ -733,6 +733,8 @@ class EvaluateByAccountableEmployee extends Component {
                     autoPoint: automaticPoint,
                     task: data.task,
                     userId: data.userId,
+                    progress: data.progress,
+                    oldAutoPoint: data.automaticPoint,
                 }
             });
         
@@ -941,8 +943,8 @@ class EvaluateByAccountableEmployee extends Component {
         let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
         let actionsNotRating = taskActions.filter(item => (
             item.rating === -1 &&
-            new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
-            && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+            new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
+            && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
 
         return (
@@ -1009,11 +1011,13 @@ class EvaluateByAccountableEmployee extends Component {
                             </a> 
                         </strong>
                         <br/>
+                        <br/>
                         <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
                             <a href="javascript:void(0)" >
                                 {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
                             </a> 
                         </strong>
+                        <br/>
                         <br/>
                         <strong>Các hoạt động chưa đánh giá tháng này: &nbsp; </strong>
                         <ul>
@@ -1038,7 +1042,7 @@ class EvaluateByAccountableEmployee extends Component {
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
 
-                        <br/>
+                        {/* <br/> */}
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>
                         <br/>
