@@ -56,7 +56,6 @@ class CreateForm extends Component {
       
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
                 <DialogModal
                     modalID="modal-create-document-domain"
                     formID="form-create-document-domain"

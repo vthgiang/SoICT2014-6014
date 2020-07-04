@@ -17,7 +17,6 @@ class DialogModal extends Component {
     }
 
     closeModal = (reset) => {
-        console.log("Clicked!!!!")
         this.setState({
             reload: this.state.reload + 1
         });

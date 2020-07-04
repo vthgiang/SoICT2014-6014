@@ -12,11 +12,12 @@ class Tree extends Component {
     componentDidMount() {
         const {id, data} = this.state;
         const { onChanged, checkNode, unCheckNode } = this.props;
-        window.$(`#tree-${id}`).jstree({
+        window.$(`#${id}`).jstree({
             checkbox : {
                 whole_node : false,
                 three_state: false,
-                tie_selection: false
+                tie_selection: false,
+                deselect_all: false
             },
             core:{
                 themes:{
@@ -29,32 +30,32 @@ class Tree extends Component {
             plugins: [ "checkbox" ]
         });
 
-        window.$(`#tree-${id}`).on("changed.jstree", function (e, data) {
+        window.$(`#${id}`).on("changed.jstree", function (e, data) {
             if (onChanged){
                 onChanged(e, data);
             }
         });
 
-        window.$(`#tree-${id}`).on("check_node.jstree", function (e, data) {
+        window.$(`#${id}`).on("check_node.jstree", function (e, data) {
             if (checkNode)
                 checkNode(e, data)
         });
 
-        window.$(`#tree-${id}`).on("uncheck_node.jstree", function (e, data) {
+        window.$(`#${id}`).on("uncheck_node.jstree", function (e, data) {
             if (unCheckNode)
                 unCheckNode(e, data)
         });
     }
 
     componentDidUpdate() {
-        console.log("Refresh data tree")
         const { id,data } = this.state;
-        console.log("data-tree-update: ", data)
-        window.$(`#tree-${id}`).jstree(true).settings.core.data = data;
+        window.$(`#${id}`).jstree(true).settings.core.data = data;
+        window.$(`#${id}`).jstree(true).refresh();
+
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.data.length !== prevState.data.length) {
+        if (nextProps.id !== prevState.id || JSON.stringify(nextProps.data) !== JSON.stringify(prevState.data)) {
             return {
                 id: nextProps.id,
                 data: nextProps.data
@@ -65,16 +66,17 @@ class Tree extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // Chỉ render lại khi id thay đổi
-        if (nextProps.id !== this.state.id || nextProps.data.length !== this.state.data.length){
+        if (nextProps.id !== this.state.id || JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)){
             return true;
-        }
-        return true;
+        }else return false;
     }
 
     render() {
         const { id, data } = this.state;
-        return id !== undefined ? <div id={`tree-${id}`}/> : null;
+
+        return <React.Fragment>
+            {id !== undefined ? <div id={`${id}`}/> : null}
+        </React.Fragment>;
     }
 }
 

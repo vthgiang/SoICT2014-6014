@@ -55,7 +55,7 @@ class EditForm extends Component {
         const {translate, documents}=this.props;
         const {tree,list} = documents.administration.domains;
         const {domainId, domainName, domainDescription, domainParent} = this.state;
-        console.log("state edit: ", this.state)
+        
         return ( 
             <React.Fragment>
                 <DialogModal

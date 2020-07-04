@@ -21,8 +21,9 @@ class AdministrationDocumentDomains extends Component {
     }
 
     onChanged = async (e, data) => {
+        console.log("CLICK NODE TREE - data", data)
         await this.setState({currentDomain: data.node})
-        window.$(`#modal-edit-document-domain`).modal('show');
+        window.$(`#modal-edit-document-domain`).modal({backdrop:'static',keyboard:false, show:true});
     }
 
     checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
@@ -35,10 +36,6 @@ class AdministrationDocumentDomains extends Component {
         this.setState({
             deleteNode: [...data.selected, ...data.node.children_d]
         })
-    }
-
-    openDomainsTree = async () => {
-        console.log("open tree");
     }
 
     deleteDomains = () => {
@@ -55,6 +52,9 @@ class AdministrationDocumentDomains extends Component {
         }).then((result) => {
             if (result.value && deleteNode.length > 0) {
                 this.props.deleteDocumentDomain(deleteNode, "many");
+                this.setState({
+                    deleteNode: []
+                });
             }
         })
     }
@@ -74,13 +74,13 @@ class AdministrationDocumentDomains extends Component {
 
         return ( 
             <React.Fragment>
-                <div>
-                    <button className="btn btn-primary" style={{marginRight: '4px'}} onClick={this.openDomainsTree}>Mở cây</button>
-                    {
-                        deleteNode.length > 0 && <button className="btn btn-danger" onClick={this.deleteDomains}>Xóa</button>
-                    }
-                    <CreateForm domainParent={this.state.domainParent} changedDataTree={this.changedDataTree}/>
-                </div>
+                <button className="btn btn-sm btn-success" onClick={()=>{
+                    window.$('#modal-create-document-domain').modal('show');
+                }} title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
+                {
+                    deleteNode.length > 0 && <button className="btn btn-sm btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
+                }
+                <CreateForm/>
                 {
                     this.state.currentDomain !== undefined &&
                     <EditForm
@@ -91,16 +91,13 @@ class AdministrationDocumentDomains extends Component {
                     />
                 }
                 <div style={{paddingTop: '10px'}}>
-                    {
-                        dataTree.length > 0 &&
-                        <Tree 
-                            id="qlcv-document"
-                            onChanged={this.onChanged} 
-                            checkNode={this.checkNode}
-                            unCheckNode={this.unCheckNode}
-                            data={dataTree}
-                        />
-                    }
+                    <Tree 
+                        id="tree-qlcv-document"
+                        onChanged={this.onChanged} 
+                        checkNode={this.checkNode}
+                        unCheckNode={this.unCheckNode}
+                        data={dataTree}
+                    />
                 </div>
             </React.Fragment>
         );
