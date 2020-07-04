@@ -52,7 +52,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
             await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId);
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
@@ -106,10 +106,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
-                organizationalUnitId: nextProps.organizationalUnitId
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
             }
         } else{
             return null;
