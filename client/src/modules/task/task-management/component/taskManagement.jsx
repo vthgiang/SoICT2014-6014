@@ -163,7 +163,7 @@ class TaskManagement extends Component {
         let currentTasks = tasks.tasks.filter(task => task._id === id);
 
         let progress = currentTasks[0].progress;
-        let action = currentTasks[0].taskActions;
+        let action = currentTasks[0].taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
         if(action.length === 0 && progress === 0){
             await this.props.deleteTaskById(id);
