@@ -296,7 +296,15 @@ exports.deleteTaskAction = async (req,res)=>{
 // Chỉnh sửa một hoạt động hoặc bình luận
 exports.editCommentOfTaskAction = async (req, res) => {
     try {
-        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params,req.body);
+        var files=[] ;
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params,req.body,files);
         await LogInfo(req.user.email, ` edit action comment  `,req.user.company);
         res.status(200).json({
             success: true,
