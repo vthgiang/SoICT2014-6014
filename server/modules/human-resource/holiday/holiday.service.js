@@ -1,9 +1,11 @@
-const { Holiday } = require('../../../models').schema;
+const {
+    Holiday
+} = require('../../../models').schema;
 
 /**
  * Lấy danh sách ngày nghỉ lễ tết
  * @company : Id công ty
- */ 
+ */
 exports.getAllHolidays = async (company) => {
     return await Holiday.find({
         company: company
@@ -51,7 +53,7 @@ exports.updateHoliday = async (id, data) => {
     var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
     var partEnd = data.endDate.split('-');
     var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-    
+
     var holidayChange = {
         startDate: startDate,
         endDate: endDate,

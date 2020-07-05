@@ -94,7 +94,10 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
-            table: 'Bảng', upload: 'Tải lên', pick_image: 'Chọn ảnh', crop: "Cắt ảnh",
+            table: 'Bảng',
+            upload: 'Tải lên',
+            pick_image: 'Chọn ảnh',
+            crop: "Cắt ảnh",
             action: 'Hành động',
             name: 'Tên',
             description: 'Mô tả',
@@ -156,8 +159,10 @@ export default {
             change_user_password_success: 'Thay đổi mật khẩu thành công',
             change_user_password_faile: 'Thay đổi mật khẩu thất bại',
             user_not_found: 'Không tìm thấy thông tin người dùng',
-            email_invalid: 'Email không hợp lệ', email_not_found: 'Email này chưa được đăng kí trên hệ thống',
+            email_invalid: 'Email không hợp lệ',
+            email_not_found: 'Email này chưa được đăng kí trên hệ thống',
             password_invalid: 'Mật khẩu không chính xác',
+            email_password_invalid: 'Email hoặc mật khẩu không chính xác',
             acc_blocked: 'Tài khoản này đã bị tạm khóa',
             acc_have_not_role: 'Tài khoản chưa được phân quyền trên hệ thống',
             wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',
@@ -216,10 +221,10 @@ export default {
                 add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
                 delete_component_for_company_success: 'Xóa component thành công',
 
-                create_import_configuration_success:"Thêm cấu hình file import thành công",
-                create_import_configuration_faile:"Thêm cấu hình file import thất bại",
-                edit_import_configuration_success:"Chỉnh sửa cấu hình file import thành công",
-                edit_import_configuration_faile:"Chỉnh sửa cấu hình file import thất bại",
+                create_import_configuration_success: "Thêm cấu hình file import thành công",
+                create_import_configuration_faile: "Thêm cấu hình file import thất bại",
+                edit_import_configuration_success: "Chỉnh sửa cấu hình file import thành công",
+                edit_import_configuration_faile: "Chỉnh sửa cấu hình file import thất bại",
 
                 email_exist: 'Email này đã được sử dụng',
                 company_not_found: 'Không tìm thấy thông tin về công ty',
@@ -372,7 +377,8 @@ export default {
             sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
-            from: 'từ', at: 'lúc',
+            from: 'từ',
+            at: 'lúc',
 
             add: 'Tạo thông báo',
             receivered: 'Thông báo đã nhận',
@@ -391,17 +397,43 @@ export default {
         },
 
         document: {
-            title: 'Quản lý tài liệu biểu mẫu', version: 'Tên phiên bản', information: 'Thông tin',different_versions: 'Phiên bản khác', amount: 'Số lượng',
-            name: 'Tên văn bản', description: 'Mô tả', category: "Loại văn bản", domain: 'Danh mục', roles: 'Những vị trí có quyền xem mẫu này',
-            issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn', views: 'Số lần xem', downloads: 'Số lần download',
-            add: 'Thêm văn bản', edit: 'Sửa văn bản', delete: 'Xóa văn bản', add_version: 'Thêm phiên bản mới',
-            upload_file: 'Upload File', upload_file_scan: 'Upload File scan', download: 'Tải xuống',no_version: 'Không có phiên bản nào khác',
+            title: 'Quản lý tài liệu biểu mẫu',
+            version: 'Tên phiên bản',
+            information: 'Thông tin',
+            different_versions: 'Phiên bản khác',
+            amount: 'Số lượng',
+            name: 'Tên văn bản',
+            description: 'Mô tả',
+            category: "Loại văn bản",
+            domain: 'Danh mục',
+            roles: 'Những vị trí có quyền xem mẫu này',
+            issuing_date: 'Ngày ban hành',
+            effective_date: 'Ngày áp dụng',
+            expired_date: 'Ngày hết hạn',
+            views: 'Số lần xem',
+            downloads: 'Số lần download',
+            add: 'Thêm văn bản',
+            edit: 'Sửa văn bản',
+            delete: 'Xóa văn bản',
+            add_version: 'Thêm phiên bản mới',
+            upload_file: 'Upload File',
+            upload_file_scan: 'Upload File scan',
+            download: 'Tải xuống',
+            no_version: 'Không có phiên bản nào khác',
             doc_version: {
                 title: 'Phiên bản',
-                name: 'Tên phiên bản', description: 'Mô tả', issuing_body: 'Cơ quan ban hành', official_number: 'Số hiệu',
-                issuing_date: 'Ngày ban hành', effective_date: 'Ngày áp dụng', expired_date: 'Ngày hết hạn',
-                signer: 'Người ký', number_view: 'Số lần xem', number_download: 'Số lần tải', 
-                file: 'File upload', scanned_file_of_signed_document: 'File scan',
+                name: 'Tên phiên bản',
+                description: 'Mô tả',
+                issuing_body: 'Cơ quan ban hành',
+                official_number: 'Số hiệu',
+                issuing_date: 'Ngày ban hành',
+                effective_date: 'Ngày áp dụng',
+                expired_date: 'Ngày hết hạn',
+                signer: 'Người ký',
+                number_view: 'Số lần xem',
+                number_download: 'Số lần tải',
+                file: 'File upload',
+                scanned_file_of_signed_document: 'File scan',
             },
             relationship: {
                 title: 'Liên kết văn bản',
@@ -425,12 +457,24 @@ export default {
 
             administration: {
                 categories: {
-                    add: 'Thêm loại văn bản', edit: 'Sửa thông tin loại văn bản', delete: 'Xóa loại văn bản',
-                    name: 'Tên', description: 'Mô tả', select: 'Chọn loại văn bản', not_select: 'Chưa thuộc loại văn bản',
+                    add: 'Thêm loại văn bản',
+                    edit: 'Sửa thông tin loại văn bản',
+                    delete: 'Xóa loại văn bản',
+                    name: 'Tên',
+                    description: 'Mô tả',
+                    select: 'Chọn loại văn bản',
+                    not_select: 'Chưa thuộc loại văn bản',
                 },
                 domains: {
-                    add: 'Thêm danh mục văn bản', edit: 'Sửa thông tin danh mục văn bản', delete: 'Xóa danh mục văn bản',
-                    name: 'Tên', description: 'Mô tả', parent: 'Danh mục cha', select_parent: 'Chọn danh mục cha', select: 'Chọn danh mục', not_select: 'Không thuộc về danh mục nào',
+                    add: 'Thêm danh mục văn bản',
+                    edit: 'Sửa thông tin danh mục văn bản',
+                    delete: 'Xóa các danh mục đã chọn',
+                    name: 'Tên',
+                    description: 'Mô tả',
+                    parent: 'Danh mục cha',
+                    select_parent: 'Chọn danh mục cha',
+                    select: 'Chọn danh mục',
+                    not_select: 'Không thuộc về danh mục nào',
                 }
             },
             user: {
@@ -613,7 +657,7 @@ export default {
             manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset:'Quản lý đề nghị cấp phát',
+            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
@@ -670,7 +714,7 @@ export default {
             vice_dean_name: 'Tên chức danh cho phó đơn vị',
             vice_dean_example: 'VD: Phó phòng tài chính',
             employee_name: 'Tên chức danh cho nhân viên đơn vị',
-            employee_example: 'Nhân viên phòng tài chính',
+            employee_example: 'VD: Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
             delete: 'Xóa đơn vị',
             add_success: 'Tạo đơn vị thành công',
@@ -1074,6 +1118,8 @@ export default {
                 delete_salary_faile: 'Xoá bảng lương thất bại',
                 edit_salary_success: 'Chỉnh sửa bảng lương thành công',
                 edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
+                import_salary_success: 'Import bảng lương thành công',
+                import_salary_faile: 'Import bảng lương thất bại',
             },
 
             // Quản lý nghỉ phép
@@ -1250,73 +1296,93 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday : {
+            holiday: {
 
                 // Thông điệp trả về từ server
-                start_date_required:'Thời gian bắt đầu không được để trống',
-                end_date_required:'Thời gian kết thúc không được để trống',
-                reason_required:'Mô tả lịch nghỉ không được để trống',
+                start_date_required: 'Thời gian bắt đầu không được để trống',
+                end_date_required: 'Thời gian kết thúc không được để trống',
+                reason_required: 'Mô tả lịch nghỉ không được để trống',
 
-                get_holiday_success:'Lấy danh sách lịch làm việc thành công',
-                get_holiday_faile:'Lấy danh sách lịch làm việc thất bại',
-                create_holiday_success:'Thêm mới lịch làm việc thành công',
-                create_holiday_faile:'Thêm mới lịch làm việc thất bại',
-                delete_holiday_success:'Xoá lịch làm việc thành công',
-                delete_holiday_faile:'Xoá lịch làm việc thất bại',
-                edit_holiday_success:'Chỉnh sửa lịch làm việc thành công',
-                edit_holiday_faile:'Chỉnh sửa lịch làm việc thất bại',
+                get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
+                get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
+                create_holiday_success: 'Thêm mới lịch làm việc thành công',
+                create_holiday_faile: 'Thêm mới lịch làm việc thất bại',
+                delete_holiday_success: 'Xoá lịch làm việc thành công',
+                delete_holiday_faile: 'Xoá lịch làm việc thất bại',
+                edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
+                edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
 
-            }
+            },
+
+            // Quản lý chấm công nhân viên
+            timesheets: {
+                // Thông điệp trả về từ server
+                employee_number_required: "Mã nhân viên không được để trống",
+                month_timesheets_required: "Tháng chấm công không được để trống",
+                staff_code_not_find: "Mã nhân viên không tồn tại",
+                month_timesheets_have_exist: "Tháng chấm công đã tồn tại",
+                get_timesheets_success: "Lấy thông tin chấm công thành công",
+                get_timesheets_faile: "Lấy thông tin chấm công thất bại",
+                create_timesheets_success: "Thêm mới thông tin chấm công thành công",
+                create_timesheets_faile: "Thêm mới thông tin chấm công thất bại",
+                edit_timesheets_success: "Chỉnh sửa thông tin chấm công thành công",
+                edit_timesheets_faile: "Chỉnh sửa thông tin chấm công thất bại",
+                delete_timesheets_success: "Xoá thông tin chấm công thành công",
+                delete_timesheets_faile: "Xoá thông tin chấm công thất bại",
+                import_timesheets_success: "Import thông tin chấm công thành công",
+                import_timesheets_faile: "Import thông tin chấm công thất bại",
+
+            },
 
         },
 
         // Modules quản lý đào tạo
-        training:{
+        training: {
 
             // Quản khoá đào tạo
-            course:{
-                
-                // Thông điệp trả về từ server
-                name_required:'Tên khoá đào tạo không được để trống',
-                course_id_required:'Mã khoá đào tạo không được để trống',
-                offered_by_required:'Đơn vị đào tạo không được để trống',
-                course_place_required:'Địa điểm đào tạo không được để trống',
-                start_date_required:'Thời gian bắt đầu không được để trống',
-                end_date_required:'Thời gian kết thúc không được để trống',
-                type_required:'Loại đào tạo không được để trống',
-                education_program_required:'Thuộc chương trình đào tạo không được để trống',
-                employee_commitment_time_required:'Thời gian cam kết không được để trống',
-                cost_required:'Chi phí đào tạo không được để trống',
-                course_id_have_exist:'Mã khoá đào tạo đã tồn tại',
+            course: {
 
-                get_list_course_success:'Lấy danh sách khoá đào tạo thành công',
-                get_list_course_faile:'Lấy danh sách khoá đào tạo thất bại',
-                create_course_success:'Thêm mới khoá đào tạo thành công',
-                create_course_faile:'Thêm mới khoá đào tạo thất bại',
-                delete_course_success:'Xoá khoá đào tạo thành công',
+                // Thông điệp trả về từ server
+                name_required: 'Tên khoá đào tạo không được để trống',
+                course_id_required: 'Mã khoá đào tạo không được để trống',
+                offered_by_required: 'Đơn vị đào tạo không được để trống',
+                course_place_required: 'Địa điểm đào tạo không được để trống',
+                start_date_required: 'Thời gian bắt đầu không được để trống',
+                end_date_required: 'Thời gian kết thúc không được để trống',
+                type_required: 'Loại đào tạo không được để trống',
+                education_program_required: 'Thuộc chương trình đào tạo không được để trống',
+                employee_commitment_time_required: 'Thời gian cam kết không được để trống',
+                cost_required: 'Chi phí đào tạo không được để trống',
+                course_id_have_exist: 'Mã khoá đào tạo đã tồn tại',
+
+                get_list_course_success: 'Lấy danh sách khoá đào tạo thành công',
+                get_list_course_faile: 'Lấy danh sách khoá đào tạo thất bại',
+                create_course_success: 'Thêm mới khoá đào tạo thành công',
+                create_course_faile: 'Thêm mới khoá đào tạo thất bại',
+                delete_course_success: 'Xoá khoá đào tạo thành công',
                 delete_course_faile: 'Xoá khoá đào tạo thất bại',
-                edit_course_success:'Chỉnh sửa khoá đào tạo thành công',
-                edit_course_faile:'Chỉnh sửa khoá đào tạo thất bại',
+                edit_course_success: 'Chỉnh sửa khoá đào tạo thành công',
+                edit_course_faile: 'Chỉnh sửa khoá đào tạo thất bại',
             },
 
             // Quản lý chương trình đào tạo
-            education_program :{
+            education_program: {
 
                 // Thông điệp trả về từ server
-                apply_for_organizational_units_required:'Áp dụng cho đơn vị không được để trống',
-                apply_for_positions_required:'Áp dụng cho chức vụ không được để trống',
-                program_id_required:'Mã chương trình đào tạo không được để trống',
-                name_required:'Tên chương trình đào tạo không được để trống',
-                program_id_have_exist:'Mã chương trình đào tạo đã tồn tại',
+                apply_for_organizational_units_required: 'Áp dụng cho đơn vị không được để trống',
+                apply_for_positions_required: 'Áp dụng cho chức vụ không được để trống',
+                program_id_required: 'Mã chương trình đào tạo không được để trống',
+                name_required: 'Tên chương trình đào tạo không được để trống',
+                program_id_have_exist: 'Mã chương trình đào tạo đã tồn tại',
 
-                get_education_program_success:'Lấy danh sách chương trình đào tạo thành công',
-                get_education_program_faile:'Lấy danh sách chương trình đào tạo thất bại',
-                create_education_program_success:'Thêm mới chương trình đào tạo thành công',
-                create_education_program_faile:'Thêm mới chương trình đào tạo thất bại',
-                delete_education_program_success:'Xoá chương trình đào tạo thành công',
-                delete_education_program_faile:'Xoá chương trình đào tạo thất bại',
-                edit_education_program_success:'Chỉnh sửa chương trình đào tạo thành công',
-                edit_education_program_faile:'Chỉnh sửa chương trình đào tạo thất bại',
+                get_education_program_success: 'Lấy danh sách chương trình đào tạo thành công',
+                get_education_program_faile: 'Lấy danh sách chương trình đào tạo thất bại',
+                create_education_program_success: 'Thêm mới chương trình đào tạo thành công',
+                create_education_program_faile: 'Thêm mới chương trình đào tạo thất bại',
+                delete_education_program_success: 'Xoá chương trình đào tạo thành công',
+                delete_education_program_faile: 'Xoá chương trình đào tạo thất bại',
+                edit_education_program_success: 'Chỉnh sửa chương trình đào tạo thành công',
+                edit_education_program_faile: 'Chỉnh sửa chương trình đào tạo thất bại',
             }
 
         },
@@ -1605,15 +1671,15 @@ export default {
                 create_result_info_task_success: 'Tạo result info task thành công',
                 create_result_infomation_task_success: 'Tạo result infomation task thành công',
                 edit_result_infomation_task_success: 'Sửa result infomation task thành công',
-                create_task_comment_success:'Tạo thành công bình luận công việc',
-                get_task_comments_success:'Lấy tất cả bình luận của công việc thành công',
-                edit_task_comment_success:'Sửa bình luận thành công',
-                delete_task_comment_success:'Xóa bình luận thành công',
-                create_comment_of_task_comment_success:'Tạo bình luận thành công',
-                edit_comment_of_task_comment_success:'Sửa bình luận thành công',
-                delete_comment_of_task_comment_success:'Xóa bình luận thành công',
-                evaluation_action_success:'Đánh giá hoạt động thành công',
-                confirm_action_success:'Xác nhận hoạt động thành công',
+                create_task_comment_success: 'Tạo thành công bình luận công việc',
+                get_task_comments_success: 'Lấy tất cả bình luận của công việc thành công',
+                edit_task_comment_success: 'Sửa bình luận thành công',
+                delete_task_comment_success: 'Xóa bình luận thành công',
+                create_comment_of_task_comment_success: 'Tạo bình luận thành công',
+                edit_comment_of_task_comment_success: 'Sửa bình luận thành công',
+                delete_comment_of_task_comment_success: 'Xóa bình luận thành công',
+                evaluation_action_success: 'Đánh giá hoạt động thành công',
+                confirm_action_success: 'Xác nhận hoạt động thành công',
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1634,15 +1700,15 @@ export default {
                 create_result_info_task_fail: 'Tạo result info task thất bại',
                 create_result_infomation_task_fail: 'Tạo result infomation task thất bại',
                 edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
-                create_task_comment_fail:'Tạo bình luận công việc thất bại',
-                get_task_comments_fail:'Lấy tất cả bình luận công việc thất bại',
-                edit_task_comment_fail:'Sửa bình luận thất bại',
-                delete_task_comment_success:'Xóa bình luận thất bại',
-                create_comment_of_task_comment_fail:'Tạo bình luận thất bại',
-                edit_comment_of_task_comment_fail:'Sửa bình luận thất bại',
-                delete_comment_of_task_comment_fail:'Xóa bình luận thất bại',
-                evaluation_action_fail:'Đánh giá công việc thất bại',
-                confirm_action_fail:'Xác nhận hoạt động thất bại',
+                create_task_comment_fail: 'Tạo bình luận công việc thất bại',
+                get_task_comments_fail: 'Lấy tất cả bình luận công việc thất bại',
+                edit_task_comment_fail: 'Sửa bình luận thất bại',
+                delete_task_comment_success: 'Xóa bình luận thất bại',
+                create_comment_of_task_comment_fail: 'Tạo bình luận thất bại',
+                edit_comment_of_task_comment_fail: 'Sửa bình luận thất bại',
+                delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
+                evaluation_action_fail: 'Đánh giá công việc thất bại',
+                confirm_action_fail: 'Xác nhận hoạt động thất bại',
                 // modal approve task
                 modal_approve_task: {
                     title: 'Yêu cầu kết thúc công việc',
@@ -1651,7 +1717,7 @@ export default {
 
                     task_info: 'Thông tin công việc',
                     percent: 'Công việc hoàn thành',
-                    
+
                     auto_point: 'Điểm hệ thống',
                     employee_point: 'Điểm tự đánh giá',
                     approved_point: 'Điểm quản lí đánh giá',
@@ -1666,13 +1732,13 @@ export default {
 
             },
             task_template: {
-               
-                create_task_template_success:'Tạo mẫu công việc thành công !',
-                create_task_template_fail:'Tạo mẫu công việc thất bại !',
-                edit_task_template_success:'Sửa mẫu công việc thành công !',
-                edit_task_template_fail:'Sửa mẫu công việc thất bại !',
-                delete_task_template_success:'Xóa mẫu công việc thành công !',
-                delete_task_template_fail:'Xóa mẫu công việc thất bại !',
+
+                create_task_template_success: 'Tạo mẫu công việc thành công !',
+                create_task_template_fail: 'Tạo mẫu công việc thất bại !',
+                edit_task_template_success: 'Sửa mẫu công việc thành công !',
+                edit_task_template_fail: 'Sửa mẫu công việc thất bại !',
+                delete_task_template_success: 'Xóa mẫu công việc thành công !',
+                delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
             }
         },
 

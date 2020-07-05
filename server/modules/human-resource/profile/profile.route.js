@@ -5,12 +5,26 @@ const {
     uploadFile
 } = require('../../../middleware');
 const EmployeeController = require("./profile.controller");
-const data =[
-    {name:'fileAvatar', path:'/human-resource/avatars'},
-    {name:'fileDegree', path:'/human-resource/degrees'},
-    {name:'fileCertificate', path:'/human-resource/certificates'},
-    {name:'fileContract', path:'/human-resource/contracts'},
-    {name:'file', path:'/human-resource/files'}
+const data = [{
+        name: 'fileAvatar',
+        path: '/human-resource/avatars'
+    },
+    {
+        name: 'fileDegree',
+        path: '/human-resource/degrees'
+    },
+    {
+        name: 'fileCertificate',
+        path: '/human-resource/certificates'
+    },
+    {
+        name: 'fileContract',
+        path: '/human-resource/contracts'
+    },
+    {
+        name: 'file',
+        path: '/human-resource/files'
+    }
 ]
 
 /**
@@ -21,7 +35,10 @@ router.get('/:userId', auth, EmployeeController.getEmployeeProfile);
 /**
  * Cập nhật thông tin cá nhân
  */
-router.patch('/:userId', auth, uploadFile([{name:'fileAvatar', path:'/human-resource/avatars'}], 'single'), EmployeeController.updatePersonalInformation);
+router.patch('/:userId', auth, uploadFile([{
+    name: 'fileAvatar',
+    path: '/human-resource/avatars'
+}], 'single'), EmployeeController.updatePersonalInformation);
 
 /**
  * Lấy danh sách nhân viên

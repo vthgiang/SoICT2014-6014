@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/CombineActions';
-import { createUnitKpiActions } from '../redux/actions';
-import { DatePicker } from '../../../../../common-components';
-import { DialogModal } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { DialogModal, DatePicker } from '../../../../../common-components';
+
+import { createUnitKpiActions } from '../redux/actions';
 
 class OrganizationalUnitKpiCreateModal extends Component {
     constructor(props) {
@@ -13,17 +13,10 @@ class OrganizationalUnitKpiCreateModal extends Component {
             organizationalUnitKpi: {
                 organizationalUnit: "",
                 date: "",
-                // creater: localStorage.getItem("id")
             }
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-
     }
-    componentDidMount() {
-        
-    }
-
+    
     formatDate = async (value) => {
         await this.setState(state => {
             return {
@@ -44,10 +37,14 @@ class OrganizationalUnitKpiCreateModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
+            
         var defaultTime =  [month, year].join('-');
 
         if(this.state.organizationalUnitKpi.date === ""){
@@ -83,19 +80,20 @@ class OrganizationalUnitKpiCreateModal extends Component {
     
     render() {
         const { organizationalUnit } = this.props;
-        
-        // hàm để chuyển sang song ngữ
-        const { translate } = this.props;
+        const { translate } = this.props; // Hàm để chuyển sang song ngữ
 
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         var defaultTime =  [month, year].join('-');
 
@@ -110,12 +108,16 @@ class OrganizationalUnitKpiCreateModal extends Component {
                     func={this.handleSubmit}
                     // disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form khởi tạo KPI đơn vị */}
                     <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
+                        
+                        {/* Đơn vị */}
                         <div className="form-group">
                             <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.organizational_unit')}</label>
                             <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
                             <DatePicker
@@ -127,6 +129,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                             />
                         </div>
 
+                        {/* Mục tiêu mặc định */}
                         <div className="form-group">
                             <label className="col-sm-12">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>

@@ -435,13 +435,13 @@ class ModalAddTask extends Component {
                                 <ErrorLabel content={newTask.errorOnName}/>
                             </div>
                             <div className={`form-group ${newTask.errorOnDescription===undefined?"":"has-error"}`}>
-                                <label className="control-label">Mô tả công việc</label>
+                                <label className="control-label">Mô tả công việc*</label>
                                 <textarea type="Description" className="form-control" name="Mô tả công việc" placeholder="Mô tả công việc" value={newTask.description} onChange={this.handleChangeTaskDescription}/>
                                 <ErrorLabel content={newTask.errorOnDescription}/>
                             </div>
                             <div className="row form-group">
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate===undefined?"":"has-error"}`}>
-                                    <label className="control-label">Ngày bắt đầu*:</label>
+                                    <label className="control-label">Ngày bắt đầu*</label>
                                     <DatePicker 
                                         id="datepicker1"
                                         dateFormat="day-month-year"
@@ -451,7 +451,7 @@ class ModalAddTask extends Component {
                                     <ErrorLabel content={newTask.errorOnStartDate}/>
                                 </div>
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate===undefined?"":"has-error"}`}>
-                                    <label className="control-label">Ngày kết thúc*:</label>
+                                    <label className="control-label">Ngày kết thúc*</label>
                                     <DatePicker 
                                         id="datepicker2"
                                         value={newTask.endDate}
@@ -461,7 +461,7 @@ class ModalAddTask extends Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label className="control-label">Mức độ ưu tiên</label>
+                                <label className="control-label">Mức độ ưu tiên*</label>
                                 <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
                                     <option value={3}>Cao</option>
                                     <option value={2}>Trung bình</option>

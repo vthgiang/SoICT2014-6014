@@ -75,24 +75,9 @@ exports.getTask = async (id,userId) => {
             "info": null
         }
     }
+    task.evaluations.reverse();
     return task;
-    // if(task.taskTemplate === null){
-        // return task;
-        // return {
-        //     "info": task,
-        //     // "informations": task.taskInformations
-        // };
-    // } 
-    // else {
-    //     var task2 = await Task.findById(id)
-    //     .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
-    //     .populate({path: "taskActions.creator", model: User, select: "name email"});
-    //     return {
-    //         "info": task,
-    //         "informations": task2.taskInformations
-    //     };
-    // }
-        
+   
 }
 
 /**
@@ -1903,7 +1888,6 @@ exports.getTasksByUser = async (data) => {
         status: "Inprocess"
     })
     var nowdate = new Date();
-    console.log(nowdate.getTime() )
     var tasksexpire = [], deadlineincoming= [], test;
     for (let i in tasks){
         var olddate = new Date(tasks[i].endDate);

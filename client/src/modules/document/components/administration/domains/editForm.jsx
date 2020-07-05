@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import TreeSelect from 'rc-tree-select';
 
 class EditForm extends Component {
     constructor(props) {
@@ -26,7 +25,7 @@ class EditForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ domainParent: value });
+        this.setState({ domainParent: value[0] });
     };
 
     save = () => {
@@ -54,12 +53,11 @@ class EditForm extends Component {
 
     render() {
         const {translate, documents}=this.props;
-        const domains = documents.administration.domains.tree;
+        const {tree,list} = documents.administration.domains;
         const {domainId, domainName, domainDescription, domainParent} = this.state;
-
+        
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-edit-document-domain" button_name={translate('general.edit')} title={translate('document.administration.domains.edit')}/>
                 <DialogModal
                     modalID="modal-edit-document-domain"
                     formID="form-edit-document-domain"
@@ -73,23 +71,7 @@ class EditForm extends Component {
                             </div>
                             <div className="form-group">
                                 <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                                <div>
-                                <TreeSelect
-                                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                                    style={{ width: '100%' }}
-                                    transitionName="rc-tree-select-dropdown-slide-up"
-                                    choiceTransitionName="rc-tree-select-selection__choice-zoom"
-                                    placeholder={<i>{translate('document.administration.domains.select_parent')}</i>}
-                                    showSearch
-                                    allowClear
-                                    treeLine
-                                    value={domainParent}
-                                    treeData={domains}
-                                    treeNodeFilterProp="label"
-                                    filterTreeNode={false}
-                                    onChange={this.handleParent}
-                                />
-                                </div>
+                                <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
                             </div>
                             <div className="form-group">
                                     <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>

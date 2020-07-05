@@ -716,21 +716,19 @@ exports.addTaskLog = async (data) => {
     var task = await Task.findByIdAndUpdate(
         taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
-    var taskLog = task.logs;
+    var taskLog = task.logs.reverse();
 
     return taskLog;
 }
 
 /**
- * Thêm nhật ký cho một công việc
+ * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (id) => {
     var task = await Task.findById(id).populate("logs.creator")
     
-    return task.logs;
+    return task.logs.reverse();
 }
-
-
 
 /**
  * hàm convert dateISO sang string
@@ -1003,6 +1001,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
+    newTask.evaluations.reverse();
     
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 }
@@ -1126,6 +1125,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
+    newTask.evaluations.reverse();
 
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 
@@ -1211,6 +1211,8 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 
@@ -1262,7 +1264,22 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     }
    
     await Task.updateOne({_id: taskId}, {$set:{progress: progress}}, {$new: true});
-    
+
+    await Task.updateOne(
+        {
+            _id: taskId,
+            "evaluations._id" : evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.progress": progress,
+            }
+        },
+        {
+            $new: true,
+        }
+    );
+
     var task = await Task.findById(taskId);
 
     var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
@@ -1456,6 +1473,8 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 
@@ -1739,6 +1758,21 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     )
 
+    // update progress of evaluation
+    await Task.updateOne(
+        {
+            _id: taskId,
+            "evaluations._id" : evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.progress": progress,
+            }
+        },
+        {
+            $new: true,
+        }
+    );
 
     // var newTask = await Task.findById(taskId);
     var newTask = await Task.findById(taskId).populate([
@@ -1755,6 +1789,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 /**

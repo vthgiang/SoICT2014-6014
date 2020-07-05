@@ -1,6 +1,7 @@
 const {DocumentCategory, DocumentDomain, Role, User, UserRole} = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -88,7 +89,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    const doc = await Document.create({
+    const newDoc = {
         company,
         name: data.name,
         domains: data.domains,
@@ -106,16 +107,13 @@ exports.createDocument = async (company, data) => {
             file: data.file,
             scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
         }],
-
-        relationshipDescription: data.relationshipDescription !== 'undefined' ? data.relationshipDescription : undefined ,
-        relationshipDocuments: data.relationshipDocuments !== 'undefined' ? data.relationshipDocuments : undefined,
-
         roles: data.roles,
-
-        archivedRecordPlaceInfo: data.archivedRecordPlaceInfo !== 'undefined'?data.archivedRecordPlaceInfo:undefined ,
-        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
-        archivedRecordPlaceManager: data.archivedRecordPlaceManager !== 'undefined' ? data.archivedRecordPlaceManager : undefined
-    });
+    }
+    if(data.relationshipDescription !== 'undefined') newDoc.relationshipDescription = data.relationshipDescription;
+    if(data.archivedRecordPlaceInfo !== 'undefined') newDoc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo;
+    if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined') newDoc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit;
+    
+    const doc = await Document.create(newDoc);
 
     return await Document.findById(doc._id).populate([
         { path: 'category', model: DocumentCategory},
@@ -293,6 +291,7 @@ exports.getDocumentDomains = async (company) => {
             id: domain._id.toString(),
             key: domain._id.toString(),
             value: domain._id.toString(),
+            label: domain.name,
             title: domain.name,
             parent_id: domain.parent !== undefined ? domain.parent.toString() : null
         }
@@ -382,7 +381,7 @@ exports.editDocumentDomain = async (id, data) => {
     const domain = await DocumentDomain.findById(id);
     domain.name = data.name,
     domain.description = data.description,
-    domain.parent = data.parent
+    domain.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     await domain.save();
 
     return domain;
@@ -394,4 +393,11 @@ exports.deleteDocumentDomain = async (id) => {
     await DocumentDomain.deleteOne({_id: id});
 
     return await this.getDocumentDomains(domain.company);
+}
+
+
+exports.deleteManyDocumentDomain = async (array, company) => {
+    await DocumentDomain.deleteMany({_id: {$in: array}});
+
+    return await this.getDocumentDomains(company);
 }

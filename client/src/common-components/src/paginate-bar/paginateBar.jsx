@@ -23,7 +23,8 @@ class PaginateBar extends Component {
     }
 
     setPaginate = async () => {
-        await window.$(`#search-page`).collapse("hide");
+        const {id ="search-page"} = this.props;
+        await window.$(`#paginate-${id}`).collapse("hide");
         await this.props.func(this.state.page);
     }
 
@@ -38,7 +39,7 @@ class PaginateBar extends Component {
     }
 
     render() {
-        const { pageTotal, currentPage, translate, func } = this.props;
+        const { pageTotal, currentPage, translate, func, id="search-page" } = this.props;
         var items = [];
 
         if (typeof pageTotal !== "undefined" && pageTotal > 5) {
@@ -46,21 +47,21 @@ class PaginateBar extends Component {
                 for (let i = 0; i < currentPage + 1; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
+                items.push(<li className="disable" key={pageTotal + 1}><a href={`#paginate-${id}`} data-toggle="collapse">...</a></li>);
                 items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => func(pageTotal)}>{pageTotal}</a></li>);
             } else if (currentPage >= pageTotal - 2) {
                 items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => func(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
+                items.push(<li className="disable" key={0}><a href={`#paginate-${id}`} data-toggle="collapse">...</a></li>);
                 for (let i = pageTotal - 3; i < pageTotal; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
             } else {
                 items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => func(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
+                items.push(<li className="disable" key={0}><a href={`#paginate-${id}`} data-toggle="collapse">...</a></li>);
                 for (let i = currentPage - 2; i < currentPage + 1; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
+                items.push(<li className="disable" key={pageTotal + 1}><a href={`#paginate-${id}`} data-toggle="collapse">...</a></li>);
                 items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => func(pageTotal)}>{pageTotal}</a></li>);
             }
         } else if (typeof pageTotal !== "undefined" && pageTotal > 1) {
@@ -80,7 +81,7 @@ class PaginateBar extends Component {
                                 {items}
                                 {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
                             </ul>
-                            <div id="search-page" className="form-group collapse">
+                            <div id={`paginate-${id}`} className="form-group collapse search-page">
                                 <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
                                 <button
                                     type="button"

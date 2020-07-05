@@ -239,7 +239,7 @@ class DisciplineManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listDisciplines === 'undefined' || listDisciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar id="discipline" pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     {
                         this.state.currentRow !== undefined &&
                         <DisciplineEditForm

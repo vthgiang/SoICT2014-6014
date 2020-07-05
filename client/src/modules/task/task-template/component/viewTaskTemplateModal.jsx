@@ -52,7 +52,6 @@ class ModalViewTaskTemplate extends Component {
                     title={taskTemplate && taskTemplate.name}
                     hasSaveButton={false}
                 >
-
                     {/* Modal Body */}
                         <div className="row row-equal-height" >
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
@@ -100,7 +99,6 @@ class ModalViewTaskTemplate extends Component {
                                                     })}
                                                 </ul>
                                             </dd>
-
                                             {taskTemplate.responsibleEmployees && taskTemplate.responsibleEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.performer')}</dt>
@@ -173,7 +171,7 @@ class ModalViewTaskTemplate extends Component {
                                                         <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
-                                                )
+                                            )
                                         }
                                     </div>
                                 </div>
@@ -192,7 +190,7 @@ class ModalViewTaskTemplate extends Component {
                                                         <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
-                                                )
+                                            )
                                         }
                                     </div>
                                 </div>

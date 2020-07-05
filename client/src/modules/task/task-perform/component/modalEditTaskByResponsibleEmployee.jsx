@@ -398,20 +398,20 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         console.log("*******************", title, "|||" , description);
                 
-        this.props.addTaskLog({
-            createdAt: Date.now(),
-            taskId: currentTask._id, 
-            creator: getStorage("userId"), 
-            title: title, 
-            description: description,
-        })
+        if (title !== '' || description !== '') {
+            this.props.addTaskLog({
+                createdAt: Date.now(),
+                taskId: currentTask._id, 
+                creator: getStorage("userId"), 
+                title: title, 
+                description: description,
+            })
+        }
     }   
 
     save = () => {            
         let taskId;
         taskId = this.props.id;
-
-        this.handleAddTaskLog(taskId);
         
         let data = {
             date: this.formatDate(Date.now()),
@@ -423,9 +423,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             info: this.state.info,
         }
 
-        console.log('data', data, taskId);
         this.props.editTaskByResponsibleEmployees(data, taskId);
 
+        this.handleAddTaskLog(taskId);
     }
 
     componentDidMount() {

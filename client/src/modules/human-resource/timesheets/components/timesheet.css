@@ -2,15 +2,15 @@
     height: 74px;
     max-height: 74px !important;
 }
-div.sticky {
+.sticky {
     position: -webkit-sticky;
     position: sticky;
     left: 0;
     background-color: white;
     z-index: 3;
 }
-.timekeeping th {
-    height: 42px;
+.timekeeping td {
+    height: 37px;
 }
 
 .table {

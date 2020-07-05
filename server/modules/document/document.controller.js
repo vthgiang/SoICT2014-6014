@@ -328,7 +328,7 @@ exports.editDocumentDomain = async(req, res) => {
             content: domain
         });
     } catch (error) {
-        
+        console.log("error: ",error)
         await LogError(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
@@ -351,6 +351,27 @@ exports.deleteDocumentDomain = async(req, res) => {
     } catch (error) {
         console.log('ERERRPR"', error)
         await LogError(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_domain_faile'],
+            content: error
+        });
+    }
+};
+
+exports.deleteManyDocumentDomain = async(req, res) => {
+    try {
+        const domain = await DocumentServices.deleteManyDocumentDomain(req.body.array, req.user.company._id);
+        
+        await LogInfo(req.user.email, 'DELETE_MANY_DOCUMENT_DOMAIN', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_domain_success'],
+            content: domain
+        });
+    } catch (error) {
+        console.log('ERERRPR"', error)
+        await LogError(req.user.email, 'DELETE_MANY_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_domain_faile'],

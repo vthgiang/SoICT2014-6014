@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { getStorage } from '../../../../config';
+import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
@@ -12,26 +13,78 @@ class EvaluateByConsultedEmployee extends Component {
 
         let idUser = getStorage("userId");
         let { task } = this.props;
-        // let task = tasks && tasks.task;
         
+        let progress = task.progress;
         let evaluations;
         let dateOfEval = new Date();
         let monthOfEval = dateOfEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => ( monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()) );
 
-        // console.log('--------------------', evaluations);
-
         let automaticPoint = ( evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         
-        let point = undefined;
+        let point = undefined, date;
         if(evaluations){
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted" ));
             if(res) point = res.employeePoint ? res.employeePoint : undefined;
+            date = evaluations.date;
+            progress = evaluations.progress;
+        }
+
+        let infoEval = evaluations? evaluations.taskInformations : [];
+        let info = {};
+
+        for(let i in infoEval){
+                   
+            if(infoEval[i].type === "Date"){
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(infoEval[i].value),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                } 
+                else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
+                    info[`${infoEval[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                } 
+            }
+            else if(infoEval[i].type === "SetOfValues"){
+                let splitSetOfValues = infoEval[i].extra.split('\n');
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: [infoEval[i].value],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                }
+                else if(!infoEval[i].filledByAccountableEmployeesOnly){
+                    info[`${infoEval[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                }
+            }
+            else {
+                if(infoEval[i].value){
+                    info[`${infoEval[i].code}`] = {
+                        value: infoEval[i].value,
+                        code: infoEval[i].code,
+                        type: infoEval[i].type
+                    }
+                }
+            }         
         }
 
         this.state={
-            info: {},
+            info: info,
+            task: task,
+            date: date,
+            progress: progress,
             evaluations: evaluations,
             automaticPoint: automaticPoint,
             point: point
@@ -78,6 +131,17 @@ class EvaluateByConsultedEmployee extends Component {
                 errorOnPoint: this.validatePoint(value)
             }
         })
+    }
+
+    
+    handleShowAutomaticPointInfo = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showAutoPointInfo: 1
+            }
+        });
+        window.$(`#modal-automatic-point-info`).modal('show');
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -127,8 +191,6 @@ class EvaluateByConsultedEmployee extends Component {
     render() {
         let { point, errorOnPoint, evaluations, automaticPoint } = this.state;
         let { id, role, task } = this.props;
-        // let { tasks } = this.props;
-        // let task = tasks.task.info;
 
         return (
             <React.Fragment>
@@ -184,7 +246,12 @@ class EvaluateByConsultedEmployee extends Component {
                                     {
                                         (evaluations.results.length !== 0) ?
                                         <div>
-                                            <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{automaticPoint}</p>
+                                            {/* <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{automaticPoint}</p> */}
+                                            <strong>Điểm tự động: &nbsp;
+                                                <a href="javascript:void(0)" onClick = { () => this.handleShowAutomaticPointInfo() }>
+                                                    {automaticPoint !== undefined? automaticPoint : "Chưa tính được"}
+                                                </a>
+                                            </strong>
                                             {
                                                 evaluations.results.map((res) => {
                                                     if(res.role === "Responsible"){
@@ -203,6 +270,16 @@ class EvaluateByConsultedEmployee extends Component {
                     </form>
                 </form>
             </DialogModal>
+            {
+                this.state.showAutoPointInfo === 1 && 
+                <ModalShowAutoPointInfo
+                    task={this.state.task}
+                    progress={this.state.progress}
+                    date={this.state.date}
+                    info={this.state.info}
+                    autoPoint={automaticPoint}
+                />
+            }
         </React.Fragment>
         );
     }
@@ -213,11 +290,6 @@ const mapState = (state) => {
     return { tasks, performtasks }; 
 }
 const getState = {
-    // getTaskById: taskManagementActions.getTaskById,
-    // createResult: performTaskAction.createResultTask,
-    // editResultTask: performTaskAction.editResultTask,
-    // editStatusOfTask: taskManagementActions.editStatusOfTask,
-    // evaluateTaskByConsultedEmployees: taskManagementActions.evaluateTaskByConsultedEmployees, 
     evaluateTaskByConsultedEmployees: performTaskAction.evaluateTaskByConsultedEmployees, 
 }
 

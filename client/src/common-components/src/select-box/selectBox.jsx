@@ -149,7 +149,7 @@ class SelectBox extends Component {
                         {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {
                             if (!(item.value instanceof Array)) { // Dạng bình thường
-                                return <option key={item.value} value={item.value}>{item.text}</option>
+                                return <option key={`key-${item.value}`} value={item.value}>{item.text}</option>
                             } else {
                                 return ( // Dạng group
                                     <optgroup key={item.text} label={item.text}>

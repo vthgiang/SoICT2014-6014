@@ -91,7 +91,10 @@ class DepartmentTreeView extends Component {
             {
                 currentRow !== undefined &&
                 <React.Fragment>
-                    <DepartmentCreateWithParent departmentParent={currentRow.id}/>
+                    <DepartmentCreateWithParent
+                        departmentId={currentRow.id}
+                        departmentParent={currentRow.id}
+                    />
                     <DepartmentEditForm
                         departmentId={currentRow.id}
                         departmentName={currentRow.name}
@@ -148,34 +151,30 @@ class DepartmentTreeView extends Component {
 
     showNodeContent = (data, translate) => {
         return (
-            <React.Fragment>
-                <div
-                    id={`department-${data.id}`} 
-                    className="tf-nc w3-card-4 department" 
-                    title={ data.name }
-                >
-                    <button title="Ẩn/hiện điều khiển" style={{border: 'none', backgroundColor: 'white'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></button>
+            <div className="tf-nc w3-card-4 department" style={{borderTop: '2px solid gray'}}>
+                <div id={`department-${data.id}`} title={ data.name }>
+                    <a href="#abc" title="Ẩn/hiện điều khiển" style={{border: 'none', backgroundColor: 'transparent'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></a>
                     {` ${data.name} `}
-                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none', marginTop: '8px'}}>
-                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <a className="edit text-green" href="javascript:void(0)" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
-                        </div>
-                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <a className="edit text-yellow" href="javascript:void(0)" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">edit</i></a>
-                        </div>
-                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <DeleteNotification 
-                                content={translate('manage_department.delete')}
-                                data={{
-                                    id: data.id,
-                                    info: data.name
-                                }}
-                                func={this.props.destroy}
-                            />
-                        </div>
-                    </div>
                 </div>
-            </React.Fragment>
+                <div id={`department-setting-${data.id}`} className="pull-right" style={{
+                        display: 'none', marginTop: '8px',
+                        borderRadius: '3px',
+                        border: 'none',
+                        padding: '4px 2px 0px 2px',
+                        backgroundColor: '#ECF0F5'
+                    }}>
+                    <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
+                    <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">edit</i></a>
+                    <DeleteNotification 
+                        content={translate('manage_department.delete')}
+                        data={{
+                            id: data.id,
+                            info: data.name
+                        }}
+                        func={this.props.destroy}
+                    />
+                </div>
+            </div>
         )
     }
 

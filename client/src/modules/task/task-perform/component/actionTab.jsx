@@ -693,7 +693,11 @@ class ActionTab extends Component {
             files = task.files
         }
         if (performtasks.logtimer) logTimer = performtasks.logtimer; 
-        if (performtasks.logs) logs = performtasks.logs; 
+
+        if (performtasks.logs) {
+            logs = performtasks.logs;            
+        }; 
+
         return (
             <div>
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
@@ -1267,11 +1271,10 @@ class ActionTab extends Component {
                             {logs && logs.map(item =>
                                 <div key={item._id} style={{marginBottom: 20}}>
                                     <a style={{fontWeight: 700}} href="javascript:void(0)">{item.creator.name} - </a>
-                                    Thời gian {moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")}
-                                    <ul>
-                                        <li> {item.title? item.title: "Không có tiêu đề"} </li>
-                                        <li> {item.description? item.description: "Không có mô tả"} </li>
-                                    </ul>
+                                    Thời gian {moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")} - {item.title? item.title: "Không có tiêu đề"}
+                                    <div>
+                                        {item.description? item.description: "Không có mô tả"} 
+                                    </div>
                                 </div>
                             )}
                         </div>

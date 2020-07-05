@@ -174,7 +174,7 @@ class SalaryEditForm extends Component {
 
     render() {
         const { translate, salary } = this.props;
-        const { employeeNumber, unit, mainSalary, bonus, month,
+        const { employeeNumber, unit, mainSalary, bonus, month, _id,
             errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
         return (
             <React.Fragment>
@@ -193,7 +193,7 @@ class SalaryEditForm extends Component {
                         <div className="form-group">
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id="edit_month"
+                                id={`edit_month${_id}`}
                                 dateFormat="month-year"
                                 value={month}
                                 onChange={this.handleMonthChange}

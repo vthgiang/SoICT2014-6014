@@ -5,7 +5,7 @@ import { managerKpiActions  } from '../redux/actions';
 import Swal from 'sweetalert2';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions'
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
+
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DatePicker, SelectBox } from '../../../../../common-components/index';

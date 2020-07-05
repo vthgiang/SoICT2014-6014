@@ -55,22 +55,21 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        var roles = await RoleService
-            .createRolesForOrganizationalUnit(req.body, req.user.company._id);
-        var organizationalUnit = await OrganizationalUnitService
-            .createOrganizationalUnit( 
+        let roles = await RoleService
+            .createRolesForOrganizationalUnit(
                 req.body, 
+                req.user.company._id
+            );
+        let organizationalUnit = await OrganizationalUnitService
+            .createOrganizationalUnit( 
+                req.body, req.user.company._id,
                 roles.deans.map(dean=>dean._id), 
                 roles.viceDeans.map(vice=>vice._id), 
-                roles.employees.map(em=>em._id), 
-                req.user.company._id 
+                roles.employees.map(em=>em._id)
             );
-        var tree = await OrganizationalUnitService
+        
+        let tree = await OrganizationalUnitService
             .getOrganizationalUnitsAsTree(req.user.company._id);
-
-        organizationalUnit.dean = roles.dean;
-        organizationalUnit.viceDean = roles.viceDean;
-        organizationalUnit.employee = roles.employee;
 
         await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(200).json({

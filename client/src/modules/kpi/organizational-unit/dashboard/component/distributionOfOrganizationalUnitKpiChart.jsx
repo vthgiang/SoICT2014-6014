@@ -45,8 +45,8 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId);
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             
             this.setState(state => {
                 return {
@@ -85,10 +85,11 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
-                organizationalUnitId: nextProps.organizationalUnitId
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
             }
         } else{
             return null;
@@ -161,7 +162,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi &&
-                    <div ref="chart"></div>
+                    <section ref="chart"></section>
                 }
             </React.Fragment>
         )

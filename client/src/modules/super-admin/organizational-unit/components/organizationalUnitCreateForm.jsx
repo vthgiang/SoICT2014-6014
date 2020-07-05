@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
-import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { DepartmentValidator } from './organizationalUnitValidator';
 
 class DepartmentCreateForm extends Component {
@@ -11,9 +11,9 @@ class DepartmentCreateForm extends Component {
         this.state = { 
             departmentName: '',
             departmentDescription: '',
-            deans: [''],
-            viceDeans: [''],
-            employees: ['']
+            deans: [],
+            viceDeans: [],
+            employees: []
         }
     }
 
@@ -95,106 +95,111 @@ class DepartmentCreateForm extends Component {
                             </div>
                             <div className="form-group">
                                 <label>{ translate('manage_department.parent') }</label>
-                                <select 
-                                    className="form-control" 
-                                    style={{width: '100%'}} 
-                                    onChange={this.handleParent}>
-                                        <option key={'noparent'} value={null}>{translate('manage_department.no_parent')}</option>
-                                    {   
-                                        department.list.map(department => 
-                                            <option key={department._id} value={department._id}>{department.name}</option>    
-                                        )
-                                    }
-                                </select>
+                                <SelectBox
+                                    id="create-organizational-unit"
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {[
+                                        {text: "Không có phòng ban cha"}, ...department.list.map( department => {return {value: department._id, text: department.name}})
+                                    ]}
+                                    onChange={this.handleParent}
+                                    multiple={false}
+                                />
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
-                            <div className={`form-group ${departmentDeanError===undefined?"":"has-error"}`}>
-                                <a href="#add-dean" className="text-green pull-right" onClick={this.handleAddDean}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
-                                {
-                                    this.state.deans.length > 1 ?
-                                    this.state.deans.map((dean, index)=>{
-                                        return <div key={index} className="input-group">
-                                            <input type="text" 
-                                                className="form-control" 
-                                                placeholder={ translate('manage_department.dean_example')}
-                                                value={dean}
-                                                onChange={(e)=>this.handleChangeDean(e, index)}
-                                            />
-                                                <a href="#delete-dean" 
-                                                    className="input-group-addon text-red" 
-                                                    style={{border: 'none'}} 
-                                                    onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
-                                                </a> 
-                                            <br></br>
-                                        </div>
-                                    }): <input type="text" 
-                                        className="form-control" 
-                                        placeholder={ translate('manage_department.dean_example')}
-                                        value={this.state.deans[0]}
-                                        onChange={(e)=>this.handleChangeDean(e, 0)}
-                                    />
-                                }
+                            <div className="form-group">
+                                <table className="table table-hover table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><label>{ translate('manage_department.dean_name') }</label></th>
+                                            <th style={{width: '40px'}} className="text-center"><a href="#add-dean" className="text-green" onClick={this.handleAddDean}><i className="material-icons">add_box</i></a></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.state.deans.length > 0 &&
+                                            this.state.deans.map((dean, index)=>{
+                                                return <tr key={index}>
+                                                    <td><input type="text" 
+                                                        className="form-control" 
+                                                        placeholder={ translate('manage_department.dean_example')}
+                                                        value={dean}
+                                                        onChange={(e)=>this.handleChangeDean(e, index)}
+                                                    /></td>
+                                                    <td><a href="#delete-dean" 
+                                                        className="text-red" 
+                                                        style={{border: 'none'}} 
+                                                        onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
+                                                    </a></td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
                             </div> 
 
                             <div className="form-group">
-                                <a href="#add-vicedean" className="text-green pull-right" onClick={this.handleAddViceDean}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
-                                {
-                                    this.state.viceDeans.length > 1 ?
-                                    this.state.viceDeans.map((vicedean, index)=>{
-                                        return <div key={index} className="input-group">
-                                            <input type="text" 
-                                                className="form-control" 
-                                                placeholder={ translate('manage_department.vice_dean_example')}
-                                                value={vicedean}
-                                                onChange={(e)=>this.handleChangeViceDean(e, index)}
-                                            />
-                                                <a href="#delete-dean" 
-                                                    className="input-group-addon text-red" 
-                                                    style={{border: 'none'}} 
-                                                    onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
-                                                </a> 
-                                            <br></br>
-                                        </div>
-                                    }): <input type="text" 
-                                        className="form-control" 
-                                        placeholder={ translate('manage_department.vice_dean_example')}
-                                        value={this.state.viceDeans[0]}
-                                        onChange={(e)=>this.handleChangeViceDean(e, 0)}
-                                    />
-                                }
+                                <table className="table table-hover table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><label>{ translate('manage_department.vice_dean_name') }</label></th>
+                                            <th style={{width: '40px'}} className="text-center"><a href="#add-vicedean" className="text-green" onClick={this.handleAddViceDean}><i className="material-icons">add_box</i></a></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.state.viceDeans.length > 0 &&
+                                            this.state.viceDeans.map((vicedean, index)=>{
+                                                return <tr key={index}>
+                                                    <td><input type="text" 
+                                                        className="form-control" 
+                                                        placeholder={ translate('manage_department.vice_dean_example')}
+                                                        value={vicedean}
+                                                        onChange={(e)=>this.handleChangeViceDean(e, index)}
+                                                    /></td>
+                                                    <td><a href="#delete-vice-dean" 
+                                                        className="text-red" 
+                                                        style={{border: 'none'}} 
+                                                        onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
+                                                    </a></td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
 
                             <div className="form-group">
-                                <a href="#add-employee" className="text-green pull-right" onClick={this.handleAddEmployee}><i className="material-icons">add_box</i></a>
-                                <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
-                                {
-                                    this.state.employees.length > 1 ?
-                                    this.state.employees.map((employee, index)=>{
-                                        return <div key={index} className="input-group">
-                                            <input type="text" 
-                                                className="form-control" 
-                                                placeholder={ translate('manage_department.employee_example')}
-                                                value={employee}
-                                                onChange={(e)=>this.handleChangeEmployee(e, index)}
-                                            />
-                                                <a href="#delete-dean" 
-                                                    className="input-group-addon text-red" 
-                                                    style={{border: 'none'}} 
-                                                    onClick={()=>this.handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
-                                                </a> 
-                                            <br></br>
-                                        </div>
-                                    }): <input type="text" 
-                                        className="form-control" 
-                                        placeholder={ translate('manage_department.dean_example')}
-                                        value={this.state.employees[0]}
-                                        onChange={(e)=>this.handleChangeEmployee(e, 0)}
-                                    />
-                                }
+                                <table className="table table-hover table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><label>{ translate('manage_department.employee_name') }</label></th>
+                                            <th style={{width: '40px'}} className="text-center"><a href="#add-employee" className="text-green" onClick={this.handleAddEmployee}><i className="material-icons">add_box</i></a></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.state.employees.length > 0 &&
+                                            this.state.employees.map((employee, index)=>{
+                                                return <tr key={index}>
+                                                    <td><input type="text" 
+                                                        className="form-control" 
+                                                        placeholder={ translate('manage_department.employee_example')}
+                                                        value={employee}
+                                                        onChange={(e)=>this.handleChangeEmployee(e, index)}
+                                                    /></td>
+                                                    <td><a href="#delete-employee" 
+                                                        className="text-red" 
+                                                        style={{border: 'none'}} 
+                                                        onClick={()=>this.handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
+                                                    </a></td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </fieldset>
                     </form>
@@ -222,12 +227,11 @@ class DepartmentCreateForm extends Component {
             });
     }
 
-    handleParent = (e) => {
-        const {value} = e.target;
+    handleParent = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                departmentParent: value
+                departmentParent: value[0]
             }
         })
     }

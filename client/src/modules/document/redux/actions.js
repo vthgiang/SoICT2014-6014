@@ -294,22 +294,38 @@ function editDocumentDomain(id, data){
     }
 }
 
-function deleteDocumentDomain(id, data){
+function deleteDocumentDomain(data, type="single"){
     return dispatch => {
         dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_REQUEST});
-        DocumentServices.deleteDocumentDomain(id, data)
+        if(type !== 'single'){
+            DocumentServices.deleteManyDocumentDomain(data)
             .then(res => {
                 dispatch({
                     type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS,
                     payload: {
-                        id, 
-                        tree: res.data.content
+                        list: res.data.content.list,
+                        tree: res.data.content.tree
                     }
                 })
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_FAILE});
             })
+        }else{
+            DocumentServices.deleteDocumentDomain(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: {
+                        list: res.data.content.list,
+                        tree: res.data.content.tree
+                    }
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_FAILE});
+            })
+        }
     }
 }
 
