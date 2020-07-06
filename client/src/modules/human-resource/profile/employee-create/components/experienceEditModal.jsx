@@ -94,7 +94,7 @@ class ModalEditExperience extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
 
@@ -120,8 +120,10 @@ class ModalEditExperience extends Component {
         }
     }
     render() {
+
         const { id, translate } = this.props;
         const { company, position, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = this.state;
+        console.log(id);
         return (
             <React.Fragment>
                 <DialogModal

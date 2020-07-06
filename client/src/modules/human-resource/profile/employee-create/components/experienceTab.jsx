@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { toast } from 'react-toastify';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+
 import { ModalAddExperience, ModalEditExperience } from './combinedContent';
 
 class ExperienceTab extends Component {
@@ -46,13 +49,38 @@ class ExperienceTab extends Component {
 
     // Function thêm mới kinh nghiệm làm việc
     handleAddExperience = async (data) => {
-        await this.setState({
-            ...this.state,
-            experiences: [...this.state.experiences, {
-                ...data
-            }]
-        })
-        this.props.handleAddExperience(this.state.experiences, data);
+        let { experiences } = this.state;
+        let startDate = new Date(data.startDate);
+        let endDate = new Date(data.endDate);
+        let checkData = true;
+        // Kiểm tra trùng lặp thời gian làm Việc
+        for (let n in experiences) {
+            let date1 = new Date(experiences[n].startDate);
+            let date2 = new Date(experiences[n].endDate);
+            if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
+                (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
+                checkData = false;
+                break;
+            }
+        }
+        if (checkData) {
+            await this.setState({
+                ...this.state,
+                experiences: [...this.state.experiences, {
+                    ...data
+                }]
+            })
+            this.props.handleAddExperience(this.state.experiences, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Thời gian làm làm việc bị trùng lặp']}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
     // Function chỉnh sửa kinh nghiệm làm việc
     handleEditExperience = async (data) => {

@@ -36,6 +36,7 @@ class ContactTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi emailPersonal 1
     handleEmail1Change = (e) => {
         const { value } = e.target;
@@ -55,6 +56,7 @@ class ContactTab extends Component {
         }
         return msg === undefined;
     }
+
     // Function bắt sự kiện thay đổi emailPersonal 1
     handleEmail2Change = (e) => {
         const { value } = e.target;
@@ -74,6 +76,27 @@ class ContactTab extends Component {
         }
         return msg === undefined;
     }
+
+    // Function bắt sự kiện thay đổi emailPersonal 1
+    handleEmergencyContactPersonEmailChange = (e) => {
+        const { value } = e.target;
+        this.validateEmergencyContactPersonEmail(value, true);
+    }
+    validateEmergencyContactPersonEmail = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateEmail(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEmergencyContactPersonEmail: msg,
+                    emergencyContactPersonEmail: value,
+                }
+            });
+            this.props.handleChange("emergencyContactPersonEmail", value);
+        }
+        return msg === undefined;
+    }
+
     // Function bắt sự kiện thay đổi địa chỉ chỗ ở hiện tại
     handleNowAddressChange = (e) => {
         const { value } = e.target;
@@ -135,7 +158,7 @@ class ContactTab extends Component {
         const { id, translate } = this.props;
         const { phoneNumber2, phoneNumber, personalEmail, personalEmail2, homePhone, emergencyContactPerson,
             relationWithEmergencyContactPerson, emergencyContactPersonAddress, emergencyContactPersonPhoneNumber, emergencyContactPersonHomePhone, emergencyContactPersonEmail, permanentResidence,
-            permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry, temporaryResidence, temporaryResidenceWard,
+            permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry, temporaryResidence, temporaryResidenceWard, errorOnEmergencyContactPersonEmail,
             temporaryResidenceDistrict, temporaryResidenceCity, temporaryResidenceCountry, errorOnPhoneNumber, errorOnTemporaryResidence, errorOnPersonalEmail, errorOnPersonalEmail2 } = this.state;
         return (
             <div id={id} className="tab-pane">
@@ -195,10 +218,10 @@ class ContactTab extends Component {
                                 <label >{translate('manage_employee.home_phone')}</label>
                                 <input type="text" className="form-control" name="emergencyContactPersonHomePhone" value={emergencyContactPersonHomePhone} onChange={this.handleChange} placeholder={translate('manage_employee.home_phone')} autoComplete="off" />
                             </div>
-
-                            <div className="form-group col-md-4">
+                            <div className={`form-group col-md-4 ${errorOnEmergencyContactPersonEmail === undefined ? "" : "has-error"}`}>
                                 <label >{translate('manage_employee.email')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPersonEmail" value={emergencyContactPersonEmail} onChange={this.handleChange} placeholder={translate('manage_employee.email')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPersonEmail" value={emergencyContactPersonEmail} onChange={this.handleEmergencyContactPersonEmailChange} placeholder={translate('manage_employee.email')} autoComplete="off" />
+                                <ErrorLabel content={errorOnEmergencyContactPersonEmail} />
                             </div>
                         </div>
                     </fieldset>
