@@ -978,8 +978,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate===undefined?"":"has-error"}`}>
                                         <label className="control-label">Ngày bắt đầu*</label>
                                         <DatePicker 
-                                            id="datepicker1"
-                                            dateFormat="day-month-year"
+                                            id={`datepicker2-startdate-${this.props.id}`}
+                                            // dateFormat="day-month-year"
                                             value={startDate}
                                             onChange={this.handleChangeTaskStartDate}
                                         />
@@ -988,7 +988,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate===undefined?"":"has-error"}`}>
                                         <label className="control-label">Ngày kết thúc*</label>
                                         <DatePicker 
-                                            id="datepicker2"
+                                            id={`datepicker2-enddate-${this.props.id}`}
                                             value={endDate}
                                             onChange={this.handleChangeTaskEndDate}
                                         />
