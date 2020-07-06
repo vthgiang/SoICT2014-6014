@@ -44,8 +44,8 @@ function calcAutoPoint(data) {
     let taskActions = task.taskActions;
     let actions = taskActions.filter(item => (
         item.rating !== -1 &&
-        new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
-        && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+        new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
+        && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
     ))
 
     let actionRating = actions.map(action => action.rating);

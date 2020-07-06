@@ -27,7 +27,6 @@ class DistributionOfEmployeeKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextState.month !== this.state.month) {
-            console.log("555", nextState.month)
             await this.props.getEmployeeKpiSet(nextState.month);
 
             this.setState(state => {

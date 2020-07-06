@@ -17,7 +17,7 @@ class TreeSelect extends Component {
         this.props.handleChange(data);
     };
 
-    convertData = (array, value) => {
+    convertData = (array=[], value=[]) => {
         let data = [];
         for (let i = 0; i < array.length; i++) {
             if(value.indexOf(array[i].id) > -1){
@@ -53,6 +53,7 @@ class TreeSelect extends Component {
                 onChange={this.onChange}
                 texts={{ placeholder: ' ' }}
                 mode={mode}
+                className="qlcv"
             />
         </React.Fragment> );
     }

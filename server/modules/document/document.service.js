@@ -1,6 +1,7 @@
 const {DocumentCategory, DocumentDomain, Role, User, UserRole} = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -380,7 +381,7 @@ exports.editDocumentDomain = async (id, data) => {
     const domain = await DocumentDomain.findById(id);
     domain.name = data.name,
     domain.description = data.description,
-    domain.parent = data.parent
+    domain.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     await domain.save();
 
     return domain;
@@ -392,4 +393,11 @@ exports.deleteDocumentDomain = async (id) => {
     await DocumentDomain.deleteOne({_id: id});
 
     return await this.getDocumentDomains(domain.company);
+}
+
+
+exports.deleteManyDocumentDomain = async (array, company) => {
+    await DocumentDomain.deleteMany({_id: {$in: array}});
+
+    return await this.getDocumentDomains(company);
 }

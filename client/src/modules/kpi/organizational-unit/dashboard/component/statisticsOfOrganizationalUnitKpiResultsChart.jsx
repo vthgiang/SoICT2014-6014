@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
-import { SelectBox } from '../../../../../common-components/index';
-
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -41,6 +39,19 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             });
             
             this.columnChart();
+        }
+
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            await this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, nextProps.month);
+            
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+
+            return false;
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
@@ -79,6 +90,18 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         return false;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
+            return {
+                ...prevState,
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
+            }
+        } else{
+            return null;
+        }
     }
 
     handleSelectKindOfPoint = (value) => {
@@ -239,16 +262,25 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     render() {
+        const { dashboardOrganizationalUnitKpi } = this.props;
+        var listEmployeeKpiSet;
+
+        if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
+            listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
+        }
+
         return (
             <React.Fragment>
                 <div className="box-body" style={{ textAlign: "right" }}>
-                    <div className="btn-group">
+                    <section className="btn-group">
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
-                    </div>
+                    </section>
 
-                    <section ref="chart"></section>
+                    {listEmployeeKpiSet &&
+                        <section ref="chart"></section>
+                    }
                 </div>
             </React.Fragment>
         )

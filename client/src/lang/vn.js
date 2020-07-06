@@ -468,7 +468,7 @@ export default {
                 domains: {
                     add: 'Thêm danh mục văn bản',
                     edit: 'Sửa thông tin danh mục văn bản',
-                    delete: 'Xóa danh mục văn bản',
+                    delete: 'Xóa các danh mục đã chọn',
                     name: 'Tên',
                     description: 'Mô tả',
                     parent: 'Danh mục cha',
