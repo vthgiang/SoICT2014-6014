@@ -21,12 +21,16 @@ export const createUnitKpiServices = {
     addKPIUnit
 }
 
-// Lấy KPI đơn vị hiện tại(lấy bằng role hoặc bằng params: id của đơn vị)
-function getCurrentKPIUnit(roleId, organizationalUnitId) {
+/**
+ * Get organizational unit kpi set
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/roles/${roleId}`,
         method: 'GET',
-        params: { organizationalUnitId: organizationalUnitId },
+        params: { organizationalUnitId: organizationalUnitId, month: month },
     }, false, true, 'kpi.organizational_unit');
 }
 

@@ -115,7 +115,7 @@ class TaskTimesheetLog extends Component {
 
                     {this.state.showModal == auth.user.id && 
                     <React.Fragment>
-                        <div style={{width:'98%',backgroundColor:'white',border:'1px solid'}}>
+                        <div style={{width:'98%',backgroundColor:'white',border:'1px solid', height:"170px"}}>
                         <h2 style={{width:'100%',textAlign:'center',fontFamily:'sans-serif'}}>Nhập mô tả</h2>
                         <TextareaAutosize
                             style={{width:'100%'}}

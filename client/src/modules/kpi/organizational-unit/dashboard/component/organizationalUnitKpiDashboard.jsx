@@ -11,6 +11,7 @@ import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizati
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 
 import { SelectBox } from '../../../../../common-components/index';
+import { DatePicker } from '../../../../../common-components';
 class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
@@ -18,14 +19,14 @@ class OrganizationalUnitKpiDashboard extends Component {
         
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
+        this.today = new Date();
+
         this.state = {
-            currentMonth: new Date().getMonth() + 1,
             currentYear: new Date().getFullYear(),
             currentRole: null,
 
             organizationalUnitId: null,
-            organizationalUnit: null,
-            organizationalUnitSelectBox: null,
+            month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
@@ -99,13 +100,21 @@ class OrganizationalUnitKpiDashboard extends Component {
     }
 
     handleSelectOrganizationalUnitId = (value) => {
-        var organizationalUnitId = this.state.organizationalUnitSelectBox.filter(x => x.value === value[0]).map(x => x.text);
 
         this.setState(state => {
             return {
                 ...state,
-                organizationalUnitId: value[0],
-                organizationalUnit: organizationalUnitId[0]
+                organizationalUnitId: value[0]
+            }
+        })
+    }
+
+    handleSelectMonth = async (value) => {
+        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        this.setState(state => {
+            return {
+                ...state,
+                month: month
             }
         })
     }
@@ -160,19 +169,28 @@ class OrganizationalUnitKpiDashboard extends Component {
                 this.setState(state => {
                     return {
                         ...state,
-                        organizationalUnitId: organizationalUnitSelectBox[0].value,
-                        organizationalUnit: organizationalUnitSelectBox[0].text,
-                        organizationalUnitSelectBox: organizationalUnitSelectBox
+                        organizationalUnitId: organizationalUnitSelectBox[0].value
                     }
                 })
             }
         }
         
+        var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        var defaultDate = [month, year].join('-');
+
         return (
             <React.Fragment>
                 <div className="qlcv">
                     {childOrganizationalUnit &&
-                        <div className="form-inline">
+                        <span className="form-inline">
                             <label style={{width: "auto"}}>Đơn vị</label>
                             <SelectBox
                                 id={`organizationalUnitSelectBox`}
@@ -183,27 +201,72 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 onChange={this.handleSelectOrganizationalUnitId}
                                 value={organizationalUnitSelectBox[0].value}
                             />
-                        </div>
+                        </span>
                     }
+
+                    <span className="form-inline">
+                        <label style={{width: "auto"}}>Tháng</label>
+                        <DatePicker 
+                            id="monthInOrganizationalUnitKpiDashboard"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultDate}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonth}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </span>
                 </div>
                 
                 <div className=" box box-primary">
                     <div className="box-header with-border">
-                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.currentMonth}</div>
+                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên</div>
                     </div>
-                    <div className="box-body">
-                        <TrendsInOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                    <div className="box-body qlcv">
+                        <TrendsInOrganizationalUnitKpiChart 
+                            organizationalUnitId={this.state.organizationalUnitId}
+                            month={this.state.month}
+                        />
                     </div>
                 </div>
                     
+                <div className="row">
+                    <div className="col-xs-6">
+                        {childOrganizationalUnit &&
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div class="box-title">Phân bố KPI đơn vị</div>
+                                </div>
+                                <div className="box-body qlcv">
+                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
+                                        <DistributionOfOrganizationalUnitKpiChart 
+                                            organizationalUnitId={this.state.organizationalUnitId}
+                                            month={this.state.month}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        }   
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Thống kê kết quả KPI</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <StatisticsOfOrganizationalUnitKpiResultsChart
+                                    month={this.state.month}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="row">
                     {childOrganizationalUnit &&
                         <div className="col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Trạng thái công việc</div>
+                                    <div className="box-title">Kết quả KPI đơn vị</div>
                                 </div>
-                                <div className="box-body">
+                                <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
                                         <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
                                     }
@@ -211,44 +274,18 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         </div>
                     }   
-                    <div className="col-xs-6">
-                        {childOrganizationalUnit &&
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div class="box-title">Phân bố KPI đơn vị tháng {this.state.currentMonth}</div>
-                                </div>
-                                <div className="box-body">
-                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                        <DistributionOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
-                                    }
-                                </div>
-                            </div>
-                        }   
-                    </div>
-                </div>
-                <div className="row">
                     {childOrganizationalUnit &&
                         <div className="col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">Kết quả KPI các đơn vị năm {this.state.currentYear}</div>
                                 </div>
-                                <div className="box-body">
+                                <div className="box-body qlcv">
                                     <ResultsOfAllOrganizationalUnitKpiChart/>
                                 </div>
                             </div>
                         </div>
-                    }       
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">Thống kê kết quả KPI tháng {this.state.currentMonth}</div>
-                            </div>
-                            <div className="box-body">
-                                <StatisticsOfOrganizationalUnitKpiResultsChart/>
-                            </div>
-                        </div>
-                    </div>
+                    }   
                 </div>
             </React.Fragment>
         );
