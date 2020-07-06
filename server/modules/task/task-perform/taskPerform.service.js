@@ -1017,6 +1017,10 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var name = data.name;
     var priority = data.priority;
     var status = data.status;
+
+    var startDate = data.startDate;
+    var endDate = data.endDate;
+
     // var user = data.user;
     var progress = data.progress;
     var info = data.info;
@@ -1029,6 +1033,13 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     
     // var date = Date.now();
     var date = data.date;
+
+    // Chuẩn hóa ngày bắt đầu và ngày kết thúc
+    var splitStartDate = startDate.split("-");
+    var startOfTask = new Date(splitStartDate[2], splitStartDate[1]-1, splitStartDate[0]);
+    
+    var splitEndDate = endDate.split("-");
+    var endOfTask = new Date(splitEndDate[2], splitEndDate[1]-1, splitEndDate[0]);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
@@ -1053,6 +1064,9 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                 progress: progress,
                 priority: parseInt(priority[0]),
                 status: status[0],
+
+                startDate: startOfTask,
+                endDate: endOfTask,
 
                 responsibleEmployees: responsibleEmployees,
                 consultedEmployees: consultedEmployees,
