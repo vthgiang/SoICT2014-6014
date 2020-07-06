@@ -160,4 +160,35 @@ exports.updateHoliday = async (req, res) => {
             }
         });
     }
-}
+};
+
+// Import dữ liệu nghỉ lễ tết
+exports.importHolidays = async (req, res) => {
+    try {
+        var data = await HolidayService.importHolidays(req.body, req.user.company._id);
+        if (data.rowError !== undefined) {
+            await LogError(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: ["import_holiday_faile"],
+                content: data
+            });
+        } else {
+            await LogInfo(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["import_holiday_success"],
+                content: data
+            });
+        }
+    } catch (error) {
+        await LogError(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ["import_holiday_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+};

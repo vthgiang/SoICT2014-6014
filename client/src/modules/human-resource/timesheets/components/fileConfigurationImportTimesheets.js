@@ -6,7 +6,7 @@ export const configurationTimesheets = {
     dateOfMonth: "Các ngày trong tháng",
     file: {
         fileName: 'templateImportSalary',
-        fileUrl: '/upload/human-resource/templateImport/teamplateImportTimesheets.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportTimesheets.xlsx'
     }
 
 }

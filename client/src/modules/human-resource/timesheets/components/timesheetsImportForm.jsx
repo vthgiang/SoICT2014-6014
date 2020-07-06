@@ -57,7 +57,7 @@ class TimesheetsImportForm extends Component {
             "${'Tên tiêu đề ứng với mã số nhân viên'}": "${data.employeeNumber}",
             "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
             "${'Tên tiêu để ứng với các ngày trong tháng'}": "${data.dateOfMonth}",
-        }`
+}`
         return stringData;
     }
 

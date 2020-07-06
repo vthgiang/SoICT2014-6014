@@ -1067,6 +1067,8 @@ export default {
                 delete_holiday_faile: 'Delete holiday faile',
                 edit_holiday_success: 'Edit holiday success',
                 edit_holiday_faile: 'Edit holiday faile',
+                import_holiday_success: 'Import holiday success',
+                import_holiday_faile: 'Import holiday faile',
 
             },
 
