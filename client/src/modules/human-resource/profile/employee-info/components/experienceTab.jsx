@@ -7,6 +7,7 @@ class ExperiencTab extends Component {
         super(props);
         this.state = {};
     }
+
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
         var d = new Date(date),
@@ -38,7 +39,6 @@ class ExperiencTab extends Component {
             return null;
         }
     }
-
 
     render() {
         const { id, translate } = this.props;

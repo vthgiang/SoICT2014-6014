@@ -296,10 +296,10 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let automaticPoint = data.autoPoint;
         let taskInfo = {
-            task: this.state.task,
-            progress: this.state.progress,
+            task: data.task,
+            progress: data.progress,
             date: value,
-            info: this.state.info,
+            info: data.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
@@ -313,7 +313,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 info: data.info, 
                 kpi: data.kpi,
                 autoPoint: automaticPoint,
-                point: data.point
+                point: data.point,
+                oldAutoPoint: data.autoPoint,
+                progress: data.progress,
             }
         });
         console.log('-----stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.state);
@@ -654,8 +656,8 @@ class EvaluateByResponsibleEmployee extends Component {
         let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
         let actionsNotRating = taskActions.filter(item => (
             item.rating === -1 &&
-            new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
-            && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+            new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
+            && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
 
         // let task = (tasks && tasks.task)&& tasks.task.info;
@@ -719,11 +721,13 @@ class EvaluateByResponsibleEmployee extends Component {
                             </a>
                         </strong>
                         <br/>
+                        <br/>
                         <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
                             <a href="javascript:void(0)" >
                                 {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
                             </a> 
                         </strong>
+                        <br/>
                         <br/>
                         <strong>Các hoạt động chưa đánh giá tháng này: &nbsp; </strong>
                         <ul>
@@ -747,7 +751,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             />
                         }
                         {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
-                        <br/>
+                        {/* <br/> */}
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>
                             <label>Điểm tự đánh giá (<span style={{color:"red"}}>*</span>)</label>

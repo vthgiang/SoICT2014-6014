@@ -1311,7 +1311,8 @@ export default {
                 delete_holiday_faile: 'Xoá lịch làm việc thất bại',
                 edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
                 edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
-
+                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên

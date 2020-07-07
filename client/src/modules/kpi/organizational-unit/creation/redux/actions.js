@@ -14,12 +14,16 @@ export const createUnitKpiActions = {
 }
 
 
-// lấy kpi đơn vị hiện tại(lấy bằng role hoặc bằng params: id của đơn vị)
-function getCurrentKPIUnit(roleId, organizationalUnitId=undefined) {
+/**
+ * Get organizational unit kpi set
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+function getCurrentKPIUnit(roleId, organizationalUnitId=undefined, month=undefined) {
     return dispatch => {
         dispatch({ type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST });
 
-        createUnitKpiServices.getCurrentKPIUnit(roleId, organizationalUnitId)
+        createUnitKpiServices.getCurrentKPIUnit(roleId, organizationalUnitId, month)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS,

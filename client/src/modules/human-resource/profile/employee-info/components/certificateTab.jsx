@@ -62,7 +62,7 @@ class CertificateTab extends Component {
                                             <td>{x.issuedBy}</td>
                                             <td>{x.year}</td>
                                             <td>{translate(`manage_employee.${x.degreeType}`)}</td>
-                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile.length === 0) ? translate('manage_employee.no_files') :
                                                 <a className='intable'
                                                     href={LOCAL_SERVER_API + x.urlFile} target="_blank"
                                                     download={x.name}>
@@ -99,7 +99,7 @@ class CertificateTab extends Component {
                                                 <td>{x.issuedBy}</td>
                                                 <td>{this.formatDate(x.startDate)}</td>
                                                 <td>{this.formatDate(x.endDate)}</td>
-                                                <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <td>{(typeof x.urlFile === 'undefined' || x.urlFile.length === 0) ? translate('manage_employee.no_files') :
                                                     <a className='intable'
                                                         href={LOCAL_SERVER_API + x.urlFile} target="_blank"
                                                         download={x.name}>

@@ -61,7 +61,7 @@ class SalaryImportForm extends Component {
             "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
             "${'Tên tiêu để ứng với tiền lương chính'}": "${data.mainSalary}",
             "${'Tên tiêu để ứng với lương thưởng khác'}": [${bonus}]
-        }`
+}`
         return stringData;
     }
 
@@ -90,7 +90,7 @@ class SalaryImportForm extends Component {
         }
     }
 
-    // bắt sự kiện thay đổi tháng lương
+    // Bắt sự kiện thay đổi tháng lương
     handleMonthChange = (value) => {
         const { salary } = this.props;
         let partMonth = value.split('-'), rowError = [], importData = [];
@@ -118,7 +118,7 @@ class SalaryImportForm extends Component {
             month: value,
         });
     }
-    // bắt sự kiện thay đổi (textarea);
+    // Bắt sự kiện thay đổi (textarea);
     handleChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -127,7 +127,7 @@ class SalaryImportForm extends Component {
                 this.convertStringToObject(value) : this.state.importConfiguration,
         })
     }
-    // bắt xự kiện chọn file import
+    // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
         const { importConfiguration } = this.state;
         let configData = importConfiguration !== null ? importConfiguration : configurationSalary;

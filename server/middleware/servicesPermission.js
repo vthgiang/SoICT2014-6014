@@ -190,6 +190,7 @@ exports.data = [
     { path: '/holidays', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/holidays/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/holidays/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/holidays/import', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     
     { path: '/sample/item', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/sample/item', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
@@ -312,7 +313,7 @@ exports.data = [
     { path: '/performtask/:task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     //comment of task action
     { path: '/performtask/action-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/action-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/action-comment/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
     //task action
     { path: '/performtask/task-action', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},

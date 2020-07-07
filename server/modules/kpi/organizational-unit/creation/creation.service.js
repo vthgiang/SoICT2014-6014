@@ -1,12 +1,32 @@
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = require('../../../../models/index').schema;
 
 /**
- * Lấy tập KPI đơn vị của đơn vị ứng với role người dùng
- * @id Id của role người dùng
- * @organizationalUnitId params Id đơn vị
+ * Get organizational unit kpi set
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
  */
-exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId=undefined) => {
+exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month) => {
     
+    let now = new Date(month);
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+    let endOfLastMonth = new Date(currentYear, currentMonth);
+
+    if(month) {
+        now = new Date(month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+
     if(!organizationalUnitId) {
         var department = await OrganizationalUnit.findOne({
             $or: [
@@ -19,13 +39,8 @@ exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId=undefi
         var department = { '_id': organizationalUnitId };
     }
 
-    var now = new Date();
-    var currentYear = now.getFullYear();
-    var currentMonth = now.getMonth();
-    var endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    var endOfLastMonth = new Date(currentYear, currentMonth);
-
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
+    // Status khác 2 --> chưa kết thúc
+    var kpiunit = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department._id, status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     

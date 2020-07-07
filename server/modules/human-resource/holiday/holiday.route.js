@@ -26,4 +26,7 @@ router.delete('/:id', auth, HolidayController.deleteHoliday);
  */
 router.put('/:id', auth, HolidayController.updateHoliday);
 
+// Import thông tin nghỉ lễ tết
+router.post('/import', auth, HolidayController.importHolidays);
+
 module.exports = router;
