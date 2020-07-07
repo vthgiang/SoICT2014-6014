@@ -361,9 +361,9 @@ async function getResultTaskByMonth(data) {
     // console.log("data ne", data.id);
     var date = new Date(data.date);
     let kpiType;
-    if (data.kpiType === 1) {
+    if (data.kpiType === "1") {
         kpiType = "Accountable";
-    } else if (data.kpitType === 2) {
+    } else if (data.kpiType === "2") {
         kpiType = "Consulted";
     } else {
         kpiType = "Responsible";
@@ -371,13 +371,9 @@ async function getResultTaskByMonth(data) {
 
     var monthkpi = parseInt(date.getMonth() + 1);
     var yearkpi = parseInt(date.getFullYear());
-    //console.log('type', typeof monthkpi);
-    //console.log("month", monthkpi);
-    console.log('month', monthkpi);
-    var task = await Task.aggregate([
-        {
-            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
-        },
+    
+
+    let conditions = [
         {
             $unwind: "$evaluations"
         },
@@ -390,46 +386,44 @@ async function getResultTaskByMonth(data) {
         { $match: { "results.role": kpiType } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
-    ]);
-    //console.log('-----------', task);
-
-        //console.log('ttttttttttttttttttt');
-        for (let i = 0; i < task.length; i++) {
-            let x = task[i];
-            let date = await new Date(x.date);
-            let startDate = await new Date(x.startDate);
-            // let endDate = new Date(x.endDate);
-
-            let month = await date.getMonth() + 1;
-            let year = await date.getFullYear();
-            let startMonth = await startDate.getMonth() + 1;
-            //let endMonth = endDate.getMonth() + 1;
-            // console.log('monthhhh', month);
-            // console.log('startMonthhh', startMonth);
-            if (month === startMonth) task[i].preEvaDate = startDate;
-            // else if (month == endMonth) x.preEvaDate = endDate;
-            else {
-                let preEval = await Task.aggregate([
-                    {
-                        $match: { "_id": mongoose.Types.ObjectId(x.taskId) },
-                    },
+    ]
+    if (kpiType === "Responsible") {
+        conditions.unshift({
+            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
+        });
+    }
 
 
-                    {
-                        $unwind: "$evaluations"
-                    },
-                    {
-                        $replaceRoot: { newRoot: "$evaluations" }
-                    },
-                    { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-                    { $match: { "month": month - 1 } },
-                    { $match: { "year": year } },
-                ]);
-               // console.log('dfeef', preEval);
-                task[i].preEvaDate = await preEval[0].date;
-                //console.log('rrrrr', x);
+    var task = await Task.aggregate(conditions);
 
-            }
+    for (let i = 0; i < task.length; i++) {
+        let x = task[i];
+        let date = await new Date(x.date);
+        let startDate = await new Date(x.startDate);
+
+        let month = await date.getMonth() + 1;
+        let year = await date.getFullYear();
+        let startMonth = await startDate.getMonth() + 1;
+
+        if (month === startMonth) {
+            task[i].preEvaDate = startDate;
+        } else {
+            let preEval = await Task.aggregate([
+                {
+                    $match: { "_id": mongoose.Types.ObjectId(x.taskId) },
+                },
+                {
+                    $unwind: "$evaluations"
+                },
+                {
+                    $replaceRoot: { newRoot: "$evaluations" }
+                },
+                { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+                { $match: { "month": month - 1 } },
+                { $match: { "year": year } },
+            ]);
+            task[i].preEvaDate = await preEval[0].date;
         }
-      return task;
+    }
+    return task;
 }
