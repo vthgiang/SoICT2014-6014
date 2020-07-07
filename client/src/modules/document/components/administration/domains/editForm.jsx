@@ -57,29 +57,26 @@ class EditForm extends Component {
         const {domainId, domainName, domainDescription, domainParent} = this.state;
         
         return ( 
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-edit-document-domain"
-                    formID="form-edit-document-domain"
-                    title={translate('document.administration.domains.edit')}
-                    func={this.save}
-                >
-                    <form id="form-edit-document-domain">
-                                <div className="form-group">
-                                <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} value={domainName}/>
-                            </div>
-                            <div className="form-group">
-                                <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                                <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
-                            </div>
-                            <div className="form-group">
-                                    <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
-                                    <textarea type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
-                                </div>
-                                </form>
-                </DialogModal>
-            </React.Fragment>
+            <div id="edit-document-domain" style={{display: 'hide'}}>
+                <div className="form-group">
+                    <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={this.handleName} value={domainName}/>
+                </div>
+                <div className="form-group">
+                    <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
+                    <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
+                </div>
+                <div className="form-group">
+                    <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
+                    <textarea type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
+                </div> 
+                <div>
+                    <button className="btn btn-sm btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>Lưu</button>
+                    <button className="btn btn-sm btn-danger pull-right" onClick={()=>{
+                        window.$(`#edit-document-domain`).slideUp()
+                    }}>Đóng</button>
+                </div>         
+            </div>
          );
     }
 }

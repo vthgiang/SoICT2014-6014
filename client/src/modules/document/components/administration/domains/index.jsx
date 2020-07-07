@@ -23,7 +23,7 @@ class AdministrationDocumentDomains extends Component {
     onChanged = async (e, data) => {
         console.log("CLICK NODE TREE - data", data)
         await this.setState({currentDomain: data.node})
-        window.$(`#modal-edit-document-domain`).modal({backdrop:'static',keyboard:false, show:true});
+        window.$(`#edit-document-domain`).slideDown();;
     }
 
     checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
@@ -81,24 +81,33 @@ class AdministrationDocumentDomains extends Component {
                     deleteNode.length > 0 && <button className="btn btn-sm btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
                 }
                 <CreateForm/>
-                {
-                    this.state.currentDomain !== undefined &&
-                    <EditForm
-                        domainId={this.state.currentDomain.id}
-                        domainName={this.state.currentDomain.text}
-                        domainDescription={this.state.currentDomain.description}
-                        domainParent={this.state.currentDomain.parent}
-                    />
-                }
-                <div style={{paddingTop: '10px'}}>
-                    <Tree 
-                        id="tree-qlcv-document"
-                        onChanged={this.onChanged} 
-                        checkNode={this.checkNode}
-                        unCheckNode={this.unCheckNode}
-                        data={dataTree}
-                    />
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                        <div style={{paddingTop: '10px'}}>
+                            <Tree 
+                                id="tree-qlcv-document"
+                                onChanged={this.onChanged} 
+                                checkNode={this.checkNode}
+                                unCheckNode={this.unCheckNode}
+                                data={dataTree}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        {
+                            this.state.currentDomain !== undefined &&
+                            <EditForm
+                                domainId={this.state.currentDomain.id}
+                                domainName={this.state.currentDomain.text}
+                                domainDescription={this.state.currentDomain.description}
+                                domainParent={this.state.currentDomain.parent}
+                            />
+                        }
+                    </div>
                 </div>
+
+                
+                
             </React.Fragment>
         );
     }
