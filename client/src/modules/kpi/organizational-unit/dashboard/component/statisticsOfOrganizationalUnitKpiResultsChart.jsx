@@ -45,6 +45,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             this.columnChart();
         }
 
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
             

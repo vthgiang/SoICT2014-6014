@@ -32,6 +32,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Call action again when currentRole changes
         if(this.state.currentRole !== localStorage.getItem("currentRole")) {
             await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
 
@@ -45,6 +46,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             
