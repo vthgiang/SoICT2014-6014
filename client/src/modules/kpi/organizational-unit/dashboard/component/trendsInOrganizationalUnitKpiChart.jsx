@@ -54,9 +54,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId)
+            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
 
             this.setState(state => {
                 return {
