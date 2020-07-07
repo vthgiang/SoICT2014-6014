@@ -266,201 +266,206 @@ class EditForm extends Component {
                     func={this.save}
                 >
                     <form id="form-edit-document">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin văn bản</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>{ translate('document.name') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" value={documentName} onChange={this.handleName}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber}/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner}/>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>{ translate('document.category') }<span className="text-red">*</span></label>
-                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                            id={`select-box-edit-document-category-${documentId}`}
-                                            className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items = {categories}
-                                            value={documentCategory}
-                                            onChange={this.handleCategory}
-                                            multiple={false}
-                                            options={{placeholder: translate('document.administration.categories.select')}}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.domain') }<span className="text-red">*</span></label>
-                                        <TreeSelect 
-                                            data={list} 
-                                            value={documentDomains}
-                                            handleChange={this.handleDomains} 
-                                            mode="hierarchical"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <ButtonModal modalID="sub-modal-add-document-new-version" button_name={translate('general.add')} title={translate('document.add')}/>
-                                    <DialogModal
-                                        modalID="sub-modal-add-document-new-version"
-                                        formID="sub-form-add-document-new-version"
-                                        title={translate('document.add_version')}
-                                        func={()=>this.addNewVersion(documentId)}
-                                    >
-                                        <React.Fragment>
-                                        <div className="form-group">
-                                                <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleVersionName}/>
+                    <div className="nav-tabs-custom">
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">Thông tin văn bản</a></li>
+                                <li><a href="#doc-edit-sub-info" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                <div className="tab-pane active" id="doc-edit-info">
+                                    <div className="row">
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{ translate('document.name') }<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" value={documentName} onChange={this.handleName}/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                                <input type="file"  onChange={this.handleUploadFile}/>
+                                                <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody}/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                                <input type="file" onChange={this.handleUploadFileScan}/>
+                                                <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber}/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id={`document-edit-version-issuing-date-${documentId}`}
-                                                    // value={documentIssuingDate}
-                                                    onChange={this.handleIssuingDate}
+                                                <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner}/>
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{ translate('document.category') }<span className="text-red">*</span></label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id={`select-box-edit-document-category-${documentId}`}
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {categories}
+                                                    value={documentCategory}
+                                                    onChange={this.handleCategory}
+                                                    multiple={false}
+                                                    options={{placeholder: translate('document.administration.categories.select')}}
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id={`document-edit-version-effective-date-${documentId}`}
-                                                    // value={documentEffectiveDate}
-                                                    onChange={this.handleEffectiveDate}
+                                                <label>{ translate('document.domain') }<span className="text-red">*</span></label>
+                                                <TreeSelect 
+                                                    data={list} 
+                                                    value={documentDomains}
+                                                    handleChange={this.handleDomains} 
+                                                    mode="hierarchical"
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id={`document-edit-version-expired-date-${documentId}`}
-                                                    // value={documentExpiredDate}
-                                                    onChange={this.handleExpiredDate}
-                                                />
+                                                <label>{ translate('document.description') }<span className="text-red">*</span></label>
+                                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
                                             </div>
-                                        </React.Fragment>
-                                    </DialogModal>
-                                    <table className="table table-hover table-striped table-bordered" id="table-document-version">
-                                        <thead>
-                                            <tr>
-                                                <th>{translate('document.version')}</th>
-                                                <th>{translate('document.issuing_date')}</th>
-                                                <th>{translate('document.effective_date')}</th>
-                                                <th>{translate('document.expired_date')}</th>
-                                                <th>{translate('document.doc_version.file')}</th>
-                                                <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                documentVersions !== undefined && documentVersions.length > 0 ?
-                                                documentVersions.map((version, i) => {
-                                                    return <tr key={i}>
-                                                        <td>{version.versionName}</td>
-                                                        <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
-                                                        <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
-                                                        <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <ButtonModal modalID="sub-modal-add-document-new-version" button_name={translate('general.add')} title={translate('document.add')}/>
+                                            <DialogModal
+                                                modalID="sub-modal-add-document-new-version"
+                                                formID="sub-form-add-document-new-version"
+                                                title={translate('document.add_version')}
+                                                func={()=>this.addNewVersion(documentId)}
+                                            >
+                                                <React.Fragment>
+                                                <div className="form-group">
+                                                        <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
+                                                        <input type="text" className="form-control" onChange={this.handleVersionName}/>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                                        <input type="file"  onChange={this.handleUploadFile}/>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                                        <input type="file" onChange={this.handleUploadFileScan}/>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
+                                                        <DatePicker
+                                                            id={`document-edit-version-issuing-date-${documentId}`}
+                                                            // value={documentIssuingDate}
+                                                            onChange={this.handleIssuingDate}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
+                                                        <DatePicker
+                                                            id={`document-edit-version-effective-date-${documentId}`}
+                                                            // value={documentEffectiveDate}
+                                                            onChange={this.handleEffectiveDate}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
+                                                        <DatePicker
+                                                            id={`document-edit-version-expired-date-${documentId}`}
+                                                            // value={documentExpiredDate}
+                                                            onChange={this.handleExpiredDate}
+                                                        />
+                                                    </div>
+                                                </React.Fragment>
+                                            </DialogModal>
+                                            <table className="table table-hover table-striped table-bordered" id="table-document-version">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('document.version')}</th>
+                                                        <th>{translate('document.issuing_date')}</th>
+                                                        <th>{translate('document.effective_date')}</th>
+                                                        <th>{translate('document.expired_date')}</th>
+                                                        <th>{translate('document.doc_version.file')}</th>
+                                                        <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
                                                     </tr>
-                                                }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
-                                            }
-                                        </tbody>
-                                    </table>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        documentVersions !== undefined && documentVersions.length > 0 ?
+                                                        documentVersions.map((version, i) => {
+                                                            return <tr key={i}>
+                                                                <td>{version.versionName}</td>
+                                                                <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
+                                                                <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
+                                                                <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
+                                                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                            </tr>
+                                                        }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="tab-pane" id="doc-edit-sub-info">
+                                    <div className="row">
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{ translate('document.relationship.description') }</label>
+                                                <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription}/>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>{ translate('document.relationship.list') }</label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id="select-edit-documents-relationship-to-document"
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {relationshipDocs}
+                                                    onChange={this.handleRelationshipDocuments}
+                                                    value={documentRelationshipDocuments}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>{ translate('document.roles') }</label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id={`select-edit-document-users-see-permission-${documentId}`}
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {roleList}
+                                                    value={documentRoles}
+                                                    onChange={this.handleRoles}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{ translate('document.store.information') }</label>
+                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInformation} value={documentArchivedRecordPlaceInfo}/>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>{ translate('document.store.organizational_unit_manage') }</label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id={`select-edit-documents-organizational-unit-manage${documentId}`}
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
+                                                    onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
+                                                    value={documentArchivedRecordPlaceOrganizationalUnit}
+                                                    multiple={false}
+                                                />
+                                            </div>
+                                            {/* <div className="form-group">
+                                                <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id="select-edit-documents-user-manage"
+                                                    className="form-control select2"
+                                                    style={{width: "100%"}}
+                                                    items = {userManage}
+                                                    value={documentArchivedRecordPlaceManager}
+                                                    onChange={this.handleArchivedRecordPlaceManager}
+                                                    options={{placeholder: translate('document.store.select_user')}}
+                                                    multiple={false}
+                                                />
+                                            </div> */}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
-                            <div className="form-group">
-                                <label>{ translate('document.relationship.description') }</label>
-                                <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription}/>
-                            </div>
-                            <div className="form-group">
-                                <label>{ translate('document.relationship.list') }</label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id="select-edit-documents-relationship-to-document"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {relationshipDocs}
-                                    onChange={this.handleRelationshipDocuments}
-                                    value={documentRelationshipDocuments}
-                                    multiple={true}
-                                />
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.roles') }</legend>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-edit-document-users-see-permission-${documentId}`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {roleList}
-                                value={documentRoles}
-                                onChange={this.handleRoles}
-                                multiple={true}
-                            />
-                        </fieldset>
-
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.store.title') }</legend>
-                            <div className="form-group">
-                                <label>{ translate('document.store.information') }</label>
-                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInformation} value={documentArchivedRecordPlaceInfo}/>
-                            </div>
-                            <div className="form-group">
-                                <label>{ translate('document.store.organizational_unit_manage') }</label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id={`select-edit-documents-organizational-unit-manage${documentId}`}
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
-                                    onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                    value={documentArchivedRecordPlaceOrganizationalUnit}
-                                    multiple={false}
-                                />
-                            </div>
-                            {/* <div className="form-group">
-                                <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id="select-edit-documents-user-manage"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {userManage}
-                                    value={documentArchivedRecordPlaceManager}
-                                    onChange={this.handleArchivedRecordPlaceManager}
-                                    options={{placeholder: translate('document.store.select_user')}}
-                                    multiple={false}
-                                />
-                            </div> */}
-                        </fieldset>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

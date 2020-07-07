@@ -3,7 +3,6 @@ import { ComponentConstants } from "./constants";
 
 export const ComponentActions = {
     get,
-    getPaginate,
     edit,
     create,
     show,
@@ -11,7 +10,20 @@ export const ComponentActions = {
 }
 
 
-function get(){
+function get(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
+            ComponentServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+        }
+    }
+    
     return dispatch => {
         dispatch({ type: ComponentConstants.GET_COMPONENTS_REQUEST});
         ComponentServices.get()
@@ -20,25 +32,6 @@ function get(){
                     type: ComponentConstants.GET_COMPONENTS_SUCCESS,
                     payload: res.data.content
                 })
-            })
-            .catch(err => {
-                
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
-        ComponentServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                
             })
     }
 }

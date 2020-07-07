@@ -1549,19 +1549,27 @@ const sampleCompanyData = async () => {
 
 
     const domanins = await DocumentDomain.insertMany([{
-            name: "Sản xuất",
+            name: "Nội quy công ty",
             company: vnist,
-            description: 'Sản xuất'
+            description: 'nội quy công ty'
         },
         {
-            name: "Sản xuất 2",
+            name: "Chính sách nhân sự",
             company: vnist,
-            description: 'Sản xuất 2'
+            description: 'Chính sách nhân sự'
         },
         {
-            name: "Sản xuất 3",
+            name: "Tài liệu chung",
             company: vnist,
-            description: 'Sản xuất 3'
+            description: 'Tài liệu chung'
+        },{
+            name: "Công văn hoàn thuế",
+            company: vnist,
+            description: 'Công văn hoàn thuế'
+        },{
+            name: "Lịch biểu",
+            company: vnist,
+            description: 'Lịch biểu'
         },
     ]);
 
