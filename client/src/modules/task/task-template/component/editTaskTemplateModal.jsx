@@ -495,6 +495,9 @@ class ModalEditTaskTemplate extends Component {
                             <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
                             
+                            <br/>
+                            <div><span style={{fontWeight: 800}}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100(1-p1/p2)</div>
+                            <br/>
                             <div><span style={{fontWeight: 800}}>{translate('task_template.parameters')}:</span></div>
                             <div><span style={{fontWeight: 600}}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
                             <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
@@ -502,7 +505,6 @@ class ModalEditTaskTemplate extends Component {
                             <div><span style={{fontWeight: 600}}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
                             <div><span style={{fontWeight: 600}}>progress</span> - % Tiến độ công việc (0-100)</div>
                             <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                            <div><span style={{fontWeight: 800}}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100(1-p1/p2)</div>
                         </div>
                     </div>
                 </div>

@@ -1563,7 +1563,7 @@ export default {
             action_name: 'Tên hoạt động',
             delete: 'Xóa trắng',
             cancel_editing: 'Hủy chỉnh sửa',
-            obligatory: 'Bắt buộc',
+            mandatory: 'Bắt buộc',
             add_tasktemplate: 'Thêm mẫu công việc',
             infor_name: 'Tên thông tin',
             datatypes: 'Kiểu dữ liệu',

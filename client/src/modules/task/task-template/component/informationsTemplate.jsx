@@ -47,11 +47,11 @@ class InformationForm extends Component{
             animation: 500,
             onChange: async(evt) => {
                 window.$('#informations tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html(index + 1);
+                    window.$(this).find('td:nth-child(1)').html("p" + (index + 1));
                 });
             },
             onEnd: async(evt) => {
-                let taskInformations = this.state.newTemplate.taskInformations;
+                let taskInformations = this.state.taskInformations;
                 const item = taskInformations[evt.oldIndex];
                 taskInformations.splice(evt.oldIndex, 1);
                 taskInformations.splice(evt.newIndex, 0, item);
