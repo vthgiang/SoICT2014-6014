@@ -91,9 +91,9 @@ function getTaskById(id, employeeId, date, kpiType) {
  
 // chỉnh sửa approvepoint
  
-function setPointKPI(employeeId, data){
+function setPointKPI(employeeId, kpiType, data){
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}/${kpiType}`,
         method: 'PUT',
         data: data
     }, true, true, 'kpi.evaluation')
