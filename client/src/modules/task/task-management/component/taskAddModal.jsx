@@ -112,7 +112,7 @@ class ModalAddTask extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState=true) => {
-        let msg = TaskFormValidator.validateTaskStartDate(value);
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate);
 
         if (willUpdateState){
             this.state.newTask.startDate = value;
