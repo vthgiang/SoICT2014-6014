@@ -245,7 +245,7 @@ handleDeleteAction = async (index) => {
             </div>
             <div className="form-group" >
                 <label className="control-label">
-                {translate('task_template.obligatory')} &nbsp;
+                {translate('task_template.mandatory')} &nbsp;
                     <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
                 </label>
             </div>
