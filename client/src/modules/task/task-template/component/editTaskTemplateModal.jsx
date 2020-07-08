@@ -523,7 +523,7 @@ class ModalEditTaskTemplate extends Component {
                                     editingTemplate.taskInformations.map((item, index) => 
                                         <div style={{paddingBottom: "20px"}} key={index}>
                                             <div>
-                                                <label>{item.name} - Kiểu {item.type}</label>
+                                                <label>{item.code} - {item.name} - Kiểu {item.type}</label>
                                                 {item.filledByAccountableEmployeesOnly ? `- ${translate('task_template.manager_fill')}` : ""}
                                             </div>
                                             {item.description}

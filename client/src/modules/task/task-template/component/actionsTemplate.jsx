@@ -263,7 +263,7 @@ handleDeleteAction = async (index) => {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th style={{ width: '10%' }}>STT</th>
+                        <th style={{ width: '50px' }} className="col-fixed">STT</th>
                         <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
                         <th title="Mô tả">{translate('task_template.description')}</th>
                         <th title="Bắt buộc">{translate('task_template.obligation')}</th>
