@@ -164,13 +164,7 @@ class ModalMemberEvaluate extends Component {
         window.$(`#modal-taskimportance-auto`).modal('show')
     }
     handleClickTaskName = async(id) =>{
-        await this.setState(state => {
-            return {
-                ...state,
-                taskId: id
-            }
-        })
-        await this.props.getTaskInfoById(id);
+        this.props.getTaskInfoById(id);
         window.$(`#modal-detail-task`).modal('show')
     }
     
@@ -292,7 +286,7 @@ class ModalMemberEvaluate extends Component {
 
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td><a href= "#modal-detail-task" onClick={()=> this.handleClickTaskName(item._id)}>{itemTask.name}</a></td>
+                                                    <td><a href= "#modal-detail-task" onClick={()=> this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
