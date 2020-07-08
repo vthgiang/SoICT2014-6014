@@ -24,9 +24,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             dataStatus: this.DATA_STATUS.QUERYING,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
         };
+    }
 
-        // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
-        this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, this.state.month);
+    componentDidMount = () => {
+        if(this.props.organizationalUnitId) {
+            // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
+            this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
+        }
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -41,8 +45,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             this.columnChart();
         }
 
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            await this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, nextProps.month);
+            await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
             
             this.setState(state => {
                 return {
@@ -56,7 +61,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
             // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
-            this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.state.currentRole, this.state.month);
+            this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
 
             this.setState(state => {
                 return {

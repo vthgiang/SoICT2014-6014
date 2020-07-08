@@ -2,16 +2,29 @@ const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, Emp
 
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
 
-/** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
-exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUnitId=undefined) => {
+/**
+ * Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
 
     let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
-    let now = new Date();
-    let currentYear = now.getFullYear();
-    let currentMonth = now.getMonth();
-    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    let endOfLastMonth = new Date(currentYear, currentMonth);
+    if(month) {
+        now = new Date(month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
 
     if(!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
@@ -47,19 +60,19 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             foreignField: "parent",
             as: "employeeKpis" 
         }},
-        { $unwind: "$employeeKpis"},
+        { $unwind: "$employeeKpis" },
 
         { $lookup: {
             from: "employee_kpi_sets",
             localField: "employeeKpis._id",
             foreignField: "kpis",
-            as: "employee" 
+            as: "employeeKpiSet" 
         }},
-        { $unwind: "$employee"},
+        { $unwind: "$employeeKpiSet" },
 
         { $addFields: {
             "employeeKpis.organizationalUnitKpiParent": "$organizationalUnitKpis.parent",
-            "employeeKpis.creator": "$employee.creator"
+            "employeeKpis.creator": "$employeeKpiSet.creator"
         }},
 
         { $replaceRoot: { newRoot: "$employeeKpis" } }
@@ -68,16 +81,29 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
     return employeeKpis;   
 }
 
-/** Lấy tất cả task của organizationalUnit theo tháng hiện tại*/
-exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId=undefined) => {
+/**
+ * Lấy tất cả task của organizationalUnit theo tháng hiện tại
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
     
     let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
-    let now = new Date();
-    let currentYear = now.getFullYear();
-    let currentMonth = now.getMonth();
-    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    let endOfLastMonth = new Date(currentYear, currentMonth);
+    if(month) {
+        now = new Date(month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth+1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
 
     if(!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
@@ -142,19 +168,13 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, role
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
-exports.getAllEmployeeKpiSetInOrganizationalUnit = async (roleId, month) => {
+exports.getAllEmployeeKpiSetInOrganizationalUnit = async (organizationalUnitId, month) => {
 
     let beginOfCurrentMonth = new Date(month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth()+1);
 
-    let organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            { 'deans': roleId },
-            { 'viceDeans': roleId },
-            { 'employees': roleId }
-        ]
-    });
-    
+    let organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
+
     let employeeKpiSets = await OrganizationalUnit.aggregate([
         { $match: { '_id': organizationalUnit._id } },
 

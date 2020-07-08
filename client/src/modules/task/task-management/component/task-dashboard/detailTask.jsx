@@ -7,8 +7,23 @@ import { DetailTaskTab } from '../../../task-perform/component/detailTaskTab';
 class ModelDetailTask extends Component{
     constructor (props) {
         super(props);
+        this.state = {};
     }
     
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.id !== this.state.id) {
+            this.props.getTaskById(nextProps.id);
+
+            this.setState( state => {
+                return {
+                    ...state,
+                    id: nextProps.id,
+                }
+            });
+            return false;
+        }
+        return true;
+    }
 
     formatDate(date) {
         var d = new Date(date),
