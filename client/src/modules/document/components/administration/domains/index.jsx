@@ -71,14 +71,15 @@ class AdministrationDocumentDomains extends Component {
                 parent: node.parent !== undefined ? node.parent.toString() : "#"
             }
         })
+        console.log("edit choice: ", this.state)
 
         return ( 
             <React.Fragment>
-                <button className="btn btn-sm btn-success" onClick={()=>{
+                <button className="btn btn-success" onClick={()=>{
                     window.$('#modal-create-document-domain').modal('show');
                 }} title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
                 {
-                    deleteNode.length > 0 && <button className="btn btn-sm btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
+                    deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
                 }
                 <CreateForm/>
                 <div className="row">
@@ -99,7 +100,7 @@ class AdministrationDocumentDomains extends Component {
                             <EditForm
                                 domainId={this.state.currentDomain.id}
                                 domainName={this.state.currentDomain.text}
-                                domainDescription={this.state.currentDomain.description}
+                                domainDescription={this.state.currentDomain.original.description}
                                 domainParent={this.state.currentDomain.parent}
                             />
                         }

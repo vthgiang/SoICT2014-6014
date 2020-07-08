@@ -1599,77 +1599,129 @@ const sampleCompanyData = async () => {
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
 
-    const domanins = await DocumentDomain.insertMany([{
-            name: "Nội quy công ty",
-            company: vnist,
-            description: 'nội quy công ty'
-        },
+    const domains = await DocumentDomain.insertMany([ 
         {
-            name: "Chính sách nhân sự",
+            name: "Tài liệu lữu trữ bắt buộc",
             company: vnist,
-            description: 'Chính sách nhân sự'
-        },
-        {
-            name: "Tài liệu chung",
-            company: vnist,
-            description: 'Tài liệu chung'
+            description: 'Tài liệu lữu trữ bắt buộc'
         },{
-            name: "Công văn hoàn thuế",
+            name: "Hồ sơ lữu trữ bắt buộc",
             company: vnist,
-            description: 'Công văn hoàn thuế'
-        },{
-            name: "Lịch biểu",
-            company: vnist,
-            description: 'Lịch biểu'
+            description: 'Hồ sơ lữu trữ bắt buộc'
         },
     ]);
 
-    const domanins2 = await DocumentDomain.insertMany([{
-            name: "Nhà Kho",
+    const domanins2 = await DocumentDomain.insertMany([
+        //tài liệu bắt buộc
+        {
+            name: "Điều lệ công ty",
             company: vnist,
-            description: 'Nhà Kho',
-            parent: domanins[0]._id
+            description: 'Điều lệ công ty',
+            parent: domains[0]._id
+        },{
+            name: "Quy chế quản lý nội bộ công ty",
+            company: vnist,
+            description: 'Quy chế quản lý nội bộ công ty',
+            parent: domains[0]._id
+        },{
+            name: "Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông",
+            company: vnist,
+            description: 'Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông',
+            parent: domains[0]._id
+        },{
+            name: "Văn bằng bảo hộ quyền sở hữu công nghiệp",
+            company: vnist,
+            description: 'Văn bằng bảo hộ quyền sở hữu công nghiệp',
+            parent: domains[0]._id
+        },{
+            name: "Giấy chứng nhận đăng ký chất lượng sản phẩm",
+            company: vnist,
+            description: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+            parent: domains[0]._id
+        },{
+            name: "Giấy phép và giấy chứng nhận khác",
+            company: vnist,
+            description: 'Giấy phép và giấy chứng nhận khác',
+            parent: domains[0]._id
+        },{
+            name: "Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty",
+            company: vnist,
+            description: 'Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty',
+            parent: domains[0]._id
+        },{
+            name: "Biên bản họp hội đồng thành viên",
+            company: vnist,
+            description: 'Biên bản họp hội đồng thành viên, đại hội đồng cổ đông, hội đồng quản trị, các quyết định của doanh nghiệp',
+            parent: domains[0]._id
+        },{
+            name: "Bản cáo bạch để phát hành chứng khoán",
+            company: vnist,
+            description: 'Bản cáo bạch để phát hành chứng khoán',
+            parent: domains[0]._id
+        },{
+            name: "Báo cáo của ban kiểm soát",
+            company: vnist,
+            description: 'Báo cáo của ban kiểm soát, kết luận của cơ quan thanh tra, kết luận của tổ chức kiểm toán',
+            parent: domains[0]._id
+        },{
+            name: "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
+            company: vnist,
+            description: 'Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm',
+            parent: domains[0]._id
+        },
+
+        //hồ sơ
+        {
+            name: "Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng",
+            company: vnist,
+            description: 'Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng của từng phòng ban và của tổ chức',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 2",
+            name: "Hồ sơ xem xét của lãnh đạo",
             company: vnist,
-            description: 'Nhà Kho 2',
-            parent: domanins[0]._id
+            description: 'Hồ sơ xem xét của lãnh đạo',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
+            company: vnist,
+            description: 'Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ về kinh nghiệm làm việc của nhân viên",
+            company: vnist,
+            description: 'Hồ sơ về kinh nghiệm làm việc của nhân viên',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 3",
+            name: "Hồ sơ yêu cầu của các đơn đặt hàng từ khách hàng",
             company: vnist,
-            description: 'Nhà Kho 3',
-            parent: domanins[1]._id
+            description: 'Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng của từng phòng ban và của tổ chức',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 4",
+            name: "Các hồ sơ cung cấp thông tin đầu vào",
             company: vnist,
-            description: 'Nhà Kho 4',
-            parent: domanins[1]._id
+            description: 'Các hồ sơ cung cấp thông tin đầu vào phục vụ cho thiết kế sản phẩm',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ tài liệu quản lý chất lượng ISO 9001",
+            company: vnist,
+            description: 'Hồ sơ tài liệu quản lý chất lượng ISO 9001',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm",
+            company: vnist,
+            description: 'Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 5",
+            name: "Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm",
             company: vnist,
-            description: 'Nhà Kho 5',
-            parent: domanins[0]._id
-        },
-        {
-            name: "Nhà Kho 6",
-            company: vnist,
-            description: 'Nhà Kho 6',
-            parent: domanins[2]._id
+            description: 'Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm',
+            parent: domains[1]._id
         },
     ]);
-
-    const domanins3 = await DocumentDomain.insertMany([
-        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins2[0]._id},
-        { name: "Nhà Kho 12", company: vnist, description: 'Nhà Kho 2', parent: domanins2[0]._id},
-        { name: "Nhà Kho 13", company: vnist, description: 'Nhà Kho 3', parent: domanins2[1]._id},
-        { name: "Nhà Kho 14", company: vnist, description: 'Nhà Kho 4', parent: domanins2[1]._id},
-        { name: "Nhà Kho 15", company: vnist, description: 'Nhà Kho 5', parent: domanins2[0]._id},
-        { name: "Nhà Kho 16", company: vnist, description: 'Nhà Kho 6', parent: domanins2[2]._id},
-    ]); 
 
     const categories = await DocumentCategory.insertMany([
         {
@@ -1688,6 +1740,14 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             name: "Tài liệu",
             description: 'Tài liệu'
+        },{
+            company: vnist._id,
+            name: "Hồ sơ",
+            description: 'Hồ sơ'
+        },{
+            company: vnist._id,
+            name: "Biên bản",
+            description: 'Biên bản'
         },
     ]);
 
