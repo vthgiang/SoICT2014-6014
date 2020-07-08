@@ -72,10 +72,12 @@ class ModalViewTaskTemplate extends Component {
                                         
                                         <dt>{translate('task_template.parameters')}</dt>
                                         <dd>
-                                            <div>D: Tổng số ngày thực hiện công việc (trừ CN)</div>
-                                            <div>D0: Số ngày quá hạn</div>
-                                            <div>A: Tổng số hoạt động</div>
-                                            <div>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</div>
+                                            <div><span style={{fontWeight: 600}}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                                            <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                            <div><span style={{fontWeight: 600}}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                            <div><span style={{fontWeight: 600}}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                            <div><span style={{fontWeight: 600}}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                            <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                         </dd>
                                         <dt>{translate('task_template.priority')}</dt>
                                         <dd>{taskTemplate && priority }</dd>
