@@ -21,5 +21,6 @@ exports.CATEGORY_LINKS = [
     { name: 'employee-management', description: 'Quản lý nhân sự'},
     { name: 'education-management', description: 'Quản lý đào tạo'},
     { name: 'document-management', description: 'Quản lý tài liệu, biểu mẫu'},
-    { name: 'process-management', description: 'Quản lý quy trình'}
+    { name: 'process-management', description: 'Quản lý quy trình'},
+    { name: 'asset-management', description: 'Quản lý tài sản'},
 ];

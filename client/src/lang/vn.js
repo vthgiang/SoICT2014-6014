@@ -95,6 +95,7 @@ export default {
          *******************************************************/
         general: {
             table: 'Bảng',
+            scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
             pick_image: 'Chọn ảnh',
             crop: "Cắt ảnh",

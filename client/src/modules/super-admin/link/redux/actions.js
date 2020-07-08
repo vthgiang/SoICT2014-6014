@@ -23,16 +23,14 @@ function get(data){
         }
     }
     return dispatch => {
-        return dispatch => {
-            dispatch({ type: LinkConstants.GET_LINKS_REQUEST});
-            LinkServices.get()
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_SUCCESS,
-                        payload: res.data.content
-                    })
+        dispatch({ type: LinkConstants.GET_LINKS_REQUEST});
+        LinkServices.get()
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.GET_LINKS_SUCCESS,
+                    payload: res.data.content
                 })
-        }
+            })
     }
 }
 

@@ -324,174 +324,209 @@ const sampleCompanyData = async () => {
     const links = await Link.insertMany([{ // 0
             url: '/',
             description: `Trang chủ công ty ${vnist.name}`,
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[0].name
         }, { // 1
             url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[1].name
         }, { // 2
             url: '/users-management',
             description: 'Quản lý người dùng',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[1].name
         }, { // 3
             url: '/roles-management',
             description: 'Quản lý phân quyền',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[1].name
         }, { // 4
             url: '/links-management',
             description: 'Quản lý trang web của công ty',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[1].name
         }, { // 5
             url: '/components-management',
             description: 'Quản lý các thành phần UI trên trang web của công ty',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[1].name
         }, { // 6
             url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[6].name
         }, { // 7
             url: '/hr-manage-holiday',
             description: 'Kế hoạch làm việc',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 8
             url: '/hr-add-employee',
             description: 'Thêm mới nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 9
             url: '/hr-list-employee',
             description: 'Danh sách nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 10
             url: '/hr-update-employee',
             description: 'Cập nhật thông tin cá nhân của nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 11
             url: '/hr-detail-employee',
             description: 'Thông tin cá nhân của nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 12
             url: '/hr-salary-employee',
             description: 'Quản lý lương nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 13
             url: '/hr-annual-leave',
             description: 'Quản lý nghỉ phép của nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 14
             url: '/hr-discipline',
             description: 'Quản lý khen thưởng, kỷ luật',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 15
             url: '/hr-dashboard-employee',
             description: 'Dashboard nhân sự',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 16
             url: '/hr-time-keeping',
             description: 'Quản lý chấm công',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 17
             url: '/hr-trainning-course',
             description: 'Quản lý đào tạo',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 18
             url: '/hr-account',
             description: 'Thông tin tài khoản ',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 19
             url: '/hr-training-plan',
             description: 'Kế hoạch đào tạo',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 20
             url: '/hr-list-education',
             description: 'Chương trình đào tạo bắt buộc',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
 
         //thêm link của quản lý KPI
         { // 21
             url: '/kpi-units/create',
             description: 'Khởi tạo KPI đơn vị',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { // 22
             url: '/kpi-units/dashboard',
             description: 'Dashboard KPI đơn vị',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { // 23
             url: '/kpi-personals/create',
             description: 'Khởi tạo KPI cá nhân',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { //24  /kpi-personal-manager
             url: '/kpi-personals/manager',
             description: 'Quản lí KPI cá nhân',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { // 25
             url: '/notifications',
             description: 'Thông báo',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[0].name
         },
         { // 26
             url: '/hr-manage-department',
             description: 'Quản lý nhân sự các đơn vị',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[4].name
         },
         { // 27
             url: '/task-template',
             description: 'Mẫu công việc',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[3].name
         },
         { // 28
             url: '/kpi-member/manager',
             description: 'Quản lí kpi nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { // 29
             url: '/task-management',
             description: 'Xem danh sách công việc',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[3].name
         },
         { // 30 
             url: '/task-management-dashboard',
             description: 'Dashboard công việc',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[3].name
         },
         { // 31 /kpi-member-dashboard
             url: '/kpi-member/dashboard',
             description: 'Dashboard KPI nhân viên',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
         { // 32
             url: '/kpi-units/manager',
             description: 'Quản lý KPI đơn vị',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
 
         { // 33
             url: '/kpi-units/dashboard',
             description: 'Tổng quan KPI đơn vị',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
 
         { // 34  kpi-personal-dashboard
             url: '/kpi-personals/dashboard',
             description: 'DashBoard Kpi cá nhân',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[2].name
         },
 
 
@@ -500,81 +535,95 @@ const sampleCompanyData = async () => {
         { //35. quản lý loại tài sản
             url: '/dashboard-asset',
             description: 'DashBoard quản lý tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
         { //36. quản lý loại tài sản
             url: '/manage-type-asset',
             description: 'Quản lý loại tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //37. quản lý thông tin tài sản
             url: '/manage-info-asset',
             description: 'Quản lý thông tin tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //38. quản lý sửa chữa - thay thế - nâng cấp tài sản
             url: '/manage-repair-asset',
             description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //39. Quản lý cấp phát - điều chuyển - thu hồi tài sản
             url: '/manage-distribute-asset',
             description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //40. Quản lý khấu hao tài sản
             url: '/manage-depreciation-asset',
             description: 'Quản lý khấu hao tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //41. Quản lý đề nghị mua sắm tài sản
             url: '/manage-recommend-procure',
             description: 'Quản lý đề nghị mua sắm tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
         { //42. Quản lý đề nghị cấp phát tài sản
             url: '/manage-recommend-distribute-asset',
             description: 'Quản lý đề nghị cấp phát tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         { //43. Quản lý sự cố tài sản
             url: '/manage-crash-asset',
             description: 'Quản lý sự cố tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
         // NHÂN VIÊN
         { //44
             url: '/recommend-equipment-procurement',
             description: 'Đăng ký mua sắm tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
         { //45
             url: '/recommmend-distribute-asset',
             description: 'Đăng ký cấp phát tài sản',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
         { //46
             url: '/manage-assigned-asset',
             description: 'Quản lý tài sản được bàn giao',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[8].name
         },
 
 
         { //47
             url: '/task',
             description: 'Chi tiết công việc',
-            company: vnist._id
+            company: vnist._id,
+            category: 'task-management'
         },{ // 48 tài liệu văn bản
             url: '/documents',
             description: 'Tài liệu',
-            company: vnist._id
+            company: vnist._id,
+            category: Terms.CATEGORY_LINKS[6].name
         }
     ]);
 
@@ -587,12 +636,14 @@ const sampleCompanyData = async () => {
     const components = await Component.insertMany([{
             name: 'create-notification',
             description: 'Tạo thông báo mới',
-            company: vnist._id
+            company: vnist._id,
+            link: links[25]._id
         },
         { // Tạo button Thêm mới
             name: 'create-task-template-button',
             description: 'Button thêm mới mẫu công việc',
-            company: vnist._id
+            company: vnist._id,
+            link: links[27]._id
         }
     ]);
     const notificationLink = await Link.findById(links[25]._id);
