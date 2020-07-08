@@ -1979,7 +1979,7 @@ export default {
 
                     // Nhóm dành cho các trạng thái tập KPI
                     not_approved: 'Chưa kích hoạt',
-                    approved: 'Đã kich hoạt',
+                    approved: 'Đã kích hoạt',
 
                     // Nhóm dành cho table
                     target_list: 'Danh sách mục tiêu',
