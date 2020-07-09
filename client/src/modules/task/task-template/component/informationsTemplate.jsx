@@ -47,11 +47,11 @@ class InformationForm extends Component{
             animation: 500,
             onChange: async(evt) => {
                 window.$('#informations tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html(index + 1);
+                    window.$(this).find('td:nth-child(1)').html("p" + (index + 1));
                 });
             },
             onEnd: async(evt) => {
-                let taskInformations = this.state.newTemplate.taskInformations;
+                let taskInformations = this.state.taskInformations;
                 const item = taskInformations[evt.oldIndex];
                 taskInformations.splice(evt.oldIndex, 1);
                 taskInformations.splice(evt.newIndex, 0, item);
@@ -323,7 +323,7 @@ class InformationForm extends Component{
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th style={{ width: '10%' }}>STT</th>
+                            <th style={{ width: '50px' }} className="col-fixed">Mã</th>
                             <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
                             <th title="Mô tả">{translate('task_template.description')}</th>
                             <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
@@ -336,7 +336,7 @@ class InformationForm extends Component{
                             (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 taskInformations.map((item, index) =>
                                 <tr key={`${this.state.keyPrefix}_${index}`}>
-                                    <td>{index + 1}</td>
+                                    <td>p{index + 1}</td>
                                     <td>{item.name}</td>
                                     <td>{item.description}</td>
                                     <td>{item.type}</td>

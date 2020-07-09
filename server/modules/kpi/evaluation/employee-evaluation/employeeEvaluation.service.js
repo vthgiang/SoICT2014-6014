@@ -220,7 +220,7 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
     return kpipersonal;
 };
 
-exports.setTaskImportanceLevel = async (id, data) => {
+exports.setTaskImportanceLevel = async (id, kpiType, data) => {
     // data body co taskId, date, point, employeeId
     // id là id của employee kpi
     console.log(data);
@@ -233,7 +233,8 @@ exports.setTaskImportanceLevel = async (id, data) => {
     var key = {
         id: id,
         date: data[0].date,
-        employeeId: data[0].employeeId
+        employeeId: data[0].employeeId,
+        kpiType: kpiType
     }
     let task = await getResultTaskByMonth(key);
     let autoPoint = 0;

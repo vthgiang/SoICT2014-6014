@@ -121,6 +121,7 @@ class ModalMemberEvaluate extends Component {
         let employeeId = this.props.employeeKpiSet.creator._id;
         let tasks = this.state.tasks;
         let points = this.state.points;
+        let kpiType = this.state.type;
         if (tasks && tasks.length>0){
             let data=[];
             tasks.forEach(element => {
@@ -133,7 +134,7 @@ class ModalMemberEvaluate extends Component {
                 })
             });
 
-            this.props.setPointKPI(this.state.content, data);
+            this.props.setPointKPI(this.state.content, kpiType, data);
         }
     }
 
@@ -299,7 +300,7 @@ class ModalMemberEvaluate extends Component {
                                                         {this.state.points && this.state.tasks &&
                                                         <React.Fragment>
                                                             <input type="range"
-                                                            min="1"
+                                                            min="0"
                                                             max='10'
                                                             name={`taskImportanceLevel${itemTask.taskId}`}
                                                             value={this.state.points[itemTask.taskId]}

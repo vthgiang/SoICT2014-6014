@@ -1561,7 +1561,7 @@ export default {
             action_name: 'Tên hoạt động',
             delete: 'Xóa trắng',
             cancel_editing: 'Hủy chỉnh sửa',
-            obligatory: 'Bắt buộc',
+            mandatory: 'Bắt buộc',
             add_tasktemplate: 'Thêm mẫu công việc',
             infor_name: 'Tên thông tin',
             datatypes: 'Kiểu dữ liệu',
@@ -1977,7 +1977,7 @@ export default {
 
                     // Nhóm dành cho các trạng thái tập KPI
                     not_approved: 'Chưa kích hoạt',
-                    approved: 'Đã kich hoạt',
+                    approved: 'Đã kích hoạt',
 
                     // Nhóm dành cho table
                     target_list: 'Danh sách mục tiêu',
