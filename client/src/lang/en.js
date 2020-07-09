@@ -360,39 +360,39 @@ export default {
         },
 
         notification: {
-            title: 'Thông báo',
-            news: 'Thông báo mới',
-            see_all: 'Xem tất cả',
-            total: 'Tổng số',
-            level: 'loại thông báo',
+            title: 'Notification',
+            news: 'News',
+            see_all: 'See all',
+            total: 'Total',
+            level: 'Level',
             type: {
-                title: 'Loại thông báo',
-                info: 'Thông tin',
-                general: 'Thông báo chung',
-                important: 'Thông báo quan trọng',
-                emergency: 'Thông báo khẩn',
+                title: 'Type',
+                info: 'Information',
+                general: 'General',
+                important: 'Important',
+                emergency: 'Emergency',
             },
-            content: 'Nội dung thông báo',
-            sender: 'Gửi từ',
-            departments: 'Thông báo tới đơn vị/phòng ban',
-            users: 'Thông báo đến người dùng cụ thể',
-            from: 'từ',
-            at: 'lúc',
+            content: 'Content',
+            sender: 'Sender',
+            departments: 'Notify to organizational units',
+            users: 'Notify to users',
+            from: 'from',
+            at: 'at',
 
-            add: 'Tạo thông báo',
-            receivered: 'Thông báo đã nhận',
-            sent: 'Thông báo đã tạo',
-            note: 'Chú thích',
-            info: 'Thông tin thông báo',
-            delete: 'Xóa thông báo',
+            add: 'Add new nofitication',
+            receivered: 'Receivered',
+            sent: 'Sent',
+            note: 'Not',
+            info: 'Information',
+            delete: 'Delete',
 
             // Thông điệp trả về từ server
-            create_notification_success: 'Tạo thông báo thành công',
-            create_notification_faile: 'Tạo thông báo thất bại',
-            delete_notification_success: 'Xóa thông báo thành công',
-            delete_notification_faile: 'Xóa thông báo thất bại',
-            delete_manual_notification_success: 'Xóa thông báo thành công',
-            delete_manual_notification_faile: 'Xóa thông báo thất bại',
+            create_notification_success: 'Create notification successfully',
+            create_notification_faile: 'Create notification faile',
+            delete_notification_success: 'Delete notification successfully',
+            delete_notification_faile: 'Delete notification faile',
+            delete_manual_notification_success: 'Delete notification successfully',
+            delete_manual_notification_faile: 'Delete notification faile',
         },
 
         document: {
@@ -502,7 +502,9 @@ export default {
             password_invalid: 'Password invalid',
             wrong5_block: 'Input password wrong 5 times. Accont have been blocked!',
             acc_blocked: 'Accont have been blocked!',
-            acc_have_not_role: 'Accout have not role'
+            acc_have_not_role: 'Accout have not role',
+            reset_password_success: 'Reset password successfully!',
+            reset_password_faile: 'Reset password faile!'
         },
 
         confirm: {
@@ -510,6 +512,7 @@ export default {
             no: 'NO',
             no_data: 'No data',
             field_invalid: "Input field invalid. Please check again!",
+            loading: 'Loading data ...'
         },
 
         form: {
@@ -557,6 +560,7 @@ export default {
             choose_hidden_columns: 'Select columns to hide',
             hide_all_columns: 'Hide all columns',
         },
+
         modal: {
             update: 'Save',
             close: 'Close',
@@ -573,7 +577,6 @@ export default {
             staff_number: 'Staff code',
             add_search: 'Search',
             number_decisions: 'Decis number',
-            add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
             all_position: 'Select all position',
@@ -598,6 +601,7 @@ export default {
             cocautochuc: 'Organizational Structure',
             taskmanagement: 'Task Management',
             manageDocument: 'Manage Document',
+            manageDocumentType: 'Manage Document Type',
             
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
@@ -636,6 +640,30 @@ export default {
             task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
+
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+            dashboard_asset: 'DashBoard quản lý tài sản',
+            manage_asset: 'Quản lý tài sản',
+            manage_type_asset: 'Quản lý loại tài sản',
+            add_asset: 'Thêm tài sản',
+            manage_info_asset: 'Quản lý thông tin tài sản',
+            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_repair_asset: 'Quản lý sửa chữa, thay thế',
+            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_room_asset: 'Quản lý phòng & trang thiết bị',
+            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
+            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
+            manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            // NHÂN VIÊN
+            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
+            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            //******END */
         },
 
         manage_system: {
@@ -657,6 +685,14 @@ export default {
             info: 'Company information',
             edit: 'Edit company information',
             super_admin: "SuperAdmin email of company",
+            add_success: 'Tạo doanh nghiệp thành công',
+            add_faile: 'Tạo doanh nghiệp thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
+            log: 'Ghi log',
+            on: 'Bật',
+            off: 'Tắt',
+            service: 'Dịch vụ'
         },
 
         manage_department: {
@@ -679,7 +715,11 @@ export default {
             employee_name: 'Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
-            delete: 'Delete department'
+            delete: 'Delete department',
+            add_success: 'Tạo đơn vị thành công',
+            add_faile: 'Tạo đơn vị thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
         },
 
         manage_role: {
@@ -1395,15 +1435,6 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set'
-        },
-
-        notification: {
-            add: 'Add',
-            add_title: 'Add new notification',
-            add_success: 'Add notification successfully',
-            add_faile: 'Add notification faile',
-            edit_success: 'Edit notification successfully',
-            edit_faile: 'Edit notification faile'
         },
 
         task: {

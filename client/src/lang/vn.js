@@ -9,7 +9,6 @@ export default {
              * Start 
              * Chức năng quản lý nhân sự, xoá sau
              */
-
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
             staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -80,7 +79,6 @@ export default {
             edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
             guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
             no_change_data: 'Không có thông tin nào được thay đổi',
-
 
             /** 
              * End
