@@ -58,13 +58,7 @@ class EditForm extends Component {
         console.log("edit domain: ",this.state)
         
         return ( 
-            <div id="edit-document-domain" style={{
-                    display: 'hide', 
-                    border: '0.5px solid #c1c1c1',
-                    borderRadius: '5px',
-                    padding: '15px',
-                    paddingBottom: '5px'
-                }}>
+            <div id="edit-document-domain">
                 <div className="form-group">
                     <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={domainName}/>

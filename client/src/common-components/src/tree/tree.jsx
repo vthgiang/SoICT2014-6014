@@ -21,7 +21,7 @@ class Tree extends Component {
             },
             core:{
                 themes:{
-                    dots: true,
+                    dots: false,
                     icons: true,
                 },
                 data: data,
