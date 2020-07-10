@@ -6,7 +6,7 @@ import CreateForm from './createForm';
 import EditForm from './editForm';
 import './domains.css'
 import Swal from 'sweetalert2';
-import {Tree} from '../../../../../common-components';
+import { Tree, SlimScroll} from '../../../../../common-components';
 import {convertArrayToTree} from '../../../../../helpers/arrayToTree';
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
@@ -83,8 +83,8 @@ class AdministrationDocumentDomains extends Component {
                 }
                 <CreateForm/>
                 <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                        <div style={{paddingTop: '10px'}}>
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                        <div className="domain-tree" id="domain-tree">
                             <Tree 
                                 id="tree-qlcv-document"
                                 onChanged={this.onChanged} 
@@ -93,8 +93,9 @@ class AdministrationDocumentDomains extends Component {
                                 data={dataTree}
                             />
                         </div>
+                        <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                         {
                             this.state.currentDomain !== undefined &&
                             <EditForm

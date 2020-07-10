@@ -19,3 +19,8 @@ a.domain-tree-content {
 a.domain-tree-content:hover {
     color: red;
 }
+
+.domain-tree {
+    padding-top: 10px;
+    overflow: auto;
+}

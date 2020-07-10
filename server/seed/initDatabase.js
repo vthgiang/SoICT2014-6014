@@ -1,17 +1,20 @@
 const Log = require('../models/system-admin/log.model');
 
-const { RoleType, Role, RootRole, SystemLink, Link, Privilege, User, UserRole} = require('../models').schema;
+const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole} = require('../models').schema;
+
+require('dotenv').config({path: '../.env'});
 
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-require('dotenv').config({path: '../.env'});
 
 // DB Config
 const db = process.env.DATABASE;
 
 const seedDatabase = async () => {
-    // Connect to MongoDB
+    await console.log("Bắt đầu khởi tạo dữ liệu mẫu ...");
+
+    // Step 1: Connect to MongoDB
     await mongoose.connect( db, { 
         useNewUrlParser: true, 
         useUnifiedTopology: true,
@@ -19,23 +22,37 @@ const seedDatabase = async () => {
         useFindAndModify: false
     }).then(() => {
         console.log("Kết nối thành công đến MongoDB!\n");
-    }).catch(err => console.log("ERROR! :(\n", err));
+    }).catch(err => console.log("DB ERROR! :(\n", err));
 
+
+
+
+
+    // Step 2: Xóa DB cũ
     await mongoose.connection.db.dropDatabase(
         console.log("Khởi tạo lại môi trường để cài đặt dữ liệu mẫu.")
     );
-    await console.log("Đang khởi tạo dữ liệu mẫu ...");
-    // Tạo bản ghi trạng thái log
+
+
+    
+    
+    // Step 3: Tạo bản ghi trạng thái log
     await Log.create({ name: 'log', status: true });
 
-    // Tạo các roletype trong hệ thống
+
+
+    
+    // Step 4: Tạo các roletype trong hệ thống
     await RoleType.insertMany([
         { name: Terms.ROLE_TYPES.ROOT }, 
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
 
-    //Tạo tài khoản systemadmin cho hệ thống quản lý công việc
+
+
+
+    // Step 5: Tạo tài khoản system admin cho hệ thống quản lý công việc
     var salt = await bcrypt.genSaltSync(10);
     var hash = await bcrypt.hashSync(process.env.SYSTEM_ADMIN_PASSWORD, salt);
     var systemAdmin = await User.create({
@@ -43,243 +60,44 @@ const seedDatabase = async () => {
         email: process.env.SYSTEM_ADMIN_EMAIL,
         password: hash
     });
-
-    // Tạo role System Admin 
-    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT});
-    var roleSystemAdmin = await Role.create({
+    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT}); 
+    var roleSystemAdmin = await Role.create({ // Tạo role System Admin
         name: Terms.ROOT_ROLES.SYSTEM_ADMIN.NAME,
         type: roleAbstract._id
     });
+    await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id }); // Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
 
-    // Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
-    await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
 
-    // Tạo link cho system 
-    var links = await Link.insertMany([{
+
+
+
+    // Step 6: Tạo các page cho system admin
+    var links = await Link.insertMany([
+        {
             url: '/',
             description: 'Trang chủ'
-        },{
+        },
+        {
             url: '/system/settings',
             description: 'Quản lý thiết lập hệ thống'
-        },{
+        },
+        {
             url: '/system/companies-management',
             description: 'Quản lý thông tin doanh nghiệp/công ty'
-        },{
+        },
+        {
             url: '/system/links-default-management',
             description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty'
-        },{
+        },
+        {
             url: '/system/components-default-management',
             description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty'
-        },{
+        },
+        {
             url: '/system/roles-default-management',
             description: 'Thông tin về các role default trong csdl'
         }
     ]);
-
-    // Tạo các role abstract mặc định để khởi tạo cho từng công ty
-    var roleAbstracts = await RootRole.insertMany([
-        {
-            name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
-            description: Terms.ROOT_ROLES.SUPER_ADMIN.DESCRIPTION
-        },{
-            name: Terms.ROOT_ROLES.ADMIN.NAME,
-            description: Terms.ROOT_ROLES.ADMIN.DESCRIPTION
-        },{
-            name: Terms.ROOT_ROLES.DEAN.NAME,
-            description: Terms.ROOT_ROLES.DEAN.DESCRIPTION
-        },{
-            name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
-            description: Terms.ROOT_ROLES.VICE_DEAN.DESCRIPTION
-        },{
-            name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
-            description: Terms.ROOT_ROLES.EMPLOYEE.DESCRIPTION
-        }
-    ])
-    // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
-    // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
-    const linkDefaults = await SystemLink.insertMany([
-
-        // Common
-        {
-            url: '/',
-            description: 'Trang chủ',
-            category: Terms.CATEGORY_LINKS[0].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ]
-        },{
-            url: '/notifications',
-            description: 'Thông báo',
-            category: Terms.CATEGORY_LINKS[0].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
-        },
-
-        // RBAC
-        {
-            url: '/users-management',
-            description: 'Quản lý người dùng',
-            category: Terms.CATEGORY_LINKS[1].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },{
-            url: '/roles-management',
-            description: 'Quản lý phân quyền',
-            category: Terms.CATEGORY_LINKS[1].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },{
-            url: '/departments-management',
-            description: 'Quản lý cơ cấu tổ chức',
-            category: Terms.CATEGORY_LINKS[1].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },{
-            url: '/links-management',
-            description: 'Quản lý trang',
-            category: Terms.CATEGORY_LINKS[1].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },{
-            url: '/components-management',
-            description: 'Quản lý thành phần UI',
-            category: Terms.CATEGORY_LINKS[1].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },
-
-        // KPI
-        {
-            url: '/kpi-units/create',
-            description: 'Khởi tạo Kpi đơn vị',
-            category: Terms.CATEGORY_LINKS[2].name,
-            roles: [ roleAbstracts[2]._id]
-        },{
-            url: '/kpi-units/overview',
-            description: 'Tổng quan Kpi đơn vị',
-            category: Terms.CATEGORY_LINKS[2].name,
-            roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/kpi-personals/create',
-            description: 'Khởi tạo Kpi cá nhân',
-            category: Terms.CATEGORY_LINKS[2].name,
-            roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/kpi-personals/overview',
-            description:'Tổng quan Kpi cá nhân',
-            category: Terms.CATEGORY_LINKS[2].name,
-            roles:[roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/kpi-member/overview',
-            description: 'Quản lí kpi nhân viên',
-            category: Terms.CATEGORY_LINKS[2].name,
-            roles:[roleAbstracts[2]._id]
-        },
-
-        // EMPLOYEE
-        {
-            url: '/hr-manage-holiday',
-            description: 'Kế hoạch làm việc',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-add-employee',
-            description: 'Thêm mới nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-list-employee',
-            description: 'Danh sách nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-update-employee',
-            description: 'Cập nhật thông tin cá nhân của nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-detail-employee',
-            description: 'Thông tin cá nhân nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-salary-employee',
-            description: 'Quản lý lương nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-sabbatical',
-            description: 'Quản lý nghỉ phép của nhân viên',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-discipline',
-            description: 'Quản lý khen thưởng, kỷ luật',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-dashboard-employee',
-            description: 'Dashboard nhân sự',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-time-keeping',
-            description: 'Quản lý chấm công',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-account',
-            description: 'Thông tin tài khoản',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-manage-department',
-            description: 'Quản lý nhân sự các đơn vị',
-            category: Terms.CATEGORY_LINKS[4].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },
-
-        // EDUCATION
-        {
-            url: '/hr-training-plan',
-            description: 'Kế hoạch đào tạo',
-            category: Terms.CATEGORY_LINKS[5].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-list-education',
-            description: 'Chương trình đào tạo bắt buộc',
-            category: Terms.CATEGORY_LINKS[5].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/hr-trainning-course',
-            description: 'Quản lý đào tạo',
-            category: Terms.CATEGORY_LINKS[5].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },
-
-        // TASK
-        {
-            url:'/task-management',
-            description:'Xem danh sách công việc',
-            category: Terms.CATEGORY_LINKS[3].name,
-            roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
-            url: '/task-management-dashboard',
-            description: 'Dashboard công việc',
-            category: Terms.CATEGORY_LINKS[3].name,
-            roles: [ roleAbstracts[4]._id, roleAbstracts[3]._id, roleAbstracts[2]._id]
-        },{
-            url: '/task-template',
-            description: 'Mẫu công việc',
-            category: Terms.CATEGORY_LINKS[3].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },
-
-        // DOCUMENT
-        {
-            url: '/documents-management',
-            description: 'Quản lý tài liệu biểu mẫu',
-            category: Terms.CATEGORY_LINKS[6].name,
-            roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
-        },
-
-        // PROCESS
-        
-    ]);
-    console.log("link defaults: ", linkDefaults);
-
     await Privilege.insertMany([
         {
             resourceId: links[0]._id,
@@ -307,6 +125,90 @@ const seedDatabase = async () => {
             roleId: roleSystemAdmin._id
         }
     ]);
+    
+    
+    
+    
+    // Step 7: Tạo các role abstract mặc định để khởi tạo cho từng công ty
+    let roleSuperAdmin = await RootRole.create({
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
+        description: Terms.ROOT_ROLES.SUPER_ADMIN.DESCRIPTION
+    });
+    let roleAdmin = await RootRole.create({
+        name: Terms.ROOT_ROLES.ADMIN.NAME,
+        description: Terms.ROOT_ROLES.ADMIN.DESCRIPTION
+    });
+    let roleDean = await RootRole.create({
+        name: Terms.ROOT_ROLES.DEAN.NAME,
+        description: Terms.ROOT_ROLES.DEAN.DESCRIPTION
+    });
+    let roleViceDean = await RootRole.create({
+        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
+        description: Terms.ROOT_ROLES.VICE_DEAN.DESCRIPTION
+    });
+    let roleEmployee = await RootRole.create({
+        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
+        description: Terms.ROOT_ROLES.EMPLOYEE.DESCRIPTION
+    });
+
+
+
+
+
+
+    // Step 8: Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
+    let systemLinks = Terms.LINKS;
+    let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.NAME){
+            return roleSuperAdmin._id;
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.NAME){
+            return roleAdmin._id;
+        } else if (roleName === Terms.ROOT_ROLES.DEAN.NAME){
+            return roleDean._id;
+        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.NAME){
+            return roleViceDean._id;
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.NAME){
+            return roleEmployee._id;
+        }
+    }
+
+    let componentLinkMap = {};
+
+    for (let i=0; i<systemLinks.length; ++i) {
+        let systemComponents = systemLinks[i].components;
+        if (systemComponents && systemComponents.length>0) { // Tạo các components
+            systemComponents = systemComponents.map(component => { // Liên kết với role
+                component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
+                return component;
+            })
+
+            let mongodbSystemComponents = await SystemComponent.insertMany(systemComponents);
+            systemComponents = mongodbSystemComponents.map(component => component._id);
+            systemLinks[i].components = systemComponents;
+
+            mongodbSystemComponents.forEach(mongodbComponent => {
+                componentLinkMap[mongodbComponent._id] = i;
+            });
+        }
+
+        let roles = systemLinks[i].roles;
+        if (roles){
+            systemLinks[i].roles = roles.map(role => convertRoleNameToRoleId(role));
+        }
+    }
+
+    const mongodbSystemLinks = await SystemLink.insertMany(systemLinks); // Tạo các links
+    
+    for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
+        let systemComponent = await SystemComponent.findById(id);
+        systemComponent.link = mongodbSystemLinks[componentLinkMap[id]]._id;
+        await systemComponent.save();
+    }
+
+    
+    
+    
+    
 
     // Kết thúc việc khởi tạo dữ liệu mẫu
     await console.log("Đã tạo xong dữ liệu mẫu");

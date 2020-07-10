@@ -1,5 +1,5 @@
 const { SystemLink, RootRole, SystemComponent } = require('../../../models').schema;
-const {CATEGORY_LINKS} = require('../../../seed/terms');
+const {LINK_CATEGORY} = require('../../../seed/terms');
 
 /**
  * Lấy danh sách tất cả các system link 
@@ -18,7 +18,7 @@ exports.getAllSystemLinks = async () => {
  */
 exports.getAllSystemLinkCategories = async () => {
     
-    return CATEGORY_LINKS;
+    return Object.keys(LINK_CATEGORY).map(key => LINK_CATEGORY[key]);
 }
 
 /**
