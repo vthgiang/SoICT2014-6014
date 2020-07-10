@@ -70,7 +70,7 @@ class CompanyCreateForm extends Component {
                                     <table className="table table-hover table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style={{width: '32px'}}></th>
+                                                <th style={{width: '32px'}} className="col-fixed"></th>
                                                 <th>{ translate('system_admin.system_link.table.category') }</th>
                                                 <th>{ translate('system_admin.system_link.table.url') }</th>
                                                 <th>{ translate('system_admin.system_link.table.description') }</th>
