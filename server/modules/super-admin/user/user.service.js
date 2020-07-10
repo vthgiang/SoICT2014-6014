@@ -75,7 +75,7 @@ exports.createUser = async (data, company) => {
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
 
-    var checkUser = await User.findOne({ email: data.email, company});
+    var checkUser = await User.findOne({ email: data.email });
     if(checkUser !== null) throw['email_exist'];
     var user = await User.create({
         name: data.name,
