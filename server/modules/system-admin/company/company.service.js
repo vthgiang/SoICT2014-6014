@@ -8,14 +8,26 @@ const { update } = require('../../../models/auth/role.model');
 /**
  * Lấy danh sách tất cả các công ty
  */
-exports.getAllCompanies = async () => {
-    const companies = await Company.find()
+exports.getAllCompanies = async (query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        return await Company.find()
         .populate([
             { path: "links", model: Link },
             { path: "superAdmin", model: User, select: '_id name email' }
         ]);
-
-    return companies;
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? {[`${query.key}`]: new RegExp(query.value, "i")}
+            : {};
+        console.log("option: ", option);
+        return await Company.paginate( option , {page, limit, populate: [
+            { path: 'links', model: Link },
+            { path: "superAdmin", model: User, select: '_id name email' }
+        ]});
+    }
 }
 
 /**
@@ -27,21 +39,6 @@ exports.getCompany = async (id) => {
         { path: "links", model: Link },
         { path: "superAdmin", model: User, select: '_id name email' }
     ]);
-}
-
-/**
- * Lấy danh sách các công ty theo phân trang
- * @limit giới hạn trên 1 trang
- * @page trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedCompanies = async (limit, page, data={}) => {
-    const companies = await Company.paginate( data , {page, limit, populate: [
-        { path: 'links', model: Link },
-        { path: "superAdmin", model: User, select: '_id name email' }
-    ]});
-
-    return companies;
 }
 
 /**
@@ -264,19 +261,6 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
 }
 
 /**
- * Lấy danh sách tất cả các link của 1 công ty
- * @companyId id của công ty
- */
-exports.getCompanyLinks = async(companyId) => {
-    const check = await Company.findById(companyId);
-    if(check === null) throw ['company_not_found'];
-    const links = await Link.find({company: companyId})
-        .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} });
-
-    return links;
-}
-
-/**
  * Chỉnh sửa email của tài khoản super admin của công ty
  * @companyId id của công ty
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
@@ -399,35 +383,60 @@ exports.deleteCompanyComponent = async(companyId, componentId) => {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-exports.getCompanyLinks = async(companyId) => {
-    return await Link.find({ company: companyId });
-}
+exports.getCompanyLinks = async(companyId, query) => {
+    const check = await Company.findById(companyId);
+    if(check === null) throw ['company_not_found'];
 
-/**
- * Lấy danh sách các link của 1 công ty theo phân trang
- * @companyId id của công ty
- * @page trang muốn lấy
- * @limit giới hạn trên một trang
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedCompanyLinks = async (companyId, page, limit, data={}) => {
-    const newData = await Object.assign({ company: companyId }, data );
-    return await Link
-        .paginate( newData , { 
-            page, 
-            limit
-        });
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        return await Link
+            .find({company: companyId})
+            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} });
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company: companyId}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company: companyId};
+        console.log("option: ", option);
+        return await Link.paginate( option , {page, limit, populate: [
+            { path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} }
+        ]});
+    }
 }
 
 /**
  * Lấy danh sách các component của công ty
  * @companyId id của công ty
  */
-exports.getCompanyComponents = async (companyId) => {
-    return await Component.find({ company: companyId })
-        .populate([
-            { path: 'link', model: Link}
-        ]);
+exports.getCompanyComponents = async (companyId, query) => {
+    const check = await Company.findById(companyId);
+    if(check === null) throw ['company_not_found'];
+
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        return await Component.find({ company: companyId })
+            .populate([
+                { path: 'link', model: Link}
+            ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company: companyId}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company: companyId};
+        console.log("option link: ", option);
+        const rescom = await Component
+            .paginate( option , { 
+                page, 
+                limit,
+                populate: [
+                    {path: 'link', model: Link}
+                ]
+            });
+            console.log('rescom: ', rescom)
+        return rescom;
+    }
 }
 
 /**
@@ -440,26 +449,6 @@ exports.getComponentById = async (componentId) => {
             { path: 'link', model: Link}
         ]);
 }
-
-/**
- * Lấy danh sách các component của công ty theo phân trang
- * @companyId id của công ty
- * @page trang muốn lấy
- * @limit giới hạn trên một trang
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedCompanyComponents = async (companyId, page, limit, data={}) => {
-    const newData = await Object.assign({ company: companyId }, data );
-    return await Component
-        .paginate( newData , { 
-            page, 
-            limit,
-            populate: [
-                {path: 'link', model: Link}
-            ]
-        });
-}
-
 
 /**
  * Lấy thông tin cấu hình file import

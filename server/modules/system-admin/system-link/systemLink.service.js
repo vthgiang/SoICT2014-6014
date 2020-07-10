@@ -4,12 +4,25 @@ const {LINK_CATEGORY} = require('../../../seed/terms');
 /**
  * Lấy danh sách tất cả các system link 
  */
-exports.getAllSystemLinks = async () => {
-
-    return await SystemLink.find().populate([
-        { path: 'roles', model: RootRole },
-        { path: 'components', model: SystemComponent }
-    ]);
+exports.getAllSystemLinks = async (query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        return await SystemLink.find().populate([
+            { path: 'roles', model: RootRole },
+            { path: 'components', model: SystemComponent }
+        ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? {[`${query.key}`]: new RegExp(query.value, "i")}
+            : {};
+        console.log("option: ", option);
+        return await SystemLink.paginate( option, {page, limit, populate: [
+            { path: 'roles', model: RootRole },
+            { path: 'components', model: SystemComponent }
+        ]});
+    }
 }
 
 /**
@@ -19,20 +32,6 @@ exports.getAllSystemLinks = async () => {
 exports.getAllSystemLinkCategories = async () => {
     
     return Object.keys(LINK_CATEGORY).map(key => LINK_CATEGORY[key]);
-}
-
-/**
- * Phân trang danh sách system link
- * @limit giới hạn dữ liệu
- * @page trang
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedSystemLinks = async (limit, page, data={}) => {
-    
-    return await SystemLink.paginate( data, {page, limit, populate: [
-        { path: 'roles', model: RootRole },
-        { path: 'components', model: SystemComponent }
-    ]});
 }
 
 /**

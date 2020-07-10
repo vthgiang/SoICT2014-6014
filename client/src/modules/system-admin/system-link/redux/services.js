@@ -4,17 +4,17 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const LinkDefaultServices = {
     get,
     getCategories,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get() {
+function get(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
-        method: 'GET'
+        method: 'GET',
+        params
     }, false, true, 'system_admin.system_link')
 }
 

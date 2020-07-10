@@ -17,7 +17,7 @@ class CompanyTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: { $regex: '', $options: 'i' }
+            value: ''
         }
     }
 
@@ -53,10 +53,6 @@ class CompanyTable extends Component {
             }
         });
         await window.$('#modal-edit-company').modal('show');
-        await this.props.linksList(company._id);
-        await this.props.linksPaginate(company._id, 1, 5);
-        await this.props.componentsList(company._id);
-        await this.props.componentsPaginate(company._id, 1, 5);
     }
 
     handleService = async (company) => {
@@ -68,16 +64,9 @@ class CompanyTable extends Component {
         });
         await window.$('#modal-edit-services-company').modal('show');
         await this.props.linksList(company._id);
-        await this.props.linksPaginate(company._id, 1, 5);
+        await this.props.linksList(company._id, {page: 1, limit: 5});
         await this.props.componentsList(company._id);
-        await this.props.componentsPaginate(company._id, 1, 5);
-    }
-
-    componentDidMount(){
-        this.props.get();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
-        this.props.getLinksDefault();
-        this.props.getComponentsDefault();
+        await this.props.componentsList(company._id, {page: 1, limit: 5});
     }
 
     render() { 
@@ -186,37 +175,40 @@ class CompanyTable extends Component {
     searchWithOption = async() => {
         const data = {
             limit: this.state.limit,
-            page: 1
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
         };
-        data[this.state.option] = this.state.value;
-        await this.props.getPaginate(data);
+        await this.props.get(data);
     }
 
-    setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.get(data);
     }
-    
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-    
+
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.get(data);
+    }
+
+    componentDidMount(){
+        this.props.get();
+        this.props.get({page: this.state.page, limit: this.state.limit});
+        this.props.getLinksDefault();
+        this.props.getComponentsDefault();
     }
 }
  
@@ -227,7 +219,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
-    getPaginate: CompanyActions.getPaginate,
     getLinksDefault: LinkDefaultActions.get,
     getComponentsDefault: ComponentDefaultActions.get,
     linksList: CompanyActions.linksList,

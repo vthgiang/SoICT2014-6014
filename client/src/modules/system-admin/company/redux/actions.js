@@ -3,7 +3,6 @@ import { CompanyConstants } from "./constants";
 
 export const CompanyActions = {
     get,
-    getPaginate,
     create,
     edit,
     addNewLink,
@@ -11,47 +10,44 @@ export const CompanyActions = {
     deleteLink,
     deleteComponent,
     linksList,
-    linksPaginate,
     componentsList,
-    componentsPaginate,
 
     getImportConfiguration,
     createImportConfiguration,
     editImportConfiguration,
 };
 
-function get(){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_COMPANIES_REQUEST});
-        CompanyServices.get()
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_COMPANIES_SUCCESS,
-                    payload: res.data.content
+function get(data){
+    if(data === undefined)
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_COMPANIES_REQUEST});
+            CompanyServices.get()
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_COMPANIES_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(err => {
-                
-                dispatch({ type: CompanyConstants.GET_COMPANIES_FAILE});
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST});
-        CompanyServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_COMPANIES_PAGINATE_SUCCESS,
-                    payload: res.data.content
+                .catch(err => {
+                    
+                    dispatch({ type: CompanyConstants.GET_COMPANIES_FAILE});
                 })
-            })
-            .catch(err => {
-                dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_FAILE});
-                
-            })
-    }
+        }
+    else
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST});
+            CompanyServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_COMPANIES_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_FAILE});
+                    
+                })
+        }
 }
 
 function create(company){
@@ -155,70 +151,66 @@ function deleteComponent(companyId, componentId){
     }
 }
 
-function linksList(companyId){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST});
-        CompanyServices.linksList(companyId)
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE});
-            })
+function linksList(companyId, data){
+    if(data === undefined)
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST});
+            CompanyServices.linksList(companyId)
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_SUCCESS,
+                        payload: res.data.content
+                    });
+                })
+                .catch(err => {
+                    dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE});
+                })
+        }
+    else
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST});
+            CompanyServices.linksList(companyId, data)
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS,
+                        payload: res.data.content
+                    });
+                })
+                .catch(err => {
+                    dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE});
+                })
     }
 }
 
-function linksPaginate(companyId, page, limit, data={}){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST});
-        CompanyServices.linksPaginate(companyId, page, limit, data)
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE});
-            })
-        
-    }
-}
-
-function componentsList(companyId){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST});
-        CompanyServices.componentsList(companyId)
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE});
-            })
-        
-    }
-}
-
-function componentsPaginate(companyId, page, limit, data={}){
-    return dispatch => {
-        dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST});
-        CompanyServices.componentsPaginate(companyId, page, limit, data)
-            .then(res => {
-                dispatch({
-                    type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE});
-            })
-    }
+function componentsList(companyId, data){
+    if(data === undefined)
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST});
+            CompanyServices.componentsList(companyId)
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS,
+                        payload: res.data.content
+                    });
+                })
+                .catch(err => {
+                    dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE});
+                })
+        }
+    else
+        return dispatch => {
+            dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST});
+            CompanyServices.componentsList(companyId, data)
+                .then(res => {
+                    dispatch({
+                        type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS,
+                        payload: res.data.content
+                    });
+                })
+                .catch(err => {
+                    dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE});
+                })
+        }
 }
 
 function getImportConfiguration(data){
