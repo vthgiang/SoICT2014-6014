@@ -12,7 +12,7 @@ const fs = require('fs');
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
-    if(error) throw (error.details[0].message);
+    if(error) throw ["email_password_invalid"];
 
     const user = await User
         .findOne({email : data.email})
