@@ -15,7 +15,7 @@ const {
     EducationProgram,
     Course,
 
-    //asset
+    
     Asset,
     AssetType,
     AssetCrash,
@@ -59,7 +59,6 @@ const sampleCompanyData = async () => {
 
 
     // Step 1: TẠO DỮ LIỆU VỀ CÔNG TY VNIST
-
     console.log("Khởi tạo dữ liệu công ty!");
     var vnist = await Company.create({
         name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
@@ -76,7 +75,6 @@ const sampleCompanyData = async () => {
 
 
     // Step 2: TẠO CÁC TÀI KHOẢN NGƯỜI DÙNG CHO CÔNG TY VNIST
-
     console.log(`Khởi tạo các tài khoản cho công ty [${vnist.name}]`);
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
@@ -182,7 +180,6 @@ const sampleCompanyData = async () => {
 
 
     // Step 3: TẠO CÁC ROLE MẶC ĐỊNH CỦA CÔNG TY
-
     console.log("Lấy role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({
         name: Terms.ROLE_TYPES.ROOT
@@ -190,8 +187,6 @@ const sampleCompanyData = async () => {
     const roleChucDanh = await RoleType.findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
-
-
     const roleAdmin = await Role.create({
         name: Terms.ROOT_ROLES.ADMIN.name,
         company: vnist._id,
@@ -264,43 +259,41 @@ const sampleCompanyData = async () => {
 
 
 
-    // Step 4: GÁN QUYỀN CHO NHÂN VIÊN CỦA CỦA CÔNG TY 
-
+    // Step 4: GÁN QUYỀN CHO NHÂN VIÊN CỦA CỦA CÔNG TY
     console.log('Gán quyền cho nhân viên trong công ty ...');
-
-    await UserRole.insertMany([{ //gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
+    await UserRole.insertMany([{ // Gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
             userId: users[0]._id,
             roleId: roleSuperAdmin._id
         }, {
-            userId: users[1]._id, //gán tài khoản admin.vnist có role là admin
+            userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
             roleId: roleAdmin._id
         },
         // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-        { //Giám đốc Nguyễn Văn An
+        { // Giám đốc Nguyễn Văn An
             userId: users[2]._id,
             roleId: giamDoc._id
         },
-        { //Phó giám đốc Trần Văn Bình
+        { // Phó giám đốc Trần Văn Bình
             userId: users[3]._id,
             roleId: phoGiamDoc._id
         },
-        { //Thành viên ban giám đốc Vũ Thị Cúc
+        { // Thành viên ban giám đốc Vũ Thị Cúc
             userId: users[4]._id,
             roleId: thanhVienBGĐ._id
         },
-        { //Trưởng phòng kinh doanh Nguyễn Văn Danh
+        { // Trưởng phòng kinh doanh Nguyễn Văn Danh
             userId: users[5]._id,
             roleId: truongPhongHC._id
         },
-        { //Nguyễn Văn Danh cũng là thành viên ban giám đốc
+        { // Nguyễn Văn Danh cũng là thành viên ban giám đốc
             userId: users[5]._id,
             roleId: thanhVienBGĐ._id
         },
-        { //Phó phòng kinh doanh Trần Thị Én
+        { // Phó phòng kinh doanh Trần Thị Én
             userId: users[6]._id,
             roleId: phoPhongHC._id
         },
-        { //Nhân viên phòng kinh doanh Phạm Đình Phúc
+        { // Nhân viên phòng kinh doanh Phạm Đình Phúc
             userId: users[7]._id,
             roleId: nvPhongHC._id
         }
@@ -313,7 +306,6 @@ const sampleCompanyData = async () => {
 
 
     // Step 5: TẠO PHÒNG BAN CỦA CỦA CÔNG TY
-
     console.log('Tạo Phòng ban cho công ty...');
     const Directorate = await OrganizationalUnit.create({ // Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
@@ -343,8 +335,7 @@ const sampleCompanyData = async () => {
 
 
 
-    // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY 
-
+    // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY
     console.log("Tạo link cho các trang web của công ty...");
     let links = Terms.LINKS;
     for (let i=0; i<links.length; ++i){

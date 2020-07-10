@@ -156,7 +156,7 @@ const seedDatabase = async () => {
 
 
 
-    // Step 8: Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
+    // Step 8: Khởi tạo các system link để áp dụng cho các công ty sử dụng dịch vụ
     let systemLinks = Terms.LINKS;
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
         if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
