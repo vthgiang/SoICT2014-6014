@@ -110,9 +110,9 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
         }else return [];
     }
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
-    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME });
-    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME });
-    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME });
+    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.name });
+    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.name });
+    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.name });
 
     const employeeArr = await filterValidRoleArray(data.employees, companyID);
     console.log('employeeArr:', employeeArr)

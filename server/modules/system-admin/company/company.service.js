@@ -114,7 +114,7 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
     console.log("dữ liệu nhận được: ", companyId, companyName, userEmail)
     const checkEmail = await User.findOne({email: userEmail});
     if(checkEmail !== null) throw ['email_exist'];
-    const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name});
     console.log("role Super admin cong ty: ", roleSuperAdmin)
     const salt = await bcrypt.genSaltSync(10);
     const password = await generator.generate({ length: 10, numbers: true });
@@ -267,7 +267,7 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
 exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
     
     const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name});
     const oldSuperAdmin = await User.findById(com.superAdmin._id);
 
     if(oldSuperAdmin.email === superAdminEmail)

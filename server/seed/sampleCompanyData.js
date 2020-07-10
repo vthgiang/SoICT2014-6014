@@ -193,28 +193,28 @@ const sampleCompanyData = async () => {
 
 
     const roleAdmin = await Role.create({
-        name: Terms.ROOT_ROLES.ADMIN.NAME,
+        name: Terms.ROOT_ROLES.ADMIN.name,
         company: vnist._id,
         type: roleAbstract._id,
     });
     const roleSuperAdmin = await Role.create({
-        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
         company: vnist._id,
         type: roleAbstract._id,
         parents: [roleAdmin._id]
     });
     const roleDean = await Role.create({
-        name: Terms.ROOT_ROLES.DEAN.NAME,
+        name: Terms.ROOT_ROLES.DEAN.name,
         company: vnist._id,
         type: roleAbstract._id,
     });
     const roleViceDean = await Role.create({
-        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
+        name: Terms.ROOT_ROLES.VICE_DEAN.name,
         company: vnist._id,
         type: roleAbstract._id,
     });
     const roleEmployee = await Role.create({
-        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
+        name: Terms.ROOT_ROLES.EMPLOYEE.name,
         company: vnist._id,
         type: roleAbstract._id,
     });
@@ -351,15 +351,15 @@ const sampleCompanyData = async () => {
         links[i].company = vnist._id;
     }
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
-        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.NAME){
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
             return roleSuperAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.ADMIN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
             return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEAN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.DEAN.name){
             return roleDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name){
             return roleViceDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
             return roleEmployee._id;
         }
     }

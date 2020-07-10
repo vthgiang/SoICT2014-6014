@@ -62,7 +62,7 @@ const seedDatabase = async () => {
     });
     var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT}); 
     var roleSystemAdmin = await Role.create({ // Tạo role System Admin
-        name: Terms.ROOT_ROLES.SYSTEM_ADMIN.NAME,
+        name: Terms.ROOT_ROLES.SYSTEM_ADMIN.name,
         type: roleAbstract._id
     });
     await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id }); // Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
@@ -131,24 +131,24 @@ const seedDatabase = async () => {
     
     // Step 7: Tạo các role abstract mặc định để khởi tạo cho từng công ty
     let roleSuperAdmin = await RootRole.create({
-        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
-        description: Terms.ROOT_ROLES.SUPER_ADMIN.DESCRIPTION
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
+        description: Terms.ROOT_ROLES.SUPER_ADMIN.description
     });
     let roleAdmin = await RootRole.create({
-        name: Terms.ROOT_ROLES.ADMIN.NAME,
-        description: Terms.ROOT_ROLES.ADMIN.DESCRIPTION
+        name: Terms.ROOT_ROLES.ADMIN.name,
+        description: Terms.ROOT_ROLES.ADMIN.description
     });
     let roleDean = await RootRole.create({
-        name: Terms.ROOT_ROLES.DEAN.NAME,
-        description: Terms.ROOT_ROLES.DEAN.DESCRIPTION
+        name: Terms.ROOT_ROLES.DEAN.name,
+        description: Terms.ROOT_ROLES.DEAN.description
     });
     let roleViceDean = await RootRole.create({
-        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
-        description: Terms.ROOT_ROLES.VICE_DEAN.DESCRIPTION
+        name: Terms.ROOT_ROLES.VICE_DEAN.name,
+        description: Terms.ROOT_ROLES.VICE_DEAN.description
     });
     let roleEmployee = await RootRole.create({
-        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
-        description: Terms.ROOT_ROLES.EMPLOYEE.DESCRIPTION
+        name: Terms.ROOT_ROLES.EMPLOYEE.name,
+        description: Terms.ROOT_ROLES.EMPLOYEE.description
     });
 
 
@@ -159,15 +159,15 @@ const seedDatabase = async () => {
     // Step 8: Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
     let systemLinks = Terms.LINKS;
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
-        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.NAME){
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
             return roleSuperAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.ADMIN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
             return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEAN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.DEAN.name){
             return roleDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name){
             return roleViceDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.NAME){
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
             return roleEmployee._id;
         }
     }

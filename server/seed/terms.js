@@ -5,12 +5,12 @@ exports.ROLE_TYPES= {
 }
 
 const ROOT_ROLES = {
-    SYSTEM_ADMIN: {NAME: "System Admin", DESCRIPTION: "Quản lý các doanh nghiệp/công ty sử dụng dịch vụ"},
-    SUPER_ADMIN: {NAME: "Super Admin", DESCRIPTION: "Super Admin của một doanh nghiệp/công ty. Chỉ có một Super Admin duy nhất, không thể xóa"},
-    ADMIN: {NAME: "Admin", DESCRIPTION: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin"},
-    DEAN: {NAME: "Dean", DESCRIPTION: "Trưởng đơn vị trong một doanh nghiệp/công ty"},
-    VICE_DEAN: {NAME: "Vice Dean", DESCRIPTION: "Phó đơn vị trong một doanh nghiệp/công ty"},
-    EMPLOYEE: {NAME: "Employee", DESCRIPTION: "Nhân viên đơn vị trong một doanh nghiệp/công ty"},
+    SYSTEM_ADMIN: {name: "System Admin", description: "Quản lý các doanh nghiệp/công ty sử dụng dịch vụ"},
+    SUPER_ADMIN: {name: "Super Admin", description: "Super Admin của một doanh nghiệp/công ty. Chỉ có một Super Admin duy nhất, không thể xóa"},
+    ADMIN: {name: "Admin", description: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin"},
+    DEAN: {name: "Dean", description: "Trưởng đơn vị trong một doanh nghiệp/công ty"},
+    VICE_DEAN: {name: "Vice Dean", description: "Phó đơn vị trong một doanh nghiệp/công ty"},
+    EMPLOYEE: {name: "Employee", description: "Nhân viên đơn vị trong một doanh nghiệp/công ty"},
 }
 exports.ROOT_ROLES = ROOT_ROLES;
 
@@ -33,11 +33,11 @@ const LINKS = [
         description: `Trang chủ công ty`,
         category: LINK_CATEGORY.COMMON.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME,
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name
         ]
     },
     { // 1
@@ -45,8 +45,8 @@ const LINKS = [
         description: 'Quản lý cơ cấu tổ chức',
         category: LINK_CATEGORY.RBAC.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 2
@@ -54,8 +54,8 @@ const LINKS = [
         description: 'Quản lý người dùng',
         category: LINK_CATEGORY.RBAC.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 3
@@ -63,8 +63,8 @@ const LINKS = [
         description: 'Quản lý phân quyền',
         category: LINK_CATEGORY.RBAC.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 4
@@ -72,8 +72,8 @@ const LINKS = [
         description: 'Quản lý trang web của công ty',
         category: LINK_CATEGORY.RBAC.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 5
@@ -81,8 +81,8 @@ const LINKS = [
         description: 'Quản lý các thành phần UI trên trang web của công ty',
         category: LINK_CATEGORY.RBAC.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 6
@@ -90,8 +90,8 @@ const LINKS = [
         description: 'Quản lý tài liệu biểu mẫu',
         category: LINK_CATEGORY.DOCUMENT.name,
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
         ]
     },
     { // 7
@@ -99,7 +99,7 @@ const LINKS = [
         description: 'Kế hoạch làm việc',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 8
@@ -107,7 +107,7 @@ const LINKS = [
         description: 'Thêm mới nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 9
@@ -115,7 +115,7 @@ const LINKS = [
         description: 'Danh sách nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 10
@@ -123,7 +123,7 @@ const LINKS = [
         description: 'Cập nhật thông tin cá nhân của nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 11
@@ -131,7 +131,7 @@ const LINKS = [
         description: 'Thông tin cá nhân của nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 12
@@ -139,7 +139,7 @@ const LINKS = [
         description: 'Quản lý lương nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 13
@@ -147,7 +147,7 @@ const LINKS = [
         description: 'Quản lý nghỉ phép của nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 14
@@ -155,7 +155,7 @@ const LINKS = [
         description: 'Quản lý khen thưởng, kỷ luật',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 15
@@ -163,7 +163,7 @@ const LINKS = [
         description: 'Dashboard nhân sự',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 16
@@ -171,7 +171,7 @@ const LINKS = [
         description: 'Quản lý chấm công',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 17
@@ -179,7 +179,7 @@ const LINKS = [
         description: 'Quản lý đào tạo',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 18
@@ -187,7 +187,7 @@ const LINKS = [
         description: 'Thông tin tài khoản ',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 19
@@ -195,7 +195,7 @@ const LINKS = [
         description: 'Kế hoạch đào tạo',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 20
@@ -203,7 +203,7 @@ const LINKS = [
         description: 'Chương trình đào tạo bắt buộc',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -213,7 +213,7 @@ const LINKS = [
         description: 'Khởi tạo KPI đơn vị',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
+            ROOT_ROLES.DEAN.name,
         ]
     },
     { // 22
@@ -221,9 +221,9 @@ const LINKS = [
         description: 'Dashboard KPI đơn vị',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 23
@@ -231,8 +231,8 @@ const LINKS = [
         description: 'Khởi tạo KPI cá nhân',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { //24  /kpi-personal-manager
@@ -240,8 +240,8 @@ const LINKS = [
         description: 'Quản lí KPI cá nhân',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 25
@@ -253,17 +253,17 @@ const LINKS = [
                 name: 'create-notification',
                 description: 'Tạo thông báo mới',
                 roles: [
-                    ROOT_ROLES.ADMIN.NAME,
-                    ROOT_ROLES.SUPER_ADMIN.NAME,
+                    ROOT_ROLES.ADMIN.name,
+                    ROOT_ROLES.SUPER_ADMIN.name,
                 ]
             }
         ],
         roles: [
-            ROOT_ROLES.SUPER_ADMIN.NAME,
-            ROOT_ROLES.ADMIN.NAME,
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 26
@@ -271,7 +271,7 @@ const LINKS = [
         description: 'Quản lý nhân sự các đơn vị',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { // 27
@@ -283,14 +283,14 @@ const LINKS = [
                 name: 'create-task-template-button',
                 description: 'Button thêm mới mẫu công việc',
                 roles: [
-                    ROOT_ROLES.DEAN.NAME,
+                    ROOT_ROLES.DEAN.name,
                 ]
             }
         ],
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 28
@@ -298,7 +298,7 @@ const LINKS = [
         description: 'Quản lí kpi nhân viên',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
+            ROOT_ROLES.DEAN.name,
         ]
     },
     { // 29
@@ -306,9 +306,9 @@ const LINKS = [
         description: 'Xem danh sách công việc',
         category: LINK_CATEGORY.TASK.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 30 
@@ -316,9 +316,9 @@ const LINKS = [
         description: 'Dashboard công việc',
         category: LINK_CATEGORY.TASK.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { //47
@@ -326,9 +326,9 @@ const LINKS = [
         description: 'Chi tiết công việc',
         category: 'task-management',
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { // 31 /kpi-member-dashboard
@@ -336,7 +336,7 @@ const LINKS = [
         description: 'Dashboard KPI nhân viên',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
+            ROOT_ROLES.DEAN.name,
         ]
     },
     { // 32
@@ -344,7 +344,7 @@ const LINKS = [
         description: 'Quản lý KPI đơn vị',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
+            ROOT_ROLES.DEAN.name,
         ]
     },
 
@@ -359,8 +359,8 @@ const LINKS = [
         description: 'DashBoard Kpi cá nhân',
         category: LINK_CATEGORY.KPI.name,
         roles: [
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
 
@@ -372,7 +372,7 @@ const LINKS = [
         description: 'DashBoard quản lý tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { //36. quản lý loại tài sản
@@ -380,7 +380,7 @@ const LINKS = [
         description: 'Quản lý loại tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -389,7 +389,7 @@ const LINKS = [
         description: 'Quản lý thông tin tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -398,7 +398,7 @@ const LINKS = [
         description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -407,7 +407,7 @@ const LINKS = [
         description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -416,7 +416,7 @@ const LINKS = [
         description: 'Quản lý khấu hao tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -425,7 +425,7 @@ const LINKS = [
         description: 'Quản lý đề nghị mua sắm tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
     { //42. Quản lý đề nghị cấp phát tài sản
@@ -433,7 +433,7 @@ const LINKS = [
         description: 'Quản lý đề nghị cấp phát tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -442,7 +442,7 @@ const LINKS = [
         description: 'Quản lý sự cố tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.NAME,
+            ROOT_ROLES.ADMIN.name,
         ]
     },
 
@@ -452,9 +452,9 @@ const LINKS = [
         description: 'Đăng ký mua sắm tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { //45
@@ -462,9 +462,9 @@ const LINKS = [
         description: 'Đăng ký cấp phát tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
     { //46
@@ -472,9 +472,9 @@ const LINKS = [
         description: 'Quản lý tài sản được bàn giao',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     },
 
@@ -485,9 +485,9 @@ const LINKS = [
         description: 'Tài liệu',
         category: LINK_CATEGORY.DOCUMENT.name,
         roles: [
-            ROOT_ROLES.DEAN.NAME,
-            ROOT_ROLES.VICE_DEAN.NAME,
-            ROOT_ROLES.EMPLOYEE.NAME,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ]
     }
 ];
