@@ -141,7 +141,7 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
         resourceId: { $in: link.components }
     }).distinct('resourceId');
 
-    const components = Component.find({_id: {$in: data}});
+    const components = await Component.find({_id: {$in: data}});
 
     return components;
 }

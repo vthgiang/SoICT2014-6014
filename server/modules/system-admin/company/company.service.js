@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require("../../../seed/terms");
+const { update } = require('../../../models/auth/role.model');
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -244,6 +245,9 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
                 link: link._id,
                 company: companyId
             });
+            const updateLink = await Link.findById(link._id);
+            updateLink.components = [component._id, ...updateLink.components];
+            await updateLink.save();
             for (let k = 0; k < systemComponent.roles.length; k++) {
                 const rootRole = systemComponent.roles[k];
                 const role = await Role.findOne({name: rootRole.name, company: companyId});
