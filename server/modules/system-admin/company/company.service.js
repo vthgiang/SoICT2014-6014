@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require("../../../seed/terms");
-const { update } = require('../../../models/auth/role.model');
 
 /**
  * Lấy danh sách tất cả các công ty

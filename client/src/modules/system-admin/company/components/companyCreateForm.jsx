@@ -10,10 +10,10 @@ class CompanyCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            name: null,
-            shortName: null,
-            description: null,
-            email: null,
+            companyName: "",
+            companyShortName: "",
+            companyDescription: "",
+            companyEmail: "",
             linkDefaultArr: []
         }
     }
@@ -36,6 +36,7 @@ class CompanyCreateForm extends Component {
                     formID="form-create-company" isLoading={this.props.company.isLoading}
                     title={translate('system_admin.company.add')}
                     func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-company">
                         <div className="row" style={{padding: '20px'}}>
