@@ -402,11 +402,11 @@ const sampleCompanyData = async () => {
         }
     }
 
-    const mongodbSystemLinks = await Link.insertMany(links); // Tạo các links
+    const mongodbLinks = await Link.insertMany(links); // Tạo các links
     
     for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
         let component = await Component.findById(id);
-        component.link = mongodbSystemLinks[componentLinkMap[id]]._id;
+        component.link = mongodbLinks[componentLinkMap[id]]._id;
         await component.save();
     }
 
@@ -417,7 +417,7 @@ const sampleCompanyData = async () => {
     
     // Step 7: Phân quyền cho các trang
     let privileges_links = [];
-    mongodbSystemLinks.forEach(mongodbSystemLink => {
+    mongodbLinks.forEach(mongodbSystemLink => {
         if (mongodbSystemLink.roles) {
             mongodbSystemLink.roles.forEach(role => {
                 privileges_links.push({
