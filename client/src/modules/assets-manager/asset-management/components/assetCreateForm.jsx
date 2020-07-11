@@ -158,6 +158,7 @@ class AssetCreateForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
+        console.log(this.state, 'this.state-create')
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản" />
