@@ -1,1 +1,0 @@
-Chức năng quản lý loại tài sản (bên phía quản lý)
