@@ -70,7 +70,7 @@ function createRecommendDistribute(data) {
     }
 }
 
-// Xoá thông tin thông tin phiếu đề nghị mua sắm thiết bị
+// Xoá thông tin thông tin phiếu đăng ký sử dụng tài sản
 function deleteRecommendDistribute(id) {
     return dispatch => {
         dispatch({
@@ -92,7 +92,7 @@ function deleteRecommendDistribute(id) {
     }
 }
 
-// cập nhật thông tin phiếu cấp phát
+// cập nhật thông tin phiếu đăng ký sử dụng
 function updateRecommendDistribute(id, infoRecommendDistribute) {
     return async dispatch => {
         try {

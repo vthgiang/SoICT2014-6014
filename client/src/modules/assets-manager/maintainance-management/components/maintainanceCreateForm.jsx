@@ -178,6 +178,7 @@ class MaintainanceCreateForm extends Component {
         return result;
     }
 
+
     // Bắt sự kiện submit form
     save = () => {
         var partCreate = this.state.createDate.split('-');
@@ -196,10 +197,10 @@ class MaintainanceCreateForm extends Component {
                 endDate: endDate,
                 expense: this.state.expense,
                 status: this.state.status,
-                
+
             }
             let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
-            return this.props.createMaintainance(assetId,dataToSubit).then(({response}) => {
+            return this.props.createMaintainance(assetId, dataToSubit).then(({ response }) => {
                 if (response.data.success) {
                     this.props.getAllAsset({
                         code: "",
@@ -226,8 +227,7 @@ class MaintainanceCreateForm extends Component {
             <React.Fragment>
                 <ButtonModal modalID="modal-create-maintainance" button_name="Thêm mới phiếu" title="Thêm mới phiếu bảo trì" />
                 <DialogModal
-                    // size='75' modalID="modal-create-maintainance" isLoading={maintainance.isLoading}
-                    size='75' modalID="modal-create-maintainance"
+                    size='50' modalID="modal-create-maintainance"
                     formID="form-create-maintainance"
                     title="Thêm mới phiếu bảo trì"
                     func={this.save}
@@ -282,7 +282,7 @@ class MaintainanceCreateForm extends Component {
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
 
-                                
+
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>

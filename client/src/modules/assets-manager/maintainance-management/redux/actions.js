@@ -4,17 +4,17 @@ import {AssetManagerActions} from '../../asset-management/redux/actions';
 
 export const MaintainanceActions = {
     createMaintainance,
-    updateMaintainance, 
+    updateMaintainance,
     deleteMaintainance
 }
 
-function createMaintainance(id, data) {
+function createMaintainance(id, data, incident_id) {
     return async dispatch => {
         try {
             dispatch({
                 type: MaintainanceConstants.CREATE_MAINTAINANCE_REQUEST
             });
-            const response = await MaintainanceService.createMaintainance(id, data);
+            const response = await MaintainanceService.createMaintainance(id, data, incident_id);
             dispatch({
                 type: MaintainanceConstants.CREATE_MAINTAINANCE_SUCCESS,
                 payload: response.data.content

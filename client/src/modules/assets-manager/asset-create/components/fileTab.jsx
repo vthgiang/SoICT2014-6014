@@ -25,6 +25,22 @@ class FileTab extends Component {
         this.props.handleChange(name, value);
     }
 
+    /**
+     * Bắt sự kiện thay đổi mã hồ sơ
+     * archivedRecordNumber
+     */
+    handleArchivedRecordNumberChange = (e) => {
+        let value = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                archivedRecordNumber: value
+            }
+
+        });
+        this.props.handleChange("archivedRecordNumber", value);
+    }
+
     // Function thêm tài liệu đính kèm mặc định
     defaulteClick = async (e) => {
         var { translate } = this.props;
@@ -94,7 +110,7 @@ class FileTab extends Component {
                     <div className="col-md-4">
                         <div className="form-group">
                             <label>Nơi lưu trữ bản cứng</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder="Nơi lưu trữ bản cứng" autoComplete="off" />
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleArchivedRecordNumberChange} placeholder="Nơi lưu trữ bản cứng" autoComplete="off" />
                         </div>
                     </div>
                     <div className="col-md-12">

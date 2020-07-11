@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AssetCreateValidator } from './assetCreateValidator';
-import { DatePicker, ErrorLabel } from '../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 import moment from 'moment';
 
 class DepreciationTab extends Component {
@@ -129,6 +129,16 @@ class DepreciationTab extends Component {
         return msg === undefined;
     }
 
+    /**
+     * Bắt sự kiện thay đổi phương pháp khấu hao
+     */
+    handleDepreciationTypeChange = (value) => {
+        this.setState({
+            depreciationType: value[0]
+        })
+        this.props.handleChange('depreciationType', value[0]);
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -138,8 +148,10 @@ class DepreciationTab extends Component {
                 residualValue: nextProps.residualValue,
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
+                depreciationType: nextProps.depreciationType,
                 errorOnStartDepreciation: undefined,
                 errorOnUsefulLife: undefined,
+                errorOnDepreciationType: undefined,
             }
         } else {
             return null;
@@ -163,8 +175,8 @@ class DepreciationTab extends Component {
     render() {
         const { id, translate } = this.props;
         const {
-            cost, residualValue, usefulLife, startDepreciation, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnUsefulLife
+            cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
+            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnUsefulLife, errorOnDepreciationType
         } = this.state;
         console.log('startDepreciation', startDepreciation);
         return (
@@ -184,13 +196,13 @@ class DepreciationTab extends Component {
                                 placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                         </div>
                         <div className={`form-group ${errorOnUsefulLife === undefined ? "" : "has-error"} `}>
-                            <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span> (Ghi chú: Thời gian sử dụng = Thời gian trích khấu hao)</label>
+                            <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span></label>
                             <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
                                 placeholder="Thời gian trích khấu hao" autoComplete="off" />
                             <ErrorLabel content={errorOnUsefulLife} />
                         </div>
                         <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
-                            <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span> (Ghi chú: giá trị default = ngày nhập tài sản)</label>
+                            <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}
@@ -198,8 +210,25 @@ class DepreciationTab extends Component {
                             />
                             <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br />
+                        <div className={`form-group ${errorOnDepreciationType === undefined ? "" : "has-error"}`}>
+                            <label htmlFor="depreciationType">Phương pháp khấu hao<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`depreciationType${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={depreciationType}
+                                items={[
+                                    { value: '', text: '---Chọn phương pháp khấu hao---' },
+                                    { value: 'Đường thẳng', text: 'Phương pháp khấu hao đường thẳng' },
+                                    { value: 'Số dư giảm dần', text: 'Phương pháp khấu hao theo số dư giảm dần' },
+                                    { value: 'Sản lượng', text: 'Phương pháp khấu hao theo sản lượng'},
+                                ]}
+                                onChange={this.handleDepreciationTypeChange}
+                            />
+                            <ErrorLabel content={errorOnDepreciationType} />
+                        </div>
+                        {/* <div className="form-group">
+                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao</label><br />
                             <input
                                 className="form-control"
                                 id={`endDepreciation-${id}`}
@@ -216,7 +245,7 @@ class DepreciationTab extends Component {
                             <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br />
                             <input type="number" className="form-control" name="monthlyDepreciationValue" value={cost / usefulLife}
                                 placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
-                        </div>
+                        </div> */}
                     </fieldset>
                 </div>
             </div>

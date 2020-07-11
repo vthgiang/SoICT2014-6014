@@ -17,16 +17,25 @@ class AssetCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: LOCAL_SERVER_API + '/upload/human-resource/avatars/avatar5.png',
+            img: LOCAL_SERVER_API + '/upload/asset/pictures/picture5.png',
             avatar: "",
             asset: {
-                avatar: '/upload/human-resource/avatars/avatar5.png',
+                avatar: '/upload/asset/pictures/picture5.png',
                 purchaseDate: this.formatDate2(Date.now()),
-                assignedTo: null,
                 warrantyExpirationDate: this.formatDate2(Date.now()),
-                detailInfo: [],
+                assignedTo: null,
+                handoverFromDate: null,
+                handoverToDate: null,
                 status: "Sẵn sàng sử dụng",
+                description: "",
+                detailInfo: [],
+                residualValue: null,
                 startDepreciation: this.formatDate2(Date.now()),
+                disposalDate: null,
+                disposalType: "",
+                disposalCost: null,
+                disposalDesc: "",
+                archivedRecordNumber: ""
             },
             maintainanceLogs: [],
             usageLogs: [],
@@ -130,9 +139,10 @@ class AssetCreateForm extends Component {
         let result = this.validatorInput(this.state.asset.code) && this.validatorInput(this.state.asset.assetName) &&
             this.validatorInput(this.state.asset.serial) && this.validatorInput(this.state.asset.purchaseDate) &&
             this.validatorInput(this.state.asset.warrantyExpirationDate) && this.validatorInput(this.state.asset.location) &&
-            this.validatorInput(this.state.asset.assetType) && this.validatorInput(this.state.asset.managedBy) && 
+            this.validatorInput(this.state.asset.assetType) && this.validatorInput(this.state.asset.managedBy) &&
             this.validatorInput(this.state.asset.status) && this.validatorInput(this.state.asset.cost) &&
-            this.validatorInput(this.state.asset.usefulLife) && this.validatorInput(this.state.asset.startDepreciation);
+            this.validatorInput(this.state.asset.usefulLife) && this.validatorInput(this.state.asset.startDepreciation) &&
+            this.validatorInput(this.state.asset.depreciationType);
         return result;
     }
 
@@ -163,7 +173,7 @@ class AssetCreateForm extends Component {
             <React.Fragment>
                 <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản" />
                 <DialogModal
-                    size='100' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
+                    size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
                     formID="form-add-asset"
                     title="Thêm mới tài sản"
                     func={this.save}

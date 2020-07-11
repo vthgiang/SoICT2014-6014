@@ -43,6 +43,7 @@ export const AssetCreateValidator = {
     validateResidualValue, //Giá trị thu hồi dự tính
     validateUsefulLife, // Thời gian trích khấu hao
     validateStartDepreciation, // Thời gian bắt đầu trích khấu hao
+    validateDepreciationType, // Thời gian bắt đầu trích khấu hao
 
     /**
      * Thông tin sự cố
@@ -301,6 +302,15 @@ function validateStartDepreciation(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Thời gian bắt đầu trích khấu hao không được để trống";
+    }
+    return msg;
+}
+
+//kiểm tra phương pháp trích trích khấu hao
+function validateDepreciationType(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Phương pháp trích khấu hao không được để trống";
     }
     return msg;
 }

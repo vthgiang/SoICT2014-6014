@@ -109,6 +109,15 @@ class DepreciationEditForm extends Component {
         return msg === undefined;
     }
 
+    /**
+     * Bắt sự kiện thay đổi phương pháp khấu hao
+     */
+    handleDepreciationTypeChange = (value) => {
+        this.setState({
+            depreciationType: value[0]
+        })
+    }
+
 
     addMonthToEndDepreciation = (day) => {
         if (day !== undefined) {
@@ -124,12 +133,21 @@ class DepreciationEditForm extends Component {
         }
     };
 
+    // function kiểm tra các trường bắt buộc phải nhập
+    validatorInput = (value) => {
+        if (value !== undefined && value.toString().trim() !== '') {
+            return true;
+        }
+        return false;
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
             // this.validateCost(this.state.cost, false) &&
             // this.validateUsefulLife(this.state.usefulLife, false) &&
-            this.validateStartDepreciation(this.state.startDepreciation, false)
+            this.validateStartDepreciation(this.state.startDepreciation, false) &&
+            this.validatorInput(this.state.depreciationType);
         return result;
     }
 
@@ -143,6 +161,7 @@ class DepreciationEditForm extends Component {
                 usefulLife: this.state.usefulLife,
                 startDepreciation: startDepreciation,
                 residualValue: this.state.residualValue,
+                depreciationType: this.state.depreciationType,
                 assetId
             }
             return this.props.updateDepreciation(this.props._id, dataToSubmit);
@@ -159,6 +178,7 @@ class DepreciationEditForm extends Component {
                 residualValue: nextProps.residualValue,
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
+                depreciationType: nextProps.depreciationType,
                 errorOnStartDepreciation: undefined,
                 errorOnUsefulLife: undefined,
             }
@@ -172,10 +192,9 @@ class DepreciationEditForm extends Component {
         const { _id, translate, assetsManager } = this.props;
         var assetlist = assetsManager.listAssets;
         const { asset,
-            cost, residualValue, usefulLife, startDepreciation, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnUsefulLife
+            cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
+            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife
         } = this.state;
-        console.log(this.state, 'this.state-dep')
         return (
             <React.Fragment>
                 <DialogModal
@@ -183,7 +202,7 @@ class DepreciationEditForm extends Component {
                     formID="form-edit-depreciation"
                     title="Chỉnh sửa thông tin khấu hao tài sản"
                     func={this.save}
-                disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-edit-depreciation">
                         <div className="col-md-12">
@@ -200,7 +219,7 @@ class DepreciationEditForm extends Component {
                                             onChange={this.handleAssetChange}
                                             value={_id}
                                             multiple={false}
-                                        // disabled
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -217,13 +236,13 @@ class DepreciationEditForm extends Component {
                                     placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                             </div>
                             <div className={`form-group ${errorOnUsefulLife === undefined ? "" : "has-error"} `}>
-                                <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span> (Ghi chú: Thời gian sử dụng = Thời gian trích khấu hao)</label>
+                                <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
                                     placeholder="Thời gian trích khấu hao" autoComplete="off" />
                                 <ErrorLabel content={errorOnUsefulLife} />
                             </div>
                             <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
-                                <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span> (Ghi chú: giá trị default = ngày nhập tài sản)</label>
+                                <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`startDepreciation${_id}`}
                                     value={startDepreciation}
@@ -231,7 +250,24 @@ class DepreciationEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDepreciation} />
                             </div>
-                            <div className="form-group">
+                            <div className={`form-group ${errorOnDepreciationType === undefined ? "" : "has-error"}`}>
+                                <label htmlFor="depreciationType">Phương pháp khấu hao<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`depreciationType${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={depreciationType}
+                                    items={[
+                                        { value: '', text: '---Chọn hình thức thanh lý---' },
+                                        { value: 'Đường thẳng', text: 'Phương pháp khấu hao đường thẳng' },
+                                        { value: 'Số dư giảm dần', text: 'Phương pháp khấu hao theo số dư giảm dần' },
+                                        { value: 'Sản lượng', text: 'Phương pháp khấu hao theo sản lượng' },
+                                    ]}
+                                    onChange={this.handleDepreciationTypeChange}
+                                />
+                                <ErrorLabel content={errorOnDepreciationType} />
+                            </div>
+                            {/* <div className="form-group">
                                 <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br />
                                 <input
                                     className="form-control"
@@ -249,7 +285,7 @@ class DepreciationEditForm extends Component {
                                 <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br />
                                 <input type="number" className="form-control" name="monthlyDepreciationValue" value={cost / usefulLife}
                                     placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
-                            </div>
+                            </div> */}
                         </div>
                     </form>
                 </DialogModal>

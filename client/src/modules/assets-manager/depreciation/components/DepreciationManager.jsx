@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {DataTableSetting, DatePicker, PaginateBar, SelectMulti} from '../../../../common-components';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
-import {AssetTypeActions} from "../../asset-type/redux/actions";
-import {AssetDetailForm, AssetEditForm} from '../../asset-management/components/combinedContent';
-import { DepreciationEditForm} from './depreciationEditForm';
-import {UserActions} from '../../../super-admin/user/redux/actions';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from '../../../../common-components';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { AssetDetailForm, AssetEditForm } from '../../asset-management/components/combinedContent';
+import { DepreciationEditForm } from './depreciationEditForm';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class DepreciationManager extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class DepreciationManager extends Component {
     }
 
     componentDidMount() {
-        this.props.searchAssetTypes({typeNumber: "", typeName: "", limit: 0});
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getAllAsset(this.state);
 
     }
@@ -94,7 +94,7 @@ class DepreciationManager extends Component {
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -103,7 +103,7 @@ class DepreciationManager extends Component {
 
     // Function lưu giá trị tên tài sản vào state khi thay đổi
     handleAssetNameChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -162,7 +162,7 @@ class DepreciationManager extends Component {
     };
 
     render() {
-        const {translate, assetsManager, assetType} = this.props;
+        const { translate, assetsManager, assetType } = this.props;
         var lists = "";
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
@@ -184,20 +184,20 @@ class DepreciationManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom: 10}}>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                         options={{nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản"}}
-                                         onChange={this.handleTypeChange}
-                                         items={[]}
+                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                onChange={this.handleTypeChange}
+                                items={[]}
                             >
                             </SelectMulti>
                         </div>
@@ -216,66 +216,66 @@ class DepreciationManager extends Component {
                     </div>
                     <table id="depreciation-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th style={{width: "8%"}}>Mã tài sản</th>
-                            <th style={{width: "10%"}}>Tên tài sản</th>
-                            <th style={{width: "10%"}}>Loại tài sản</th>
-                            <th style={{width: "10%"}}>Nguyên giá</th>
-                            <th style={{width: "10%"}}>Thời gian bắt đầu trích khấu hao</th>
-                            <th style={{width: "10%"}}>Thời gian trích khấu hao</th>
-                            <th style={{width: "10%"}}>Mức độ KH trung bình năm</th>
-                            <th style={{width: "10%"}}>Mức độ KH trung bình tháng</th>
-                            <th style={{width: "10%"}}>Giá trị hao mòn lũy kế</th>
-                            <th style={{width: "10%"}}>Giá trị còn lại</th>
-                            <th style={{width: "10%"}}>Thời gian kết thúc trích khấu hao</th>
-                            <th style={{width: '120px', textAlign: 'center'}}>Hành động
+                            <tr>
+                                <th style={{ width: "8%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Loại tài sản</th>
+                                <th style={{ width: "10%" }}>Nguyên giá</th>
+                                <th style={{ width: "10%" }}>Thời gian bắt đầu trích khấu hao</th>
+                                <th style={{ width: "10%" }}>Thời gian trích khấu hao</th>
+                                <th style={{ width: "10%" }}>Mức độ KH trung bình năm</th>
+                                <th style={{ width: "10%" }}>Mức độ KH trung bình tháng</th>
+                                <th style={{ width: "10%" }}>Giá trị hao mòn lũy kế</th>
+                                <th style={{ width: "10%" }}>Giá trị còn lại</th>
+                                <th style={{ width: "10%" }}>Thời gian kết thúc trích khấu hao</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
-                                    tableId="depreciation-table"
-                                    columnArr={[
-                                        "Mã tài sản",
-                                        "Tên tài sản",
-                                        "Loại tài sản",
-                                        "Nguyên giá",
-                                        "Thời gian bắt đầu trích khấu hao",
-                                        "Thời gian trích khấu hao",
-                                        "Mức độ KH trung bình năm",
-                                        "Mức độ KH trung bình tháng",
-                                        "Giá trị hao mòn lũy kế",
-                                        "Giá trị còn lại",
-                                        "Thời gian kết thúc trích khấu hao"
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
+                                        tableId="depreciation-table"
+                                        columnArr={[
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Loại tài sản",
+                                            "Nguyên giá",
+                                            "Thời gian bắt đầu trích khấu hao",
+                                            "Thời gian trích khấu hao",
+                                            "Mức độ KH trung bình năm",
+                                            "Mức độ KH trung bình tháng",
+                                            "Giá trị hao mòn lũy kế",
+                                            "Giá trị còn lại",
+                                            "Thời gian kết thúc trích khấu hao"
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {(typeof lists !== 'undefined' && lists.length !== 0) &&
-                        lists.map((x, index) => (
-                            <tr key={index}>
-                                <td>{x.code}</td>
-                                <td>{x.assetName}</td>
-                                <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
-                                <td>{formater.format(parseInt(x.cost))} VNĐ</td>
-                                <td>{this.formatDate(x.startDepreciation)}</td>
-                                <td>{x.usefulLife} Tháng</td>
-                                <td>{formater.format(parseInt(12 * (x.cost / x.usefulLife)))} VNĐ/Năm</td>
-                                <td>{formater.format(parseInt((x.cost / x.usefulLife)))} VNĐ/Tháng</td>
-                                
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                                lists.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.code}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
+                                        <td>{formater.format(parseInt(x.cost))} VNĐ</td>
+                                        <td>{this.formatDate(x.startDepreciation)}</td>
+                                        <td>{x.usefulLife} tháng</td>
+                                        <td>{formater.format(parseInt(12 * (x.cost / x.usefulLife)))} VNĐ/năm</td>
+                                        <td>{formater.format(parseInt((x.cost / x.usefulLife)))} VNĐ/tháng</td>
 
-                                <td>{formater.format(parseInt(((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
-                                
 
-                                <td>{formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
-                                <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
-                                <td style={{textAlign: "center"}}>
-                                    <a onClick={() => this.handleView(x)} style={{width: '5px'}} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin khấu hao tài sản"><i className="material-icons">edit</i></a>
-                                </td>
-                            </tr>))
-                        }
+                                        <td>{formater.format(parseInt(((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
+
+
+                                        <td>{formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
+                                        <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin khấu hao tài sản"><i className="material-icons">edit</i></a>
+                                        </td>
+                                    </tr>))
+                            }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
@@ -283,7 +283,7 @@ class DepreciationManager extends Component {
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
                 {
@@ -305,13 +305,21 @@ class DepreciationManager extends Component {
                         description={this.state.currentRowView.description}
                         status={this.state.currentRowView.status}
                         detailInfo={this.state.currentRowView.detailInfo}
+
                         cost={this.state.currentRowView.cost}
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
+
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}
                         incidentLogs={this.state.currentRowView.incidentLogs}
+
+                        disposalDate={this.state.currentRowView.disposalDate}
+                        disposalType={this.state.currentRowView.disposalType}
+                        disposalCost={this.state.currentRowView.disposalCost}
+                        disposalDesc={this.state.currentRowView.disposalDesc}
+
                         archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
                         files={this.state.currentRowView.files}
                     />
@@ -325,6 +333,7 @@ class DepreciationManager extends Component {
                         residualValue={this.state.currentRow.residualValue}
                         startDepreciation={this.formatDate(this.state.currentRow.startDepreciation)}
                         usefulLife={this.state.currentRow.usefulLife}
+                        depreciationType={this.state.currentRow.depreciationType}
                     />
                 }
             </div>
@@ -333,8 +342,8 @@ class DepreciationManager extends Component {
 };
 
 function mapState(state) {
-    const {assetsManager, assetType, user} = state;
-    return {assetsManager, assetType, user};
+    const { assetsManager, assetType, user } = state;
+    return { assetsManager, assetType, user };
 };
 
 const actionCreators = {
@@ -345,4 +354,4 @@ const actionCreators = {
 };
 
 const connectedListDepreciation = connect(mapState, actionCreators)(withTranslate(DepreciationManager));
-export {connectedListDepreciation as DepreciationManager};
+export { connectedListDepreciation as DepreciationManager };

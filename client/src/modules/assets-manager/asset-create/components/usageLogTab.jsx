@@ -159,8 +159,8 @@ class UsageLogTab extends Component {
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.usedBy !== null && userlist.length ? userlist.filter(item => item._id === x.usedBy).pop().name : ''}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td>{x.startDate ? this.formatDate(x.startDate): ''}</td>
+                                            <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i

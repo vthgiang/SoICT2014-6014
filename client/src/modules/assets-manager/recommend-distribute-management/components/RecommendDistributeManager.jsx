@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
 import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
+import { UsageCreateForm } from './usageCreateForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-import { RecommendDistributeActions } from './../redux/actions';
-import {UserActions} from "../../../super-admin/user/redux/actions";
-import {AssetManagerActions} from "../../asset-management/redux/actions";
+import { RecommendDistributeActions } from '../../recommend-distribute/redux/actions';
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
+
 class RecommendDistributeManager extends Component {
     constructor(props) {
         super(props);
@@ -21,7 +22,15 @@ class RecommendDistributeManager extends Component {
     }
     componentDidMount() {
         this.props.searchRecommendDistributes(this.state);
-        this.props.getAllUsers();
+        this.props.getUser();
+        this.props.getAllAsset({
+            code: "",
+            assetName: "",
+            assetType: null,
+            status: null,
+            page: 0,
+            limit: 100,
+        });
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -32,6 +41,35 @@ class RecommendDistributeManager extends Component {
             }
         });
         window.$('#modal-edit-recommenddistributemanage').modal('show');
+    }
+
+    // Bắt sự kiện click thêm mới thông tin phiếu bảo trì
+    handleAddUsage = async (value, asset) => {
+        // value.asset = asset;
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowAdd: value
+            }
+        });
+        window.$('#modal-create-usage').modal('show');
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -106,9 +144,11 @@ class RecommendDistributeManager extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute } = this.props;
+        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
         var listRecommendDistributes = "";
-
+        var lists = "";
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
         if (this.props.recommendDistribute.isLoading === false) {
             listRecommendDistributes = this.props.recommendDistribute.listRecommendDistributes;
         }
@@ -119,7 +159,6 @@ class RecommendDistributeManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    {/* <RecommendDistributeCreateForm /> */}
                     <div className="form-group">
                         <h4 className="box-title">Danh sách phiếu đăng ký sử dụng tài sản: </h4>
                     </div>
@@ -146,9 +185,9 @@ class RecommendDistributeManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
                                     { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
+                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
                                 ]}
                             >
                             </SelectMulti>
@@ -161,7 +200,7 @@ class RecommendDistributeManager extends Component {
                     <table id="recommenddistributemanager-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                            <th style={{ width: "10%" }}>Mã phiếu</th>
+                                <th style={{ width: "10%" }}>Mã phiếu</th>
                                 <th style={{ width: "15%" }}>Ngày lập</th>
                                 <th style={{ width: "15%" }}>Người đề nghị</th>
                                 <th style={{ width: "17%" }}>Mã tài sản</th>
@@ -193,9 +232,9 @@ class RecommendDistributeManager extends Component {
                         </thead>
                         <tbody>
                             {(typeof listRecommendDistributes !== 'undefined' && listRecommendDistributes.length !== 0) &&
-                                listRecommendDistributes.map((x, index) =>{
+                                listRecommendDistributes.map((x, index) => {
                                     console.log(x);
-                                    return ( <tr key={index}>
+                                    return (<tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.proponent.name}</td>
@@ -204,21 +243,22 @@ class RecommendDistributeManager extends Component {
                                         <td>{x.dateStartUse}</td>
                                         <td>{x.dateEndUse}</td>
                                         <td>{x.approver ? x.approver.name : ''}</td>
-                                        {/*<td>{x.approver.name}</td>*/}
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleAddUsage(x, x.asset)} className="post_add text-green" style={{ width: '5px' }} title="Thêm mới thông tin sử dụng tài sản"><i
+                                                className="material-icons">post_add</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đăng ký sử dụng tài sản"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                    content="Xóa thông tin phiếu"
-                                                    data={{
-                                                        id: x._id,
-                                                        info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
-                                                    }}
-                                                    func={this.props.deleteRecommendDistribute}
+                                                content="Xóa thông tin phiếu"
+                                                data={{
+                                                    id: x._id,
+                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                }}
+                                                func={this.props.deleteRecommendDistribute}
                                             />
                                         </td>
                                     </tr>)
-                                } )
+                                })
                             }
                         </tbody>
                     </table>
@@ -232,22 +272,27 @@ class RecommendDistributeManager extends Component {
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendDistributeManagerEditForm
-                    _id={this.state.currentRow._id}
-                    recommendNumber={this.state.currentRow.recommendNumber}
-                    dateCreate={this.state.currentRow.dateCreate}
-                    proponent={this.state.currentRow.proponent}
-                    positionProponent={this.state.currentRow.positionProponent}
-                    reqContent={this.state.currentRow.reqContent}
-                    assetId={this.state.currentRow.asset && this.state.currentRow.asset._id}
-                    code={this.state.currentRow.asset && this.state.currentRow.asset.code}
-                    asset={this.state.currentRow.asset}
-                    assetName={this.state.currentRow.asset && this.state.currentRow.asset.assetName}
-                    dateStartUse={this.state.currentRow.dateStartUse}
-                    dateEndUse={this.state.currentRow.dateEndUse}
-                    approver={this.state.currentRow.approver}
-                    positionApprover={this.state.currentRow.positionApprover}
-                    status={this.state.currentRow.status}
-                    note={this.state.currentRow.note}
+                        _id={this.state.currentRow._id}
+                        recommendNumber={this.state.currentRow.recommendNumber}
+                        dateCreate={this.state.currentRow.dateCreate}
+                        proponent={this.state.currentRow.proponent}
+                        reqContent={this.state.currentRow.reqContent}
+                        asset={this.state.currentRow.asset}
+                        dateStartUse={this.state.currentRow.dateStartUse}
+                        dateEndUse={this.state.currentRow.dateEndUse}
+                        approver={this.state.currentRow.approver}
+                        status={this.state.currentRow.status}
+                        note={this.state.currentRow.note}
+                    />
+                }
+                {
+                    this.state.currentRowAdd !== undefined &&
+                    <UsageCreateForm
+                        _id={this.state.currentRowAdd._id}
+                        asset={this.state.currentRowAdd.asset}
+                        startDate={this.state.currentRowAdd.dateStartUse}
+                        endDate={this.state.currentRowAdd.dateEndUse}
+                        usedBy={this.state.currentRowAdd.proponent}
                     />
                 }
             </div >
@@ -256,12 +301,13 @@ class RecommendDistributeManager extends Component {
 };
 
 function mapState(state) {
-    const { recommendDistribute } = state;
-    return { recommendDistribute };
+    const { recommendDistribute, assetsManager, assetType, user, auth } = state;
+    return { recommendDistribute, assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
-    getAllUsers: UserActions.get,
+    getUser: UserActions.get,
+    getAllAsset: AssetManagerActions.getAllAsset,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel } from '../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 
 class DisposalTab extends Component {
     constructor(props) {
@@ -51,16 +51,11 @@ class DisposalTab extends Component {
     /**
      * Bắt sự kiện thay đổi hình thức thanh lý
      */
-    handleDisposalTypeChange = (e) => {
-        let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...this.state,
-                disposalType: value
-            }
-
-        });
-        this.props.handleChange("disposalType", value);
+    handleDisposalTypeChange = (value) => {
+        this.setState({
+            disposalType: value[0]
+        })
+        this.props.handleChange('disposalType', value[0]);
     }
 
     /**
@@ -120,17 +115,25 @@ class DisposalTab extends Component {
                             <label htmlFor="disposalDate">Thời gian thanh lý</label>
                             <DatePicker
                                 id={`disposalDate${id}`}
-                                value={disposalDate}
+                                value={disposalDate ? this.formatDate(disposalDate): ''}
                                 onChange={this.handleDisposalDateChange}
                             />
                         </div>
                         <div className="form-group">
                             <label htmlFor="disposalType">Hình thức thanh lý</label>
-                            <select className="form-control" name="disposalType" value={disposalType} onChange={this.handleDisposalTypeChange}>
-                                <option value="Tiêu hủy">Tiêu hủy</option>
-                                <option value="Nhượng bán">Nhượng bán</option>
-                                <option value="Tặng">Tặng</option>
-                            </select>
+                            <SelectBox
+                                id={`disposalType${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={disposalType}
+                                items={[
+                                    { value: '', text: '---Chọn hình thức thanh lý---'}, 
+                                    { value: 'Tiêu hủy', text: 'Tiêu hủy'},
+                                    { value: 'Nhượng bán', text: 'Nhượng bán'},
+                                    { value: 'Tặng', text: 'Tặng'},
+                                ]}
+                                onChange={this.handleDisposalTypeChange}
+                            />
                         </div>
                         <div className={`form-group`}>
                             <label htmlFor="disposalCost">Giá trị thanh lý (VNĐ)</label><br />
@@ -142,11 +145,6 @@ class DisposalTab extends Component {
                             <input type="text" className="form-control" name="disposalDesc" value={disposalDesc} onChange={this.handleDisposalDescriptionChange}
                                 placeholder="Nội dung thanh lý" autoComplete="off" />
                         </div>
-                        {/* <div className={`form-group`}>
-                            <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span> (Ghi chú: Thời gian sử dụng = Thời gian trích khấu hao)</label>
-                            <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
-                                placeholder="Thời gian trích khấu hao" autoComplete="off" />
-                        </div> */}
 
                     </fieldset>
                 </div>

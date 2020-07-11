@@ -111,12 +111,12 @@ class MaintainanceLogTab extends Component {
                                     maintainanceLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.maintainanceCode}</td>
-                                            <td>{this.formatDate(x.createDate)}</td>
+                                            <td>{x.createDate ? this.formatDate(x.createDate): ''}</td>
                                             <td>{x.type}</td>
                                             <td>{x.description}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{formater.format(parseInt(x.expense))} VNĐ</td>
+                                            <td>{x.startDate ? this.formatDate(x.startDate): ''}</td>
+                                            <td>{x.endDate ? this.formatDate(x.endDate): ''}</td>
+                                            <td>{x.expense ? formater.format(parseInt(x.expense)): ''} VNĐ</td>
                                             <td>{x.status}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i

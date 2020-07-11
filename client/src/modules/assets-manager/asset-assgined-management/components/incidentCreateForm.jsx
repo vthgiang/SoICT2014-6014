@@ -5,7 +5,7 @@ import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../comm
 import { IncidentActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetCreateValidator } from '../../asset-create/components/assetCreateValidator';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 class IncidentCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -139,7 +139,7 @@ class IncidentCreateForm extends Component {
             let dataToSubmit = {
                 incidentCode: this.state.incidentCode,
                 type: this.state.type,
-                reportedBy: !this.state.reportedBy ? this.props.user.list[0].id : this.state.reportedBy,
+                reportedBy: this.props.auth.user._id,
                 dateOfIncident: dateOfIncident,
                 description: this.state.description,
                 statusIncident: "Chờ xử lý",
@@ -147,7 +147,7 @@ class IncidentCreateForm extends Component {
                 assetId
             }
             // let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
-            return this.props.createIncident(assetId, dataToSubmit).then(({response}) => {
+            return this.props.createIncident(assetId, dataToSubmit).then(({ response }) => {
                 if (response.data.success) {
                     this.props.getAllAsset({
                         code: "",
@@ -155,7 +155,7 @@ class IncidentCreateForm extends Component {
                         month: null,
                         status: "",
                         page: 0,
-                        limit: 5,
+                        // limit: 5,
                     });
                 }
             });
@@ -163,8 +163,6 @@ class IncidentCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('nextProps,',nextProps);
-        console.log(prevState);
         if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
@@ -182,7 +180,7 @@ class IncidentCreateForm extends Component {
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
         const { incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription } = this.state;
-        console.log(this.state, 'this.state')
+        console.log(this.state, 'this.state-aa')
         return (
             <React.Fragment>
                 {/* <ButtonModal modalID="modal-create-assetcrash" button_name="Báo cáo sự cố tài sản" title="Báo cáo sự cố tài sản" /> */}
@@ -219,7 +217,7 @@ class IncidentCreateForm extends Component {
                                             onChange={this.handleAssetChange}
                                             value={asset._id}
                                             multiple={false}
-                                        // disabled
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -248,7 +246,7 @@ class IncidentCreateForm extends Component {
                                     value={dateOfIncident}
                                     onChange={this.handleDateOfIncidentChange}
                                 />
-                                <ErrorLabel content={errorOnDateOfIncident}/>
+                                <ErrorLabel content={errorOnDateOfIncident} />
                             </div>
                             <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>

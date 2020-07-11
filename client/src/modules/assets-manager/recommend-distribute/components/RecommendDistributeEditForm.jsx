@@ -179,7 +179,7 @@ class RecommendDistributeEditForm extends Component {
                 <DialogModal
                     size='75' modalID="modal-edit-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistribute"
-                    title="Chỉnh sửa thông tin phiếu đăng ký sử dụng thiết bị"
+                    title="Chỉnh sửa thông tin phiếu đăng ký sử dụng tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -212,10 +212,9 @@ class RecommendDistributeEditForm extends Component {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleProponentChange}
-                                                // value={auth.user._id}
                                                 value={proponent._id}
                                                 multiple={false}
-                                            // disabled
+                                            disabled
                                             />
                                         </div>
                                     </div>
@@ -241,6 +240,7 @@ class RecommendDistributeEditForm extends Component {
                                                 onChange={this.handleAssetChange}
                                                 value={asset._id}
                                                 multiple={false}
+                                                disabled
                                             />
                                         </div>
                                     </div>

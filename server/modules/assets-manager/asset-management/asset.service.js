@@ -77,13 +77,11 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createAsset = async (data, company, fileInfo) => {
-    console.log(data);
 
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let {maintainanceLogs, usageLogs, incidentLogs, locationLogs, files} = data;
     files = this.mergeUrlFileToObject(file, files);
-
     let createAsset = await Asset.create({
         company: company,
         avatar: avatar,
@@ -94,7 +92,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         purchaseDate: data.purchaseDate,
         warrantyExpirationDate: data.warrantyExpirationDate,
         managedBy: data.managedBy,
-        assignedTo: data.assignedTo,
+        assignedTo: data.assignedTo ? data.assignedTo : null,
         handoverFromDate: data.handoverFromDate,
         handoverToDate: data.handoverToDate,
         location: data.location,
@@ -107,6 +105,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         usefulLife: data.usefulLife,
         residualValue: data.residualValue,
         startDepreciation: data.startDepreciation,
+        depreciationType: data.depreciationType,
 
         // sửa chữa - bảo trì
         maintainanceLogs: maintainanceLogs,
@@ -192,7 +191,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
     oldAsset.managedBy = data.managedBy;
-    oldAsset.assignedTo = data.assignedTo!=='' ? data.assignedTo:null;
+    oldAsset.assignedTo = data.assignedTo !== '' ? data.assignedTo : null;
     oldAsset.handoverFromDate = data.handoverFromDate;
     oldAsset.handoverToDate = data.handoverToDate;
     oldAsset.location = data.location;
@@ -204,6 +203,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.usefulLife = data.usefulLife;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
+    oldAsset.depreciationType = data.depreciationType;
     // thanh lý
     oldAsset.disposalDate = data.disposalDate;
     oldAsset.disposalType = data.disposalType;
@@ -254,9 +254,10 @@ exports.deleteAsset = async (id) => {
 exports.updateDepreciation = async (id, data) => {
     return await Asset.update({_id: id}, {
         cost: data.cost,
+        residualValue: data.residualValue,
         usefulLife: data.usefulLife,
         startDepreciation: data.startDepreciation,
-        residualValue: data.residualValue,
+        depreciationType: data.depreciationType,
     });
 }
 
@@ -267,7 +268,7 @@ exports.createMaintainanceForIncident = async (id, incidentId, data) => {
     console.log(data, 'data-maintainance')
     return await Asset.update({_id: data.assetId, "incidentLogs._id": incidentId}, {
         $addToSet: {maintainanceLogs: data},
-        $set:{
+        $set: {
             "incidentLogs.$.statusIncident": data.statusIncident,
         }
     });
@@ -286,15 +287,24 @@ exports.searchMaintainances = async (id, data, company) => {
 /*
  * Thêm mới phiếu bảo trì
  */
-exports.createMaintainance = async (id, data) => {
-    return await Asset.update({_id: id}, {$addToSet: {maintainanceLogs: data}});
-}
+exports.createMaintainance = async (id, data, incident_id) => {
+    if (incident_id !== undefined) {
+        return await Asset.update({_id: id, "incidentLogs._id": incident_id}, {
+            $set: {
+                "incidentLogs.$.statusIncident": "Đã xử lý"
+            },
+            $addToSet: {maintainanceLogs: data}
+        });
+    } else {
+        return await Asset.update({_id: id}, {$addToSet: {maintainanceLogs: data}});
+    }
+};
 
 /**
  * Chỉnh sửa phiếu bảo trì
  */
 exports.updateMaintainance = async (maintainanceId, data) => {
-    return await Asset.update({_id: data.assetId, "maintainanceLogs._id":maintainanceId}, {
+    return await Asset.update({_id: data.assetId, "maintainanceLogs._id": maintainanceId}, {
         $set: {
             "maintainanceLogs.$.maintainanceCode": data.maintainanceCode,
             "maintainanceLogs.$.createDate": data.createDate,
@@ -340,7 +350,7 @@ exports.createUsage = async (id, data) => {
  * Chỉnh sửa thông tin sử dụng
  */
 exports.updateUsage = async (usageId, data) => {
-    return await Asset.update({_id: data.assetId, "usageLogs._id":usageId}, {
+    return await Asset.update({_id: data.assetId, "usageLogs._id": usageId}, {
         $set: {
             "usageLogs.$.usedBy": data.usedBy,
             "usageLogs.$.description": data.description,
@@ -356,7 +366,6 @@ exports.updateUsage = async (usageId, data) => {
 exports.deleteUsage = async (assetId, usageId) => {
     return await Asset.update({_id: assetId}, {"$pull": {"usageLogs": {"_id": usageId}}});
 }
-
 
 
 /**

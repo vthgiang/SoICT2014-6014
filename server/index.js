@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const multer = require('multer');
-multer({dest: 'upload/avatars'});
+multer({ dest: 'upload/avatars' });
 require('dotenv').config();
 
 
@@ -48,7 +48,7 @@ const systemComponent = require('./modules/system-admin/system-component/systemC
 const systemLink = require('./modules/system-admin/system-link/systemLink.route');
 const rootRole = require('./modules/system-admin/root-role/rootRole.route');
 
-const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
+const tasktemplate = require("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
 
@@ -80,7 +80,8 @@ app.use(cookieParser());
 app.use('/upload/human-resource/avatars', express.static('upload/human-resource/avatars'));
 app.use('/upload/human-resource/templateImport', express.static('upload/human-resource/templateImport'));
 app.use('/upload/avatars', express.static('upload/avatars'));
- 
+app.use('/upload/asset/pictures', express.static('upload/asset/pictures'));
+
 
 
 
@@ -88,10 +89,10 @@ const db = process.env.DATABASE;// DB Config
 mongoose // Connect to MongoDB
     .connect(
         db, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    }
     )
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
@@ -102,8 +103,8 @@ mongoose.set('useFindAndModify', false); // Global setting cho mongoose, không 
 global.isLog = false;
 const Logger = require('./models/system-admin/log.model');
 Logger.findOne({
-        name: 'log'
-    })
+    name: 'log'
+})
     .then(result => {
         result.status ? isLog = true : isLog = false;
     })
@@ -156,10 +157,10 @@ app.use("/educationPrograms", educationPrograms);
 app.use("/courses", courses);
 
 //asset
-app.use("/assettype",assetType);
+app.use("/assettype", assetType);
 app.use("/assets", asset);
-app.use("/recommendprocure",recommendProcure);
-app.use("/recommenddistribute",recommendDistribute);
+app.use("/recommendprocure", recommendProcure);
+app.use("/recommenddistribute", recommendDistribute);
 
 // Start server
 const port = process.env.PORT || 5000;

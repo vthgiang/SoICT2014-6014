@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { DialogModal } from '../../../../common-components';
 import {
-    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, AttachmentTab
+    GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, AttachmentTab
 } from '../../asset-info/components/combinedContent';
 class AssetDetailForm extends Component {
     constructor(props) {
@@ -37,9 +37,14 @@ class AssetDetailForm extends Component {
                 residualValue: nextProps.residualValue,
                 startDepreciation: nextProps.startDepreciation,
                 usefulLife: nextProps.usefulLife,
+                depreciationType: nextProps.depreciationType,
                 maintainanceLogs: nextProps.maintainanceLogs,
                 usageLogs: nextProps.usageLogs,
                 incidentLogs: nextProps.incidentLogs,
+                disposalDate: nextProps.disposalDate,
+                disposalType: nextProps.disposalType,
+                disposalCost: nextProps.disposalCost,
+                disposalDesc: nextProps.disposalDesc,
                 archivedRecordNumber: nextProps.archivedRecordNumber,
                 files: nextProps.files,
             }
@@ -51,15 +56,16 @@ class AssetDetailForm extends Component {
         const { translate, assetsManager } = this.props;
         const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
                 managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, 
-                detailInfo, cost, residualValue, startDepreciation, usefulLife, 
-                maintainanceLogs, usageLogs, incidentLogs, archivedRecordNumber, files 
+                detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
+                maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
+                disposalDesc, archivedRecordNumber, files 
             } = this.state;
         console.log(this.state, 'this.state');
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-view-asset" isLoading={assetsManager}
+                    size='75' modalID="modal-view-asset" isLoading={assetsManager}
                     formID="form-view-asset"
                     title="Thông tin tài sản"
                     hasSaveButton={false}
@@ -72,6 +78,7 @@ class AssetDetailForm extends Component {
                                 <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
                                 <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
                                 <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
+                                <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#view_disposal${_id}`}>Thông tin thanh lý</a></li>
                                 <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
                             </ul>
                             <div className="tab-content">
@@ -81,7 +88,7 @@ class AssetDetailForm extends Component {
                                     code={code}
                                     assetName={assetName}
                                     serial={serial}
-                                    assetType={assetType}
+                                    assetTypes={assetType}
                                     purchaseDate={purchaseDate}
                                     warrantyExpirationDate={warrantyExpirationDate}
                                     managedBy={managedBy}
@@ -107,10 +114,18 @@ class AssetDetailForm extends Component {
                                     residualValue={residualValue}
                                     startDepreciation={startDepreciation}
                                     usefulLife={usefulLife}
+                                    depreciationType={depreciationType}
                                 />
                                 <IncidentLogTab
                                     id={`view_incident${_id}`}
                                     incidentLogs={incidentLogs}
+                                />
+                                <DisposalTab
+                                    id={`view_disposal${_id}`}
+                                    disposalDate={disposalDate}
+                                    disposalType={disposalType}
+                                    disposalCost={disposalCost}
+                                    disposalDesc={disposalDesc}
                                 />
                                 <AttachmentTab
                                     id={`view_attachments${_id}`}

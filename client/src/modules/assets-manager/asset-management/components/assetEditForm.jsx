@@ -27,9 +27,13 @@ class AssetEditForm extends Component {
 
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation'|| name === 'disposalDate') {
-            var partValue = value.split('-');
-            value = [partValue[2], partValue[1], partValue[0]].join('-');
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') { //
+            if  (value) {
+                var partValue = value.split('-');
+                value = [partValue[2], partValue[1], partValue[0]].join('-');
+            } else {
+                value = null
+            }
         }
         this.setState({
             [name]: value
@@ -187,11 +191,11 @@ class AssetEditForm extends Component {
         if (this.state !== {}) {
             let result =
                 this.validatorInput(this.state.code) && this.validatorInput(this.state.assetName) &&
-                this.validatorInput(this.state.serial) && this.validatorInput(this.state.purchaseDate) &&
-                this.validatorInput(this.state.warrantyExpirationDate) && this.validatorInput(this.state.location) &&
-                this.validatorInput(this.state.status) && this.validatorInput(this.state.cost) &&
-                this.validatorInput(this.state.usefulLife) && this.validatorInput(this.state.residualValue) &&
-                this.validatorInput(this.state.startDepreciation);
+                this.validatorInput(this.state.serial) && this.validatorInput(this.state.assetType) &&
+                this.validatorInput(this.state.purchaseDate) && this.validatorInput(this.state.warrantyExpirationDate) && 
+                this.validatorInput(this.state.location) && this.validatorInput(this.state.status) && 
+                this.validatorInput(this.state.cost) && this.validatorInput(this.state.usefulLife) &&
+                this.validatorInput(this.state.startDepreciation) && this.validatorInput(this.state.depreciationType);
             return result;
         }
         return true;
@@ -256,8 +260,9 @@ class AssetEditForm extends Component {
                 //khấu hao
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
-                startDepreciation: nextProps.startDepreciation,
                 usefulLife: nextProps.usefulLife,
+                startDepreciation: nextProps.startDepreciation,
+                depreciationType: nextProps.depreciationType,
                 //thanh lý
                 disposalDate: nextProps.disposalDate,
                 disposalType: nextProps.disposalType,
@@ -303,17 +308,17 @@ class AssetEditForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { _id } = this.state;
+        console.log(this.state, 'this.state-edit')
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
+                    size='75' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
                     formID="form-edit-asset"
                     title="Chỉnh sửa thông tin tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    {/* <form className="form-group" id="form-edit-asset"> */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
@@ -369,6 +374,7 @@ class AssetEditForm extends Component {
                                 startDepreciation={moment(this.state.startDepreciation).format('DD-MM-YYYY')}
                                 // startDepreciation={this.state.startDepreciation}
                                 usefulLife={this.state.usefulLife}
+                                depreciationType={this.state.depreciationType}
                             />
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
@@ -380,8 +386,7 @@ class AssetEditForm extends Component {
                             <DisposalTab
                                 id={`edit_disposal${_id}`}
                                 handleChange={this.handleChange}
-                                // disposalDate={this.formatDate(this.state.disposalDate)}
-                                disposalDate={moment(this.state.disposalDate).format('DD-MM-YYYY')}
+                                disposalDate={this.state.disposalDate}
                                 disposalType={this.state.disposalType}
                                 disposalCost={this.state.disposalCost}
                                 disposalDesc={this.state.disposalDesc}

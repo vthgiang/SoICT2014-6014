@@ -6,8 +6,8 @@ const {
 } = require('../../../middleware');
 const AssetController = require("./asset.controller");
 const data =[
-    {name:'fileAvatar', path:'/human-resource/avatars'},
-    {name:'file', path:'/human-resource/files'}
+    {name:'fileAvatar', path:'/asset/pictures'},
+    {name:'file', path:'/asset/files'}
 ]
 
 /**

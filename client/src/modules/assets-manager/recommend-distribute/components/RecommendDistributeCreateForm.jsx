@@ -233,7 +233,7 @@ class RecommendDistributeCreateForm extends Component {
                                                 onChange={this.handleProponentChange}
                                                 value={auth.user._id}
                                                 multiple={false}
-                                                // disabled
+                                                disabled
                                             />
                                         </div>
                                     </div>
@@ -259,6 +259,7 @@ class RecommendDistributeCreateForm extends Component {
                                                 onChange={this.handleAssetChange}
                                                 value={asset}
                                                 multiple={false}
+                                                disabled
                                             />
                                         </div>
                                     </div>

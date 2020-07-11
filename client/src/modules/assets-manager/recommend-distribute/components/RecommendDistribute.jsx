@@ -346,8 +346,8 @@ class RecommendDistribute extends Component {
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
                                         <td>{x.assignedTo !== null && userlist.length ? userlist.filter(item => item._id === x.assignedTo).pop().name : ''}</td>
-                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
-                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
+                                        <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
+                                        <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
@@ -382,13 +382,22 @@ class RecommendDistribute extends Component {
                         description={this.state.currentRowView.description}
                         status={this.state.currentRowView.status}
                         detailInfo={this.state.currentRowView.detailInfo}
+                        
                         cost={this.state.currentRowView.cost}
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
+                        
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}
                         incidentLogs={this.state.currentRowView.incidentLogs}
+                        
+                        residualValue={this.state.currentRowView.residualValue}
+                        startDepreciation={this.state.currentRowView.startDepreciation}
+                        usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
+                        
                         archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
                         files={this.state.currentRowView.files}
                     />
@@ -402,7 +411,6 @@ class RecommendDistribute extends Component {
                 }
                 <hr />
                 <div className="box-body qlcv">
-                    {/* <RecommendDistributeCreateForm /> */}
                     <div className="form-group">
                         <h4 className="box-title">Danh sách phiếu đăng ký sử dụng tài sản: </h4>
                     </div>
@@ -429,9 +437,9 @@ class RecommendDistribute extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
                                     { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
+                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
                                 ]}
                             >
                             </SelectMulti>
@@ -486,7 +494,6 @@ class RecommendDistribute extends Component {
                                             <td>{x.asset !== null ? x.asset.assetName : ''}</td>
                                             <td>{x.dateStartUse}</td>
                                             <td>{x.dateEndUse}</td>
-                                            {/* <td>{x.approver !== null ? x.approver.name : ''}</td> */}
                                             <td>{x.approver && x.approver.name}</td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>

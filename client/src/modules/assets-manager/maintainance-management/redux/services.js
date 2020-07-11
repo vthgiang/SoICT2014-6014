@@ -8,9 +8,9 @@ export const MaintainanceService = {
 }
 
 // tạo mới thông tin bảo trì tài sản
-function createMaintainance(id, data) {
+function createMaintainance(id, data, incident_id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/createMaintainance/${id}`,
+        url: incident_id ? `${LOCAL_SERVER_API}/assets/createMaintainance/${id}?incident_id=${incident_id}` : `${LOCAL_SERVER_API}/assets/createMaintainance/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'asset.maintainance');

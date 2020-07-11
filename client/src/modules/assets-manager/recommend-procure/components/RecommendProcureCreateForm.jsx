@@ -17,6 +17,8 @@ class RecommendProcureCreateForm extends Component {
             unit: "",
             estimatePrice: "",
             status: "Chờ phê duyệt",
+            approver: null,
+            note: "",
         };
     }
 
@@ -173,14 +175,14 @@ class RecommendProcureCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
 
-        let dataToSubmit = {...this.state, proponent: this.props.auth.user._id}
+        let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
             return this.props.createRecommendProcure(dataToSubmit);
         }
     }
 
     render() {
-        const { _id, translate, recommendProcure, user,auth } = this.props;
+        const { _id, translate, recommendProcure, user, auth } = this.props;
         var userlist = user.list;
         const {
             recommendNumber, dateCreate, equipment, supplier, total, unit, estimatePrice,
@@ -205,7 +207,7 @@ class RecommendProcureCreateForm extends Component {
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
-                                    <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span>  : ''}/>
+                                    <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span> : ''} />
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày lập<span className="text-red">*</span></label>
@@ -229,7 +231,7 @@ class RecommendProcureCreateForm extends Component {
                                                 onChange={this.handleProponentChange}
                                                 value={auth.user._id}
                                                 multiple={false}
-                                                // disabled
+                                                disabled
                                             />
                                         </div>
                                     </div>
@@ -261,12 +263,7 @@ class RecommendProcureCreateForm extends Component {
                                     <label>Giá trị dự tính (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice}
                                         onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
-                                    {/* <label style={{height: 34, display: "inline", width: "5%"}}> VNĐ</label> */}
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
-                                </div> */}
                             </div>
                         </div>
                     </form>

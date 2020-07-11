@@ -9,7 +9,7 @@ class RecommendProcureEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userProponentIndex: "",
+            status: "Chờ phê duyệt"
         };
     }
     // Bắt sự kiện thay đổi mã phiếu
@@ -207,7 +207,7 @@ class RecommendProcureEditForm extends Component {
                                                 onChange={this.handleProponentChange}
                                                 value={proponent._id}
                                                 multiple={false}
-                                            // disabled
+                                                disabled
                                             />
                                         </div>
                                     </div>

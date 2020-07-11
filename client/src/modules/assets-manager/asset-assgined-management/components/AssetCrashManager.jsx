@@ -18,7 +18,7 @@ class AssetCrashManager extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 5,
+            // limit: 5,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -33,7 +33,7 @@ class AssetCrashManager extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 5,
+            // limit: 5,
         });
     }
 

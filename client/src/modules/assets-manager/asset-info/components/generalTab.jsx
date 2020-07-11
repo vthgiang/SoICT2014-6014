@@ -34,7 +34,7 @@ class GeneralTab extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetType: nextProps.assetType,
+                assetTypes: nextProps.assetTypes,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
@@ -52,14 +52,13 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
-
+        const { id, translate, user, assetType } = this.props;
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
         const {
-            img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate,
+            img, avatar, code, assetName, serial, assetTypes, purchaseDate, warrantyExpirationDate,
             managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo
         } = this.state;
-        const user = this.props.user;
-        const listAssetTypes = this.props.assetType;
 
         return (
             <div id={id} className="tab-pane active">
@@ -91,7 +90,7 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Loại tài sản:&emsp; </strong>
-                                        {assetType.typeName}
+                                        {assetTypes !== null && assettypelist.length ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày nhập:&emsp; </strong>
@@ -99,26 +98,26 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày bảo hành:&emsp; </strong>
-                                         {this.formatDate(warrantyExpirationDate)}
+                                        {this.formatDate(warrantyExpirationDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Người duy trì:&emsp; </strong>
-                                        {managedBy.name}
+                                        {managedBy !== null && userlist.length ? userlist.filter(item => item._id === managedBy).pop().name : ''}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <strong>Người vận hành:&emsp; </strong>
-                                        {assignedTo.name}
+                                        {assignedTo !== null && userlist.length ? userlist.filter(item => item._id === assignedTo).pop().name : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
-                                        {this.formatDate(handoverFromDate)}
+                                        {handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng đến ngày:&emsp; </strong>
-                                        {this.formatDate(handoverToDate)}
+                                        {handoverToDate ? this.formatDate(handoverToDate) : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Vị trí tài sản:&emsp; </strong>
@@ -168,5 +167,10 @@ class GeneralTab extends Component {
     }
 };
 
-const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
+function mapState(state) {
+    const { user, assetType } = state;
+    return { user, assetType };
+};
+
+const tabGeneral = connect(mapState, null)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };

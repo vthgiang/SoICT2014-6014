@@ -188,7 +188,7 @@ class IncidentEditForm extends Component {
                                             onChange={this.handleAssetChange}
                                             value={asset._id}
                                             multiple={false}
-                                        // disabled
+                                            disabled
                                         />
                                     </div>
                                 </div>

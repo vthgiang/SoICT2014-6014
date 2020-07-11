@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { UsageCreateForm } from './usageCreateForm';
-// import {UsageEditForm} from './usageEditForm';
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar } from '../../../../common-components';
-// import { UsageActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -16,8 +14,8 @@ class UsageManagement extends Component {
             code: "",
             assetName: "",
             month: "",
-            page: "",
-            limit: "",
+            page: 0,
+            limit: 5,
         }
     }
 
@@ -30,8 +28,8 @@ class UsageManagement extends Component {
             assetType: null,
             month: null,
             status: "",
-            page: "",
-            limit: "",
+            page: 0,
+            limit: 100,
         });
     }
 
@@ -174,9 +172,6 @@ class UsageManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <UsageCreateForm />
-                    {/* <div className="form-group">
-                        <h4 className="box-title">Lịch sử sử dụng tài sản: </h4>
-                    </div> */}
                     <div className="form-inline">
 
                         <div className="form-group">
@@ -194,7 +189,7 @@ class UsageManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                value={this.formatDate2(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
@@ -241,22 +236,21 @@ class UsageManagement extends Component {
                             {(typeof lists !== 'undefined' && lists.length) &&
                                 // lists.map(asset => {
                                 //     return asset.usageLogs.map((x, index) => (
-                                    lists.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.code}</td>
-                                            <td>{x.assetName}</td>
-                                            <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType)  ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
-                                            <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
-                                            <td>{this.formatDate(x.handoverFromDate)}</td>
-                                            <td>{this.formatDate(x.handoverToDate)}</td>
-                                            {/* <td>{x.description}</td> */}
-                                            <td>{x.location}</td>
-                                            <td>{x.status}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                {/* <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin lịch sử hoạt động của tài sản"><i
+                                lists.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.code}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
+                                        <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
+                                        <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
+                                        <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
+                                        <td>{x.location}</td>
+                                        <td>{x.status}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            {/* <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin lịch sử hoạt động của tài sản"><i
                                                     className="material-icons">edit</i></a> */}
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng tài sản"><i className="material-icons">edit</i></a>
-                                                {/* <DeleteNotification
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng tài sản"><i className="material-icons">edit</i></a>
+                                            {/* <DeleteNotification
                                                     content="Xóa thông tin lịch sử hoạt động của tài sản"
                                                     data={{
                                                         id: x._id,
@@ -264,8 +258,8 @@ class UsageManagement extends Component {
                                                     }}
                                                     func={() => this.deleteUsage(asset._id, x._id)}
                                                 /> */}
-                                            </td>
-                                        </tr>))
+                                        </td>
+                                    </tr>))
                                 //         ))
                                 // })
 
@@ -291,7 +285,7 @@ class UsageManagement extends Component {
                     />
                 } */}
 
-{
+                {
                     this.state.currentRow !== undefined &&
                     <AssetEditForm
                         _id={this.state.currentRow._id}
@@ -310,10 +304,18 @@ class UsageManagement extends Component {
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
                         detailInfo={this.state.currentRow.detailInfo}
+
                         cost={this.state.currentRow.cost}
                         residualValue={this.state.currentRow.residualValue}
                         startDepreciation={this.state.currentRow.startDepreciation}
                         usefulLife={this.state.currentRow.usefulLife}
+                        depreciationType={this.state.currentRow.depreciationType}
+
+                        disposalDate={this.state.currentRow.disposalDate}
+                        disposalType={this.state.currentRow.disposalType}
+                        disposalCost={this.state.currentRow.disposalCost}
+                        disposalDesc={this.state.currentRow.disposalDesc}
+
                         maintainanceLogs={this.state.currentRow.maintainanceLogs}
                         usageLogs={this.state.currentRow.usageLogs}
                         incidentLogs={this.state.currentRow.incidentLogs}
@@ -333,7 +335,6 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // deleteUsage: UsageActions.deleteUsage,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,

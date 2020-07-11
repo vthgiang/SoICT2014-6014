@@ -24,23 +24,6 @@ class MaintainanceEditForm extends Component {
         });
     }
 
-    // // Function format dữ liệu Date thành string
-    // formatDate(date, monthYear = false) {
-    //     var d = new Date(date),
-    //         month = '' + (d.getMonth() + 1),
-    //         day = '' + d.getDate(),
-    //         year = d.getFullYear();
-
-    //     if (month.length < 2)
-    //         month = '0' + month;
-    //     if (day.length < 2)
-    //         day = '0' + day;
-
-    //     if (monthYear === true) {
-    //         return [month, year].join('-');
-    //     } else return [day, month, year].join('-');
-    // }
-
     // Bắt sự kiện thay đổi mã phiếu
     handleMaintainanceCodeChange = (e) => {
         let { value } = e.target;
@@ -244,8 +227,7 @@ class MaintainanceEditForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    // size='75' modalID="modal-edit-maintainance" isLoading={maintainance.isLoading}
-                    size='75' modalID="modal-edit-maintainance" isLoading={false}
+                    size='50' modalID="modal-edit-maintainance" isLoading={false}
                     formID="form-create-maintainance"
                     title="Chỉnh sửa phiếu bảo trì"
                     func={this.save}
@@ -289,6 +271,7 @@ class MaintainanceEditForm extends Component {
                                                 onChange={this.handleAssetChange}
                                                 value={asset._id}
                                                 multiple={false}
+                                                disabled
                                             />
                                         </div>
                                     </div>

@@ -27,9 +27,9 @@ class MaintainanceManagement extends Component {
             assetName: "",
             assetType: null,
             month: null,
-            status: "",
-            page: "",
-            limit: "",
+            status: null,
+            page: 0,
+            limit: 100,
         });
     }
 
@@ -155,7 +155,7 @@ class MaintainanceManagement extends Component {
     }
 
     deleteMaintainance = (assetId, maintainanceId) => {
-        this.props.deleteMaintainance(assetId, maintainanceId).then(({response}) => {
+        this.props.deleteMaintainance(assetId, maintainanceId).then(({ response }) => {
             if (response.data.success) {
                 this.props.getAllAsset({
                     code: "",
@@ -279,32 +279,32 @@ class MaintainanceManagement extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map(asset => {
                                     return asset.maintainanceLogs.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.maintainanceCode}</td>
-                                        <td>{this.formatDate2(x.createDate)}</td>
-                                        <td>{x.type}</td>
-                                        <td>{asset.code}</td>
-                                        <td>{asset.assetName}</td>
-                                        <td>{x.description}</td>
-                                        <td>{this.formatDate2(x.startDate)}</td>
-                                        <td>{this.formatDate2(x.endDate)}</td>
-                                        <td>{formater.format(parseInt(x.expense))} VNĐ</td>
-                                        <td>{x.status}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
-                                                className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content="Xóa thông tin phiếu"
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.maintainanceCode + " - " + x.createDate.replace(/-/gi, "/")
-                                                }}
-                                                func={() => this.deleteMaintainance(asset._id, x._id)}
-                                            />
-                                        </td>
-                                    </tr>))
-                            })
-                        }
+                                        <tr key={index}>
+                                            <td>{x.maintainanceCode}</td>
+                                            <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
+                                            <td>{x.type}</td>
+                                            <td>{asset.code}</td>
+                                            <td>{asset.assetName}</td>
+                                            <td>{x.description}</td>
+                                            <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
+                                            <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
+                                            <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
+                                            <td>{x.status}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
+                                                    className="material-icons">edit</i></a>
+                                                <DeleteNotification
+                                                    content="Xóa thông tin phiếu"
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
+                                                    }}
+                                                    func={() => this.deleteMaintainance(asset._id, x._id)}
+                                                />
+                                            </td>
+                                        </tr>))
+                                })
+                            }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
@@ -342,8 +342,6 @@ function mapState(state) {
 const actionCreators = {
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
     getAllAsset: AssetManagerActions.getAllAsset,
-    // searchMaintainances: MaintainanceActions.searchMaintainances,
-
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));

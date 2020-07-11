@@ -68,8 +68,8 @@ class IncidentLogTab extends Component {
                                         <tr key={index}>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
-                                            <td>{x.reportedby !==null  && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name: ''}</td>
-                                            <td>{this.formatDate(x.dateOfIncident)}</td>
+                                            <td>{x.reportedby !== null  && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name: ''}</td>
+                                            <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident): ''}</td>
                                             <td>{x.description}</td>
                                         </tr>
                                     )

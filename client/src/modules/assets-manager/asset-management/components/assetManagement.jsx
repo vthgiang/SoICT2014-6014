@@ -263,7 +263,7 @@ class AssetManagement extends Component {
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy !== null && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
-                                        <td>{this.formatDate(x.handoverFromDate)}</td>
+                                        <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
@@ -307,15 +307,23 @@ class AssetManagement extends Component {
                         status={this.state.currentRowView.status}
                         detailInfo={this.state.currentRowView.detailInfo}
                         cost={this.state.currentRowView.cost}
+
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
+
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}
                         incidentLogs={this.state.currentRowView.incidentLogs}
+
+                        disposalDate={this.state.currentRowView.disposalDate}
+                        disposalType={this.state.currentRowView.disposalType}
+                        disposalCost={this.state.currentRowView.disposalCost}
+                        disposalDesc={this.state.currentRowView.disposalDesc}
+
                         archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
                         files={this.state.currentRowView.files}
-
                     />
                 }
 
@@ -338,11 +346,12 @@ class AssetManagement extends Component {
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
                         detailInfo={this.state.currentRow.detailInfo}
-                        
+
                         cost={this.state.currentRow.cost}
                         residualValue={this.state.currentRow.residualValue}
                         startDepreciation={this.state.currentRow.startDepreciation}
                         usefulLife={this.state.currentRow.usefulLife}
+                        depreciationType={this.state.currentRow.depreciationType}
 
                         disposalDate={this.state.currentRow.disposalDate}
                         disposalType={this.state.currentRow.disposalType}
@@ -354,7 +363,6 @@ class AssetManagement extends Component {
                         incidentLogs={this.state.currentRow.incidentLogs}
                         archivedRecordNumber={this.state.currentRow.archivedRecordNumber}
                         files={this.state.currentRow.files}
-
                     />
                 }
             </div>

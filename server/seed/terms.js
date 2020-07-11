@@ -418,16 +418,16 @@ const LINKS = [
         ]
     },
     {
-        url: '/manage-repair-asset',
-        description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
+        url: '/manage-maintainance-asset',
+        description: 'Quản lý bảo trì tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
         ]
     },
     {
-        url: '/manage-distribute-asset',
-        description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
+        url: '/manage-usage-asset',
+        description: 'Quản lý sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
@@ -436,6 +436,14 @@ const LINKS = [
     {
         url: '/manage-depreciation-asset',
         description: 'Quản lý khấu hao tài sản',
+        category: LINK_CATEGORY.ASSET.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+        ]
+    },
+    {
+        url: '/manage-incident-asset',
+        description: 'Quản lý sự cố tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
@@ -451,15 +459,7 @@ const LINKS = [
     },
     {
         url: '/manage-recommend-distribute-asset',
-        description: 'Quản lý đề nghị cấp phát tài sản',
-        category: LINK_CATEGORY.ASSET.name,
-        roles: [
-            ROOT_ROLES.ADMIN.name,
-        ]
-    },
-    {
-        url: '/manage-crash-asset',
-        description: 'Quản lý sự cố tài sản',
+        description: 'Quản lý đăng ký sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
@@ -478,7 +478,7 @@ const LINKS = [
     },
     {
         url: '/recommmend-distribute-asset',
-        description: 'Đăng ký cấp phát tài sản',
+        description: 'Đăng ký sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.DEAN.name,

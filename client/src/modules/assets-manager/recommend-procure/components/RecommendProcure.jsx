@@ -16,13 +16,13 @@ class RecommendProcure extends Component {
             month: "",
             status: "",
             page: 0,
-            limit: 10,
+            limit: 5,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
-        this.props.getAllUsers();
+        this.props.getUser();
     }
 
     // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
@@ -159,9 +159,9 @@ class RecommendProcure extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
                                     { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
+                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
                                 ]}
                             >
                             </SelectMulti>
@@ -209,7 +209,6 @@ class RecommendProcure extends Component {
                                         <td>{x.proponent.name}</td>
                                         <td>{x.equipment}</td>
                                         <td>{x.approver && x.approver.name}</td>
-                                        {/* <td>{x.approver}</td> */}
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -241,8 +240,7 @@ class RecommendProcure extends Component {
                         _id={this.state.currentRowView._id}
                         recommendNumber={this.state.currentRowView.recommendNumber}
                         dateCreate={this.state.currentRowView.dateCreate}
-                        proponent={this.state.currentRowView.proponent.name}
-                        positionProponent={this.state.currentRowView.positionProponent}
+                        proponent={this.state.currentRowView.proponent}
                         equipment={this.state.currentRowView.equipment}
                         supplier={this.state.currentRowView.supplier}
                         total={this.state.currentRowView.total}
@@ -283,7 +281,7 @@ function mapState(state) {
 const actionCreators = {
     searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
     deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
-    getAllUsers: UserActions.get
+    getUser: UserActions.get
 };
 
 const connectedListRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcure));

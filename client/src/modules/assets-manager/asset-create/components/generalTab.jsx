@@ -286,16 +286,11 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi trạng thái tài sản
      */
-    handleStatusChange = (e) => {
-        let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...this.state,
-                status: value
-            }
-
-        });
-        this.props.handleChange("status", value);
+    handleStatusChange = (value) => {
+        this.setState({
+            status: value[0]
+        })
+        this.props.handleChange('status', value[0]);
     }
 
     /**
@@ -441,9 +436,10 @@ class GeneralTab extends Component {
         const { id, translate, user, assetType } = this.props;
 
         const {
-            img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo,
-            errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate, errorOnWarrantyExpirationDate, errorOnHandoverFromDate, errorOnHandoverToDate,
-            errorOnManagedBy, errorOnAssignedTo, errorOnNameField, errorOnValue,
+            img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
+            assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo,
+            errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
+            errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
         } = this.state;
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
@@ -498,8 +494,7 @@ class GeneralTab extends Component {
                                                     id={`assetType${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
-                                                    items={[ { value: '', text: '---Chọn loại tài sản---' },...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
-                                                    // items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
+                                                    items={[{ value: '', text: '---Chọn loại tài sản---' }, ...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
                                                     onChange={this.handleAssetTypeChange}
                                                     value={assetTypes}
                                                     multiple={false}
@@ -568,7 +563,7 @@ class GeneralTab extends Component {
                                         <label htmlFor="handoverFromDate">Thời gian sử dụng từ ngày</label>
                                         <DatePicker
                                             id={`handoverFromDate${id}`}
-                                            value={this.formatDate(handoverFromDate)}
+                                            value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                             onChange={this.handleHandoverFromDateChange}
                                         />
                                     </div>
@@ -577,7 +572,7 @@ class GeneralTab extends Component {
                                         <label htmlFor="handoverToDate">Thời gian sử dụng đến ngày</label>
                                         <DatePicker
                                             id={`handoverToDate${id}`}
-                                            value={this.formatDate(handoverToDate)}
+                                            value={handoverToDate ? this.formatDate(handoverToDate) : ''}
                                             onChange={this.handleHandoverToDateChange}
                                         />
                                     </div>
@@ -596,14 +591,21 @@ class GeneralTab extends Component {
                                     </div>
 
                                     <div className="form-group">
-                                        <label htmlFor="status">Trạng thái</label>
-                                        <select className="form-control" name="status" value={status} onChange={this.handleStatusChange}>
-                                            <option value="Sẵn sàng sử dụng">Sẵn sàng sử dụng</option>
-                                            <option value="Đang sử dụng">Đang sử dụng</option>
-                                            <option value="Hỏng hóc">Hỏng hóc</option>
-                                            <option value="Hỏng hóc">Thanh lý</option>
-                                            <option value="Mất">Mất</option>
-                                        </select>
+                                        <label>Trạng thái</label>
+                                        <SelectBox
+                                            id={`status${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={status}
+                                            items={[
+                                                { value: 'Sẵn sàng sử dụng', text: 'Sẵn sàng sử dụng' },
+                                                { value: 'Đang sử dụng', text: 'Đang sử dụng' },
+                                                { value: 'Hỏng hóc', text: 'Hỏng hóc' },
+                                                { value: 'Mất', text: 'Mất' },
+                                                { value: 'Thanh lý', text: 'Thanh lý' },
+                                            ]}
+                                            onChange={this.handleStatusChange}
+                                        />
                                     </div>
 
                                 </div>

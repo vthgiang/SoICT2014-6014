@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { UsageFormValidator } from './usageFormValidator';
-import { UsageActions } from '../redux/actions';
+import { UsageFormValidator } from '../../usage-management/components/usageFormValidator';
+import { UsageActions } from '../../usage-management/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
@@ -114,8 +114,9 @@ class UsageCreateForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateStartDate(this.state.startDate, false) &&
-            this.validateDescription(this.state.description, false)
+            this.validateStartDate(this.state.startDate, false)
+        // &&
+        // this.validateDescription(this.state.description, false)
         return result;
     }
 
@@ -137,35 +138,52 @@ class UsageCreateForm extends Component {
                 status: "Đang sử dụng",
 
             }
-            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
-            return this.props.createUsage(assetId, dataToSubit).then(({ response }) => {
-                if (response.data.success) {
-                    this.props.getAllAsset({
-                        code: "",
-                        assetName: "",
-                        month: null,
-                        status: "",
-                        page: "",
-                        limit: "",
-                    });
-                }
-            });
+            let assetId = !this.state.asset[0] ? this.props.assetsManager.listAssets[0]._id : this.state.asset[0];
+            return this.props.createUsage(assetId, dataToSubit);
+            // .then(({response}) => {
+            //     if (response.data.success) {
+            //         this.props.getAllAsset({
+            //             code: "",
+            //             assetName: "",
+            //             month: null,
+            //             status: "",
+            //             page: "",
+            //             limit: "",
+            //         });
+            //     }
+            // });
         }
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('nextProps,', nextProps);
+        console.log(prevState);
+        if (nextProps._id !== prevState._id) {
+            return {
+                ...prevState,
+                _id: nextProps._id,
+                asset: nextProps.asset,
+                startDate: nextProps.startDate,
+                endDate: nextProps.endDate,
+                usedBy: nextProps.usedBy
+            }
+        } else {
+            return null;
+        }
+
+    }
+
     render() {
-        const { id, translate, user, assetsManager } = this.props;
+        const { _id, translate, user, assetsManager } = this.props;
         var userlist = user.list;
-        console.log(userlist, 'userlist');
         var assetlist = assetsManager.listAssets;
-        console.log(assetlist, 'assetlist');
         const {
             asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription
         } = this.state;
-        console.log(this.state, 'tungstate')
+        console.log(this.state, 'tungstate-a')
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-usage`} button_name="Thêm mới" title="Thêm mới thông tin sử dụng tài sản" />
+                {/* <ButtonModal modalID={`modal-create-usage`} button_name="Thêm mới" title="Thêm mới thông tin sử dụng tài sản" /> */}
                 <DialogModal
                     size='50' modalID={`modal-create-usage`} isLoading={false}
                     formID={`form-create-usage`}
@@ -180,15 +198,16 @@ class UsageCreateForm extends Component {
                                 <div>
                                     <div id="assetUBox">
                                         <SelectBox
-                                            id={`add-usage-asset${id}`}
+                                            id={`add-usage-asset${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={assetlist.map(x => {
                                                 return { value: x._id, text: x.code + " - " + x.assetName }
                                             })}
                                             onChange={this.handleAssetChange}
-                                            value={asset}
+                                            value={asset._id}
                                             multiple={false}
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -198,15 +217,16 @@ class UsageCreateForm extends Component {
                                 <div>
                                     <div id="usedByUBox">
                                         <SelectBox
-                                            id={`add-usedBy${id}`}
+                                            id={`add-usedBy${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => {
                                                 return { value: x._id, text: x.name + " - " + x.email }
                                             })}
                                             onChange={this.handleUsedByChange}
-                                            value={usedBy}
+                                            value={usedBy._id}
                                             multiple={false}
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -214,7 +234,7 @@ class UsageCreateForm extends Component {
                             <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`add-start-date${id}`}
+                                    id={`add-start-date${_id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -224,7 +244,7 @@ class UsageCreateForm extends Component {
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
-                                    id={`add-end-date${id}`}
+                                    id={`add-end-date${_id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
