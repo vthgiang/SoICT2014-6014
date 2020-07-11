@@ -79,6 +79,10 @@ import AssetManager from "../modules/assets-manager/asset-management/components"
 import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
 import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
 
+
+//report
+import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
+
 class Routes extends Component {
 
     render() {
@@ -901,6 +905,22 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ManagerRecommendDistribute }
                     />
+
+                    <PrivateRoute 
+                        isLoading={this.props.reports.isLoading}
+                        key={ 'task-report-management' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-report', name: 'report_management', icon:'fa fa-flash' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-report' }
+                        path={ '/task-report' }
+                        pageName={ 'report_management' }
+                        layout={ Layout }
+                        component={ TaskReportManager }
+                    />  
 
 
 

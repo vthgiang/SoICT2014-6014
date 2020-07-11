@@ -496,5 +496,19 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ]
     },
+
+
+
+    
+    {
+        url: '/task-report',
+        description: 'Quản lý báo cáo công việc',
+        category: LINK_CATEGORY.REPORT.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ]
+    },
 ];
 exports.LINKS = LINKS;

@@ -61,6 +61,9 @@ const asset = require('./modules/assets-manager/asset-management/asset.route');
 const recommendProcure = require('./modules/assets-manager/recommend-equipment-procurement/recommend-procurement.route');
 const recommendDistribute = require('./modules/assets-manager/recommend-distribute-equipment/recommend-distribute.route');
 
+// report
+const taskReport = require('./modules/report/task-report/taskReport.route');
+
 
 // APP
 const app = express();
@@ -161,6 +164,10 @@ app.use("/assettype", assetType);
 app.use("/assets", asset);
 app.use("/recommendprocure", recommendProcure);
 app.use("/recommenddistribute", recommendDistribute);
+
+// Task report
+app.use('/taskreports', taskReport);
+
 
 // Start server
 const port = process.env.PORT || 5000;

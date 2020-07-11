@@ -56,6 +56,9 @@ const AssetType = require('./asset/assetType.model'); //loại tài sản
 const RecommendProcure = require('./asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
 const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
 
+//report
+const TaskReport = require('./report/taskReport.model');
+
 exports.schema = {
     Privilege,
     Role,
@@ -113,4 +116,6 @@ exports.schema = {
     AssetType,
     RecommendProcure,
     RecommendDistribute,
+
+    TaskReport,
 } 

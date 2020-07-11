@@ -48,6 +48,8 @@ import { recommendDistribute } from "../modules/assets-manager/recommend-distrib
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
 import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
 
+//report 
+import {reports} from "../modules/report/task-report/redux/reducers";
 const appReducer = combineReducers(Object.assign({
     //system
     log,
@@ -105,7 +107,12 @@ const appReducer = combineReducers(Object.assign({
     assetType,
     assetsManager,
 
-    dashboardEvaluationEmployeeKpiSet
+    dashboardEvaluationEmployeeKpiSet,
+
+    //report
+    reports,
+
+    
 }, { Intl }));
 
 const rootReducer = (state, action) => {

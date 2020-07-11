@@ -402,4 +402,11 @@ exports.data = [
     { path: '/kpi/evaluation/dashboard/users/organizational-units/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/evaluation/dashboard/organizational-units/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
+    // module report management
+    { path: '/taskreports', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/taskreports/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/taskreports', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/taskreports/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+
 ];

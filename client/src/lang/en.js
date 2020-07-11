@@ -664,6 +664,10 @@ export default {
             recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
             manage_assigned_asset: 'Quản lý thiết bị bàn giao',
             //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: 'Report management',
+            task_report: 'Manage work reports',
         },
 
         manage_system: {
@@ -1940,6 +1944,29 @@ export default {
                 update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
             }
         },
+
+        report_manager: {
+            search: 'Search',
+            search_by_name: 'Search by name',
+            select_all_units: 'Select all units',
+            performer: 'Performer',
+            description: 'Description',
+            name: 'Report Name',
+            unit: 'Unit',
+            delete: 'Delete report',
+            edit: 'Edit report',
+            creator: 'Creator',
+            
+            //message trả về từ server
+            
+            create_report_manager_success: 'Create report success !',
+            create_report_manager_faile: 'Create report fail ! ',
+            edit_report_manager_success:'Edit report success !',
+            edit_report_manager_faile:'Edit report fail !',
+            delete_report_manager_success:'Delete report success !',
+            delete_report_manager_faile:'Delete report fail !',
+        },
+        
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

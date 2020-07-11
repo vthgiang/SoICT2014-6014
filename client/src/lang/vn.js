@@ -665,6 +665,10 @@ export default {
             recommend_distribute_asset: 'Đăng ký sử dụng thiết bị',
             manage_assigned_asset: 'Quản lý thiết bị bàn giao',
             //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: 'Quản lý báo cáo',
+            task_report: 'Quản lý báo cáo công việc',
         },
 
         manage_system: {
@@ -2077,6 +2081,29 @@ export default {
                 update_evaluate_kpi_unit_fail: 'Cập nhật điểm đánh giá KPI đơn vị lỗi',
             }
         },
+
+        report_manager: {
+            search: 'Tìm kiếm',
+            search_by_name: 'Tìm kiếm theo tên',
+            select_all_units: 'Chọn tất cả đơn vị',
+            performer: 'Người thực hiện',
+            name: 'Tên báo cáo',
+            description: 'Mô tả',
+            action: 'Hành động',
+            unit: 'Đơn vị',
+            creator: 'Người tạo',
+            edit: 'Chỉnh sửa thông tin báo cáo',
+            delete: 'Xóa báo cáo',
+
+            //message trả về từ server
+            create_report_manager_success: 'Tạo báo cáo thành công !',
+            create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
+            edit_report_manager_success:'Sửa báo cáo thành công !',
+            edit_report_manager_fail:'Sửa mẫu báo cáo thất bại !',
+            delete_report_manager_success:'Xóa mẫu báo cáo thành công !',
+            delete_report_manager_fail:'Xóa mẫu báo cáo thất bại !',
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

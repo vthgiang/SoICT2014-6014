@@ -606,6 +606,27 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+
+                            {/* Report management */}
+                            {
+                                (this.checkURL('/task-report', links) === true) &&
+                                <li className="treeview">
+                                    <a href="">
+                                        <i className="fa fa-calendar"></i> <span>{translate(`menu.report_management`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {
+                                            this.checkURL('/task-report', links) === true &&
+                                            <li className={window.location.pathname === "/task-report" ? "active" : ""}>
+                                                <Link to="/task-report">{translate(`menu.task_report`)}</Link>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
                         </ul>
                     </section>
                 </aside>
