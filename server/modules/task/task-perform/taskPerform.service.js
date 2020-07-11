@@ -569,8 +569,32 @@ exports.deleteCommentOfTaskComment = async (params) => {
 exports.evaluationAction = async (id,body) => {
     // đánh giá
     if(body.type === 0){
+        //cập nhật điểm người đánh giá
+        let evaluationAction = await Task.updateOne(
+            { "taskActions._id":id},
+            {
+                $push: 
+                {
+                    "taskActions.$.evaluations":
+                    {
+                        creator: body.creator,
+                        rating: body.rating,
+                    }
+                },
+            },
+            { $new: true}
+        )
+
+       
+
+        //danh sách người phê duyệt
         let task1 = await Task.findOne({ "taskActions._id": id })
-        let rating1= await Task.aggregate([
+        let accountableEmployees = task1.accountableEmployees
+
+
+
+        //danh sách các đánh giá
+        let evaluations= await Task.aggregate([
             { $match: {"taskActions._id": mongoose.Types.ObjectId(id)}},
             { $unwind: "$taskActions"},
             { $replaceRoot: {newRoot: "$taskActions"}},
@@ -578,62 +602,36 @@ exports.evaluationAction = async (id,body) => {
             { $unwind: "$evaluations"},
             { $replaceRoot: {newRoot: "$evaluations"}}
         ])
-        //let rating = []
-        // rating1.forEach(x=>{
-        //     let idAccountableEmployee = task1.accountableEmployees.find(elem => x.creator===elem);
-        //     if(idAccountableEmployee){
-        //         rating.push(x.rating)
-        //     }
-        // })
-        // console.log(task1.accountableEmployees)
-        // console.log(body.creator)
+        
+
+        //tim xem trong danh sách đánh giá ai là người phê duyệt
+        let rating = [];
+        evaluations.forEach(x => {
+            if(accountableEmployees.some(elem => x.creator.toString() === elem.toString())) {
+                rating.push(x.rating)
+            }
+        })  
+
+
+        //tính điểm trung bình
+        let accountableRating =  rating.reduce((accumulator, currentValue) => { return accumulator + currentValue},0)/rating.length
+
+
         //check xem th đấnh giá có là người phê duyệt không
-        var idAccountableEmployee = task1.accountableEmployees.some(elem =>body.creator == elem);
-        console.log(idAccountableEmployee)
-        if (idAccountableEmployee) {
-            let evaluationAction = await Task.updateOne(
-                {"taskActions._id":id},
-                {
-                    $push: 
-                    {
-                        "taskActions.$.evaluations":
-                        {
-                            creator: body.creator,
-                            rating: body.rating,
-                        }
-                    },
-                },
-                {$new: true}
-            )
-            console.log(id)
-            console.log(body.rating)
+        let idAccountableEmployee = task1.accountableEmployees.some(elem => body.creator === elem.toString())
+        if(idAccountableEmployee){
             let evaluationActionRating = await Task.updateOne(
-                {"taskActions._id":id},
+                { "taskActions._id":id},
                 {
                     $set: 
                     {
-                        "taskActions.$.rating": body.rating
+                        "taskActions.$.rating": accountableRating
                     }
                 },
-                {$new: true}
-            )
-                console.log("hihihhihihihihihi")
-        } else {
-            var evaluationAction1 = await Task.update(
-                {"taskActions._id":id},
-                {
-                    "$push": 
-                    {
-                        "taskActions.$.evaluations":
-                        {
-                            creator: body.creator,
-                            rating: body.rating,
-                        }
-                    }
-                },
-                {$new: true}
+                { $new: true}
             )
         }
+
         // đánh giá lại
         }else if(body.type === 1){
             let taskAction = await Task.update(
@@ -1003,6 +1001,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
+    newTask.evaluations.reverse();
     
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 }
@@ -1016,6 +1015,10 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var name = data.name;
     var priority = data.priority;
     var status = data.status;
+
+    var startDate = data.startDate;
+    var endDate = data.endDate;
+
     // var user = data.user;
     var progress = data.progress;
     var info = data.info;
@@ -1028,6 +1031,13 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     
     // var date = Date.now();
     var date = data.date;
+
+    // Chuẩn hóa ngày bắt đầu và ngày kết thúc
+    var splitStartDate = startDate.split("-");
+    var startOfTask = new Date(splitStartDate[2], splitStartDate[1]-1, splitStartDate[0]);
+    
+    var splitEndDate = endDate.split("-");
+    var endOfTask = new Date(splitEndDate[2], splitEndDate[1]-1, splitEndDate[0]);
 
     // chuẩn hóa dữ liệu info
     for(let i in info){
@@ -1052,6 +1062,9 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                 progress: progress,
                 priority: parseInt(priority[0]),
                 status: status[0],
+
+                startDate: startOfTask,
+                endDate: endOfTask,
 
                 responsibleEmployees: responsibleEmployees,
                 consultedEmployees: consultedEmployees,
@@ -1126,6 +1139,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     var user = await User.find({ _id : { $in : userId }});
     var email = user.map( item => item.email);
     user = await User.findById(data.user);
+    newTask.evaluations.reverse();
 
     return {newTask: newTask, email: email, user: user, tasks: tasks};
 
@@ -1211,6 +1225,8 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 
@@ -1262,7 +1278,22 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     }
    
     await Task.updateOne({_id: taskId}, {$set:{progress: progress}}, {$new: true});
-    
+
+    await Task.updateOne(
+        {
+            _id: taskId,
+            "evaluations._id" : evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.progress": progress,
+            }
+        },
+        {
+            $new: true,
+        }
+    );
+
     var task = await Task.findById(taskId);
 
     var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
@@ -1456,6 +1487,8 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 
@@ -1739,6 +1772,21 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     )
 
+    // update progress of evaluation
+    await Task.updateOne(
+        {
+            _id: taskId,
+            "evaluations._id" : evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.progress": progress,
+            }
+        },
+        {
+            $new: true,
+        }
+    );
 
     // var newTask = await Task.findById(taskId);
     var newTask = await Task.findById(taskId).populate([
@@ -1755,6 +1803,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User,select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar'},
     ]);
+    newTask.evaluations.reverse();
+
     return newTask;
 }
 /**

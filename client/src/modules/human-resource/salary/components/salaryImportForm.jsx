@@ -16,7 +16,7 @@ class SalaryImportForm extends Component {
             importData: [],
             month: null,
             configData: this.convertConfigurationToString(configurationSalary),
-            importConfiguration: null,
+            importConfiguration: configurationSalary,
             limit: 100,
             page: 0
         };
@@ -61,7 +61,7 @@ class SalaryImportForm extends Component {
             "${'Tên tiêu để ứng với họ và tên'}": "${data.employeeName}",
             "${'Tên tiêu để ứng với tiền lương chính'}": "${data.mainSalary}",
             "${'Tên tiêu để ứng với lương thưởng khác'}": [${bonus}]
-        }`
+}`
         return stringData;
     }
 
@@ -90,7 +90,7 @@ class SalaryImportForm extends Component {
         }
     }
 
-    // bắt sự kiện thay đổi tháng lương
+    // Bắt sự kiện thay đổi tháng lương
     handleMonthChange = (value) => {
         const { salary } = this.props;
         let partMonth = value.split('-'), rowError = [], importData = [];
@@ -99,10 +99,10 @@ class SalaryImportForm extends Component {
             rowError = salary.error.rowError;
             importData = salary.error.data;
             importData = importData.map((x, index) => {
-                if (x.errorAlert.find(y => y = "month_salary_have_exist") !== undefined) {
+                if (x.errorAlert.find(y => y === "month_salary_have_exist") !== undefined) {
                     x.errorAlert = x.errorAlert.filter(y => y !== "month_salary_have_exist");
                     x.error = false;
-                    rowError = rowError.filter(y => y !== index);
+                    rowError = rowError.filter(y => y !== index + 1);
                 }
                 return x;
             })
@@ -118,7 +118,7 @@ class SalaryImportForm extends Component {
             month: value,
         });
     }
-    // bắt sự kiện thay đổi (textarea);
+    // Bắt sự kiện thay đổi (textarea);
     handleChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -127,7 +127,7 @@ class SalaryImportForm extends Component {
                 this.convertStringToObject(value) : this.state.importConfiguration,
         })
     }
-    // bắt xự kiện chọn file import
+    // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
         const { importConfiguration } = this.state;
         let configData = importConfiguration !== null ? importConfiguration : configurationSalary;
@@ -151,9 +151,17 @@ class SalaryImportForm extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
                     var indexEmployeeName, indexEmployeenumber, indexMainSalary, indexBouns = [];
+
+                    // Xoá các row excel trống
+                    data = data.filter(x => {
+                        let check = x.filter(y => y !== null);
+                        if (check.length === 0) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
-                    console.log(data);
-                    console.log(data[0]);
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {
                             if (x !== null) {

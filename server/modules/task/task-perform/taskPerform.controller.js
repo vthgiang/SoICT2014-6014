@@ -296,7 +296,15 @@ exports.deleteTaskAction = async (req,res)=>{
 // Chỉnh sửa một hoạt động hoặc bình luận
 exports.editCommentOfTaskAction = async (req, res) => {
     try {
-        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params,req.body);
+        var files=[] ;
+        if(req.files !== undefined){
+            req.files.forEach((elem,index) => {
+                var path = elem.destination +'/'+ elem.filename;
+                files.push({name : elem.originalname, url: path})
+                
+            })
+        }
+        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params,req.body,files);
         await LogInfo(req.user.email, ` edit action comment  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -616,7 +624,7 @@ exports.getTaskLog = async(req,res) => {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (req, res) => {
-    // try {
+    try {
         var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
@@ -629,14 +637,14 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
             messages: ['edit_task_success'],
             content: task.newTask
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` edit task `,req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_task_fail'],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await LogError(req.user.email, ` edit task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
 }
 /**
  * edit task by responsible employee

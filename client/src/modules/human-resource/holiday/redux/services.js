@@ -1,10 +1,15 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 export const HolidayService = {
     getListHoliday,
     createNewHoliday,
     deleteHoliday,
     updateHoliday,
+    importHoliday,
 }
 /**
  * Lấy danh sách nghỉ lễ tết
@@ -50,4 +55,16 @@ function updateHoliday(id, data) {
         method: 'PUT',
         data: data
     }, true, true, 'human_resource.holiday');
+}
+
+/**
+ * Import dữ liệu nghỉ lễ tết
+ * @param {*} data : array thông tin nghỉ lễ tết
+ */
+function importHoliday(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/holidays/import`,
+        method: 'POST',
+        data: data,
+    }, true, false, 'human_resource.holiday');
 }

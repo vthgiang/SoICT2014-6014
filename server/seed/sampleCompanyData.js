@@ -15,7 +15,7 @@ const {
     EducationProgram,
     Course,
 
-    //asset
+    
     Asset,
     AssetType,
     RecommendProcure,
@@ -37,7 +37,7 @@ require('dotenv').config({
 // DB CONFIG
 const db = process.env.DATABASE;
 
-// kẾT NỐI TỚI CSDL MONGODB
+// KẾT NỐI TỚI CSDL MONGODB
 mongoose.connect(db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -48,14 +48,14 @@ mongoose.connect(db, {
 }).catch(err => console.log("ERROR! :(\n", err));
 
 const sampleCompanyData = async () => {
-    console.log("Đang tạo dữ liệu ...");
+    console.log("Bắt đầu tạo dữ liệu ...");
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU VỀ CÔNG TY VNIST
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
 
+
+
+
+
+    // Step 1: TẠO DỮ LIỆU VỀ CÔNG TY VNIST
     console.log("Khởi tạo dữ liệu công ty!");
     var vnist = await Company.create({
         name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
@@ -63,105 +63,120 @@ const sampleCompanyData = async () => {
         description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
     console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
-    //END
+    
 
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO CÁC TÀI KHOẢN NGƯỜI DÙNG CHO CÔNG TY VNIST
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
 
+
+
+
+
+    // Step 2: TẠO CÁC TÀI KHOẢN NGƯỜI DÙNG CHO CÔNG TY VNIST
     console.log(`Khởi tạo các tài khoản cho công ty [${vnist.name}]`);
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
 
-    const users = await User.insertMany([{
-        name: 'Super Admin VNIST',
-        email: 'super.admin.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Admin VNIST',
-        email: 'admin.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Văn An',
-        email: 'nva.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Trần Văn Bình',
-        email: 'tvb.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Vũ Thị Cúc',
-        email: 'vtc.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Văn Danh',
-        email: 'nvd.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Trần Thị Én',
-        email: 'tte.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Phạm Đình Phúc',
-        email: 'pdp.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Trần Minh Đức',
-        email: 'tmd.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Việt Anh',
-        email: 'nguyenvietanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Viết Thái',
-        email: 'nguyenvietthai.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Trần Mỹ Hạnh',
-        email: 'tranmyhanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Minh Thành',
-        email: 'nguyenminhthanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Nguyễn Gia Huy',
-        email: 'nguyengiahuy.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }, {
-        name: 'Trần Minh Anh',
-        email: 'tranminhanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }]);
+    const users = await User.insertMany([
+        {
+            name: 'Super Admin VNIST',
+            email: 'super.admin.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Admin VNIST',
+            email: 'admin.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Văn An',
+            email: 'nva.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Văn Bình',
+            email: 'tvb.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Vũ Thị Cúc',
+            email: 'vtc.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Văn Danh',
+            email: 'nvd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Thị Én',
+            email: 'tte.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Phạm Đình Phúc',
+            email: 'pdp.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Minh Đức',
+            email: 'tmd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Việt Anh',
+            email: 'nguyenvietanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Viết Thái',
+            email: 'nguyenvietthai.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Mỹ Hạnh',
+            email: 'tranmyhanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Minh Thành',
+            email: 'nguyenminhthanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Gia Huy',
+            email: 'nguyengiahuy.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Minh Anh',
+            email: 'tranminhanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        }
+    ]);
     console.log("Xong! Đã thêm tài khoản:", users);
-    //END
+    
 
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO CÁC ROLE MẶC ĐỊNH CỦA CÔNG TY 
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
 
+
+
+
+    // Step 3: TẠO CÁC ROLE MẶC ĐỊNH CỦA CÔNG TY
     console.log("Lấy role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({
         name: Terms.ROLE_TYPES.ROOT
@@ -169,125 +184,125 @@ const sampleCompanyData = async () => {
     const roleChucDanh = await RoleType.findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
-
-    const admin = await Role.create({
-        name: Terms.ROOT_ROLES.ADMIN.NAME,
-        company: vnist._id,
-        type: roleAbstract._id
-    });
-    const roles = await Role.insertMany([{
-        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
+    const roleAdmin = await Role.create({
+        name: Terms.ROOT_ROLES.ADMIN.name,
         company: vnist._id,
         type: roleAbstract._id,
-        parents: [admin._id]
-    }, {
-        name: Terms.ROOT_ROLES.DEAN.NAME,
+    });
+    const roleSuperAdmin = await Role.create({
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
         company: vnist._id,
-        type: roleAbstract._id
-    }, {
-        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
+        type: roleAbstract._id,
+        parents: [roleAdmin._id]
+    });
+    const roleDean = await Role.create({
+        name: Terms.ROOT_ROLES.DEAN.name,
         company: vnist._id,
-        type: roleAbstract._id
-    }, {
-        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
+        type: roleAbstract._id,
+    });
+    const roleViceDean = await Role.create({
+        name: Terms.ROOT_ROLES.VICE_DEAN.name,
         company: vnist._id,
-        type: roleAbstract._id
-    }]);
+        type: roleAbstract._id,
+    });
+    const roleEmployee = await Role.create({
+        name: Terms.ROOT_ROLES.EMPLOYEE.name,
+        company: vnist._id,
+        type: roleAbstract._id,
+    });
 
     const thanhVienBGĐ = await Role.create({
-        parents: [roles[3]._id],
+        parents: [roleEmployee._id],
         name: "Thành viên ban giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
-        parents: [roles[2]._id, thanhVienBGĐ._id],
+        parents: [roleViceDean._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
-        parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
+        parents: [roleDean._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
     const nvPhongHC = await Role.create({
-        parents: [roles[3]._id],
+        parents: [roleEmployee._id],
         name: "Nhân viên phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
     const phoPhongHC = await Role.create({
-        parents: [roles[2]._id, nvPhongHC._id],
+        parents: [roleViceDean._id, nvPhongHC._id],
         name: "Phó phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
     const truongPhongHC = await Role.create({
-        parents: [roles[1]._id, nvPhongHC._id, phoPhongHC._id],
+        parents: [roleDean._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
 
-    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, thanhVienBGĐ, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
-    //END
+    console.log("Đã tạo xong các role mặc định của công ty!");
+    
 
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        GÁN QUYỀN CHO NHÂN VIÊN CỦA CỦA CÔNG TY 
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
 
-    console.log('Gán quyền cho nhân viên trong công ty');
 
-    await UserRole.insertMany([{ //gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
+
+
+    // Step 4: GÁN QUYỀN CHO NHÂN VIÊN CỦA CỦA CÔNG TY
+    console.log('Gán quyền cho nhân viên trong công ty ...');
+    await UserRole.insertMany([{ // Gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
             userId: users[0]._id,
-            roleId: roles[0]._id
+            roleId: roleSuperAdmin._id
         }, {
-            userId: users[1]._id, //gán tài khoản admin.vnist có role là admin
-            roleId: admin._id
+            userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
+            roleId: roleAdmin._id
         },
         // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-        { //Giám đốc Nguyễn Văn An
+        { // Giám đốc Nguyễn Văn An
             userId: users[2]._id,
             roleId: giamDoc._id
         },
-        { //Phó giám đốc Trần Văn Bình
+        { // Phó giám đốc Trần Văn Bình
             userId: users[3]._id,
             roleId: phoGiamDoc._id
         },
-        { //Thành viên ban giám đốc Vũ Thị Cúc
+        { // Thành viên ban giám đốc Vũ Thị Cúc
             userId: users[4]._id,
             roleId: thanhVienBGĐ._id
         },
-        { //Trưởng phòng kinh doanh Nguyễn Văn Danh
+        { // Trưởng phòng kinh doanh Nguyễn Văn Danh
             userId: users[5]._id,
             roleId: truongPhongHC._id
         },
-        { //Nguyễn Văn Danh cũng là thành viên ban giám đốc
+        { // Nguyễn Văn Danh cũng là thành viên ban giám đốc
             userId: users[5]._id,
             roleId: thanhVienBGĐ._id
         },
-        { //Phó phòng kinh doanh Trần Thị Én
+        { // Phó phòng kinh doanh Trần Thị Én
             userId: users[6]._id,
             roleId: phoPhongHC._id
         },
-        { //Nhân viên phòng kinh doanh Phạm Đình Phúc
+        { // Nhân viên phòng kinh doanh Phạm Đình Phúc
             userId: users[7]._id,
             roleId: nvPhongHC._id
         }
     ]);
 
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO PHÒNG BAN CỦA CỦA CÔNG TY 
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+    
+    
+    
 
+
+    // Step 5: TẠO PHÒNG BAN CỦA CỦA CÔNG TY
     console.log('Tạo Phòng ban cho công ty...');
     const Directorate = await OrganizationalUnit.create({ // Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
@@ -311,224 +326,13 @@ const sampleCompanyData = async () => {
 
 
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY 
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
-
-    console.log("Tạo link cho các trang web của công ty...");
-    const links = await Link.insertMany([{ // 0
-            url: '/',
-            description: `Trang chủ công ty ${vnist.name}`,
-            company: vnist._id
-        }, { // 1
-            url: '/departments-management',
-            description: 'Quản lý cơ cấu tổ chức',
-            company: vnist._id
-        }, { // 2
-            url: '/users-management',
-            description: 'Quản lý người dùng',
-            company: vnist._id
-        }, { // 3
-            url: '/roles-management',
-            description: 'Quản lý phân quyền',
-            company: vnist._id
-        }, { // 4
-            url: '/links-management',
-            description: 'Quản lý trang web của công ty',
-            company: vnist._id
-        }, { // 5
-            url: '/components-management',
-            description: 'Quản lý các thành phần UI trên trang web của công ty',
-            company: vnist._id
-        }, { // 6
-            url: '/documents-management',
-            description: 'Quản lý tài liệu biểu mẫu',
-            company: vnist._id
-        }, { // 7
-            url: '/hr-manage-holiday',
-            description: 'Kế hoạch làm việc',
-            company: vnist._id
-        },
-        { // 8
-            url: '/hr-add-employee',
-            description: 'Thêm mới nhân viên',
-            company: vnist._id
-        },
-        { // 9
-            url: '/hr-list-employee',
-            description: 'Danh sách nhân viên',
-            company: vnist._id
-        },
-        { // 10
-            url: '/hr-update-employee',
-            description: 'Cập nhật thông tin cá nhân của nhân viên',
-            company: vnist._id
-        },
-        { // 11
-            url: '/hr-detail-employee',
-            description: 'Thông tin cá nhân của nhân viên',
-            company: vnist._id
-        },
-        { // 12
-            url: '/hr-salary-employee',
-            description: 'Quản lý lương nhân viên',
-            company: vnist._id
-        },
-        { // 13
-            url: '/hr-annual-leave',
-            description: 'Quản lý nghỉ phép của nhân viên',
-            company: vnist._id
-        },
-        { // 14
-            url: '/hr-discipline',
-            description: 'Quản lý khen thưởng, kỷ luật',
-            company: vnist._id
-        },
-        { // 15
-            url: '/hr-dashboard-employee',
-            description: 'Dashboard nhân sự',
-            company: vnist._id
-        },
-        { // 16
-            url: '/hr-time-keeping',
-            description: 'Quản lý chấm công',
-            company: vnist._id
-        },
-        { // 17
-            url: '/hr-trainning-course',
-            description: 'Quản lý đào tạo',
-            company: vnist._id
-        },
-        { // 18
-            url: '/hr-account',
-            description: 'Thông tin tài khoản ',
-            company: vnist._id
-        },
-        { // 19
-            url: '/hr-training-plan',
-            description: 'Kế hoạch đào tạo',
-            company: vnist._id
-        },
-        { // 20
-            url: '/hr-list-education',
-            description: 'Chương trình đào tạo bắt buộc',
-            company: vnist._id
-        },
-
-        //thêm link của quản lý KPI
-        { // 21
-            url: '/kpi-units/create',
-            description: 'Khởi tạo KPI đơn vị',
-            company: vnist._id
-        },
-        { // 22
-            url: '/kpi-units/dashboard',
-            description: 'Dashboard KPI đơn vị',
-            company: vnist._id
-        },
-        { // 23
-            url: '/kpi-personals/create',
-            description: 'Khởi tạo KPI cá nhân',
-            company: vnist._id
-        },
-        { //24  /kpi-personal-manager
-            url: '/kpi-personals/manager',
-            description: 'Quản lí KPI cá nhân',
-            company: vnist._id
-        },
-        { // 25
-            url: '/notifications',
-            description: 'Thông báo',
-            company: vnist._id
-        },
-        { // 26
-            url: '/hr-manage-department',
-            description: 'Quản lý nhân sự các đơn vị',
-            company: vnist._id
-        },
-        { // 27
-            url: '/task-template',
-            description: 'Mẫu công việc',
-            company: vnist._id
-        },
-        { // 28
-            url: '/kpi-member/manager',
-            description: 'Quản lí kpi nhân viên',
-            company: vnist._id
-        },
-        { // 29
-            url: '/task-management',
-            description: 'Xem danh sách công việc',
-            company: vnist._id
-        },
-        { // 30 
-            url: '/task-management-dashboard',
-            description: 'Dashboard công việc',
-            company: vnist._id
-        },
-        { // 31 /kpi-member-dashboard
-            url: '/kpi-member/dashboard',
-            description: 'Dashboard KPI nhân viên',
-            company: vnist._id
-        },
-        { // 32
-            url: '/kpi-units/manager',
-            description: 'Quản lý KPI đơn vị',
-            company: vnist._id
-        },
-
-        { // 33
-            url: '/kpi-units/dashboard',
-            description: 'Tổng quan KPI đơn vị',
-            company: vnist._id
-        },
-
-        { // 34  kpi-personal-dashboard
-            url: '/kpi-personals/dashboard',
-            description: 'DashBoard Kpi cá nhân',
-            company: vnist._id
-        },
 
 
-        // thêm link quản lý tài sản
-        // QUẢN LÝ
-        { //35. quản lý loại tài sản
-            url: '/dashboard-asset',
-            description: 'DashBoard quản lý tài sản',
-            company: vnist._id
-        },
-        { //36. quản lý loại tài sản
-            url: '/manage-type-asset',
-            description: 'Quản lý loại tài sản',
-            company: vnist._id
-        },
 
-        { //37. quản lý thông tin tài sản
-            url: '/manage-info-asset',
-            description: 'Quản lý thông tin tài sản',
-            company: vnist._id
-        },
 
-        { //38. quản lý sửa chữa - thay thế - nâng cấp tài sản
-            url: '/manage-repair-asset',
-            description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
-            company: vnist._id
-        },
 
-        { //39. Quản lý cấp phát - điều chuyển - thu hồi tài sản
-            url: '/manage-distribute-asset',
-            description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
-            company: vnist._id
-        },
 
-        { //40. Quản lý khấu hao tài sản
-            url: '/manage-depreciation-asset',
-            description: 'Quản lý khấu hao tài sản',
-            company: vnist._id
-        },
-
+<<<<<<< HEAD
         { //41. Quản lý đề nghị mua sắm tài sản
             url: '/manage-recommend-procure',
             description: 'Quản lý đăng ký mua sắm tài sản',
@@ -597,348 +401,67 @@ const sampleCompanyData = async () => {
     updateVnist.super_admin = users[0]._id;
     await updateVnist.save();
     console.log("Xong! Đã tạo links: ", links);
-
-    //Thêm component -------------------------------------------------------
-    const components = await Component.insertMany([{
-            name: 'create-notification',
-            description: 'Tạo thông báo mới',
-            company: vnist._id
-        },
-        { // Tạo button Thêm mới
-            name: 'create-task-template-button',
-            description: 'Button thêm mới mẫu công việc',
-            company: vnist._id
+=======
+    // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY
+    console.log("Tạo link cho các trang web của công ty...");
+    let links = Terms.LINKS;
+    for (let i=0; i<links.length; ++i){
+        links[i].company = vnist._id;
+    }
+    let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
+            return roleSuperAdmin._id;
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
+            return roleAdmin._id;
+        } else if (roleName === Terms.ROOT_ROLES.DEAN.name){
+            return roleDean._id;
+        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name){
+            return roleViceDean._id;
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
+            return roleEmployee._id;
         }
-    ]);
-    const notificationLink = await Link.findById(links[25]._id);
-    await notificationLink.components.push(components[0]._id);
-    await notificationLink.save();
+    }
+>>>>>>> d6ecfba570d881a3bbd3b0589c2752b454a448ba
 
-    const taskTemplateManagementLink = await Link.findById(links[27]._id);
-    await taskTemplateManagementLink.components.push(components[1]._id);
-    await taskTemplateManagementLink.save();
+    let componentLinkMap = {};
 
-    //gán quyền tạo thông báo cho admin, superadmin
-    var dataComponents = [
-        {
-            resourceId: components[0]._id,
-            resourceType: 'Component',
-            roleId: roles[0]._id
-        },{
-            resourceId: components[0]._id,
-            resourceType: 'Component',
-            roleId: admin._id
-        },{
-            resourceId: components[1]._id,
-            resourceType: 'Component',
-            roleId: roles[1]._id
+    for (let i=0; i<links.length; ++i) {
+        let components = links[i].components;
+        if (components && components.length>0) { // Tạo các components
+            components = components.map(component => { // Liên kết với role
+                component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
+                component.company = vnist._id;
+                return component;
+            })
+
+            let mongodbComponents = await Component.insertMany(components);
+            components = mongodbComponents.map(component => component._id);
+            links[i].components = components;
+
+            // Phân quyền cho component trong Privilege
+            let privileges_component = [];
+            mongodbComponents.forEach(mongodbComponent => {
+                if (mongodbComponent.roles) {
+                    mongodbComponent.roles.forEach(role => {
+                        privileges_component.push({
+                            resourceId: mongodbComponent._id,
+                            resourceType: 'Component',
+                            roleId: role._id
+                        })
+                    });
+                }
+                componentLinkMap[mongodbComponent._id] = i;
+            });
+            await Privilege.insertMany(privileges_component);
         }
-    ];
 
-    var privileges_component = await Privilege.insertMany(dataComponents);
-    console.log("privilege component: ", privileges_component);
+        let roles = links[i].roles;
+        if (roles){
+            links[i].roles = roles.map(role => convertRoleNameToRoleId(role));
+        }
+    }
 
-    //END
-
-    const privileges = await Privilege.insertMany([
-        //gán 7 link trên cho super admin
-        {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[1]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[2]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[3]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[4]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[5]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[6]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        }, {
-            resourceId: links[25]._id, //notifications
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        },
-        //end
-
-        //Gán quyền vào các trang cho admin
-        {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[1]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[2]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[3]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[4]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[5]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[6]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        }, {
-            resourceId: links[7]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[8]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[9]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[10]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[11]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[12]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[13]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[14]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[15]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[16]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[17]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[18]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[19]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[20]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[25]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[26]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        //end
-        //gán quyền vào trang home '/' ,trang thông báo /notifications -> cho role Dean, Vice Dean và Employee
-        {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        }, {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        }, {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[25]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        }, {
-            resourceId: links[25]._id,
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        }, {
-            resourceId: links[25]._id,
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-
-        // Gán quyền vào trang kpi cho role Dean, Vice Dean và Employee
-        {
-            resourceId: links[21]._id, // Khởi tạo KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[22]._id, // Dashboard KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[22]._id, // Dashboard KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        },
-        {
-            resourceId: links[22]._id, // Dashboard KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[32]._id, // Quản lý KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-
-        {
-            resourceId: links[23]._id, // Khởi tạo KPI cá nhân
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[24]._id, // Tổng quan KPI cá nhân
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-
-        // Gán quyền mẫu công việc
-        {
-            resourceId: links[27]._id, // Mẫu công việc
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[27]._id, // Mẫu công việc
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        },
-        {
-            resourceId: links[27]._id, //M ẫu công việc
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-
-        // Gán quyền quản lý KPI nhân viên
-        {
-            resourceId: links[28]._id, // Quản lý KPI nhân viên
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[31]._id, // Quản lý KPI nhân viên
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        // Gán quyền quản lý công việc
-        {
-            resourceId: links[29]._id, // Quản lý công việc
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[29]._id, //Quản lý công việc
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        },
-        {
-            resourceId: links[29]._id, // Quản lý công việc
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[30]._id, // Dashboard công việc
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[30]._id, // Dashboard công việc
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        },
-        {
-            resourceId: links[30]._id, // Dashboard công việc
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-
-        
-        {
-            resourceId: links[47]._id, // Chi tiết công việc
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[47]._id, // Chi tiết công việc
-            resourceType: 'Link',
-            roleId: roles[2]._id // Vice Dean
-        },
-        {
-            resourceId: links[47]._id, // Chi tiết công việc
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-
-
-        // Gán quyền dashboard kpi cá nhân
-        {
-            resourceId: links[34]._id, // Tổng quan KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-
-
+<<<<<<< HEAD
         /**
          * gán quyền quản lý tài sản tất cả mọi người trong công ty
          */
@@ -1182,22 +705,35 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[0]._id // Super Admin
         },
+=======
+    const mongodbLinks = await Link.insertMany(links); // Tạo các links
+    
+    for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
+        let component = await Component.findById(id);
+        component.link = mongodbLinks[componentLinkMap[id]]._id;
+        await component.save();
+    }
 
-        {
-            resourceId: links[48]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Employee
-        },{
-            resourceId: links[48]._id,
-            resourceType: 'Link',
-            roleId: roles[2]._id // Employee
-        },{
-            resourceId: links[48]._id,
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
 
-    ]);
+
+>>>>>>> d6ecfba570d881a3bbd3b0589c2752b454a448ba
+
+
+    
+    // Step 7: Phân quyền cho các trang
+    let privileges_links = [];
+    mongodbLinks.forEach(mongodbSystemLink => {
+        if (mongodbSystemLink.roles) {
+            mongodbSystemLink.roles.forEach(role => {
+                privileges_links.push({
+                    resourceId: mongodbSystemLink._id,
+                    resourceType: 'Link',
+                    roleId: role._id
+                })
+            });
+        }
+    });
+    let privileges = await Privilege.insertMany(privileges_links);
     console.log("Gán quyền cho các role: ", privileges);
 
     /*---------------------------------------------------------------------------------------------
@@ -1659,69 +1195,129 @@ const sampleCompanyData = async () => {
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
 
-    const domanins = await DocumentDomain.insertMany([{
-            name: "Sản xuất",
-            company: vnist,
-            description: 'Sản xuất'
-        },
+    const domains = await DocumentDomain.insertMany([ 
         {
-            name: "Sản xuất 2",
+            name: "Tài liệu lữu trữ bắt buộc",
             company: vnist,
-            description: 'Sản xuất 2'
-        },
-        {
-            name: "Sản xuất 3",
+            description: 'Tài liệu lữu trữ bắt buộc'
+        },{
+            name: "Hồ sơ lữu trữ bắt buộc",
             company: vnist,
-            description: 'Sản xuất 3'
+            description: 'Hồ sơ lữu trữ bắt buộc'
         },
     ]);
 
-    const domanins2 = await DocumentDomain.insertMany([{
-            name: "Nhà Kho",
+    const domanins2 = await DocumentDomain.insertMany([
+        //tài liệu bắt buộc
+        {
+            name: "Điều lệ công ty",
             company: vnist,
-            description: 'Nhà Kho',
-            parent: domanins[0]._id
+            description: 'Điều lệ công ty',
+            parent: domains[0]._id
+        },{
+            name: "Quy chế quản lý nội bộ công ty",
+            company: vnist,
+            description: 'Quy chế quản lý nội bộ công ty',
+            parent: domains[0]._id
+        },{
+            name: "Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông",
+            company: vnist,
+            description: 'Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông',
+            parent: domains[0]._id
+        },{
+            name: "Văn bằng bảo hộ quyền sở hữu công nghiệp",
+            company: vnist,
+            description: 'Văn bằng bảo hộ quyền sở hữu công nghiệp',
+            parent: domains[0]._id
+        },{
+            name: "Giấy chứng nhận đăng ký chất lượng sản phẩm",
+            company: vnist,
+            description: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+            parent: domains[0]._id
+        },{
+            name: "Giấy phép và giấy chứng nhận khác",
+            company: vnist,
+            description: 'Giấy phép và giấy chứng nhận khác',
+            parent: domains[0]._id
+        },{
+            name: "Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty",
+            company: vnist,
+            description: 'Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty',
+            parent: domains[0]._id
+        },{
+            name: "Biên bản họp hội đồng thành viên",
+            company: vnist,
+            description: 'Biên bản họp hội đồng thành viên, đại hội đồng cổ đông, hội đồng quản trị, các quyết định của doanh nghiệp',
+            parent: domains[0]._id
+        },{
+            name: "Bản cáo bạch để phát hành chứng khoán",
+            company: vnist,
+            description: 'Bản cáo bạch để phát hành chứng khoán',
+            parent: domains[0]._id
+        },{
+            name: "Báo cáo của ban kiểm soát",
+            company: vnist,
+            description: 'Báo cáo của ban kiểm soát, kết luận của cơ quan thanh tra, kết luận của tổ chức kiểm toán',
+            parent: domains[0]._id
+        },{
+            name: "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
+            company: vnist,
+            description: 'Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm',
+            parent: domains[0]._id
+        },
+
+        //hồ sơ
+        {
+            name: "Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng",
+            company: vnist,
+            description: 'Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng của từng phòng ban và của tổ chức',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 2",
+            name: "Hồ sơ xem xét của lãnh đạo",
             company: vnist,
-            description: 'Nhà Kho 2',
-            parent: domanins[0]._id
+            description: 'Hồ sơ xem xét của lãnh đạo',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
+            company: vnist,
+            description: 'Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ về kinh nghiệm làm việc của nhân viên",
+            company: vnist,
+            description: 'Hồ sơ về kinh nghiệm làm việc của nhân viên',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 3",
+            name: "Hồ sơ yêu cầu của các đơn đặt hàng từ khách hàng",
             company: vnist,
-            description: 'Nhà Kho 3',
-            parent: domanins[1]._id
+            description: 'Hồ sơ thống kê kết quả thực hiện mục tiêu chất lượng của từng phòng ban và của tổ chức',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 4",
+            name: "Các hồ sơ cung cấp thông tin đầu vào",
             company: vnist,
-            description: 'Nhà Kho 4',
-            parent: domanins[1]._id
+            description: 'Các hồ sơ cung cấp thông tin đầu vào phục vụ cho thiết kế sản phẩm',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ tài liệu quản lý chất lượng ISO 9001",
+            company: vnist,
+            description: 'Hồ sơ tài liệu quản lý chất lượng ISO 9001',
+            parent: domains[1]._id
+        },{
+            name: "Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm",
+            company: vnist,
+            description: 'Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm',
+            parent: domains[1]._id
         },
         {
-            name: "Nhà Kho 5",
+            name: "Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm",
             company: vnist,
-            description: 'Nhà Kho 5',
-            parent: domanins[0]._id
-        },
-        {
-            name: "Nhà Kho 6",
-            company: vnist,
-            description: 'Nhà Kho 6',
-            parent: domanins[2]._id
+            description: 'Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm',
+            parent: domains[1]._id
         },
     ]);
-
-    const domanins3 = await DocumentDomain.insertMany([
-        { name: "Nhà Kho", company: vnist, description: 'Nhà Kho', parent: domanins2[0]._id},
-        { name: "Nhà Kho 12", company: vnist, description: 'Nhà Kho 2', parent: domanins2[0]._id},
-        { name: "Nhà Kho 13", company: vnist, description: 'Nhà Kho 3', parent: domanins2[1]._id},
-        { name: "Nhà Kho 14", company: vnist, description: 'Nhà Kho 4', parent: domanins2[1]._id},
-        { name: "Nhà Kho 15", company: vnist, description: 'Nhà Kho 5', parent: domanins2[0]._id},
-        { name: "Nhà Kho 16", company: vnist, description: 'Nhà Kho 6', parent: domanins2[2]._id},
-    ]); 
 
     const categories = await DocumentCategory.insertMany([
         {
@@ -1740,6 +1336,14 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             name: "Tài liệu",
             description: 'Tài liệu'
+        },{
+            company: vnist._id,
+            name: "Hồ sơ",
+            description: 'Hồ sơ'
+        },{
+            company: vnist._id,
+            name: "Biên bản",
+            description: 'Biên bản'
         },
     ]);
 

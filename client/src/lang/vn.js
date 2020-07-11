@@ -9,7 +9,6 @@ export default {
              * Start 
              * Chức năng quản lý nhân sự, xoá sau
              */
-
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
             staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -81,7 +80,6 @@ export default {
             guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
             no_change_data: 'Không có thông tin nào được thay đổi',
 
-
             /** 
              * End
              * Chức năng quản lý nhân sự
@@ -95,6 +93,7 @@ export default {
          *******************************************************/
         general: {
             table: 'Bảng',
+            scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
             pick_image: 'Chọn ảnh',
             crop: "Cắt ảnh",
@@ -468,7 +467,7 @@ export default {
                 domains: {
                     add: 'Thêm danh mục văn bản',
                     edit: 'Sửa thông tin danh mục văn bản',
-                    delete: 'Xóa danh mục văn bản',
+                    delete: 'Xóa các danh mục đã chọn',
                     name: 'Tên',
                     description: 'Mô tả',
                     parent: 'Danh mục cha',
@@ -1119,6 +1118,8 @@ export default {
                 delete_salary_faile: 'Xoá bảng lương thất bại',
                 edit_salary_success: 'Chỉnh sửa bảng lương thành công',
                 edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
+                import_salary_success: 'Import bảng lương thành công',
+                import_salary_faile: 'Import bảng lương thất bại',
             },
 
             // Quản lý nghỉ phép
@@ -1310,7 +1311,8 @@ export default {
                 delete_holiday_faile: 'Xoá lịch làm việc thất bại',
                 edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
                 edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
-
+                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1328,7 +1330,8 @@ export default {
                 edit_timesheets_faile: "Chỉnh sửa thông tin chấm công thất bại",
                 delete_timesheets_success: "Xoá thông tin chấm công thành công",
                 delete_timesheets_faile: "Xoá thông tin chấm công thất bại",
-
+                import_timesheets_success: "Import thông tin chấm công thành công",
+                import_timesheets_faile: "Import thông tin chấm công thất bại",
 
             },
 
@@ -1555,7 +1558,7 @@ export default {
             action_name: 'Tên hoạt động',
             delete: 'Xóa trắng',
             cancel_editing: 'Hủy chỉnh sửa',
-            obligatory: 'Bắt buộc',
+            mandatory: 'Bắt buộc',
             add_tasktemplate: 'Thêm mẫu công việc',
             infor_name: 'Tên thông tin',
             datatypes: 'Kiểu dữ liệu',
@@ -1971,7 +1974,7 @@ export default {
 
                     // Nhóm dành cho các trạng thái tập KPI
                     not_approved: 'Chưa kích hoạt',
-                    approved: 'Đã kich hoạt',
+                    approved: 'Đã kích hoạt',
 
                     // Nhóm dành cho table
                     target_list: 'Danh sách mục tiêu',

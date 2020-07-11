@@ -39,18 +39,14 @@ function validateTaskDescription(value) {
 /**
  * @param {*} value Định dạng: dd-mm-yyyy
  */
-function validateTaskStartDate(value) {
+function validateTaskStartDate(startDate, endDate) {
     let msg = undefined;
 
-    if (value.trim() === ""){
+    if (startDate.trim() === ""){
         msg = "Hãy chọn ngày bắt đầu công việc";
-    } 
-    // else {
-        // var pattern = /(\d{2})\-(\d{2})\-(\d{4})/; 
-        // var date = new Date(value.replace(pattern,'$3-$2-$1'));
-        // if (date < Date.now())
-        //     msg = "Thời gian bắt đầu không thể trước ngày hôm nay!";
-    // }
+    } else if (endDate !== ""){
+        msg = _validateTaskDate(startDate, endDate);
+    }
     return msg;
 }
 
@@ -61,16 +57,27 @@ function validateTaskStartDate(value) {
 function validateTaskEndDate(startDate, endDate) {
     let msg = undefined;
 
-    var pattern = /(\d{2})\-(\d{2})\-(\d{4})/;
-
     if (endDate.trim() === ""){
         msg = "Hãy chọn ngày kết thúc công việc";
     } else if (startDate !== ""){
-        var startDate = new Date(startDate.replace(pattern,'$3-$2-$1'));
-        var endDate = new Date(endDate.replace(pattern,'$3-$2-$1'));
-        if (startDate > endDate){
-            msg = "Thời gian kết thúc phải sau thời gian bắt đầu!"
-        }
+        msg = _validateTaskDate(startDate, endDate);
+    }
+    return msg;
+}
+
+/**
+ * Hàm tiện ích kiểm tra ngày bắt đầu phải trước ngày kết thúc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate ngày kết thúc
+ */
+function _validateTaskDate(startDate, endDate){
+    let msg = undefined;
+    var pattern = /(\d{2})\-(\d{2})\-(\d{4})/;
+
+    var startDate = new Date(startDate.replace(pattern,'$3-$2-$1'));
+    var endDate = new Date(endDate.replace(pattern,'$3-$2-$1'));
+    if (startDate > endDate){
+        msg = "Thời gian kết thúc phải sau thời gian bắt đầu!"
     }
     return msg;
 }

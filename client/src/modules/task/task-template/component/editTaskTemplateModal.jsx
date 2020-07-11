@@ -492,14 +492,19 @@ class ModalEditTaskTemplate extends Component {
                     <div className="col-sm-6">
                         <div className={`form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} >
                             <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
-                            <input type="text" className="form-control" id="inputFormula" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                            <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnFormula}/>
                             
-                            <label className="control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.parameters')}:</label>
-                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
-                            <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
-                            <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
-                            <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
+                            <br/>
+                            <div><span style={{fontWeight: 800}}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100(1-p1/p2)</div>
+                            <br/>
+                            <div><span style={{fontWeight: 800}}>{translate('task_template.parameters')}:</span></div>
+                            <div><span style={{fontWeight: 600}}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                            <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                            <div><span style={{fontWeight: 600}}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                            <div><span style={{fontWeight: 600}}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                            <div><span style={{fontWeight: 600}}>progress</span> - % Tiến độ công việc (0-100)</div>
+                            <div><span style={{fontWeight: 600}}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                         </div>
                     </div>
                 </div>
@@ -520,7 +525,7 @@ class ModalEditTaskTemplate extends Component {
                                     editingTemplate.taskInformations.map((item, index) => 
                                         <div style={{paddingBottom: "20px"}} key={index}>
                                             <div>
-                                                <label>{item.name} - Kiểu {item.type}</label>
+                                                <label>{item.code} - {item.name} - Kiểu {item.type}</label>
                                                 {item.filledByAccountableEmployeesOnly ? `- ${translate('task_template.manager_fill')}` : ""}
                                             </div>
                                             {item.description}

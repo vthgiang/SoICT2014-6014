@@ -4,34 +4,34 @@ const { Privilege, Role, Link, Component } = require('../../../models').schema;
  * Lấy danh sách các component của công ty
  * @id id của công ty
  */
-exports.getAllComponents = async (id) => {
-
-    return await Component
-        .find({ company: id })
-        .populate([
-            { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
-            { path: 'link', model: Link },
-        ]);
-}
-
-/**
- * Phân trang danh sách các component
- * @company id công ty
- * @limit giới hạn
- * @page số thứ tự trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedComponents = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await Component
-        .paginate( newData , { 
-            page, 
-            limit,
-            populate: [
-                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
+exports.getAllComponents = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Component
+            .find({ company})
+            .populate([
+                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
-            ]
-        });
+            ]);
+
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company};
+        console.log("option: ", option);
+        return await Component
+            .paginate( option , { 
+                page, 
+                limit,
+                populate: [
+                    { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
+                    { path: 'link', model: Link },
+                ]
+            });
+    }
 }
 
 /**
@@ -141,7 +141,7 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
         resourceId: { $in: link.components }
     }).distinct('resourceId');
 
-    const components = Component.find({_id: {$in: data}});
+    const components = await Component.find({_id: {$in: data}});
 
     return components;
 }

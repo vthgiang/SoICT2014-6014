@@ -25,8 +25,7 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     render() {
-        console.log("task in props",this.props.task);
-        const { task, progress, date, info} = this.props; 
+        const { task, progress, date, info} = this.props; // props from parent component
         
         let taskInformations = task.taskInformations;
 
@@ -35,21 +34,21 @@ class ModalShowAutoPointInfo extends Component {
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
 
-        let timeLimitOfWork = endDate.getTime() - startDate.getTime();
-        let dayOfWork = evaluationsDate.getTime() - startDate.getTime();
-        let overdueDate = (dayOfWork - timeLimitOfWork > 0) ? dayOfWork - timeLimitOfWork : 0;
+        let totalDay = endDate.getTime() - startDate.getTime();
+        let dayUsed = evaluationsDate.getTime() - startDate.getTime();
+        let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
 
         // chuyển về đơn vị ngày
-        timeLimitOfWork = timeLimitOfWork/86400000;
-        dayOfWork = dayOfWork/86400000;
+        totalDay = totalDay/86400000;
+        dayUsed = dayUsed/86400000;
         overdueDate = overdueDate/86400000;
 
         // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
         let taskActions = task.taskActions;
         let actions = taskActions.filter(item => (
             item.rating !== -1 &&
-            new Date(item.createdAt).getMonth() >= evaluationsDate.getMonth() 
-            && new Date(item.createdAt).getFullYear() >= evaluationsDate.getFullYear()
+            new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
+            && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
 
         let actionRating = actions.map(action => action.rating);
@@ -61,17 +60,18 @@ class ModalShowAutoPointInfo extends Component {
         let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
         reduceAction = reduceAction > 0 ? reduceAction : 0;
 
-        let avgRating = reduceAction/a;
+        let averageActionRating = reduceAction/a;
         let formula = task.taskTemplate && task.taskTemplate.formula;
         if(task.taskTemplate){
 
             let taskInformations = info;
             // formula = task.taskTemplate.formula;
-
+        
             // thay các biến bằng giá trị
             formula = formula.replace(/overdueDate/g, overdueDate);
-            formula = formula.replace(/dayOfWork/g, dayOfWork);
-            formula = formula.replace(/avgRating/g, avgRating);
+            formula = formula.replace(/totalDay/g, totalDay);
+            formula = formula.replace(/dayUsed/g, dayUsed);
+            formula = formula.replace(/averageActionRating/g, averageActionRating);
             formula = formula.replace(/progress/g, progress);
             
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -98,7 +98,6 @@ class ModalShowAutoPointInfo extends Component {
                     modalID={`modal-automatic-point-info`}
                     formID="form-automatic-point-info"
                     title={`Thông tin điểm tự động của công việc`} 
-                    // bodyStyle={{padding: "0px"}}
                     hasSaveButton={false}
                 >
                     {
@@ -108,13 +107,13 @@ class ModalShowAutoPointInfo extends Component {
                             <p>Trong đó: </p>
                             <ul>
                                 <li>overdueDate: Thời gian quá hạn: {overdueDate} (ngày)</li>
-                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
-                                <li>avgRating: Trung bình cộng điểm đánh giá hoạt động: {avgRating} </li>
+                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
+                                <li>averageActionRating: Trung bình cộng điểm đánh giá hoạt động: {averageActionRating} </li>
                                 <li>progress: Tiến độ công việc: {progress} (%)</li>
                                 {
                                     taskInformations && taskInformations.map(e => {
                                         if(e.type === 'Number'){
-                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`].value === undefined) ? "Chưa có giá trị" : info[`${e.code}`].value}</li>
+                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value: "Chưa có giá trị" }</li>
                                         }
                                     })
                                 }
@@ -125,28 +124,28 @@ class ModalShowAutoPointInfo extends Component {
                     {
                         ((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
                         <div>
-                            <p><strong>Công thức tính: </strong> progress/(dayOfWork/timeLimitOfWork)</p>
+                            <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay)</p>
                             <p>Trong đó: </p>
                             <ul>
                                 <li>progress: Tiến độ công việc: {progress} (%)</li>
-                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
-                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ngày)</li>
+                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
+                                <li>totalDay: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {totalDay} (ngày)</li>
                             </ul>
-                            <p><strong>Công thức hiện tại: </strong>{progress}/({dayOfWork}/{timeLimitOfWork}) = {this.props.autoPoint}</p>
+                            <p><strong>Công thức hiện tại: </strong>{progress}/({dayUsed}/{totalDay}) = {this.props.autoPoint}</p>
                         </div>
                     }
                     {
                         ((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
                         <div>
-                            <p><strong>Công thức tính: </strong> progress/(dayOfWork/timeLimitOfWork) - 0.5*(10-avgRating)*10</p>
+                            <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10</p>
                             <p>Trong đó: </p>
                             <ul>
                                 <li>progress: Tiến độ công việc: {progress} (%)</li>
-                                <li>avgRating: Trung bình cộng điểm đánh giá hoạt động: {avgRating}</li>
-                                <li>dayOfWork: Thời gian làm việc tính đến ngày đánh giá: {dayOfWork} (ngày)</li>
-                                <li>timeLimitOfWork: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {timeLimitOfWork} (ngày)</li>
+                                <li>averageActionRating: Trung bình cộng điểm đánh giá hoạt động: {averageActionRating}</li>
+                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
+                                <li>totalDay: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {totalDay} (ngày)</li>
                             </ul>
-                        <p><strong>Công thức hiện tại: </strong>{progress}/({dayOfWork}/{timeLimitOfWork}) - {0.5}*({10}-{avgRating})*{10} = {this.props.autoPoint}</p>
+                        <p><strong>Công thức hiện tại: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {this.props.autoPoint}</p>
                         </div>
                     }
 

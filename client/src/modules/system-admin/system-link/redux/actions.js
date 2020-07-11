@@ -4,26 +4,41 @@ import { LinkDefaultConstants } from "./constants";
 export const LinkDefaultActions = {
     get,
     getCategories,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get(){
-    return dispatch => {
-        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST});
-        LinkDefaultServices.get()
-            .then(res => {
-                dispatch({
-                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS,
-                    payload: res.data.content
+function get(data){
+    if(data === undefined){
+        return dispatch => {
+            dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST});
+            LinkDefaultServices.get()
+                .then(res => {
+                    dispatch({
+                        type: LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
-            })
+                .catch(err => {
+                    dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
+                })
+        }
+    }else{
+        return dispatch => {
+            dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST});
+            LinkDefaultServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE});
+                })
+        }
     }
 }
 
@@ -39,22 +54,6 @@ function getCategories(){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE});
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST});
-        LinkDefaultServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE});
             })
     }
 }
@@ -123,5 +122,3 @@ function destroy(id, link){
             })
     }
 }
-
-

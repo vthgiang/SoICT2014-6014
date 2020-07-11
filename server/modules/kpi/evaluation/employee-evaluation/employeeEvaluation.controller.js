@@ -190,7 +190,7 @@ exports.setPointKPI = async (req, res) => {
 // cập nhật điểm level
 exports.setTaskImportanceLevel = async (req, res) => {
    // try {
-        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.body);
+        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.params.kpiType, req.body);
         //  await LogInfo(req.user.email, `Set task importance level`, req.user.company);
         res.status(200).json({
             success: true,

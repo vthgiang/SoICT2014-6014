@@ -100,7 +100,7 @@ class DataTableSetting extends Component {
                 
                 <div className="box box-primary box-solid collapse setting-table" id={`setting-${tableId}`}>
                     <div className="box-header with-border">
-                        <h3 className="box-title">Thiết lập bảng</h3>
+                        <h3 className="box-title">{translate('general.action')}</h3>
                         <div className="box-tools pull-right">
                             <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target={`#setting-${tableId}`} ><i className="fa fa-times"></i></button>
                         </div>
@@ -125,7 +125,7 @@ class DataTableSetting extends Component {
                             {window.$(`#${tableContainerId}`)[0] !== undefined &&
                                 <React.Fragment>
                                     <div className="checkbox">
-                                        <label><input type="checkbox" checked={this.state.useScrollBar} ref="configCheckbox" onChange={this.configTableWidth} />Dùng thanh cuộn bảng</label>
+                    <label><input type="checkbox" checked={this.state.useScrollBar} ref="configCheckbox" onChange={this.configTableWidth} />{translate("general.scroll")}</label>
                                     </div>
                                     <SlimScroll outerComponentId={tableContainerId} innerComponentId={tableId} innerComponentWidth={tableWidth} activate={this.state.useScrollBar} />
                                 </React.Fragment>

@@ -9,7 +9,6 @@ class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            domainParent: []
         }
     }
 
@@ -28,7 +27,7 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ domainParent: value });
+        this.setState({ domainParent: value[0] });
     };
 
     save = () => {
@@ -53,11 +52,10 @@ class CreateForm extends Component {
 
     render() {
         const {translate, documents}=this.props;
-        const domains = documents.administration.domains.tree;
-        console.log("State: ", this.state)
+        const {tree, list} = documents.administration.domains;
+      
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-create-document-domain" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
                 <DialogModal
                     modalID="modal-create-document-domain"
                     formID="form-create-document-domain"
@@ -70,11 +68,11 @@ class CreateForm extends Component {
                             <input type="text" className="form-control" onChange={this.handleName}/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
-                            <TreeSelect dataTree={domains} handleChange={this.handleParent}/>
+                            <label>{ translate('document.administration.domains.parent') }</label>
+                            <TreeSelect data={list} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
+                            <label>{ translate('document.administration.domains.description') }</label>
                             <textarea style={{minHeight: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
                         </div>
                     </form>

@@ -26,7 +26,7 @@ router.delete('/:id', auth, TimsheetsController.deleteTimesheets);
  */
 router.patch('/:id', auth, TimsheetsController.updateTimesheets);
 
-// // Import chấm công
-// router.post('/import', auth, TimsheetsController.importSalaries);
+// Import chấm công
+router.post('/import', auth, TimsheetsController.importTimesheets);
 
 module.exports = router;

@@ -4,7 +4,6 @@ const ComponentController = require('./component.controller');
 const { auth, authFunc } = require('../../../middleware');
 
 router.get("/", auth, ComponentController.getAllComponents);
-router.post("/paginate", auth, ComponentController.getPaginatedComponents);
 router.post("/", auth, ComponentController.createComponent);
 router.get("/:id", auth, ComponentController.getComponent);
 router.patch("/:id", auth, ComponentController.editComponent);

@@ -36,6 +36,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Call action again when currentRole changes
         if(this.state.currentRole !== localStorage.getItem("currentRole")) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
             await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
@@ -52,11 +53,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId)
+            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
 
             this.setState(state => {
                 return {
@@ -106,10 +108,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
-                organizationalUnitId: nextProps.organizationalUnitId
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
             }
         } else{
             return null;

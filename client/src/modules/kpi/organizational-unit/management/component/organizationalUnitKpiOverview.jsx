@@ -13,10 +13,10 @@ class KPIUnitManager extends Component {
         this.state = {
             showModalCopy: "",
             currentRole: localStorage.getItem("currentRole"),
-            status: 3,
+            status: -1,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                status: 3,
+                status: -1,
                 startDate: this.formatDate(Date.now()),
                 endDate: this.formatDate(Date.now())
             },

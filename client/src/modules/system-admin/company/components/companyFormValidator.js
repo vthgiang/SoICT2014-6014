@@ -44,8 +44,6 @@ function validateDescription(value) {
         msg = "system_admin.company.validator.description.no_less4";
     } else if(value.length > 255){
         msg = "system_admin.company.validator.description.no_more255";
-    } else if (!VALIDATOR.isValidName(value)){
-        msg = "system_admin.company.validator.description.no_special";
     }
     return msg;
 }

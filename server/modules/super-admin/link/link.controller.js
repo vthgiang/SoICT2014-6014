@@ -7,7 +7,8 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getAllLinks = async (req, res) => {
     try {
-        var links = await LinkService.getAllLinks(req.user.company._id);
+        console.log("getalllink", req.query)
+        var links = await LinkService.getAllLinks(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({

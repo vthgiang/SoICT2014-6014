@@ -87,7 +87,6 @@ exports.createNotification = async (company, data, manualNotification=undefined)
         usersArr = await usersArr.concat(userArr);
     }
 
-    return usersArr;
     console.log("User nhận thông báo2:", usersArr)
 
     // Loại bỏ các giá trị trùng nhau

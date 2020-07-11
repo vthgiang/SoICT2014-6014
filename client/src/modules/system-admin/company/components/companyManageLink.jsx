@@ -10,7 +10,7 @@ class CompanyManageLinks extends Component {
             limit: 5,
             page: 1,
             option: 'url',
-            value: { $regex: '', $options: 'i' }
+            value: ''
          }
     }
 
@@ -182,30 +182,35 @@ class CompanyManageLinks extends Component {
     }
 
     searchWithOption = async() => {
-        const {companyId, limit, page, option, value} = this.state;
-        const data = {};
-        data[option] = value;
-        await this.props.linksPaginate(companyId, page, limit, data);
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.linksList(this.state.companyId, data);
     }
 
-    setPage = async (pageNumber) => {
-        await this.setState({ page: pageNumber });
-        const {limit, page, companyId, value, option} = this.state;
-        const data = {};
-        if(value !== null){
-            data[option] = value;
-        }
-        await this.props.linksPaginate(companyId, page, limit, data);
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.linksList(this.state.companyId, data);
     }
-    
-    setLimit = async (number) => {
-        await this.setState({ limit: number });
-        const {limit, page, companyId, value, option} = this.state;
-        const data = {};
-        if(value !== null){
-            data[option] = value;
-        }
-        await this.props.linksPaginate(companyId, page, limit, data);
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.linksList(this.state.companyId, data);
     }
 }
  
@@ -214,10 +219,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps =  {
     addNewLink: CompanyActions.addNewLink,
     deleteLink: CompanyActions.deleteLink,
-    linksList: CompanyActions.linksList,
-    linksPaginate: CompanyActions.linksPaginate,
-    componentsList: CompanyActions.componentsList,
-    componentsPaginate: CompanyActions.componentsPaginate
+    linksList: CompanyActions.linksList
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyManageLinks) );

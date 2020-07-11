@@ -4,7 +4,7 @@ const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require('../../../seed/
 
 exports.getAllCompanies = async (req, res) => {
     try {
-        const companies = await CompanyService.getAllCompanies();
+        const companies = await CompanyService.getAllCompanies(req.query);
         
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(200).json({
@@ -17,31 +17,6 @@ exports.getAllCompanies = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_companies_faile'],
-            content: error
-        });
-    }
-};
-
-
-exports.getPaginatedCompanies = async (req, res) => {
-    try {
-        var { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        var companies = await CompanyService.getPaginatedCompanies(limit, page, req.body);
-
-        LogInfo(req.user.email, 'PAGINATE_COMPANIES');
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_companies_success'],
-            content: companies
-        });
-    } catch (error) {
-        
-        LogInfo(req.user.email, 'PAGINATE_COMPANIES');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['paginate_companies_faile'],
             content: error
         });
     }
@@ -140,7 +115,7 @@ exports.deleteCompany = async (req, res) => {
 
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getCompanyLinks(req.params.id);
+        const links = await CompanyService.getCompanyLinks(req.params.id,req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
@@ -149,7 +124,7 @@ exports.getCompanyLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        
+        console.log("ERR: ",error)
         LogError(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(400).json({
             success: false,
@@ -246,7 +221,7 @@ exports.deleteCompanyComponent = async (req, res) => {
 
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getCompanyLinks(req.params.id);
+        const links = await CompanyService.getCompanyLinks(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
@@ -264,34 +239,9 @@ exports.getCompanyLinks = async (req, res) => {
     }
 };
 
-exports.getPaginatedCompanyLinks = async (req, res) => {
-    try {
-        const links = await CompanyService.getPaginatedCompanyLinks(
-            req.params.id, 
-            req.params.page, 
-            req.params.limit, 
-            req.body
-        );
-        
-        LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
-        res.status(200).json({
-            success: true,
-            messages: ['get_links_paginate_of_company_success'],
-            content: links
-        });
-    } catch (error) {
-        LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_links_paginate_of_company_faile'],
-            content: error
-        });
-    }
-};
-
 exports.getCompanyComponents = async (req, res) => {
     try {
-        const components = await CompanyService.getCompanyComponents(req.params.id);
+        const components = await CompanyService.getCompanyComponents(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
@@ -300,35 +250,12 @@ exports.getCompanyComponents = async (req, res) => {
             content: components
         });
     } catch (error) {
+        
+        console.log("ERR component: ",error)
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_components_list_of_company_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getPaginatedCompanyComponents = async (req, res) => {
-    try {
-        const components = await CompanyService.getPaginatedCompanyComponents(
-            req.params.id,
-            req.params.page,
-            req.params.limit,
-            req.body
-        );
-        
-        LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
-        res.status(200).json({
-            success: true,
-            messages: ['get_components_paginate_of_company_success'],
-            content: components
-        });
-    } catch (error) {
-        LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_components_paginate_of_company_faile'],
             content: error
         });
     }
