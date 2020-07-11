@@ -24,6 +24,7 @@ const LINK_CATEGORY = {
     DOCUMENT: { name: 'document-management', description: 'Quản lý tài liệu, biểu mẫu'},
     PROCESS: { name: 'process-management', description: 'Quản lý quy trình'},
     ASSET: { name: 'asset-management', description: 'Quản lý tài sản'},
+    REPORT: { name: 'report-management', description: 'Quản lý báo cáo'},
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
 
