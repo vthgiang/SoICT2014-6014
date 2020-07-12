@@ -15,7 +15,6 @@ function searchRecommendDistributes(data) {
     return async (dispatch) => {
         try {
             const result = await RecommendDistributeService.searchRecommendDistributes(data);
-            console.log(result);
             dispatch({
                 type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_SUCCESS,
                 payload: result.data.content
