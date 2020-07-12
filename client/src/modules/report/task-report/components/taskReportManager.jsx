@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import Swal from 'sweetalert2';
 
 import { ButtonModal }  from '../../../../common-components';
 import { DataTableSetting, PaginateBar, DeleteNotification } from '../../../../common-components';
@@ -35,6 +36,29 @@ class TaskReportManager extends Component {
         });
         await window.$('#modal-edit-report').modal('show'); // hiển thị modal edit
     }
+
+    /**
+     * Hàm xóa báo cáo
+     * @param {*} id  của báo cáo muốn xóa
+     * @param {*} name tên báo cáo muốn xóa
+     */
+    handleDelete = async (id, name) => {
+        const { translate } = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('report_manager.delete')} </div> <div> "${name}" ?</div></h4>`,
+            type: 'success',
+            showCancelButton: true,
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('report_manager.cancel'),
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: translate('report_manager.confirm')
+        }).then((res) => {
+            if (res.value){
+                this.props.deleteTaskReport(id);
+            }
+        });
+    }
+
 
     /**
      * Hàm  bắt sự kiện khi ấn enter để lưu
@@ -117,7 +141,7 @@ class TaskReportManager extends Component {
 
                     {/* Thêm mới bao cáo */}
                     <div className="form-inline">
-                        <ButtonModal modalID="modal-create-task-report" button_name="Thêm mới" title="Thêm mới báo cáo" />
+                        <ButtonModal modalID="modal-create-task-report" button_name= {translate('report_manager.add_report')} title= {translate('report_manager.add_report')} />
                     </div>
                     <TaskReportCreateForm/>
 
@@ -163,13 +187,9 @@ class TaskReportManager extends Component {
                                     <td>{ item.creator.name }</td>
                                     <td style={{textAlign: 'center'}}>
                                         <a onClick={() => this.handleEdit(item)} className="edit text-yellow" style= {{width: '5px'}} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
-                                        {
-                                            <DeleteNotification 
-                                                content={ translate('report_manager.delete') }
-                                                data={ { id: item._id, info: item.name } }
-                                                func={ deleteTaskReport }
-                                            />
-                                        }
+                                        <a onClick={()=>this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
+                                            <i className="material-icons">delete</i>
+                                        </a>
                                     </td>
                                 </tr>
                             )) :  <tr><td colSpan={4}><center>{translate('report_manager.no_data')}</center></td></tr>

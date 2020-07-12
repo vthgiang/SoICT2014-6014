@@ -2084,6 +2084,7 @@ export default {
 
         report_manager: {
             search: 'Tìm kiếm',
+            add_report: 'Thêm mới',
             search_by_name: 'Tìm kiếm theo tên',
             select_all_units: 'Chọn tất cả đơn vị',
             performer: 'Người thực hiện',
@@ -2094,6 +2095,9 @@ export default {
             creator: 'Người tạo',
             edit: 'Chỉnh sửa thông tin báo cáo',
             delete: 'Bạn chắc chắn muốn xóa báo cáo:',
+            confirm: 'Xác nhận',
+            cancel: 'Hủy bỏ',
+            title_delete: 'Xóa báo cáo này',
             no_data: 'Không có dữ liệu',
             search_by_name: 'Nhập tên mẫu báo cáo',
 

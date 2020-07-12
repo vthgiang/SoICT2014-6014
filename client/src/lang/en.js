@@ -667,7 +667,7 @@ export default {
 
             // QUẢN LÝ BÁO CÁO
             report_management: 'Report management',
-            task_report: 'Manage work reports',
+            task_report: 'Manage task reports',
         },
 
         manage_system: {
@@ -1947,14 +1947,18 @@ export default {
 
         report_manager: {
             search: 'Search',
+            add_report: 'Add report',
             search_by_name: 'Search by name',
             select_all_units: 'Select all units',
             performer: 'Performer',
             description: 'Description',
             name: 'Report Name',
             unit: 'Unit',
-            delete: 'Delete report',
-            edit: 'Edit report',
+            delete: 'Are you sure you want to delete report:',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
+            edit: 'Edit this report',
+            title_delete: 'Delete this report',
             creator: 'Creator',
             no_data: 'No data',
             search_by_name: 'Search by name report',
