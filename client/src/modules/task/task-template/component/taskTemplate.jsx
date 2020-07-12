@@ -198,9 +198,9 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.deans.indexOf(localStorage.getItem("currentRole"))
-                || item.viceDeans.indexOf(localStorage.getItem("currentRole"))
-                || item.employees.indexOf(localStorage.getItem("currentRole")));
+                item.deans.includes(localStorage.getItem("currentRole"))
+                || item.viceDeans.includes(localStorage.getItem("currentRole"))
+                || item.employees.includes(localStorage.getItem("currentRole")));
         }
         
         if (tasktemplates.items) {
@@ -213,16 +213,20 @@ class TaskTemplate extends Component {
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
                     {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
                     {<TaskTemplateImportForm />}
-                    {<ModalAddTaskTemplate/>}
+                    {this.checkHasComponent('create-task-template-button') && 
+                    <React.Fragment>
+                        <ModalAddTaskTemplate />
                         <div class = "form-inline">
                             <div class ="dropdown pull-right" style={{marginBottom: 15}}>
                                 <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>Thêm mới</button>
-                                <ul className="dropdown-menu pull-right" style={{background:"#999", marginTop: 0}}>
-                                    <li><a href="#modal_import_file" style={{color:"#fff"}} title="ImportForm" onClick={(event)=>{this.handImportFile(event)}}>ImportFile</a></li>
-                                    <li><a href="#modal-add-task-template" style={{color:"#fff"}} title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>Add</a></li>
+                                <ul className="dropdown-menu pull-right">
+                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>Add</a></li>
+                                    <li><a href="#modal_import_file" title="ImportForm" onClick={(event)=>{this.handImportFile(event)}}>ImportFile</a></li>
                                 </ul>
                             </div>
                         </div>
+                    </React.Fragment>
+                    }
                                         
                     <div className="form-inline">
                         <div className = "form-group">
