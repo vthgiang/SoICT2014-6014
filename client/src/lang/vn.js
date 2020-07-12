@@ -1451,6 +1451,20 @@ export default {
                 edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
             },
 
+            // Quản lý khấu hao
+            depreciation: {
+
+                //Thông điệp trả về từ server
+                get_depreciation_success: 'Lấy thông tin khấu hao thành công',
+                get_depreciation_faile: 'Lấy thông tin khấu hao thất bại',
+                create_depreciation_success: 'Thêm thông tin khấu hao tài sản thành công',
+                create_depreciation_faile: 'Thêm thông tin khấu hao tài sản thất bại',
+                delete_depreciation_success: 'Xoá thông tin khấu hao tài sản thành công',
+                delete_depreciation_faile: 'Xoá thông tin khấu hao tài sản thất bại',
+                edit_depreciation_success: 'Chỉnh sửa thông tin khấu hao tài sản thành công',
+                edit_depreciation_faile: 'Chỉnh sửa thông tin khấu hao tài sản thất bại',
+            },
+
             // Quản lý sự cố
             incident: {
 

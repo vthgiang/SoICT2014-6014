@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
-import { AssetDetailForm, AssetEditForm } from '../../asset-management/components/combinedContent';
+import { AssetDetailForm } from '../../asset-management/components/combinedContent';
 import { DepreciationEditForm } from './depreciationEditForm';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
@@ -263,16 +263,13 @@ class DepreciationManager extends Component {
                                         <td>{x.usefulLife} tháng</td>
                                         <td>{formater.format(parseInt(12 * (x.cost / x.usefulLife)))} VNĐ/năm</td>
                                         <td>{formater.format(parseInt((x.cost / x.usefulLife)))} VNĐ/tháng</td>
-
-
-                                        <td>{formater.format(parseInt(((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
-
-
-                                        <td>{formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * (((new Date()).getMonth() + 1) - this.formatDate(x.startDepreciation).split('-')[1])))} VNĐ</td>
+                                        <td>{formater.format(parseInt(((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))))} VNĐ</td>
+                                        <td>{formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))))} VNĐ</td>
                                         <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin khấu hao tài sản"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin khấu hao tài sản"><i
+                                                className="material-icons">edit</i></a>
                                         </td>
                                     </tr>))
                             }
