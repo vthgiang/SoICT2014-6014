@@ -10,7 +10,6 @@ const { LogInfo, LogError } = require('../../../logs');
 exports.getTaskReports = async (req, res) => {
     try {
         let taskReports = await TaskReportService.getTaskReports(req.query);
-        console.log(req.user)
         LogInfo(req.user.email, ' get_task_report ',req.user.company);
 
         res.status(200).json({

@@ -33,8 +33,8 @@ export function reports(state = initState, action) {
         case TaskReportConstants.GET_TASK_REPORT_SUCCESS:
             return {
                 ...state,
-                listTaskReport: action.payload.listTaskReport, //action.payload.listTaskReport
-                totalList: action.payload.totalList, //action.payload.totalList
+                listTaskReport: action.payload.listTaskReport, 
+                totalList: action.payload.totalList,
                 isLoading: false,
             };
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { TaskReportActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel }  from '../../../../common-components';
+import { DialogModal, ErrorLabel }  from '../../../../common-components';
 import { taskReportFormValidator } from './taskReportFormValidator';
 
 class TaskReportCreateForm extends Component {
@@ -96,7 +96,6 @@ class TaskReportCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-task-report" button_name="Thêm mới" title="Thêm mới báo cáo" />
                 <DialogModal
                     modalID="modal-create-task-report" isLoading= { reports.isLoading }
                     formID="form-create-task-report"

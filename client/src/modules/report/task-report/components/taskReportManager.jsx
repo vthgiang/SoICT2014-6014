@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
+import { ButtonModal }  from '../../../../common-components';
 import { DataTableSetting, PaginateBar, DeleteNotification } from '../../../../common-components';
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
@@ -104,80 +105,80 @@ class TaskReportManager extends Component {
 
         return (
             <div className="box">
-                <TaskReportCreateForm/>
-                {
-                    this.state.currentRow !== undefined &&
-                    <TaskReportEditForm 
-                    _id = { this.state.currentRow._id } 
-                    nameTaskReport = { this.state.currentRow.name }
-                    descriptionTaskReport = { this.state.currentRow.description }
-                    />
-                }
-                
-                {/* search form */}
-                <div className="qlcv">
+                <div className="box-body qlcv" >
+                    {
+                        this.state.currentRow !== undefined &&
+                        <TaskReportEditForm 
+                        _id = { this.state.currentRow._id } 
+                        nameTaskReport = { this.state.currentRow.name }
+                        descriptionTaskReport = { this.state.currentRow.description }
+                        />
+                    }
+
+                    {/* Thêm mới bao cáo */}
                     <div className="form-inline">
+                        <ButtonModal modalID="modal-create-task-report" button_name="Thêm mới" title="Thêm mới báo cáo" />
+                    </div>
+                    <TaskReportCreateForm/>
+
+                    {/* search form */}
+                    <div className="form-inline" style={{marginBottom: '2px'}}>
                         <div className="form-group">
-                            <label>{translate('form.value')}</label>
-                            <input className="form-control" type="text" onKeyUp= { this.handleEnterLimitSetting } name="name" onChange= { this.handleChangeInput }/>
+                            <label className = "form-control-static">{translate('report_manager.name')}</label>
+                            <input className="form-control" type="text" onKeyUp= { this.handleEnterLimitSetting } name="name" onChange= { this.handleChangeInput } placeholder={translate('report_manager.search_by_name')}/>
                             <button type="button" className="btn btn-success" onClick= { this.search } title= {translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>
-                </div>
 
-                {/* table hiển thị danh sách báo cáo công việc */}
-                <table className="table table-hover table-striped table-bordered" id="report_manager">
-                    <thead>
-                        <tr>
-                            <th>{ translate('report_manager.name') }</th>
-                            <th>{ translate('report_manager.description') }</th>
-                            <th>{ translate('report_manager.creator') }</th>
-                            <th style={{ width: '120px', textAlign: 'center' } }>
-                                { translate('table.action') }
-                                <DataTableSetting
-                                    tableId="report_manager"
-                                    columnArr={[
-                                        translate('report_manager.name'),
-                                        translate('report_manager.description'),
-                                        translate('report_manager.creator'),
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      {
-                         (reports && reports.totalList && reports.listTaskReport) ? reports.listTaskReport.map(item => (
-                            <tr key= { item._id }>
-                                <td>{ item.name }</td>
-                                <td>{ item.description }</td>
-                                <td>{ item.creator.name }</td>
-                                <td style={{textAlign: 'center'}}>
-                                    <a onClick={() => this.handleEdit(item)} className="edit text-yellow" style= {{width: '5px'}} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
-                                    {
-                                        <DeleteNotification 
-                                            content={ translate('report_manager.delete') }
-                                            data={ { id: item._id, info: item.name + item._id } }
-                                            func={ deleteTaskReport }
-                                        />
-                                    }
-                                </td>
+                    <DataTableSetting
+                        tableId="report_manager"
+                        columnArr={[
+                            translate('report_manager.name'),
+                            translate('report_manager.description'),
+                            translate('report_manager.creator'),
+                        ]}
+                        limit={this.state.limit}
+                        setLimit={this.setLimit}
+                        hideColumnOption={true}
+                    />
+
+                    {/* table hiển thị danh sách báo cáo công việc */}
+                    <table className="table table-hover table-striped table-bordered" id="report_manager">
+                        <thead>
+                            <tr>
+                                <th>{ translate('report_manager.name') }</th>
+                                <th>{ translate('report_manager.description') }</th>
+                                <th>{ translate('report_manager.creator') }</th>
+                                <th style={{ width: '120px', textAlign: 'center' } }>
+                                    { translate('table.action') }
+                                </th>
                             </tr>
-                         )) : null
-                      }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {
+                            ( reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
+                                <tr key={ item._id }>
+                                    <td>{ item.name }</td>
+                                    <td>{ item.description }</td>
+                                    <td>{ item.creator.name }</td>
+                                    <td style={{textAlign: 'center'}}>
+                                        <a onClick={() => this.handleEdit(item)} className="edit text-yellow" style= {{width: '5px'}} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
+                                        {
+                                            <DeleteNotification 
+                                                content={ translate('report_manager.delete') }
+                                                data={ { id: item._id, info: item.name } }
+                                                func={ deleteTaskReport }
+                                            />
+                                        }
+                                    </td>
+                                </tr>
+                            )) :  <tr><td colSpan={4}><center>{translate('report_manager.no_data')}</center></td></tr>
+                        }
+                        </tbody>
+                    </table>
 
-                {
-                    reports.isLoading ?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    reports.totalList === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                }
-
-                <PaginateBar pageTotal= { pageTotal ? pageTotal : 0 } currentPage= { page } func= { this.setPage } />     
+                    <PaginateBar pageTotal= { pageTotal ? pageTotal : 0 } currentPage= { page } func= { this.setPage } />    
+                </div>
             </div>
         );
     }
