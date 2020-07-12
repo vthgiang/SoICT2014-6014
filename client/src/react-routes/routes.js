@@ -911,13 +911,13 @@ class Routes extends Component {
                         key={ 'task-report-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/task-report', name: 'report_management', icon:'fa fa-flash' }
+                            { link: '/task-report', name: 'task_report', icon:'fa fa-flash' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/task-report' }
                         path={ '/task-report' }
-                        pageName={ 'report_management' }
+                        pageName={ 'task_report' }
                         layout={ Layout }
                         component={ TaskReportManager }
                     />  

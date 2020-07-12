@@ -2107,7 +2107,10 @@ export default {
             unit: 'Đơn vị',
             creator: 'Người tạo',
             edit: 'Chỉnh sửa thông tin báo cáo',
-            delete: 'Xóa báo cáo',
+            delete: 'Bạn chắc chắn muốn xóa báo cáo:',
+            no_data: 'Không có dữ liệu',
+            search_by_name: 'Nhập tên mẫu báo cáo',
+
 
             //message trả về từ server
             create_report_manager_success: 'Tạo báo cáo thành công !',

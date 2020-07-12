@@ -142,4 +142,5 @@ const actionCreators = {
     editTaskReport: TaskReportActions.editTaskReport,
 };
 const editReport = connect(mapState, actionCreators)(withTranslate(TaskReportEditForm));
+
 export {editReport as TaskReportEditForm};

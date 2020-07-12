@@ -1956,7 +1956,9 @@ export default {
             delete: 'Delete report',
             edit: 'Edit report',
             creator: 'Creator',
-            
+            no_data: 'No data',
+            search_by_name: 'Search by name report',
+
             //message trả về từ server
             
             create_report_manager_success: 'Create report success !',
