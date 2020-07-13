@@ -307,6 +307,7 @@ class DepreciationManager extends Component {
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
 
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}

@@ -29,7 +29,7 @@ class UsageManagement extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 100,
+            limit: 5,
         });
     }
 

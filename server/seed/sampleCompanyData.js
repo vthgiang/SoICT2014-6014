@@ -1295,45 +1295,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[19]._id,
         purchaseDate: new Date("2020-06-20"),
         warrantyExpirationDate: new Date("2022-06-20"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PKD",
         status: "Sẵn sàng sử dụng",
         description: "Laptop Sony Vaio",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 50000000,
         residualValue: 10000000,
@@ -1357,45 +1332,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[8]._id,
         purchaseDate: new Date("2020-05-20"),
         warrantyExpirationDate: new Date("2022-05-20"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PKD",
         status: "Sẵn sàng sử dụng",
         description: "Điều hòa Panasonic 9.000BTU",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 40000000,
         residualValue: 5000000,
@@ -1419,45 +1369,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[16]._id,
         purchaseDate: new Date("2020-05-25"),
         warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
         description: "Máy tính cây",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 30000000,
         residualValue: 5000000,
@@ -1481,45 +1406,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[16]._id,
         purchaseDate: new Date("2020-05-26"),
         warrantyExpirationDate: new Date("2022-05-26"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
         description: "Máy in HP M402D",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 35000000,
         residualValue: 4000000,
@@ -1543,45 +1443,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[16]._id,
         purchaseDate: new Date("2020-05-25"),
         warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
         description: "Máy in màu epson L805",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 30000000,
         residualValue: 5000000,
@@ -1605,45 +1480,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[19]._id,
         purchaseDate: new Date("2020-05-20"),
         warrantyExpirationDate: new Date("2022-05-20"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
         description: "Lap top DELL Vostro 3568",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 35000000,
         residualValue: 5000000,
@@ -1667,45 +1517,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[19]._id,
         purchaseDate: new Date("2020-04-20"),
         warrantyExpirationDate: new Date("2022-04-20"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "PKT",
         status: "Sẵn sàng sử dụng",
         description: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 15000000,
@@ -1730,45 +1555,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[18]._id,
         purchaseDate: new Date("2020-04-25"),
         warrantyExpirationDate: new Date("2022-04-25"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
         description: "Máy bơm áp",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 40000000,
         residualValue: 15000000,
@@ -1793,45 +1593,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[18]._id,
         purchaseDate: new Date("2020-04-30"),
         warrantyExpirationDate: new Date("2022-04-30"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
         description: "Máy nén khí công nghiệp 22kw",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 20000000,
@@ -1856,45 +1631,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[18]._id,
         purchaseDate: new Date("2020-03-30"),
         warrantyExpirationDate: new Date("2022-03-30"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
         description: "Máy phát điện Misumisi 25kw",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 25000000,
@@ -1919,45 +1669,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[19]._id,
         purchaseDate: new Date("2020-05-30"),
         warrantyExpirationDate: new Date("2022-05-30"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "VPGĐ",
         status: "Sẵn sàng sử dụng",
         description: "Laptop Dell XPS",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 25000000,
@@ -1982,45 +1707,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[22]._id,
         purchaseDate: new Date("2020-04-30"),
         warrantyExpirationDate: new Date("2022-04-30"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "Xưởng TN",
         status: "Sẵn sàng sử dụng",
         description: "Hệ thống báo cháy AED Đèn + chuông",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 25000000,
@@ -2049,44 +1749,20 @@ const sampleCompanyData = async () => {
         assetType: listAssetType[23]._id,
         purchaseDate: new Date("2020-04-20"),
         warrantyExpirationDate: new Date("2022-04-20"),
-        managedBy: users[1]._id,
+        managedBy: users[14]._id,
         assignedTo: null,
         handoverFromDate: null,
         handoverToDate: null,
         location: "Xưởng TN",
         status: "Sẵn sàng sử dụng",
         description: "Xe đẩy hàng (0.8m x 0.6m x 0.85m)",
-        detailInfo: [{
-            nameField: null,
-            value: null,
-        }],
+        detailInfo: [],
 
-        usageLogs: [{ //ghi lại lịch sử sử dụng
-            usedBy: null,
-            startDate: null,
-            endDate: null,
-            description: null
-        }],
+        usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [{
-            maintainanceCode: null,
-            createDate: null,
-            type: null,
-            description: null,
-            startDate: null,
-            endDate: null,
-            expense: null,
-            status: null
-        }],
+        maintainanceLogs: [],
         //sự cố
-        incidentLogs: [{
-            incidentCode: null,
-            type: null,
-            reportedBy: null,
-            dateOfIncident: null,
-            description: null,
-            incidentStatus: null,
-        }],
+        incidentLogs: [],
         //khấu hao
         cost: 60000000,
         residualValue: 25000000,
