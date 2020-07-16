@@ -480,8 +480,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
-                {currentKpi &&
-                    <div ref="chart"></div>
+                {currentKpi ?
+                    <section ref="chart"></section>
+                    : <section>Không có dữ liệu</section>
                 }
             </React.Fragment>
         )
