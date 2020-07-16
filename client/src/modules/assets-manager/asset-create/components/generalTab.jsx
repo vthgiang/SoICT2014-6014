@@ -14,7 +14,8 @@ class GeneralTab extends Component {
         super(props);
         this.state = {
             detailInfo: [],
-            status: "Sẵn sàng sử dụng",
+            // status: "Sẵn sàng sử dụng",
+            // canRegisterForUse: "Được phép đăng ký sử dụng",
         };
     }
 
@@ -294,6 +295,16 @@ class GeneralTab extends Component {
     }
 
     /**
+     * Bắt sự kiện thay đổi quyền đăng ký sử dụng
+     */
+    handleCanRegisterForUseChange = (value) => {
+        this.setState({
+            canRegisterForUse: value[0]
+        })
+        this.props.handleChange('canRegisterForUse', value[0]);
+    }
+
+    /**
      * Bắt sự kiện click thêm Thông tin chi tiết
      */
     handleAddDetailInfo = () => {
@@ -412,6 +423,7 @@ class GeneralTab extends Component {
                 handoverToDate: nextProps.handoverToDate,
                 description: nextProps.description,
                 status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
 
                 errorOnCode: undefined,
@@ -437,7 +449,7 @@ class GeneralTab extends Component {
 
         const {
             img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
-            assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo,
+            assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
         } = this.state;
@@ -508,7 +520,7 @@ class GeneralTab extends Component {
                                         <label htmlFor="purchaseDate">Ngày nhập<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`purchaseDate${id}`}
-                                            value={this.formatDate(purchaseDate)}
+                                            value={purchaseDate ? this.formatDate(purchaseDate): ''}
                                             onChange={this.handlePurchaseDateChange}
                                         />
                                         <ErrorLabel content={errorOnPurchaseDate} />
@@ -518,14 +530,14 @@ class GeneralTab extends Component {
                                         <label htmlFor="warrantyExpirationDate">Ngày bảo hành<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`warrantyExpirationDate${id}`}
-                                            value={this.formatDate(warrantyExpirationDate)}
+                                            value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
                                             onChange={this.handleWarrantyExpirationDateChange}
                                         />
                                         <ErrorLabel content={errorOnPurchaseDate} />
                                     </div>
 
                                     <div className={`form-group${errorOnManagedBy === undefined ? "" : "has-error"}`}>
-                                        <label>Người duy trì<span className="text-red">*</span></label>
+                                        <label>Người quản lý<span className="text-red">*</span></label>
                                         <div id="managedByBox">
                                             <SelectBox
                                                 id={`managedBy${id}`}
@@ -543,7 +555,7 @@ class GeneralTab extends Component {
 
                                 <div className="col-md-6">
                                     <div className={`form-group`}>
-                                        <label>Người vận hành</label>
+                                        <label>Người sử dụng</label>
                                         <div>
                                             <div id="assignedToBox">
                                                 <SelectBox
@@ -591,13 +603,14 @@ class GeneralTab extends Component {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Trạng thái</label>
+                                        <label>Trạng thái<span className="text-red">*</span></label>
                                         <SelectBox
                                             id={`status${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
                                             items={[
+                                                { value: '', text: '---Chọn trạng thái---' },
                                                 { value: 'Sẵn sàng sử dụng', text: 'Sẵn sàng sử dụng' },
                                                 { value: 'Đang sử dụng', text: 'Đang sử dụng' },
                                                 { value: 'Hỏng hóc', text: 'Hỏng hóc' },
@@ -608,6 +621,21 @@ class GeneralTab extends Component {
                                         />
                                     </div>
 
+                                    <div className="form-group">
+                                        <label>Quyền đăng ký sử dụng<span className="text-red">*</span></label>
+                                        <SelectBox
+                                            id={`canRegisterForUse${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={canRegisterForUse}
+                                            items={[
+                                                { value: '', text: '---Chọn quyền sử dụng---' },
+                                                { value: 'Được phép đăng ký sử dụng', text: 'Được phép đăng ký sử dụng' },
+                                                { value: 'Không được phép đăng ký sử dụng', text: 'Không được phép đăng ký sử dụng' },
+                                            ]}
+                                            onChange={this.handleCanRegisterForUseChange}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

@@ -20,6 +20,7 @@ class RecommendDistribute extends Component {
             status: null,
             page: 0,
             limit: 5,
+            canRegisterForUse: "Được phép đăng ký sử dụng",
             //-----------------------
             recommendNumber: "",
             month: "",
@@ -33,7 +34,15 @@ class RecommendDistribute extends Component {
     componentDidMount() {
         this.props.searchRecommendDistributes(this.state);
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({
+            code: "",
+            assetName: "",
+            assetType: null,
+            status: null,
+            page: 0,
+            limit: 5,
+            canRegisterForUse: "Được phép đăng ký sử dụng"
+        });
         this.props.getUser();
     }
 
@@ -340,7 +349,7 @@ class RecommendDistribute extends Component {
                         </thead>
                         <tbody>
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
-                                lists.map((x, index) => (
+                                lists.filter(item => item.canRegisterForUse === "Được phép đăng ký sử dụng").map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>

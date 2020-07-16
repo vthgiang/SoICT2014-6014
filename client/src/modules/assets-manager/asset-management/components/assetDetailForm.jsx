@@ -32,6 +32,7 @@ class AssetDetailForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
@@ -55,12 +56,11 @@ class AssetDetailForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
-                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, 
+                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
                 detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
                 maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
                 disposalDesc, archivedRecordNumber, files 
             } = this.state;
-        console.log(this.state, 'this.state');
 
         return (
             <React.Fragment>
@@ -98,6 +98,7 @@ class AssetDetailForm extends Component {
                                     location={location}
                                     description={description}
                                     status={status}
+                                    canRegisterForUse={canRegisterForUse}
                                     detailInfo={detailInfo}
                                 />
                                 <MaintainanceLogTab

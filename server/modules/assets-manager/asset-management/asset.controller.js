@@ -19,6 +19,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 code: req.query.code,
                 assetName: req.query.assetName,
                 status: req.query.status,
+                canRegisterForUse: req.query.canRegisterForUse,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }

@@ -33,6 +33,7 @@ function getAllAsset(data) {
     };
 }
 
+
 /**
  * Thêm mới thông tin tài sản
  * @param {*} data : dữ liệu thông tin tài sản cần tạo

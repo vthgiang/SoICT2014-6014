@@ -156,8 +156,6 @@ class UsageCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('nextProps,', nextProps);
-        console.log(prevState);
         if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
@@ -183,7 +181,6 @@ class UsageCreateForm extends Component {
         console.log(this.state, 'tungstate-a')
         return (
             <React.Fragment>
-                {/* <ButtonModal modalID={`modal-create-usage`} button_name="Thêm mới" title="Thêm mới thông tin sử dụng tài sản" /> */}
                 <DialogModal
                     size='50' modalID={`modal-create-usage`} isLoading={false}
                     formID={`form-create-usage`}

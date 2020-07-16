@@ -192,8 +192,10 @@ class AssetEditForm extends Component {
             let result =
                 this.validatorInput(this.state.code) && this.validatorInput(this.state.assetName) &&
                 this.validatorInput(this.state.serial) && this.validatorInput(this.state.assetType) &&
+                this.validatorInput(this.state.managedBy) &&
                 this.validatorInput(this.state.purchaseDate) && this.validatorInput(this.state.warrantyExpirationDate) && 
                 this.validatorInput(this.state.location) && this.validatorInput(this.state.status) && 
+                this.validatorInput(this.state.canRegisterForUse) && 
                 this.validatorInput(this.state.cost) && this.validatorInput(this.state.usefulLife) &&
                 this.validatorInput(this.state.startDepreciation) && this.validatorInput(this.state.depreciationType);
             return result;
@@ -256,6 +258,7 @@ class AssetEditForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 //khấu hao
                 cost: nextProps.cost,
@@ -349,6 +352,7 @@ class AssetEditForm extends Component {
                                 location={this.state.location}
                                 description={this.state.description}
                                 status={this.state.status}
+                                canRegisterForUse={this.state.canRegisterForUse}
                                 detailInfo={this.state.detailInfo}
                             />
                             <MaintainanceLogTab

@@ -16,6 +16,7 @@ class AssetManagement extends Component {
             assetType: null,
             month: null,
             status: "",
+            canRegisterForUse: "",
             page: 0,
             limit: 5,
         }
@@ -131,6 +132,18 @@ class AssetManagement extends Component {
         })
     }
 
+    // Function lưu giá trị status vào state khi thay đổi
+    handleCanRegisterForUseChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+        ;
+        this.setState({
+            ...this.state,
+            canRegisterForUse: value
+        })
+    }
+
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
         this.props.getAllAsset(this.state);
@@ -218,7 +231,19 @@ class AssetManagement extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label></label>
+                            <label className="form-control-static">Quyền đăng ký</label>
+                            <SelectMulti id={`multiSelectStatus3`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn quyền đăng ký", allSelectedText: "Chọn tất cả quyền đăng ký" }}
+                                onChange={this.handleCanRegisterForUseChange}
+                                items={[
+                                    { value: "Được phép đăng ký sử dụng", text: "Được phép đăng ký sử dụng" },
+                                    { value: "Không được phép đăng ký sử dụng", text: "Không được phép đăng ký sử dụng" },
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+                        <div className="form-group">
+                            {/* <label></label> */}
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
                         </div>
                     </div>
@@ -229,8 +254,8 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>Tên tài sản</th>
                                 <th style={{ width: "10%" }}>Loại tài sản</th>
                                 <th style={{ width: "10%" }}>Ngày nhập</th>
-                                <th style={{ width: "10%" }}>Người duy trì</th>
-                                <th style={{ width: "10%" }}>Người vận hành</th>
+                                <th style={{ width: "10%" }}>Người quản lý</th>
+                                <th style={{ width: "10%" }}>Người sử dụng</th>
                                 <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
@@ -305,6 +330,7 @@ class AssetManagement extends Component {
                         location={this.state.currentRowView.location}
                         description={this.state.currentRowView.description}
                         status={this.state.currentRowView.status}
+                        canRegisterForUse={this.state.currentRowView.canRegisterForUse}
                         detailInfo={this.state.currentRowView.detailInfo}
                         cost={this.state.currentRowView.cost}
 
@@ -345,6 +371,7 @@ class AssetManagement extends Component {
                         location={this.state.currentRow.location}
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
+                        canRegisterForUse={this.state.currentRow.canRegisterForUse}
                         detailInfo={this.state.currentRow.detailInfo}
 
                         cost={this.state.currentRow.cost}
