@@ -16,14 +16,12 @@ class RecommendProcureDetailForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                positionProponent: nextProps.positionProponent,
                 equipment: nextProps.equipment,
                 supplier: nextProps.supplier,
                 total: nextProps.total,
                 unit: nextProps.unit,
                 estimatePrice: nextProps.estimatePrice,
                 approver: nextProps.approver,
-                positionApprover: nextProps.positionApprover,
                 status: nextProps.status,
                 note: nextProps.note,
             }
@@ -35,13 +33,12 @@ class RecommendProcureDetailForm extends Component {
     render() {
         var formater = new Intl.NumberFormat();
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, dateCreate, proponent, positionProponent, equipment, supplier,
-            total, unit, estimatePrice, approver, positionApprover, status, note } = this.state;
-        console.log('this.state', this.state);
+        const { recommendNumber, dateCreate, proponent, equipment, supplier, total, unit, estimatePrice, approver, status, note } = this.state;
+        console.log('this.state-detail', this.state);
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-view-recommendprocure" isLoading={recommendProcure}
+                    size='50' modalID="modal-view-recommendprocure" isLoading={recommendProcure}
                     formID="form-view-recommendprocure"
                     title="Thông tin phiếu đề nghị mua sắm thiết bị"
                     hasSaveButton={false}
@@ -59,11 +56,9 @@ class RecommendProcureDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>Người đề nghị:&emsp; </strong>
-                                    {proponent}
-                                </div>
-                                <div className="form-group">
-                                    <strong>Chức vụ người đề nghị:&emsp; </strong>
-                                    {positionProponent}
+                                    {/* {proponent} */}
+                                    {proponent.name}
+                                    {/* {proponent ? proponent.name : ''} */}
                                 </div>
                                 <div className={`form-group`}>
                                     <strong>Thiết bị đề nghị mua:&emsp; </strong>
@@ -85,15 +80,12 @@ class RecommendProcureDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                 <strong>Giá trị dự tính:&emsp; </strong>
-                                    {formater.format(parseInt(estimatePrice))} VNĐ
+                                    {estimatePrice ? formater.format(parseInt(estimatePrice)) : ''} VNĐ
                                 </div>
                                 <div className="form-group">
                                 <strong>Người phê duyệt:&emsp; </strong>
-                                    {approver.name}
-                                </div>
-                                <div className="form-group">
-                                <strong>Chức vụ người phê duyệt:&emsp; </strong>
-                                    {positionApprover}
+                                    {/* {approver ? approver: ''} */}
+                                    {approver ? approver.name : ''}
                                 </div>
                                 <div className="form-group">
                                 <strong>Trạng thái:&emsp; </strong>

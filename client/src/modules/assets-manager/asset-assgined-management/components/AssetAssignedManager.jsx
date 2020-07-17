@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {DataTableSetting, PaginateBar, SelectMulti} from '../../../../common-components';
-import {AssetManagerActions} from '../../asset-manager/redux/actions';
-import {AssetTypeActions} from "../../asset-type/redux/actions";
-import {AssetCrashCreateForm} from "./AssetCrashCreateForm";
-import {UserActions} from "../../../super-admin/user/redux/actions";
-import {AssetDetailForm} from "../../asset-manager/components/AssetDetailForm";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, PaginateBar, SelectMulti } from '../../../../common-components';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { IncidentCreateForm } from "./incidentCreateForm";
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { AssetDetailForm } from '../../asset-management/components/assetDetailForm';
 
 class AssetAssignedManager extends Component {
     constructor(props) {
@@ -15,20 +15,18 @@ class AssetAssignedManager extends Component {
             code: "",
             assetName: "",
             assetType: null,
-            month: "",
-            status: null,
+            month: null,
+            status: "",
             page: 0,
-            limit: 50,
-            typeNumber: "",
-            typeName: "",
+            limit: 100,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
+        // this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
 
     componentDidMount() {
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getAllAsset(this.state);
-        this.props.getAllUsers();
-        this.props.searchAssetTypes({typeNumber: "", typeName: "", limit: 0});
+        this.props.getUser();
     }
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -42,7 +40,8 @@ class AssetAssignedManager extends Component {
     }
 
     // Bắt sự kiện click báo cáo sự cố tài sản
-    handleReport = async (value) => {
+    handleReport = async (value, asset) => {
+        value.asset = asset;
         await this.setState(state => {
             return {
                 ...state,
@@ -50,6 +49,23 @@ class AssetAssignedManager extends Component {
             }
         });
         window.$('#modal-create-assetcrash').modal('show');
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -69,7 +85,7 @@ class AssetAssignedManager extends Component {
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -78,7 +94,7 @@ class AssetAssignedManager extends Component {
 
     // Function lưu giá trị tên tài sản vào state khi thay đổi
     handleAssetNameChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -111,13 +127,9 @@ class AssetAssignedManager extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
-        // if (this.state.month === null) {
         await this.setState({
             ...this.state,
-            // ,
-            // month: this.formatDate(Date.now())
         })
-        // }
         this.props.getAllAsset(this.state);
     }
 
@@ -140,11 +152,13 @@ class AssetAssignedManager extends Component {
     }
 
     render() {
-        const {translate, assetsManager, auth} = this.props;
+        const { id, translate, assetsManager, assetType, user, auth } = this.props;
         var lists = "";
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
-        if (assetsManager.allAsset) {
-            lists = this.props.assetsManager.allAsset;
+        if (this.props.assetsManager.isLoading === false) {
+            lists = this.props.assetsManager.listAssets;
         }
 
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
@@ -160,33 +174,33 @@ class AssetAssignedManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom: 10}}>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                         options={{nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản"}}
-                                         onChange={this.handleTypeChange}
-                                         items={[]}
+                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                onChange={this.handleTypeChange}
+                                items={[]}
                             >
                             </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                         options={{nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái"}}
-                                         onChange={this.handleStatusChange}
-                                         items={[
-                                             {value: "Đang sử dụng", text: "Đang sử dụng"},
-                                             {value: "Hỏng hóc", text: "Hỏng hóc"},
-                                             {value: "Mất", text: "Mất"}
-                                         ]}
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
+                                onChange={this.handleStatusChange}
+                                items={[
+                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
+                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
+                                    { value: "Mất", text: "Mất" }
+                                ]}
                             >
                             </SelectMulti>
                         </div>
@@ -197,77 +211,104 @@ class AssetAssignedManager extends Component {
                     </div>
                     <table id="assetassigned-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th style={{width: "8%"}}>Mã tài sản</th>
-                            <th style={{width: "10%"}}>Tên tài sản</th>
-                            <th style={{width: "10%"}}>Loại tài sản</th>
-                            <th style={{width: "10%"}}>Giá trị tài sản</th>
-                            <th style={{width: "20%"}}>Thời gian sử dụng từ ngày</th>
-                            <th style={{width: "20%"}}>Thời gian sử dụng đến ngày</th>
-                            <th style={{width: "10%"}}>Trạng thái</th>
-                            <th style={{width: '120px', textAlign: 'center'}}>Hành động
+                            <tr>
+                                <th style={{ width: "8%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Loại tài sản</th>
+                                <th style={{ width: "10%" }}>Giá trị tài sản</th>
+                                <th style={{ width: "20%" }}>Thời gian bắt đầu sử dụng</th>
+                                <th style={{ width: "20%" }}>Thời gian kết thúc sử dụng</th>
+                                <th style={{ width: "10%" }}>Trạng thái</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
-                                    tableId="assetassigned-table"
-                                    columnArr={[
-                                        "Mã tài sản",
-                                        "Tên tài sản",
-                                        "Loại tài sản",
-                                        "Giá trị tài sản",
-                                        "Thời gian sử dụng từ ngày",
-                                        "Thời gian sử dụng đến ngày",
-                                        "Trạng thái"
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
+                                        tableId="assetassigned-table"
+                                        columnArr={[
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Loại tài sản",
+                                            "Giá trị tài sản",
+                                            "Thời gian bắt đầu sử dụng",
+                                            "Thời gian kết thúc sử dụng",
+                                            "Trạng thái"
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {(typeof lists !== 'undefined' && lists.length !== 0) &&
-                        lists.filter(item => item.asset.person._id === auth.user._id).map((x, index) => (
-                            <tr key={index}>
-                                <td>{x.asset.code}</td>
-                                <td>{x.asset.assetName}</td>
-                                <td>{x.asset.assetType.typeName}</td>
-                                <td>{formater.format(parseInt(x.asset.cost))} VNĐ</td>
-                                <td>{x.asset.dateStartUse}</td>
-                                <td>{x.asset.dateEndUse}</td>
-                                <td>{x.asset.status}</td>
-                                <td style={{textAlign: "center"}}>
-                                    <a onClick={() => this.handleView(x)} style={{width: '5px'}} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                    <a onClick={() => this.handleReport(x)} className="edit text-red" style={{width: '5px'}} title="Báo cáo sự cố thiết bị"><i
-                                        className="material-icons">notification_important</i></a>
-                                </td>
-                            </tr>))
-                        }
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                                lists.filter(item => item.assignedTo === auth.user._id).map((x, index) => (
+                                    // lists.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.code}</td>
+                                        <td>{x.assetName}</td>
+                                        <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
+                                        <td>{formater.format(parseInt(x.cost))} VNĐ</td>
+                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
+                                        <td>{this.formatDate2(x.handoverToDate)}</td>
+                                        <td>{x.status}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleReport(x, x)} className="edit text-red" style={{ width: '5px' }} title="Báo cáo sự cố thiết bị"><i
+                                                className="material-icons">notification_important</i></a>
+                                        </td>
+                                    </tr>))
+                            }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 {
                     this.state.currentRowView !== undefined &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView.asset._id}
-                        asset={this.state.currentRowView.asset}
-                        repairUpgrade={this.state.currentRowView.repairUpgrade}
-                        distributeTransfer={this.state.currentRowView.distributeTransfer}
+                        _id={this.state.currentRowView._id}
+                        avatar={this.state.currentRowView.avatar}
+                        code={this.state.currentRowView.code}
+                        assetName={this.state.currentRowView.assetName}
+                        serial={this.state.currentRowView.serial}
+                        assetType={this.state.currentRowView.assetType}
+                        purchaseDate={this.state.currentRowView.purchaseDate}
+                        warrantyExpirationDate={this.state.currentRowView.warrantyExpirationDate}
+                        managedBy={this.state.currentRowView.managedBy}
+                        assignedTo={this.state.currentRowView.assignedTo}
+                        handoverFromDate={this.state.currentRowView.handoverFromDate}
+                        handoverToDate={this.state.currentRowView.handoverToDate}
+                        location={this.state.currentRowView.location}
+                        description={this.state.currentRowView.description}
+                        status={this.state.currentRowView.status}
+                        detailInfo={this.state.currentRowView.detailInfo}
+                        cost={this.state.currentRowView.cost}
+                        residualValue={this.state.currentRowView.residualValue}
+                        startDepreciation={this.state.currentRowView.startDepreciation}
+                        usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
+
+                        maintainanceLogs={this.state.currentRowView.maintainanceLogs}
+                        usageLogs={this.state.currentRowView.usageLogs}
+                        incidentLogs={this.state.currentRowView.incidentLogs}
+
+                        disposalDate={this.state.currentRowView.disposalDate}
+                        disposalType={this.state.currentRowView.disposalType}
+                        disposalCost={this.state.currentRowView.disposalCost}
+                        disposalDesc={this.state.currentRowView.disposalDesc}
+
+                        archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
+                        files={this.state.currentRowView.files}
                     />
                 }
 
                 {
                     this.state.currentRow !== undefined &&
-                    <AssetCrashCreateForm
+                    <IncidentCreateForm
                         _id={this.state.currentRow._id}
-                        assetId={this.state.currentRow.asset._id}
-                        code={this.state.currentRow.asset.code}
                         asset={this.state.currentRow.asset}
-                        assetName={this.state.currentRow.asset.assetName}
                     />
                 }
             </div>
@@ -276,15 +317,15 @@ class AssetAssignedManager extends Component {
 };
 
 function mapState(state) {
-    const {assetsManager, auth} = state;
-    return {assetsManager, auth};
+    const { assetsManager, assetType, user, auth } = state;
+    return { assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
-    getAllAsset: AssetManagerActions.getAllAsset,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
-    getAllUsers: UserActions.get
+    getAllAsset: AssetManagerActions.getAllAsset,
+    getUser: UserActions.get,
 };
 
 const connectedListAssetAssigned = connect(mapState, actionCreators)(withTranslate(AssetAssignedManager));
-export {connectedListAssetAssigned as AssetAssignedManager};
+export { connectedListAssetAssigned as AssetAssignedManager };

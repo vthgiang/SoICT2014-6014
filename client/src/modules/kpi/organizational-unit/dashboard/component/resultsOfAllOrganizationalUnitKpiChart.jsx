@@ -15,9 +15,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     constructor(props) {
         super(props);
 
-        var currentDate = new Date();
-        var currentYear = currentDate.getFullYear();
-        var currentMonth = currentDate.getMonth();
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
 
         this.INFO_SEARCH = {
             startDate: currentYear + '-' + 1,

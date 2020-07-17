@@ -46,11 +46,10 @@ import { componentsDefault } from "../modules/system-admin/system-component/redu
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
 import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
-import { assetsManager } from "../modules/assets-manager/asset-manager/redux/reducers";
-import { assetCrash } from "../modules/assets-manager/asset-crash-management/redux/reducers";
-import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
-import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
+import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
 
+//report 
+import {reports} from "../modules/report/task-report/redux/reducers";
 const appReducer = combineReducers(Object.assign({
     //system
     log,
@@ -107,11 +106,13 @@ const appReducer = combineReducers(Object.assign({
     recommendDistribute,
     assetType,
     assetsManager,
-    repairUpgrade,
-    distributeTransfer,
-    assetCrash,
 
-    dashboardEvaluationEmployeeKpiSet
+    dashboardEvaluationEmployeeKpiSet,
+
+    //report
+    reports,
+
+    
 }, { Intl }));
 
 const rootReducer = (state, action) => {

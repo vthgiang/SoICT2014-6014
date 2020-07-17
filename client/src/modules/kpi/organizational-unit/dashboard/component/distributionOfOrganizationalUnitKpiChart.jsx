@@ -163,8 +163,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
-                {currentKpi &&
+                {currentKpi ?
                     <section ref="chart"></section>
+                    : <section>Không có dữ liệu</section>
                 }
             </React.Fragment>
         )

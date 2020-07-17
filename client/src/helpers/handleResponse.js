@@ -27,3 +27,14 @@ export function handleResponseShowAlert(response, error) {
     //     return data;
     // });
 }
+
+export const string2literal = (value) => {
+    let maps = {
+        "NaN": NaN,
+        "null": null,
+        "undefined": undefined,
+        "Infinity": Infinity,
+        "-Infinity": -Infinity
+    };
+    return ((value in maps) ? maps[value] : value);
+};

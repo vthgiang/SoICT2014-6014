@@ -98,6 +98,7 @@ class OrganizationalUnitKpiCreate extends Component {
             title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_cancel_approve'),
             type: 'success',
             showCancelButton: true,
+            cancelButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel'),
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
@@ -123,6 +124,7 @@ class OrganizationalUnitKpiCreate extends Component {
                     title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_approve'),
                     type: 'success',
                     showCancelButton: true,
+                    cancelButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel'),
                     cancelButtonColor: '#d33',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
@@ -155,6 +157,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_delete_success'),
                 type: 'success',
                 showCancelButton: true,
+                cancelButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel'),
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
@@ -179,6 +182,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_kpi'),
                 type: 'success',
                 showCancelButton: true,
+                cancelButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel'),
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
@@ -248,17 +252,17 @@ class OrganizationalUnitKpiCreate extends Component {
         let parentKpi = this.props.createKpiUnit.parent;
         if (parentKpi == null) {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
+                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: 'Đồng ý'
             })
         } else {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI. Liên hệ với cấp trên của bạn để hỏi thêm!',
+                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: 'Đồng ý'
             })
         }
     }

@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 import { RecommendDistributeFromValidator } from './RecommendDistributeFromValidator';
 import { RecommendDistributeActions } from '../redux/actions';
-
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 class RecommendDistributeEditForm extends Component {
     constructor(props) {
         super(props);
-        // this.proponentInput = React.createRef();
-        // this.assetIdInput = React.createRef();
-        this.state = {
-            assetIndex: "",
-            userProponentIndex: ""
-        };
+        this.state = {};
     }
 
     // Bắt sự kiện thay đổi mã phiếu
@@ -53,25 +49,14 @@ class RecommendDistributeEditForm extends Component {
         return msg === undefined;
     }
 
-    //Bắt sự kiện thay đổi "Người đề nghị"
-    handleProponentChange = (e) => {
-        const selectedIndex = e.target.options.selectedIndex;
-        this.setState({ userProponentIndex: e.target.options[selectedIndex].getAttribute('data-key1') });
-        let value = e.target.value;
-        this.validateProponent(value, true);
-    }
-    validateProponent = (value, willUpdateState = true) => {
-        let msg = RecommendDistributeFromValidator.validateProponent(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnProponent: msg,
-                    proponent: value,
-                }
-            });
-        }
-        return msg === undefined;
+    /**
+     * Bắt sự kiện thay đổi người đề nghị
+     */
+    handleProponentChange = (value) => {
+        this.setState({
+            ...this.state,
+            proponent: value[0]
+        });
     }
 
     // Bắt sự kiện thay đổi "Nội dung đề nghị"
@@ -93,23 +78,13 @@ class RecommendDistributeEditForm extends Component {
         return msg === undefined;
     }
 
-    //bắt sự kiện thay đổi mã tài sản
-    handleCodeChange = (e) => {
-        let value = e.target.value;
-        this.validateCode(value, true);
-    }
-    validateCode = (value, willUpdateState = true) => {
-        let msg = RecommendDistributeFromValidator.validateCode(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCode: msg,
-                    code: value,
-                }
-            });
-        }
-        return msg === undefined;
+    /**
+     * Bắt sự kiện thay đổi tài sản
+     */
+    handleAssetChange = (value) => {
+        this.setState({
+            asset: value[0]
+        });
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng từ ngày"
@@ -172,15 +147,11 @@ class RecommendDistributeEditForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                positionProponent: nextProps.positionProponent,
                 reqContent: nextProps.reqContent,
-                code: nextProps.code,
-                assetName: nextProps.assetName,
                 asset: nextProps.asset,
                 dateStartUse: nextProps.dateStartUse,
                 dateEndUse: nextProps.dateEndUse,
                 approver: nextProps.approver,
-                positionApprover: nextProps.positionApprover,
                 status: nextProps.status,
                 note: nextProps.note,
                 errorOnRecommendNumber: undefined,
@@ -195,17 +166,19 @@ class RecommendDistributeEditForm extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, user } = this.props;
+        const { _id, translate, recommendDistribute, user, assetsManager, auth } = this.props;
+        var assetlist = assetsManager.listAssets;
+        var userlist = user.list;
         const {
-            recommendNumber, dateCreate, proponent, positionProponent, reqContent, code, assetName, dateStartUse, dateEndUse, approver, positionApprover, status, note,
+            recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-recommenddistribute" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID="modal-edit-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistribute"
-                    title="Chỉnh sửa thông tin phiếu đề nghị cấp phát thiết bị"
+                    title="Chỉnh sửa thông tin phiếu đăng ký sử dụng tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -220,31 +193,30 @@ class RecommendDistributeEditForm extends Component {
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_start_date"
+                                        id={`edit_start_date${_id}`}
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
-                                <div className="form-group">
-                                    <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <select id="drops1" className="form-control" name="proponent"
-                                        value={proponent._id}
-                                        placeholder="Please Select"
-                                        onChange={this.handleProponentChange}
-                                        disabled>
-                                        <option value="" disabled>Please Select</option>
-                                        {user.list.length ? user.list.map((item, index) => {
-                                            return (
-                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
-                                            )
-                                        }) : null}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ người đề nghị</label>
-                                    <input disabled type="text" className="form-control" name="positionProponent"
-                                        value={this.state.userProponentIndex !== '' && user.list[this.state.userProponentIndex].roles.length ? user.list[this.state.userProponentIndex].roles[0].roleId.name : (proponent !== null && this.state.userProponentIndex === '' && user.list.find(user => user._id === proponent._id).roles.length) ? user.list.find(user => user._id === proponent._id).roles[0].roleId.name : ''} />
+                                <div className={`form-group`}>
+                                    <label>Người đề nghị</label>
+                                    <div>
+                                        <div id="proponentBox">
+                                            <SelectBox
+                                                id={`proponent${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist.map(x => {
+                                                    return { value: x._id, text: x.name + " - " + x.email }
+                                                })}
+                                                onChange={this.handleProponentChange}
+                                                value={proponent._id}
+                                                multiple={false}
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className={`form-group ${errorOnReqContent === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung đề nghị<span className="text-red">*</span></label>
@@ -254,17 +226,28 @@ class RecommendDistributeEditForm extends Component {
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group`}>
-                                    <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} autoComplete="off" placeholder="Mã tài sản" disabled />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" disabled />
+                                    <label>Tài sản</label>
+                                    <div>
+                                        <div id="assetUBox">
+                                            <SelectBox
+                                                id={`asset${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={assetlist.map(x => {
+                                                    return { value: x._id, text: x.code + " - " + x.assetName }
+                                                })}
+                                                onChange={this.handleAssetChange}
+                                                value={asset._id}
+                                                multiple={false}
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_start_use"
+                                        id={`edit_start_use${_id}`}
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
@@ -273,15 +256,11 @@ class RecommendDistributeEditForm extends Component {
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
                                     <label>thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_end_use"
+                                        id={`edit_end_use${_id}`}
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />
                                     <ErrorLabel content={errorOnDateEndUse} />
-                                </div>
-                                <div className="form-group">
-                                    <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" value={status} disabled />
                                 </div>
 
                             </div>
@@ -294,11 +273,13 @@ class RecommendDistributeEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendDistribute, auth, user } = state;
-    return { recommendDistribute, auth, user };
+    const { recommendDistribute, auth, user, assetsManager } = state;
+    return { recommendDistribute, auth, user, assetsManager };
 };
 
 const actionCreators = {
+    getUser: UserActions.get,
+    getAllAsset: AssetManagerActions.getAllAsset,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
 };
 
