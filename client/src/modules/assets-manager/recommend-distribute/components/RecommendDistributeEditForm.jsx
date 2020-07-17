@@ -173,11 +173,10 @@ class RecommendDistributeEditForm extends Component {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
-        console.log(this.state, 'this.state')
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-recommenddistribute" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID="modal-edit-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistribute"
                     title="Chỉnh sửa thông tin phiếu đăng ký sử dụng tài sản"
                     func={this.save}
@@ -214,7 +213,7 @@ class RecommendDistributeEditForm extends Component {
                                                 onChange={this.handleProponentChange}
                                                 value={proponent._id}
                                                 multiple={false}
-                                            disabled
+                                                disabled
                                             />
                                         </div>
                                     </div>

@@ -203,7 +203,7 @@ class RecommendProcureManagerEditForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-recommendprocuremanage" isLoading={recommendProcure.isLoading}
+                    size='50' modalID="modal-edit-recommendprocuremanage" isLoading={recommendProcure.isLoading}
                     formID="form-edit-recommendprocuremanage"
                     title="Cập nhật phiếu đăng ký mua sắm tài sản"
                     func={this.save}
@@ -268,7 +268,7 @@ class RecommendProcureManagerEditForm extends Component {
                                     <ErrorLabel content={errorOnUnit}/>
                                 </div>
                                 <div className="form-group">
-                                    <label>Giá trị dự tính:</label>
+                                    <label>Giá trị dự tính (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange}/>
                                 </div>
                                 <div className={`form-group`}>

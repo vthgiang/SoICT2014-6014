@@ -8,7 +8,7 @@ import { AssetManagerActions } from "../../asset-management/redux/actions";
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
-import {AssetDetailForm} from '../../asset-management/components/assetDetailForm';
+import { AssetDetailForm } from '../../asset-management/components/assetDetailForm';
 
 class RecommendDistribute extends Component {
     constructor(props) {
@@ -220,10 +220,10 @@ class RecommendDistribute extends Component {
     // Function bắt sự kiện tìm kiếm
     handleSubmitRecommendSearch = async () => {
         // if (this.state.month === "") {
-            await this.setState({
-                ...this.state
-                // month: this.formatDate(Date.now())
-            })
+        await this.setState({
+            ...this.state
+            // month: this.formatDate(Date.now())
+        })
         // }
         this.props.searchRecommendDistributes(this.state);
     }
@@ -247,7 +247,7 @@ class RecommendDistribute extends Component {
     // }
 
     render() {
-        const { translate, recommendDistribute, assetsManager,assetType, user, auth } = this.props;
+        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
         var lists = "";
         var listRecommendDistributes = "";
         var userlist = user.list;
@@ -390,23 +390,24 @@ class RecommendDistribute extends Component {
                         location={this.state.currentRowView.location}
                         description={this.state.currentRowView.description}
                         status={this.state.currentRowView.status}
+                        canRegisterForUse={this.state.currentRowView.canRegisterForUse}
                         detailInfo={this.state.currentRowView.detailInfo}
-                        
+
                         cost={this.state.currentRowView.cost}
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
                         depreciationType={this.state.currentRowView.depreciationType}
-                        
+
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}
                         incidentLogs={this.state.currentRowView.incidentLogs}
-                        
+
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
                         depreciationType={this.state.currentRowView.depreciationType}
-                        
+
                         archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
                         files={this.state.currentRowView.files}
                     />

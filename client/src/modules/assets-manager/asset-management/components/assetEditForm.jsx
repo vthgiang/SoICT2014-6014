@@ -28,7 +28,7 @@ class AssetEditForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') { //
-            if  (value) {
+            if (value) {
                 var partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
             } else {
@@ -193,9 +193,9 @@ class AssetEditForm extends Component {
                 this.validatorInput(this.state.code) && this.validatorInput(this.state.assetName) &&
                 this.validatorInput(this.state.serial) && this.validatorInput(this.state.assetType) &&
                 this.validatorInput(this.state.managedBy) &&
-                this.validatorInput(this.state.purchaseDate) && this.validatorInput(this.state.warrantyExpirationDate) && 
-                this.validatorInput(this.state.location) && this.validatorInput(this.state.status) && 
-                this.validatorInput(this.state.canRegisterForUse) && 
+                this.validatorInput(this.state.purchaseDate) && this.validatorInput(this.state.warrantyExpirationDate) &&
+                this.validatorInput(this.state.location) && this.validatorInput(this.state.status) &&
+                this.validatorInput(this.state.canRegisterForUse) &&
                 this.validatorInput(this.state.cost) && this.validatorInput(this.state.usefulLife) &&
                 this.validatorInput(this.state.startDepreciation) && this.validatorInput(this.state.depreciationType);
             return result;
@@ -325,8 +325,8 @@ class AssetEditForm extends Component {
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
-                            <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#edit_maintainance${_id}`}>Thông tin bảo trì</a></li>
                             <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#edit_usage${_id}`}>Thông tin sử dụng</a></li>
+                            <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#edit_maintainance${_id}`}>Thông tin bảo trì</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#edit_depreciation${_id}`}>Thông tin khấu hao</a></li>
                             <li><a title="Thông tin sự cố" data-toggle="tab" href={`#edit_incident${_id}`}>Thông tin sự cố</a></li>
                             <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#edit_disposal${_id}`}>Thông tin thanh lý</a></li>
@@ -334,7 +334,7 @@ class AssetEditForm extends Component {
                         </ul>
                         < div className="tab-content">
                             <GeneralTab
-                                id={`edit_general${_id}`}
+                                _id={`edit_general${_id}`}
                                 img={this.state.img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
@@ -355,19 +355,21 @@ class AssetEditForm extends Component {
                                 canRegisterForUse={this.state.canRegisterForUse}
                                 detailInfo={this.state.detailInfo}
                             />
-                            <MaintainanceLogTab
-                                id={`edit_maintainance${_id}`}
-                                maintainanceLogs={this.state.maintainanceLogs}
-                                handleAddMaintainance={this.handleCreateMaintainanceLogs}
-                                handleEditMaintainance={this.handleEditMaintainanceLogs}
-                                handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
-                            />
+
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
                                 usageLogs={this.state.usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
+                            />
+
+                            <MaintainanceLogTab
+                                id={`edit_maintainance${_id}`}
+                                maintainanceLogs={this.state.maintainanceLogs}
+                                handleAddMaintainance={this.handleCreateMaintainanceLogs}
+                                handleEditMaintainance={this.handleEditMaintainanceLogs}
+                                handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
                             />
 
                             <DepreciationTab
@@ -380,6 +382,7 @@ class AssetEditForm extends Component {
                                 usefulLife={this.state.usefulLife}
                                 depreciationType={this.state.depreciationType}
                             />
+
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
                                 incidentLogs={this.state.incidentLogs}
@@ -387,6 +390,7 @@ class AssetEditForm extends Component {
                                 handleEditIncident={this.handleEditIncidentLogs}
                                 handleDeleteIncident={this.handleDeleteIncidentLogs}
                             />
+
                             <DisposalTab
                                 id={`edit_disposal${_id}`}
                                 handleChange={this.handleChange}

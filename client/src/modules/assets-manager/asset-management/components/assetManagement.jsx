@@ -257,6 +257,7 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>Người quản lý</th>
                                 <th style={{ width: "10%" }}>Người sử dụng</th>
                                 <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
+                                <th style={{ width: "10%" }}>Thời gian kết thúc sử dụng</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
@@ -289,6 +290,7 @@ class AssetManagement extends Component {
                                         <td>{x.managedBy !== null && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
+                                        <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>

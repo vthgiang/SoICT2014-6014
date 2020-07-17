@@ -404,10 +404,10 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
-                id: nextProps.id,
+                _id: nextProps._id,
                 img: nextProps.img,
                 avatar: nextProps.avatar,
                 code: nextProps.code,
@@ -445,7 +445,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType } = this.props;
+        const { _id, translate, user, assetType } = this.props;
 
         const {
             img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
@@ -457,7 +457,7 @@ class GeneralTab extends Component {
         var assettypelist = assetType.listAssetTypes;
         console.log(this.state, 'this.state-general')
         return (
-            <div id={id} className="tab-pane active">
+            <div id={_id} className="tab-pane active">
                 <div className="box-body">
                     <div className="col-md-12">
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
@@ -503,7 +503,7 @@ class GeneralTab extends Component {
                                         <div>
                                             <div id="assetTypeBox">
                                                 <SelectBox
-                                                    id={`assetType${id}`}
+                                                    id={`assetType${_id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={[{ value: '', text: '---Chọn loại tài sản---' }, ...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
@@ -519,7 +519,7 @@ class GeneralTab extends Component {
                                     <div className={`form-group ${errorOnPurchaseDate === undefined ? "" : "has-error"}`}>
                                         <label htmlFor="purchaseDate">Ngày nhập<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id={`purchaseDate${id}`}
+                                            id={`purchaseDate${_id}`}
                                             value={purchaseDate ? this.formatDate(purchaseDate): ''}
                                             onChange={this.handlePurchaseDateChange}
                                         />
@@ -529,7 +529,7 @@ class GeneralTab extends Component {
                                     <div className={`form-group ${errorOnWarrantyExpirationDate === undefined ? "" : "has-error"}`}>
                                         <label htmlFor="warrantyExpirationDate">Ngày bảo hành<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id={`warrantyExpirationDate${id}`}
+                                            id={`warrantyExpirationDate${_id}`}
                                             value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
                                             onChange={this.handleWarrantyExpirationDateChange}
                                         />
@@ -540,7 +540,7 @@ class GeneralTab extends Component {
                                         <label>Người quản lý<span className="text-red">*</span></label>
                                         <div id="managedByBox">
                                             <SelectBox
-                                                id={`managedBy${id}`}
+                                                id={`managedBy${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
@@ -559,7 +559,7 @@ class GeneralTab extends Component {
                                         <div>
                                             <div id="assignedToBox">
                                                 <SelectBox
-                                                    id={`assignedTo${id}`}
+                                                    id={`assignedTo${_id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
@@ -574,7 +574,7 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <label htmlFor="handoverFromDate">Thời gian sử dụng từ ngày</label>
                                         <DatePicker
-                                            id={`handoverFromDate${id}`}
+                                            id={`handoverFromDate${_id}`}
                                             value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                             onChange={this.handleHandoverFromDateChange}
                                         />
@@ -583,7 +583,7 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <label htmlFor="handoverToDate">Thời gian sử dụng đến ngày</label>
                                         <DatePicker
-                                            id={`handoverToDate${id}`}
+                                            id={`handoverToDate${_id}`}
                                             value={handoverToDate ? this.formatDate(handoverToDate) : ''}
                                             onChange={this.handleHandoverToDateChange}
                                         />
@@ -605,7 +605,7 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <label>Trạng thái<span className="text-red">*</span></label>
                                         <SelectBox
-                                            id={`status${id}`}
+                                            id={`status${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -624,7 +624,7 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <label>Quyền đăng ký sử dụng<span className="text-red">*</span></label>
                                         <SelectBox
-                                            id={`canRegisterForUse${id}`}
+                                            id={`canRegisterForUse${_id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={canRegisterForUse}

@@ -74,8 +74,8 @@ class AssetDetailForm extends Component {
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
                                 <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
-                                <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
-                                <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
+                                <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#view_usage${_id}`}>Thông tin sử dụng</a></li>
+                                <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#view_maintainance${_id}`}>Thông tin bảo trì</a></li>
                                 <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
                                 <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
                                 <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#view_disposal${_id}`}>Thông tin thanh lý</a></li>

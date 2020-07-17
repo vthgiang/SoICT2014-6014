@@ -138,8 +138,11 @@ class UsageCreateForm extends Component {
                 status: "Đang sử dụng",
 
             }
-            let assetId = !this.state.asset[0] ? this.props.assetsManager.listAssets[0]._id : this.state.asset[0];
+            // let assetId = !this.state.asset[0] ? this.props.assetsManager.listAssets[0]._id : this.state.asset[0];
+            let assetId = this.state.asset._id;
+            console.log(assetId, 'assetId');
             return this.props.createUsage(assetId, dataToSubit);
+            
             // .then(({response}) => {
             //     if (response.data.success) {
             //         this.props.getAllAsset({
