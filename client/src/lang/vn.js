@@ -1662,8 +1662,14 @@ export default {
                 action_store: 'Lưu vào kho',
                 action_restore: 'Lấy ra khỏi kho',
                 action_add: 'Thêm công việc con',
-                action_start_timer: 'Bắt đầu bấm giờ'
+                action_start_timer: 'Bắt đầu bấm giờ',
 
+                from: 'Từ tháng',
+                to: 'Đến tháng',
+                prev: 'Trước',
+                next:'Sau',
+                tasks_calendar:'Lịch công việc chi tiết',
+                model_detail_task_title: 'Thông tin chi tiết công việc',
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1962,6 +1968,30 @@ export default {
                     excellent_employee: 'Nhân viên ưu tú',
                     best_employee: 'Nhân viên xuất sắc nhất',
                     month: 'Tháng'
+                },
+
+                employee_evaluation:{
+                    approve_KPI_employee:'Phê duyệt KPI nhân viên',
+                    month:'Tháng',
+                    end_compare:'Tắt so sánh',
+                    compare:'So sánh',
+                    approve_all:'Phê duyệt tất cả',
+                    choose_month_cmp:'Chọn tháng so sánh',
+                    search:'Tìm kiếm',
+                    index:'STT',
+                    name:'Tên',
+                    target:'Mục tiêu đơn vị',
+                    criteria:'Tiêu chí đánh giá',
+                    weight:'Trọng số',
+                    result:'Kết quả đánh giá',
+                    data_not_found:'Không tìm thấy dữ liệu phù hợp',
+                    unsuitable_weight:'Trọng số không thỏa mãn',
+                    status:'Trạng thái',
+                    action:'Hành động',
+                    save_result:'Lưu kết quả',
+                    edit_target:'Sửa mục tiêu',
+                    pass:'Đạt',
+                    fail:'Không đạt'
                 }
 
             },
