@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { DialogModal} from '../../../../../common-components/index';
 import {taskManagementActions} from '../../../task-management/redux/actions'
 import { DetailTaskTab } from '../../../task-perform/component/detailTaskTab';
-
+import {withTranslate} from 'react-redux-multilingual';
 class ModelDetailTask extends Component{
     constructor (props) {
         super(props);
@@ -26,7 +26,7 @@ class ModelDetailTask extends Component{
     }
 
     formatDate(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -40,13 +40,13 @@ class ModelDetailTask extends Component{
     }
 
     render(){
-        const {tasks} = this.props;
+        const {tasks, translate} = this.props;
         let task = tasks && tasks.task;
         return(
             <React.Fragment>
             <DialogModal
                 modalID={`modal-detail-task`}
-                title={`Thông tin chi tiết công việc`}
+                title={translate('task.task_management.model_detail_task_title')}
                 hasSaveButton ={false}
                 size={75}>
                  <DetailTaskTab
@@ -65,5 +65,5 @@ function mapState(state){
 const Actions = {
     getTaskById: taskManagementActions.getTaskById
 }
-const connectedModelDetailTask = connect (mapState, Actions)(ModelDetailTask)
+const connectedModelDetailTask = connect (mapState, Actions)(withTranslate(ModelDetailTask));
 export { connectedModelDetailTask as ModelDetailTask };
