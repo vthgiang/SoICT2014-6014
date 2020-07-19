@@ -630,8 +630,8 @@ class GeneralTab extends Component {
                                             value={canRegisterForUse}
                                             items={[
                                                 { value: '', text: '---Chọn quyền sử dụng---' },
-                                                { value: 'Được phép đăng ký sử dụng', text: 'Được phép đăng ký sử dụng' },
-                                                { value: 'Không được phép đăng ký sử dụng', text: 'Không được phép đăng ký sử dụng' },
+                                                { value: true, text: 'Được phép đăng ký sử dụng' },
+                                                { value: false, text: 'Không được phép đăng ký sử dụng' },
                                             ]}
                                             onChange={this.handleCanRegisterForUseChange}
                                         />
