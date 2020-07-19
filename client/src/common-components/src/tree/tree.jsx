@@ -4,16 +4,20 @@ import './tree.css';
 class Tree extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            data: []
+        }
     }
 
     componentDidMount() {
-        const { id, data, onChanged, onCheckChanged } = this.props;
-        window.$('#' + id).jstree({
+        const {id, data} = this.state;
+        const { onChanged, checkNode, unCheckNode } = this.props;
+        window.$(`#${id}`).jstree({
             checkbox : {
                 whole_node : false,
                 three_state: false,
-                tie_selection: false
+                tie_selection: false,
+                deselect_all: false
             },
             core:{
                 themes:{
@@ -26,34 +30,35 @@ class Tree extends Component {
             plugins: [ "checkbox" ]
         });
 
-        window.$('#' + id).on("changed.jstree", function (e, data) {
+        window.$(`#${id}`).on("changed.jstree", function (e, data) {
             if (onChanged){
                 onChanged(e, data);
             }
         });
 
-        window.$('#' + id).on("check_node.jstree", function (e, data) {
-            if (onCheckChanged){
-                onCheckChanged(e, data);
-            }
+        window.$(`#${id}`).on("check_node.jstree", function (e, data) {
+            if (checkNode)
+                checkNode(e, data)
         });
 
-        window.$('#' + id).on("uncheck_node.jstree", function (e, data) {
-            if (onCheckChanged){
-                onCheckChanged(e, data);
-            }
+        window.$(`#${id}`).on("uncheck_node.jstree", function (e, data) {
+            if (unCheckNode)
+                unCheckNode(e, data)
         });
     }
 
     componentDidUpdate() {
-        const { id } = this.props;
-        window.$("#" + id).jstree(true).refresh(); // Cập nhật lại tree theo data mới
+        const { id,data } = this.state;
+        window.$(`#${id}`).jstree(true).settings.core.data = data;
+        window.$(`#${id}`).jstree(true).refresh();
+
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id ) {
+        if (nextProps.id !== prevState.id || JSON.stringify(nextProps.data) !== JSON.stringify(prevState.data)) {
             return {
                 id: nextProps.id,
+                data: nextProps.data
             }
         } else {
             return null;
@@ -61,17 +66,17 @@ class Tree extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // Chỉ render lại khi id thay đổi
-        if (nextProps.id !== this.state.id)
+        if (nextProps.id !== this.state.id || JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)){
             return true;
-        return false;
+        }else return false;
     }
 
     render() {
-        const { id, data } = this.props;
-        return (
-            <div id={id}/>
-        );
+        const { id, data } = this.state;
+
+        return <React.Fragment>
+            {id !== undefined ? <div id={`${id}`}/> : null}
+        </React.Fragment>;
     }
 }
 

@@ -3,7 +3,7 @@ const {LogInfo, LogError} = require('../../../logs');
 
 exports.getAllSystemComponents = async (req, res) => {
     try {
-        const components = await ComponentDefaultServices.getAllSystemComponents();
+        const components = await ComponentDefaultServices.getAllSystemComponents(req.query);
         
         LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -17,30 +17,6 @@ exports.getAllSystemComponents = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_components_default_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getPaginatedSystemComponents = async (req, res) => {
-    try {
-        const { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        const components = await ComponentDefaultServices.getPaginatedSystemComponents(limit, page, req.body);
-        
-        LogInfo(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_components_default_success'],
-            content: components
-        });
-    } catch (error) {
-        
-        LogError(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['paginate_components_default_faile'],
             content: error
         });
     }

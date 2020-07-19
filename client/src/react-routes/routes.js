@@ -71,15 +71,17 @@ import RecommendDistribute from "../modules/assets-manager/recommend-distribute/
 import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure-management/components";
 import ManagerRecommendDistribute from "../modules/assets-manager/recommend-distribute-management/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
-import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
-import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
+import MaintainanceManager from "../modules/assets-manager/maintainance-management/components";
+import UsageManager from "../modules/assets-manager/usage-management/components";
+import IncidentManager from "../modules/assets-manager/incident-management/components";
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
-import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
-import ManagerAsset from "../modules/assets-manager/asset-manager/components";
-import ManagerAssetCrash from "../modules/assets-manager/asset-crash-management/components";
-import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
+import AssetManager from "../modules/assets-manager/asset-management/components";
 import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
 import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
+
+
+//report
+import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 class Routes extends Component {
 
@@ -728,7 +730,7 @@ class Routes extends Component {
 
                     <PrivateRoute 
                         isLoading={ this.props.recommendDistribute.isLoading }
-                        key={ 'recommend-distribute-asset' } //recommend_distribute_asset
+                        key={ 'recommend-distribute-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/recommmend-distribute-asset', name: 'recommend_distribute_asset', icon:'' }
@@ -793,22 +795,6 @@ class Routes extends Component {
 
                     <PrivateRoute 
                         isLoading={ this.props.assetsManager.isLoading }
-                        key={ 'add-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/add-asset', name: 'add_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/add-asset' }
-                        path={ '/add-asset' }
-                        pageName={ 'add_asset' }
-                        layout={ Layout }
-                        component={ AssetCreatePage }
-                    /> 
-
-                    <PrivateRoute 
-                        isLoading={ this.props.assetsManager.isLoading }
                         key={ 'manage-info-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -820,39 +806,40 @@ class Routes extends Component {
                         path={ '/manage-info-asset' }
                         pageName={ 'manage_info_asset' }
                         layout={ Layout }
-                        component={ ManagerAsset }
+                        component={ AssetManager }
+                    />
+
+
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'manage-maintainance-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-maintainance-asset', name: 'manage_maintainance_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-maintainance-asset' }
+                        path={ '/manage-maintainance-asset' }
+                        pageName={ 'manage_maintainance_asset' }
+                        layout={ Layout }
+                        component={ MaintainanceManager }
                     />
 
                     <PrivateRoute 
-                        isLoading={ this.props.repairUpgrade.isLoading }
-                        key={ 'manage-repair-asset' }
+                        isLoading={ false }
+                        key={ 'manage-usage-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-repair-asset', name: 'manage_repair_asset', icon:'' }
+                            { link: '/manage-usage-asset', name: 'manage_usage_asset', icon:'' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-repair-asset' }
-                        path={ '/manage-repair-asset' }
-                        pageName={ 'manage_repair_asset' }
+                        link={ '/manage-usage-asset' } 
+                        path={ '/manage-usage-asset' }
+                        pageName={ 'manage_usage_asset' }
                         layout={ Layout }
-                        component={ ManagerRepairUpgrade }
-                    /> 
-
-                    <PrivateRoute 
-                        isLoading={ this.props.distributeTransfer.isLoading }
-                        key={ 'manage-distribute-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-distribute-asset', name: 'manage_distribute_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/manage-distribute-asset' } 
-                        path={ '/manage-distribute-asset' }
-                        pageName={ 'manage_distribute_asset' }
-                        layout={ Layout }
-                        component={ ManagerDistributeTransfer }
+                        component={ UsageManager }
                     />
 
                     <PrivateRoute 
@@ -872,19 +859,19 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ this.props.assetCrash.isLoading }
-                        key={ 'manage-crash-asset' }
+                        isLoading={ false }
+                        key={ 'manage-incident-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-crash-asset', name: 'manage_crash_asset', icon:'' }
+                            { link: '/manage-incident-asset', name: 'manage_incident_asset', icon:'' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-crash-asset' } 
-                        path={ '/manage-crash-asset' }
-                        pageName={ 'manage_crash_asset' }
+                        link={ '/manage-incident-asset' } 
+                        path={ '/manage-incident-asset' }
+                        pageName={ 'manage_incident_asset' }
                         layout={ Layout }
-                        component={ ManagerAssetCrash }
+                        component={ IncidentManager }
                     />
 
                     <PrivateRoute 
@@ -918,6 +905,22 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ManagerRecommendDistribute }
                     />
+
+                    <PrivateRoute 
+                        isLoading={this.props.reports.isLoading}
+                        key={ 'task-report-management' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-report', name: 'task_report', icon:'fa fa-flash' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-report' }
+                        path={ '/task-report' }
+                        pageName={ 'task_report' }
+                        layout={ Layout }
+                        component={ TaskReportManager }
+                    />  
 
 
 

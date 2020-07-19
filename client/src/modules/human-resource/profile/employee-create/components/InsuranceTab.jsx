@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker } from '../../../../../common-components';
-import {
-    ModalImportFileBHXH, SocialInsuranceAddModal,
-    SocialInsuranceEditModal
-} from './combinedContent';
+import { DatePicker, ErrorLabel } from '../../../../../common-components';
+
+import { toast } from 'react-toastify';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+
+import { ModalImportFileBHXH, SocialInsuranceAddModal, SocialInsuranceEditModal } from './combinedContent';
 
 
 class InsurranceTab extends Component {
@@ -51,21 +52,96 @@ class InsurranceTab extends Component {
     }
     // Bắt sự kiện thay đổi ngày có hiệu lực
     handleStartDateBHYTChange = (value) => {
+        let { errorOnHealthInsuranceEndDate, healthInsuranceEndDate } = this.state;
+        let errorOnHealthInsuranceStartDate = undefined;
+        if (value) {
+            let partValue = value.split('-');
+            let startDate = [partValue[2], partValue[1], partValue[0]].join('-');
+            let date = new Date(startDate);
+            if (healthInsuranceEndDate) {
+                let endDate = healthInsuranceEndDate.split('-');
+                endDate = [endDate[2], endDate[1], endDate[0]].join('-');
+                let d = new Date(endDate);
+                if (date.getTime() >= d.getTime()) {
+                    errorOnHealthInsuranceStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+                }
+            }
+        }
+        this.setState({
+            healthInsuranceStartDate: value,
+            errorOnHealthInsuranceStartDate: errorOnHealthInsuranceStartDate,
+            errorOnHealthInsuranceEndDate: errorOnHealthInsuranceEndDate === 'Ngày có hiệu lực chưa được nhập' ? undefined : errorOnHealthInsuranceEndDate
+        })
         this.props.handleChange("healthInsuranceStartDate", value)
+
     }
     // Bắt sự kiện thay dổi ngày hêt hạn
     handleEndDateBHYTChange = (value) => {
-        this.props.handleChange("healthInsuranceEndDate", value)
+        let { healthInsuranceStartDate } = this.state;
+        if (value) {
+            let partValue = value.split('-');
+            let endDate = [partValue[2], partValue[1], partValue[0]].join('-');
+            let date = new Date(endDate);
+            if (healthInsuranceStartDate) {
+                let startDate = healthInsuranceStartDate.split('-');
+                startDate = [startDate[2], startDate[1], startDate[0]].join('-');
+                let d = new Date(startDate);
+                if (d.getTime() >= date.getTime()) {
+                    this.setState({
+                        healthInsuranceEndDate: value,
+                        errorOnHealthInsuranceEndDate: "Thời gian kết thúc phải sau thời gian bắt đầu",
+                    })
+                } else {
+                    this.setState({
+                        healthInsuranceEndDate: value,
+                        errorOnHealthInsuranceStartDate: undefined,
+                        errorOnHealthInsuranceEndDate: undefined,
+                    })
+                    this.props.handleChange("healthInsuranceEndDate", value)
+                }
+            } else {
+                this.setState({
+                    healthInsuranceEndDate: value,
+                    errorOnHealthInsuranceEndDate: "Ngày có hiệu lực chưa được nhập",
+                })
+            }
+        }
+
+
     }
     // function thêm thông tin quá trình đóng BHXH
     handleAddBHXH = async (data) => {
-        var socialInsuranceDetails = this.state.socialInsuranceDetails;
-        await this.setState({
-            socialInsuranceDetails: [...socialInsuranceDetails, {
-                ...data
-            }]
-        })
-        this.props.handleAddBHXH(this.state.socialInsuranceDetails, data);
+        let { socialInsuranceDetails } = this.state;
+        let startDate = new Date(data.startDate);
+        let endDate = new Date(data.endDate);
+        let checkData = true;
+        // Kiểm tra trùng lặp quá trình đống bảo hiểm xã hộihội
+        for (let n in socialInsuranceDetails) {
+            let date1 = new Date(socialInsuranceDetails[n].startDate);
+            let date2 = new Date(socialInsuranceDetails[n].endDate);
+            if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
+                (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
+                checkData = false;
+                break;
+            }
+        }
+        if (checkData) {
+            await this.setState({
+                socialInsuranceDetails: [...socialInsuranceDetails, {
+                    ...data
+                }]
+            })
+            this.props.handleAddBHXH(this.state.socialInsuranceDetails, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Quá trình đóng bảo hiểm bị trùng lặp']}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
     // function chỉnh sửa thông tin quá trình đóng BHXH
     handleEditBHXH = async (data) => {
@@ -106,7 +182,8 @@ class InsurranceTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
+        const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, errorOnHealthInsuranceStartDate,
+            socialInsuranceNumber, socialInsuranceDetails, errorOnHealthInsuranceEndDate } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -117,21 +194,23 @@ class InsurranceTab extends Component {
                                 <label>{translate('manage_employee.number_BHYT')}</label>
                                 <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
                             </div>
-                            <div className="form-group col-md-4">
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate === undefined ? "" : "has-error"}`}>
                                 <label >{translate('manage_employee.start_date')}</label>
                                 <DatePicker
                                     id={`startDateBHYT${id}`}
                                     value={healthInsuranceStartDate !== undefined ? this.formatDate(healthInsuranceStartDate) : undefined}
                                     onChange={this.handleStartDateBHYTChange}
                                 />
+                                <ErrorLabel content={errorOnHealthInsuranceStartDate} />
                             </div>
-                            <div className="form-group col-md-4">
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('manage_employee.end_date_certificate')}</label>
                                 <DatePicker
                                     id={`endDateBHYT${id}`}
                                     value={healthInsuranceEndDate !== undefined ? this.formatDate(healthInsuranceEndDate) : undefined}
                                     onChange={this.handleEndDateBHYTChange}
                                 />
+                                <ErrorLabel content={errorOnHealthInsuranceEndDate} />
                             </div>
                         </div>
                     </fieldset>

@@ -1,116 +1,77 @@
-import { AssetCrashConstants } from "./constants";
-import { AssetCrashService } from "./services";
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import {IncidentService} from './services';
+import {IncidentConstants} from './constants';
+import {AssetManagerActions} from '../../asset-management/redux/actions';
 
-export const AssetCrashActions = {
-    searchAssetCrashs,
-    createAssetCrash,
-    deleteAssetCrash,
-    updateAssetCrash,
-};
+export const IncidentActions = {
+    createIncident,
+    updateIncident,
+    deleteIncident
+}
 
-// Lấy danh sách sự cố tài sản
-function searchAssetCrashs(data) {
-
-    return async (dispatch) => {
+function createIncident(id, data) {
+    return async dispatch => {
         try {
-            const result = await AssetCrashService.searchAssetCrashs(data);
-
             dispatch({
-                type: AssetCrashConstants.GET_ASSET_CRASH_SUCCESS,
-                payload: result.data.content
-            })
-
-        } catch (error) {
+                type: IncidentConstants.CREATE_INCIDENT_REQUEST
+            });
+            const response = await IncidentService.createIncident(id, data);
             dispatch({
-                type: AssetCrashConstants.GET_ASSET_CRASH_FAILURE,
-                error: error.response.data
+                type: IncidentConstants.CREATE_INCIDENT_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: IncidentConstants.CREATE_INCIDENT_FAILURE,
+                error: err
             });
         }
+
     };
 }
 
-// Tạo mới thông tin sự cố tài sản
-function createAssetCrash(data) {
-    return async dispatch => {
-        try {
-            dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_REQUEST
-            });
-            const response = await AssetCrashService.createAssetCrash(data).then(res => res);
-            dispatch(searchAssetCrashs({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
-            dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_SUCCESS,
-                payload: response.data.content
-            });
-            return {
-                response
-            }
-        } catch (err) {
-            dispatch({
-                type: AssetCrashConstants.CREATE_ASSET_CRASH_FAILURE,
-                error: err.response.data
-            });
-        }
-
-    }
-}
-
-// Xoá thông tin sự cố tài sản
-function deleteAssetCrash(id) {
+function updateIncident(id, data) {
     return dispatch => {
         dispatch({
-            type: AssetCrashConstants.DELETE_ASSET_CRASH_REQUEST,
+            type: IncidentConstants.UPDATE_INCIDENT_REQUEST
         });
-        AssetCrashService.deleteAssetCrash(id)
+
+        IncidentService.updateIncident(id, data)
             .then(res => {
-                dispatch(searchAssetCrashs({
-                    code: "",
-                    assetName: "",
-                    month: "",
-                    type: null,
-                    page: 0,
-                    limit: 5,
-                }));
                 dispatch({
-                    type: AssetCrashConstants.DELETE_ASSET_CRASH_SUCCESS,
+                    type: IncidentConstants.UPDATE_INCIDENT_SUCCESS,
                     payload: res.data.content
                 })
+                dispatch(AssetManagerActions.getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }))
             })
             .catch(err => {
                 dispatch({
-                    type: AssetCrashConstants.DELETE_ASSET_CRASH_SUCCESS,
-                    error: err.response.data
+                    type: IncidentConstants.UPDATE_INCIDENT_FAILURE,
+                    error: err
                 });
             })
-    }
+    };
 }
 
-// cập nhật thông tin sự cố tài sản
-function updateAssetCrash(id, infoAssetCrash) {
+function deleteIncident(assetId, incidentId) {
     return async dispatch => {
         try {
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_REQUEST
+                type: IncidentConstants.DELETE_INCIDENT_REQUEST
             });
-            const response = await AssetCrashService.updateAssetCrash(id, infoAssetCrash)
-            dispatch(searchAssetCrashs({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
+            const response = await IncidentService.deleteIncident(assetId, incidentId);
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_SUCCESS,
+                type: IncidentConstants.DELETE_INCIDENT_SUCCESS,
                 payload: response.data.content
             });
             return {
@@ -118,9 +79,10 @@ function updateAssetCrash(id, infoAssetCrash) {
             }
         } catch (err) {
             dispatch({
-                type: AssetCrashConstants.UPDATE_ASSET_CRASH_FAILURE,
-                error: err.response.data
+                type: IncidentConstants.DELETE_INCIDENT_FAILURE,
+                error: err
             });
         }
+
     }
 }

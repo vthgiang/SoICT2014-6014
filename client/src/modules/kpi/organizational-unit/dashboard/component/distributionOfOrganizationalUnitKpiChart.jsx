@@ -32,6 +32,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Call action again when currentRole changes
         if(this.state.currentRole !== localStorage.getItem("currentRole")) {
             await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
 
@@ -45,8 +46,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId);
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
+        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             
             this.setState(state => {
                 return {
@@ -85,10 +87,11 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId) {
+        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
-                organizationalUnitId: nextProps.organizationalUnitId
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
             }
         } else{
             return null;
@@ -160,8 +163,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
-                {currentKpi &&
-                    <div ref="chart"></div>
+                {currentKpi ?
+                    <section ref="chart"></section>
+                    : <section>Không có dữ liệu</section>
                 }
             </React.Fragment>
         )

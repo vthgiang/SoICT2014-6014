@@ -11,7 +11,7 @@ class CompanyManageComponent extends Component {
             limit: 5,
             page: 1,
             option: 'name',
-            value: { $regex: '', $options: 'i' }
+            value: ''
          }
     }
 
@@ -177,30 +177,35 @@ class CompanyManageComponent extends Component {
     }
 
     searchWithOption = async() => {
-        const {companyId, limit, page, option, value} = this.state;
-        const data = {};
-        data[option] = value;
-        await this.props.componentsPaginate(companyId, page, limit, data);
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.componentsList(this.state.companyId, data);
     }
 
-    setPage = async (pageNumber) => {
-        await this.setState({ page: pageNumber });
-        const {limit, page, companyId, value, option} = this.state;
-        const data = {};
-        if(value !== null){
-            data[option] = value;
-        }
-        await this.props.componentsPaginate(companyId, page, limit, data);
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.componentsList(this.state.companyId, data);
     }
-    
-    setLimit = async (number) => {
-        await this.setState({ limit: number });
-        const {limit, page, companyId, value, option} = this.state;
-        const data = {};
-        if(value !== null){
-            data[option] = value;
-        }
-        await this.props.componentsPaginate(companyId, page, limit, data);
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.componentsList(this.state.companyId, data);
     }
 }
  
@@ -210,7 +215,6 @@ const mapDispatchToProps =  {
     addNewComponent: CompanyActions.addNewComponent,
     deleteComponent: CompanyActions.deleteComponent,
     componentsList: CompanyActions.componentsList,
-    componentsPaginate: CompanyActions.componentsPaginate
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyManageComponent) );

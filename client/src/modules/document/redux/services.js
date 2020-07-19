@@ -19,6 +19,7 @@ export const DocumentServices = {
     createDocumentDomain,
     editDocumentDomain,
     deleteDocumentDomain,
+    deleteManyDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -134,11 +135,18 @@ function editDocumentDomain(id, data) {
     }, true, true, 'document');
 }
 
-function deleteDocumentDomain(id, data) {  
+function deleteDocumentDomain(id) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/domains/${id}`,
         method: 'DELETE',
-        data,
+    }, true, true, 'document');
+}
+
+function deleteManyDocumentDomain(array) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/documents/domains/delete-many`,
+        method: 'POST',
+        data: {array}
     }, true, true, 'document');
 }
 

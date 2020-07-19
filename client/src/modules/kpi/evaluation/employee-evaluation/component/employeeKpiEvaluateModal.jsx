@@ -8,14 +8,14 @@ import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import {TaskDialog} from './taskImpotanceDialog';
 import React, { Component, useState } from 'react';
 
-import ReactSlider from 'react-slider';
-
 import { connect } from 'react-redux';
 
 import { kpiMemberActions } from '../redux/actions';
-import { PaginateBar, DataTableSetting } from '../../../../../common-components';
+import { DataTableSetting } from '../../../../../common-components';
 
 import { DialogModal } from '../../../../../common-components/index';
+// import { DetailTaskTab } from '../../../../task/task-perform/component/detailTaskTab';
+import { ModelDetailTask } from '../../../../task/task-management/component/task-dashboard/detailTask';
 //const Handle = Slider.Handle;
 class ModalMemberEvaluate extends Component {
     constructor(props) {
@@ -121,6 +121,7 @@ class ModalMemberEvaluate extends Component {
         let employeeId = this.props.employeeKpiSet.creator._id;
         let tasks = this.state.tasks;
         let points = this.state.points;
+        let kpiType = this.state.type;
         if (tasks && tasks.length>0){
             let data=[];
             tasks.forEach(element => {
@@ -133,7 +134,7 @@ class ModalMemberEvaluate extends Component {
                 })
             });
 
-            this.props.setPointKPI(this.state.content, data);
+            this.props.setPointKPI(this.state.content, kpiType, data);
         }
     }
 
@@ -160,10 +161,21 @@ class ModalMemberEvaluate extends Component {
 
         window.$(`#modal-taskimportance-auto`).modal('show')
     }
-
+    
+    handleClickTaskName = async(id) =>{
+        this.setState(state => {
+            return {
+                ...state,
+                taskId: id,
+            }
+        });
+        window.$(`#modal-detail-task`).modal('show');
+    }
+    
 
     render() {
-        var list, myTask = [], thisKPI = null;
+        let list, myTask = [];
+        const { taskId } = this.state;
         const { kpimembers } = this.props;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
 
@@ -278,7 +290,7 @@ class ModalMemberEvaluate extends Component {
 
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{itemTask.name}</td>
+                                                    <td><a href= "#" onClick={()=> this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                     <td>{this.formatDate(itemTask.startDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br/> <i className="fa fa-angle-double-down"></i><br/> {this.formatDate(itemTask.date)}</td>
                                                     <td>{itemTask.status}</td>
@@ -288,7 +300,7 @@ class ModalMemberEvaluate extends Component {
                                                         {this.state.points && this.state.tasks &&
                                                         <React.Fragment>
                                                             <input type="range"
-                                                            min="1"
+                                                            min="0"
                                                             max='10'
                                                             name={`taskImportanceLevel${itemTask.taskId}`}
                                                             value={this.state.points[itemTask.taskId]}
@@ -340,6 +352,7 @@ class ModalMemberEvaluate extends Component {
                                 />
 
                             }
+                            {<ModelDetailTask id={taskId}/>}
                         </React.Fragment>;
                         return true;
                     })}
@@ -357,7 +370,7 @@ function mapState(state) {
 const actionCreators = {
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
     getTaskById: kpiMemberActions.getTaskById,
-    setPointKPI: kpiMemberActions.setPointKPI
+    setPointKPI: kpiMemberActions.setPointKPI,
 };
 const connectedModalMemberEvaluate = connect(mapState, actionCreators)(ModalMemberEvaluate);
 export { connectedModalMemberEvaluate as ModalMemberEvaluate };

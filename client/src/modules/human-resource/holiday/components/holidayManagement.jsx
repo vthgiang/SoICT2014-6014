@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ModalImportHoliday } from './holidayImportForm';
 import { DeleteNotification } from '../../../../common-components';
-import { HolidayEditForm, HolidayCreateForm } from './combinedContent'
+import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
 
 import { HolidayActions } from '../redux/actions';
 class ManageHoliday extends Component {
@@ -14,6 +13,12 @@ class ManageHoliday extends Component {
     }
     componentDidMount() {
         this.props.getListHoliday();
+    }
+    handleImport = async () => {
+        await this.setState({
+            importHoliday: true
+        })
+        window.$('#modal_import_file').modal('show');
     }
     formatDate(date) {
         var d = new Date(date),
@@ -28,7 +33,7 @@ class ManageHoliday extends Component {
         return [day, month, year].join('/');
     }
 
-    formatDate2(date){
+    formatDate2(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -50,13 +55,15 @@ class ManageHoliday extends Component {
     }
     render() {
         if (this.props.holiday.listHoliday.length !== 0) {
-            var listHoliday = this.props.holiday.listHoliday
+            var listHoliday = this.props.holiday.listHoliday;
         }
-        var { translate } = this.props;
+        let { translate } = this.props;
+        let { importHoliday } = this.state;
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <button type="button" className="btn btn-primary pull-right" style={{ marginTop:2, marginBottom:10, marginLeft: 15 }} id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
+                    <button type="button" className="btn btn-primary pull-right" style={{ marginTop: 2, marginBottom: 10, marginLeft: 15 }} id="" title="Chọn tệp để Import" onClick={() => this.handleImport()}>Import File</button>
+                    {importHoliday && <HolidayImportForm />}
                     <HolidayCreateForm />
                     <table className="table table-striped table-bordered table-hover">
                         <thead>

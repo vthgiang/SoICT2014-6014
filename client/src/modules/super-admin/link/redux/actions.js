@@ -3,14 +3,25 @@ import { LinkConstants } from "./constants";
 
 export const LinkActions = {
     get,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get(){
+function get(data){
+    if(data !== undefined){
+        return dispatch => {
+            dispatch({ type: LinkConstants.GET_LINKS_PAGINATE_REQUEST});
+            LinkServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+        }
+    }
     return dispatch => {
         dispatch({ type: LinkConstants.GET_LINKS_REQUEST});
         LinkServices.get()
@@ -19,25 +30,6 @@ function get(){
                     type: LinkConstants.GET_LINKS_SUCCESS,
                     payload: res.data.content
                 })
-            })
-            .catch(err => {
-                
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: LinkConstants.GET_LINKS_PAGINATE_REQUEST});
-        LinkServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                
             })
     }
 }
@@ -51,9 +43,6 @@ function show(id){
                     type: LinkConstants.SHOW_LINK_SUCCESS,
                     payload: res.data.content
                 })
-            })
-            .catch(err => {
-                
             })
     }
 }
@@ -69,8 +58,6 @@ function create(link){
                         payload: res.data.content
                     });
                 })
-                .catch(err => {
-                })
     }
 }
 
@@ -84,8 +71,6 @@ function edit(id, link){
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-            })
     }
 }
 
@@ -98,8 +83,6 @@ function destroy(id, link){
                     type: LinkConstants.DELETE_LINK_SUCCESS,
                     payload: id
                 })
-            })
-            .catch(err => {
             })
     }
 }

@@ -1,32 +1,87 @@
 const express = require("express");
 const router = express.Router();
-const {auth} = require('../../../middleware');
+const {
+    auth,
+    uploadFile
+} = require('../../../middleware');
 const AssetController = require("./asset.controller");
-const formidable = require("express-formidable");
+const data =[
+    {name:'fileAvatar', path:'/asset/pictures'},
+    {name:'file', path:'/asset/files'}
+]
+
 /**
  * Lấy danh sách tài sản
  */
-router.post('/paginate', auth, AssetController.searchAssetProfiles);
+router.get('/', auth, AssetController.searchAssetProfiles);
 
-// Kiểm tra sự tồn tại của mã tài sản
-router.get('/checkCode/:code', auth, AssetController.checkCode);
+/**
+ * Thêm mới một tài sản
+ */
+router.post('/', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 
-// Thêm mới một tài sản
-router.post('/', auth, formidable(), AssetController.create);
+/**
+ * Cập nhật thông tin tài sản theo id
+ */
+router.put('/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 
-// them file
-router.post('/uploadFile', auth, formidable(), AssetController.uploadFileAttachments);
+/**
+ * Xoá thông tin tài sản
+ */
+router.delete('/:id', auth, AssetController.deleteAsset);
 
-// Cập nhật thông tin tài sản theo id
-router.put('/update/:id', auth, AssetController.updateInfoAsset);
+/**
+ * Chỉnh sửa thông tin khấu hao tài sản
+ */
+router.put('/updateDepreciation/:id', auth,  AssetController.updateDepreciation);
 
-// Cập nhật Avatar của tài sản theo mã tài sản
-router.patch('/avatar/:code', auth, AssetController.uploadAvatar, AssetController.updateAvatar);
+/**
+ * Thêm mới thông tin bảo trì cho sự cố
+ */
+router.put('/createMaintainanceForIncident/:id', auth,  AssetController.createMaintainanceForIncident);
 
-// Cập nhật(thêm) thông tin file đính kèm
-router.patch('/file/:code', auth, AssetController.uploadFile, AssetController.updateFile);
+/**
+ * Thêm mới thông tin sử dụng tài sản
+ */
+router.put('/createUsage/:id', auth,  AssetController.createUsage);
 
-// Xoá thông tin tài sản
-router.delete('/:id', auth, AssetController.delete);
+/**
+ * Chỉnh sửa thông tin sử dụng tài sản
+ */
+router.put('/updateUsage/:id', auth,  AssetController.updateUsage);
 
+/**
+ * Xóa thông tin sử dụng tài sản
+ */
+router.delete('/deleteUsage/:id', auth,  AssetController.deleteUsage);
+
+/**
+ * Thêm mới thông tin bảo trì tài sản
+ */
+router.put('/createMaintainance/:id', auth,  AssetController.createMaintainance);
+
+/**
+ * Chỉnh sửa thông tin bảo trì tài sản
+ */
+router.put('/updateMaintainance/:id', auth,  AssetController.updateMaintainance);
+
+/**
+ * Xóa thông tin bảo trì tài sản
+ */
+router.delete('/deleteMaintainance/:id', auth,  AssetController.deleteMaintainance);
 module.exports = router;
+
+/**
+ * Thêm mới thông tin sự cố tài sản
+ */
+router.put('/createIncident/:id', auth,  AssetController.createIncident);
+
+/**
+ * Chỉnh sửa thông tin sự cố tài sản
+ */
+router.put('/updateIncident/:id', auth,  AssetController.updateIncident);
+
+/**
+ * Xóa thông tin sự cố tài sản
+ */
+router.delete('/deleteIncident/:id', auth,  AssetController.deleteIncident);

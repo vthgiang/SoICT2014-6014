@@ -228,7 +228,7 @@ exports.importSalaries = async (data, company) => {
                 errorAlert: [...x.errorAlert, "staff_code_not_find"],
                 error: true
             };
-            rowError = [...rowError, index];
+            rowError = [...rowError, index + 1];
         } else {
             x = {
                 ...x,
@@ -244,7 +244,7 @@ exports.importSalaries = async (data, company) => {
                         errorAlert: [...x.errorAlert, "month_salary_have_exist"],
                         error: true
                     };
-                    rowError = [...rowError, index];
+                    rowError = [...rowError, index + 1];
                 }
             }
         }

@@ -9,9 +9,6 @@ router.get("/", auth, LinkController.getAllSystemLinks);
 //Lấy tất cả các category link mặc định
 router.get("/categories", auth, LinkController.getAllSystemLinkCategories);
 
-//Lấy giới hạn link mặc đinh sẽ tạo cho 1 doanh nghiệp ( bao nhiêu giá trị / bảng quản lý trang )
-router.post("/paginate", auth, LinkController.getPaginatedSystemLinks);
-
 //tạo một link mặc định mới
 router.post("/", auth, LinkController.createSystemLink);
 

@@ -3,25 +3,17 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const LinkServices = {
     get,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get() {
+function get(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/link`,
         method: 'GET',
-    }, false, true, 'super_admin.link');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link/paginate`,
-        method: 'POST',
-        data,
+        params
     }, false, true, 'super_admin.link');
 }
 

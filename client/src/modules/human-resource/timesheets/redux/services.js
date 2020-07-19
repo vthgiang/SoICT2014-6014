@@ -5,6 +5,7 @@ export const TimesheetsService = {
     createTimesheets,
     deleteTimesheets,
     updateTimesheets,
+    importTimesheets,
 }
 
 /**
@@ -62,15 +63,15 @@ function updateTimesheets(id, data) {
     }, true, true, 'human_resource.timesheets');
 }
 
-// /**
-//  * Import dữ liệu chấm công
-//  * @param {*} data : Array thông tin chấm công
-//  */
-// function importTimesheets(data) {
-//     return sendRequest({
-//         url: `${ LOCAL_SERVER_API }/timesheets/import`,
-//         method: 'POST',
-//         data: data,
-//     }, true, false, 'human_resource.timesheets');
-// }
+/**
+ * Import dữ liệu chấm công
+ * @param {*} data : Array thông tin chấm công
+ */
+function importTimesheets(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/timesheets/import`,
+        method: 'POST',
+        data: data,
+    }, true, false, 'human_resource.timesheets');
+}
 

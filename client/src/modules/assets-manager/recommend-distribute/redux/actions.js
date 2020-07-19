@@ -1,6 +1,6 @@
 import { RecommendDistributeConstants } from "./constants";
 import { RecommendDistributeService } from "./services";
-import { AssetManagerActions } from "../../asset-manager/redux/actions";
+import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 export const RecommendDistributeActions = {
     searchRecommendDistributes,
@@ -38,20 +38,21 @@ function createRecommendDistribute(data) {
                 type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST
             });
             const response = await RecommendDistributeService.createRecommendDistribute(data).then(res => res);
-            dispatch(AssetManagerActions.getAllAsset({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
+            
             dispatch(searchRecommendDistributes({
                 recommendNumber: "",
                 month: "",
                 status: "",
                 page: 0,
                 limit: 5,
+            }));
+            dispatch(AssetManagerActions.getAllAsset({
+                code: "",
+                assetName: "",
+                month: "",
+                type: null,
+                page: 0,
+                limit: 9,
             }));
             dispatch({
                 type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS,
@@ -70,7 +71,7 @@ function createRecommendDistribute(data) {
     }
 }
 
-// Xoá thông tin thông tin phiếu đề nghị mua sắm thiết bị
+// Xoá thông tin thông tin phiếu đăng ký sử dụng tài sản
 function deleteRecommendDistribute(id) {
     return dispatch => {
         dispatch({
@@ -92,7 +93,7 @@ function deleteRecommendDistribute(id) {
     }
 }
 
-// cập nhật thông tin phiếu cấp phát
+// cập nhật thông tin phiếu đăng ký sử dụng
 function updateRecommendDistribute(id, infoRecommendDistribute) {
     return async dispatch => {
         try {

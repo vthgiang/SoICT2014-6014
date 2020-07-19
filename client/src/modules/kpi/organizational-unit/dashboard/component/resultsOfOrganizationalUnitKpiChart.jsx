@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
+import { DatePicker } from '../../../../../common-components';
+import Swal from 'sweetalert2';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -12,16 +15,21 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     constructor(props) {
         super(props);
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
 
-        var currentDate = new Date();
-        var currentYear = currentDate.getFullYear();
-        var currentMonth = currentDate.getMonth();
+        this.INFO_SEARCH = {
+            startDate: currentYear + '-' + 1,
+            endDate: currentYear + '-' + (currentMonth + 2)
+        }
+
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
             organizationalUnitId: null,
-            startDate: currentYear + '-' + 1,
-            endDate: currentYear + '-' + (currentMonth + 2),
+            startDate: this.INFO_SEARCH.startDate,
+            endDate: this.INFO_SEARCH.endDate,
             dataStatus: this.DATA_STATUS.QUERYING
         };
     }
@@ -38,9 +46,24 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Call action again when this.props.organizationalUnitId changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
             // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
             await this.props.getAllOrganizationalUnitKpiSetByTime(nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
+            
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
+            });
+
+            return false;
+        }
+
+        // Call action again when this.state.startDate or this.state.endDate changes
+        if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
+            await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.organizationalUnitId, nextState.startDate, nextState.endDate);
             
             this.setState(state => {
                 return {
@@ -121,6 +144,47 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         return dataMultiLineChart;
     };
 
+    /** Select month start in box */
+    handleSelectMonthStart = (value) => {
+        var month = value.slice(3,7) + '-' + value.slice(0,2);
+
+        this.INFO_SEARCH.startDate = month;
+    }
+
+    /** Select month end in box */
+    handleSelectMonthEnd = async (value) => {
+        if(value.slice(0,2)<12) {
+            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        } else {
+            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+
+        this.INFO_SEARCH.endDate = month;
+    }
+
+    /** Search data */
+    handleSearchData = async () => {
+        var startDate = new Date(this.INFO_SEARCH.startDate);
+        var endDate = new Date(this.INFO_SEARCH.endDate);
+
+        if (startDate.getTime() >= endDate.getTime()) {
+            Swal.fire({
+                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    startDate: this.INFO_SEARCH.startDate,
+                    endDate: this.INFO_SEARCH.endDate
+                }
+            })
+        }
+    }
+
     // Xóa các chart đã render trước khi đủ dữ liệu
     removePreviosMultiLineChart = () => {
         const chart =  this.refs.chart;
@@ -179,8 +243,50 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
+        var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        var defaultEndDate = [month, year].join('-');
+        var defaultStartDate = ['01', year].join('-');
+
         return(
-            <div ref="chart"></div>
+            <React.Fragment>
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>Từ tháng</label>
+                        <DatePicker 
+                            id="monthStartInResultsOfOrganizationalUnitKpiChart"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultStartDate}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonthStart}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </div>
+                </section>
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>Đến tháng</label>
+                        <DatePicker 
+                            id="monthEndInResultsOfOrganizationalUnitKpiChart"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultEndDate}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonthEnd}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </div>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                    </div>
+                </section>
+
+                <section ref="chart"></section>
+            </React.Fragment>
         )
     }
 }

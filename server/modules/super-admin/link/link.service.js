@@ -5,29 +5,30 @@ const Privilege = require('../../../models/auth/privilege.model');
  * Lấy danh sách tất cả các link của 1 công ty
  * @company id của công ty
  */
-exports.getAllLinks = async (company) => {
-    return await Link
-        .find({ company })
-        .populate({ path: 'roles', model: Privilege });
-}
+exports.getAllLinks = async (company, query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        
+        return await Link
+            .find({ company })
+            .populate({ path: 'roles', model: Privilege });
 
-/**
- * Phân trang danh sách các link
- * @company id công ty
- * @limit giới hạn hiển thị trên 1 bảng
- * @page số thứ tự của trang muốn lấy
- * @data dữ liệu truy vấn
- */
-exports.getPaginatedLinks = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await Link
-        .paginate( newData , { 
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : {company};
+        console.log("link option: ", option);
+        return await Link
+        .paginate( option , { 
             page, 
             limit,
             populate: [
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }}
             ]
         });
+    }
 }
 
 /**

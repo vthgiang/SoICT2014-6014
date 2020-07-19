@@ -357,14 +357,12 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS:
-            index = findIndex(state.administration.domains.list, action.payload._id);
-            if(index !== -1) state.administration.domains.list.splice(index, 1);
             return {
                 ...state,
                 isLoading: false,
                 administration: {
                     ...state.administration,
-                    domains: action.payload.tree
+                    domains: action.payload
                 }
             };
 

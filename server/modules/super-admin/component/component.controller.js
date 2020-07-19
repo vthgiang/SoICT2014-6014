@@ -8,7 +8,7 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getAllComponents = async (req, res) => {
     try {
-        const components = await ComponentService.getAllComponents(req.user.company._id);
+        const components = await ComponentService.getAllComponents(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({
@@ -17,35 +17,11 @@ exports.getAllComponents = async (req, res) => {
             content: components
         });
     } catch (error) {
-        
+        console.log("error: ", error)
         await LogError(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_components_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getPaginatedComponents = async (req, res) => {
-    try {
-        const { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        const components = await ComponentService.getPaginatedComponents(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
-        
-        await LogInfo(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_components_success'],
-            content: components
-        });
-    } catch (error) {
-        
-        await LogError(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['paginate_components_faile'],
             content: error
         });
     }

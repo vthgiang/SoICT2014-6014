@@ -6,6 +6,8 @@ import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { TasksSchedule } from './tasksSchedule';
 import { taskManagementActions } from '../../redux/actions';
 
+import {withTranslate} from 'react-redux-multilingual';
+
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -33,7 +35,7 @@ class TaskDashboard extends Component {
         return dps;
     }
     render() {
-        const { tasks } = this.props;
+        const { tasks, translate } = this.props;
         const options3 = {
             theme: "light2", // "light1", "dark1", "dark2"
             animationEnabled: true,
@@ -251,7 +253,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Lịch công việc chi tiết</div>
+                            <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
                             </div>
                             <TasksSchedule />
                         </div>
@@ -276,5 +278,5 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
 
 };
-const connectedTaskDashboard = connect(mapState, actionCreators)(TaskDashboard);
+const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
 export { connectedTaskDashboard as TaskDashboard };

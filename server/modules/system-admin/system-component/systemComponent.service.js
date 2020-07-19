@@ -1,24 +1,29 @@
 const { SystemComponent, SystemLink, RootRole } = require('../../../models').schema;
 
-exports.getAllSystemComponents = async () => {
-
-    return await SystemComponent.find().populate([
-        { path: 'roles', model: RootRole },
-        { path: 'link', model: SystemLink }
-    ]);
-}
-
-exports.getPaginatedSystemComponents = async (limit, page, data={}) => {
-
-    return await SystemComponent
-        .paginate( data , { 
-            page, 
-            limit,
-            populate: [
-                { path: 'roles', model: RootRole },
-                { path: 'link', model: SystemLink }
-            ]
-        });
+exports.getAllSystemComponents = async (query) => {
+    var page = query.page;
+    var limit = query.limit;
+    
+    if(page === undefined && limit === undefined ){
+        return await SystemComponent.find().populate([
+            { path: 'roles', model: RootRole },
+            { path: 'link', model: SystemLink }
+        ]);
+    }else{
+        const option = (query.key !== undefined && query.value !== undefined)
+            ? {[`${query.key}`]: new RegExp(query.value, "i")}
+            : {};
+        console.log("option: ", option);
+        return await SystemComponent
+            .paginate( option , { 
+                page, 
+                limit,
+                populate: [
+                    { path: 'roles', model: RootRole },
+                    { path: 'link', model: SystemLink }
+                ]
+            });
+    }
 }
 
 exports.getSystemComponent = async (id) => {

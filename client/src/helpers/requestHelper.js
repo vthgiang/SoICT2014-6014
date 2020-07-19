@@ -9,7 +9,6 @@ const AuthenticateHeader = (name='jwt',) => {
     const token = getStorage(name);
     const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
-    console.log("FGPRT:", fingerprint)
     
     return {
         'current-page': window.location.pathname,

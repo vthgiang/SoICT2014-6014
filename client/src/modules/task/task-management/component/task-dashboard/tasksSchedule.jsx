@@ -6,8 +6,9 @@ import moment from 'moment'
 import Timeline from "react-calendar-timeline";
 import {DatePicker} from '../../../../../common-components/index'
 import { taskManagementActions } from '../../../task-management/redux/actions';
-import {ModelDetailTask2} from './detailTask'
+import {ModelDetailTask} from './detailTask'
 import './calendar.css'
+import { withTranslate } from 'react-redux-multilingual';
 
 class TasksSchedule extends Component{
     constructor(props){
@@ -40,11 +41,9 @@ class TasksSchedule extends Component{
           startDateAfter: this.formatDate(new Date()),
           endDateBefore: null
       },
+      taskId: null
     };
   }
-  /**
-   *  tim kiem cong viec thuc hien theo thang
-   */
   componentDidMount() {
     let {infoSearch} = this.state;
     let {organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore} = infoSearch;
@@ -52,7 +51,7 @@ class TasksSchedule extends Component{
   }
   
   formatDate(date) {
-      var d = new Date(date),
+      let d = new Date(date),
           month = '' + (d.getMonth()),
           day = '' + d.getDate(),
           year = d.getFullYear();
@@ -134,9 +133,6 @@ class TasksSchedule extends Component{
           });
       
   }
-/**
- * hien thi du lieu cho calendar
- */
   getDurations(){
       const {tasks} = this.props;
       const taskList = tasks && tasks.responsibleTasks;
@@ -172,13 +168,16 @@ class TasksSchedule extends Component{
       
   }
   handleItemClick = async(itemId) => {
-      
+      let {tasks} = this.props;
+      let {taskId} = this.state;
+      let id = tasks.responsibleTasks[itemId-1]._id;
       await this.setState(state => {
           return {
               ...state,
-              detailTask: itemId-1
+              taskId: id
           }
       })
+      await this.props.getTaskById(id);
       window.$(`#modal-detail-task`).modal('show')
   }
   animateScroll = invert => {
@@ -210,16 +209,18 @@ class TasksSchedule extends Component{
   };
   
   render() {
-    const { defaultTimeStart, defaultTimeEnd, infoSearch } = this.state;
+    const { defaultTimeStart, defaultTimeEnd, infoSearch, taskId } = this.state;
     const {startDateAfter, endDateBefore} = infoSearch;
+    let {tasks, translate} = this.props;
+    let task = tasks && tasks.task;
     return (
         <React.Fragment>
           <div className="box-body qlcv">
-              <ModelDetailTask2 id={this.state.detailTask}/>
+              {<ModelDetailTask task={task}/>}
               <div className="flex-right">
                 <div className="form-inline">
                   <div className="form-group">
-                    <label>Từ tháng: </label>
+                    <label>{translate('task.task_management.from')}: </label>
                     <DatePicker id='start_date_after'
                             value = {startDateAfter}
                             onChange={this.handleStartDateChange}
@@ -227,7 +228,7 @@ class TasksSchedule extends Component{
                             />
                   </div>
                   <div className="form-group">
-                    <label>Đến tháng: </label>
+                    <label>{translate('task.task_management.to')}: </label>
                     <DatePicker
                             id='end_date_before'
                             value = {endDateBefore}
@@ -236,7 +237,7 @@ class TasksSchedule extends Component{
                             />
                   </div>
                   <div className="form-group">
-                    <button className="btn btn-success" onClick={this.handleSearchTasks}>Tìm kiếm</button>
+                    <button className="btn btn-success" onClick={this.handleSearchTasks}>{translate('task.task_management.search')}</button>
                   </div>
                 </div>
               </div>
@@ -256,8 +257,8 @@ class TasksSchedule extends Component{
                     defaultTimeEnd={defaultTimeEnd}
                 />
               <div className="form-inline pull-right" style={{marginTop:"5px"}}>
-                <button className='btn btn-danger' onClick={this.onPrevClick}><i class="fa fa-angle-left"></i> Prev</button>
-                <button className='btn btn-danger' onClick={this.onNextClick}>Next <i class="fa fa-angle-right"></i></button>
+                <button className='btn btn-danger' onClick={this.onPrevClick}><i class="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
+                <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i class="fa fa-angle-right"></i></button>
               </div>
           </div>
       </React.Fragment>
@@ -271,6 +272,7 @@ function mapState(state){
 }
 const actions = {
   getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
+  getTaskById: taskManagementActions.getTaskById
 }
-const connectedSchedule = connect(mapState, actions) (TasksSchedule)
+const connectedSchedule = connect(mapState, actions) (withTranslate(TasksSchedule))
 export {connectedSchedule as TasksSchedule}

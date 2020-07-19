@@ -184,32 +184,31 @@ exports.updateTimesheets = async (req, res) => {
     }
 }
 
-// // Import dữ liệu chấm công
-// exports.importSalaries = async (req, res) => {
-//     try {
-//         var data = await SalaryService.importSalaries(req.body, req.user.company._id);
-//         console.log(data);
-//         if(data.rowError!==undefined){
-//             await LogError(req.user.email, 'IMPORT_SARALY', req.user.company);
-//             res.status(400).json({
-//                 success: false,
-//                 messages:["import_salary_faile"],
-//                 content: data
-//             });
-//         }else{
-//             await LogInfo(req.user.email, 'IMPORT_SARALY', req.user.company);
-//             res.status(200).json({
-//                 success: true,
-//                 messages:["import_salary_success"],
-//                 content: data
-//             });
-//         }
-//     } catch (error) {
-//         await LogError(req.user.email, 'IMPORT_SARALY', req.user.company);
-//         res.status(400).json({
-//             success: false,
-//             messages:["import_salary_faile"],
-//             content: {error: error}
-//         });
-//     }
-// }
+// Import dữ liệu chấm công
+exports.importTimesheets = async (req, res) => {
+    try {
+        var data = await TimesheetService.importTimesheets(req.body, req.user.company._id);
+        if(data.rowError!==undefined){
+            await LogError(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages:["import_timesheets_faile"],
+                content: data
+            });
+        }else{
+            await LogInfo(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages:["import_timesheets_success"],
+                content: data
+            });
+        }
+    } catch (error) {
+        await LogError(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages:["import_timesheets_faile"],
+            content: {error: error}
+        });
+    }
+}

@@ -152,3 +152,59 @@ exports.updateTimesheets = async (id, data) => {
 
     return updateTimesheets
 }
+
+/**
+ * import thông tin chấm công
+ */
+
+exports.importTimesheets = async (data, company) => {
+    let timesheetsExisted = await Timesheets.find({
+        month: data[0].month,
+        company: company
+    })
+    let employeeInfo = await Employee.find({
+        company: company
+    }, {
+        employeeNumber: 1,
+        _id: 1
+    });
+    let rowError = [];
+    data = data.map((x, index) => {
+        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
+        if (employee.length === 0) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "staff_code_not_find"],
+                error: true
+            };
+            rowError = [...rowError, index + 1];
+        } else {
+            x = {
+                ...x,
+                employee: employee[0]._id,
+                company: company
+            };
+            if (timesheetsExisted.length !== 0) {
+                let timesheetsMonth = new Date(x.month);
+                let timesheets = timesheetsExisted.filter(y => y.employee.toString() === employee[0]._id.toString() && timesheetsMonth.toString() === y.month.toString());
+                if (timesheets.length !== 0) {
+                    x = {
+                        ...x,
+                        errorAlert: [...x.errorAlert, "month_timesheets_have_exist"],
+                        error: true
+                    };
+                    rowError = [...rowError, index + 1];
+                }
+            }
+        }
+        return x;
+    })
+    if (rowError.length !== 0) {
+        return {
+            data,
+            rowError
+        }
+    } else {
+        return await Timesheets.insertMany(data);
+    }
+}

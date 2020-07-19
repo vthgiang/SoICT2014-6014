@@ -42,7 +42,7 @@ class ActionForm extends Component{
                 });
             },
             onEnd: async(evt) => {
-                let taskActions = this.state.newTemplate.taskActions;
+                let taskActions = this.state.taskActions;
                 const item = taskActions[evt.oldIndex];
                 taskActions.splice(evt.oldIndex, 1);
                 taskActions.splice(evt.newIndex, 0, item);
@@ -245,7 +245,7 @@ handleDeleteAction = async (index) => {
             </div>
             <div className="form-group" >
                 <label className="control-label">
-                {translate('task_template.obligatory')} &nbsp;
+                {translate('task_template.mandatory')} &nbsp;
                     <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
                 </label>
             </div>
@@ -263,10 +263,10 @@ handleDeleteAction = async (index) => {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th style={{ width: '10%' }}>STT</th>
+                        <th style={{ width: '50px' }} className="col-fixed">STT</th>
                         <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
                         <th title="Mô tả">{translate('task_template.description')}</th>
-                        <th title="Bắt buộc">{translate('task_template.obligation')}</th>
+                        <th title="Bắt buộc">{translate('task_template.mandatory')}</th>
                         <th title="Hành động">{translate('task_template.action')}</th>
                     </tr>
                 </thead>

@@ -3,25 +3,17 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const ComponentDefaultServices = {
     get,
-    getPaginate,
     show,
     create,
     edit,
     destroy
 };
 
-function get() {
+function get(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'GET',
-    }, false, true, 'system_admin.system_component');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/components-default-management/paginate`,
-        method: 'POST',
-        data,
+        params
     }, false, true, 'system_admin.system_component');
 }
 
