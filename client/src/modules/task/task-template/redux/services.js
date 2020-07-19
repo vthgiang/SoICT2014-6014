@@ -13,6 +13,7 @@ export const taskTemplateService = {
     addNewTaskTemplate,
     editTaskTemplate,
     deleteTaskTemplateById,    
+    importTaskTemplate,
 };
 // get all task template
 function getAll() {
@@ -85,4 +86,15 @@ function deleteTaskTemplateById(id) {
         url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
         method: 'DELETE',
     }, true, true, 'task.task_template');
+}
+
+// import a task Task Template 
+
+function importTaskTemplate(data){
+    console.log('reer', data);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasktemplates/importTaskTemplate`,
+        method: 'POST',
+        data: data,
+    },true, true, 'task.task_template');
 }

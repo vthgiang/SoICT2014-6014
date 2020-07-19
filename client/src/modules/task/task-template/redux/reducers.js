@@ -142,6 +142,24 @@ export function tasktemplates(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case taskTemplateConstants.IMPORT_TEMPLATE_REQUEST:
+            return{
+                ...state,
+                isLoading: true
+            };
+        case taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS:
+            return{
+                ...state,
+                isLoading: false,
+                importStatus: true,
+                importTaskTemplate: action.payload.content,
+            };
+        case taskTemplateConstants.IMPORT_TEMPLATE_FAILURE:
+            return{
+                ...state,
+                isLoading:false,
+                error: action.error
+            }
         default:
             return state
     }
