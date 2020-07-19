@@ -9,6 +9,7 @@ class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            domainParent: []
         }
     }
 
@@ -53,6 +54,7 @@ class CreateForm extends Component {
     render() {
         const {translate, documents}=this.props;
         const {tree, list} = documents.administration.domains;
+        const {domainParent} = this.state;
       
         return ( 
             <React.Fragment>
@@ -69,7 +71,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }</label>
-                            <TreeSelect data={list} handleChange={this.handleParent} mode="radioSelect"/>
+                            <TreeSelect data={list} value={domainParent.length > 1 ? [] : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.description') }</label>

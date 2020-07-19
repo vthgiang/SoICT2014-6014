@@ -3,7 +3,6 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const CompanyServices = {
     get,
-    getPaginate,
     create,
     edit,
     addNewLink,
@@ -11,27 +10,18 @@ export const CompanyServices = {
     addNewComponent,
     deleteComponent,
     linksList,
-    linksPaginate,
     componentsList,
-    componentsPaginate,
 
     getImportConfiguration,
     createImportConfiguration,
     editImportConfiguration,
 };
 
-function get() {
+function get(params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company`,
         method: 'GET',
-    }, false, true, 'system_admin.company');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/company/paginate`,
-        method: 'POST',
-        data,
+        params
     }, false, true, 'system_admin.company');
 }
 
@@ -82,33 +72,19 @@ function deleteComponent(companyId, componentId) {
     }, true, true, 'system_admin.company');
 }
 
-function linksList(companyId) {
+function linksList(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/links-list`,
         method: 'GET',
+        params
     }, false, true, 'system_admin.company');
 }
 
-function linksPaginate(companyId, page, limit, data={}) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/links-paginate/${page}/${limit}`,
-        method: 'POST',
-        data,
-    }, false, true, 'system_admin.company');
-}
-
-function componentsList(companyId) {
+function componentsList(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/components-list`,
         method: 'GET',
-    }, false, true, 'system_admin.company');
-}
-
-function componentsPaginate(companyId, page, limit, data) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/components-paginate/${page}/${limit}`,
-        method: 'POST',
-        data,
+        params
     }, false, true, 'system_admin.company');
 }
 

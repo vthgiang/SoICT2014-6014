@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../env';
 
 class AttachmentTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
-
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
-                file: nextProps.file,
-                numberFile: nextProps.asset.numberFile,
+                files: nextProps.files,
+                archivedRecordNumber: nextProps.archivedRecordNumber,
             }
         } else {
             return null;
@@ -23,15 +23,14 @@ class AttachmentTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { file, numberFile } = this.state;
-        console.log('this.state', this.state);
+        const { files, archivedRecordNumber } = this.state;
         return (
             <div id={id} className="tab-pane">
-                <div className=" row box-body">
+                <div className="row box-body">
                     <div className="col-md-4">
                         <div className="form-group">
-                        <strong>Nơi lưu trữ bản cứng:&emsp;</strong>
-                            {numberFile}
+                            <strong>Nơi lưu trữ bản cứng:&emsp;</strong>
+                            {archivedRecordNumber}
                         </div>
                     </div>
                     <div className="col-md-12">
@@ -46,24 +45,30 @@ class AttachmentTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof file !== 'undefined' && file.length !== 0) &&
-                                    file.map((x, index) => (
+                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                    files.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameFile}</td>
-                                            <td>{x.discFile}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.description}</td>
                                             <td>{x.number}</td>
-                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={x.urlFile} target="_blank"><u>{x.urlFile}</u></a>}</td>
+                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                                <a className='intable'
+                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
                                         </tr>
                                     ))}
                             </tbody>
                         </table>
                         {
-                            (typeof file === 'undefined' || file.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>
             </div>
+
         );
     }
 };

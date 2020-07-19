@@ -3,7 +3,7 @@ const {LogInfo, LogError} =  require('../../../logs');
 
 exports.getAllSystemLinks = async (req, res) => {
     try {
-        var links = await SystemLinkServices.getAllSystemLinks();
+        var links = await SystemLinkServices.getAllSystemLinks(req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(200).json({
@@ -12,7 +12,7 @@ exports.getAllSystemLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        
+        console.log("ERROR: ", error)
         LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
@@ -38,30 +38,6 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_links_default_categories_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getPaginatedSystemLinks = async (req, res) => {
-    try {
-        var { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        var links = await SystemLinkServices.getPaginatedSystemLinks(limit, page, req.body);
-
-        LogInfo(req.user.email, 'PAGINATE_LINKS_DEFAULT')
-        res.status(200).json({
-            success: true,
-            messages: ['paginate_links_default_success'],
-            content: links
-        });
-    } catch (error) {
-        
-        LogError(req.user.email, 'PAGINATE_LINKS_DEFAULT');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['delete_system_component_faile'],
             content: error
         });
     }

@@ -93,6 +93,11 @@ export default {
          *******************************************************/
         general: {
             table: 'Table',
+            scroll: 'Scroll bar',
+            upload: 'Upload',
+            pick_image: 'Pick Image',
+            crop: 'Crop',
+            action: 'Action',
             name: 'name',
             description: 'Description',
             search: 'Search',
@@ -101,6 +106,7 @@ export default {
             save: 'Save',
             close: 'Close',
             accept: 'Accept',
+            cancel: 'Cancel',
             yes: 'Yes',
             no: 'No',
             loading: 'Loading',
@@ -109,7 +115,7 @@ export default {
             error: 'Error',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
-                reason: 'Reasons:',
+                reason: 'Reasons maybe:',
                 content: [
                     'Session to work invalid',
                     'Access denied',
@@ -122,65 +128,107 @@ export default {
             }
         },
 
+        auth: {
+            validator: {
+                confirm_password_invalid: 'Confirm password invalid! Please input again',
+            },
+            security: {
+                label: 'Security',
+                title: 'Change user password',
+                old_password: 'Old password',
+                new_password: 'New passowrd',
+                confirm_password: 'Confirm password'
+            },
+            login: 'Login',
+            logout: 'Log out',
+            logout_all_account: 'Log out all account',
+            profile: {
+                label: 'Profile',
+                title: 'User information',
+                name: 'Username',
+                email: 'Email',
+                password: 'New password',
+                confirm: 'Confirm password',
+                otp: 'OTP'
+            },
+
+            // Thông điệp nhận từ server
+            change_user_information_success: 'Change user information success',
+            change_user_information_faile: 'Change user information faile',
+            change_user_password_success: 'Change password success',
+            change_user_password_faile: 'Change password faile',
+            user_not_found: 'User not found',
+            email_invalid: 'Email invalid',
+            email_not_found: 'Email not found',
+            password_invalid: 'Password invalid',
+            email_password_invalid: 'Email or Password invalid',
+            acc_blocked: 'Account blocked',
+            acc_have_not_role: 'Account have not role',
+            wrong5_block: 'Wrong password 5 time. Account blocked',
+            request_forgot_password_success: 'Request change password success. System sent email for you. Please check email',
+            reset_password_success: 'Reset password thành công',
+            otp_invalid: 'OTP invalid'
+        },
+
         system_admin: {
             company: {
                 table: {
-                    name: 'Tên doanh nghiệp/công ty',
-                    short_name: 'Tên ngắn',
-                    description: 'Mô tả về doanh nghiệp/công ty',
-                    log: 'Ghi log',
-                    service: 'Dịch vụ',
-                    super_admin: 'Tài khoản super admin',
+                    name: 'Company name',
+                    short_name: 'Short name',
+                    description: 'Description',
+                    log: 'Log',
+                    service: 'Services',
+                    super_admin: 'SuperAdmin Account',
                 },
-                on: 'Bật',
-                off: 'Tắt',
-                add: 'Thêm doanh nghiệp/công ty',
-                edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
-                service: 'Dịch vụ cho doanh nghiệp/công ty',
+                on: 'On',
+                off: 'Off',
+                add: 'Add new company',
+                edit: 'Edit company',
+                service: 'Company services',
                 validator: {
                     name: {
-                        no_blank: 'Tên không được để trống',
-                        no_less4: 'Tên không được ít hơn 4 kí tự',
-                        no_more255: 'Tên không quá 255 kí tự',
-                        no_special: 'Tên không được chứa kí tự đặc biệt'
+                        no_blank: 'Name not null',
+                        no_less4: 'Name less than 4',
+                        no_more255: 'Name not more 255',
+                        no_special: 'Name cannnot have special digit'
                     },
                     short_name: {
-                        no_blank: 'Tên không được để trống',
-                        no_less4: 'Tên không được ít hơn 4 kí tự',
-                        no_more255: 'Tên không quá 255 kí tự',
-                        no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
+                        no_blank: 'Name not null',
+                        no_less4: 'Name less than 4',
+                        no_more255: 'Name not more 255',
+                        no_space: 'Short name cannot have space and special digit'
                     },
                     short_name: {
-                        no_blank: 'Mô tả không được để trống',
-                        no_less4: 'Mô tả không được ít hơn 4 kí tự',
-                        no_more255: 'Mô tả không quá 255 kí tự',
-                        no_special: 'Mô tả không được chứa kí tự đặc biệt'
+                        no_blank: 'Description not null',
+                        no_less4: 'Description less than 4',
+                        no_more255: 'Description more than 255',
+                        no_special: 'Description have special digit'
                     },
                     super_admin: {
-                        no_blank: 'Email không được để trống',
-                        email_invalid: 'Email không hợp lệ',
+                        no_blank: 'Email not null',
+                        email_invalid: 'Email invalid',
                     }
                 },
 
                 // Thông điệp trả về từ server
-                create_company_success: 'Khởi tạo dữ liệu công ty thành công',
-                show_company_success: 'Lấy dữ liệu công ty thành công',
-                edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
-                delete_company_success: 'Xóa dữ liệu công ty thành công',
-                add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
-                delete_link_for_company_success: 'Xóa link thành công',
-                add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
-                delete_component_for_company_success: 'Xóa component thành công',
+                create_company_success: 'Create company success',
+                show_company_success: 'Get data company success',
+                edit_company_success: 'Edit company success',
+                delete_company_success: 'Delete company success',
+                add_new_link_for_company_success: 'Add link success',
+                delete_link_for_company_success: 'Delete link successs',
+                add_new_component_for_company_success: 'Add component success',
+                delete_component_for_company_success: 'Delete component success',
 
                 create_import_configuration_success: "Create import file configuration success",
                 create_import_configuration_faile: "Create import file configuration faile",
                 edit_import_configuration_success: "Edit import file configuration success",
                 edit_import_configuration_faile: "Edit import file configuration faile",
 
-                email_exist: 'Email này đã được sử dụng',
-                company_not_found: 'Không tìm thấy thông tin về công ty',
-                link_exist: 'Url cho link đã tồn tại',
-                component_exist: 'Component này đã tồn tại',
+                email_exist: 'Email exist',
+                company_not_found: 'Company not found',
+                link_exist: 'Link exist',
+                component_exist: 'Component exist',
             },
 
             log: {
@@ -188,47 +236,89 @@ export default {
             },
 
             root_role: {
+                table: {
+                    name: 'Role name',
+                    description: 'Description'
+                },
 
+                //Thông điệp trả về từ server
+                get_root_roles_success: 'Get data root role success'
             },
 
             system_link: {
                 table: {
-                    url: 'Đường dẫn',
-                    description: 'Mô tả về trang',
+                    url: 'Url',
+                    category: 'Category',
+                    description: 'Description',
+                    roles: 'Roles',
+                },
+                add: 'Add new system link',
+                edit: 'Edit system link',
+                delete: 'Delete system link',
+                validator: {
+                    url: {
+                        no_blank: 'Url not null',
+                        start_with_slash: 'Url invalid. Must begin with /',
+                    },
+                    description: {
+                        no_blank: 'Description not null',
+                        no_special: 'Description canot have special digit',
+                    }
                 },
 
                 // Thông điệp từ server
-                create_system_link_success: 'Tạo system link thành công',
-                edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+                create_system_link_success: 'Add system link success',
+                edit_system_link_success: 'Edit system link success',
+                delete_system_link_success: 'Delete system link success',
 
-                system_link_url_exist: 'Url này đã được sử dụng',
+                system_link_url_exist: 'Url exist',
             },
 
             system_component: {
                 table: {
-
+                    name: 'Component name',
+                    description: 'Description',
+                    link: 'Link',
+                    roles: 'Roles'
                 },
+                add: 'Add new system component',
+                edit: 'Edit system component',
+                delete: 'Delete system component',
+                validator: {
+                    name: {
+                        no_space: 'Name not null',
+                        no_special: 'Name cannot have special digit',
+                    },
+                    description: {
+                        no_space: 'Description not null',
+                        no_special: 'Description cannot special digit',
+                    },
+                },
+                select_link: 'Select link',
 
                 //Thông điệp trả về từ server
-                create_system_component_success: 'Tạo system component thành công',
-                show_system_component_success: 'Lấy dữ liệu system component thành công',
-                edit_system_component_success: 'Chỉnh sửa system admin thành công',
-                delete_system_component_success: 'Xóa system component thành công',
+                create_system_component_success: 'Add system component success',
+                show_system_component_success: 'Get data success',
+                edit_system_component_success: 'Edit system component success',
+                delete_system_component_success: 'Delete system component success',
 
-                system_component_name_invalid: 'Tên không hợp lệ',
-                system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+                system_component_name_invalid: 'Component name invalid',
+                system_component_name_exist: 'Component name exist',
             }
         },
         super_admin: {
             organization_unit: {
                 //Thông điệp trả về từ server
-                create_department_success: 'Tạo đơn vị thành công',
-                edit_department_success: 'Chỉnh sửa đơn vị thành công',
-                delete_department_success: 'Xóa đơn vị thành công',
+                create_department_success: 'Create organizational unit success',
+                edit_department_success: 'Edit organizational unit success',
+                delete_department_success: 'Delete organizational unit success',
 
                 department_name_exist: 'Tên đơn vị này đã được sử dụng',
                 department_not_found: 'Không tìm thấy thông tin về đơn vị',
                 department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+                role_dean_exist: 'Tên chức danh cho trưởng đơn vị đã tồn tại',
+                role_vice_dean_exist: 'Tên chức danh cho phó đơn vị đã tồn tại',
+                role_employee_exist: 'Tên chức danh cho nhân viên đơn vị đã tồn tại',
             },
             user: {
                 // Thông điệp trả về từ server
@@ -269,12 +359,134 @@ export default {
             },
         },
 
-        not_found: {
-            title: 'Qpps! Page not found',
-            content: 'We could not find the page you were looking for',
-            back_to_home: 'Return to HomePage'
+        notification: {
+            title: 'Notification',
+            news: 'News',
+            see_all: 'See all',
+            total: 'Total',
+            level: 'Level',
+            type: {
+                title: 'Type',
+                info: 'Information',
+                general: 'General',
+                important: 'Important',
+                emergency: 'Emergency',
+            },
+            content: 'Content',
+            sender: 'Sender',
+            departments: 'Notify to organizational units',
+            users: 'Notify to users',
+            from: 'from',
+            at: 'at',
+
+            add: 'Add new nofitication',
+            receivered: 'Receivered',
+            sent: 'Sent',
+            note: 'Not',
+            info: 'Information',
+            delete: 'Delete',
+
+            // Thông điệp trả về từ server
+            create_notification_success: 'Create notification successfully',
+            create_notification_faile: 'Create notification faile',
+            delete_notification_success: 'Delete notification successfully',
+            delete_notification_faile: 'Delete notification faile',
+            delete_manual_notification_success: 'Delete notification successfully',
+            delete_manual_notification_faile: 'Delete notification faile',
         },
-        language: 'Language setting',
+
+        document: {
+            title: 'Document management',
+            version: 'Version',
+            information: 'Information',
+            different_versions: 'Different version',
+            amount: 'Amount',
+            name: 'Document name',
+            description: 'Description',
+            category: 'Category',
+            domain: 'Domain',
+            roles: 'Roles has privilege to see',
+            issuing_date: 'Issuing date',
+            effective_date: 'Effective date',
+            expired_date: 'Expired date',
+            views: 'Views',
+            downloads: 'Downloads',
+            add: 'Add document',
+            edit: 'Edit document',
+            delete: 'Delete document',
+            add_version: 'Add document version',
+            upload_file: 'Upload file',
+            upload_file_scan: 'Upload file scan',
+            download: 'Download',
+            no_version: 'Not have different version',
+            doc_version: {
+                title: 'Version',
+                name: 'Version name',
+                description: 'Description',
+                issuing_body: 'Issuing body',
+                official_number: 'Official number',
+                issuing_date: 'Issuing date',
+                effective_date: 'Effective date',
+                expired_date: 'Expired date',
+                signer: 'Signer',
+                number_view: 'Number of view',
+                number_download: 'Number of download',
+                file: 'File upload',
+                scanned_file_of_signed_document: 'File scan',
+            },
+            relationship: {
+                title: 'Document relationship',
+                description: 'Relationship description',
+                list: 'Document relationship list'
+            },
+            store: {
+                title: 'Store',
+                information: 'Information',
+                organizational_unit_manage: 'Organizational Unit Management',
+                select_organizational: 'Select organizational unit',
+                user_manage: 'User management',
+                select_user: 'Select user',
+            },
+
+            category: 'Document category',
+            domain: 'Document domain',
+            data: 'Document list data',
+            statistics_report: 'Statistics report',
+            history_report: 'History report',
+
+            administration: {
+                categories: {
+                    add: 'Add document category',
+                    edit: 'Edit document category',
+                    delete: 'Delete document category',
+                    name: 'Category name',
+                    description: 'Description',
+                    select: 'Select document category',
+                    not_select: 'Not select category',
+                },
+                domains: {
+                    add: 'Add document domain',
+                    edit: 'Edit document domain',
+                    delete: 'Delete document doamin',
+                    name: 'Domain name',
+                    description: 'Domain description',
+                    parent: 'Domain parent',
+                    select_parent: 'Select domain parent',
+                    select: 'Select domain',
+                    not_select: 'Not select domain',
+                }
+            },
+            user: {
+
+            },
+        },
+
+        not_found: {
+            title: 'Not found this page',
+            content: 'System cannot search this page for you',
+            back_to_home: 'Back to homepage'
+        },
+        language: 'Setting language',
         alert: {
             title: 'Notification from system',
             log_again: 'Error! Log in again!',
@@ -290,22 +502,9 @@ export default {
             password_invalid: 'Password invalid',
             wrong5_block: 'Input password wrong 5 times. Accont have been blocked!',
             acc_blocked: 'Accont have been blocked!',
-            acc_have_not_role: 'Accout have not role'
-        },
-        auth: {
-            security: 'security',
-            login: 'Login',
-            logout: 'Logout',
-            logout_all_account: 'Log out all account',
-            profile: {
-                title: 'Profile',
-                name: 'Username',
-                email: 'Email',
-                password: 'New password',
-                confirm: 'Confirm password',
-                edit_success: 'Edit user profile success',
-                edit_faile: 'Edit user profile faile'
-            }
+            acc_have_not_role: 'Accout have not role',
+            reset_password_success: 'Reset password successfully!',
+            reset_password_faile: 'Reset password faile!'
         },
 
         confirm: {
@@ -313,6 +512,7 @@ export default {
             no: 'NO',
             no_data: 'No data',
             field_invalid: "Input field invalid. Please check again!",
+            loading: 'Loading data ...'
         },
 
         form: {
@@ -360,6 +560,7 @@ export default {
             choose_hidden_columns: 'Select columns to hide',
             hide_all_columns: 'Hide all columns',
         },
+
         modal: {
             update: 'Save',
             close: 'Close',
@@ -376,7 +577,6 @@ export default {
             staff_number: 'Staff code',
             add_search: 'Search',
             number_decisions: 'Decis number',
-            add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
             all_position: 'Select all position',
@@ -395,11 +595,14 @@ export default {
             manage_link: 'Manage Pages',
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
+            documents: 'Documents',
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
             taskmanagement: 'Task Management',
             manageDocument: 'Manage Document',
+            manageDocumentType: 'Manage Document Type',
+            
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
@@ -437,6 +640,34 @@ export default {
             task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
+
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+            dashboard_asset: 'DashBoard quản lý tài sản',
+            manage_asset: 'Quản lý tài sản',
+            manage_type_asset: 'Quản lý loại tài sản',
+            add_asset: 'Thêm tài sản',
+            manage_info_asset: 'Quản lý thông tin tài sản',
+            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_repair_asset: 'Quản lý sửa chữa, thay thế',
+            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_room_asset: 'Quản lý phòng & trang thiết bị',
+            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
+            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
+            manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            // NHÂN VIÊN
+            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
+            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: 'Report management',
+            task_report: 'Manage task reports',
         },
 
         manage_system: {
@@ -458,6 +689,14 @@ export default {
             info: 'Company information',
             edit: 'Edit company information',
             super_admin: "SuperAdmin email of company",
+            add_success: 'Tạo doanh nghiệp thành công',
+            add_faile: 'Tạo doanh nghiệp thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
+            log: 'Ghi log',
+            on: 'Bật',
+            off: 'Tắt',
+            service: 'Dịch vụ'
         },
 
         manage_department: {
@@ -480,7 +719,11 @@ export default {
             employee_name: 'Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
-            delete: 'Delete department'
+            delete: 'Delete department',
+            add_success: 'Tạo đơn vị thành công',
+            add_faile: 'Tạo đơn vị thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
         },
 
         manage_role: {
@@ -511,7 +754,10 @@ export default {
             add_faile: 'Add new user failed',
             edit_success: 'Edit user successfully',
             edit_faile: 'Edit user failed',
-            roles: 'Roles assigned'
+            roles: 'Roles assigned',
+            name: 'User name',
+            email: 'Email',
+            status: 'Status'
         },
 
         manage_link: {
@@ -535,6 +781,9 @@ export default {
             add: 'Add',
             add_title: 'Add new component',
             info: 'Component information',
+            name: 'Component name',
+            description: 'Description',
+            link: 'Link',
             edit: 'Edit component information',
             delete: 'Delete component',
             roles: 'Roles have privilege to component',
@@ -1067,6 +1316,8 @@ export default {
                 delete_holiday_faile: 'Delete holiday faile',
                 edit_holiday_success: 'Edit holiday success',
                 edit_holiday_faile: 'Edit holiday faile',
+                import_holiday_success: 'Import holiday success',
+                import_holiday_faile: 'Import holiday faile',
 
             },
 
@@ -1174,9 +1425,9 @@ export default {
             roles: 'Roles',
             edit_tasktemplate: 'Edit tasktemplate',
             action_name: 'Action name',
+            mandatory: 'mandatory',
             delete: 'Delete',
             cancel_editing: 'Cancel editing',
-            obligatory: 'Obligatory',
             add_tasktemplate: 'Add tasktemplate',
             infor_name: 'Information name',
             datatypes: 'Datatypes',
@@ -1188,15 +1439,6 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set'
-        },
-
-        notification: {
-            add: 'Thêm mới',
-            add_title: 'Thêm thông báo mới',
-            add_success: 'Tạo thông báo mới thành công',
-            add_faile: 'Tạo thông báo thất bại',
-            edit_success: 'Chỉnh sửa thông báo thành công',
-            edit_faile: 'Chỉnh sửa thông báo thất bại'
         },
 
         task: {
@@ -1256,6 +1498,14 @@ export default {
                 end_date: 'End date',
 
                 search: "Search",
+
+                
+                from: 'From',
+                to: 'To',
+                prev: 'Prev',
+                next:'Next',
+                tasks_calendar:'Tasks Calendar',
+                model_detail_task_title:'Detail task',
 
                 col_name: 'Name of task',
                 col_organization: 'Department',
@@ -1570,8 +1820,31 @@ export default {
                     excellent_employee: 'Excellent Employees',
                     best_employee: 'Best employee',
                     month: 'Month'
-                }
+                },
 
+                employee_evaluation:{
+                    approve_KPI_employee:'Approve KPI employee',
+                    month:'Month',
+                    end_compare:'End comparing',
+                    compare:'Compare',
+                    approve_all:'Approve all',
+                    choose_month_cmp:'Choose month to compare',
+                    search:'Search',
+                    index:'ID',
+                    name:'Name',
+                    target:'Kpi unit',
+                    criteria:'Criteria',
+                    weight:'Weight',
+                    result:'Result',
+                    data_not_found:'There is no satisfied result',
+                    unsuitable_weight:'Unsuitable weight',
+                    status:'Status',
+                    action:'Action',
+                    save_result:'Save result',
+                    edit_target:'Edit kpi',
+                    pass:'Pass',
+                    fail:'Fail'
+                }
             },
             organizational_unit: {
                 // Module chính
@@ -1702,6 +1975,35 @@ export default {
                 update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
             }
         },
+
+        report_manager: {
+            search: 'Search',
+            add_report: 'Add report',
+            search_by_name: 'Search by name',
+            select_all_units: 'Select all units',
+            performer: 'Performer',
+            description: 'Description',
+            name: 'Report Name',
+            unit: 'Unit',
+            delete: 'Are you sure you want to delete report:',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
+            edit: 'Edit this report',
+            title_delete: 'Delete this report',
+            creator: 'Creator',
+            no_data: 'No data',
+            search_by_name: 'Search by name report',
+
+            //message trả về từ server
+            
+            create_report_manager_success: 'Create report success !',
+            create_report_manager_faile: 'Create report fail ! ',
+            edit_report_manager_success:'Edit report success !',
+            edit_report_manager_faile:'Edit report fail !',
+            delete_report_manager_success:'Delete report success !',
+            delete_report_manager_faile:'Delete report fail !',
+        },
+        
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

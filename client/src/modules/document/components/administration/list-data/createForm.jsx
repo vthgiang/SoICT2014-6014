@@ -172,24 +172,17 @@ class CreateForm extends Component {
                     modalID="modal-create-document"
                     formID="form-create-document"
                     title={translate('document.add')}
-                    func={this.save} size="75"
+                    func={this.save} size="100"
                 >
                     <form id="form-create-document">
-                        <div role="tabpanel">
-                            <ul className="nav nav-tabs" role="tablist">
-                                <li role="presentation" className="active">
-                                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Thông tin văn bản</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#tab" aria-controls="tab" role="tab" data-toggle="tab">Phiên bản</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#tab2" aria-controls="tab" role="tab" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a>
-                                </li>
+                        <div className="nav-tabs-custom">
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a href="#doc-info" data-toggle="tab">Thông tin văn bản</a></li>
+                                <li><a href="#doc-sub-info" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div role="tabpanel" className="tab-pane active" id="home">
-                                    <div className="row" style={{padding: '10px'}}>
+                                <div className="tab-pane active" id="doc-info">
+                                    <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{ translate('document.name') }<span className="text-red">*</span></label>
@@ -227,57 +220,52 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                                <textarea type="text" className="form-control" onChange={this.handleDescription}/>
+                                                <textarea style={{height: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div role="tabpanel" className="tab-pane" id="tab">
-                                    <div className="row" style={{padding: '12px'}}>
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleVersionName} placeholder="VD: Phiên bản 1"/>
-                                            </div>  
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                                <input type="file" onChange={this.handleUploadFile}/>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                                <input type="file" onChange={this.handleUploadFileScan}/>
-                                            </div>
-                                        </div>
-                                    
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id="create-document-version-issuing-date"
-                                                    value={this.state.documentIssuingDate}
-                                                    onChange={this.handleIssuingDate}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id="create-document-version-effective-date"
-                                                    value={this.state.documentEffectiveDate}
-                                                    onChange={this.handleEffectiveDate}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id="create-document-version-expired-date"
-                                                    value={this.state.documentExpiredDate}
-                                                    onChange={this.handleExpiredDate}
-                                                />
+                                    <div className="row">
+                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
+                                                    <input type="text" className="form-control" onChange={this.handleVersionName} placeholder="VD: Phiên bản 1"/>
+                                                </div>  
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                                    <input type="file" onChange={this.handleUploadFile}/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                                    <input type="file" onChange={this.handleUploadFileScan}/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
+                                                    <DatePicker
+                                                        id="create-document-version-issuing-date"
+                                                        value={this.state.documentIssuingDate}
+                                                        onChange={this.handleIssuingDate}
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
+                                                    <DatePicker
+                                                        id="create-document-version-effective-date"
+                                                        value={this.state.documentEffectiveDate}
+                                                        onChange={this.handleEffectiveDate}
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
+                                                    <DatePicker
+                                                        id="create-document-version-expired-date"
+                                                        value={this.state.documentExpiredDate}
+                                                        onChange={this.handleExpiredDate}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
-                                <div role="tabpanel" className="tab-pane" id="tab2" style={{padding: '10px'}}>
+                                <div className="tab-pane" id="doc-sub-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">

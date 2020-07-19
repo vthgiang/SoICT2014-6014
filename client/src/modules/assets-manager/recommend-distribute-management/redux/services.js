@@ -27,13 +27,13 @@ function searchRecommendDistributes(data) {
 //     }, true, true, 'asset.recommend_distribute');
 // }
 
-// // Xoá thông tin phiếu đề nghị mua sắm thiết bị
-// function deleteRecommendDistribute(id) {
-//     return sendRequest({
-//         url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
-//         method: 'DELETE',
-//     }, true, true, 'asset.recommend_distribute');
-// }
+// Xoá thông tin phiếu đề nghị mua sắm thiết bị
+function deleteRecommendDistribute(id) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
+        method: 'DELETE',
+    }, true, true, 'asset.recommend_distribute');
+}
 
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendDistribute(id, data) {

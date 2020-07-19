@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
@@ -9,6 +9,7 @@ import { TaskInformationForm } from './taskInformationForm';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { performTaskAction } from '../redux/actions';
 import Swal from 'sweetalert2'
+import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -109,6 +110,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
 
+        let startDate = this.formatDate(task.startDate);
+        let endDate = this.formatDate(task.endDate);
+
         this.state = {
             listInactive: listInactive,
             userId: userId,
@@ -119,11 +123,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
             statusOptions :  statusOptions,
             priorityOptions : priorityOptions,
             progress: progress,
+            startDate: startDate,
+            endDate: endDate,
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             consultedEmployees: consultedEmployees,
             informedEmployees: informedEmployees,
-            inactiveEmployees: inactiveEmployees
+            inactiveEmployees: inactiveEmployees,
         }    
     }
 
@@ -584,6 +590,44 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return errorMessage === undefined;
     }
 
+    
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState=true) => {
+        let msg = TaskFormValidator.validateTaskStartDate(value);
+
+        if (willUpdateState){
+            this.state.startDate = value;
+            this.state.errorOnStartDate= msg;
+            this.setState(state =>{
+                return{
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState=true) => {
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value);
+
+        if (willUpdateState){
+            this.state.endDate = value;
+            this.state.errorOnEndDate= msg;
+            this.setState(state =>{
+                return{
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+
     handleTaskProgressChange = event => {
         let value = event.target.value;
         this.validateTaskProgress(value, true);
@@ -799,16 +843,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
             description: this.state.taskDescription,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
-            // evaluateId: evaluations._id,
             user: this.state.userId,
             progress: this.state.progress,
             date: this.formatDate(Date.now()),
+
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
 
             accountableEmployees: this.state.accountableEmployees,
             consultedEmployees: this.state.consultedEmployees,
             responsibleEmployees: this.state.responsibleEmployees,
             informedEmployees: this.state.informedEmployees,
-            // inactiveEmployees: this.state.inactiveEmployees,
             inactiveEmployees: inactiveEmployees,
 
             info: this.state.info,
@@ -865,8 +910,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     render() { 
         
         const { task } = this.state;
-        const { errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
-            responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
+        const { errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions, 
+            startDate, endDate, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
         const { user, tasktemplates, translate } = this.props;
@@ -927,6 +972,27 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                value={taskDescription}
                                                className="form-control" onChange={this.handleTaskDescriptionChange}/>
                                         <ErrorLabel content={errorTaskDescription}/>
+                                    </div>
+                                </div>
+                                <div className="row form-group">
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate===undefined?"":"has-error"}`}>
+                                        <label className="control-label">Ngày bắt đầu*</label>
+                                        <DatePicker 
+                                            id={`datepicker2-startdate-${this.props.id}`}
+                                            // dateFormat="day-month-year"
+                                            value={startDate}
+                                            onChange={this.handleChangeTaskStartDate}
+                                        />
+                                        <ErrorLabel content={errorOnStartDate}/>
+                                    </div>
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate===undefined?"":"has-error"}`}>
+                                        <label className="control-label">Ngày kết thúc*</label>
+                                        <DatePicker 
+                                            id={`datepicker2-enddate-${this.props.id}`}
+                                            value={endDate}
+                                            onChange={this.handleChangeTaskEndDate}
+                                        />
+                                        <ErrorLabel content={errorOnEndDate}/>
                                     </div>
                                 </div>
                             </fieldset>

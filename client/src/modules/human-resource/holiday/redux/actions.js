@@ -9,6 +9,7 @@ export const HolidayActions = {
     createNewHoliday,
     deleteHoliday,
     updateHoliday,
+    importHoliday,
 };
 
 /**
@@ -111,4 +112,29 @@ function updateHoliday(id, infoHoliday) {
                 });
             })
     }
+}
+
+/**
+ * Import dữ liệu nghỉ lễ tết
+ * @param {*} data : array thông tin nghỉ lễ tết
+ */
+function importHoliday(data) {
+    return dispatch => {
+        dispatch({
+            type: HolidayConstants.IMPORT_HOLIDAY_REQUEST
+        });
+        HolidayService.importHoliday(data)
+            .then(res => {
+                dispatch({
+                    type: HolidayConstants.IMPORT_HOLIDAY_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: HolidayConstants.IMPORT_HOLIDAY_FAILURE,
+                    error: err.response.data.content
+                });
+            })
+    };
 }

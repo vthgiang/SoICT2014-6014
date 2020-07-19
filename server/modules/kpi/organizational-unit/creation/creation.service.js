@@ -7,11 +7,7 @@ const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = 
  */
 exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month) => {
     
-    let now = new Date(month);
-    let currentYear = now.getFullYear();
-    let currentMonth = now.getMonth();
-    let endOfCurrentMonth = new Date(currentYear, currentMonth+1);
-    let endOfLastMonth = new Date(currentYear, currentMonth);
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
     if(month) {
         now = new Date(month);

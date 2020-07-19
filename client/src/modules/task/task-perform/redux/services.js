@@ -148,7 +148,7 @@ function addTaskAction(newAction){
 function editActionComment(id, newComment) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
-        method:'PUT',
+        method:'PATCH',
         data : newComment
     }, false, true, 'task.task_perform');
 }

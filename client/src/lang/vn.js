@@ -9,7 +9,6 @@ export default {
              * Start 
              * Chức năng quản lý nhân sự, xoá sau
              */
-
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
             staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -81,7 +80,6 @@ export default {
             guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
             no_change_data: 'Không có thông tin nào được thay đổi',
 
-
             /** 
              * End
              * Chức năng quản lý nhân sự
@@ -95,6 +93,7 @@ export default {
          *******************************************************/
         general: {
             table: 'Bảng',
+            scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
             pick_image: 'Chọn ảnh',
             crop: "Cắt ảnh",
@@ -650,21 +649,26 @@ export default {
             manage_type_asset: 'Quản lý loại tài sản',
             add_asset: 'Thêm tài sản',
             manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_maintainance_asset: 'Quản lý bảo trì tài sản',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
-            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
             manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
+            manage_recommend_distribute_asset:'Quản lý đăng ký sử dụng',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            recommend_distribute_asset: 'Đăng ký sử dụng thiết bị',
             manage_assigned_asset: 'Quản lý thiết bị bàn giao',
             //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: 'Quản lý báo cáo',
+            task_report: 'Quản lý báo cáo công việc',
         },
 
         manage_system: {
@@ -1311,7 +1315,8 @@ export default {
                 delete_holiday_faile: 'Xoá lịch làm việc thất bại',
                 edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
                 edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
-
+                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1407,8 +1412,8 @@ export default {
             asset_info: {
 
                 //Thông điệp trả về từ server
-                get_asset_success: 'Lấy thông tin tài sản thành công',
-                get_asset_faile: 'Lấy thông tin tài sản thất bại',
+                get_list_asset_success: 'Lấy thông tin tài sản thành công',
+                get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
                 create_asset_success: 'Thêm tài sản thành công',
                 create_asset_faile: 'Thêm tài sản thất bại',
                 delete_asset_success: 'Xoá tài sản thành công',
@@ -1418,32 +1423,60 @@ export default {
 
             },
 
-            // Quản lý sửa chữa, thay thế, nâng cấp
-            repair_upgrade: {
+            // Quản lý bảo trì
+            maintainance: {
 
                 //Thông điệp trả về từ server
-                get_repair_upgrade_success: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thành công',
-                get_repair_upgrade_faile: 'Lấy thông tin sửa chữa, thay thế, nâng cấp thất bại',
-                create_repair_upgrade_success: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thành công',
-                create_repair_upgrade_faile: 'Thêm phiếu sửa chữa, thay thế, nâng cấp thất bại',
-                delete_repair_upgrade_success: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thành công',
-                delete_repair_upgrade_faile: 'Xoá phiếu sửa chữa, thay thế, nâng cấp thất bại',
-                edit_repair_upgrade_success: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thành công',
-                edit_repair_upgrade_faile: 'Chỉnh sửa thông tin phiếu sửa chữa, thay thế, nâng cấp thất bại',
+                get_maintainance_success: 'Lấy thông tin bảo trì thành công',
+                get_maintainance_faile: 'Lấy thông tin thông tin bảo trì thất bại',
+                create_maintainance_success: 'Thêm phiếu bảo trì thành công',
+                create_maintainance_faile: 'Thêm phiếu bảo trì thất bại',
+                delete_maintainance_success: 'Xoá phiếu bảo trì thành công',
+                delete_maintainance_faile: 'Xoá phiếu bảo trì thất bại',
+                edit_maintainance_success: 'Chỉnh sửa thông tin phiếu bảo trì thành công',
+                edit_maintainance_faile: 'Chỉnh sửa thông tin phiếu bảo trì thất bại',
             },
 
-            // Quản lý cấp phát, điều chuyển, thu hồi
-            distribute_transfer: {
+            // Quản lý sử dụng
+            usage: {
 
                 //Thông điệp trả về từ server
-                get_distribute_transfer_success: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thành công',
-                get_distribute_transfer_faile: 'Lấy thông tin cấp phát, điều chuyển, thu hồi thất bại',
-                create_distribute_transfer_success: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thành công',
-                create_distribute_transfer_faile: 'Thêm phiếu cấp phát, điều chuyển, thu hồi thất bại',
-                delete_distribute_transfer_success: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thành công',
-                delete_distribute_transfer_faile: 'Xoá phiếu cấp phát, điều chuyển, thu hồi thất bại',
-                edit_distribute_transfer_success: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thành công',
-                edit_distribute_transfer_faile: 'Chỉnh sửa thông tin phiếu cấp phát, điều chuyển, thu hồi thất bại',
+                get_usage_success: 'Lấy thông tin sử dụng thành công',
+                get_usage_faile: 'Lấy thông tin sử dụng thất bại',
+                create_usage_success: 'Thêm hoạt động sử dụng tài sản thành công',
+                create_usage_faile: 'Thêm hoạt động sử dụng tài sản thất bại',
+                delete_usage_success: 'Xoá hoạt động sử dụng tài sản thành công',
+                delete_usage_faile: 'Xoá hoạt động sử dụng tài sản thất bại',
+                edit_usage_success: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thành công',
+                edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
+            },
+
+            // Quản lý khấu hao
+            depreciation: {
+
+                //Thông điệp trả về từ server
+                get_depreciation_success: 'Lấy thông tin khấu hao thành công',
+                get_depreciation_faile: 'Lấy thông tin khấu hao thất bại',
+                create_depreciation_success: 'Thêm thông tin khấu hao tài sản thành công',
+                create_depreciation_faile: 'Thêm thông tin khấu hao tài sản thất bại',
+                delete_depreciation_success: 'Xoá thông tin khấu hao tài sản thành công',
+                delete_depreciation_faile: 'Xoá thông tin khấu hao tài sản thất bại',
+                edit_depreciation_success: 'Chỉnh sửa thông tin khấu hao tài sản thành công',
+                edit_depreciation_faile: 'Chỉnh sửa thông tin khấu hao tài sản thất bại',
+            },
+
+            // Quản lý sự cố
+            incident: {
+
+                //Thông điệp trả về từ server
+                get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
+                get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
+                create_incident_success: 'Thêm sự cố tài sản thành công',
+                create_incident_faile: 'Thêm sự cố tài sản thất bại',
+                delete_incident_success: 'Xoá thông tin sự cố tài sản thành công',
+                delete_incident_faile: 'Xoá thông tin sự cố tài sản thất bại',
+                edit_incident_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
+                edit_incident_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
             },
 
             // Quản lý đề nghị mua sắm thiết bị
@@ -1489,7 +1522,7 @@ export default {
                 edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
-            // Đăng ký cấp phát thiết bị
+            // Đăng ký sử dụng thiết bị
             recommend_distribute: {
 
                 //Thông điệp trả về từ server
@@ -1503,24 +1536,6 @@ export default {
                 edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
-            // Quản lý thiết bị được bàn giao
-            manage_assigned: {
-
-                //Thông điệp trả về từ server
-
-            },
-
-            asset_crash: {
-                //Thông điệp trả về từ server
-                get_asset_crash_success: 'Lấy thông tin sự cố tài sản thành công',
-                get_asset_crash_faile: 'Lấy thông tin sự cố tài sản thất bại',
-                create_asset_crash_success: 'Thêm thông tin sự cố tài sản thành công',
-                create_asset_crash_faile: 'Thêm thông tin sự cố tài sản thất bại',
-                delete_asset_crash_success: 'Xóa thông tin sự cố tài sản thành công',
-                delete_asset_crash_faile: 'Xóa thông tin sự cố tài sản thất bại',
-                edit_asset_crash_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
-                edit_asset_crash_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
-            }
         },
 
 
@@ -1561,7 +1576,7 @@ export default {
             action_name: 'Tên hoạt động',
             delete: 'Xóa trắng',
             cancel_editing: 'Hủy chỉnh sửa',
-            obligatory: 'Bắt buộc',
+            mandatory: 'Bắt buộc',
             add_tasktemplate: 'Thêm mẫu công việc',
             infor_name: 'Tên thông tin',
             datatypes: 'Kiểu dữ liệu',
@@ -1647,8 +1662,14 @@ export default {
                 action_store: 'Lưu vào kho',
                 action_restore: 'Lấy ra khỏi kho',
                 action_add: 'Thêm công việc con',
-                action_start_timer: 'Bắt đầu bấm giờ'
+                action_start_timer: 'Bắt đầu bấm giờ',
 
+                from: 'Từ tháng',
+                to: 'Đến tháng',
+                prev: 'Trước',
+                next:'Sau',
+                tasks_calendar:'Lịch công việc chi tiết',
+                model_detail_task_title: 'Thông tin chi tiết công việc',
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1947,6 +1968,30 @@ export default {
                     excellent_employee: 'Nhân viên ưu tú',
                     best_employee: 'Nhân viên xuất sắc nhất',
                     month: 'Tháng'
+                },
+
+                employee_evaluation:{
+                    approve_KPI_employee:'Phê duyệt KPI nhân viên',
+                    month:'Tháng',
+                    end_compare:'Tắt so sánh',
+                    compare:'So sánh',
+                    approve_all:'Phê duyệt tất cả',
+                    choose_month_cmp:'Chọn tháng so sánh',
+                    search:'Tìm kiếm',
+                    index:'STT',
+                    name:'Tên',
+                    target:'Mục tiêu đơn vị',
+                    criteria:'Tiêu chí đánh giá',
+                    weight:'Trọng số',
+                    result:'Kết quả đánh giá',
+                    data_not_found:'Không tìm thấy dữ liệu phù hợp',
+                    unsuitable_weight:'Trọng số không thỏa mãn',
+                    status:'Trạng thái',
+                    action:'Hành động',
+                    save_result:'Lưu kết quả',
+                    edit_target:'Sửa mục tiêu',
+                    pass:'Đạt',
+                    fail:'Không đạt'
                 }
 
             },
@@ -1977,7 +2022,7 @@ export default {
 
                     // Nhóm dành cho các trạng thái tập KPI
                     not_approved: 'Chưa kích hoạt',
-                    approved: 'Đã kich hoạt',
+                    approved: 'Đã kích hoạt',
 
                     // Nhóm dành cho table
                     target_list: 'Danh sách mục tiêu',
@@ -2080,6 +2125,36 @@ export default {
                 update_evaluate_kpi_unit_fail: 'Cập nhật điểm đánh giá KPI đơn vị lỗi',
             }
         },
+
+        report_manager: {
+            search: 'Tìm kiếm',
+            add_report: 'Thêm mới',
+            search_by_name: 'Tìm kiếm theo tên',
+            select_all_units: 'Chọn tất cả đơn vị',
+            performer: 'Người thực hiện',
+            name: 'Tên báo cáo',
+            description: 'Mô tả',
+            action: 'Hành động',
+            unit: 'Đơn vị',
+            creator: 'Người tạo',
+            edit: 'Chỉnh sửa thông tin báo cáo',
+            delete: 'Bạn chắc chắn muốn xóa báo cáo:',
+            confirm: 'Xác nhận',
+            cancel: 'Hủy bỏ',
+            title_delete: 'Xóa báo cáo này',
+            no_data: 'Không có dữ liệu',
+            search_by_name: 'Nhập tên mẫu báo cáo',
+
+
+            //message trả về từ server
+            create_report_manager_success: 'Tạo báo cáo thành công !',
+            create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
+            edit_report_manager_success:'Sửa báo cáo thành công !',
+            edit_report_manager_fail:'Sửa mẫu báo cáo thất bại !',
+            delete_report_manager_success:'Xóa mẫu báo cáo thành công !',
+            delete_report_manager_fail:'Xóa mẫu báo cáo thất bại !',
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

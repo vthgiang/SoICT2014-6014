@@ -3,7 +3,6 @@ import { ComponentDefaultConstants } from "./constants";
 
 export const ComponentDefaultActions = {
     get,
-    getPaginate,
     edit,
     create,
     show,
@@ -11,37 +10,37 @@ export const ComponentDefaultActions = {
 }
 
 
-function get(){
-    return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_REQUEST});
-        ComponentDefaultServices.get()
-            .then(res => {
-                dispatch({
-                    type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
-                    payload: res.data.content
+function get(data){
+    if(data === undefined){
+        return dispatch => {
+            dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_REQUEST});
+            ComponentDefaultServices.get()
+                .then(res => {
+                    dispatch({
+                        type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_FAILE});
-                
-            })
-    }
-}
-
-function getPaginate(data){
-    return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
-        ComponentDefaultServices.getPaginate(data)
-            .then(res => {
-                dispatch({
-                    type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
-                    payload: res.data.content
+                .catch(err => {
+                    dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_FAILE});
+                    
                 })
-            })
-            .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_FAILE});
-                
-            })
+        }
+    }else{
+        return dispatch => {
+            dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
+            ComponentDefaultServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_FAILE});
+                    
+                })
+        }
     }
 }
 

@@ -36,6 +36,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Call action again when currentRole changes
         if(this.state.currentRole !== localStorage.getItem("currentRole")) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
             await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
@@ -52,11 +53,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
+        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
-            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId)
+            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
 
             this.setState(state => {
                 return {
@@ -478,8 +480,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
-                {currentKpi &&
-                    <div ref="chart"></div>
+                {currentKpi ?
+                    <section ref="chart"></section>
+                    : <section>Không có dữ liệu</section>
                 }
             </React.Fragment>
         )

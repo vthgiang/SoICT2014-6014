@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 import { RecommendDistributeFromValidator } from '../../recommend-distribute/components/RecommendDistributeFromValidator';
 import { RecommendDistributeActions } from '../../recommend-distribute/redux/actions';
 import { UserActions } from "../../../super-admin/user/redux/actions";
-
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 class RecommendDistributeManagerEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userProponentIndex: "",
-            userApproverIndex: "",
+            status: "Chờ phê duyệt"
         };
 
     }
@@ -53,25 +52,14 @@ class RecommendDistributeManagerEditForm extends Component {
         return msg === undefined;
     }
 
-    //Bắt sự kiện thay đổi "Người đề nghị"
-    handleProponentChange = (e) => {
-        const selectedIndex = e.target.options.selectedIndex;
-        this.setState({ userProponentIndex: e.target.options[selectedIndex].getAttribute('data-key1') });
-        let value = e.target.value;
-        this.validateProponent(value, true);
-    }
-    validateProponent = (value, willUpdateState = true) => {
-        let msg = RecommendDistributeFromValidator.validateProponent(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnProponent: msg,
-                    proponent: value,
-                }
-            });
-        }
-        return msg === undefined;
+    /**
+     * Bắt sự kiện thay đổi người đề nghị
+     */
+    handleProponentChange = (value) => {
+        this.setState({
+            ...this.state,
+            proponent: value[0]
+        });
     }
 
     // Bắt sự kiện thay đổi "Nội dung đề nghị"
@@ -93,23 +81,13 @@ class RecommendDistributeManagerEditForm extends Component {
         return msg === undefined;
     }
 
-    //bắt sự kiện thay đổi mã tài sản
-    handleCodeChange = (e) => {
-        let value = e.target.value;
-        this.validateCode(value, true);
-    }
-    validateCode = (value, willUpdateState = true) => {
-        let msg = RecommendDistributeFromValidator.validateCode(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCode: msg,
-                    code: value,
-                }
-            });
-        }
-        return msg === undefined;
+    /**
+     * Bắt sự kiện thay đổi tài sản
+     */
+    handleAssetChange = (value) => {
+        this.setState({
+            asset: value[0]
+        });
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng từ ngày"
@@ -149,32 +127,18 @@ class RecommendDistributeManagerEditForm extends Component {
     }
 
     //Bắt sự kiện thay đổi "Người phê duyệt"
-    handleApproverChange = (e) => {
-        const selectedIndex = e.target.options.selectedIndex;
-        this.setState({ userApproverIndex: e.target.options[selectedIndex].getAttribute('data-key1') });
-        let value = e.target.value;
-        this.validateApprover(value, true);
-    }
-    validateApprover = (value, willUpdateState = true) => {
-        let msg = RecommendDistributeFromValidator.validateApprover(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnApprover: msg,
-                    approver: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Bắt sự kiện thay đổi "Trạng thái phiếu"
-    handleStatusChange = (e) => {
-        let value = e.target.value;
+    handleApproverChange = (value) => {
         this.setState({
             ...this.state,
-            status: value
+            approver: value[0]
+        });
+    }
+
+    // Bắt sự kiện thay đổi "Trạng thái"
+    handleStatusChange = (value) => {
+        this.setState({
+            ...this.state,
+            status: value[0]
         })
     }
 
@@ -209,9 +173,9 @@ class RecommendDistributeManagerEditForm extends Component {
     }
 
     save = () => {
+        let dataToSubmit = {...this.state, approver: this.props.auth.user._id};
         if (this.isFormValidated()) {
-            console.log(this.state);
-            return this.props.updateRecommendDistribute(this.state._id, this.state);
+            return this.props.updateRecommendDistribute(this.state._id, dataToSubmit);
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -222,15 +186,11 @@ class RecommendDistributeManagerEditForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                positionProponent: nextProps.positionProponent,
                 reqContent: nextProps.reqContent,
-                code: nextProps.code,
-                assetName: nextProps.assetName,
                 asset: nextProps.asset,
                 dateStartUse: nextProps.dateStartUse,
                 dateEndUse: nextProps.dateEndUse,
                 approver: nextProps.approver,
-                positionApprover: nextProps.positionApprover,
                 status: nextProps.status,
                 note: nextProps.note,
                 errorOnRecommendNumber: undefined,
@@ -245,18 +205,20 @@ class RecommendDistributeManagerEditForm extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, user } = this.props;
+        const { _id, translate, recommendDistribute, user, assetsManager, auth } = this.props;
+        var assetlist = assetsManager.listAssets;
+        var userlist = user.list;
         const {
-            recommendNumber, dateCreate, proponent, positionProponent, reqContent, code, assetName, dateStartUse, dateEndUse, approver, positionApprover, status, note,
+            recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
         return (
 
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistributemanage"
-                    title="Cập nhật thông tin phiếu đề nghị cấp phát thiết bị"
+                    title="Cập nhật phiếu đăng ký sử dụng tài sản"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -265,102 +227,115 @@ class RecommendDistributeManagerEditForm extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" disabled />
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_start_date"
+                                        id={`edit_start_date${_id}`}
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
-                                        disabled
+                                    // disabled
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
-                                <div className="form-group">
-                                    <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <select id="drops1" className="form-control" name="proponent"
-                                        value={proponent._id}
-                                        placeholder="Please Select"
-                                        onChange={this.handleProponentChange}
-                                        disabled>
-                                        <option value="" disabled>Please Select</option>
-                                        {user.list.length ? user.list.map((item, index) => {
-                                            return (
-                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
-                                            )
-                                        }) : null}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ người đề nghị</label>
-                                    <input disabled type="text" className="form-control" name="positionProponent"
-                                        value={this.state.userProponentIndex !== '' && user.list[this.state.userProponentIndex].roles.length ? user.list[this.state.userProponentIndex].roles[0].roleId.name : (proponent !== null && this.state.userProponentIndex === '' && user.list.find(user => user._id === proponent._id).roles.length) ? user.list.find(user => user._id === proponent._id).roles[0].roleId.name : ''} />
+                                <div className={`form-group`}>
+                                    <label>Người đề nghị</label>
+                                    <div>
+                                        <div id="proponentBox">
+                                            <SelectBox
+                                                id={`proponent${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist.map(x => {
+                                                    return { value: x._id, text: x.name + " - " + x.email }
+                                                })}
+                                                onChange={this.handleProponentChange}
+                                                value={proponent._id}
+                                                multiple={false}
+                                            disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className={`form-group ${errorOnReqContent === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung đề nghị<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị" disabled></textarea>
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị" ></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} autoComplete="off" placeholder="Mã tài sản" disabled />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" disabled />
+                                    <label>Tài sản</label>
+                                    <div>
+                                        <div id="edit_asset">
+                                            <SelectBox
+                                                id={`edit_asset${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={assetlist.map(x => {
+                                                    return { value: x._id, text: x.code + " - " + x.assetName }
+                                                })}
+                                                onChange={this.handleAssetChange}
+                                                value={asset._id}
+                                                multiple={false}
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_start_use"
+                                        id={`edit_start_use${_id}`}
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
-                                        disabled
                                     />
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
                                     <label>thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_end_use"
+                                        id={`edit_end_use${_id}`}
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
-                                        disabled
                                     />
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
-                                <div className="form-group">
-                                    <label>Người phê duyệt<span className="text-red">*</span></label>
-                                    <select id="drops2" className="form-control" name="approver"
-                                        value={approver}
-                                        placeholder="Please Select"
-                                        onChange={this.handleApproverChange}>
-                                        <option value="" disabled>Please Select</option>
-                                        {user.list.length ? user.list.map((item, index) => {
-                                            return (
-                                                <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
-                                            )
-                                        }) : null}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ người phê duyệt</label>
-                                    <input disabled type="text" className="form-control" name="positionApprover"
-                                    //    value={this.state.userApproverIndex !== '' && user.list[this.state.userApproverIndex].roles.length ? user.list[this.state.userApproverIndex].roles[0].roleId.name : (approver !== '' && this.state.userApproverIndex === '' && user.list.filter(user => user._id === approver).pop().roles.length) ? user.list.filter(user => user._id === approver).pop().roles[0].roleId.name : ''}
-                                    //
-                                    />
+                                <div className={`form-group`}>
+                                    <label>Người phê duyệt</label>
+                                    <div>
+                                        <div id="approver">
+                                            <SelectBox
+                                                id={`approver${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist.map(x => {
+                                                    return { value: x._id, text: x.name + " - " + x.email }
+                                                })}
+                                                onChange={this.handleApproverChange}
+                                                value={auth.user._id}
+                                                multiple={false}
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
-                                    <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="Đã chấp nhận">Đã chấp nhận</option>
-                                        <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                                        <option value="Không chấp nhận">Không chấp nhận</option>
-                                    </select>
+                                    <SelectBox
+                                        id={`status${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={status}
+                                        items={[
+                                            { value: 'Đã phê duyệt', text: 'Đã phê duyệt' },
+                                            { value: 'Chờ phê duyệt', text: 'Chờ phê duyệt' },
+                                            { value: 'Không phê duyệt', text: 'Không phê duyệt' },
+                                        ]}
+                                        onChange={this.handleStatusChange}
+                                    />
                                 </div>
                                 <div className="form-group">
                                     <label>Ghi chú</label>
@@ -377,11 +352,13 @@ class RecommendDistributeManagerEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendDistribute, user } = state;
-    return { recommendDistribute, user };
+    const { recommendDistribute, auth, user, assetsManager } = state;
+    return { recommendDistribute, auth, user, assetsManager };
 };
 
 const actionCreators = {
+    getUser: UserActions.get,
+    getAllAsset: AssetManagerActions.getAllAsset,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
 
 };

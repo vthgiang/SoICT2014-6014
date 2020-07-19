@@ -27,6 +27,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
             organizationalUnitId: null,
             month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
+            date: (this.today.getMonth()+1) + '-' + this.today.getFullYear(),
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
@@ -99,6 +100,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         
     }
 
+    /** Select organizational unit in box*/
     handleSelectOrganizationalUnitId = (value) => {
 
         this.setState(state => {
@@ -109,12 +111,14 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
+    /** Select month in box*/
     handleSelectMonth = async (value) => {
         var month = value.slice(3,7) + '-' + value.slice(0,2);
         this.setState(state => {
             return {
                 ...state,
-                month: month
+                month: month,
+                date: value
             }
         })
     }
@@ -216,9 +220,10 @@ class OrganizationalUnitKpiDashboard extends Component {
                     </span>
                 </div>
                 
+                {/* Xu hướng thực hiện mục tiêu */}
                 <div className=" box box-primary">
                     <div className="box-header with-border">
-                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên</div>
+                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</div>
                     </div>
                     <div className="box-body qlcv">
                         <TrendsInOrganizationalUnitKpiChart 
@@ -229,11 +234,12 @@ class OrganizationalUnitKpiDashboard extends Component {
                 </div>
                     
                 <div className="row">
+                    {/* Phân bố KPI đơn vị */}
                     <div className="col-xs-6">
                         {childOrganizationalUnit &&
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="box-title">Phân bố KPI đơn vị</div>
+                                    <div class="box-title">Phân bố KPI đơn vị tháng {this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
@@ -246,13 +252,16 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         }   
                     </div>
+
+                    {/* Thống kê kết quả KPI */}
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Thống kê kết quả KPI</div>
+                                <div className="box-title">Thống kê kết quả KPI tháng {this.state.date}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <StatisticsOfOrganizationalUnitKpiResultsChart
+                                    organizationalUnitId={this.state.organizationalUnitId}
                                     month={this.state.month}
                                 />
                             </div>
@@ -260,8 +269,9 @@ class OrganizationalUnitKpiDashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
+                    {/* Kết quả KPI đơn vị */}
                     {childOrganizationalUnit &&
-                        <div className="col-xs-6">
+                        <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">Kết quả KPI đơn vị</div>
@@ -274,11 +284,13 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         </div>
                     }   
+
+                    {/* Kết quả KPI các đơn vị */}
                     {childOrganizationalUnit &&
-                        <div className="col-xs-6">
+                        <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Kết quả KPI các đơn vị năm {this.state.currentYear}</div>
+                                    <div className="box-title">Kết quả KPI các đơn vị</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <ResultsOfAllOrganizationalUnitKpiChart/>

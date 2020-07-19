@@ -24,7 +24,7 @@ router.put('/task-action',auth,uploadFile([{name:'files', path:'/files/actions'}
 router.delete('/task-action/:task/:id',auth, PerformTaskController.deleteTaskAction);
 //comment of task action
 router.post('/action-comment/create',auth,uploadFile([{name:'files', path:'/files/commentofactions'}], 'array'),  PerformTaskController.createCommentOfTaskAction);
-router.put('/action-comment/:id',auth,  PerformTaskController.editCommentOfTaskAction);
+router.patch('/action-comment/:id',auth,uploadFile([{name:'files', path:'/files/commentofactions'}], 'array'),  PerformTaskController.editCommentOfTaskAction);
 router.delete('/action-comment/:task/:id',auth,  PerformTaskController.deleteCommentOfTaskAction);
 //task comment
 router.post('/task-comment/create',auth,uploadFile([{name:'files', path:'/files/taskcomments'}], 'array'),PerformTaskController.createTaskComment);

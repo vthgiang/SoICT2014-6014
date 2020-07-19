@@ -3,7 +3,10 @@ import {
 } from './constants';
 const initState = {
     listHoliday: [],
-    isLoading: false
+    isLoading: false,
+    importHoliday: [],
+    importStatus: false,
+    error: "",
 }
 
 export function holiday(state = initState, action) {
@@ -12,6 +15,7 @@ export function holiday(state = initState, action) {
         case HolidayConstants.CREATE_HOLIDAY_REQUEST:
         case HolidayConstants.DELETE_HOLIDAY_REQUEST:
         case HolidayConstants.UPDATE_HOLIDAY_REQUEST:
+        case HolidayConstants.IMPORT_HOLIDAY_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -46,16 +50,24 @@ export function holiday(state = initState, action) {
                     ),
                 isLoading: false,
             };
-        case HolidayConstants.GET_HOLIDAY_FAILURE:
-        case HolidayConstants.CREATE_HOLIDAY_FAILURE:
-        case HolidayConstants.DELETE_HOLIDAY_FAILURE:
-        case HolidayConstants.UPDATE_HOLIDAY_FAILURE:
+        case HolidayConstants.IMPORT_HOLIDAY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
-            };
-        default:
-            return state
+                importStatus: true,
+                listHoliday: action.payload.content,
+            }
+            case HolidayConstants.GET_HOLIDAY_FAILURE:
+            case HolidayConstants.CREATE_HOLIDAY_FAILURE:
+            case HolidayConstants.DELETE_HOLIDAY_FAILURE:
+            case HolidayConstants.UPDATE_HOLIDAY_FAILURE:
+            case HolidayConstants.IMPORT_HOLIDAY_FAILURE:
+                return {
+                    ...state,
+                    isLoading: false,
+                    error: action.error
+                };
+            default:
+                return state
     }
 }

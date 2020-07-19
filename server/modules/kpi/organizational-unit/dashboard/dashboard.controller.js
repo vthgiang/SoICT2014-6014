@@ -4,12 +4,7 @@ const DashboardOrganizationalUnitService = require('./dashboard.service');
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
     try {
-        if(req.query) {
-            var employeeKpis = await DashboardOrganizationalUnitService.getAllEmployeeKpiInOrganizationalUnit(req.params.roleId, req.query.organizationalUnitId);
-        } else {
-            var employeeKpis = await DashboardOrganizationalUnitService.getAllEmployeeKpiInOrganizationalUnit(req.params.roleId)
-        }
-
+        var employeeKpis = await DashboardOrganizationalUnitService.getAllEmployeeKpiInOrganizationalUnit(req.params.roleId, req.query.organizationalUnitId, req.query.month);
         LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -29,12 +24,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
-        if(req.query) {
-            var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId, req.query.organizationalUnitId);
-        } else {
-            var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId);
-        }
-        
+        var tasks = await DashboardOrganizationalUnitService.getAllTaskOfOrganizationalUnit(req.params.roleId, req.query.organizationalUnitId, req.query.month);
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -94,7 +84,7 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpiSets = await DashboardOrganizationalUnitService.getAllEmployeeKpiSetInOrganizationalUnit(req.params.roleId, req.params.month);
+        var employeeKpiSets = await DashboardOrganizationalUnitService.getAllEmployeeKpiSetInOrganizationalUnit(req.params.organizationalUnitId, req.params.month);
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,

@@ -6,12 +6,12 @@ import CreateForm from './createForm';
 import EditForm from './editForm';
 import './domains.css'
 import Swal from 'sweetalert2';
-import {Tree} from '../../../../../common-components';
-import {convertArrayToTree} from '../../../../../helpers/arrayToTree';
+import { Tree, SlimScroll} from '../../../../../common-components';
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            domainParent: [],
             deleteNode: []
         }
     }
@@ -21,19 +21,20 @@ class AdministrationDocumentDomains extends Component {
     }
 
     onChanged = async (e, data) => {
-        console.log("CLICK NODE TREE - data", data)
         await this.setState({currentDomain: data.node})
-        window.$(`#modal-edit-document-domain`).modal({backdrop:'static',keyboard:false, show:true});
+        window.$(`#edit-document-domain`).slideDown();;
     }
 
     checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
         this.setState({
+            domainParent: [...data.selected],
             deleteNode: [...data.selected, ...data.node.children_d]
         })
     }
 
     unCheckNode = (e, data) => {
         this.setState({
+            domainParent: [...data.selected],
             deleteNode: [...data.selected, ...data.node.children_d]
         })
     }
@@ -60,9 +61,9 @@ class AdministrationDocumentDomains extends Component {
     }
 
     render() { 
-        const {deleteNode} = this.state;
-        const {translate, documents} = this.props;
-        const {list, tree} = this.props.documents.administration.domains;
+        const {domainParent, deleteNode} = this.state;
+        const {translate} = this.props;
+        const {list} = this.props.documents.administration.domains;
         const dataTree = list.map(node=>{
             return {
                 ...node,
@@ -74,30 +75,37 @@ class AdministrationDocumentDomains extends Component {
 
         return ( 
             <React.Fragment>
-                <button className="btn btn-sm btn-success" onClick={()=>{
+                <button className="btn btn-success" onClick={()=>{
                     window.$('#modal-create-document-domain').modal('show');
-                }} title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
+                }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
                 {
-                    deleteNode.length > 0 && <button className="btn btn-sm btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
+                    deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
                 }
-                <CreateForm/>
-                {
-                    this.state.currentDomain !== undefined &&
-                    <EditForm
-                        domainId={this.state.currentDomain.id}
-                        domainName={this.state.currentDomain.text}
-                        domainDescription={this.state.currentDomain.description}
-                        domainParent={this.state.currentDomain.parent}
-                    />
-                }
-                <div style={{paddingTop: '10px'}}>
-                    <Tree 
-                        id="tree-qlcv-document"
-                        onChanged={this.onChanged} 
-                        checkNode={this.checkNode}
-                        unCheckNode={this.unCheckNode}
-                        data={dataTree}
-                    />
+                <CreateForm domainParent={this.state.domainParent}/>
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                        <div className="domain-tree" id="domain-tree">
+                            <Tree 
+                                id="tree-qlcv-document"
+                                onChanged={this.onChanged} 
+                                checkNode={this.checkNode}
+                                unCheckNode={this.unCheckNode}
+                                data={dataTree}
+                            />
+                        </div>
+                        <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                        {
+                            this.state.currentDomain !== undefined &&
+                            <EditForm
+                                domainId={this.state.currentDomain.id}
+                                domainName={this.state.currentDomain.text}
+                                domainDescription={this.state.currentDomain.original.description}
+                                domainParent={this.state.currentDomain.parent}
+                            />
+                        }
+                    </div>
                 </div>
             </React.Fragment>
         );

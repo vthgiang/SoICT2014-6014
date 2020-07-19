@@ -9,7 +9,7 @@ export function recommendDistribute(state =initState, action) {
     switch (action.type) {
         case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_REQUEST:
         // case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST:
-        // case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_REQUEST:
+        case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_REQUEST:
         case RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_REQUEST:
             return {
                 ...state,
@@ -29,13 +29,13 @@ export function recommendDistribute(state =initState, action) {
         //         isLoading: false,
         //         listRecommendDistributes: [...state.listRecommendDistributes, action.payload],
         //     };
-        // case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS:
+        case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS:
 
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //         listRecommendDistributes: state.listRecommendDistributes.filter(recommendDistribute => (recommendDistribute._id !== action.payload._id)),
-        //     };
+            return {
+                ...state,
+                isLoading: false,
+                listRecommendDistributes: state.listRecommendDistributes.filter(recommendDistribute => (recommendDistribute._id !== action.payload._id)),
+            };
         case RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_SUCCESS:
             return {
                 ...state,
@@ -44,7 +44,7 @@ export function recommendDistribute(state =initState, action) {
             };
         case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_FAILURE:
         // case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_FAILURE:
-        // case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_FAILURE:
+        case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_FAILURE:
         case RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_FAILURE:
             return {
                 ...state,

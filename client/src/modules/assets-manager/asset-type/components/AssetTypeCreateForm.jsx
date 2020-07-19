@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {ButtonModal, DialogModal, ErrorLabel} from '../../../../common-components';
-import {AssetTypeFromValidator} from './AssetTypeFromValidator';
-import {AssetTypeActions} from '../redux/actions';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { AssetTypeFromValidator } from './AssetTypeFromValidator';
+import { AssetTypeActions } from '../redux/actions';
 
 class AssetTypeCreateForm extends Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class AssetTypeCreateForm extends Component {
         }
         return msg === undefined;
     }
-    
+
     /**
      * Bắt sự kiện thay đổi thời gian trích khấu hao
      */
@@ -74,15 +74,25 @@ class AssetTypeCreateForm extends Component {
         })
     }
 
+    // /**
+    //  * Bắt sự kiện thay đổi loại tài sản cha
+    //  */
+    // handleParentChange = (e) => {
+    //     let value = e.target.value;
+    //     this.setState({
+    //         ...this.state,
+    //         parent: value
+    //     })
+    // }
+
     /**
      * Bắt sự kiện thay đổi loại tài sản cha
      */
-    handleParentChange = (e) => {
-        let value = e.target.value;
+    handleParentChange = (value) => {
         this.setState({
             ...this.state,
-            parent: value
-        })
+            parent: value[0]
+        });
     }
 
     /**
@@ -116,15 +126,15 @@ class AssetTypeCreateForm extends Component {
     }
 
     render() {
-        const {translate, assetType} = this.props;
-        console.log(assetType);
+        const { id, translate, assetType } = this.props;
         const {
             typeNumber, typeName, timeDepreciation, parent, description,
             errorOnTypeNumber, errorOnTypeName
         } = this.state;
+        var assettypelist = assetType.listAssetTypes;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản"/>
+                <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản" />
                 <DialogModal
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
@@ -135,33 +145,49 @@ class AssetTypeCreateForm extends Component {
                     <form className="form-group" id="form-create-assettype">
                         <div className={`form-group ${errorOnTypeNumber === undefined ? "" : "has-error"}`}>
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="typeNumber" value={typeNumber} onChange={this.handleTypeNumberChange} autoComplete="off" placeholder="Mã loại tài sản"/>
-                            <ErrorLabel content={errorOnTypeNumber}/>
-                            <ErrorLabel content={this.validateExitsTypeNumber(typeNumber) ? 'Type Number is exits' : ''}/>
+                            <input type="text" className="form-control" name="typeNumber" value={typeNumber} onChange={this.handleTypeNumberChange} autoComplete="off" placeholder="Mã loại tài sản" />
+                            <ErrorLabel content={errorOnTypeNumber} />
+                            <ErrorLabel content={this.validateExitsTypeNumber(typeNumber) ? <span className="text-red">Mã loại tài sản đã tồn tại</span> : ''} />
                         </div>
                         <div className={`form-group ${errorOnTypeName === undefined ? "" : "has-error"}`}>
                             <label>Tên loại tài sản<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} autoComplete="off" placeholder="Tên loại tài sản"/>
-                            <ErrorLabel content={errorOnTypeName}/>
+                            <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} autoComplete="off" placeholder="Tên loại tài sản" />
+                            <ErrorLabel content={errorOnTypeName} />
                         </div>
                         <div className="form-group">
                             <label>Thời gian khấu hao (Tháng)</label>
-                            <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao"/>
+                            <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" />
                             {/* <label style={{height: 34, display: "inline", width: "5%"}}> &nbsp; Tháng</label> */}
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({parent: e.target.value})}>
+                            <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({ parent: e.target.value })}>
                                 {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
                                     <option key={index} value={item._id}>{item.typeNumber + " - " + item.typeName}</option>
                                 )) : null}
 
                             </select>
+                        </div> */}
+                        <div className={`form-group`}>
+                            <label>Loại tài sản cha</label>
+                            <div>
+                                <div id="assetTypeBox">
+                                    <SelectBox
+                                        id={`assetType${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[{ value: '', text: '---Chọn loại tài sản cha---' }, ...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
+                                        onChange={this.handleParentChange}
+                                        value={parent}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>
-                            <textarea className="form-control" rows="3" style={{height: 34}} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                      placeholder="Mô tả"></textarea>
+                            <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                placeholder="Mô tả"></textarea>
                         </div>
                     </form>
                 </DialogModal>
@@ -171,8 +197,8 @@ class AssetTypeCreateForm extends Component {
 };
 
 function mapState(state) {
-    const {assetType} = state;
-    return {assetType};
+    const { assetType } = state;
+    return { assetType };
 };
 
 const actionCreators = {
@@ -180,4 +206,4 @@ const actionCreators = {
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetTypeCreateForm));
-export {createForm as AssetTypeCreateForm};
+export { createForm as AssetTypeCreateForm };

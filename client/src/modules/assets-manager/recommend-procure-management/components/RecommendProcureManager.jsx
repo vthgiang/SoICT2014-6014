@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { RecommendProcureCreateForm } from './RecommendProcureCreateForm';
 import { RecommendProcureManagerEditForm } from './RecommendProcureManagerEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
@@ -22,7 +21,7 @@ class RecommendProcureManager extends Component {
     }
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
-        this.props.getAllUsers();
+        this.props.getUser();
     }
 
     // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
@@ -44,6 +43,23 @@ class RecommendProcureManager extends Component {
             }
         });
         window.$('#modal-edit-recommendprocuremanage').modal('show');
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -133,7 +149,6 @@ class RecommendProcureManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    {/* <RecommendProcureCreateForm /> */}
                     <div className="form-group">
                         <h4 className="box-title">Danh sách phiếu đề nghị mua sắm thiết bị: </h4>
                     </div>
@@ -160,9 +175,9 @@ class RecommendProcureManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
                                     { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
+                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
                                 ]}
                             >
                             </SelectMulti>
@@ -240,7 +255,7 @@ class RecommendProcureManager extends Component {
                         _id={this.state.currentRowView._id}
                         recommendNumber={this.state.currentRowView.recommendNumber}
                         dateCreate={this.state.currentRowView.dateCreate}
-                        proponent={this.state.currentRowView.proponent.name}
+                        proponent={this.state.currentRowView.proponent}
                         equipment={this.state.currentRowView.equipment}
                         supplier={this.state.currentRowView.supplier}
                         total={this.state.currentRowView.total}
@@ -257,15 +272,13 @@ class RecommendProcureManager extends Component {
                         _id={this.state.currentRow._id}
                         recommendNumber={this.state.currentRow.recommendNumber}
                         dateCreate={this.state.currentRow.dateCreate}
-                        proponent={this.state.currentRow.proponent._id}
-                        positionProponent={this.state.currentRow.positionProponent}
+                        proponent={this.state.currentRow.proponent}
                         equipment={this.state.currentRow.equipment}
                         supplier={this.state.currentRow.supplier}
                         total={this.state.currentRow.total}
                         unit={this.state.currentRow.unit}
                         estimatePrice={this.state.currentRow.estimatePrice}
                         approver={this.state.currentRow.approver}
-                        positionApprover={this.state.currentRow.positionApprover}
                         note={this.state.currentRow.note}
                         status={this.state.currentRow.status}
                     />
@@ -276,14 +289,14 @@ class RecommendProcureManager extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const { recommendProcure, user, auth } = state;
+    return { recommendProcure, user, auth };
 };
 
 const actionCreators = {
     searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
     deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
-    getAllUsers: UserActions.get
+    getUser: UserActions.get
 };
 
 const connectedListRecommendProcureManager = connect(mapState, actionCreators)(withTranslate(RecommendProcureManager));

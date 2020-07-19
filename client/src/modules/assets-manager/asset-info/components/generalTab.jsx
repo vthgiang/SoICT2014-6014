@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import { LOCAL_SERVER_API } from '../../../../env';
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -13,52 +30,36 @@ class GeneralTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                img: nextProps.asset.avatar,
-                code: nextProps.asset.code,
-                assetName: nextProps.asset.assetName,
-                serial: nextProps.asset.serial,
-                assetType: nextProps.asset.assetType,
-                datePurchase: nextProps.asset.datePurchase,
-                warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
-                manager: nextProps.asset.manager,
-                positionManager: nextProps.asset.manager.positionManager,
-                person: nextProps.asset.person,
-                positionPerson: nextProps.asset.person.positionPerson,
-                dateStartUse: nextProps.asset.dateStartUse,
-                dateEndUse: nextProps.asset.dateEndUse,
-                location: nextProps.asset.location,
-                description: nextProps.asset.description,
-                status: nextProps.asset.status,
-                detailInfo: nextProps.asset.detailInfo,
+                avatar: nextProps.avatar,
+                code: nextProps.code,
+                assetName: nextProps.assetName,
+                serial: nextProps.serial,
+                assetTypes: nextProps.assetTypes,
+                purchaseDate: nextProps.purchaseDate,
+                warrantyExpirationDate: nextProps.warrantyExpirationDate,
+                managedBy: nextProps.managedBy,
+                assignedTo: nextProps.assignedTo,
+                handoverFromDate: nextProps.handoverFromDate,
+                handoverToDate: nextProps.handoverToDate,
+                location: nextProps.location,
+                description: nextProps.description,
+                status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
+                detailInfo: nextProps.detailInfo,
             }
         } else {
             return null;
         }
     }
 
-    // string2literal = (value) => {
-    //     var maps = {
-    //         "NaN": NaN,
-    //         "null": null,
-    //         "undefined": undefined,
-    //         "Infinity": Infinity,
-    //         "-Infinity": -Infinity
-    //     }
-    //     console.log((value in maps) ? maps[value] : value);
-    //     return ((value in maps) ? maps[value] : value);
-    // };
-
     render() {
-        const { id, translate } = this.props;
-
+        const { id, translate, user, assetType } = this.props;
+        var userlist = user.list;
+        var assettypelist = assetType.listAssetTypes;
         const {
-            img, avatar, code, assetName, serial, assetType, datePurchase, warrantyExpirationDate, manager, positionManager, person, positionPerson, dateStartUse, dateEndUse,
-            location, description, status, detailInfo
+            img, avatar, code, assetName, serial, assetTypes, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
         } = this.state;
-        console.log('this.state', this.state);
-        console.log('code', code);
-        const user = this.props.user;
-        const listAssetTypes = this.props.assetType;
 
         return (
             <div id={id} className="tab-pane active">
@@ -66,7 +67,9 @@ class GeneralTab extends Component {
                     <div className="col-md-12">
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
-                                <img className="attachment-img avarta" src={img} alt="Attachment" />
+                                <a href={LOCAL_SERVER_API + avatar} target="_blank">
+                                    <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                                </a>
                             </div>
                         </div>
                         <label>Thông tin cơ bản:</label>
@@ -88,43 +91,34 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Loại tài sản:&emsp; </strong>
-                                        {assetType.typeName}
-                                        {/* cái này la đoi tuowng nay no ko in ra dc vay dau. thế gọi ntn ôg */}
+                                        {assetTypes !== null && assettypelist.length ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày nhập:&emsp; </strong>
-                                        {datePurchase}
+                                        {this.formatDate(purchaseDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày bảo hành:&emsp; </strong>
-                                        {warrantyExpirationDate}
+                                        {this.formatDate(warrantyExpirationDate)}
                                     </div>
                                     <div className="form-group">
                                         <strong>Người quản lý:&emsp; </strong>
-                                        {manager.name}
-                                    </div>
-                                    <div className="form-group">
-                                        <strong>Chức vụ:&emsp; </strong>
-                                        {positionManager}
+                                        {managedBy !== null && userlist.length ? userlist.filter(item => item._id === managedBy).pop().name : ''}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <strong>Người được giao sử dụng tài sản:&emsp; </strong>
-                                        {person.name}
-                                    </div>
-                                    <div className="form-group">
-                                        <strong>Chức vụ:&emsp; </strong>
-                                        {positionPerson}
+                                        <strong>Người sử dụng:&emsp; </strong>
+                                        {assignedTo !== null && userlist.length ? userlist.filter(item => item._id === assignedTo).pop().name : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
-                                        {dateStartUse}
+                                        {handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng đến ngày:&emsp; </strong>
-                                        {dateEndUse}
+                                        {handoverToDate ? this.formatDate(handoverToDate) : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Vị trí tài sản:&emsp; </strong>
@@ -137,6 +131,10 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <strong>Trạng thái:&emsp; </strong>
                                         {status}
+                                    </div>
+                                    <div className="form-group">
+                                        <strong>Quyền đăng ký sử dụng:&emsp; </strong>
+                                        {canRegisterForUse}
                                     </div>
                                 </div>
                             </div>
@@ -174,5 +172,10 @@ class GeneralTab extends Component {
     }
 };
 
-const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
+function mapState(state) {
+    const { user, assetType } = state;
+    return { user, assetType };
+};
+
+const tabGeneral = connect(mapState, null)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };

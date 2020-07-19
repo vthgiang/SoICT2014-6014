@@ -14,7 +14,7 @@ class ButtonModal extends Component {
             <React.Fragment>
                 {
                     this.props.button_type === undefined ?
-                    <a style={{marginBottom: '10px', marginTop: '2px'}} className={className} title={this.props.title} data-toggle="modal" data-backdrop="static" href={`#${this.props.modalID}`}>{this.props.button_name}</a> :
+                    <a style={{marginBottom: '10px', marginTop: '2px',}} className={className} title={this.props.title} data-toggle="modal" data-backdrop="static" href={`#${this.props.modalID}`}>{this.props.button_name}</a> :
                     <a className={`${this.props.button_type} text-${this.props.color}`} title={this.props.title} data-toggle="modal" data-backdrop="static" href={`#${this.props.modalID}`}><i className="material-icons">{this.props.button_type}</i></a>
                 }
             </React.Fragment>
