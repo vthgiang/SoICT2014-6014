@@ -16,10 +16,10 @@ class ListAsset extends Component {
             code: "",
             assetName: "",
             assetType: null,
-            status: null,
+            status: "",
+            canRegisterForUse: true,
             page: 0,
             limit: 5,
-            canRegisterForUse: true,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -29,7 +29,7 @@ class ListAsset extends Component {
             code: "",
             assetName: "",
             assetType: null,
-            status: null,
+            status: "",
             page: 0,
             limit: 5,
             canRegisterForUse: true
@@ -125,7 +125,7 @@ class ListAsset extends Component {
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleStatusAssetChange = (value) => {
+    handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
         }
@@ -138,13 +138,6 @@ class ListAsset extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
-        // if (this.state.month === null) {
-        await this.setState({
-            ...this.state,
-            // ,
-            // month: this.formatDate(Date.now())
-        })
-        // }
         this.props.getAllAsset(this.state);
     }
 
@@ -199,9 +192,7 @@ class ListAsset extends Component {
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
                                 options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
                                 onChange={this.handleTypeChange}
-                                items={[
-
-                                ]}
+                                items={[]}
                             >
                             </SelectMulti>
                         </div>

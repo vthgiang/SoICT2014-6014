@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RecommendDistributeCreateForm } from './RecommendDistributeCreateForm';
 import { RecommendDistributeEditForm } from './RecommendDistributeEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { AssetManagerActions } from "../../asset-management/redux/actions";
-import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
-import { AssetDetailForm } from '../../asset-management/components/assetDetailForm';
 
 class RecommendDistribute extends Component {
     constructor(props) {
@@ -18,7 +15,7 @@ class RecommendDistribute extends Component {
             month: "",
             status: null,
             page: 0,
-            limit: 5,
+            limit: 10,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -182,7 +179,7 @@ class RecommendDistribute extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitRecommendSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
                     <table id="recommenddistribute-table" className="table table-striped table-bordered table-hover">
