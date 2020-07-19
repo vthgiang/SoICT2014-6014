@@ -147,23 +147,27 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     /** Select month start in box */
     handleSelectMonthStart = (value) => {
         var month = value.slice(3,7) + '-' + value.slice(0,2);
+
         this.INFO_SEARCH.startDate = month;
     }
 
     /** Select month end in box */
     handleSelectMonthEnd = async (value) => {
-        var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        if(value.slice(0,2)<12) {
+            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        } else {
+            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+
         this.INFO_SEARCH.endDate = month;
     }
 
     /** Search data */
     handleSearchData = async () => {
-        var startDate = this.INFO_SEARCH.startDate.split("-");
-        var startdate = new Date(startDate[1], startDate[0], 0);
-        var endDate = this.INFO_SEARCH.endDate.split("-");
-        var enddate = new Date(endDate[1], endDate[0], 28);
-        
-        if (Date.parse(startdate) > Date.parse(enddate)) {
+        var startDate = new Date(this.INFO_SEARCH.startDate);
+        var endDate = new Date(this.INFO_SEARCH.endDate);
+
+        if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
                 title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
                 type: 'warning',
@@ -257,7 +261,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                     <div className="form-group">
                         <label>Từ tháng</label>
                         <DatePicker 
-                            id="monthStart"      
+                            id="monthStartInResultsOfOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                             value={defaultStartDate}                 // giá trị mặc định cho datePicker    
                             onChange={this.handleSelectMonthStart}
@@ -269,7 +273,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                     <div className="form-group">
                         <label>Đến tháng</label>
                         <DatePicker 
-                            id="monthEnd"      
+                            id="monthEndInResultsOfOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                             value={defaultEndDate}                 // giá trị mặc định cho datePicker    
                             onChange={this.handleSelectMonthEnd}
