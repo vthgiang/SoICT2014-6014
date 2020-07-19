@@ -91,9 +91,9 @@ const AssetSchema = new Schema({
    },
 
    canRegisterForUse: {
-        // type: Boolean,
-        type: String,
-       enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
+        type: Boolean,
+    //     type: String,
+    //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
    },
 
    description: { //17.mô tả
