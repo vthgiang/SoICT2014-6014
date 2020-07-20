@@ -321,7 +321,7 @@ exports.data = [
     { path: '/performtask/task-action', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-action/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-action/:id/:idUser', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/files/:id/:actionId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/task-action/files/:id/:actionId/:type', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     //taskcomment
     { path: '/performtask/task-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },

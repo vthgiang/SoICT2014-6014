@@ -35,7 +35,7 @@ router.post('/task-comment/comment/create',auth,uploadFile([{name:'files', path:
 router.put('/task-comment/comment/:id',auth,PerformTaskController.editCommentOfTaskComment);
 router.delete('/task-comment/comment/:id/:task',auth,PerformTaskController.deleteCommentOfTaskComment);
 // có thể gộp vào delete Action
-router.delete('/task-action/files/:id/:actionId',auth,PerformTaskController.deleteFile);
+router.delete('/task-action/files/:id/:actionId/:type',auth,PerformTaskController.deleteFile);
 
 router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
 router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);

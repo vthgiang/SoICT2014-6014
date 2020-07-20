@@ -323,10 +323,10 @@ function uploadFile(task,data) {
         );
     }
 }
-function deleteFile(id,actionId) {
+function deleteFile(id,actionId,type) {
     return dispatch => {
         dispatch({ type: performTaskConstants.DELETE_FILE_REQUEST });
-        performTaskService.deleteFile(id,actionId)
+        performTaskService.deleteFile(id,actionId,type)
         .then(
             payload => dispatch({ type: performTaskConstants.DELETE_FILE_SUCCESS, payload }),
             error => dispatch({ type: performTaskConstants.DELETE_FILE_FAILURE, error })

@@ -246,9 +246,9 @@ function uploadFile(task,data) {
         data : data
     }, false, true, 'task.task_perform');  
 };
-function deleteFile(id,actionId) {
+function deleteFile(id,actionId,type) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action/files/${id}/${actionId}`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action/files/${id}/${actionId}/${type}`,
         method : 'DELETE'
     }, false, true, 'task.task_perform');  
 };

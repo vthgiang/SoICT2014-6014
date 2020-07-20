@@ -198,13 +198,11 @@ class DetailTaskTab extends Component {
         window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
-
     refresh = async () => {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
         this.props.getTaskLog(this.state.id);
-
         await this.setState(state => {
             return {
                 ...state,
@@ -216,7 +214,6 @@ class DetailTaskTab extends Component {
         })
 
     }
-
     changeRole = (role) => {
         this.setState(state => {
             return {
