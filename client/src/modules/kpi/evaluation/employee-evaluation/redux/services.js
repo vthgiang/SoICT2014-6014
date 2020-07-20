@@ -4,7 +4,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const kpiMemberServices = {
     getAllKPIMemberOfUnit,
     getAllKPIMemberByMember,
-    getKPIMemberByMonth,  
+    getKPIMemberByMonth,
     getKPIMemberById,
     approveKPIMember,
     editTargetKPIMember,
@@ -18,26 +18,26 @@ export const kpiMemberServices = {
 */
 function getAllKPIMemberOfUnit(infosearch) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
 /**
- * Lấy tất cả kpi cá nhân 
+* Lấy tất cả kpi cá nhân 
 */
 function getAllKPIMemberByMember() {
-    let id = getStorage("userId");
+    let user_id = getStorage("userId");
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/user/${id}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/user/${user_id}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
- /**
- * Lấy KPI cá nhân của nhân vien theo id 
+/**
+* Lấy KPI cá nhân của nhân vien theo id 
 */
 function getKPIMemberById(id) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/${id}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/${id}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
@@ -46,7 +46,7 @@ function getKPIMemberById(id) {
 */
 function getKPIMemberByMonth(id, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${date}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/member/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }
@@ -55,7 +55,7 @@ function getKPIMemberByMonth(id, date) {
 */
 function approveKPIMember(id) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/approve/${id}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/approve/${id}`,
         method: 'PUT',
     }, true, true, 'kpi.evaluation');
 }
@@ -64,7 +64,7 @@ function approveKPIMember(id) {
 */
 function editTargetKPIMember(id, newTarget) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/target/${id}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/target/${id}`,
         method: 'PUT',
         data: newTarget
     }, true, true, 'kpi.evaluation')
@@ -74,7 +74,7 @@ function editTargetKPIMember(id, newTarget) {
 */
 function editStatusTarget(id, status) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`,
         method: 'PUT',
     }, true, true, 'kpi.evaluation');
 }
@@ -83,16 +83,16 @@ function editStatusTarget(id, status) {
 */
 function getTaskById(id, employeeId, date, kpiType) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}/${kpiType}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}/${kpiType}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }
 /**
  *  chỉnh sửa approvepoint 
 */
-function setPointKPI(employeeId, kpiType, data){
+function setPointKPI(employeeId, kpiType, data) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}/${kpiType}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}/${kpiType}`,
         method: 'PUT',
         data: data
     }, true, true, 'kpi.evaluation')
@@ -100,9 +100,9 @@ function setPointKPI(employeeId, kpiType, data){
 /**
  * Tính điểm KPI 
 */
-function setkpiImportantLevel(id_kpi, kpiImportantLevel){
+function setkpiImportantLevel(kpiId, kpiImportantLevel) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/importantlevel/${id_kpi}`,
+        url: `${LOCAL_SERVER_API}/kpimembers/importantlevel/${kpiId}`,
         method: 'PUT',
         data: kpiImportantLevel
     }, true, true, 'kpi.evaluation')

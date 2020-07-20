@@ -1902,27 +1902,7 @@ export default {
                 },
             },
             evaluation: {
-                get_all_kpi_member_success: 'Get all KPI member successfully',
-                get_all_kpi_member_fail: 'Get all KPI member fail',
-                get_kpi_targets_success: 'Get KPI targets successfully',
-                get_kpi_targets_fail: 'Get KPI targets fail',
-                get_all_kpi_member_by_id_success: 'Get all KPI member by Id successfully',
-                get_all_kpi_member_by_id_fail: 'Get all KPI member by Id fail',
-                get_all_kpi_member_by_month_success: 'Get all KPI member by month successfully',
-                get_all_kpi_member_by_month_fail: 'Get all KPI member by month fail',
-                approve_all_kpi_target_success: 'Approve all KPI target successfully',
-                approve_all_kpi_target_fail: 'Approve all KPI target fail',
-                edit_kpi_target_member_success: 'Edit KPI member target successfully',
-                edit_kpi_target_member_fail: 'Edit KPI member target fail',
-                edit_status_target_success: 'Edit status target successfully',
-                edit_status_target_fail: 'Edit status target fail',
-                get_task_by_id_success: 'Get all tasks by Id successfully',
-                get_task_by_id_fail: 'Get all tasks by Id fail',
-                get_system_point_success: 'Get system point successfully',
-                get_system_point_fail: 'Get system point fail',
-                set_point_kpi_success: 'Get point KPI successfully',
-                set_point_kpi_fail: 'Get point KPI fail',
-
+               
                 dashboard: {
                     organizational_unit: 'Unit',
                     select_units: 'Select organizational unit',
@@ -1938,6 +1918,10 @@ export default {
                 },
 
                 employee_evaluation:{
+
+                    /**
+                     * Approve
+                     */
                     approve_KPI_employee: 'Approve KPI employee',
                     month: '',
                     end_compare: 'End comparing',
@@ -1959,6 +1943,10 @@ export default {
                     edit_target: 'Edit kpi',
                     pass: 'Pass',
                     fail: 'Fail',
+
+                    /**
+                     * Comment
+                     */
                     edit_cmt: 'Edit comment',
                     delete_cmt: 'Delete comment',
                     add_cmt: 'Add comment',
@@ -1966,6 +1954,10 @@ export default {
                     send_edition: 'Submit edition',
                     cancel: 'Cancel',
                     comment: 'Comment',
+
+                    /**
+                     * Evaluate
+                     */
                     KPI_list: 'KPI list',
                     calc_kpi_point: 'Caculate KPI point',
                     export_file: 'Export file',
@@ -1979,6 +1971,12 @@ export default {
                     contribution: 'Contribution',
                     importance_level: 'Importance level',
                     point: 'Point',
+                    new_value: 'New value',
+                    old_value: 'Old value',
+                    auto_value: 'Auto value',
+                    /**
+                     * Management
+                     */
                     wrong_time: 'Start time has to earlier than end time',
                     choose_employee: 'Choose employee',
                     employee: 'Employee',
@@ -1994,8 +1992,40 @@ export default {
                     approve_this_kpi: 'Approve this KPI',
                     evaluate_this_kpi: 'Evaluate this KPI',
                     from: 'From',
-                    to: 'To'
-                }
+                    to: 'To',
+
+                    /**
+                     * Importance Dialog
+                     */
+                    num_of_working_day: 'Number of working day',
+                    priority: 'Priority',
+                    formula: 'Formula',
+                    explain_automatic_point: 'Explain automatic value'
+                },
+
+                /**
+                 * Thông báo từ service
+                 */
+                get_all_kpi_member_success: 'Get all KPI member successfully',
+                get_all_kpi_member_fail: 'Get all KPI member fail',
+                get_kpi_targets_success: 'Get KPI targets successfully',
+                get_kpi_targets_fail: 'Get KPI targets fail',
+                get_all_kpi_member_by_id_success: 'Get all KPI member by Id successfully',
+                get_all_kpi_member_by_id_fail: 'Get all KPI member by Id fail',
+                get_all_kpi_member_by_month_success: 'Get all KPI member by month successfully',
+                get_all_kpi_member_by_month_fail: 'Get all KPI member by month fail',
+                approve_all_kpi_target_success: 'Approve all KPI target successfully',
+                approve_all_kpi_target_fail: 'Approve all KPI target fail',
+                edit_kpi_target_member_success: 'Edit KPI member target successfully',
+                edit_kpi_target_member_fail: 'Edit KPI member target fail',
+                edit_status_target_success: 'Edit status target successfully',
+                edit_status_target_fail: 'Edit status target fail',
+                get_task_by_id_success: 'Get all tasks by Id successfully',
+                get_task_by_id_fail: 'Get all tasks by Id fail',
+                get_system_point_success: 'Get system point successfully',
+                get_system_point_fail: 'Get system point fail',
+                set_point_kpi_success: 'Get point KPI successfully',
+                set_point_kpi_fail: 'Get point KPI fail',
             },
             organizational_unit: {
                 // Module chính

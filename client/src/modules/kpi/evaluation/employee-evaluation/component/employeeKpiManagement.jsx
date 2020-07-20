@@ -5,12 +5,12 @@ import { kpiMemberActions } from '../redux/actions';
 import { DataTableSetting } from '../../../../../common-components';
 import {DatePicker, SelectBox } from '../../../../../common-components/index';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { ModalMemberApprove } from './employeeKpiApproveModal';
-import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
+import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
+import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { withTranslate } from 'react-redux-multilingual';
 
-class KPIMember extends Component {
+class EmployeeKpiManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -185,8 +185,8 @@ class KPIMember extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <ModalMemberApprove id={this.state.kpiId} />
-                        <ModalMemberEvaluate employeeKpiSet={this.state.employeeKpiSet}/>
+                        <EmployeeKpiApproveModal id={this.state.kpiId} />
+                        <EmployeeKpiEvaluateModal employeeKpiSet={this.state.employeeKpiSet}/>
                         <div className="form-inline">
                             <div className="form-group">
                                 <label>{translate('kpi.evaluation.employee_evaluation.employee')}:</label>
@@ -270,7 +270,7 @@ class KPIMember extends Component {
                         <tbody className="task-table">
                             {(kpimember && kpimember.length !== 0) ?
                             kpimember.map((item, index) =>
-                            <tr>
+                            <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{item? this.formatDate(item.date): "Deleted"}</td>
                             <td>{item.creator? item.creator.name: "Deleted"}</td>
@@ -306,9 +306,9 @@ function mapState(state) {
 }
  
 const actionCreators = {
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getAllUserSameDepartment : UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
-const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(KPIMember));
-export { connectedKPIMember as KPIMember };
+const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiManagement));
+export { connectedKPIMember as EmployeeKpiManagement };

@@ -6,12 +6,12 @@ export const ComponentActions = {
     edit,
     create,
     show,
-    destroy
+    destroy,
 }
 
 
 function get(data){
-    if(data !== undefined){
+    if (data !== undefined){
         return dispatch => {
             dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
             ComponentServices.get(data)
