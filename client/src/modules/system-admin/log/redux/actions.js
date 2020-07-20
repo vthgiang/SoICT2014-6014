@@ -1,40 +1,47 @@
-import { SystemServices } from "./services";
-import { SystemConsts } from "./constants";
+import { LogServices } from "./services";
+import { LogConstants } from "./constants";
 
-export const getLogState = () => {
+export const LogActions = {
+    getLogState,
+    toggleLogState
+}
+
+function getLogState() {
     return dispatch => {
-        dispatch({ type: SystemConsts.GET_LOG_STATE_REQUEST});
-        SystemServices.getLogState()
+        dispatch({ type: LogConstants.GET_LOG_STATE_REQUEST });
+
+        LogServices.getLogState()
             .then(res => {
                 dispatch({
-                    type: SystemConsts.GET_LOG_STATE_REQUEST_SUCCESS,
-                    payload: res.data
+                    type: LogConstants.GET_LOG_STATE_REQUEST_SUCCESS,
+                    payload: res.data.content
                 })
             })
-            .catch(err => {
+            .catch(error => {
                 dispatch({
-                    type: SystemConsts.GET_LOG_STATE_REQUEST_FAILE,
-                    payload: err.response
+                    type: LogConstants.GET_LOG_STATE_REQUEST_FAILE,
+                    payload: error
                 })
                 
             })
     }
 }
 
-export const toggleLogState = () => {
+function toggleLogState() {
     return dispatch => {
-        dispatch({ type: SystemConsts.TOGGLE_LOG_STATE_REQUEST});
-        SystemServices.toggleLogState()
+        dispatch({ type: LogConstants.TOGGLE_LOG_STATE_REQUEST });
+
+        LogServices.toggleLogState()
             .then(res => {
                 dispatch({
-                    type: SystemConsts.TOGGLE_LOG_STATE_REQUEST_SUCCESS,
-                    payload: res.data
+                    type: LogConstants.TOGGLE_LOG_STATE_REQUEST_SUCCESS,
+                    payload: res.data.content
                 })
             })
-            .catch(err => {
+            .catch(error => {
                 dispatch({
-                    type: SystemConsts.TOGGLE_LOG_STATE_REQUEST_FAILE,
-                    payload: err.response
+                    type: LogConstants.TOGGLE_LOG_STATE_REQUEST_FAILE,
+                    payload: error
                 })
                 
             })
