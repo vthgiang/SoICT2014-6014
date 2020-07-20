@@ -197,7 +197,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <span className="form-inline">
                             <label style={{width: "auto"}}>Đơn vị</label>
                             <SelectBox
-                                id={`organizationalUnitSelectBox`}
+                                id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={organizationalUnitSelectBox}

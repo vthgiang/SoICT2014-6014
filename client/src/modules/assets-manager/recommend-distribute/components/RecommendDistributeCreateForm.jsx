@@ -150,7 +150,6 @@ class RecommendDistributeCreateForm extends Component {
         return msg === undefined;
     }
 
-
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
@@ -164,7 +163,7 @@ class RecommendDistributeCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
-        let dataToSubmit = {...this.state, proponent: this.props.auth.user._id}
+        let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
             return this.props.createRecommendDistribute(dataToSubmit);
         }
@@ -195,7 +194,7 @@ class RecommendDistributeCreateForm extends Component {
             <React.Fragment>
                 {/* <ButtonModal modalID="modal-create-recommenddistribute" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị"/> */}
                 <DialogModal
-                    size='75' modalID="modal-create-recommenddistribute" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID="modal-create-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-create-recommenddistribute"
                     title="Thêm mới phiếu đăng ký sử dụng thiết bị"
                     func={this.save}
@@ -282,11 +281,6 @@ class RecommendDistributeCreateForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
-                                {/* <div className="form-group">
-                                    <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" value={status} disabled />
-                                </div> */}
-
                             </div>
                         </div>
                     </form>

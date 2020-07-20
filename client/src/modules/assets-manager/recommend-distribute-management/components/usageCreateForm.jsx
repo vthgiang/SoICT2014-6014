@@ -138,8 +138,11 @@ class UsageCreateForm extends Component {
                 status: "Đang sử dụng",
 
             }
-            let assetId = !this.state.asset[0] ? this.props.assetsManager.listAssets[0]._id : this.state.asset[0];
+            // let assetId = !this.state.asset[0] ? this.props.assetsManager.listAssets[0]._id : this.state.asset[0];
+            let assetId = this.state.asset._id;
+            console.log(assetId, 'assetId');
             return this.props.createUsage(assetId, dataToSubit);
+            
             // .then(({response}) => {
             //     if (response.data.success) {
             //         this.props.getAllAsset({
@@ -156,8 +159,6 @@ class UsageCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('nextProps,', nextProps);
-        console.log(prevState);
         if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
@@ -183,7 +184,6 @@ class UsageCreateForm extends Component {
         console.log(this.state, 'tungstate-a')
         return (
             <React.Fragment>
-                {/* <ButtonModal modalID={`modal-create-usage`} button_name="Thêm mới" title="Thêm mới thông tin sử dụng tài sản" /> */}
                 <DialogModal
                     size='50' modalID={`modal-create-usage`} isLoading={false}
                     formID={`form-create-usage`}

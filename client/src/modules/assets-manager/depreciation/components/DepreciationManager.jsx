@@ -301,12 +301,14 @@ class DepreciationManager extends Component {
                         location={this.state.currentRowView.location}
                         description={this.state.currentRowView.description}
                         status={this.state.currentRowView.status}
+                        canRegisterForUse={this.state.currentRowView.canRegisterForUse}
                         detailInfo={this.state.currentRowView.detailInfo}
 
                         cost={this.state.currentRowView.cost}
                         residualValue={this.state.currentRowView.residualValue}
                         startDepreciation={this.state.currentRowView.startDepreciation}
                         usefulLife={this.state.currentRowView.usefulLife}
+                        depreciationType={this.state.currentRowView.depreciationType}
 
                         maintainanceLogs={this.state.currentRowView.maintainanceLogs}
                         usageLogs={this.state.currentRowView.usageLogs}

@@ -109,6 +109,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
     }
 
+    /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if(Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
@@ -190,8 +191,10 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     removePreviosChart = () => {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
+        if(chart) {
+            while(chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
         }
     }
 
@@ -276,17 +279,18 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box-body" style={{ textAlign: "right" }}>
-                    <section className="btn-group">
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
-                    </section>
+                { listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
+                    <section className="box-body" style={{ textAlign: "right" }}>
+                        <section className="btn-group">
+                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
+                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
+                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
+                        </section>
 
-                    {listEmployeeKpiSet &&
                         <section ref="chart"></section>
-                    }
-                </div>
+                    </section>
+                    : <section>Không có dữ liệu</section>
+                }
             </React.Fragment>
         )
     }

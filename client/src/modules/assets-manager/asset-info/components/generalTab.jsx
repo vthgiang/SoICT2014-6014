@@ -44,6 +44,7 @@ class GeneralTab extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
             }
         } else {
@@ -57,7 +58,7 @@ class GeneralTab extends Component {
         var assettypelist = assetType.listAssetTypes;
         const {
             img, avatar, code, assetName, serial, assetTypes, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, detailInfo
+            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
         } = this.state;
 
         return (
@@ -101,14 +102,14 @@ class GeneralTab extends Component {
                                         {this.formatDate(warrantyExpirationDate)}
                                     </div>
                                     <div className="form-group">
-                                        <strong>Người duy trì:&emsp; </strong>
+                                        <strong>Người quản lý:&emsp; </strong>
                                         {managedBy !== null && userlist.length ? userlist.filter(item => item._id === managedBy).pop().name : ''}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <strong>Người vận hành:&emsp; </strong>
+                                        <strong>Người sử dụng:&emsp; </strong>
                                         {assignedTo !== null && userlist.length ? userlist.filter(item => item._id === assignedTo).pop().name : ''}
                                     </div>
                                     <div className="form-group">
@@ -130,6 +131,10 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <strong>Trạng thái:&emsp; </strong>
                                         {status}
+                                    </div>
+                                    <div className="form-group">
+                                        <strong>Quyền đăng ký sử dụng:&emsp; </strong>
+                                        {canRegisterForUse}
                                     </div>
                                 </div>
                             </div>

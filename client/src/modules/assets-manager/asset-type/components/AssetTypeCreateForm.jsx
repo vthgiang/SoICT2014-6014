@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { AssetTypeFromValidator } from './AssetTypeFromValidator';
 import { AssetTypeActions } from '../redux/actions';
 
@@ -74,15 +74,25 @@ class AssetTypeCreateForm extends Component {
         })
     }
 
+    // /**
+    //  * Bắt sự kiện thay đổi loại tài sản cha
+    //  */
+    // handleParentChange = (e) => {
+    //     let value = e.target.value;
+    //     this.setState({
+    //         ...this.state,
+    //         parent: value
+    //     })
+    // }
+
     /**
      * Bắt sự kiện thay đổi loại tài sản cha
      */
-    handleParentChange = (e) => {
-        let value = e.target.value;
+    handleParentChange = (value) => {
         this.setState({
             ...this.state,
-            parent: value
-        })
+            parent: value[0]
+        });
     }
 
     /**
@@ -116,12 +126,12 @@ class AssetTypeCreateForm extends Component {
     }
 
     render() {
-        const { translate, assetType } = this.props;
-        console.log(assetType);
+        const { id, translate, assetType } = this.props;
         const {
             typeNumber, typeName, timeDepreciation, parent, description,
             errorOnTypeNumber, errorOnTypeName
         } = this.state;
+        var assettypelist = assetType.listAssetTypes;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản" />
@@ -149,7 +159,7 @@ class AssetTypeCreateForm extends Component {
                             <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" />
                             {/* <label style={{height: 34, display: "inline", width: "5%"}}> &nbsp; Tháng</label> */}
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Loại tài sản cha</label>
                             <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({ parent: e.target.value })}>
                                 {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
@@ -157,6 +167,22 @@ class AssetTypeCreateForm extends Component {
                                 )) : null}
 
                             </select>
+                        </div> */}
+                        <div className={`form-group`}>
+                            <label>Loại tài sản cha</label>
+                            <div>
+                                <div id="assetTypeBox">
+                                    <SelectBox
+                                        id={`assetType${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[{ value: '', text: '---Chọn loại tài sản cha---' }, ...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
+                                        onChange={this.handleParentChange}
+                                        value={parent}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>

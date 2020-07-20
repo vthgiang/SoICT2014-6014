@@ -8,7 +8,8 @@ export const taskTemplateActions = {
     getTaskTemplateById,
     addTaskTemplate,
     editTaskTemplate,
-    _delete
+    _delete,
+    importTaskTemplate,
 };
 
 // Get all tasktemplate
@@ -96,5 +97,27 @@ function _delete(id) {
             res => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: res.data }),
             error => dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_FAILURE})
         );
+    };
+}
+
+// Import mẫu công việc
+function importTaskTemplate(data) {
+    return dispatch => {
+        dispatch({
+            type: taskTemplateConstants.IMPORT_TEMPLATE_REQUEST
+        });
+        taskTemplateService.importTaskTemplate(data)
+            .then(res => {
+                dispatch({
+                    type: taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: taskTemplateConstants.IMPORT_TEMPLATE_FAILURE,
+                    error: err.response.data.content
+                });
+            })
     };
 }

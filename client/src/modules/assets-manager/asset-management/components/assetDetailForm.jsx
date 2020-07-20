@@ -32,6 +32,7 @@ class AssetDetailForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
+                canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
@@ -55,12 +56,11 @@ class AssetDetailForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
-                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, 
+                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
                 detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
                 maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
                 disposalDesc, archivedRecordNumber, files 
             } = this.state;
-        console.log(this.state, 'this.state');
 
         return (
             <React.Fragment>
@@ -74,8 +74,8 @@ class AssetDetailForm extends Component {
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
                                 <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
-                                <li><a title="Sửa chữa - Thay thế - Nâng cấp" data-toggle="tab" href={`#view_maintainance${_id}`}>Sửa chữa - Thay thế - Nâng cấp</a></li>
-                                <li><a title="Cấp phát - Điều chuyển - Thu hồi" data-toggle="tab" href={`#view_usage${_id}`}>Cấp phát - Điều chuyển - Thu hồi</a></li>
+                                <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#view_usage${_id}`}>Thông tin sử dụng</a></li>
+                                <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#view_maintainance${_id}`}>Thông tin bảo trì</a></li>
                                 <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#view_depreciation${_id}`}>Thông tin khấu hao</a></li>
                                 <li><a title="Thông tin sự cố" data-toggle="tab" href={`#view_incident${_id}`}>Thông tin sự cố</a></li>
                                 <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#view_disposal${_id}`}>Thông tin thanh lý</a></li>
@@ -98,6 +98,7 @@ class AssetDetailForm extends Component {
                                     location={location}
                                     description={description}
                                     status={status}
+                                    canRegisterForUse={canRegisterForUse}
                                     detailInfo={detailInfo}
                                 />
                                 <MaintainanceLogTab

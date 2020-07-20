@@ -35,7 +35,8 @@ exports.createAssetType = async (data, company) => {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         timeDepreciation: data.timeDepreciation,
-        parent: data.parent,
+        // parent: data.parent,
+        parent: data.parent ? data.parent : null,
         description: data.description,
     });
     return createAssetType;
@@ -60,7 +61,8 @@ exports.updateAssetType = async (id, data) => {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         timeDepreciation: data.timeDepreciation,
-        parent: data.parent,
+        // parent: data.parent,
+        parent: data.parent ? data.parent : null,
         description: data.description,
     };
     // Cập nhật thông tin loại tài sản vào database

@@ -90,6 +90,12 @@ const AssetSchema = new Schema({
        // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
    },
 
+   canRegisterForUse: {
+        type: Boolean,
+    //     type: String,
+    //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
+   },
+
    description: { //17.mô tả
        type: String,
    },

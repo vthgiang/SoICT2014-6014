@@ -38,20 +38,21 @@ function createRecommendDistribute(data) {
                 type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST
             });
             const response = await RecommendDistributeService.createRecommendDistribute(data).then(res => res);
-            dispatch(AssetManagerActions.getAllAsset({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
+            
             dispatch(searchRecommendDistributes({
                 recommendNumber: "",
                 month: "",
                 status: "",
                 page: 0,
                 limit: 5,
+            }));
+            dispatch(AssetManagerActions.getAllAsset({
+                code: "",
+                assetName: "",
+                month: "",
+                type: null,
+                page: 0,
+                limit: 9,
             }));
             dispatch({
                 type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS,

@@ -29,7 +29,7 @@ class UsageManagement extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 100,
+            limit: 5,
         });
     }
 
@@ -303,6 +303,7 @@ class UsageManagement extends Component {
                         location={this.state.currentRow.location}
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
+                        canRegisterForUse={this.state.currentRow.canRegisterForUse}
                         detailInfo={this.state.currentRow.detailInfo}
 
                         cost={this.state.currentRow.cost}

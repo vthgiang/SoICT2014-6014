@@ -667,7 +667,7 @@ export default {
 
             // QUẢN LÝ BÁO CÁO
             report_management: 'Report management',
-            task_report: 'Manage work reports',
+            task_report: 'Manage task reports',
         },
 
         manage_system: {
@@ -1499,6 +1499,14 @@ export default {
 
                 search: "Search",
 
+                
+                from: 'From',
+                to: 'To',
+                prev: 'Prev',
+                next:'Next',
+                tasks_calendar:'Tasks Calendar',
+                model_detail_task_title:'Detail task',
+
                 col_name: 'Name of task',
                 col_organization: 'Department',
                 col_priority: 'Priority',
@@ -1812,8 +1820,31 @@ export default {
                     excellent_employee: 'Excellent Employees',
                     best_employee: 'Best employee',
                     month: 'Month'
-                }
+                },
 
+                employee_evaluation:{
+                    approve_KPI_employee:'Approve KPI employee',
+                    month:'Month',
+                    end_compare:'End comparing',
+                    compare:'Compare',
+                    approve_all:'Approve all',
+                    choose_month_cmp:'Choose month to compare',
+                    search:'Search',
+                    index:'ID',
+                    name:'Name',
+                    target:'Kpi unit',
+                    criteria:'Criteria',
+                    weight:'Weight',
+                    result:'Result',
+                    data_not_found:'There is no satisfied result',
+                    unsuitable_weight:'Unsuitable weight',
+                    status:'Status',
+                    action:'Action',
+                    save_result:'Save result',
+                    edit_target:'Edit kpi',
+                    pass:'Pass',
+                    fail:'Fail'
+                }
             },
             organizational_unit: {
                 // Module chính
@@ -1947,14 +1978,18 @@ export default {
 
         report_manager: {
             search: 'Search',
+            add_report: 'Add report',
             search_by_name: 'Search by name',
             select_all_units: 'Select all units',
             performer: 'Performer',
             description: 'Description',
             name: 'Report Name',
             unit: 'Unit',
-            delete: 'Delete report',
-            edit: 'Edit report',
+            delete: 'Are you sure you want to delete report:',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
+            edit: 'Edit this report',
+            title_delete: 'Delete this report',
             creator: 'Creator',
             no_data: 'No data',
             search_by_name: 'Search by name report',

@@ -11,6 +11,7 @@ router.post('/user', auth, TaskTemplateController.searchTaskTemplates);
 router.post('/create', auth, TaskTemplateController.createTaskTemplate);
 router.delete('/:id', auth, TaskTemplateController.deleteTaskTemplate);
 router.patch('/edit/:id', auth,TaskTemplateController.editTaskTemplate);
+router.post('/importTaskTemplate', auth, TaskTemplateController.importTaskTemplate);
 
 
 
