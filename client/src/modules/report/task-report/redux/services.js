@@ -1,5 +1,5 @@
-import {LOCAL_SERVER_API} from '../../../../env';
-import {sendRequest} from '../../../../helpers/requestHelper';
+import { LOCAL_SERVER_API } from '../../../../env';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const TaskReportServices = {
     getTaskReports,
@@ -21,6 +21,7 @@ function getTaskReports(data) {
             name: data.name,
             page: data.page,
             limit: data.limit,
+
         },
     }, false, true, 'report_manager');
 }
@@ -33,7 +34,7 @@ function getTaskReports(data) {
 function getTaskReportById(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/taskreports/${id}`,
-        method:'GET'
+        method: 'GET'
     }, false, true, 'report_manager');
 }
 

@@ -5,7 +5,7 @@ import './modal.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {Loading} from '../loading/loading';
+import { Loading } from '../loading/loading';
 
 class DialogModal extends Component {
     constructor(props) {
@@ -20,43 +20,43 @@ class DialogModal extends Component {
         this.setState({
             reload: this.state.reload + 1
         });
-        if(reset) document.getElementById(this.props.formID).reset();
+        if (reset) document.getElementById(this.props.formID).reset();
         window.$(`#${this.props.modalID}`).modal("hide");
 
-        if (this.props.afterClose !== undefined){
+        if (this.props.afterClose !== undefined) {
             this.props.afterClose()
         }
     }
 
     save = () => {
-        const {closeOnSave = true, resetOnSave = false, afterSave} = this.props;
+        const { closeOnSave = true, resetOnSave = false, afterSave } = this.props;
         this.props.func();
-        if (closeOnSave){
+        if (closeOnSave) {
             this.closeModal(resetOnSave);
         }
 
-        if (afterSave !== undefined){
+        if (afterSave !== undefined) {
             afterSave()
         }
     }
 
-    render() { 
-        const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true,marginTop, bodyStyle={}} = this.props;
-        return ( 
+    render() {
+        const { translate } = this.props;
+        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, size, styleCustom, maxWidth, hasNote = true, marginTop, bodyStyle = {} } = this.props;
+        return (
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth===undefined?{}:{maxWidth: maxWidth},marginTop===undefined?{}:{marginTop: marginTop}}>
+                    <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth === undefined ? {} : { maxWidth: maxWidth }, marginTop === undefined ? {} : { marginTop: marginTop }}>
                         <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" onClick={()=> {
+                            <div className="modal-header" style={styleCustom}>
+                                <button type="button" className="close" onClick={() => {
                                     this.closeModal(resetOnClose);
-                                    this.setState({isClose: !this.state.isClose},()=>{
-                                        if(this.props.receiveEventClose) this.props.receiveEventClose(this.state.isClose);
+                                    this.setState({ isClose: !this.state.isClose }, () => {
+                                        if (this.props.receiveEventClose) this.props.receiveEventClose(this.state.isClose);
                                     }
                                     );
                                 }}>&times;</button>
-                                <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
+                                <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; {this.props.isLoading && <Loading />}</h4>
                             </div>
                             <div className="modal-body text-left" style={bodyStyle}>
                                 {this.props.children}
@@ -72,15 +72,15 @@ class DialogModal extends Component {
                                         {
                                             hasSaveButton && <button type="button" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
-                                        <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
+                                        <button type="button" className="btn btn-default" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
             </React.Fragment>
-         );
+        );
     }
 }
 
