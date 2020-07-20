@@ -18,7 +18,7 @@ class TabNotificationSent extends Component {
         return ( 
             <React.Fragment>
                 {
-                    this.state.currentRow !== undefined &&
+                    this.state.currentRow &&
                     <NotificationSentInfo
                         notificationId={this.state.currentRow._id}
                         notificationTitle={this.state.currentRow.title}

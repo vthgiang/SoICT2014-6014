@@ -67,7 +67,7 @@ class NotificationSentInfo extends Component {
                     
                     <div style={{border: '1px solid lightgray', margin: '20px 0px 20px 0px' , padding: '15px'}}>{notificationContent}</div>
                     {
-                        notificationOrganizationalUnits!==undefined && notificationOrganizationalUnits.length > 0 &&
+                        notificationOrganizationalUnits && notificationOrganizationalUnits.length > 0 &&
                         <React.Fragment>
                             <p><b>{translate('notification.departments')}</b></p>
                             <ul>{
@@ -76,7 +76,7 @@ class NotificationSentInfo extends Component {
                         </React.Fragment>
                     }
                     {
-                        notificationUsers!==undefined && notificationUsers.length > 0 &&
+                        notificationUsers && notificationUsers.length > 0 &&
                         <React.Fragment>
                             <p><b>{translate('notification.users')}</b></p>
                             <ul>{
