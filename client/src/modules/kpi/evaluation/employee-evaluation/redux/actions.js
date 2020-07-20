@@ -14,13 +14,13 @@ export const kpiMemberActions = {
 };
 /**
  * Lấy tất cả KPI cá nhân
- */ 
- 
+ */
+
 function getAllKPIMemberOfUnit(infosearch) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
+        dispatch({ type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST });
         kpiMemberServices.getAllKPIMemberOfUnit(infosearch)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS,
                     payload: res.data.content
@@ -37,11 +37,11 @@ function getAllKPIMemberOfUnit(infosearch) {
 /**
  *  Lấy tất cả KPI cá nhân 
  */
-function getAllKPIMemberByMember(member) { 
+function getAllKPIMemberByMember(member) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
+        dispatch({ type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST });
         kpiMemberServices.getAllKPIMemberByMember(member)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
                     payload: res.data.content
@@ -57,12 +57,12 @@ function getAllKPIMemberByMember(member) {
 }
 /**
  *Lấy KPI cá nhân theo id  
- */ 
+ */
 function getKPIMemberById(id) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST});
+        dispatch({ type: kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST });
         kpiMemberServices.getKPIMemberById(id)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_KPIMEMBER_BYID_SUCCESS,
                     payload: res.data.content
@@ -76,16 +76,16 @@ function getKPIMemberById(id) {
             })
     };
 }
- 
+
 /**
  * Lấy KPI cá nhân theo id 
- */ 
+ */
 function getKPIMemberByMonth(id, time) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST});
- 
-        kpiMemberServices.getKPIMemberByMonth(id,time)
-            .then(res=>{
+        dispatch({ type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST });
+
+        kpiMemberServices.getKPIMemberByMonth(id, time)
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_SUCCESS,
                     payload: res.data.content
@@ -104,10 +104,10 @@ function getKPIMemberByMonth(id, time) {
  */
 function approveKPIMember(id) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST});
- 
+        dispatch({ type: kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST });
+
         kpiMemberServices.approveKPIMember(id)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.APPROVE_KPIMEMBER_SUCCESS,
                     payload: res.data.content
@@ -123,13 +123,13 @@ function approveKPIMember(id) {
 }
 /**
  * Chỉnh sửa mục tiêu KPI cá nhân
- */ 
+ */
 function editTargetKPIMember(id, newTarget) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id});
- 
+        dispatch({ type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id });
+
         kpiMemberServices.editTargetKPIMember(id, newTarget)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS,
                     payload: res.data.content
@@ -143,16 +143,16 @@ function editTargetKPIMember(id, newTarget) {
             })
     };
 }
- 
+
 /**
  * Chỉnh sửa trạng thái mục tiêu KPI cá nhân 
- * */ 
+ * */
 function editStatusTarget(id, status) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST});
- 
-        kpiMemberServices.editStatusTarget(id,status)
-            .then(res=>{
+        dispatch({ type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST });
+
+        kpiMemberServices.editStatusTarget(id, status)
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_SUCCESS,
                     payload: res.data.content
@@ -171,10 +171,10 @@ function editStatusTarget(id, status) {
  */
 function getTaskById(id, employeeId, date, kpiType) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GET_TASK_BYID_REQUEST});
- 
+        dispatch({ type: kpiMemberConstants.GET_TASK_BYID_REQUEST });
+
         kpiMemberServices.getTaskById(id, employeeId, date, kpiType)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,
                     payload: res.data.content
@@ -193,10 +193,10 @@ function getTaskById(id, employeeId, date, kpiType) {
  */
 function setPointKPI(employeeId, kpiType, data) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.SET_POINTKPI_REQUEST});
- 
+        dispatch({ type: kpiMemberConstants.SET_POINTKPI_REQUEST });
+
         kpiMemberServices.setPointKPI(employeeId, kpiType, data)
-            .then(res=>{
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.SET_POINTKPI_SUCCESS,
                     payload: res.data.content
@@ -213,12 +213,12 @@ function setPointKPI(employeeId, kpiType, data) {
 /**
  * Chỉnh sửa độ quan trọng công việc
  */
-function setkpiImportantLevel(id_kpi,date) {
+function setkpiImportantLevel(id_kpi, date) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST});
- 
-        kpiMemberServices.setkpiImportantLevel(id_kpi,date)
-            .then(res=>{
+        dispatch({ type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST });
+
+        kpiMemberServices.setkpiImportantLevel(id_kpi, date)
+            .then(res => {
                 dispatch({
                     type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS,
                     payload: res.data.content
