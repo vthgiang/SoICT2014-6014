@@ -657,7 +657,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset:'Quản lý đăng ký sử dụng',
+            manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
@@ -1603,11 +1603,11 @@ export default {
                 edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
                 confirm_delete: 'Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!',
 
-                responsible: 'Thực hiện chính',
-                accountable: 'Phê duyệt',
-                consulted: 'Hỗ trợ thực hiện',
-                creator: 'Thiết lập',
-                informed: 'Quan sát',
+                responsible: 'Người thực hiện',
+                accountable: 'Người phê duyệt',
+                consulted: 'Người hỗ trợ',
+                creator: 'Nhười thiết lập',
+                informed: 'Người quan sát',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
@@ -1670,6 +1670,16 @@ export default {
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+
+                err_organizational_unit: 'Đơn vị đã bị xóa',
+                err_name_task: 'Tên đã bị xóa',
+                err_priority: 'Độ ưu tiên đã bị xóa',
+                err_status: 'Trạng thái đã bị xóa',
+                err_start_date: 'Ngày bắt đầu đã bị xóa',
+                err_end_date: 'ngày kết thúc đã bị xóa',
+                err_progress: 'Tiến độ công việc đã bị xóa',
+                err_total_log_time: 'Thời gian thực hiện công việc bị xóa',
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1935,27 +1945,7 @@ export default {
 
             },
             evaluation: {
-                get_all_kpi_member_success: 'Lấy tất cả KPI member thành công',
-                get_all_kpi_member_fail: 'Lấy tất cả KPI nhân viên lỗi',
-                get_kpi_targets_success: 'Lấy mục tiêu KPI nhân viên thành công',
-                get_kpi_targets_fail: 'Lấy mục tiêu KPI nhân viên lỗi',
-                get_all_kpi_member_by_id_success: 'Lấy tất cả KPI nhân viên theo Id thành công',
-                get_all_kpi_member_by_id_fail: 'Lấy tất cả KPI nhân viên theo Id lỗi',
-                get_all_kpi_member_by_month_success: 'Lấy tất cả KPI nhân viên theo tháng thành công',
-                get_all_kpi_member_by_month_fail: 'Lấy tất cả KPI nhân viên theo tháng lỗi',
-                approve_all_kpi_target_success: 'Phê duyệt KPI nhân viên thành công',
-                approve_all_kpi_target_fail: 'Phê duyệt KPI nhân viên lỗi',
-                edit_kpi_target_member_success: 'Chỉnh sửa mục tiêu KPI nhân viên thành công',
-                edit_kpi_target_member_fail: 'Chỉnh sửa mục tiêu KPI nhân viên lỗi',
-                edit_status_target_success: 'Chỉnh sửa trạng thái mục tiêu thành công',
-                edit_status_target_fail: 'Chỉnh sửa trạng thái mục tiêu lỗi',
-                get_task_by_id_success: 'Lấy danh sách công việc theo Id thành công',
-                get_task_by_id_fail: 'Lấy danh sách công việc theo Id lỗi',
-                get_system_point_success: 'Lấy điểm hệ thống cho KPI thành công',
-                get_system_point_fail: 'Lấy điểm hệ thống cho KPI lỗi',
-                set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
-                set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
-
+                
                 dashboard: {
                     organizational_unit: 'Đơn vị',
                     select_units: 'Chọn đơn vị',
@@ -1971,6 +1961,9 @@ export default {
                 },
 
                 employee_evaluation:{
+                    /**
+                     * Approve
+                     */
                     approve_KPI_employee:'Phê duyệt KPI nhân viên',
                     month:'Tháng',
                     end_compare:'Tắt so sánh',
@@ -1991,9 +1984,87 @@ export default {
                     save_result:'Lưu kết quả',
                     edit_target:'Sửa mục tiêu',
                     pass:'Đạt',
-                    fail:'Không đạt'
-                }
-
+                    fail:'Không đạt',
+                    /**
+                     * Comment
+                     */
+                    edit_cmt: 'Chỉnh sửa bình luận',
+                    delete_cmt: 'Xóa bình luận',
+                    add_cmt: 'Thêm bình luận',
+                    attached_file: 'Đính kèm tệp',
+                    send_edition: 'Gửi chỉnh sửa',
+                    cancel: 'Hủy',
+                    comment: 'Bình luận',
+                    /**
+                     * Evaluate
+                     */
+                    KPI_list: 'Danh sách KPI',
+                    calc_kpi_point: 'Tính điểm KPI',
+                    export_file: 'Xuất file',
+                    KPI_info: 'Thông tin KPI',
+                    point_field: 'Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)',
+                    not_avaiable: 'Chưa đánh giá',
+                    lastest_evaluation: 'Đánh giá cuối',
+                    task_list: 'Danh sách công việc',
+                    work_duration_time: 'Thời gian làm việc',
+                    evaluate_time: 'Thời gian đánh giá',
+                    contribution: 'Đóng góp',
+                    importance_level: 'Độ quan trọng',
+                    point: 'Điểm',
+                    new_value: 'Giá trị mới',
+                    old_value: 'Giá trị cũ',
+                    auto_value: 'Giá trị tự động',
+    
+                    /**
+                     * Management
+                     */
+                    wrong_time: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                    choose_employee: 'Chọn nhân viên',
+                    employee: 'Nhân viên',
+                    choose_status: 'Chọn trạng thái',
+                    establishing: 'Đang thiết lập',
+                    expecting: 'Chờ phê duyệt',
+                    activated: 'Đã kích hoạt',
+                    time: 'Thời gian',
+                    num_of_kpi: 'Số mục tiêu',
+                    kpi_status: 'Trạng thái mục tiêu',
+                    approve: 'Phê duyệt',
+                    evaluate: 'Đánh giá',
+                    approve_this_kpi: 'Phê duyệt KPI này',
+                    evaluate_this_kpi: 'Đánh giá KPI này',
+                    from: 'Từ tháng',
+                    to: 'Đến tháng',
+                    /**
+                     * Importance Dialog
+                     */
+                    num_of_working_day: 'Số ngày làm việc',
+                    priority: 'Độ ưu tiên',
+                    formula: 'Công thức',
+                    explain_automatic_point: 'Giải thích giá trị điểm tự động'
+                },
+                /**
+                 * Thông báo từ service
+                 */
+                get_all_kpi_member_success: 'Lấy tất cả KPI member thành công',
+                get_all_kpi_member_fail: 'Lấy tất cả KPI nhân viên lỗi',
+                get_kpi_targets_success: 'Lấy mục tiêu KPI nhân viên thành công',
+                get_kpi_targets_fail: 'Lấy mục tiêu KPI nhân viên lỗi',
+                get_all_kpi_member_by_id_success: 'Lấy tất cả KPI nhân viên theo Id thành công',
+                get_all_kpi_member_by_id_fail: 'Lấy tất cả KPI nhân viên theo Id lỗi',
+                get_all_kpi_member_by_month_success: 'Lấy tất cả KPI nhân viên theo tháng thành công',
+                get_all_kpi_member_by_month_fail: 'Lấy tất cả KPI nhân viên theo tháng lỗi',
+                approve_all_kpi_target_success: 'Phê duyệt KPI nhân viên thành công',
+                approve_all_kpi_target_fail: 'Phê duyệt KPI nhân viên lỗi',
+                edit_kpi_target_member_success: 'Chỉnh sửa mục tiêu KPI nhân viên thành công',
+                edit_kpi_target_member_fail: 'Chỉnh sửa mục tiêu KPI nhân viên lỗi',
+                edit_status_target_success: 'Chỉnh sửa trạng thái mục tiêu thành công',
+                edit_status_target_fail: 'Chỉnh sửa trạng thái mục tiêu lỗi',
+                get_task_by_id_success: 'Lấy danh sách công việc theo Id thành công',
+                get_task_by_id_fail: 'Lấy danh sách công việc theo Id lỗi',
+                get_system_point_success: 'Lấy điểm hệ thống cho KPI thành công',
+                get_system_point_fail: 'Lấy điểm hệ thống cho KPI lỗi',
+                set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
+                set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
             },
             organizational_unit: {
                 // Module chính
@@ -2137,6 +2208,7 @@ export default {
             action: 'Hành động',
             unit: 'Đơn vị',
             creator: 'Người tạo',
+            createdAt: 'Ngày tạo',
             edit: 'Chỉnh sửa thông tin báo cáo',
             delete: 'Bạn chắc chắn muốn xóa báo cáo:',
             confirm: 'Xác nhận',
@@ -2144,15 +2216,16 @@ export default {
             title_delete: 'Xóa báo cáo này',
             no_data: 'Không có dữ liệu',
             search_by_name: 'Nhập tên mẫu báo cáo',
+            search_by_creator: 'Nhập tên người tạo báo cáo',
 
 
             //message trả về từ server
             create_report_manager_success: 'Tạo báo cáo thành công !',
             create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
-            edit_report_manager_success:'Sửa báo cáo thành công !',
-            edit_report_manager_fail:'Sửa mẫu báo cáo thất bại !',
-            delete_report_manager_success:'Xóa mẫu báo cáo thành công !',
-            delete_report_manager_fail:'Xóa mẫu báo cáo thất bại !',
+            edit_report_manager_success: 'Sửa báo cáo thành công !',
+            edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
+            delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
+            delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
         },
 
         footer: {

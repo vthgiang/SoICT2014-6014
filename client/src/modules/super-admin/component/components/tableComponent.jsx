@@ -40,9 +40,9 @@ class TableComponent extends Component {
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
-                        componentLink={ currentRow.link ? currentRow.link._id : "Link is deleted" }
+                        componentLink={ currentRow.link ? currentRow.link._id : null }
                         componentDescription={ currentRow.description }
-                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): "Role is deleted" }
+                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): null }
                     />
                 }
 

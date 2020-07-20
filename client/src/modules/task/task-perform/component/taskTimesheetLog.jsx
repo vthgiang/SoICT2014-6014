@@ -9,7 +9,7 @@ import { CallApiStatus } from '../../../auth/redux/reducers'
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
-
+import Swal from 'sweetalert2';
 class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
@@ -86,12 +86,19 @@ class TaskTimesheetLog extends Component {
     }   
     save = () => {
         //do something
-        console.log("Clicked!!")
+        Swal.fire({
+            title: "Bấm giờ quá 8 tiếng sẽ không được ghi nhận",
+            type: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Xác nhận',
+            icon: 'warning'
+        })
     }
     render() { 
         
         const { translate, performtasks, auth } = this.props;
         const currentTimer = performtasks.currentTimer;
+        const a = this.state.time - currentTimer?.timesheetLogs[0].startedAt
         return ( 
             <React.Fragment>
                 {
@@ -134,9 +141,11 @@ class TaskTimesheetLog extends Component {
                         </div>
                     </React.Fragment>
                     }
+                    { (a > 28200000 && a < 28201000) && 
+                        this.save()
+                    }
                    </React.Fragment>
                 }
-                
             </React.Fragment>
         );
     }

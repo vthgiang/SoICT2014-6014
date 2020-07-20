@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Swal from 'sweetalert2';
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
 import Timeline from "react-calendar-timeline";
-import {DatePicker} from '../../../../../common-components/index'
+import { DatePicker } from '../../../../../common-components/index'
 import { taskManagementActions } from '../../../task-management/redux/actions';
-import {ModelDetailTask} from './detailTask'
+import { ModelDetailTask } from './detailTask'
 import './calendar.css'
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -14,11 +14,11 @@ class TasksSchedule extends Component{
     constructor(props){
         super(props);
     
-    var defaultTimeStart = moment()
+    let defaultTimeStart = moment()
       .startOf("month")
       .toDate();
 
-    var defaultTimeEnd = moment()
+    let defaultTimeEnd = moment()
       .startOf("month")
       .add(1, "month")
       .toDate();
@@ -45,9 +45,9 @@ class TasksSchedule extends Component{
     };
   }
   componentDidMount() {
-    let {infoSearch} = this.state;
-    let {organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore} = infoSearch;
-    this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate,startDateAfter,endDateBefore);
+    let { infoSearch } = this.state;
+    let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
+    this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
   }
   
   formatDate(date) {
