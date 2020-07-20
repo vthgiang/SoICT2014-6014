@@ -56,7 +56,7 @@ import {KPIPersonalManager} from "../modules/kpi/employee/management/component/e
 import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
-import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
+import {EmployeeKpiManagement} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
 import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 
@@ -646,7 +646,7 @@ class Routes extends Component {
                         path={ '/kpi-member/manager' }
                         pageName= "kpi_member_manager"
                         layout={ Layout }
-                        component={ KPIMember }
+                        component={ EmployeeKpiManagement }
                     />
                     <PrivateRoute 
                         isLoading={ false }
