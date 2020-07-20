@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { RoleDefaultActions} from '../redux/actions';
-import { withTranslate } from 'react-redux-multilingual';
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
 
-class RoleTable extends Component {
+import { RootRoleActions} from '../redux/actions';
+
+import { withTranslate } from 'react-redux-multilingual';
+
+class RootRoleTable extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {}
     }
 
+    componentDidMount(){
+        this.props.getAllRootRoles();
+    }
+
     render() { 
-        const { rolesDefault, translate } = this.props;
+        const { rootRoles, translate } = this.props;
 
         return ( 
             <React.Fragment>
@@ -22,9 +29,10 @@ class RoleTable extends Component {
                             <th>{ translate('manage_role.description') }</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {
-                            rolesDefault.list.map( role => 
+                            rootRoles.list.map( role => 
                                 <tr key={ `role-default-${role._id}` }>
                                     <td> { role.name } </td>
                                     <td> { role.description } </td>
@@ -36,17 +44,15 @@ class RoleTable extends Component {
             </React.Fragment>
          );
     }
-
-    componentDidMount(){
-        this.props.get();
-    }
-
 }
  
-const mapStateToProps = state => state;
-
-const mapDispatchToProps =  {
-    get: RoleDefaultActions.get
+function mapState(state) {
+    const { rootRoles } = state;
+    return [ rootRoles ]
+}
+const actions =  {
+    getAllRootRoles: RootRoleActions.getAllRootRoles
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(RoleTable) );
+const connectedRootRoleTable = connect(mapState, actions)(withTranslate(RootRoleTable))
+export { connectedRootRoleTable as RootRoleTable }

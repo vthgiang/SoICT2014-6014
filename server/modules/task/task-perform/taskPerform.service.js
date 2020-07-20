@@ -55,7 +55,6 @@ exports.startTimesheetLog = async (body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (body) => {
-    console.log(body)
     var timer = await Task.findOneAndUpdate(
         { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
         {
@@ -67,8 +66,23 @@ exports.stopTimesheetLog = async (body) => {
             }
         },
         {new: true}
+
     ).populate({path: "timesheetLogs.creator", select: "name"});
-    
+    let time = 0;
+
+    timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x=> {
+        time += x.duration; 
+    })
+    var timer1 = await Task.findOneAndUpdate(
+        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        {
+            $set: 
+            {
+                totalLoggedTime: time
+            }
+        }
+    )
+
     return timer.timesheetLogs;
 }
 /**
@@ -212,6 +226,7 @@ exports.createTaskAction = async (body,files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (id,body,files) => {
+    console.log(files)
     var action = await Task.updateOne(
         { "taskActions._id": id },
         {
@@ -219,8 +234,16 @@ exports.editTaskAction = async (id,body,files) => {
             {
                 "taskActions.$.description": body.description
             }
-        },
-        {}
+        }
+    )
+    let action1 = await Task.updateOne(
+        { "taskActions._id": id },
+        {
+            $push:
+            {
+                "taskActions.$.files": files
+            }
+        }
     )
     var task = await Task.findOne({ "taskActions._id": id }).populate([
         { path: "taskActions.creator", model: User,select: 'name email avatar' },
@@ -571,7 +594,7 @@ exports.evaluationAction = async (id,body) => {
     if(body.type === 0){
         //cập nhật điểm người đánh giá
         let evaluationAction = await Task.updateOne(
-            { "taskActions._id":id},
+            { "taskActions._id": id},
             {
                 $push: 
                 {
@@ -1808,9 +1831,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     return newTask;
 }
 /**
- * Xóa file của công việc
+ * Xóa file của hoạt động
  */
-exports.deleteFile = async (params) => {
+exports.deleteFileAction = async (params) => {
     
     let file = await Task.aggregate([
         {$match: {"taskActions.files._id":mongoose.Types.ObjectId(params.id)}},
@@ -1831,6 +1854,5 @@ exports.deleteFile = async (params) => {
     { path: "taskActions.creator", model: User,select: 'name email avatar' },
     { path: "taskActions.comments.creator", model: User, select: 'name email avatar'},
     { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar'}])
-    console.log(task.taskActions)
     return task.taskActions ;
 }

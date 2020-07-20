@@ -13,19 +13,21 @@ class TabNotificationReceivered extends Component {
         }
     }
     render() { 
-        const {translate, notifications} = this.props;
+        const { translate, notifications } = this.props;
+        const { currentRow } = this.state;
+
         return ( 
             <React.Fragment>
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <NotificationReceiveredInfo
-                        notificationId={this.state.currentRow._id}
-                        notificationTitle={this.state.currentRow.title}
-                        notificationContent={this.state.currentRow.content}
-                        notificationLevel={this.state.currentRow.level}
-                        notificationSender={this.state.currentRow.sender}
-                        notificationReaded={this.state.currentRow.readed}
-                        notificationCreatedAt={this.state.currentRow.createdAt}
+                        notificationId={currentRow._id}
+                        notificationTitle={currentRow.title}
+                        notificationContent={currentRow.content}
+                        notificationLevel={currentRow.level}
+                        notificationSender={currentRow.sender}
+                        notificationReaded={currentRow.readed}
+                        notificationCreatedAt={currentRow.createdAt}
                     />
                 }
                 <div id="tab-notification-receivered" style={{display: 'block'}}>
@@ -105,6 +107,6 @@ const actions = {
     getAllNotifications: NotificationActions.getAllNotifications,
     paginateNotifications: NotificationActions.paginateNotifications,
     deleteNotification: NotificationActions.deleteNotification,
-    readedNotification: NotificationActions.readedNotification
+    readedNotification: NotificationActions.readedNotification,
 }
 export default connect(mapState, actions)(withTranslate(TabNotificationReceivered));

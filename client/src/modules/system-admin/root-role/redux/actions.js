@@ -1,22 +1,26 @@
-import { RoleDefaultServices } from "./services";
-import { RoleDefaultConstants } from "./constants";
+import { RootRoleServices } from "./services";
+import { RootRoleConstants } from "./constants";
 
-export const RoleDefaultActions = {
-    get
+export const RootRoleActions = {
+    getAllRootRoles
 }
 
-function get(){
+function getAllRootRoles() {
     return dispatch => {
-        dispatch({ type: RoleDefaultConstants.GET_ROLES_DEFAULT_REQUEST});
-        RoleDefaultServices.get()
+        dispatch({ type: RootRoleConstants.GET_ALL_ROOT_ROLE_REQUEST });
+
+        RootRoleServices.getAllRootRoles()
             .then(res => {
                 dispatch({
-                    type: RoleDefaultConstants.GET_ROLES_DEFAULT_SUCCESS,
+                    type: RootRoleConstants.GET_ALL_ROOT_ROLE_SUCCESS,
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-                dispatch({ type: RoleDefaultConstants.GET_ROLES_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ 
+                    type: RootRoleConstants.GET_ALL_ROOT_ROLE_FAILURE,
+                    payload: error
+                });
             })
     }
 }

@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
-
 import Swal from 'sweetalert2';
-
 import { kpiMemberActions } from '../redux/actions';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
+import { DataTableSetting } from '../../../../../common-components';
+import {DatePicker, SelectBox } from '../../../../../common-components/index';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import {
-    getStorage
-} from '../../../../../config';
-import { ModalMemberApprove } from './employeeKpiApproveModal';
-import { Comments } from './employeeKpiComment';
-import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
-
+import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
+import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { withTranslate } from 'react-redux-multilingual';
 
-// import { withTranslate } from 'react-redux-multilingual';
- 
-class KPIMember extends Component {
+class EmployeeKpiManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,7 +35,7 @@ class KPIMember extends Component {
         this.props.getAllKPIMemberOfUnit(this.state.infosearch);
     }
     formatDateBack(date) {
-        var d = new Date(date), month, day, year;
+        let d = new Date(date), month, day, year;
         if(d.getMonth()===0){
             month = '' + 12;
             day = '' + d.getDate();
@@ -63,7 +53,7 @@ class KPIMember extends Component {
         return [month, year].join('-');
     }
     formatDate(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -137,27 +127,30 @@ class KPIMember extends Component {
             }
         })
         const { infosearch } = this.state;
-            var startDate;
-            var endDate;
-            var startdate=null;
-            var enddate=null;
-            
-            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
-            startdate = new Date(startDate[1], startDate[0], 0);}
-            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
-            enddate = new Date(endDate[1], endDate[0], 28);}
-   
-            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
-                Swal.fire({
-                    title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
-                    type: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
-                })
-            } 
-            else {
-                this.props.getAllKPIMemberOfUnit(infosearch);
-            }
+        let startDate, endDate;
+        let startdate = null, enddate = null;
+
+        if(infosearch.startDate !== null) {
+            startDate = infosearch.startDate.split("-");
+            startdate = new Date(startDate[1], startDate[0], 0);
+        }
+        if (infosearch.endDate !== null){
+            endDate = infosearch.endDate.split("-");
+            enddate = new Date(endDate[1], endDate[0], 28);
+        }
+        const{ translate } = this.props;
+
+        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'), 
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        } 
+        else {
+            this.props.getAllKPIMemberOfUnit(infosearch);
+        }
     }
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
@@ -178,135 +171,124 @@ class KPIMember extends Component {
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
     render() {
-        var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
-        const {status,employee,startDate, endDate} = this.state;
-
+        const { translate } = this.props;
+        const {status, startDate, endDate} = this.state;
+        let userdepartments, kpimember, unitMembers;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
-
-        let unitMembers;
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
-            unitMembers = [{text:"--Chọn nhân viên--", value: "null"}, ...unitMembers[0].value];
+            unitMembers = [{text:translate('kpi.evaluation.employee_evaluation.choose_employee'), value: "null"}, ...unitMembers[0].value];
         }
-
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <ModalMemberApprove id={this.state.kpiId} />
-                        <ModalMemberEvaluate employeeKpiSet={this.state.employeeKpiSet}/>
-
+                        <EmployeeKpiApproveModal id={this.state.kpiId} />
+                        <EmployeeKpiEvaluateModal employeeKpiSet={this.state.employeeKpiSet}/>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label>Nhân viên:</label>
+                                <label>{translate('kpi.evaluation.employee_evaluation.employee')}:</label>
                                 {unitMembers &&
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                <SelectBox 
                                     id={`employee-kpi-manage`}
                                     className="form-control"
                                     style={{width: "100%"}}
                                     items={unitMembers}
                                     onChange={this.handleEmployeeChange}
-                                    // multiple={true}
                                     value={user}
                                 />}
                             </div>
                             <div className="form-group">
-                                <label>Trạng thái:</label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                <label>{translate('kpi.evaluation.employee_evaluation.status')}:</label>
+                                <SelectBox 
                                     id={`status-kpi`}
-                                    // className="form-control"
                                     style={{width: "100%"}}
                                     items = {[
-                                        {value:"null", text : "--Chọn trạng thái--"},
-                                        {value:0, text : "Đang thiết lập"},
-                                        {value:1, text : "Chờ phê duyệt"},
-                                        {value:2, text : "Đã kích hoạt"},]}
+                                        {value: "null", text: translate('kpi.evaluation.employee_evaluation.choose_status')},
+                                        {value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing')},
+                                        {value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting')},
+                                        {value: 2, text: translate('kpi.evaluation.employee_evaluation.activated')}
+                                    ]}
                                     onChange={this.handleStatusChange}
                                     value={status}
                                 />
                             </div>
                         </div>
-
                         <div className="form-inline">
                             <div className="form-group">
-                                <label>Từ tháng:</label>
+                                <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                                 <DatePicker
                                 id='start_date'
-                                
-                                value = {startDate}
+                                value={startDate}
                                 onChange={this.handleStartDateChange}
                                 dateFormat="month-year"
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Đến tháng:</label>
+                                <label>{translate('kpi.evaluation.employee_evaluation.to')}:</label>
                                 <DatePicker
                                 id='end_date'
-                               
-                                value = {endDate}
+                                value={endDate}
                                 onChange={this.handleEndDateChange}
                                 dateFormat="month-year"
                                 />
                             </div>
                             <div className="form-group">
-                                    <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm kiếm</button>
+                                <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
                         </div>
                         
                         <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
-                        columnArr={[ 
-                            'STT' , 
-                            'Thời gian' , 
-                            'Tên nhân viên' , 
-                            'Số lượng mục tiêu' , 
-                            'Trạng thái KPI' , 
-                            'Kết quả', 
-                            'Phê duyệt' , 
-                            'Đánh giá' ]} 
-                            limit={this.state.perPage} 
-                            setLimit={this.setLimit} 
-                            hideColumnOption={true} />
+                            columnArr={[ 
+                                'STT' , 
+                                'Thời gian' , 
+                                'Tên nhân viên' , 
+                                'Số lượng mục tiêu' , 
+                                'Trạng thái KPI' , 
+                                'Kết quả', 
+                                'Phê duyệt' , 
+                                'Đánh giá' ]} 
+                                limit = {this.state.perPage} 
+                                setLimit = {this.setLimit} 
+                                hideColumnOption = {true} />
                         
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
                             <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
-                            <th title="Thời gian">Thời gian</th>
-                            <th title="Tên nhân viên">Tên nhân viên</th>
-                            <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
-                            <th title="Trạng thái KPI">Trạng thái Kpi</th>
-                            <th title="Kết quả">Kết quả</th>
-                            <th title=">Phê duyệt" style={{textAlign: "center"}}>Phê duyệt</th>
-                            <th title="Đánh giá">Đánh giá</th>
+                            <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
+                            <th title="Tên nhân viên">{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                            <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
+                            <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
+                            <th title="Kết quả">{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                            <th title="Phê duyệt" style={{textAlign: "center"}}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
+                            <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}</th>
                             </tr>
                         </thead>
                         <tbody className="task-table">
-                            {(typeof kpimember !== "undefined" && kpimember.length !== 0) ?
+                            {(kpimember && kpimember.length !== 0) ?
                             kpimember.map((item, index) =>
-                            <tr key={index + 1}>
-                            <td title={index+1}>{index + 1}</td>
-                            <td title={this.formatDate(item.date)}>{this.formatDate(item.date)}</td>
-                            <td title="">{item.creator.name}</td>
-                            <td title="">{item.kpis.length}</td>
-                            <td title="">{this.checkStatusKPI(item.status)}</td>
-                            <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
-                            
+                            <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item? this.formatDate(item.date): "Deleted"}</td>
+                            <td>{item.creator? item.creator.name: "Deleted"}</td>
+                            <td>{item.kpis? item.kpis.length: "Deleted"}</td>
+                            <td>{item? this.checkStatusKPI(item.status): "Deleted"}</td>
+                            <td>{item.approvedPoint === null? translate('kpi.evaluation.employee_evaluation.not_avaiable'): item.approvedPoint}</td>
                             <td style={{textAlign: "center"}}>
                                 <a data-target={`#modal-approve-KPI-member`} onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
-                                title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
+                                title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
                             </td>
                             <td>
                                 <a data-target={`#employee-kpi-evaluation-modal`} onClick={()=> this.showEvaluateModal(item)} data-toggle="modal"
-                                className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
-                                {/* {this.state.showEvaluateModal === item._id ?
-                                <ModalMemberEvaluate name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null} */}
+                                className="copy" title={translate('kpi.evaluation.employee_evaluation.evaluate_this_kpi')}><i className="fa fa-list"></i></a>
                             </td>
                             </tr>
                             ) : <tr>
                             <td colSpan={8}>
-                                <center>Không có dữ liệu</center>
+                                <center>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</center>
                             </td>
                             </tr>}
                         </tbody>
@@ -324,9 +306,9 @@ function mapState(state) {
 }
  
 const actionCreators = {
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getAllUserSameDepartment : UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
-const connectedKPIMember = connect(mapState, actionCreators)(KPIMember);
-export { connectedKPIMember as KPIMember };
+const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiManagement));
+export { connectedKPIMember as EmployeeKpiManagement };

@@ -66,7 +66,7 @@ exports.createNotification = async (req, res) => {
 // Lấy tất cả các thông báo mà người dùng nhận được
 exports.getAllNotifications = async (req, res) => {
     try {
-        var notification = await NotificationServices.getAllNotifications(req.user._id);
+        const notification = await NotificationServices.getAllNotifications(req.user._id);
 
         await LogInfo(req.user.email, 'GET_ALL_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
@@ -107,7 +107,7 @@ exports.paginateNotifications = async (req, res) => {
 
 exports.changeNotificationStateToReaded = async (req, res) => {
     try {
-        var notification = await NotificationServices.changeNotificationStateToReaded(req.params.id);
+        const notification = await NotificationServices.changeNotificationStateToReaded(req.params.id);
         
         await LogInfo(req.user.email, 'CHANGE_NOTIFICATION_STATE_TO_READED', req.user.company._id );
         res.status(200).json({
@@ -128,7 +128,7 @@ exports.changeNotificationStateToReaded = async (req, res) => {
 
 exports.deleteManualNotification = async (req, res) => {
     try {
-        var notification = await NotificationServices.deleteManualNotification(req.params.id);
+        const notification = await NotificationServices.deleteManualNotification(req.params.id);
 
         await LogInfo(req.user.email, 'DELETE_MANUAL_NOTIFICATION', req.user.company._id );
         res.status(200).json({
@@ -149,7 +149,7 @@ exports.deleteManualNotification = async (req, res) => {
 
 exports.deleteNotification = async (req, res) => {
     try {
-        var notification = await NotificationServices.deleteNotification(req.params.id);
+        const notification = await NotificationServices.deleteNotification(req.params.id);
 
         await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
         res.status(200).json({

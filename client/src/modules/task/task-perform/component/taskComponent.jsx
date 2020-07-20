@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
-import { SubTaskTab } from './subTaskTab';
 import { taskManagementActions } from "../../task-management/redux/actions";
-import { performTaskAction } from '../redux/actions';
 import { UserActions } from "../../../super-admin/user/redux/actions";
 
 import qs from 'qs';
-import { DialogModal } from '../../../../common-components';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -28,14 +24,7 @@ class TaskComponent extends Component {
         this.props.getAllUserOfCompany();
     }
 
-    componentDidMount() {
-        // if(this.props.id){
-        //     this.props.getTaskById(this.props.id);
-        // }
-    }
-
     shouldComponentUpdate = (nextProps, nextState) => {
-        // console.log('nextProps, nextState, this.state', nextProps, nextState, this.state);
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId && this.flag == 1) {
@@ -45,7 +34,6 @@ class TaskComponent extends Component {
             }
         }
         if (nextProps.id !== this.state.id) {
-            console.log('GET TASK');
             this.props.getTaskById(nextProps.id); // this.props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
             this.setState( state => {
                 return {
@@ -61,7 +49,7 @@ class TaskComponent extends Component {
     checkPermission(tasks) {
         var id = localStorage.getItem("userId");
         var info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-        // if (tasks.task) info = tasks.task.info;
+
         if (tasks.task) info = tasks.task;
         if (typeof info !== 'undefined' && info !== null) {
             responsibleEmployees = info.responsibleEmployees;
@@ -80,7 +68,7 @@ class TaskComponent extends Component {
             for (let n in informedEmployees) {
                 if (informedEmployees[n]._id === id) return true;
             }
-            if (info.creator._id === id){
+            if (info.creator?._id === id){
                 return true;
             }
         }
@@ -97,6 +85,8 @@ class TaskComponent extends Component {
     }
 
     render = () => {
+        const { translate } = this.props;
+
         let taskId = this.props.id;;
         let task;
 
@@ -111,7 +101,7 @@ class TaskComponent extends Component {
         if (performtasks.task && !this.checkPermission(performtasks)) {
             return (
                 <div>
-                    <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
+                    <h2>{translate('task.task_management.detail_task_permission')}</h2>
                 </div>
             );
         }

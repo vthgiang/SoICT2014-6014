@@ -1,8 +1,8 @@
 export const configTaskTempalte= {
     rowHeader : 2,
     sheets : ["Sheet1", "Sheet 2"],
-    unit : "Đơn vị",
-    viewer : "Người được xem",
+    organizationalUnit : "Đơn vị",
+    readByEmployees : "Người được xem",
     name: "Tên mẫu",
     priority: "Độ ưu tiên",
     description : "Mô tả",
@@ -15,11 +15,11 @@ export const configTaskTempalte= {
     nameTaskActions: "Tên hoạt động",
     descriptionTaskAction: "Mô tả",
     mandatory : "Bắt buộc",
-    taskInformation: "Danh sách thông tin",
+    taskInformations: "Danh sách thông tin",
     nameTaskInformation : "Tên thông tin",
-    descriptionTaskInformation: "Mô tả thông tin",
-    typeTaskInformation: "Kiểu dữ liệu",
-    onlyManager: "Chỉ quản lý được điền",
+   descriptionTaskInformation: "Mô tả thông tin",
+    type: "Kiểu dữ liệu",
+    filledByAccountableEmployeesOnly: "Chỉ quản lý được điền",
     file: {
         fileName: 'taskTemplate',
         fileUrl: '/upload/task/taskTemplateImportForm/template_mau-cong-viec.xlsx'

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
 import c3 from 'c3';
@@ -16,6 +15,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
+            willUpdate: false
         };
     }
 
@@ -26,6 +26,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             return {
                 ...state,
                 dataStatus: this.DATA_STATUS.QUERYING,
+                willUpdate: true
             }
         });
     }
@@ -39,6 +40,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true,
                 }
             });
 
@@ -56,13 +58,14 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 };
             });
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && this.state.willUpdate){
 
             this.multiLineChart();
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                    willUpdate: false
                 };
             });
         }
@@ -86,7 +89,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
         var listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
-        if(createEmployeeKpiSet) {
+        if(createEmployeeKpiSet && this.state.willUpdate) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
 

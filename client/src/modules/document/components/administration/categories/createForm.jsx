@@ -9,6 +9,10 @@ class CreateForm extends Component {
         super(props);
         this.state = {
             value: ['0-0-0'],
+            errorName: undefined,
+            errorDescription: undefined,
+            documentTypeName: '',
+            documentTypeDescription: '',
         }
     }
 
@@ -16,6 +20,7 @@ class CreateForm extends Component {
         console.log('onChange ', value);
         this.setState({ value });
     };
+    
 
     handleName = (e) => {
         const value = e.target.value;
@@ -31,6 +36,55 @@ class CreateForm extends Component {
         })
     }
 
+    validateTypeName = (value, willUpdateState)=>{
+        let msg = undefined;
+        if(value === "")
+            msg = "Tên không được để trống";
+        if(willUpdateState){
+            this.setState(state=>{
+               return{
+                   ...state,
+                   documentTypeName: value,
+                   errorName: msg
+               }
+            })
+        }
+        return msg === undefined ;
+    }
+
+    handleValidateTypeName = e =>{
+        let value = e.target.value.trim();
+        this.validateTypeName(value, true);
+    }
+    validateTypeDescription = (value, willUpdateState)=>{
+        let msg = undefined;
+        if(value === "")
+            msg = "Tên không được để trống";
+        if(willUpdateState){
+            this.setState(state=>{
+               return{
+                   ...state,
+                   documentTypeDescription: value,
+                   errorDescription: msg
+               }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleValidateTypeDescription = e =>{
+        let value = e.target.value.trim();
+        this.validateTypeDescription(value, true);
+    }
+    isFormValidated = () =>{
+       // let {documentTypeDescription, documentTypeName} = this.state
+        
+        let cons = this.validateTypeName(this.state.documentTypeName, false) 
+        &&  this.validateTypeDescription(this.state.documentTypeDescription, false);
+        console.log('qqqqqqqqq', cons);
+        return cons;
+    }
+
     save = () => {
         const {documentTypeName, documentTypeDescription} = this.state;
         this.props.createDocumentCategory({
@@ -41,6 +95,7 @@ class CreateForm extends Component {
 
     render() {
         const {translate}=this.props;
+        const {errorName, errorDescription} = this.state;
         return ( 
             <React.Fragment>
                 
@@ -50,15 +105,19 @@ class CreateForm extends Component {
                     formID="form-create-document-type"
                     title={translate('document.administration.categories.add')}
                     func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-document-type">
-                        <div className="form-group">
+                        <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                             <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleName}/>
+                            <input type="text" className="form-control"
+                             onChange={this.handleValidateTypeName}/>
+                             <ErrorLabel content={errorName}/>
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${errorDescription === undefined ? "" : "has-error"}`}>
                             <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
-                            <textarea type="text" className="form-control" onChange={this.handleDescription}/>
+                            <textarea type="text" className="form-control" onChange={this.handleValidateTypeDescription}/>
+                            <ErrorLabel content={errorDescription}/>
                         </div>
                     </form>
                 </DialogModal>

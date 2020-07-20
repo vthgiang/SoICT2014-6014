@@ -1,4 +1,4 @@
-const { TaskReport } = require('../../../models').schema;
+const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = require('../../../models').schema;
 
 
 /**
@@ -12,13 +12,13 @@ exports.getTaskReports = async (params) => {
     if (name !== undefined && name.length !== 0) {
         keySearch = {
             ...keySearch,
-            name : {$regex : params.name, $options : "i"},
+            name: { $regex: params.name, $options: "i" },
         }
     }
 
     let totalList = await TaskReport.countDocuments();
-    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' }).skip(parseInt(params.page)).limit(parseInt(params.limit)).populate({path : 'creator', select : "_id name"});
-    return {totalList, listTaskReport};
+    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' }).skip(parseInt(params.page)).limit(parseInt(params.limit)).populate({ path: 'creator', select: "_id name" });
+    return { totalList, listTaskReport };
 }
 
 
@@ -28,7 +28,7 @@ exports.getTaskReports = async (params) => {
  */
 exports.getTaskReportById = async (id) => {
     let taskReportById = await TaskReport.findById(id)
-    .populate({path : 'creator', select : "_id name"});
+        .populate({ path: 'creator', select: "_id name" });
     return taskReportById;
 }
 
@@ -40,12 +40,12 @@ exports.getTaskReportById = async (id) => {
  */
 exports.createTaskReport = async (data, user) => {
     let newTaskReport = await TaskReport.create({
-        name : data.nameTaskReport,
-        description : data.descriptionTaskReport,
-        creator : user,
+        name: data.nameTaskReport,
+        description: data.descriptionTaskReport,
+        creator: user,
     })
 
-    let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({path : 'creator', select : "_id name"});
+    let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
     return getNewTaskReport;
 }
 
@@ -59,12 +59,12 @@ exports.createTaskReport = async (data, user) => {
 exports.editTaskReport = async (id, data, user) => {
     await TaskReport.findByIdAndUpdate(id, {
         $set: {
-            name : data.nameTaskReport,
-            description : data.descriptionTaskReport,
-            creator : user,
+            name: data.nameTaskReport,
+            description: data.descriptionTaskReport,
+            creator: user,
         }
-    }, {new: true});
-    return await TaskReport.findOne({_id : id}).populate({path : 'creator', select : '_id name'});
+    }, { new: true });
+    return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
 }
 
 
@@ -73,6 +73,6 @@ exports.editTaskReport = async (id, data, user) => {
  * @param {*} id báo cáo cần xóa
  */
 exports.deleteTaskReport = async (id) => {
-    let deleteReport = await TaskReport.findOneAndDelete({_id : id});
+    let deleteReport = await TaskReport.findOneAndDelete({ _id: id });
     return deleteReport;
 }

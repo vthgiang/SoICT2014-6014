@@ -7,6 +7,7 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
 import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
+import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
 
 import { SelectBox, SelectMulti } from '../../../../../common-components';
 import Swal from 'sweetalert2';
@@ -208,21 +209,25 @@ class DashBoardKPIMember extends Component {
 
     handleSelectMonthStart = (value) => {
         var month = value.slice(3,7) + '-' + value.slice(0,2);
+
         this.INFO_SEARCH.startMonth = month;
     }
 
-    handleSelectMonthEnd = async (value) => {
-        var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+    handleSelectMonthEnd = (value) => {
+        if(value.slice(0,2)<12) {
+            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        } else {
+            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+
         this.INFO_SEARCH.endMonth = month;
     }
 
     handleSearchData = async () => {
-        var startDate = this.INFO_SEARCH.startMonth.split("-");
-        var startdate = new Date(startDate[1], startDate[0], 0);
-        var endDate = this.INFO_SEARCH.endMonth.split("-");
-        var enddate = new Date(endDate[1], endDate[0], 28);
-        
-        if (Date.parse(startdate) > Date.parse(enddate)) {
+        var startMonth = new Date(this.INFO_SEARCH.startMonth);
+        var endMonth = new Date(this.INFO_SEARCH.endMonth);
+
+        if (startMonth.getTime() >= endMonth.getTime()) {
             Swal.fire({
                 title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
                 type: 'warning',
@@ -473,12 +478,12 @@ class DashBoardKPIMember extends Component {
                 </div>
 
 
-                {/* Thống kê kết quả thực hiện mục tiêu của nhân viên */}
+                {/* Thống kê kết quả KPI của nhân viên */}
                 <div className="row">
                     <div className="col-md-12">
                         <div className="box">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Thống kê kết quả thực hiện mục tiêu của nhân viên</h3>
+                                <h3 className="box-title">Thống kê kết quả KPI của nhân viên</h3>
                                 <div className="box-tools pull-right">
                                     <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
                                     </button>
@@ -491,7 +496,7 @@ class DashBoardKPIMember extends Component {
                                     <div className="col-sm-6 col-xs-12 form-group" >
                                         <label>Từ tháng</label>
                                         <DatePicker 
-                                            id="monthStart"      
+                                            id="monthStartInEmployeeKpiEvaluation"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                             value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
                                             onChange={this.handleSelectMonthStart}
@@ -501,7 +506,7 @@ class DashBoardKPIMember extends Component {
                                     <div className="col-sm-6 col-xs-12 form-group" >
                                         <label>Đến tháng</label>
                                         <DatePicker 
-                                            id="monthEnd"      
+                                            id="monthEndInEmployeeKpiEvaluation"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                             value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
                                             onChange={this.handleSelectMonthEnd}
@@ -539,6 +544,26 @@ class DashBoardKPIMember extends Component {
                                         />
                                     }
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Kết quả Kpi tất cả nhân viên */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Kết quả KPI tất cả nhân viên</h3>
+                                <div className="box-tools pull-right">
+                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
+                                    </button>
+                                </div>
+                            </div>
+                            {/* /.box-header */}
+
+                            <div className="box-body qlcv">
+                                <ResultsOfAllEmployeeKpiSetChart/>
                             </div>
                         </div>
                     </div>

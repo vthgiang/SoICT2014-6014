@@ -12,8 +12,8 @@ class Notifications extends Component {
     }
 
     checkHasComponent = (name) => {
-        var {auth} = this.props;
-        var result = false;
+        let {auth} = this.props;
+        let result = false;
         auth.components.forEach(component => {
             if(component.name === name) result=true;
         });

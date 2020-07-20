@@ -16,8 +16,6 @@ class SubTaskTab extends Component {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId){
                 this.props.getTaskById(taskId);
-                // this.props.getTaskActions(taskId);
-                // this.props.getTaskComments(taskId);
                 this.props.getSubTask(taskId);
             }
         }
@@ -58,7 +56,7 @@ class SubTaskTab extends Component {
                     )
                 })}
 
-                {subtasks && subtasks.length==0 && <dt>Không có công việc con</dt>}
+                {subtasks && subtasks.length==0 && <dt>{translate("task.task_perform.none_subtask")}</dt>}
             </div>
         )
     }

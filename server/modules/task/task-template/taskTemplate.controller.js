@@ -86,6 +86,7 @@ exports.searchTaskTemplates = async (req, res) => {
 // Tạo một mẫu công việc
 exports.createTaskTemplate = async (req, res) => {
     try {
+        console.log('controller',req.body);
         var data = await TaskTemplateService.createTaskTemplate(req.body);
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
         res.status(200).json({
@@ -141,5 +142,22 @@ exports.editTaskTemplate = async(req, res) => {
             content: error
         });
     }
+}
+
+exports.importTaskTemplate = async(req, res)=>{
+   // try{
+        let data = await TaskTemplateService.importTaskTemplate(req.body, req.user._id);
+        res.status(200).json({
+            success: true,
+            message: [`import_task_template_success`],
+            content: data
+        });
+    // }catch(error){
+    //     res.status(400).json({
+    //         success: false,
+    //         message:[`import_task_template_faile`],
+    //         content: error
+    //     });
+    // }
 }
 
