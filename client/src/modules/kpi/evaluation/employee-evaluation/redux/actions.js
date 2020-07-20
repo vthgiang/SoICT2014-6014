@@ -11,20 +11,14 @@ export const kpiMemberActions = {
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
-    // createComment,
-    // editComment,
-    // deleteComment,
-    // createCommentOfComment,
-    // editCommentOfComment,
-    // deleteCommentOfComment
 };
+/**
+ * Lấy tất cả KPI cá nhân
+ */ 
  
-// Lấy tất cả KPI cá nhân
 function getAllKPIMemberOfUnit(infosearch) {
-    console.log('inforsearch action', infosearch);
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
- 
         kpiMemberServices.getAllKPIMemberOfUnit(infosearch)
             .then(res=>{
                 dispatch({
@@ -40,12 +34,12 @@ function getAllKPIMemberOfUnit(infosearch) {
             })
     };
 }
-// Lấy tất cả KPI cá nhân
-function getAllKPIMemberByMember(member) { //member
-    console.log('mmmm',member);
+/**
+ *  Lấy tất cả KPI cá nhân 
+ */
+function getAllKPIMemberByMember(member) { 
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
- 
         kpiMemberServices.getAllKPIMemberByMember(member)
             .then(res=>{
                 dispatch({
@@ -61,13 +55,12 @@ function getAllKPIMemberByMember(member) { //member
             })
     };
 }
- 
- 
-// Lấy KPI cá nhân theo id
+/**
+ *Lấy KPI cá nhân theo id  
+ */ 
 function getKPIMemberById(id) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST});
- 
         kpiMemberServices.getKPIMemberById(id)
             .then(res=>{
                 dispatch({
@@ -84,7 +77,9 @@ function getKPIMemberById(id) {
     };
 }
  
-// Lấy KPI cá nhân theo id
+/**
+ * Lấy KPI cá nhân theo id 
+ */ 
 function getKPIMemberByMonth(id, time) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST});
@@ -104,12 +99,9 @@ function getKPIMemberByMonth(id, time) {
             })
     };
 }
- 
- 
- 
- 
- 
-// Phê duyệt toàn bộ KPI cá nhân
+/**
+ *  Phê duyệt toàn bộ KPI cá nhân
+ */
 function approveKPIMember(id) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST});
@@ -129,10 +121,9 @@ function approveKPIMember(id) {
             })
     };
 }
- 
- 
- 
-// Chỉnh sửa mục tiêu KPI cá nhân
+/**
+ * Chỉnh sửa mục tiêu KPI cá nhân
+ */ 
 function editTargetKPIMember(id, newTarget) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id});
@@ -153,7 +144,9 @@ function editTargetKPIMember(id, newTarget) {
     };
 }
  
-// Chỉnh sửa trạng thái mục tiêu KPI cá nhân
+/**
+ * Chỉnh sửa trạng thái mục tiêu KPI cá nhân 
+ * */ 
 function editStatusTarget(id, status) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST});
@@ -173,7 +166,9 @@ function editStatusTarget(id, status) {
             })
     };
 }
-
+/**
+ *Lấy danh sách công việc theo id
+ */
 function getTaskById(id, employeeId, date, kpiType) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_TASK_BYID_REQUEST});
@@ -193,7 +188,9 @@ function getTaskById(id, employeeId, date, kpiType) {
             })
     };
 }
-
+/**
+ * Chỉnh sửa điểm KPI
+ */
 function setPointKPI(employeeId, kpiType, data) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.SET_POINTKPI_REQUEST});
@@ -213,7 +210,9 @@ function setPointKPI(employeeId, kpiType, data) {
             })
     };
 }
-
+/**
+ * Chỉnh sửa độ quan trọng công việc
+ */
 function setkpiImportantLevel(id_kpi,date) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST});

@@ -1,40 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
-import moment from 'moment'
-
+import { DataTableSetting } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker} from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
-
-import {
-    getStorage
-} from '../../../../../config';
+import { getStorage } from '../../../../../config';
 import { Comment } from './employeeKpiComment';
-// import Files from 'react-files'
-// import TextareaAutosize from 'react-textarea-autosize';
-
-// import '../../../../task/task-perform/component/actionTab';
 class ModalMemberApprove extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
         super(props);
         this.state = {
             currentUser: idUser,
-            date : this.formatDateBack(Date.now()),
+            date: this.formatDateBack(Date.now()),
             editing: false,
             edit: "",
             compare: false,
             checkInput: false,
             checkWeight: false,
-            
         };
         this.newWeight = [];
     }
-    // componentDidMount() {
-    //     // console.log('id : ====='+this.props.id);
-    //     this.props.getKPIMemberById(this.props.id);
-    // }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.id !== prevState.id) {
             return {
@@ -55,18 +42,18 @@ class ModalMemberApprove extends Component {
         }
         return true;
     }
+
     handleEdit = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
                 editing: true,
-                edit: state.edit ===id ? "" : id,
+                edit: state.edit === id? "": id,
             }
         })
     }
-    handleSaveEdit = async (target) => {
-        
 
+    handleSaveEdit = async (target) => {
         await this.setState(state=>{
             return{
                 ...state,
@@ -89,6 +76,7 @@ class ModalMemberApprove extends Component {
             })
         }
     }
+
     handleDateChange = (value) => {
         this.setState(state => {
                 return {
@@ -99,14 +87,16 @@ class ModalMemberApprove extends Component {
             });
         
     }
+
     validateDate = (value) => {
+        const { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = "Chọn tháng so sánh";
+            msg = translate('kpi.evaluation.employee_evaluation.choose_month_cmp');
         }
-        
         return msg;
     }
+
     handleCompare = async (id) => {
         await this.setState(state => {
             return {
@@ -117,8 +107,8 @@ class ModalMemberApprove extends Component {
         if (id) {
 				this.props.getKPIMemberByMonth(id,this.formatDateBack(Date.now()));
         }
-        
     }
+
     formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -132,9 +122,10 @@ class ModalMemberApprove extends Component {
 
         return [month, year].join('-');
     }
+
     formatDateBack(date) {
         let d = new Date(date), month, day, year;
-        if(d.getMonth()===0){
+        if(d.getMonth() === 0){
             month = '' + 12;
             day = '' + d.getDate();
             year = d.getFullYear()-1;
@@ -150,38 +141,9 @@ class ModalMemberApprove extends Component {
 
         return [month, year].join('-');
     }
-    handleCloseModal = async (id, listTarget) => {
-        let totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
-        if(totalWeight!==100&&this.state.editing){
-            await this.setState(state => {
-                return{
-                    ...state,
-                    checkWeight: true
-                }
-            })
-        } else {
-            let element = document.getElementsByTagName("BODY")[0];
-            element.classList.remove("modal-open");
-            let modal = document.getElementById(`memberKPIApprove${id}`);
-            modal.classList.remove("in");
-            modal.style = "display: none;";
-        }
-    }
-    checkStatusTarget = (status) => {
-        if (status === null) {
-            return "Chưa phê duyệt";
-        } else if (status === 0) {
-            return "Yêu cầu chỉnh sửa";
-        } else if (status === 1) {
-            return "Đã kích hoạt";
-        } else if (status === 2) {
-            return "Đã kết thúc"
-        }
-    }
+
     searchKPIMemberByMonth = async (id) => {
-        
         if(this.state.date === undefined || this.state.date == this.formatDateBack(Date.now()) ){    
-            
             this.props.getKPIMemberByMonth(id, this.formatDateBack(Date.now()));
         }
         else { 
@@ -197,13 +159,10 @@ class ModalMemberApprove extends Component {
     }
 
     handleApproveKPI = async (id, listTarget) => {
-        
         let totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
-        
-        if(totalWeight!==100){
+        if(totalWeight !== 100){
             await this.setState(state => {
                 return{
-            
                     ...state,
                     checkWeight: true
                 }
@@ -227,23 +186,21 @@ class ModalMemberApprove extends Component {
     }
 
     render() {
-        
-        const { translate, kpimembers } = this.props;
-        const { errorOnDate, date,currentUser} = this.state;
+        const { kpimembers } = this.props;
+        const { translate } = this.props;
+        const { errorOnDate, date } = this.state;
         let kpimember, kpimembercmp, month;
         if (kpimembers.currentKPI) {
             kpimember = kpimembers.currentKPI;
             month = kpimember.date.split('-');
-            let currentKPI = kpimembers.currentKPI
         }
-        
         if (kpimembers.kpimembers){
             let arrkpimember = kpimembers.kpimembers;
             arrkpimember.forEach(item => {
-                let datekpi= item.date.split('-');
-                let date= new Date();
-                if((date.getMonth()+1)===datekpi[1] && date.getFullYear()===datekpi[2]){
-                    kpimember= item;
+                let datekpi = item.date.split('-');
+                let date = new Date();
+                if((date.getMonth()+ 1) === datekpi[1] && date.getFullYear() === datekpi[2]){
+                    kpimember = item;
                 }
             });
         } 
@@ -251,13 +208,11 @@ class ModalMemberApprove extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                modalID={`modal-approve-KPI-member`}
-                // title={`Phê duyệt KPI nhân viên  - Tháng ${kpimember && month[1]}/${kpimember && month[0]}`}
-                title={`${translate('kpi.evaluation.employee_evaluation.approve_KPI_employee')} - ${translate('kpi.evaluation.employee_evaluation.month')} ${kpimember && month[1]}/${kpimember && month[0]}`}
-                hasSaveButton ={false}
-                size={100}>
-                        
-                    <div className="qlcv">
+                modalID = {`modal-approve-KPI-member`}
+                title = {`${translate('kpi.evaluation.employee_evaluation.approve_KPI_employee')} - ${translate('kpi.evaluation.employee_evaluation.month')} ${kpimember && month[1]}/${kpimember && month[0]}`}
+                hasSaveButton = {false}
+                size = {100}>
+                    <div className = "qlcv">
                         <div className="form-inline pull-right">
                             {this.state.compare ?
                             <button className=" btn btn-primary"  onClick={() => this.handleCompare()}>{translate('kpi.evaluation.employee_evaluation.end_compare')}</button>:
@@ -265,49 +220,47 @@ class ModalMemberApprove extends Component {
                             }
                             <button className=" btn btn-success"  onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>  
                         </div>
-                
                         <br/>
                         {this.state.compare &&
                         <div>
                             <div className="form-inline">
-                                <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                    <label style={{width: "140px"}}>{translate('kpi.evaluation.employee_evaluation.choose_mpnth_cmp')}</label>
+                                <div className={`form-group ${errorOnDate === undefined? "": "has-error"}`}>
+                                    <label style = {{width: "140px"}}>{translate('kpi.evaluation.employee_evaluation.choose_mpnth_cmp')}</label>
                                     <DatePicker
-                                        id="create_date"
-                                        dateFormat="month-year"
-                                        value={date}
-                                        onChange={this.handleDateChange}
+                                        id = "create_date"
+                                        dateFormat = "month-year"
+                                        value = {date}
+                                        onChange = {this.handleDateChange}
                                     />
-                                    <ErrorLabel content={errorOnDate} />
+                                    <ErrorLabel content= {errorOnDate} />
                                 </div>
                                 <div className="form-group" >
-                                    <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                    <button className="btn btn-success" onClick = {() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                 </div>
                             </div>
-
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th title="STT" className="col-fixed" style={{width: 50}}>STT</th>
-                                        <th title="Tên mục tiêu">{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                        <th title="Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
-                                        <th title="Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
-                                        <th title="Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
-                                        <th title="Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                                        <th title = "STT" className="col-fixed" style= {{width: 50}}>STT</th>
+                                        <th title = "Tên mục tiêu">{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                        <th title = "Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
+                                        <th title = "Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
+                                        <th title = "Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                        <th title = "Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    { kpimembercmp ?
+                                    { kpimembercmp?
                                         kpimembercmp.kpis.map((item, index) =>
                                             <tr >
                                                 <td>{index+1}</td>
-                                                <td>{item.name}</td>
-                                                <td>{item.parent && item.parent.name }</td>
-                                                <td>{item.criteria}</td>
-                                                <td>{this.state.edit === item._id ? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                <td>{item.approvedPoint}</td>
+                                                <td>{item? item.name: "Deleted"}</td>
+                                                <td>{item.parent? item.parent.name: "Deleted" }</td>
+                                                <td>{item? item.criteria: "Deleted"}</td>
+                                                <td>{this.state.edit === item._id? <input min="0" max="100"defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                                <td>{item? item.approvedPoint: "Deleted"}</td>
                                             </tr>
-                                        ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
+                                        ) : <tr><td colSpan= {6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
                                     }
                                 </tbody>
                             </table>
@@ -315,21 +268,21 @@ class ModalMemberApprove extends Component {
                         }
                         <br></br>
                         <br></br>
-                        {this.state.checkWeight && <p className="text-danger" style={{fontWeight: 900}}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
-                        <table id ="kpi-approve-table" className="table table-bordered table-striped table-hover">
+                        {this.state.checkWeight && <p className="text-danger" style= {{fontWeight: 900}}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
+                        <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th title="STT" className="col-fixed" style={{width: 50}}>{translate('kpi.evaluation.employee_evaluation.index')}</th>
-                                    <th title="Tên mục tiêu">{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                    <th title="Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
-                                    <th title="Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
-                                    <th title="Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
-                                    <th title="Trạng thái">{translate('kpi.evaluation.employee_evaluation.status')}</th>
-                                    <th title="Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
-                                    <th title="Hành động" className="col-fixed" style={{width: 130}}>
+                                    <th className="col-fixed" style= {{width: 50}}>{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.target')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                    <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                                    <th className="col-fixed" style= {{width: 130}}>
                                     {translate('kpi.evaluation.employee_evaluation.action')}
                                         <DataTableSetting class="pull-right" tableId="kpi-approve-table"
-                                            columnArr={[ 
+                                            columnArr= {[ 
                                                 'STT',
                                                 'Tên mục tiêu'
                                                 ,'Mục tiêu đơn vị',
@@ -338,7 +291,9 @@ class ModalMemberApprove extends Component {
                                                 'Trạng thái',
                                                 'Kết quả đánh giá',
                                                 'Hành động']}
-                                            limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true}
+                                            limit= {this.state.perPage} 
+                                            setLimit= {this.setLimit} 
+                                            hideColumnOption= {true}
                                         />
                                     </th>
                                 </tr>
@@ -347,17 +302,17 @@ class ModalMemberApprove extends Component {
                                 {kpimember && kpimember.kpis.map((item, index) =>
                                     <tr >
                                         <td>{index+1}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.parent && item.parent.name}</td>
-                                        <td>{item.criteria}</td>
-                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref={input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
+                                        <td>{item? item.name: "Deleted"}</td>
+                                        <td>{item.parent? item.parent.name: "Deleted"}</td>
+                                        <td>{item? item.criteria: "Deleted"}</td>
+                                        <td>{this.state.edit === item._id ? <input min="0" max="100"  ref = {input => this.newWeight[item._id]= input}  defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                         <td>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
-                                        <td>{item.approvedPoint}</td>
+                                        <td>{item? item.approvedPoint: "Deleted"}</td>
                                         <td>
-                                        {this.state.edit === item._id?<a href="#" className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
-                                        :<a href="#" className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
-                                        <a href="#" className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event)=>this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check</i></a>
-                                        <a href="#" className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
+                                        {this.state.edit === item._id? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
+                                        :<a style={{ cursor: 'pointer'}} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
+                                        <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event)=>this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check</i></a>
+                                        <a style={{ cursor: 'pointer' }} className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event)=>this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
                                         </td>
                                     </tr>
                                 )}

@@ -18,9 +18,9 @@ class TaskImpartanceDialog extends Component{
                     hasSaveButton = {false}
                 >
                     <div>
-                        <div>Số ngày thực hiện: {this.props.task.daykpi}</div>
-                        <div>Đóng góp: {this.props.task.results.contribution}</div>
-                        <div>Độ ưu tiên: {this.props.task.priority}</div>
+                        <div>Số ngày thực hiện: {this.props.task? this.props.task.daykpi: "Deleted"}</div>
+                        <div>Đóng góp: {this.props.task? this.props.task.results.contribution: "Deleted"}</div>
+                        <div>Độ ưu tiên: {this.props.task? this.props.task.priority: "Deleted"}</div>
                         <div>Công thức :</div>
                         <div> 3 * ({this.props.task.priority} / 3) + 3 * ({this.props.task.results.contribution} / 100) + 4 * ({this.props.task.daykpi} / 30)</div>
                         <div> = {this.props.task.taskImportanceLevelCal}</div>
@@ -30,7 +30,5 @@ class TaskImpartanceDialog extends Component{
         )
     };
 }
-
-
 const  taskImportance = connect(null,null)(withTranslate(TaskImpartanceDialog))
 export {taskImportance as TaskDialog}
