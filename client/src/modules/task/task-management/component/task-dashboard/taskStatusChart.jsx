@@ -108,7 +108,7 @@ class TaskStatusChart extends Component {
     }
 
     handleSelectRole = (value) => {
-        var roleName = this.ROLE_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
+        let roleName = this.ROLE_SELECTBOX.filter(x => x.value === Number(value[0])).map(x => x.text);
 
         this.setState(state => {
             return {
@@ -122,14 +122,14 @@ class TaskStatusChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { tasks } = this.props;
-        var dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        var listTask, listTask;
+        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
+        let listTask;
         
-        var now = new Date();
-        var currentYear = now.getFullYear();
-        var currentMonth = now.getMonth();
-        var beginnigOfNextMonth = new Date(currentYear, currentMonth+1);
-        var beginningOfMonth = new Date(currentYear, currentMonth);
+        let now = new Date();
+        let currentYear = now.getFullYear();
+        let currentMonth = now.getMonth();
+        let beginnigOfNextMonth = new Date(currentYear, currentMonth+1);
+        let beginningOfMonth = new Date(currentYear, currentMonth);
 
         if(tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
             if(this.state.role === this.ROLE.RESPONSIBLE) {
@@ -209,7 +209,7 @@ class TaskStatusChart extends Component {
     pieChart = () => {
         this.removePreviosChart();
 
-        var dataPieChart = this.setDataPieChart();
+        let dataPieChart = this.setDataPieChart();
 
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"

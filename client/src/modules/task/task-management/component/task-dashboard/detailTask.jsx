@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DialogModal} from '../../../../../common-components/index';
-import {taskManagementActions} from '../../../task-management/redux/actions'
+import { taskManagementActions } from '../../../task-management/redux/actions'
 import { DetailTaskTab } from '../../../task-perform/component/detailTaskTab';
-import {withTranslate} from 'react-redux-multilingual';
+import { withTranslate } from 'react-redux-multilingual';
 class ModelDetailTask extends Component{
     constructor (props) {
         super(props);

@@ -1670,6 +1670,16 @@ export default {
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+
+                err_organizational_unit: 'Đơn vị đã bị xóa',
+                err_name_task: 'Tên đã bị xóa',
+                err_priority: 'Độ ưu tiên đã bị xóa',
+                err_status: 'Trạng thái đã bị xóa',
+                err_start_date: 'Ngày bắt đầu đã bị xóa',
+                err_end_date: 'ngày kết thúc đã bị xóa',
+                err_progress: 'Tiến độ công việc đã bị xóa',
+                err_total_log_time: 'Thời gian thực hiện công việc bị xóa',
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform

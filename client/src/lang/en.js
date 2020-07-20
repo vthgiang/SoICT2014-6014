@@ -1521,7 +1521,17 @@ export default {
                 action_store: 'Store task',
                 action_restore: 'Restore task',
                 action_add: 'Add new subtask',
-                action_start_timer: 'Start timer'
+                action_start_timer: 'Start timer',
+
+                err_organizational_unit: 'Organizational Unit deleted',
+                err_name_task: 'Name deleted',
+                err_priority: 'Priority deleted',
+                err_status: 'Status deleted',
+                err_start_date: 'Start date deleted',
+                err_end_date: 'End date deleted',
+                err_progress: 'Progress deleted',
+                err_total_log_time: 'Total logged time deleted',
+                
             },
             task_perform: {
                 // TODO: code_mesage_task_perform

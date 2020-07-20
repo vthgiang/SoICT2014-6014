@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-    getStorage
-} from '../../../../config';
+import { getStorage } from '../../../../config';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
-
 import { TaskFormValidator} from './taskFormValidator';
 import { taskTemplateConstants } from '../../task-template/redux/constants';
-
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 class ModalAddTask extends Component {
@@ -241,11 +237,6 @@ class ModalAddTask extends Component {
         });
     }
 
-
-
-
-
-
     handleChangeTaskResponsibleEmployees = (value) => {
         this.validateTaskResponsibleEmployees(value, true);
     }
@@ -349,11 +340,11 @@ class ModalAddTask extends Component {
 
    
     render() {
-        var units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         const { newTask } = this.state;
-        const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
-                
-        var taskTemplate,responsibleEmployees;
+        const { tasktemplates, user, KPIPersonalManager } = this.props;
+
+        let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
+        let taskTemplate;
         if(tasktemplates.taskTemplate) 
         { 
             taskTemplate =tasktemplates.taskTemplate;
@@ -371,21 +362,18 @@ class ModalAddTask extends Component {
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
-        var usersOfChildrenOrganizationalUnit;
+        let usersOfChildrenOrganizationalUnit;
         if(user.usersOfChildrenOrganizationalUnit){
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
-        var usersInUnitsOfCompany;
+        let usersInUnitsOfCompany;
         if(user&&user.usersInUnitsOfCompany){
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
         
-        var allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        var unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        let allUnitsMember =getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         
-  
-        
-        // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
                 
         return (
@@ -558,7 +546,7 @@ class ModalAddTask extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
+    const { tasktemplates, tasks, user, KPIPersonalManager } = state;
     return { tasktemplates, tasks, user, KPIPersonalManager };
 }
 
@@ -566,12 +554,11 @@ const actionCreators = {
     getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     addTask: taskManagementActions.addTask,
-    getDepartment: UserActions.getDepartmentOfUser,//có r
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,//có r
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
+    getDepartment: UserActions.getDepartmentOfUser,
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getChildrenOfOrganizationalUnits : UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany : UserActions.getAllUserInAllUnitsOfCompany
 };
