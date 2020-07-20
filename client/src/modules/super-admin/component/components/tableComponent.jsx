@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ComponentActions } from '../redux/actions';
-import ComponentInfoForm from './componentInfoForm';
+
 import { PaginateBar, DataTableSetting, SearchBar, ToolTip } from '../../../../common-components';
+
+import { ComponentActions } from '../redux/actions';
 import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
+
+import ComponentInfoForm from './componentInfoForm';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -13,7 +16,7 @@ class TableComponent extends Component {
         this.state = { 
             limit: 5,
             page: 1,
-            option: 'name', //mặc định tìm kiếm theo tên
+            option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
         }
     }
@@ -28,18 +31,22 @@ class TableComponent extends Component {
     render() { 
         const { component, translate } = this.props;
         const { currentRow } = this.state;
+
         return ( 
             <React.Fragment>
+                {/* Form chỉnh sửa thông tin về component */}
                 {
-                    currentRow !== undefined &&
+                    currentRow &&
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
-                        componentLink={ currentRow.link !== undefined ? currentRow.link._id : null }
+                        componentLink={ currentRow.link ? currentRow.link._id : "Link is deleted" }
                         componentDescription={ currentRow.description }
-                        componentRoles={ currentRow.roles.map(role => role.roleId._id) }
+                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): "Role is deleted" }
                     />
                 }
+
+                {/* Thanh tìm kiếm */}
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value:'name' },
@@ -50,6 +57,7 @@ class TableComponent extends Component {
                     search={this.searchWithOption}
                 />
                 
+                {/* Bảng dữ liệu các components */}
                 <table className="table table-hover table-striped table-bordered" id="table-manage-component">
                     <thead>
                         <tr>
@@ -79,21 +87,23 @@ class TableComponent extends Component {
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
-                                    <td>{ component.link !== undefined ? component.link.url : null }</td>
+                                    <td>{ component.link? component.link.url: "Link is deleted" }</td>
                                     <td>{ component.description }</td>
-                                    <td><ToolTip dataTooltip={component.roles.map(role => role.roleId.name)}/></td>
+                                    <td><ToolTip dataTooltip={component.roles? component.roles.map(role => role.roleId.name): "Role is deleted"}/></td>
                                     <td style={{ textAlign: 'center'}}>
                                         <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                     </td>
                                 </tr>
-                            ): component.isLoading ?
+                            ): component.isLoading?
                             <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr>:
                             <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
+
                 {/* PaginateBar */}
                 <PaginateBar pageTotal={component.totalPages} currentPage={component.page} func={this.setPage}/>
+
             </React.Fragment>
          );
     }
@@ -150,11 +160,12 @@ class TableComponent extends Component {
 }
  
 const mapState = state => state;
+
 const getState = {
     get: ComponentActions.get,
     destroy: ComponentActions.destroy,
     getLinks: LinkActions.get,
-    getRoles: RoleActions.get
+    getRoles: RoleActions.get,
 }
  
 export default connect(mapState, getState) (withTranslate(TableComponent));

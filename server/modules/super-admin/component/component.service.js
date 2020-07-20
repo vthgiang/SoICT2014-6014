@@ -8,16 +8,14 @@ exports.getAllComponents = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
-        
+    if (page === undefined && limit === undefined ){
         return await Component
-            .find({ company})
+            .find({ company })
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
             ]);
-
-    }else{
+    } else{
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
@@ -39,7 +37,6 @@ exports.getAllComponents = async (company, query) => {
  * @id id component
  */
 exports.getComponent = async (id) => {
-
     return await Component
         .findById(id)
         .populate([
@@ -92,7 +89,7 @@ exports.deleteComponent = async(id) => {
         resourceId: id,
         resourceType: 'Component'
     });
-    const deleteComponent = await Component.deleteOne({ _id: id});
+    const deleteComponent = await Component.deleteOne({ _id: id });
 
     return {relationshiopDelete, deleteComponent};
 }
@@ -107,6 +104,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceId: componentId,
         resourceType: 'Component'
     });
+
     const data = roleArr.map( role => {
         return {
             resourceId: componentId,
@@ -114,6 +112,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
             roleId: role
         };
     });
+
     const privilege = await Privilege.insertMany(data);
 
     return privilege;
@@ -136,12 +135,12 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
         ]);
         
     const data = await Privilege.find({
-        roleId: {$in: roleArr},
+        roleId: { $in: roleArr },
         resourceType: 'Component',
         resourceId: { $in: link.components }
     }).distinct('resourceId');
 
-    const components = await Component.find({_id: {$in: data}});
+    const components = await Component.find({ _id: { $in: data } });
 
     return components;
 }
