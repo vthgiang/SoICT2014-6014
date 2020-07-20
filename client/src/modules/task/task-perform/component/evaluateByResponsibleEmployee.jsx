@@ -3,16 +3,9 @@ import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../comm
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
-import { taskManagementActions } from '../../task-management/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-import { kpiMemberActions } from '../../../kpi/evaluation/employee-evaluation/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
-
-import {
-    getStorage
-} from '../../../../config';
-import { createKpiSetActions } from '../../../kpi/employee/creation/redux/actions';
-
+import { getStorage } from '../../../../config';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import moment from 'moment'
@@ -37,7 +30,6 @@ class EvaluateByResponsibleEmployee extends Component {
             date: data.date,
             kpi: data.kpi,
             point: data.point,
-            // progress: data.task.progress
             progress: data.progress
         }
 
@@ -48,9 +40,6 @@ class EvaluateByResponsibleEmployee extends Component {
     getData = (dateParam) => {
         let idUser = getStorage("userId");
         let { task } = this.props;
-        // let {tasks} = this.props;
-        // let task = (tasks && tasks.task) && tasks.task.info;
-
         let evaluations;
         
         let splitter = dateParam.split("-");
@@ -66,7 +55,6 @@ class EvaluateByResponsibleEmployee extends Component {
             date = this.formatDate(new Date()); 
         }
         else if(this.props.perform === "evaluate"){
-            // date = this.formatDate(new Date()); 
             date = moment().endOf("month").format('DD-MM-YYYY');
         }
 
@@ -83,7 +71,6 @@ class EvaluateByResponsibleEmployee extends Component {
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
-                    // infoTask[i].value = this.formatDate(infoTask[i].value);
                 } 
                 else if( !infoTask[i].filledByAccountableEmployeesOnly ) {
                     info[`${infoTask[i].code}`] = {
@@ -91,7 +78,6 @@ class EvaluateByResponsibleEmployee extends Component {
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
-                    // infoTask[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoTask[i].type === "SetOfValues"){
@@ -102,7 +88,6 @@ class EvaluateByResponsibleEmployee extends Component {
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
-                    // infoTask[i].value = [infoTask[i].value];
                 }
                 else if(!infoTask[i].filledByAccountableEmployeesOnly){
                     info[`${infoTask[i].code}`] = {
@@ -110,7 +95,6 @@ class EvaluateByResponsibleEmployee extends Component {
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
-                    // infoTask[i].value = [splitSetOfValues[0]];
                 }
             }
             else {
@@ -150,7 +134,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
-                            // infoEval[i].value = this.formatDate(infoEval[i].value);
                         } 
                         else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
                             info[`${infoEval[i].code}`] = {
@@ -158,7 +141,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
-                            // infoEval[i].value = this.formatDate(Date.now());
                         } 
                     }
                     else if(infoEval[i].type === "SetOfValues"){
@@ -169,7 +151,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
-                            // infoEval[i].value = [infoEval[i].value];
                         }
                         else if(!infoEval[i].filledByAccountableEmployeesOnly){
                             info[`${infoEval[i].code}`] = {
@@ -177,7 +158,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
-                            // infoEval[i].value = [splitSetOfValues[0]];
                         }
                     }
                     else {
@@ -222,7 +202,7 @@ class EvaluateByResponsibleEmployee extends Component {
         };
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        if(isNaN(calcAuto)) calcAuto = undefined
+        if( isNaN(calcAuto) ) calcAuto = undefined
 
         return {
             task: task,
@@ -236,7 +216,6 @@ class EvaluateByResponsibleEmployee extends Component {
             calcAuto: calcAuto,
         }
     }
-
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
@@ -258,8 +237,6 @@ class EvaluateByResponsibleEmployee extends Component {
         let date = this.formatDate(new Date());
         let department = task.organizationalUnit._id;
 
-        // this.props.getTaskById(this.props.id);
-        // this.props.getEmployeeKpiSet();
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
     }
 
@@ -288,7 +265,6 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleDateChange = (value) => {
-        // let value = e.target.value;
         let {idUser, task} = this.state;
 
         let data = this.getData(value);
@@ -318,7 +294,6 @@ class EvaluateByResponsibleEmployee extends Component {
                 progress: data.progress,
             }
         });
-        console.log('-----stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.state);
     }
 
     handleChangePoint = async (e) => {
@@ -332,21 +307,16 @@ class EvaluateByResponsibleEmployee extends Component {
         })
     }
 
-
-    // ==============================BEGIN HANDLE TASK INFORMATION===================================
-
     handleChangeProgress = async (e) => {
         let value = parseInt(e.target.value);
         await this.setState(state =>{
             return {
                 ...state,
-                // autoPoint: value,
                 progress: value,
                 errorOnProgress: this.validatePoint(value)
             }
         })
         await this.handleChangeAutoPoint();
-        // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     } 
     
     handleChangeNumberInfo = async (e) => {
@@ -363,7 +333,6 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
-        // console.log('handleChangeAutoPoint==============', this.calcAutomaticPoint());
         await this.handleChangeAutoPoint();
     } 
 
@@ -378,10 +347,6 @@ class EvaluateByResponsibleEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -398,7 +363,6 @@ class EvaluateByResponsibleEmployee extends Component {
             return {
                 ...state,
                 errorOnInfoDate: this.validateDate(value),
-                // infoDate: value,
             }
         });
     }
@@ -428,11 +392,6 @@ class EvaluateByResponsibleEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // }
-                // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
     }
@@ -465,9 +424,6 @@ class EvaluateByResponsibleEmployee extends Component {
         return msg;
     }
     
-    // ==============================END HANDLE TASK INFORMATION===================================
-
-    
     validateDate = (value, willUpdateState = true) => {
         let msg = undefined;
         if (value.trim() === "") {
@@ -490,9 +446,9 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     isFormValidated = () => {
-        const { point, autoPoint, progress, date, kpi, infoDate, infoBoolean, setOfValue } = this.state;
         const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnTextInfo, errorOnNumberInfo } = this.state;
         var {info} = this.state;
+
         var check = true;
         for(let i in info) {
             if(info[i].value === undefined ) {
@@ -500,7 +456,6 @@ class EvaluateByResponsibleEmployee extends Component {
                 break;
             }
         }
-        // check && 
         return ( errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
@@ -540,6 +495,13 @@ class EvaluateByResponsibleEmployee extends Component {
         window.$(`#modal-automatic-point-info`).modal('show');
     }
 
+    formatRole = (data) => {
+        const { translate } = this.props;
+        if(data === "Consulted") return translate('task.task_management.consulted');
+        if(data === "Accountable") return translate('task.task_management.accountable');
+        if(data === "Responsible") return translate('task.task_management.responsible');
+    }
+
     handleAddTaskLog = () => {
         let title = '';
         let description = '';
@@ -560,7 +522,7 @@ class EvaluateByResponsibleEmployee extends Component {
             if (JSON.stringify(kpi) !== JSON.stringify(currentTask.kpi)){
                 const { KPIPersonalManager } = this.props;
                 let listKpi = [];
-                if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
+                if( KPIPersonalManager && KPIPersonalManager.kpiSets ) listKpi = KPIPersonalManager.kpiSets.kpis;
 
                 let newKpi = [];
                 for(const element of kpi){
@@ -568,26 +530,24 @@ class EvaluateByResponsibleEmployee extends Component {
                     newKpi.push(a[0].name);
                 }
                 
-                description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
+                description = description === ''? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi): description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
             }
 
             if (autoPoint !== currentTask.autoPoint) {
-                description = description === '' ? description + 'Điểm chấm tự động mới: ' + autoPoint : description + '. ' + 'Điểm chấm tự động mới: ' + autoPoint;
+                description = description === ''? description + 'Điểm chấm tự động mới: ' + autoPoint: description + '. ' + 'Điểm chấm tự động mới: ' + autoPoint;
             }
 
             if (point !== currentTask.point) {
-                description = description === '' ? description + 'Điểm tự đánh giá mới: ' + point : description + '. ' + 'Điểm tự đánh giá mới: ' + point;
+                description = description === ''? description + 'Điểm tự đánh giá mới: ' + point: description + '. ' + 'Điểm tự đánh giá mới: ' + point;
             }
         }
 
-        if(currentTask.task.progress !== progress){
-            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
+        if( currentTask.task.progress !== progress ){
+            title = title === '' ? title + 'Chỉnh sửa thông tin công việc': title + '. ' + 'Chỉnh sửa thông tin công việc';
+            description = description === ''? description + 'Mức độ hoàn thành mới: ' + progress + "%": description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
         }
-
-        console.log("*****111111*********", title, "|||" , description);
                 
-        if (title !== '' || description !== '') {
+        if ( title !== '' || description !== '' ) {
             this.props.addTaskLog({
                 createdAt: Date.now(),
                 taskId: this.props.id, 
@@ -621,7 +581,6 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        // console.log('PARENT nextProps, prevState',nextProps, prevState);
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -641,13 +600,11 @@ class EvaluateByResponsibleEmployee extends Component {
         }
     }
 
-    render() {
-        console.log("#####################", currentTask);
-        
-        const { translate, tasks, performtasks, KPIPersonalManager, kpimembers } = this.props;
-        const { task, point, oldAutoPoint, autoPoint, progress, date, kpi, priority, infoDate, infoBoolean, setOfValue } = this.state;
-        const { errorOnDate, errorOnPoint, errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.state;
-        // let items = [{value: '123', text: 'Quang'},{value: '789', text: 'Thế'}]
+    render() {        
+        const { translate, KPIPersonalManager } = this.props;
+        const { task, point, oldAutoPoint, autoPoint, date, kpi, showAutoPointInfo } = this.state;
+        const { errorOnDate, errorOnPoint } = this.state;
+
         let listKpi = [];
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
@@ -660,7 +617,6 @@ class EvaluateByResponsibleEmployee extends Component {
             && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
 
-        // let task = (tasks && tasks.task)&& tasks.task.info;
         return (
             <React.Fragment>
             <DialogModal
@@ -689,7 +645,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 id={`select-kpi-personal-evaluate-${this.props.perform}-${this.props.role}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                // items = {listKpi.map(x => { return { value: x._id, text: x.name } })}
                                 items = { ((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
                                 onChange={this.handleKpiChange}
                                 multiple={true}
@@ -716,14 +671,14 @@ class EvaluateByResponsibleEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a style={{cursor: "pointer"}} id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint !== undefined?autoPoint:"Chưa tính được"}
                             </a>
                         </strong>
                         <br/>
                         <br/>
                         <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
-                            <a href="javascript:void(0)" >
+                            <a style={{color:"black"}}>
                                 {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
                             </a> 
                         </strong>
@@ -741,7 +696,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         </ul>
 
                         {
-                            this.state.showAutoPointInfo === 1 && 
+                            showAutoPointInfo === 1 && 
                             <ModalShowAutoPointInfo
                                 task={this.state.task}
                                 progress={this.state.progress}
@@ -750,8 +705,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                 autoPoint={autoPoint}
                             />
                         }
-                        {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
-                        {/* <br/> */}
                         <br/>
                         <div className={`form-group ${errorOnPoint===undefined?"":"has-error"}`}>
                             <label>Điểm tự đánh giá (<span style={{color:"red"}}>*</span>)</label>
@@ -779,7 +732,6 @@ const mapState = (state) => {
 }
 const getState = {
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    // evaluateTaskByResponsibleEmployees: taskManagementActions.evaluateTaskByResponsibleEmployees,
     evaluateTaskByResponsibleEmployees: performTaskAction.evaluateTaskByResponsibleEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }

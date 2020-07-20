@@ -119,11 +119,11 @@ class DomainOfTaskResultsChart extends Component {
     // Hàm lọc các công việc theo từng tháng
     filterTasksByMonth = (currentMonth, nextMonth) => {
         const { tasks } = this.props;
-        var maxResults = [], minResults = [], maxResult, minResult;
-        var listTask, listTask;
+        let maxResults = [], minResults = [], maxResult, minResult;
+        let listTask;
         
-        var now = new Date();
-        var currentYear = now.getFullYear();
+        let now = new Date();
+        let currentYear = now.getFullYear();
         var beginningOfMonth = new Date(currentYear, currentMonth-1);
 
         if(tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {

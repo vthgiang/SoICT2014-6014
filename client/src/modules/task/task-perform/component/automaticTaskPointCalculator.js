@@ -10,17 +10,11 @@ String.prototype.replaceAll = function(
     let strText = this;
     let intIndexOfMatch = strText.indexOf( strTarget );
     
-    // Keep looping while an instance of the target string
-    // still exists in the string.
     while (intIndexOfMatch != -1){ // có thể bị lặp vô hạn vì có trường hợp thay x = x
-        // Relace out the current instance.
         strText = strText.replace( strTarget, strSubString )
-        // Get the index of any next matching substring.
         intIndexOfMatch = strText.indexOf( strTarget );
     }
     
-    // Return the updated string with ALL the target strings
-    // replaced out with the new substring.
     return( strText );
 }
 
@@ -58,18 +52,13 @@ function calcAutoPoint(data) {
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
     let averageActionRating = reduceAction/a;
-
-    // - progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10
     let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10;
-
     let automaticPoint = 0;
 
     if(task.taskTemplate === null || task.taskTemplate === undefined){ // Công việc không theo mẫu
         automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
     }
     else{ // Công việc theo mẫu
-       console.log('formula', task.taskTemplate.formula);
-
         let formula = task.taskTemplate.formula;
         let taskInformations = info;
 
@@ -96,11 +85,7 @@ function calcAutoPoint(data) {
             formula = formula.replace(regex, undefined);
         }
 
-        console.log('new formula', formula);
-
         automaticPoint = eval(formula);
-
-        console.log('automaticPoint', automaticPoint);
     }
     
     // automaticPoint = ( !isNaN(automaticPoint) && automaticPoint > 0 ) ? automaticPoint : 0;

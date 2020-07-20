@@ -657,7 +657,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset:'Quản lý đăng ký sử dụng',
+            manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
@@ -1603,11 +1603,11 @@ export default {
                 edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
                 confirm_delete: 'Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!',
 
-                responsible: 'Thực hiện chính',
-                accountable: 'Phê duyệt',
-                consulted: 'Hỗ trợ thực hiện',
-                creator: 'Thiết lập',
-                informed: 'Quan sát',
+                responsible: 'Người thực hiện',
+                accountable: 'Người phê duyệt',
+                consulted: 'Người hỗ trợ',
+                creator: 'Nhười thiết lập',
+                informed: 'Người quan sát',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
@@ -1670,6 +1670,16 @@ export default {
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+
+                err_organizational_unit: 'Đơn vị đã bị xóa',
+                err_name_task: 'Tên đã bị xóa',
+                err_priority: 'Độ ưu tiên đã bị xóa',
+                err_status: 'Trạng thái đã bị xóa',
+                err_start_date: 'Ngày bắt đầu đã bị xóa',
+                err_end_date: 'ngày kết thúc đã bị xóa',
+                err_progress: 'Tiến độ công việc đã bị xóa',
+                err_total_log_time: 'Thời gian thực hiện công việc bị xóa',
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -2137,6 +2147,7 @@ export default {
             action: 'Hành động',
             unit: 'Đơn vị',
             creator: 'Người tạo',
+            createdAt: 'Ngày tạo',
             edit: 'Chỉnh sửa thông tin báo cáo',
             delete: 'Bạn chắc chắn muốn xóa báo cáo:',
             confirm: 'Xác nhận',
@@ -2144,15 +2155,16 @@ export default {
             title_delete: 'Xóa báo cáo này',
             no_data: 'Không có dữ liệu',
             search_by_name: 'Nhập tên mẫu báo cáo',
+            search_by_creator: 'Nhập tên người tạo báo cáo',
 
 
             //message trả về từ server
             create_report_manager_success: 'Tạo báo cáo thành công !',
             create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
-            edit_report_manager_success:'Sửa báo cáo thành công !',
-            edit_report_manager_fail:'Sửa mẫu báo cáo thất bại !',
-            delete_report_manager_success:'Xóa mẫu báo cáo thành công !',
-            delete_report_manager_fail:'Xóa mẫu báo cáo thất bại !',
+            edit_report_manager_success: 'Sửa báo cáo thành công !',
+            edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
+            delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
+            delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
         },
 
         footer: {

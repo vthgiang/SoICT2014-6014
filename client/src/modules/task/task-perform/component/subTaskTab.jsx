@@ -16,8 +16,6 @@ class SubTaskTab extends Component {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
             if (taskId){
                 this.props.getTaskById(taskId);
-                // this.props.getTaskActions(taskId);
-                // this.props.getTaskComments(taskId);
                 this.props.getSubTask(taskId);
             }
         }
