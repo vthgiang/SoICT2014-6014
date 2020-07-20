@@ -303,6 +303,9 @@ exports.data = [
     { path: '/tasks/evaluate/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/tasks/sub-task/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+
+    { path: '/tasks/get-task/evaluations', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/log-timer/currentTimer/:user', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -321,7 +324,7 @@ exports.data = [
     { path: '/performtask/task-action', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-action/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-action/:id/:idUser', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/files/:id/:actionId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/task-action/files/:id/:actionId/:type', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     //taskcomment
     { path: '/performtask/task-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/task-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -355,6 +358,7 @@ exports.data = [
     { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean'] },
     { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/tasktemplates/importTaskTemplate', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
 
 
     //asset-type
@@ -403,10 +407,10 @@ exports.data = [
     { path: '/kpi/evaluation/dashboard/organizational-units/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // module report management
-    { path: '/taskreports', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/taskreports/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/taskreports', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/taskreports/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/taskreports', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskreports/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskreports', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskreports/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
 ];

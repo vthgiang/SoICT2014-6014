@@ -3,7 +3,6 @@ import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-compone
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
-import { taskManagementActions } from '../../task-management/redux/actions';
 import { getStorage } from '../../../../config';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 
@@ -106,10 +105,6 @@ class EvaluateByConsultedEmployee extends Component {
         return [day, month, year].join('-');
     }
     
-    // componentDidMount() {
-    //     this.props.getTaskById(this.props.id);
-    // }
-
     validatePoint = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -150,7 +145,6 @@ class EvaluateByConsultedEmployee extends Component {
             return{
                 ...prevState,
                 id: nextProps.id,
-                // TODO: Ve sau can sua
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -167,7 +161,7 @@ class EvaluateByConsultedEmployee extends Component {
 
 
     isFormValidated = () => {
-        let { point, errorOnPoint, info  } = this.state;
+        let { point, errorOnPoint } = this.state;
         return ( point !== undefined && errorOnPoint === undefined)?true:false;
     }
     
@@ -182,15 +176,12 @@ class EvaluateByConsultedEmployee extends Component {
             automaticPoint: this.state.automaticPoint
         }
 
-        console.log('data', data, taskId);
         this.props.evaluateTaskByConsultedEmployees(data,taskId);
     }
 
-
-
     render() {
-        let { point, errorOnPoint, evaluations, automaticPoint } = this.state;
-        let { id, role, task } = this.props;
+        let { point, errorOnPoint, evaluations, automaticPoint, showAutoPointInfo } = this.state;
+        let { task } = this.props;
 
         return (
             <React.Fragment>
@@ -221,35 +212,30 @@ class EvaluateByConsultedEmployee extends Component {
                             <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
                             <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p>
                             {   
-                                evaluations ?
+                                evaluations?
                                 <div >
-                                    {
-                                        (evaluations.taskInformations.length !== 0) &&
+                                    {(evaluations.taskInformations.length !== 0) &&
                                         <div>
-                                            {/* <p><span style={{fontWeight: "bold"}}>Mức độ hoàn thành:</span> {task && task.progress}%</p> */}
                                             {
                                                 evaluations.taskInformations.map(info => {
                                                     if(info.type === "Date"){
                                                         return <div>
-                                                            <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? this.formatDate(info.value):"Chưa đánh giá"}</p>
+                                                            <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? this.formatDate(info.value): "Chưa đánh giá"}</p>
                                                         </div>
                                                     }
                                                     else return <div>
-                                                        {/* TODO: Check date ISO */}
-                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value:"Chưa đánh giá"}</p>
+                                                        <p><span style={{fontWeight: "bold"}}>{info.name}</span>&nbsp;-&nbsp;Giá trị: {info.value? info.value: "Chưa đánh giá"}</p>
                                                     </div>
                                                 })
                                             }
                                         </div> 
                                     }                                        
                                     <br/>
-                                    {
-                                        (evaluations.results.length !== 0) ?
+                                    {(evaluations.results.length !== 0)?
                                         <div>
-                                            {/* <p><span style={{fontWeight: "bold"}}>Điểm tự động:</span> &nbsp;{automaticPoint}</p> */}
                                             <strong>Điểm tự động: &nbsp;
-                                                <a href="javascript:void(0)" onClick = { () => this.handleShowAutomaticPointInfo() }>
-                                                    {automaticPoint !== undefined? automaticPoint : "Chưa tính được"}
+                                                <a style={{cursor: "pointer"}} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                                                    {automaticPoint !== undefined? automaticPoint: "Chưa tính được"}
                                                 </a>
                                             </strong>
                                             {
@@ -271,7 +257,7 @@ class EvaluateByConsultedEmployee extends Component {
                 </form>
             </DialogModal>
             {
-                this.state.showAutoPointInfo === 1 && 
+                showAutoPointInfo === 1 && 
                 <ModalShowAutoPointInfo
                     task={this.state.task}
                     progress={this.state.progress}

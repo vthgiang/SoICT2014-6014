@@ -16,7 +16,7 @@ class MaintainanceManagement extends Component {
             type: null,
             status: null,
             page: 0,
-            limit: 5,
+            limit: 100,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }

@@ -9,16 +9,12 @@ class TaskInformationForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        // console.log('Children nextProps, prevState', nextProps, prevState);
         if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,
-                // ...nextProps,
-                // TODO: ve sau can sửa
 
                 id: nextProps.id,
                 
-                // task: nextProps.task,
                 errorOnInfoDate: undefined,
                 errorOnProgress: undefined
             } 
@@ -28,20 +24,14 @@ class TaskInformationForm extends Component {
     }
 
     render() {
-        // const { errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.props;
-        const { value } = this.props;
-        
-        var task = this.props.task
-        
-        // console.log('taskkkkkkkkkkkkk', task);
-
+        const { value, task } = this.props;
+            
         return (
             <React.Fragment>
                 <div>
                     
                     <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
-                            {/* information task */}
                             <div className={`form-group ${value.errorOnProgress===undefined?"":"has-error"}`}>
                                 <label>Mức độ hoàn thành (<span style={{color:"red"}}>*</span>)</label>
                                 <input 
@@ -61,7 +51,6 @@ class TaskInformationForm extends Component {
                                 task.taskInformations.map((info, index)=> 
                                 {
                                     if (info.type === 'Text'){
-                                        // return <div className={`form-group ${value.errorOnTextInfo === undefined ? "" : "has-error"}`}>
                                         return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             {
@@ -82,7 +71,6 @@ class TaskInformationForm extends Component {
                                      
                                     {
                                     if (info.type === 'Number') { 
-                                        // return <div className={`form-group ${value.errorOnNumberInfo === undefined ? "" : "has-error"}`}>
                                         return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <input 
@@ -149,7 +137,6 @@ class TaskInformationForm extends Component {
                                                 multiple={false}
                                                 disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value } 
-                                                // : [info.extra[0].value]
                                             />
                                         </div>
                                     }}

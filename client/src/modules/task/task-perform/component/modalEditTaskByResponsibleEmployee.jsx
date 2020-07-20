@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/';
-import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
@@ -26,15 +25,40 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             date: data.date,
             kpi: data.kpi,
             progress: data.task.progress
-        }   
-        console.log('-------------------\n\n', this.state);
-
+        }  
     }
 
+    componentDidMount() {
+
+        let { task, userId } = this.state;
+        let date = this.formatDate(new Date());
+        let department = task.organizationalUnit._id;
+
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        console.log('PARENT nextProps, prevState', nextProps, prevState);
+        const { task } = nextProps;
+        
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined
+            } 
+        } else {
+            return null;
+        }
+    }
+    
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        console.log('taskkkkk', this.props.task);
         let { task } = this.props;
         
         let evaluations;
@@ -142,7 +166,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         return [day, month, year].join('-');
     }
-    // ==============================BEGIN HANDLE TASK INFORMATION===================================
 
     handleChangeProgress = async (e) => {
         let value = parseInt(e.target.value);
@@ -153,7 +176,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById("autoPoint").innerHTML = value;
     } 
     
     handleChangeNumberInfo = async (e) => {
@@ -229,8 +251,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             }
             return {
                 ...state,
-                
-                // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
     }
@@ -263,8 +283,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return msg;
     }
     
-    // ==============================END HANDLE TASK INFORMATION===================================
-
     handleKpiChange =(value) => {
         this.setState(state => {
             return {
@@ -341,7 +359,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
    
     isFormValidated = () => {
-        var {info} = this.state;
+        var { info } = this.state;
         var check = true;
         for(let i in info) {
             if(info[i].value === undefined ) {
@@ -349,7 +367,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 break;
             }
         }
-        // check &&
         return  this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
     }
@@ -368,7 +385,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             }
             
             if(this.state.taskDescription !== currentTask.description){
-                description = description === '' ? description + 'Mô tả công việc mới: ' + this.state.taskDescription : description + '. ' + 'Mô tả công việc mới: ' + this.state.taskDescription;
+                description = description === ''? description + 'Mô tả công việc mới: ' + this.state.taskDescription: description + '. ' + 'Mô tả công việc mới: ' + this.state.taskDescription;
             }
         }
 
@@ -381,22 +398,20 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         if(KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
         if(JSON.stringify(kpi) !== JSON.stringify(this.state.kpi)){
-            title = title === '' ? title + 'Chỉnh sửa liên kết KPI' : title + '. ' + 'Chỉnh sửa liên kết KPI';
+            title = title === ''? title + 'Chỉnh sửa liên kết KPI': title + '. ' + 'Chỉnh sửa liên kết KPI';
             
             let newKpi = [];
             for(const element of this.state.kpi){
                 let a = listKpi.filter(item => item._id === element);
                 newKpi.push(a[0].name);
             }
-            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
+            description = description === ''? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi): description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
         }
 
         if(currentTask.progress !== this.state.progress){
             title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
+            description = description === ''? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%": description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
         }
-
-        console.log("*******************", title, "|||" , description);
                 
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
@@ -419,7 +434,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             description: this.state.taskDescription,
             user: this.state.userId,
             progress: this.state.progress,
-            kpi: this.state.kpi ? this.state.kpi : [],
+            kpi: this.state.kpi? this.state.kpi: [],
             info: this.state.info,
         }
 
@@ -427,35 +442,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         this.handleAddTaskLog(taskId);
     }
-
-    componentDidMount() {
-
-        let { task, userId } = this.state;
-        let date = this.formatDate(new Date());
-        let department = task.organizationalUnit._id;
-
-        this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState){
-        console.log('PARENT nextProps, prevState', nextProps, prevState);
-        const { task } = nextProps;
-        
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined
-            } 
-        } else {
-            return null;
-        }
-    }
-    
 
     render() {
         const { KPIPersonalManager } = this.props
@@ -482,7 +468,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin cơ bản</legend>
                                 <div>
-                                    {/*Input for task name*/}
                                     <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
                                         <label>Tên công việc<span className="text-red">*</span></label>
                                         <input 
@@ -493,7 +478,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                         />
                                         <ErrorLabel content={errorTaskName}/>
                                     </div>
-                                    {/*Input for task description*/}
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>Mô tả công việc<span className="text-red">*</span></label>
@@ -538,13 +522,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 value={this.state}
                             
                             />
-
-                                
-                            {/* </fieldset> */}
-                            <div style={{display: 'none'}}>
-                                <span id='autoPoint'></span>
-                            </div>
-
                         </form>
                     </DialogModal>
                 </React.Fragment>
@@ -560,7 +537,6 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
-    // editTaskByResponsibleEmployees: taskManagementActions.editTaskByResponsibleEmployees,
     editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }

@@ -32,8 +32,8 @@ class TaskTemplateImportForm extends Component {
         let stringData = `{
             "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
             "${"Tên các sheet"}": [${sheets}],
-            "${"Tên tiêu đề ứng với đơn vị"}": "${data.unit}",
-            "${"Tên tiêu để ứng với người được xem"}": "${data.viewer}",
+            "${"Tên tiêu đề ứng với đơn vị"}": "${data.organizationalUnit}",
+            "${"Tên tiêu để ứng với người được xem"}": "${data.readByEmployees}",
             "${"Tên tiêu để ứng với tên mẫu"}": "${data.name}",
             "${"Tên tiêu để ứng với độ ưu tiên"}": "${data.priority}",
             "${"Tên tiêu để ứng với mô tả"}": "${data.description}",
@@ -45,11 +45,11 @@ class TaskTemplateImportForm extends Component {
             "${"Tên tiêu để ứng với danh sách hoạt động"}": "${data.taskActions}",
             "${"Tên tiêu để ứng với mô tả"}": "${data.descriptionTaskAction}",
             "${"Tên tiêu để ứng với bắt buộc"}": "${data.mandatory}",
-            "${"Tên tiêu để ứng với danh sách thông tin"}": "${data.taskInformation}",
+            "${"Tên tiêu để ứng với danh sách thông tin"}": "${data.taskInformations}",
             "${"Tên tiêu để ứng với tên thông tin"}": "${data.nameTaskInformation}",
             "${"Tên tiêu để ứng với mô tả thông tin"}": "${data.descriptionTaskInformation}",
-            "${"Tên tiêu để ứng với kiểu dữ liệu"}": "${data.typeTaskInformation}",
-            "${"Tên tiêu để ứng với chỉ quản lí được điền"}": "${data.onlyManager}",
+            "${"Tên tiêu để ứng với kiểu dữ liệu"}": "${data.type}",
+            "${"Tên tiêu để ứng với chỉ quản lí được điền"}": "${data.filledByAccountableEmployeesOnly}",
         }`
         console.log('ssss', stringData);
         return stringData;
@@ -70,8 +70,8 @@ class TaskTemplateImportForm extends Component {
             for (let index in data) {
                 if (index === "Số dòng tiêu đề của bảng") obj = { ...obj, rowHeader: data[index] };
                 if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
-                if (index === "Tên tiêu đề ứng với đơn vị") obj = { ...obj, unit: data[index] };
-                if (index === "Tên tiêu để ứng với người được xem") obj = { ...obj, viewer: data[index] };
+                if (index === "Tên tiêu đề ứng với đơn vị") obj = { ...obj, organizationalUnit: data[index] };
+                if (index === "Tên tiêu để ứng với người được xem") obj = { ...obj, readByEmployees: data[index] };
                 if (index === "Tên tiêu để ứng với tên mẫu") obj = { ...obj, name: data[index] };
                 if (index === "Tên tiêu để ứng với độ ưu tiên") obj = { ...obj, priority: data[index] };
                 if (index === "Tên tiêu để ứng với mô tả") obj = { ...obj, description: data[index] };
@@ -83,11 +83,11 @@ class TaskTemplateImportForm extends Component {
                 if (index === "Tên tiêu để ứng với danh sách hoạt động") obj = { ...obj, nameTaskActions: data[index] };
                 if (index === "Tên tiêu để ứng với mô tả") obj = { ...obj, descriptionTaskAction: data[index] };
                 if (index === "Tên tiêu để ứng với bắt buộc") obj = { ...obj, mandatory: data[index] };
-                if (index === "Tên tiêu để ứng với danh sách thông tin") obj = { ...obj, taskInformation: data[index] };
+                if (index === "Tên tiêu để ứng với danh sách thông tin") obj = { ...obj, taskInformations: data[index] };
                 if (index === "Tên tiêu để ứng với tên thông tin") obj = { ...obj, nameTaskInformation: data[index] };
                 if (index === "Tên tiêu để ứng với mô tả thông tin") obj = { ...obj, descriptionTaskInformation: data[index] };
-                if (index === "Tên tiêu để ứng với kiểu dữ liệu") obj = { ...obj, typeTaskInformation: data[index] };
-                if (index === "Tên tiêu để ứng với chỉ quản lí được điền") obj = { ...obj, onlyManager: data[index] }
+                if (index === "Tên tiêu để ứng với kiểu dữ liệu") obj = { ...obj, type: data[index] };
+                if (index === "Tên tiêu để ứng với chỉ quản lí được điền") obj = { ...obj, filledByAccountableEmployeesOnly: data[index] }
             }
             return obj
         } catch (error) {
@@ -135,9 +135,9 @@ class TaskTemplateImportForm extends Component {
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {
                             if (x !== null) {
-                                if (x.trim().toLowerCase() === configData.unit.trim().toLowerCase())
+                                if (x.trim().toLowerCase() === configData.organizationalUnit.trim().toLowerCase())
                                     indexUnit = index;
-                                if (x.trim().toLowerCase() === configData.viewer.trim().toLowerCase())
+                                if (x.trim().toLowerCase() === configData.readByEmployees.trim().toLowerCase())
                                     indexViewer = index;
                                 if (x.trim().toLowerCase() === configData.name.trim().toLowerCase()) {
                                     indexName = index;
@@ -169,7 +169,7 @@ class TaskTemplateImportForm extends Component {
                                 if (x.trim().toLowerCase() === configData.nameTaskActions.trim().toLowerCase()) {
                                     indexNameTaskAction = index;
                                 }
-                                if (x.trim().toLowerCase() === configData.taskInformation.trim().toLowerCase()) {
+                                if (x.trim().toLowerCase() === configData.taskInformations.trim().toLowerCase()) {
                                     indexTaskInformation = index;
                                 }
                                 if (x.trim().toLowerCase() === configData.nameTaskInformation.trim().toLowerCase()) {
@@ -181,10 +181,10 @@ class TaskTemplateImportForm extends Component {
                                 if (x.trim().toLowerCase() === configData.mandatory.trim().toLowerCase()) {
                                     indexMandatory = index;
                                 }
-                                if (x.trim().toLowerCase() === configData.typeTaskInformation.trim().toLowerCase()) {
+                                if (x.trim().toLowerCase() === configData.type.trim().toLowerCase()) {
                                     indexTypeTaskInformation = index;
                                 }
-                                if (x.trim().toLowerCase() === configData.onlyManager.trim().toLowerCase()) {
+                                if (x.trim().toLowerCase() === configData.filledByAccountableEmployeesOnly.trim().toLowerCase()) {
                                     indexOnlyManager = index;
                                 }
                                 if (x.trim().toLowerCase() === configData.descriptionTaskInformation.trim().toLowerCase()) {
@@ -199,22 +199,22 @@ class TaskTemplateImportForm extends Component {
                     data.splice(0, Number(configData.rowHeader));
                     console.log("eer", data);
                     let dataConvert = [];
-                    let unit, name, priority, description, formula;
-                    let viewer = [], responsibleEmployees = [], consultedEmployees = [], informedEmployees = [],
-                        accountableEmployees = [], taskActions = [], nameTaskAction, descriptionTaskAction, mandatory, taskInformation = [],
-                        nameTaskInformation, descriptionTaskInformation, typeTaskInformation, onlyManager;
+                    let organizationalUnit, name, priority, description, formula;
+                    let readByEmployees = [], responsibleEmployees = [], consultedEmployees = [], informedEmployees = [],
+                        accountableEmployees = [], taskActions = [], nameTaskAction, descriptionTaskAction, mandatory, taskInformations = [],
+                        nameTaskInformation, descriptionTaskInformation, type, filledByAccountableEmployeesOnly;
                     let taskActionChange = false, taskInforChange = false;
                     for (let i = 0; i < data.length; i++) {
 
                         if (data[i][indexName] !== null) {
 
-                            unit = data[i][indexUnit];
+                            organizationalUnit = data[i][indexUnit];
                             name = data[i][indexName];
                             priority = data[i][indexPriority];
                             description = data[i][indexDescription];
                             formula = data[i][indexFormula];
 
-                            viewer.push(data[i][indexViewer]);
+                            readByEmployees.push(data[i][indexViewer]);
                             responsibleEmployees.push(data[i][indexResponsibleEmployees]);
                             accountableEmployees.push(data[i][indexAccountableEmployee]);
                             consultedEmployees.push(data[i][indexConsultedEmpoloyees]);
@@ -223,18 +223,18 @@ class TaskTemplateImportForm extends Component {
                             nameTaskAction = data[i][indexNameTaskAction];
                             descriptionTaskAction = data[i][indexDescriptionTaskAction];
                             mandatory = data[i][indexMandatory];
-                            taskActions = [...taskActions, { nameTaskAction, descriptionTaskAction, mandatory }];
+                            taskActions = [...taskActions, {name: nameTaskAction,description: descriptionTaskAction, mandatory }];
 
                             if (data[i][indexNameTaskInformation]) {
                                 nameTaskInformation = data[i][indexNameTaskInformation];
                                 descriptionTaskInformation = data[i][indexDescriptionTaskInformation];
-                                typeTaskInformation = data[i][indexTypeTaskInformation];
-                                onlyManager = data[i][indexOnlyManager];
-                                taskInformation = [...taskInformation, { nameTaskInformation, descriptionTaskInformation, typeTaskInformation, onlyManager }]
+                                type = data[i][indexTypeTaskInformation];
+                                filledByAccountableEmployeesOnly = data[i][indexOnlyManager];
+                                taskInformations = [...taskInformations, {name: nameTaskInformation,description: descriptionTaskInformation, type, filledByAccountableEmployeesOnly }]
                             }
 
                         } else {
-                            if (data[i][indexViewer] !== null) viewer.push(data[i][indexViewer]);
+                            if (data[i][indexViewer] !== null) readByEmployees.push(data[i][indexViewer]);
                             if (data[i][indexResponsibleEmployees] !== null)
                                 responsibleEmployees.push(data[i][indexResponsibleEmployees]);
                             if (data[i][indexAccountableEmployee])
@@ -249,16 +249,16 @@ class TaskTemplateImportForm extends Component {
                                 descriptionTaskAction = data[i][indexDescriptionTaskAction];
                                 mandatory = data[i][indexMandatory];
                                 taskActionChange = true;
-                                taskActions = [...taskActions, { nameTaskAction, descriptionTaskAction, mandatory }];
+                                taskActions = [...taskActions, {name: nameTaskAction,description: descriptionTaskAction, mandatory }];
                             }
 
                             if (data[i][indexNameTaskInformation]) {
                                 nameTaskInformation = data[i][indexNameTaskInformation];
                                 descriptionTaskInformation = data[i][indexDescriptionTaskInformation];
-                                typeTaskInformation = data[i][indexTypeTaskInformation];
-                                onlyManager = data[i][indexOnlyManager];
+                                type = data[i][indexTypeTaskInformation];
+                                filledByAccountableEmployeesOnly = data[i][indexOnlyManager];
                                 taskInforChange = true;
-                                taskInformation = [...taskInformation, { nameTaskInformation, descriptionTaskInformation, typeTaskInformation, onlyManager }]
+                                taskInformations = [...taskInformations, {name: nameTaskInformation,description: descriptionTaskInformation, type, filledByAccountableEmployeesOnly }]
                             }
 
                         }
@@ -268,18 +268,18 @@ class TaskTemplateImportForm extends Component {
                         if (i + 1 < data.length) {
                             console.log('rer',data[i + 1][indexName]);
                             if (data[i + 1][indexName] !== null) {
-                                dataConvert = [...dataConvert, { unit, viewer, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformation }]
+                                dataConvert = [...dataConvert, { organizationalUnit, readByEmployees, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformations }]
                                console.log('ddd',dataConvert);
-                               viewer = []; responsibleEmployees = []; consultedEmployees = []; informedEmployees = [];
-                        accountableEmployees = []; taskActions = []; taskInformation = [];
+                               readByEmployees = []; responsibleEmployees = []; consultedEmployees = []; informedEmployees = [];
+                        accountableEmployees = []; taskActions = []; taskInformations = [];
                             }
 
                         }
                     }
-                    dataConvert = [...dataConvert, { unit, viewer, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformation }]
+                    dataConvert = [...dataConvert, { organizationalUnit, readByEmployees, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformations }]
                             
                     console.log('eee',dataConvert);
-                    // console.log('view', viewer);
+                    // console.log('view', readByEmployees);
                     // console.log('tee',taskActions)
                     importData = importData.concat(dataConvert);
                 })
@@ -291,6 +291,10 @@ class TaskTemplateImportForm extends Component {
                 })
             }
         }
+    }
+    save = ()=>{
+        let {importData} = this.state;
+        this.props.importTaskTemplate(importData);
     }
 
     render() {
@@ -361,8 +365,8 @@ class TaskTemplateImportForm extends Component {
                                                         <tbody>
                                                             <tr>
                                                                 <th>Tiêu đề tương ứng</th>
-                                                                <td>{importConfiguration.unit}</td>
-                                                                <td>{importConfiguration.viewer}</td>
+                                                                <td>{importConfiguration.organizationalUnit}</td>
+                                                                <td>{importConfiguration.readByEmployees}</td>
                                                                 <td>{importConfiguration.name}</td>
                                                                 <td>{importConfiguration.priority}</td>
                                                                 <td>{importConfiguration.description}</td>
@@ -375,11 +379,11 @@ class TaskTemplateImportForm extends Component {
                                                                 <td>{importConfiguration.nameTaskActions}</td>
                                                                 <td>{importConfiguration.descriptionTaskAction}</td>
                                                                 <td>{importConfiguration.mandatory}</td>
-                                                                <td>{importConfiguration.taskInformation}</td>
+                                                                <td>{importConfiguration.taskInformations}</td>
                                                                 <td>{importConfiguration.nameTaskActions}</td>
                                                                 <td>{importConfiguration.descriptionTaskAction}</td>
-                                                                <td>{importConfiguration.typeTaskInformation}</td>
-                                                                <td>{importConfiguration.onlyManager}</td>
+                                                                <td>{importConfiguration.type}</td>
+                                                                <td>{importConfiguration.filledByAccountableEmployeesOnly}</td>
 
 
                                                             </tr>

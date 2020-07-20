@@ -113,18 +113,18 @@ function updateSalary(id, data) {
 function importSalary(data) {
     return dispatch => {
         dispatch({
-            type: SalaryConstants.IMPORT_SALARY_REQUEST
+            type: SalaryConstants.IMPORT_TEMPLATE_REQUEST
         });
         SalaryService.importSalary(data)
             .then(res => {
                 dispatch({
-                    type: SalaryConstants.IMPORT_SALARY_SUCCESS,
+                    type: SalaryConstants.IMPORT_TEMPLATE_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SalaryConstants.IMPORT_SALARY_FAILURE,
+                    type: SalaryConstants.IMPORT_TEMPLATE_FAILURE,
                     error: err.response.data.content
                 });
             })

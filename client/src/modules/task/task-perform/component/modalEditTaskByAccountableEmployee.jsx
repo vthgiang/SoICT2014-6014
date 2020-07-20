@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
-import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from "../../../../config";
@@ -19,11 +18,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let userId = getStorage("userId");
 
         let { task } = this.props;
-        // let { tasks } = this.props;
-
-        // let task = (tasks && tasks.task) && tasks.task.info;
-
-        // khởi tạo state của task
 
         let statusOptions = []; statusOptions.push(task && task.status);
         let priorityOptions = []; priorityOptions.push(task && task.priority);
@@ -40,7 +34,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         code: taskInfo[i].code,
                         type: taskInfo[i].type
                     }
-                    // taskInfo[i].value = this.formatDate(taskInfo[i].value);
                 } 
                 else {
                     info[`${taskInfo[i].code}`] = {
@@ -48,7 +41,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         code: taskInfo[i].code,
                         type: taskInfo[i].type
                     }
-                    // taskInfo[i].value = this.formatDate(Date.now());
                 }
             }
             else if(taskInfo[i].type === "SetOfValues"){
@@ -66,7 +58,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         type: taskInfo[i].type
                     }
                 }
-                // taskInfo[i].value = taskInfo[i].value ? [taskInfo[i].value] : [splitter[0]];
             }
             else {
                 if(taskInfo[i].value){
@@ -83,7 +74,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let accountableEmployees = task && task.accountableEmployees.map(employee => { return employee._id });
         let consultedEmployees = task && task.consultedEmployees.map(employee => { return employee._id });
         let informedEmployees = task && task.informedEmployees.map(employee => { return employee._id });
-        // let inactiveEmployees = task && task.inactiveEmployees.map(employee => { return employee._id });
         let inactiveEmployees = task && task.inactiveEmployees;
         let listInactive = {};
         for(let i in inactiveEmployees){
@@ -148,8 +138,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return [day, month, year].join('-');
     }
 
-    // ==============================BEGIN HANDLE TASK INFORMATION===================================
-
     handleChangeProgress = async (e) => {
         let value = parseInt(e.target.value);
         await this.setState(state =>{
@@ -159,7 +147,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnProgress: this.validatePoint(value)
             }
         })
-        document.getElementById(`autoPoint`).innerHTML = value;
     } 
 
     handleChangeNumberInfo = async (e) => {
@@ -173,10 +160,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
@@ -193,10 +176,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -213,7 +192,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             return {
                 ...state,
                 errorOnInfoDate: this.validateDate(value),
-                // infoDate: value,
             }
         });
     }
@@ -243,11 +221,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // }
-                // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
     }
@@ -279,9 +252,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
         return msg;
     }
-
-    // ==============================END HANDLE TASK INFORMATION===================================
-
 
     validateDate = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -329,7 +299,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let numOfAccountable = this.state.accountableEmployees.length;
         
         await this.setState(state => {
-            state.listInactive[`${id}`] = { // accountable
+            state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
                 role: 'Accountable'
@@ -360,7 +330,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 confirmButtonText: "Xác nhận",
             }).then((res) => {
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // accountable
+                    state.listInactive[`${id}`] = { 
                         value: value,
                         checked: false,
                         role: 'Accountable'
@@ -381,7 +351,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 confirmButtonText: "Xác nhận",
             }).then((res) => {
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // accountable
+                    state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
                         role: 'Accountable'
@@ -403,7 +373,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let numOfAccountable = task.accountableEmployees.length;
 
         await this.setState(state => {
-            state.listInactive[`${id}`] = { // responsible
+            state.listInactive[`${id}`] = { 
                 value: value,
                 checked: checked,
                 role: 'Responsible'
@@ -422,8 +392,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         
-        console.log('==========================',numOfInactiveAcc, numOfInactiveResp);
-
         if(numOfInactiveResp === numOfResponsible ) {
             Swal.fire({
                 title: "Phải có tối thiểu một người thực hiện",
@@ -434,7 +402,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 confirmButtonText: "Xác nhận",
             }).then((res) => {
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // accountable
+                    state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
                         role: 'Responsible'
@@ -455,7 +423,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 confirmButtonText: "Xác nhận",
             }).then((res) => {
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // accountable
+                    state.listInactive[`${id}`] = { 
                         value: value,
                         checked: false,
                         role: 'Responsible'
@@ -477,7 +445,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let numOfAccountable = this.state.accountableEmployees.length;
 
         await this.setState(state => {
-            state.listInactive[`${id}`] = { // consulted
+            state.listInactive[`${id}`] = { 
                 value: value,
                 checked: checked,
                 role: 'Consulted'
@@ -496,8 +464,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         
-        console.log('==========================',numOfInactiveAcc, numOfInactiveResp);
-
         if(numOfAccountable === numOfInactiveAcc) {
             Swal.fire({
                 title: "Phải có tối thiểu một người phê duyệt",
@@ -510,7 +476,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // 
+                    state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
                         role: 'Consulted'
@@ -533,7 +499,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
                 this.setState(state => {
-                    state.listInactive[`${id}`] = { // 
+                    state.listInactive[`${id}`] = { 
                         value: value,
                         checked: false,
                         role: 'Consulted'
@@ -595,7 +561,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState=true) => {
-        let msg = TaskFormValidator.validateTaskStartDate(value);
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate);
 
         if (willUpdateState){
             this.state.startDate = value;
@@ -672,7 +638,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSelectedPriority = (value) => {
-        // console.log("selected priority"),
         this.setState(state=>{
             return {
                 ...state,
@@ -682,7 +647,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSelectedStatus = (value) => {
-        // console.log("selected status")
         this.setState(state=> {
             return {
                 ...state,
@@ -692,7 +656,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSelectedResponsibleEmployee = (value) => {
-        // console.log('selected responsible employee');
         this.setState(state=>{
             return {
                 ...state,
@@ -701,7 +664,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
     handleSelectedAccountableEmployee = (value) => {
-        // console.log('selected responsible employee');
         this.setState(state=>{
             return {
                 ...state,
@@ -710,7 +672,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
     handleSelectedConsultedEmployee = (value) => {
-        // console.log('selected responsible employee');
         this.setState(state=>{
             return {
                 ...state,
@@ -719,7 +680,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
     handleSelectedInformEmployee = (value) => {
-        // console.log('selected responsible employee');
         this.setState(state=>{
             return {
                 ...state,
@@ -743,7 +703,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
             
             if(taskDescription !== currentTask.description){
-                description = description === '' ? description + 'Mô tả công việc mới: ' + taskDescription : description + '. ' + 'Mô tả công việc mới: ' + taskDescription;
+                description = description === ''? description + 'Mô tả công việc mới: ' + taskDescription: description + '. ' + 'Mô tả công việc mới: ' + taskDescription;
             }
         }
 
@@ -759,14 +719,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             let usercompanys;
             if (user.usercompanys) usercompanys = user.usercompanys;
                 
-            title = title === '' ? title + 'Chỉnh sửa thông tin chi tiết' : title + '. ' + 'Chỉnh sửa thông tin chi tiết';
+            title = title === ''? title + 'Chỉnh sửa thông tin chi tiết': title + '. ' + 'Chỉnh sửa thông tin chi tiết';
             
             if(statusOptions[0] !== currentTask.status){
-                description = description === '' ? description + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]) : description + '. ' + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]);
+                description = description === ''? description + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]): description + '. ' + 'Trạng thái công việc mới: ' +  this.formatStatus(statusOptions[0]);
             }
 
             if(priorityOptions[0] !== currentTask.priority){
-                description = description === '' ? description + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0]));
+                description = description === ''? description + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' +  this.formatPriority(parseInt(priorityOptions[0]));
             }
 
             if(JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))){
@@ -775,7 +735,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     let a = usercompanys.filter(item => item._id === element);
                     responsibleEmployeesArr.push(a[0].name)
                 }
-                description = description === '' ? description + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr) : description + '. ' + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr);
+                description = description === ''? description + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr): description + '. ' + 'Những người thực hiện công việc mới: ' +  JSON.stringify(responsibleEmployeesArr);
             }
 
             if(JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id }))){
@@ -784,7 +744,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     let a = usercompanys.filter(item => item._id === element);
                     accountableEmployeesArr.push(a[0].name)
                 }
-                description = description === '' ? description + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr) : description + '. ' + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr);
+                description = description === ''? description + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr): description + '. ' + 'Những người phê duyệt công việc mới: ' +  JSON.stringify(accountableEmployeesArr);
             }
 
             if(JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id }))){
@@ -793,7 +753,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     let a = usercompanys.filter(item => item._id === element);
                     consultedEmployeesArr.push(a[0].name)
                 }
-                description = description === '' ? description + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr);
+                description = description === ''? description + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người hỗ trợ công việc mới: ' +  JSON.stringify(consultedEmployeesArr);
             }
 
             if(JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id }))){
@@ -802,7 +762,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     let a = usercompanys.filter(item => item._id === element);
                     informedEmployeesArr.push(a[0].name)
                 }
-                description = description === '' ? description + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr) : description + '. ' + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr);
+                description = description === ''? description + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr): description + '. ' + 'Những người quan sát công việc mới: ' +  JSON.stringify(informedEmployeesArr);
             }
 
             if(JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))){
@@ -816,7 +776,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
         if(progress !== currentTask.progress){
             title = title === '' ? title + 'Chỉnh sửa thông tin đánh giá công việc tháng này' : title + '. ' + 'Chỉnh sửa thông tin đánh giá công việc tháng này';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' +  progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' +  progress + "%";
+            description = description === ''? description + 'Mức độ hoàn thành mới: ' +  progress + "%": description + '. ' + 'Mức độ hoàn thành mới: ' +  progress + "%";
         }
 
         if (title !== '' || description !== '') {
@@ -866,7 +826,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     componentDidMount() {
-        // this.props.getTaskById(this.props.id);
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
@@ -875,7 +834,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                // TODO: ve sau can sửa
                 id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
@@ -896,6 +854,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if(data === 1) return translate('task.task_management.low');
         if(data === 2) return translate('task.task_management.normal');
         if(data === 3) return translate('task.task_management.high');
+    }
+
+    formatRole = (data) => {
+        const {translate} = this.props;
+        if(data === "Consulted") return translate('task.task_management.consulted');
+        if(data === "Accountable") return translate('task.task_management.accountable');
+        if(data === "Responsible") return translate('task.task_management.responsible');
     }
 
     formatStatus = (data) => {
@@ -956,7 +921,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin cơ bản</legend>
                                 <div>
-                                    {/*Input for task name*/}
                                     <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
                                         <label>Tên công việc<span className="text-red">*</span></label>
                                         <input type="text"
@@ -964,7 +928,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                className="form-control" onChange={this.handleTaskNameChange}/>
                                         <ErrorLabel content={errorTaskName}/>
                                     </div>
-                                    {/*Input for task description*/}
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>Mô tả công việc<span className="text-red">*</span></label>
@@ -974,35 +937,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <ErrorLabel content={errorTaskDescription}/>
                                     </div>
                                 </div>
-                                <div className="row form-group">
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate===undefined?"":"has-error"}`}>
-                                        <label className="control-label">Ngày bắt đầu*</label>
-                                        <DatePicker 
-                                            id={`datepicker2-startdate-${this.props.id}`}
-                                            // dateFormat="day-month-year"
-                                            value={startDate}
-                                            onChange={this.handleChangeTaskStartDate}
-                                        />
-                                        <ErrorLabel content={errorOnStartDate}/>
-                                    </div>
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate===undefined?"":"has-error"}`}>
-                                        <label className="control-label">Ngày kết thúc*</label>
-                                        <DatePicker 
-                                            id={`datepicker2-enddate-${this.props.id}`}
-                                            value={endDate}
-                                            onChange={this.handleChangeTaskEndDate}
-                                        />
-                                        <ErrorLabel content={errorOnEndDate}/>
-                                    </div>
-                                </div>
+
                             </fieldset>
 
                             {/*Thông tin chi tiết*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin chi tiết</legend>
                                 <div>
-
-                                    {/*Trạng thái*/}
                                     <div className="form-group">
                                         <label>Trạng thái</label>
                                         {
@@ -1028,14 +969,32 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{width: "100%"}}
                                                 items = {priorityArr}
                                                 multiple={false}
-                                                // value={priorityOptions.find(p => p.value === task.priority)}
                                                 value={priorityOptions}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
                                     </div>                                    
                                 </div>
-                                
+                                <div className="row form-group">
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate===undefined?"":"has-error"}`}>
+                                        <label className="control-label">Ngày bắt đầu*</label>
+                                        <DatePicker 
+                                            id={`datepicker2-startdate-${this.props.id}`}
+                                            value={startDate}
+                                            onChange={this.handleChangeTaskStartDate}
+                                        />
+                                        <ErrorLabel content={errorOnStartDate}/>
+                                    </div>
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate===undefined?"":"has-error"}`}>
+                                        <label className="control-label">Ngày kết thúc*</label>
+                                        <DatePicker 
+                                            id={`datepicker2-enddate-${this.props.id}`}
+                                            value={endDate}
+                                            onChange={this.handleChangeTaskEndDate}
+                                        />
+                                        <ErrorLabel content={errorOnEndDate}/>
+                                    </div>
+                                </div>
                             </fieldset>
 
                             <TaskInformationForm
@@ -1127,9 +1086,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     }
                                 </div>
                             </fieldset>
-                            <div style={{display: 'none'}}>
-                                <span id='autoPoint'></span>
-                            </div>
 
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Nhân viên không làm việc nữa</legend>
@@ -1143,7 +1099,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                     <label>
                                                         <input 
                                                             type="checkbox" 
-                                                            // accountable
                                                             checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}  
                                                             value={elem._id}
                                                             name="accountable" onChange={(e)=>this.handleChangeActiveAccountable(e, elem._id)} 
@@ -1161,7 +1116,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                     <label>
                                                         <input 
                                                             type="checkbox" 
-                                                            // responsible
                                                             checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true} 
                                                             value={elem._id}
                                                             name="responsible" onChange={(e)=>this.handleChangeActiveResponsible(e, elem._id)} 
@@ -1181,7 +1135,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                             <label>
                                                                 <input 
                                                                     type="checkbox" 
-                                                                    // consulted
                                                                     checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true} 
                                                                     value={elem._id}
                                                                     name="consulted" onChange={(e)=>this.handleChangeActiveConsulted(e,elem._id)} 
@@ -1194,8 +1147,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             </React.Fragment>
                                         }
                                     </div>
-                                    
-                                    {/* về sau nếu muốn xóa nhân viên trong mảng nhân viên phía client thì dùng splice(index,1) server thì dùng $pull */}
                                 </div>
                             </fieldset>
                         </form>
@@ -1213,7 +1164,6 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    // editTaskByAccountableEmployees: taskManagementActions.editTaskByAccountableEmployees,
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     addTaskLog: performTaskAction.addTaskLog,
 }

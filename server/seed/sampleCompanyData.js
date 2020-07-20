@@ -1301,7 +1301,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PKD",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Laptop Sony Vaio",
         detailInfo: [],
 
@@ -1339,7 +1339,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PKD",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Điều hòa Panasonic 9.000BTU",
         detailInfo: [],
 
@@ -1377,7 +1377,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy tính cây",
         detailInfo: [],
 
@@ -1415,7 +1415,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy in HP M402D",
         detailInfo: [],
 
@@ -1453,7 +1453,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy in màu epson L805",
         detailInfo: [],
 
@@ -1491,7 +1491,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PCN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Lap top DELL Vostro 3568",
         detailInfo: [],
 
@@ -1529,7 +1529,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "PKT",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
         detailInfo: [],
 
@@ -1568,7 +1568,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy bơm áp",
         detailInfo: [],
 
@@ -1607,7 +1607,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Được phép đăng ký sử dụng",
+        canRegisterForUse: true,
         description: "Máy nén khí công nghiệp 22kw",
         detailInfo: [],
 
@@ -1646,7 +1646,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "VP xưởng",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Không được phép đăng ký sử dụng",
+        canRegisterForUse: false,
         description: "Máy phát điện Misumisi 25kw",
         detailInfo: [],
 
@@ -1685,7 +1685,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "VPGĐ",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Không được phép đăng ký sử dụng",
+        canRegisterForUse: false,
         description: "Laptop Dell XPS",
         detailInfo: [],
 
@@ -1724,7 +1724,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "Xưởng TN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Không được phép đăng ký sử dụng",
+        canRegisterForUse: false,
         description: "Hệ thống báo cháy AED Đèn + chuông",
         detailInfo: [],
 
@@ -1767,7 +1767,7 @@ const sampleCompanyData = async () => {
         handoverToDate: null,
         location: "Xưởng TN",
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: "Không được phép đăng ký sử dụng",
+        canRegisterForUse: false,
         description: "Xe đẩy hàng (0.8m x 0.6m x 0.85m)",
         detailInfo: [],
 

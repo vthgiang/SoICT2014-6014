@@ -35,7 +35,7 @@ class TableComponent extends Component {
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
-                        componentLink={ currentRow.link !== undefined ? currentRow.link._id : null }
+                        componentLink={ currentRow.link ? currentRow.link._id : null }
                         componentDescription={ currentRow.description }
                         componentRoles={ currentRow.roles.map(role => role.roleId._id) }
                     />
@@ -79,7 +79,7 @@ class TableComponent extends Component {
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
-                                    <td>{ component.link !== undefined ? component.link.url : null }</td>
+                                    <td>{ component.link ? component.link.url : null }</td>
                                     <td>{ component.description }</td>
                                     <td><ToolTip dataTooltip={component.roles.map(role => role.roleId.name)}/></td>
                                     <td style={{ textAlign: 'center'}}>

@@ -9,12 +9,8 @@ import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountable
 import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
-import Swal from 'sweetalert2';
-import {
-    getStorage
-} from '../../../../config';
+import { getStorage } from '../../../../config';
 
-// import './actionTab.css'
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -125,7 +121,6 @@ class DetailTaskTab extends Component {
         });
     }
 
-    
     startTimer = async (taskId,userId) => {
         var timer = {
             startedAt: Date.now(),
@@ -198,13 +193,11 @@ class DetailTaskTab extends Component {
         window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
 
     }
-
     refresh = async () => {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
         this.props.getTimesheetLogs(this.state.id);
         this.props.getTaskLog(this.state.id);
-
         await this.setState(state => {
             return {
                 ...state,
@@ -216,7 +209,6 @@ class DetailTaskTab extends Component {
         })
 
     }
-
     changeRole = (role) => {
         this.setState(state => {
             return {
@@ -228,24 +220,20 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        const { translate, tasks, performtasks, user } = this.props;
-        const{ currentUser }= this.state
-        const { id, showToolbar } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+        const { tasks, performtasks } = this.props;
+        const{ currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
+        const { showToolbar, id } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         
-        var task, actions, informations;
-        var statusTask;
-        
+        let task;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null){
             task = tasks.task;
         }
-        
+
+        let statusTask
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
 
-        let roles = this.state.roles;
-        let currentRole = this.state.currentRole;
-
         let checkInactive = true;
-        if(task) checkInactive = task.inactiveEmployees.indexOf(this.state.currentUser) === -1; // return true if user is active user
+        if(task) checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1; // return true if user is active user
 
         let evaluations;
         if(task && task.evaluations && task.evaluations.length !== 0 ) evaluations = task.evaluations; //.reverse()
@@ -259,7 +247,7 @@ class DetailTaskTab extends Component {
                     </a>
                     
                     { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
-                        <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, currentRole)} title="Chỉnh sửa thông tin chung">
+                        <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole)} title="Chỉnh sửa thông tin chung">
                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                         </a>
                     }
@@ -271,17 +259,17 @@ class DetailTaskTab extends Component {
                     }
                     { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <React.Fragment>
-                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, currentRole)} title="Kết thúc công việc">
+                            <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
                                 <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
                             </a>
 
-                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, currentRole)} title="Đánh giá công việc">
+                            <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
                                 <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
                             </a>
                         </React.Fragment>
                     }
                     {
-                        (this.state.collapseInfo === false) ?
+                        (collapseInfo === false) ?
                         <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
                             <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
                         </a> :
@@ -409,10 +397,10 @@ class DetailTaskTab extends Component {
                                         <dd>
                                             <ul>
                                                 <li>Mức độ hoàn thành: &nbsp;&nbsp; {task && task.progress}%</li>
-                                                {(task && task.point && task.point !== -1) ?
+                                                {/* {(task && task.point && task.point !== -1) ?
                                                     <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
                                                     <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
-                                                }
+                                                } */}
                                                 {
                                                     (task && task.taskInformations.length !== 0) &&
                                                     task.taskInformations.map(info => {
@@ -434,19 +422,11 @@ class DetailTaskTab extends Component {
 
                                     {/* Evaluations */}
                                     <div>
-                                        {
-                                            // (task && task.evaluations && task.evaluations.length !== 0 ) && 
-                                            // task.evaluations.reverse().map(eva => {
-                                            ( evaluations ) && 
+                                        {( evaluations ) && 
                                             evaluations.map(eva => {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
-                                                    
-                                                    {/* { eva.results.length !== 0 ? */}
-                                                        {/* // <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt> : <dt>Đánh giá tháng {new Date(eva.date).getMonth() + 1}</dt> */}
-                                                        <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>
-                                                    {/* } */}
-                                                    
+                                                    <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>                                                    
                                                     <dd>
                                                         {
                                                         eva.results.length !== 0 &&
@@ -464,37 +444,30 @@ class DetailTaskTab extends Component {
                                                                 }) : <li>Chưa có ái đánh giá công việc tháng này</li>
                                                             }
                                                             </ul>
-
-                                                            {/* Danh gia theo task infomation - thoong tin cong viec thang vua qua lam duoc nhung gi */}
+                                                        </div>
+                                                        }
+                                                        <div>
                                                             <div><strong>Thông tin công việc</strong></div>
                                                             <ul>
-                                                            {/* <li>Mức độ hoàn thành &nbsp;&nbsp; {task && task.progress}%</li> */}
                                                             <li>Mức độ hoàn thành &nbsp;&nbsp; {eva.progress}%</li>
-                                                            {(task && task.point && task.point !== -1) ?
-                                                                <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
-                                                                <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
-                                                            }
-
                                                             {
                                                                 eva.taskInformations.map(info => {
-                                                                    if( !isNaN(Date.parse(info.value)) && isNaN(info.value) ){
-                                                                        return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
+                                                                    if(info.type === "Date"){
+                                                                        return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value? this.formatDate(info.value): "Chưa đánh giá tháng này"}</li>
                                                                     }
-                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? info.value : "Chưa đánh giá tháng này"}</li>
+                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value? info.value: "Chưa đánh giá tháng này"}</li>
                                                                 })
                                                             }
                                                             </ul>
                                                         </div>     
-                                                        }
-                                                        
                                                         {/* KPI */}
                                                         <div><strong>Liên kết KPI</strong></div>
                                                         <ul>
-                                                        {(eva.kpis.length !== 0) ?
+                                                        {(eva.kpis.length !== 0)?
                                                             (
                                                                 eva.kpis.map(item => {
                                                                     return (<li>KPI {item.employee.name}
-                                                                        {(item.kpis.length !== 0) ?
+                                                                        {(item.kpis.length !== 0)?
                                                                             <ol>
                                                                                 {
                                                                                     item.kpis.map(kpi => {
@@ -524,9 +497,9 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (this.props.id && this.state.showEdit === this.props.id) && currentRole === "responsible" &&
+                    (id && showEdit === id) && currentRole === "responsible" &&
                     <ModalEditTaskByResponsibleEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người thực hiện'
@@ -535,9 +508,9 @@ class DetailTaskTab extends Component {
                 }
 
                 {
-                    (this.props.id && this.state.showEdit === this.props.id) && currentRole === "accountable" &&
+                    (id && showEdit === id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Chỉnh sửa công việc với vai trò người phê duyệt'
@@ -546,9 +519,9 @@ class DetailTaskTab extends Component {
                 }
 
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "responsible") &&
+                    (id && showEvaluate === id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người thực hiện'
@@ -556,9 +529,9 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "accountable") &&
+                    (id && showEvaluate === id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người phê duyệt'
@@ -566,9 +539,9 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && currentRole === "consulted") &&
+                    (id && showEvaluate === id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Đánh giá công việc với vai trò người hỗ trợ'
@@ -578,9 +551,9 @@ class DetailTaskTab extends Component {
 
 
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "responsible") &&
+                    (id && showEndTask === id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người thực hiện'
@@ -588,9 +561,9 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "accountable") &&
+                    (id && showEndTask === id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người phê duyệt'
@@ -598,9 +571,9 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && currentRole === "consulted") &&
+                    (id && showEndTask === id && currentRole === "consulted") &&
                     <EvaluateByConsultedEmployee
-                        id={this.props.id}
+                        id={id}
                         task={task && task}
                         role={currentRole}
                         title='Kết thúc công việc với vai trò người hỗ trợ'

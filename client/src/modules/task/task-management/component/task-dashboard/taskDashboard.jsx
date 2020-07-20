@@ -25,9 +25,9 @@ class TaskDashboard extends Component {
         this.props.getTaskByUser();
     }
     generateDataPoints(noOfDps) {
-        var xVal = 1, yVal = 100;
-        var dps = [];
-        for (var i = 0; i < noOfDps; i++) {
+        let xVal = 1, yVal = 100;
+        let dps = [];
+        for (let i = 0; i < noOfDps; i++) {
             yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
             dps.push({ x: xVal, y: yVal });
             xVal++;
@@ -110,7 +110,7 @@ class TaskDashboard extends Component {
         }
         // Tinh tong so luong cong viec co trang thai Inprogess
         var numTask = [];
-        var totalTasks = 0;
+        let totalTasks = 0;
         if (tasks) {
             let tempObj = {};
             if (tasks.responsibleTasks)

@@ -17,7 +17,7 @@ class IncidentManagement extends Component {
             assetName: "",
             month: "",
             page: 0,
-            limit: 5,
+            limit: 100,
         }
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }

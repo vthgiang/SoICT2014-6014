@@ -26,7 +26,10 @@ export const taskManagementActions = {
     getTasksByUser,
 };
 
-// Get all task
+/**
+ * lấy tất cả công việc
+ */
+
 function getAll() {
     return dispatch => {
         dispatch({
@@ -37,7 +40,6 @@ function getAll() {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETALL_TASK_SUCCESS,
-                    // payload: res.data.content.tasks
                     payload: res.data.content
                 })
             })
@@ -50,7 +52,12 @@ function getAll() {
     };
 }
 
-// Get all task by role and creator
+/**
+ * lấy tất cả công việc theo vai trò
+ * @param {*} id id nhân viên
+ * @param {*} role vai trò nhân viên
+ */
+
 function getAllTaskByRole(id, role) {
     return dispatch => {
         dispatch({
@@ -62,7 +69,6 @@ function getAllTaskByRole(id, role) {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYROLE_SUCCESS,
-                    // payload: res.data.content.tasks
                     payload: res.data.content
                 })
             })
@@ -75,7 +81,20 @@ function getAllTaskByRole(id, role) {
     }
 }
 
-// Get all task by user
+
+/**
+ * lấy công việc theo người thực hiện
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) { //user, -- param
     return dispatch => {
         dispatch({
@@ -86,7 +105,6 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS,
-                    // payload: res.data.content.responsibleTasks
                     payload: res.data.content
                 })
             })
@@ -100,7 +118,19 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
 }
 
 
-// Get all task by user
+/**
+ * lấy công việc theo người phê duyệt
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     return dispatch => {
         dispatch({
@@ -110,7 +140,6 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS,
-                    // payload: res.data.content.accountableTasks
                     payload: res.data.content
                 })
             })
@@ -123,7 +152,21 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
     }
 }
 
-// Get all task by user
+
+/**
+ * lấy công việc theo người quan sát
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
+
 function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     return dispatch => {
         dispatch({
@@ -134,7 +177,6 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS,
-                    // payload: res.data.content.consultedTasks
                     payload: res.data.content
                 })
             })
@@ -147,7 +189,21 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
     }
 }
 
-// Get all task by user
+
+/**
+ * lấy công việc theo người quan sát
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
+
 function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     return dispatch => {
         dispatch({
@@ -158,7 +214,6 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
             .then( res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS, 
-                    // payload: res.data.content.informedTasks
                     payload: res.data.content
                 });
             })
@@ -171,7 +226,19 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
     }
 }
 
-// Get all task by user
+/**
+ * lấy công việc theo người tạo
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     return dispatch => {
         dispatch({
@@ -182,7 +249,6 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             .then( res=> {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS, 
-                    // payload: res.data.content.creatorTasks 
                     payload: res.data.content
                 })
             })
@@ -195,7 +261,11 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
     }
 }
 
-// Get task template by id
+/**
+ * lấy công việc theo id
+ * @param {*} id id công việc
+ */
+
 function getTaskById(id) {
     return dispatch => {
         dispatch({
@@ -207,7 +277,6 @@ function getTaskById(id) {
             .then(res=> {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYID_SUCCESS, 
-                    // payload: res.data.content.task
                     payload: res.data.content
                 })
             })
@@ -220,7 +289,11 @@ function getTaskById(id) {
     }
 }
 
-// Add a new task of user
+/**
+ * thêm mới công việc
+ * @param {*} task dữ liệu task mới thêm
+ */
+
 function addTask(task) {
     return dispatch => {
         dispatch({type: taskManagementConstants.ADDNEW_TASK_REQUEST, task});
@@ -229,7 +302,6 @@ function addTask(task) {
             .then(res=>{
                 dispatch({
                     type: taskManagementConstants.ADDNEW_TASK_SUCCESS, 
-                    // payload: res.data.content.task
                     payload: res.data.content
                 })
             })
@@ -241,7 +313,12 @@ function addTask(task) {
     }
 }
 
-// TODO: Edit a task
+/**
+ * edit task
+ * @param {*} id 
+ * @param {*} task 
+ */
+
 function editTask(id, task) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_TASK_REQUEST, id });
@@ -250,7 +327,6 @@ function editTask(id, task) {
             .then(res=> {
                 dispatch({
                     type: taskManagementConstants.EDIT_TASK_SUCCESS, 
-                    // payload: res.data.content.task
                     payload: res.data.content
                 })
             })
@@ -263,7 +339,10 @@ function editTask(id, task) {
     }
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
+/**
+ * delete task
+ * prefixed function name with underscore because delete is a reserved word in javascript
+ */ 
 function _delete(id) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.DELETE_TASK_REQUEST, id });
@@ -307,7 +386,10 @@ function editStatusOfTask(id, status) {
     };
 }
 
-// Edit status of task
+/**
+ * edit archived of task
+ * @param {*} id id of task
+ */
 function editArchivedOfTask(id) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST, id });
@@ -324,7 +406,10 @@ function editArchivedOfTask(id) {
     };
 }
 
-// Get SubTask
+/**
+ * get sub task
+ * @param {*} taskId id của task
+ */
 function getSubTask(taskId){
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_SUBTASK_REQUEST, taskId });
@@ -440,7 +525,6 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -450,6 +534,9 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
     };
 }
 
+/**
+ * get task by user
+ */
 function getTasksByUser() {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_REQUEST });
@@ -457,7 +544,6 @@ function getTasksByUser() {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_TASK_BY_USER_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })

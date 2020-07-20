@@ -447,22 +447,31 @@ class ActionTab extends Component {
             }
         })
     }
-    handleSaveEditAction = async (e,id) => {
+    handleSaveEditAction = async (e,id,description) => {
         e.preventDefault();
         let {newActionEdited} = this.state;
         let data = new FormData();
         newActionEdited.files.forEach(x => {
             data.append("files",x)
         })
-        data.append("description",newActionEdited.description)
+        if(newActionEdited.description === "" ) {
+            data.append("description",description)
+        }else {
+            data.append("description",newActionEdited.description)
+        }
         data.append("creator",newActionEdited.creator)
-        if(newActionEdited.description){
+        if(newActionEdited.description || newActionEdited.files){
             this.props.editTaskAction(id,data);
         }
         await this.setState(state => {
             return {
                 ...state,
-                editAction: ""
+                editAction: "",
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    files: [],
+                    description: ""
+                }
             }
         })
     }
@@ -671,8 +680,8 @@ class ActionTab extends Component {
         });
         window.$(`#modal-confirm-deletefile`).modal('show');
     }
-    save = () => {   
-       this.props.deleteFile(this.state.deleteFile.fileId,this.state.deleteFile.actionId)
+    save = (type) => {   
+       this.props.deleteFile(this.state.deleteFile.fileId,this.state.deleteFile.actionId,type)
     }
     //TODO href = "javascript:void(0)"
     render() {
@@ -847,7 +856,6 @@ class ActionTab extends Component {
                                             </div>
                                         </React.Fragment>
                                         }
-
                                         {/*Chỉnh sửa nội dung hoạt động của công việc */}
                                         {editAction === item._id &&
                                             <React.Fragment>
@@ -867,7 +875,7 @@ class ActionTab extends Component {
                                                             return { ...state, newActionEdited: {...state.newActionEdited, description: value}}
                                                         })
                                                     }}
-                                                    onSubmit={(e)=>{this.handleSaveEditAction(e,item._id)}}
+                                                    onSubmit={(e)=>{this.handleSaveEditAction(e,item._id,item.description)}}
                                                 />
                                                 {item.files.length >0 && 
                                                 <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>

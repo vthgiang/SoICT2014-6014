@@ -109,6 +109,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
     }
 
+    /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if(Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
