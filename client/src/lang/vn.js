@@ -657,7 +657,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset:'Quản lý đăng ký sử dụng',
+            manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
             // NHÂN VIÊN
@@ -2147,6 +2147,7 @@ export default {
             action: 'Hành động',
             unit: 'Đơn vị',
             creator: 'Người tạo',
+            createdAt: 'Ngày tạo',
             edit: 'Chỉnh sửa thông tin báo cáo',
             delete: 'Bạn chắc chắn muốn xóa báo cáo:',
             confirm: 'Xác nhận',
@@ -2154,15 +2155,16 @@ export default {
             title_delete: 'Xóa báo cáo này',
             no_data: 'Không có dữ liệu',
             search_by_name: 'Nhập tên mẫu báo cáo',
+            search_by_creator: 'Nhập tên người tạo báo cáo',
 
 
             //message trả về từ server
             create_report_manager_success: 'Tạo báo cáo thành công !',
             create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
-            edit_report_manager_success:'Sửa báo cáo thành công !',
-            edit_report_manager_fail:'Sửa mẫu báo cáo thất bại !',
-            delete_report_manager_success:'Xóa mẫu báo cáo thành công !',
-            delete_report_manager_fail:'Xóa mẫu báo cáo thất bại !',
+            edit_report_manager_success: 'Sửa báo cáo thành công !',
+            edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
+            delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
+            delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
         },
 
         footer: {
