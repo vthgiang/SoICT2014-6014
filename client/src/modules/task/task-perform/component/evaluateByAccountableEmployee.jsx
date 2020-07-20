@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { performTaskAction } from '../redux/actions';
-import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
@@ -27,7 +26,6 @@ class EvaluateByAccountableEmployee extends Component {
             results: data.results,
             empPoint: data.empPoint,
             status: data.statusOptions,
-            // progress: data.task.progress,
             progress: data.progress,
             autoPoint: data.calcAuto,
             oldAutoPoint: data.automaticPoint,
@@ -35,12 +33,31 @@ class EvaluateByAccountableEmployee extends Component {
         }
     }
     
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined, 
+                errorOnTextInfo: undefined, 
+                errorOnNumberInfo: undefined,
+                errorOnAccountablePoint: undefined,
+                errorOnAccountableContribution: undefined, 
+                errorOnMyPoint: undefined
+            } 
+        } else {
+            return null;
+        }
+    }
 
     getData = (dateParam) => {
         let idUser = getStorage("userId");
-        // let {tasks} = this.props;
         let { task } = this.props;
-        // let task = (tasks && tasks.task) && tasks.task.info;
 
         let evaluations;
         
@@ -59,13 +76,11 @@ class EvaluateByAccountableEmployee extends Component {
             date = this.formatDate(new Date()); 
         }
         else if(this.props.perform === "evaluate"){ // nếu đánh giá thì cho ngày đánh giá là cuối tháng
-            // date = this.formatDate(new Date()); 
             date = moment().endOf("month").format('DD-MM-YYYY');
         }
         let info = {};
         
         let infoEval = task.taskInformations;
-        // var splitSetOfValues = [];
         for(let i in infoEval){
             
             if(infoEval[i].type === "Date"){
@@ -75,16 +90,13 @@ class EvaluateByAccountableEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(infoEval[i].value);
                 } 
-                // else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
                 else {
                     info[`${infoEval[i].code}`] = {
                         value: this.formatDate(Date.now()),
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = this.formatDate(Date.now());
                 } 
             }
             else if(infoEval[i].type === "SetOfValues"){
@@ -95,16 +107,13 @@ class EvaluateByAccountableEmployee extends Component {
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [infoEval[i].value];
                 }
-                // else if(!infoEval[i].filledByAccountableEmployeesOnly){
                 else {
                     info[`${infoEval[i].code}`] = {
                         value: [splitSetOfValues[0]],
                         code: infoEval[i].code,
                         type: infoEval[i].type
                     }
-                    // infoEval[i].value = [splitSetOfValues[0]];
                 }
             }
             else {
@@ -115,9 +124,7 @@ class EvaluateByAccountableEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-               
             }         
-                
         }
 
         let empPoint = {}, results = {};
@@ -245,7 +252,6 @@ class EvaluateByAccountableEmployee extends Component {
                                 type: infoEval[i].type
                             }
                         } 
-                        // else if( !infoEval[i].filledByAccountableEmployeesOnly ) {
                         else {
                             info[`${infoEval[i].code}`] = {
                                 value: this.formatDate(Date.now()),
@@ -263,7 +269,6 @@ class EvaluateByAccountableEmployee extends Component {
                                 type: infoEval[i].type
                             }
                         }
-                        // else if(!infoEval[i].filledByAccountableEmployeesOnly){
                         else {
                             info[`${infoEval[i].code}`] = {
                                 value: [splitSetOfValues[0]],
@@ -291,12 +296,9 @@ class EvaluateByAccountableEmployee extends Component {
                 else date = this.formatDate(new Date());
             }
             else if(this.props.perform === "evaluate"){
-                
-                // if(chkHasInfo) date = this.formatDate(evaluations.date);
                 date = this.formatDate(evaluations.date);
 
             }
-                          
         }
 
         let statusOptions = []; statusOptions.push(task && task.status);
@@ -389,10 +391,6 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
-
-
-// ====================================================================
-
     validateEvaluateResult = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -415,11 +413,9 @@ class EvaluateByAccountableEmployee extends Component {
             state.empPoint[`accountable${id}`] = value;
             return {
                 ...state,
-                // accountablePoint: value,
                 errorOnAccountablePoint: this.validateEvaluateResult(value)
             }
         })
-        // document.getElementById(`accountablePoint${id}`).innerHTML = value;
     }
 
     handleChangeAccountableContribution = async(e, id)=>{
@@ -434,7 +430,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // accountableContribution: value,
                 errorOnAccountableContribution: this.validateEvaluateResult(value)
             }
         })
@@ -452,7 +447,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // accountablePoint: value,
                 errorOnAccountablePoint: this.validateEvaluateResult(value)
             }
         })
@@ -470,7 +464,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // accountableContribution: value,
                 errorOnAccountableContribution: this.validateEvaluateResult(value)
             }
         })
@@ -508,11 +501,7 @@ class EvaluateByAccountableEmployee extends Component {
                 errorOnAccountableContribution: this.validateEvaluateResult(value)
             }
         })
-    }
-
-// ==============================================================
-    
-
+    }   
 
     handleChangeMyPoint = async(e)=>{
         let value = parseInt(e.target.value);
@@ -534,7 +523,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: value
             }
         });
     }
@@ -548,13 +536,9 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: value
             }
         });
-        // document.getElementById(`autoPoint-${this.props.perform}`).innerHTML = value;
     }
-
-// ==========================BEGIN HANDLE INFORMATION TASK=========================================
 
     handleChangeNumberInfo = async (e) => {
         let value = parseInt(e.target.value);
@@ -584,10 +568,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // },
                 errorOnTextInfo: this.validateTextInfo(value)
             }
         })
@@ -604,7 +584,6 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 errorOnInfoDate: this.validateDate(value),
-                // infoDate: value,
             }
         });
     }
@@ -620,11 +599,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
             return {
                 ...state,
-                // [name]: {
-                //     value: value,
-                //     code: name
-                // }
-                // errorOnInfoBoolean: this.validateInfoBoolean(value)
             }
         });
     }
@@ -694,8 +668,6 @@ class EvaluateByAccountableEmployee extends Component {
             }
         });
     }
-
-// ==========================END HANDLE INFORMATION TASK=========================================    
     
     handleStatusChange =(value) => {
         this.setState(state => {
@@ -707,7 +679,6 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleDateChange = (value) => {
-        // let value = e.target.value;
         let data = this.getData(value);
 
         let automaticPoint = data.automaticPoint;
@@ -753,8 +724,6 @@ class EvaluateByAccountableEmployee extends Component {
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
         var {info} = this.state;
 
-        // TODO: Check evaluation has both {approvedPoint, contributions} for a employee
-
         var check = true;
         for(let i in info) {
             if(info[i].value === undefined ) {
@@ -762,7 +731,6 @@ class EvaluateByAccountableEmployee extends Component {
                 break;
             }
         }
-        // check &&
         return (  errorOnDate === undefined && errorOnPoint === undefined &&  errorOnProgress === undefined 
                 && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined 
                 && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined
@@ -780,24 +748,18 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
 
-    // this.state={
-    //     task: data.task,
-    //     userId: data.userId,
-    //     info: data.info,
-    //     results: data.results,
-    //     empPoint: data.empPoint,
-    //     status: data.statusOptions,
-    //     progress: data.task.progress,
-    //     autoPoint: data.automaticPoint,
-    //     date: data.date
-    // }
+    formatRole = (data) => {
+        const {translate} = this.props;
+        if(data === "Consulted") return translate('task.task_management.consulted');
+        if(data === "Accountable") return translate('task.task_management.accountable');
+        if(data === "Responsible") return translate('task.task_management.responsible');
+    }
+
     handleAddTaskLog = () => {
         let title = '';
         let description = '';
 
         let { date, autoPoint, progress, status, results } = this.state;
-
-        console.log("@@@@@@@@@@@@@@@safa", results, currentTask.results);
         
         if (date !== currentTask.date || 
             autoPoint !== currentTask.automaticPoint ||
@@ -863,8 +825,6 @@ class EvaluateByAccountableEmployee extends Component {
             title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
             description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
         }
-
-        console.log("*****111111*********", title, "|||" , description);
                 
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
@@ -879,16 +839,12 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     save = () => {
-        // let {tasks} = this.props;
-        // let task = (tasks && tasks.task) && tasks.task.info;
-        let task = this.state.task;
-
-        let evaluations, taskId;
+        let taskId;
         taskId = this.props.id;
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : parseInt(this.state.progress),
+            automaticPoint: this.state.autoPoint !== 0? this.state.autoPoint: parseInt(this.state.progress),
             role: "Responsible",
             status: this.state.status,
 
@@ -898,45 +854,14 @@ class EvaluateByAccountableEmployee extends Component {
             results: this.state.results,
         }
 
-        console.log('data', data, taskId);
-
         this.handleAddTaskLog();
         
         this.props.evaluateTaskByAccountableEmployees(data, taskId);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        // console.log('nextProps, prevState',nextProps, prevState);
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                // TODO: ve sau can sửa
-                id: nextProps.id,
-                // point: nextProps.point,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined,
-                errorOnInfoBoolean: undefined, 
-                errorOnTextInfo: undefined, 
-                errorOnNumberInfo: undefined,
-                errorOnAccountablePoint: undefined,
-                errorOnAccountableContribution: undefined, 
-                errorOnMyPoint: undefined
-            } 
-        } else {
-            return null;
-        }
-    }
-
     render() {
-        console.log("***333***", currentTask);
-        
-        const { translate, tasks, performtasks } = this.props;
-        const { task, date, status, priority, progress, accountablePoint, oldAutoPoint, autoPoint, myPoint, accountableContribution, infoDate, infoBoolean, setOfValue } = this.state;
-        const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
-                errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo} = this.state;
+        const { translate } = this.props;
+        const { task, date, status, oldAutoPoint, autoPoint,  errorOnDate, showAutoPointInfo } = this.state;
         
         let taskActions = task.taskActions;
         let splitter = date.split('-');
@@ -946,12 +871,19 @@ class EvaluateByAccountableEmployee extends Component {
             new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
             && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
+        
+        let statusArr = [
+            {value: "Inprocess", text: translate('task.task_management.inprocess')},
+            {value: "WaitForApproval", text:translate('task.task_management.wait_for_approval')}, 
+            {value: "Finished", text:translate('task.task_management.finished')}, 
+            {value: "Delayed", text:translate('task.task_management.delayed')}, 
+            {value: "Canceled", text:translate('task.task_management.canceled')}
+        ];
 
         return (
             <React.Fragment>
             <DialogModal
                 modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
-                // modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}`}
                 formID="form-evaluate-task-by-accountable"
                 title={this.props.title}
                 func={this.save}
@@ -978,7 +910,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     id={`select-priority-task-${this.props.perform}-${this.props.role}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
-                                    items = {[{value: "Inprocess", text: "Inprocess"}, {value: "WaitForApproval", text:"WaitForApproval"}, {value: "Finished", text:"Finished"}, {value: "Delayed", text:"Delayed"}, {value: "Canceled", text:"Canceled"}]}
+                                    items = {statusArr}
                                     onChange={this.handleStatusChange}
                                     multiple={false}
                                     value={status}
@@ -1006,14 +938,14 @@ class EvaluateByAccountableEmployee extends Component {
                     </div>
                     <div>
                         <strong>Điểm tự động: &nbsp;
-                            <a href="javascript:void(0)" id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
+                            <a style={{cursor: "pointer"}} id={`autoPoint-${this.props.perform}`} onClick = { () => this.handleShowAutomaticPointInfo() }>
                                 {autoPoint? autoPoint: "Chưa tính được"}
                             </a> 
                         </strong>
                         <br/>
                         <br/>
                         <strong>Điểm tự động đang lưu trên hệ thống: &nbsp;
-                            <a href="javascript:void(0)" >
+                            <a style={{color:"black"}}>
                                 {oldAutoPoint? oldAutoPoint: "Chưa có dữ liệu"}
                             </a> 
                         </strong>
@@ -1031,7 +963,7 @@ class EvaluateByAccountableEmployee extends Component {
                         </ul>
 
                         {
-                            this.state.showAutoPointInfo === 1 && 
+                            showAutoPointInfo === 1 && 
                             <ModalShowAutoPointInfo
                                 task={this.state.task}
                                 progress={this.state.progress}
@@ -1040,9 +972,6 @@ class EvaluateByAccountableEmployee extends Component {
                                 autoPoint={autoPoint}
                             />
                         }
-                        {/* <strong><a onClick={this.handleChangeAutoPoint} title={"Tính điểm tự động"} style={{color: "green", cursor: "pointer", marginLeft: "30px"}} ><i class="fa fa-calculator"></i></a></strong> */}
-
-                        {/* <br/> */}
                         <br/>
                         <strong>Đánh giá thành viên tham gia công việc: </strong>
                         <br/>
@@ -1062,9 +991,8 @@ class EvaluateByAccountableEmployee extends Component {
                                         ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
-                                                <td>{'Responsible'}</td>
+                                                <td>{this.formatRole('Responsible')}</td>
                                                 <td>{this.state.empPoint[`responsible${item._id}`]?this.state.empPoint[`responsible${item._id}`]:'Chưa đánh giá'}</td>
-                                                {/* <td>{this.state.results[`consulted${item._id}`]?this.state.results[`consulted${item._id}`]:0}</td> */}
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" 
                                                         value={this.state.results[`contributeResponsible${item._id}`] ? this.state.results[`contributeResponsible${item._id}`].value : undefined} 
@@ -1089,8 +1017,7 @@ class EvaluateByAccountableEmployee extends Component {
                                         ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
-                                                <td>{'Consulted'}</td>
-                                                {/* <td>{this.state.results[`responsible${item._id}`]?this.state.results[`responsible${item._id}`]:0}</td> */}
+                                                <td>{this.formatRole('Consulted')}</td>
                                                 <td>{this.state.empPoint[`consulted${item._id}`]?this.state.empPoint[`consulted${item._id}`]:'Chưa đánh giá'}</td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number" 
@@ -1116,18 +1043,18 @@ class EvaluateByAccountableEmployee extends Component {
                                         ( task.inactiveEmployees.indexOf(item._id) === -1 &&
                                             <tr>
                                                 <td>{item.name}</td>
-                                                <td>{'Accountable'}</td>
-                                                <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`]?this.state.empPoint[`accountable${item._id}`] : 'Chưa đánh giá' }</p></td>
+                                                <td>{this.formatRole('Accountable')}</td>
+                                                <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`]? this.state.empPoint[`accountable${item._id}`]: 'Chưa đánh giá' }</p></td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number"
-                                                        value={this.state.results[`contributeAccountable${item._id}`] ? this.state.results[`contributeAccountable${item._id}`].value : undefined}
+                                                        value={this.state.results[`contributeAccountable${item._id}`]? this.state.results[`contributeAccountable${item._id}`].value: undefined}
                                                         name={`contributeAccountable${item._id}`} placeholder={"% Đóng góp"} 
                                                         onChange={(e)=>this.handleChangeAccountableContribution(e,item._id)}
                                                     />
                                                 </td>
                                                 <td style={{padding: 5}}>
                                                     <input className="form-control" type="number"
-                                                        value={this.state.results[`approvedPoint${item._id}`] ? this.state.results[`approvedPoint${item._id}`].value : undefined }
+                                                        value={this.state.results[`approvedPoint${item._id}`]? this.state.results[`approvedPoint${item._id}`].value: undefined }
                                                         name={`approvedPoint${item._id}`} placeholder={"Điểm phê duyệt"} 
                                                         onChange={(e)=>this.handleChangeAccountablePoint(e,item._id)}
                                                     />
@@ -1152,12 +1079,7 @@ const mapState = (state) => {
     return { tasks, performtasks };
 }
 const getState = {
-    // getTaskById: taskManagementActions.getTaskById,
-    // createResult: performTaskAction.createResultTask,
-    // editResultTask: performTaskAction.editResultTask,
-    // editStatusOfTask: taskManagementActions.editStatusOfTask,
     addTaskLog: performTaskAction.addTaskLog,
-    // evaluateTaskByAccountableEmployees: taskManagementActions.evaluateTaskByAccountableEmployees,
     evaluateTaskByAccountableEmployees: performTaskAction.evaluateTaskByAccountableEmployees,
 }
 

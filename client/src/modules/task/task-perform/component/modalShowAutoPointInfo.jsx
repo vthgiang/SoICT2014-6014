@@ -25,18 +25,16 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     render() {
-        const { task, progress, date, info} = this.props; // props from parent component
-        
-        let taskInformations = task.taskInformations;
+        const { task, progress, date, info } = this.props; // props from parent component
 
+        let taskInformations = task.taskInformations;
         let splitter = date.split('-');
         let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
-
         let totalDay = endDate.getTime() - startDate.getTime();
         let dayUsed = evaluationsDate.getTime() - startDate.getTime();
-        let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
+        let overdueDate = (dayUsed - totalDay > 0)? dayUsed - totalDay: 0;
 
         // chuyển về đơn vị ngày
         totalDay = totalDay/86400000;
@@ -58,15 +56,14 @@ class ModalShowAutoPointInfo extends Component {
 
         // Tổng số điểm của các hoạt động
         let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
-        reduceAction = reduceAction > 0 ? reduceAction : 0;
+        reduceAction = reduceAction > 0? reduceAction: 0;
 
         let averageActionRating = reduceAction/a;
         let formula = task.taskTemplate && task.taskTemplate.formula;
         if(task.taskTemplate){
 
             let taskInformations = info;
-            // formula = task.taskTemplate.formula;
-        
+            
             // thay các biến bằng giá trị
             formula = formula.replace(/overdueDate/g, overdueDate);
             formula = formula.replace(/totalDay/g, totalDay);
@@ -100,8 +97,7 @@ class ModalShowAutoPointInfo extends Component {
                     title={`Thông tin điểm tự động của công việc`} 
                     hasSaveButton={false}
                 >
-                    {
-                        (task.taskTemplate !== null && task.taskTemplate !== undefined) &&
+                    {(task.taskTemplate) &&
                         <div>
                             <p><strong>Công thức tính: </strong>{task.taskTemplate.formula}</p>
                             <p>Trong đó: </p>
@@ -113,7 +109,7 @@ class ModalShowAutoPointInfo extends Component {
                                 {
                                     taskInformations && taskInformations.map(e => {
                                         if(e.type === 'Number'){
-                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value: "Chưa có giá trị" }</li>
+                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value)? info[`${e.code}`].value: "Chưa có giá trị" }</li>
                                         }
                                     })
                                 }
@@ -121,8 +117,7 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>Công thức hiện tại: </strong>{formula} = {this.props.autoPoint}</p>
                         </div> 
                     }
-                    {
-                        ((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
                         <div>
                             <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay)</p>
                             <p>Trong đó: </p>
@@ -134,8 +129,7 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>Công thức hiện tại: </strong>{progress}/({dayUsed}/{totalDay}) = {this.props.autoPoint}</p>
                         </div>
                     }
-                    {
-                        ((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
                         <div>
                             <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10</p>
                             <p>Trong đó: </p>

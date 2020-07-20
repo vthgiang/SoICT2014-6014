@@ -1603,11 +1603,11 @@ export default {
                 edit_status_archived_of_task_fail: "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
                 confirm_delete: 'Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!',
 
-                responsible: 'Thực hiện chính',
-                accountable: 'Phê duyệt',
-                consulted: 'Hỗ trợ thực hiện',
-                creator: 'Thiết lập',
-                informed: 'Quan sát',
+                responsible: 'Người thực hiện',
+                accountable: 'Người phê duyệt',
+                consulted: 'Người hỗ trợ',
+                creator: 'Nhười thiết lập',
+                informed: 'Người quan sát',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
