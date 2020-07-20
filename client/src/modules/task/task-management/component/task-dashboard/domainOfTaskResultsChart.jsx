@@ -1,41 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { taskManagementActions } from '../../redux/actions';
-
 import { SelectBox } from '../../../../../common-components/index';
-
+import {withTranslate} from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-import { max } from 'd3-array';
 
 class DomainOfTaskResultsChart extends Component {
 
     constructor(props) {
         super(props);
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        let { translate } = this.props;
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
         this.ROLE_SELECTBOX = [
             {
-                text: 'Responsible',
+                text: translate('task.task_management.responsible'),
                 value: this.ROLE.RESPONSIBLE
             },
             {
-                text: 'Accountable',
+                text: translate('task.task_management.accountable'),
                 value: this.ROLE.ACCOUNTABLE
             },
             {
-                text: 'Consulted',
+                text: translate('task.task_management.consulted'),
                 value: this.ROLE.CONSULTED
             },
             {
-                text: 'Informed',
+                text: translate('task.task_management.informed'),
                 value: this.ROLE.INFORMED
             },
             {
-                text: 'Creator',
+                text: translate('task.task_management.creator'),
                 value: this.ROLE.CREATOR
             }
         ]
@@ -280,11 +277,12 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        <label style={{width: "auto"}}>Vai trò</label>
+                        <label style={{width: "auto"}}>{translate('task.task_management.role')}</label>
                         <SelectBox
                             id={`roleOfResultsTaskSelectBox`}
                             className="form-control select2"
@@ -315,5 +313,5 @@ const actions = {
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser
 }
 
-const connectedDomainOfTaskResultsChart = connect(mapState, actions)(DomainOfTaskResultsChart);
+const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));
 export { connectedDomainOfTaskResultsChart as DomainOfTaskResultsChart }

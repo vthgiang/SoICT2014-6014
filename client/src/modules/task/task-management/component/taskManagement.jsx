@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { ModalAddTask } from './taskAddModal';
+import { TaskAddModal } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
@@ -90,7 +90,7 @@ class TaskManagement extends Component {
         return [day, month, year].join('-');
     }
 
-    list_to_tree = (list) => {        
+    list_to_tree = (list) => {
         let map = {}, node, roots = [], i, newarr = [];
         for (i = 0; i < list.length; i += 1) {
             map[list[i]._id] = i; // initialize the map
@@ -180,7 +180,7 @@ class TaskManagement extends Component {
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
-        
+
         await this.setState(state => {
             return {
                 ...state,
@@ -260,9 +260,9 @@ class TaskManagement extends Component {
 
     handleGetDataPerPage = (perPage) => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
-        
+
         let content = this.state.currentTab;
-        
+
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
         } else if (content === "accountable") {
@@ -438,7 +438,7 @@ class TaskManagement extends Component {
 
     handleChangeName = (e) => {
         let name = e.target.value;
-        if(name === ''){
+        if (name === '') {
             name = null;
         }
 
@@ -479,10 +479,10 @@ class TaskManagement extends Component {
     render() {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage } = this.state;
-        
+
         let currentTasks, units = [];
         let pageTotals;
-        
+
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
@@ -505,12 +505,12 @@ class TaskManagement extends Component {
         let data = [];
         if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
-            
+
             for (let n in dataTemp) {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    organization: dataTemp[n].organizationalUnit? dataTemp[n].organizationalUnit.name: translate('task.task_management.err_organizational_unit'),
+                    organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
@@ -522,13 +522,13 @@ class TaskManagement extends Component {
             }
 
             let archived = "store";
-            if(dataTemp[0].isArchived === true){
+            if (dataTemp[0].isArchived === true) {
                 archived = "restore";
             }
-            
+
             if (currentTab === "creator" || currentTab === "informed") {
                 let del = null;
-                if(currentTab === "creator"){
+                if (currentTab === "creator") {
                     del = "delete";
                 }
 
@@ -555,9 +555,9 @@ class TaskManagement extends Component {
                 <div className="box-body qlcv">
                     <div style={{ height: "40px" }}>
                         {currentTab !== "informed" &&
-                            <button type="button" onClick={()=>{this.handleAddTask("")}} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                            <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
-                        <ModalAddTask currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
+                        <TaskAddModal currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
                     <div className="form-inline">
@@ -721,7 +721,7 @@ class TaskManagement extends Component {
                             id={currentTaskId}
                         />
                     }
-                  
+
                     <PaginateBar
                         pageTotal={tasks.pages}
                         currentPage={currentPage}
@@ -752,4 +752,4 @@ const actionCreators = {
     deleteTaskById: taskManagementActions._delete,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
-export {translateTaskManagement as TaskManagement} ;
+export { translateTaskManagement as TaskManagement };
