@@ -84,7 +84,7 @@ class ResetPassword extends Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-xs-12">
-                                        <a className="btn btn-primary pull-right" href="/login">{ translate(`auth.accept`) }</a>
+                                        <a className="btn btn-primary pull-right" href="/login">{ translate(`general.accept`) }</a>
                                     </div>
                                 </div>
                             </div>

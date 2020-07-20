@@ -159,8 +159,9 @@ class DistributionOfEmployeeKpiChart extends Component {
                     </div>
                 </section>
 
-                {currentEmployeeKpiSet &&
+                {currentEmployeeKpiSet ?
                     <section ref="chart"></section>
+                    : <section>Không có dữ liệu</section>
                 }
             </React.Fragment>
         )

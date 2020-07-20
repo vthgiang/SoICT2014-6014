@@ -216,7 +216,7 @@ class RecommendDistributeManagerEditForm extends Component {
 
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistributemanage"
                     title="Cập nhật phiếu đăng ký sử dụng tài sản"
                     func={this.save}

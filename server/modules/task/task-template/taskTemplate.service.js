@@ -1,4 +1,4 @@
-const { TaskTemplate, Privilege, Role, UserRole,OrganizationalUnit } = require('../../../models').schema;
+const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require('../../../models').schema;
 const mongoose = require('mongoose');
 /**
  * Lấy tất cả các mẫu công việc
@@ -87,8 +87,8 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
-                    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
+                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
+                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
                     totalCount: [
                         {
                             $count: 'count'
@@ -131,8 +131,8 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage===0? []: [{ $limit: noResultsPerPage * pageNumber }],
-                    ...noResultsPerPage===0? []: [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
+                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
+                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
                     totalCount: [
                         {
                             $count: 'count'
@@ -158,6 +158,8 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (body) => {
+    console.log('body', body);
+    console.log(typeof body.readByEmployees[0]);
     var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc       
         organizationalUnit: body.organizationalUnit,
         name: body.name,
@@ -170,7 +172,7 @@ exports.createTaskTemplate = async (body) => {
         informedEmployees: body.informedEmployees,
         description: body.description,
         formula: body.formula,
-        priority:body.priority,
+        priority: body.priority,
         taskActions: body.taskActions.map(item => {
             return {
                 name: item.name,
@@ -194,21 +196,21 @@ exports.createTaskTemplate = async (body) => {
 
     // xu ly quyen nguoi xem
     var read = body.readByEmployees;
-    var roleId=[];
-    var role,roleParent;
-    role = await Role.find({ _id : { $in: read } }) ;
-    roleParent = role.map( item => item.parents);   // lấy ra các parent của các role
+    var roleId = [];
+    var role, roleParent;
+    role = await Role.find({ _id: { $in: read } });
+    roleParent = role.map(item => item.parents);   // lấy ra các parent của các role
     var flag;
     var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
-    for (let n in reads){
-        flag = 0;                                  
+    for (let n in reads) {
+        flag = 0;
         var parent = [];
         parent = parent.concat(roleParent[n]);
-        for (let i in parent){
-            for (let j in reads){
-                if (JSON.stringify(reads[j]) === JSON.stringify(parent[i])){  // nếu 1 role là kế thừa của role có sẵn quyền xem thì loại role đấy đi 
-                    reads[n]="";                                              // loại role
-                    flag=1;
+        for (let i in parent) {
+            for (let j in reads) {
+                if (JSON.stringify(reads[j]) === JSON.stringify(parent[i])) {  // nếu 1 role là kế thừa của role có sẵn quyền xem thì loại role đấy đi 
+                    reads[n] = "";                                              // loại role
+                    flag = 1;
                     roleId.push(reads[j]);                                    // thêm vào danh sách role có quyền xem
                 }
             }
@@ -217,14 +219,14 @@ exports.createTaskTemplate = async (body) => {
     }
     // xử lý các role trùng lặp
     roleId = roleId.map(u => u.toString());
-    for(let i = 0, max = roleId.length; i < max; i++) {
-        if(roleId.indexOf(roleId[i]) != roleId.lastIndexOf(roleId[i])) {
+    for (let i = 0, max = roleId.length; i < max; i++) {
+        if (roleId.indexOf(roleId[i]) != roleId.lastIndexOf(roleId[i])) {
             roleId.splice(roleId.indexOf(roleId[i]), 1);
             i--;
         }
     }
     // mỗi roleId là một Document
-    for (let i in roleId){
+    for (let i in roleId) {
         var privilege = await Privilege.create({
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
@@ -262,7 +264,7 @@ exports.editTaskTemplate = async (data, id) => {
                 name: data.name,
                 description: data.description,
                 formula: data.formula,
-                priority:data.priority,
+                priority: data.priority,
                 accountableEmployees: data.accountableEmployees,
                 readByEmployees: data.readByEmployees,
                 informedEmployees: data.informedEmployees,
@@ -276,4 +278,73 @@ exports.editTaskTemplate = async (data, id) => {
     ).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
 
     return taskTemplate;
+}
+
+
+exports.importTaskTemplate = async (data,id) => {
+
+    for (let i = 0; i < data.length; i++) {
+        // chuyen dia chi email sang id
+        for (let j = 0; j < data[i].accountableEmployees.length; j++) {
+            let accountableEmployees = await User.findOne({ email: data[i].accountableEmployees[j] });
+            data[i].accountableEmployees[j] = String(accountableEmployees._id);
+        };
+        for (let j = 0; j < data[i].readByEmployees.length; j++) {
+            let readByEmployees = await User.findOne({ email: data[i].readByEmployees[j] });
+            data[i].readByEmployees[j] = String(readByEmployees._id);
+
+        }
+        for (let j = 0; j < data[i].consultedEmployees.length; j++) {
+            let consultedEmployees = await User.findOne({ email: data[i].consultedEmployees[j] });
+            data[i].consultedEmployees[j] = String(consultedEmployees._id);
+
+        };
+        for (let j = 0; j < data[i].informedEmployees.length; j++) {
+            let informedEmployees = await User.findOne({ email: data[i].informedEmployees[j] });
+            data[i].informedEmployees[j] = String(informedEmployees._id);
+
+        };
+        for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
+            let responsibleEmployees = await User.findOne({ email: data[i].responsibleEmployees[j] });
+            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);
+            console.log(typeof data[i].responsibleEmployees[j]);
+        };
+        // xu ly thong tin priority
+        if (data[i].priority === "Cao") data[i].priority = 1;
+        else if (data[i].priority === "Thấp") data[i].priority = 3;
+        else data[i].priority = 2;
+        // xu ly thong tin filledByAccountableEmployeesOnly 
+        for (let j = 0; j < data[i].taskInformations.length; j++) {
+            // format thong tin "chi qua ly duoc dien"
+            if (data[i].taskInformations[j].filledByAccountableEmployeesOnly == 'Đúng')
+                data[i].taskInformations[j].filledByAccountableEmployeesOnly = true;
+            else data[i].taskInformations[j].filledByAccountableEmployeesOnly = false;
+            // formart thong tin kieu du lieu
+            console.log('------------------',data[i].taskInformations[j].type);
+            if (data[i].taskInformations[j].type == "Số")
+                data[i].taskInformations[j].type = 'Number';
+            if (data[i].taskInformations[j].type == "Văn bản")
+                data[i].taskInformations[j].type = 'Text';
+            if (data[i].taskInformations[j].type == "Boolean")
+                data[i].taskInformations[j].type = 'Boolean';
+            if (data[i].taskInformations[j].type == "Ngày tháng")
+                data[i].taskInformations[j].type = 'Date';
+            else
+                data[i].taskInformations[j].type = "SetOfValues";
+
+        }
+        for (let j = 0; j < data[i].taskActions.length; j++) {
+            if (data[i].taskActions[j].mandatory === "Bắt buộc")
+                data[i].taskActions[j].mandatory = true;
+            else data[i].taskActions[j].mandatory = false;
+        }
+        let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
+        data[i].organizationalUnit = String(unit._id);
+        // creator
+        data[i].creator = id;
+        // luu thong tin
+        let result = await this.createTaskTemplate(data[i]);
+        console.log(result);
+    };
+
 }

@@ -38,9 +38,15 @@ exports.searchAssetProfiles = async (params, company) => {
     }
     ;
 
+    // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
+    if (params.canRegisterForUse !== undefined && params.canRegisterForUse.length !== 0) {
+        keySearch = {...keySearch, canRegisterForUse: {$in: params.canRegisterForUse}};
+    }
+    ;
+
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch, {})
+    let listAssets = await Asset.find(keySearch)
         .sort({'createdAt': 'desc'}).skip(params.page).limit(params.limit);
     // let data = [];
     // for (let n in listAssets) {
@@ -97,6 +103,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         handoverToDate: data.handoverToDate,
         location: data.location,
         status: data.status,
+        canRegisterForUse: data.canRegisterForUse,
         description: data.description,
         detailInfo: data.detailInfo,
 
@@ -196,6 +203,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.handoverToDate = data.handoverToDate;
     oldAsset.location = data.location;
     oldAsset.status = data.status;
+    oldAsset.canRegisterForUse = data.canRegisterForUse;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
     // khấu hao

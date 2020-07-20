@@ -430,7 +430,7 @@ const LINKS = [
         description: 'Quản lý sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
+            // ROOT_ROLES.ADMIN.name,
         ]
     },
     {
