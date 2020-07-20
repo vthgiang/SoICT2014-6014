@@ -6,7 +6,6 @@ const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = requi
  * @param  params 
  */
 exports.getTaskReports = async (params) => {
-    console.log('aaaaa')
     const name = params.name;
     let keySearch = {}
 

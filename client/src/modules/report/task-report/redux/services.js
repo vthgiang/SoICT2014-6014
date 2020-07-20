@@ -21,7 +21,6 @@ function getTaskReports(data) {
             name: data.name,
             page: data.page,
             limit: data.limit,
-
         },
     }, false, true, 'report_manager');
 }
