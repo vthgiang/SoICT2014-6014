@@ -1,4 +1,4 @@
-const CompanyService = require('./company.service');
+const CompanyServices = require('./company.service');
 const { LogInfo, LogError } = require('../../../logs');
 const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require('../../../seed/terms');
 
@@ -7,7 +7,7 @@ const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require('../../../seed/
  */
 exports.getAllCompanies = async (req, res) => {
     try {
-        const companies = await CompanyService.getAllCompanies(req.query);
+        const companies = await CompanyServices.getAllCompanies(req.query);
         
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(200).json({
@@ -31,7 +31,7 @@ exports.getAllCompanies = async (req, res) => {
  */
 exports.getCompany = async (req, res) => {
     try {
-        const company = await CompanyService.getCompany(req.params.id);
+        const company = await CompanyServices.getCompany(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
@@ -55,14 +55,14 @@ exports.getCompany = async (req, res) => {
  */
 exports.createCompany = async (req, res) => {
     try {
-        const company = await CompanyService.createCompany(req.body);
-        const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
+        const company = await CompanyServices.createCompany(req.body);
+        const abstractRoles = await CompanyServices.createCompanyRootRoles(company._id);
 
-        await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
-        await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-        await CompanyService.createCompanyComponents(company._id, req.body.links);
+        await CompanyServices.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
+        await CompanyServices.createCompanyLinks(company._id, req.body.links, abstractRoles);
+        await CompanyServices.createCompanyComponents(company._id, req.body.links);
         
-        const resCompany = await CompanyService.getCompany(company._id);
+        const resCompany = await CompanyServices.getCompany(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
@@ -87,10 +87,10 @@ exports.createCompany = async (req, res) => {
  */
 exports.editCompany = async (req, res) => {
     try {
-        const company = await CompanyService.editCompany(req.params.id, req.body);
-        await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
+        const company = await CompanyServices.editCompany(req.params.id, req.body);
+        await CompanyServices.editCompanySuperAdmin(company._id, req.body.email);
 
-        const resCompany = await CompanyService.getCompany(company._id);
+        const resCompany = await CompanyServices.getCompany(company._id);
 
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
@@ -114,7 +114,7 @@ exports.editCompany = async (req, res) => {
  */
 exports.deleteCompany = async (req, res) => {
     try {
-        const company = await CompanyService.deleteCompany(req.params.id);
+        const company = await CompanyServices.deleteCompany(req.params.id);
         
         LogInfo(req.user.email, 'DELETE_COMPANY');
         res.status(200).json({
@@ -138,7 +138,7 @@ exports.deleteCompany = async (req, res) => {
  */
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getCompanyLinks(req.params.id, req.query);
+        const links = await CompanyServices.getCompanyLinks(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
@@ -165,7 +165,7 @@ exports.getCompanyLinks = async (req, res) => {
  */
 exports.addCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyService.addCompanyLink(req.params.id, req.body);
+        const link = await CompanyServices.addCompanyLink(req.params.id, req.body);
         
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -191,7 +191,7 @@ exports.addCompanyLink = async (req, res) => {
  */
 exports.deleteCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyService.deleteCompanyLink(req.params.id, req.params.linkId);
+        const link = await CompanyServices.deleteCompanyLink(req.params.id, req.params.linkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -219,8 +219,8 @@ exports.deleteCompanyLink = async (req, res) => {
  */
 exports.addCompanyComponent = async (req, res) => {
     try {
-        const component = await CompanyService.addCompanyComponent(req.params.id, req.body);
-        const resComponent = await CompanyService.getComponentById(component._id);  
+        const component = await CompanyServices.addCompanyComponent(req.params.id, req.body);
+        const resComponent = await CompanyServices.getComponentById(component._id);  
 
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(200).json({
@@ -245,7 +245,7 @@ exports.addCompanyComponent = async (req, res) => {
  */
 exports.deleteCompanyComponent = async (req, res) => {
     try {
-        const component = await CompanyService.deleteCompanyComponent(req.params.id, req.params.componentId);
+        const component = await CompanyServices.deleteCompanyComponent(req.params.id, req.params.componentId);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(200).json({
@@ -270,7 +270,7 @@ exports.deleteCompanyComponent = async (req, res) => {
  */
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getCompanyLinks(req.params.id, req.query);
+        const links = await CompanyServices.getCompanyLinks(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
@@ -294,7 +294,7 @@ exports.getCompanyLinks = async (req, res) => {
  */
 exports.getCompanyComponents = async (req, res) => {
     try {
-        const components = await CompanyService.getCompanyComponents(req.params.id, req.query);
+        const components = await CompanyServices.getCompanyComponents(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
@@ -337,7 +337,7 @@ exports.getAllLinkCategories = async (req, res) => {
  */
 exports.getImportConfiguraion =  async (req, res) => {
     try {
-        const data = await CompanyService.getImportConfiguraion(req.params.type, req.user.company._id);
+        const data = await CompanyServices.getImportConfiguraion(req.params.type, req.user.company._id);
 
         await LogInfo(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
@@ -362,7 +362,7 @@ exports.getImportConfiguraion =  async (req, res) => {
  */
 exports.createImportConfiguraion = async (req, res) => {
     try {
-        const data = await CompanyService.createImportConfiguraion(req.body, req.user.company._id);
+        const data = await CompanyServices.createImportConfiguraion(req.body, req.user.company._id);
 
         await LogInfo(req.user.email, 'CREATE_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
@@ -387,7 +387,7 @@ exports.createImportConfiguraion = async (req, res) => {
  */
 exports.editImportConfiguraion =  async (req, res) => {
     try {
-        const data = await CompanyService.editImportConfiguraion(req.params.id, req.body);
+        const data = await CompanyServices.editImportConfiguraion(req.params.id, req.body);
 
         await LogInfo(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
