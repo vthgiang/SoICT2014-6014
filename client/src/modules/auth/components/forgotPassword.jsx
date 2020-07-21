@@ -26,14 +26,6 @@ class ForgotPassword extends Component {
 
     forgotPassword = (email) => {
         this.props.forgotPassword(email);
-            // .catch(err => {
-            //     this.setState(state => {
-            //         return {
-            //             ...state,
-            //             forgotPasswordRequestError: err.response.data.message
-            //         }
-            //     })
-            // })
     }
 
     resetPassword = () => {
@@ -46,6 +38,7 @@ class ForgotPassword extends Component {
 
     render() { 
         const { translate, auth } = this.props;
+        
         return ( 
             <div className="modal fade" id="modal-reset-password">
                 <div className="modal-dialog">
