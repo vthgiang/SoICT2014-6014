@@ -1797,6 +1797,69 @@ export default {
 
             },
             task_perform: {
+
+                actions: "Hoạt động",
+                communication: "Trao đổi",
+                documents: "Tài liệu",
+                timesheetlogs:"Lịch sử bấm giờ",
+                subtasks: "Công việc con",
+                change_history: "Lịch sử thay đổi",
+                edit_action: "Sửa hành động",
+                delete_action: "Xóa hành động",
+                mandatory_action: "Hành động bắt buộc",
+                confirm_action: "Xác nhận hoàn thành",
+                evaluation: "Đánh giá",
+                attach_file: "Đính kèm file",
+                comment: "Bình luận",
+                re_evaluation: "Đánh giá lại",
+                question_delete_file: "Bạn có chắc chắn muốn xóa file",
+                edit_comment: "Sửa bình luận",
+                delete_comment: "Xóa bình luận",
+                file_attach: "File đính kèm",
+                save_edit: "Gửi chỉnh sửa",
+                cancel: "Hủy bỏ",
+                enter_comment: "Nhập bình luận",
+                create_comment: "Thêm bình luận",
+                enter_description: "Nhập mô tả",
+                create_description: "Thêm mô tả",
+                none_description: "Không có mô tả",
+                enter_action: "Nhập hoạt động",
+                create_action: "Thêm hoạt động",
+                total_time: "Tổng thời gian",
+                time: "Thời gian",
+                none_subtask: "Không có công việc con",
+                enter_comment_action: "Nhập bình luận cho hoạt động",
+                create_comment_action: "Thêm bình luận",
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Đánh giá xong kết quả thực hiện công việc',
                 edit_redult_task_success: 'Chỉnh sửa thành công kết quả đánh giá',

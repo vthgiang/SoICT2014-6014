@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DepartmentActions } from '../redux/actions';
+
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { DepartmentValidator } from './organizationalUnitValidator';
 
 class DepartmentCreateWithParent extends Component {
@@ -69,6 +72,7 @@ class DepartmentCreateWithParent extends Component {
         const { translate, department } = this.props;
         const {departmentParent, departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError} = this.state;
         console.log("state create organ:", this.state)
+        
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -80,18 +84,21 @@ class DepartmentCreateWithParent extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-department-with-parent">
-                    <fieldset className="scheduler-border">
+                        <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
-                            <div className={`form-group ${departmentNameError===undefined?"":"has-error"}`}>
+
+                            <div className={`form-group ${!departmentNameError? "": "has-error"}`}>
                                 <label>{ translate('manage_department.name')  }<span className="attention"> * </span></label>
                                 <input type="text" className="form-control" onChange={this.handleName}/><br/>
                                 <ErrorLabel content={departmentNameError}/>
                             </div>
-                            <div className={`form-group ${departmentDescriptionError===undefined?"":"has-error"}`}>
+
+                            <div className={`form-group ${!departmentDescriptionError? "": "has-error"}`}>
                                 <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
                                 <textarea type="text" className="form-control" onChange={this.handleDescription}/><br/>
                                 <ErrorLabel content={departmentDescriptionError}/>
                             </div>
+
                             <div className="form-group">
                                 <label>{ translate('manage_department.parent') }</label>
                                 <SelectBox
@@ -107,8 +114,10 @@ class DepartmentCreateWithParent extends Component {
                                 />
                             </div>
                         </fieldset>
+
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
+                            
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -231,11 +240,12 @@ class DepartmentCreateWithParent extends Component {
         let result = 
             this.validateName(this.state.departmentName, false) &&
             this.validateDescription(this.state.departmentDescription, false)
+
         return result;
     }
 
     save = () => {
-        if(this.isFormValidated())
+        if (this.isFormValidated()){
             return this.props.create({
                 name: this.state.departmentName, 
                 description: this.state.departmentDescription, 
@@ -244,6 +254,7 @@ class DepartmentCreateWithParent extends Component {
                 employees: this.state.employees, 
                 parent: this.state.departmentParent
             });
+        }
     }
     handleParent = (value) => {
         console.log("giá trị đơn vị cha: ",value[0])
@@ -276,6 +287,7 @@ class DepartmentCreateWithParent extends Component {
     }
     validateDescription = (value, willUpdateState=true) => {
         let msg = DepartmentValidator.validateName(value);
+        
         if (willUpdateState){
             this.setState(state => {
                 return {
@@ -285,11 +297,13 @@ class DepartmentCreateWithParent extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 }
 
 const mapState = state => state;
+
 const getState = {
     create: DepartmentActions.create
 }

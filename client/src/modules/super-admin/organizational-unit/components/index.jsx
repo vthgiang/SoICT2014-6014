@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import DepartmentTreeView from './organizationalUnitTreeView';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DepartmentActions } from '../redux/actions';
+
+import DepartmentTreeView from './organizationalUnitTreeView';
 
 class ManageDepartment extends Component {
     constructor(props) {
@@ -32,8 +34,9 @@ class ManageDepartment extends Component {
 }
  
 const mapState = state => state;
+
 const getState = {
-    get: DepartmentActions.get
+    get: DepartmentActions.get,
 }
  
 export default connect(mapState, getState) (withTranslate(ManageDepartment)); 
