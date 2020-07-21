@@ -1636,6 +1636,16 @@ export default {
                 dashboard_about_to_overdue: 'Task is about to overdue',
                 dashboard_max: 'Max',
                 dashboard_min: 'Min',
+
+                err_require: 'Field is required',
+                err_date_required: 'Date is required',
+                err_nan: 'The value must be number',
+                
+                // mes_notice
+                edit_task_success: 'Edit task success',
+                evaluate_task_success: 'Evaluate task success',
+                edit_task_fail: 'Edit task fail',
+                evaluate_task_fail: 'Evaluate task fail',
                 
             },
             task_perform: {
@@ -1698,6 +1708,17 @@ export default {
                 evaluation_action_fail: 'Evaluation action fail',
                 confirm_action_fail: 'Confirm action fail',
 
+                // error label
+                err_require: 'Field is required',
+                err_date_required: 'Date is required',
+                err_nan: 'The value must be number',
+                err_has_accountable: 'Must be have accountable employee at least one',
+                err_has_consulted: 'Must be have consulted employee at least one',
+                err_has_responsible: 'Must be have responsible employee at least one',
+
+                // swal
+                confirm: 'Confirm',
+
                 // modal approve task
                 modal_approve_task: {
                     title: 'Request to finish task',
@@ -1716,7 +1737,7 @@ export default {
                     accountable: 'Accountable role',
 
                     err_range: 'Value must be between 0 and 100',
-                    err_empty: "Value must be filled"
+                    err_empty: "Value must be required"
                 }
             },
             task_template: {

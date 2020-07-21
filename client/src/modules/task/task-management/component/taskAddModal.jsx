@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
@@ -7,7 +8,6 @@ import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
-import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 class TaskAddModal extends Component {

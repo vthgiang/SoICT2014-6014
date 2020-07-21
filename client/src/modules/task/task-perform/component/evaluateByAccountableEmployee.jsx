@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
-import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { getStorage } from '../../../../config';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
-import { getStorage } from '../../../../config';
-import moment from 'moment'
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
+import moment from 'moment';
 
 var currentTask;
 
@@ -574,7 +574,6 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleInfoDateChange = (value, code) => {
-        console.log('value', value);
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -604,18 +603,20 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     validateDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = "Ngày đánh giá bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
     }
 
     validateTextInfo = (value) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = "Giá trị không được để trống"
+            msg =translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -644,9 +645,10 @@ class EvaluateByAccountableEmployee extends Component {
 
 
     validateInfoBoolean = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = "Giá trị bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -655,8 +657,6 @@ class EvaluateByAccountableEmployee extends Component {
 
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('value', value);
-
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -711,9 +711,10 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
     validateDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = "Ngày đánh giá bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;

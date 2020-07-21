@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { performTaskAction } from '../redux/actions';
-import Swal from 'sweetalert2'
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import Swal from 'sweetalert2'
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -318,16 +318,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
 
-        console.log('==========================', numOfInactiveAcc, numOfInactiveResp);
-
         if (numOfAccountable === numOfInactiveAcc) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người phê duyệt",
+                title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 this.setState(state => {
                     state.listInactive[`${id}`] = {
@@ -342,13 +341,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfInactiveResp === numOfResponsible) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người thực hiện",
+                title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 this.setState(state => {
                     state.listInactive[`${id}`] = {
@@ -393,13 +393,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
 
         if (numOfInactiveResp === numOfResponsible) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người thực hiện",
+                title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 this.setState(state => {
                     state.listInactive[`${id}`] = {
@@ -414,13 +415,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfAccountable === numOfInactiveAcc) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người phê duyệt",
+                title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 this.setState(state => {
                     state.listInactive[`${id}`] = {
@@ -465,13 +467,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
 
         if (numOfAccountable === numOfInactiveAcc) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người phê duyệt",
+                title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
@@ -488,13 +491,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfInactiveResp === numOfResponsible) {
+            let { translate } = this.props;
             Swal.fire({
-                title: "Phải có tối thiểu một người thực hiện",
+                title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "Xác nhận",
+                confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
@@ -518,9 +522,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateTaskName = (value, willUpdateState) => {
+        let { translate } = this.props;
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Tên công việc không được để trống";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -540,9 +545,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateTaskDescription = (value, willUpdateState) => {
+        let { translate } = this.props;
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Mô tả công việc không được để trống";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -600,15 +606,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateTaskProgress = (value, willUpdateState) => {
+        let { translate } = this.props;
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Hãy nhập mức độ hoàn thành công việc";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (value !== undefined && isNaN(value)) {
-            errorMessage = "Mức độ hoàn thành phải có định dạng number";
+            errorMessage = translate('task.task_perform.err_nan');
         }
         if (value < 0 || value > 100) {
-            errorMessage = "Mức độ hoàn thành phải trong khoảng 0 - 100";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_range');
         }
         if (willUpdateState) {
             this.setState(state => {

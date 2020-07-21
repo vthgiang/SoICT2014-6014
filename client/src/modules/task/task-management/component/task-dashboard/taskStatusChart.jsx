@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../redux/actions';
 import { SelectBox } from '../../../../../common-components/index';
-import {withTranslate} from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
-import { translate } from 'react-redux-multilingual/lib/utils';
 
 class TaskStatusChart extends Component {
 
     constructor(props) {
         super(props);
-        
+
         let { translate } = this.props;
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };

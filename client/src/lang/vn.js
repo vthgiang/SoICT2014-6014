@@ -1606,7 +1606,7 @@ export default {
                 responsible: 'Người thực hiện',
                 accountable: 'Người phê duyệt',
                 consulted: 'Người hỗ trợ',
-                creator: 'Nhười thiết lập',
+                creator: 'Người thiết lập',
                 informed: 'Người quan sát',
 
                 add_task: 'Thêm mới',
@@ -1785,6 +1785,16 @@ export default {
                 dashboard_max: 'Cao nhất',
                 dashboard_min: 'Thấp nhất',
 
+                err_require: 'Trường này phải có giá trị',
+                err_date_required: 'Ngày phải có giá trị',
+                err_nan: 'Giá trị phải là số',
+
+                // mes_notice
+                edit_task_success: 'Chỉnh sửa công việc thành công',
+                evaluate_task_success: 'Đánh giá công việc thành công',
+                edit_task_fail: 'Chỉnh sửa công việc thất bại',
+                evaluate_task_fail: 'Đánh giá công việc thất bại',
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1845,6 +1855,27 @@ export default {
                 delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
                 evaluation_action_fail: 'Đánh giá công việc thất bại',
                 confirm_action_fail: 'Xác nhận hoạt động thất bại',
+
+                // error label
+                err_require: 'Trường này phải có giá trị',
+                err_date_required: 'Ngày phải có giá trị',
+                err_nan: 'Giá trị phải là số',
+                err_has_accountable: 'Phải có ít nhất một người phê duyệt',
+                err_has_consulted: 'Phải có ít nhất một người hỗ trợ',
+                err_has_responsible: 'Phải có ít nhất một người thực hiện',
+
+                // swal
+                confirm: 'Xác nhận',
+
+                // log
+                log_edit_basic_info: 'Chỉnh sửa thông tin cơ bản',
+                log_edit_name: 'Tên công việc mới',
+                log_edit_description: 'MÔ tả công việc mới',
+                log_edit_kpi: 'Chỉnh sửa liên kết kpi',
+                log_edit_kpi_new: 'Liên kết kpi mới',
+                log_edit_eval_info: 'Chỉnh sửa thông tin đánh giá công việc',
+                log_edit_progress: 'Mức độ hoàn thành công việc mới',
+
                 // modal approve task
                 modal_approve_task: {
                     title: 'Yêu cầu kết thúc công việc',

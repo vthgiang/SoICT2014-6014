@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { TaskAddModal } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
-import Swal from 'sweetalert2';
-import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
 import { getStorage } from '../../../../config';
+import Swal from 'sweetalert2';
 
 class TaskManagement extends Component {
     constructor(props) {

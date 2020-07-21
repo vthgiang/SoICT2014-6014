@@ -16,15 +16,16 @@ class DetailTaskTab extends Component {
     constructor(props) {
         super(props);
         
+        let { translate } = this.props;
         var idUser = getStorage("userId");
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.ROLE = {
-            RESPONSIBLE: {name: "Người thực hiện", value: "responsible"},
-            ACCOUNTABLE:  {name: "Người phê duyệt", value: "accountable"},
-            CONSULTED:  {name: "Người hỗ trợ", value: "consulted"},
-            CREATOR:  {name: "Người tạo", value: "creator"},
-            INFORMED:  {name: "Người quan sát", value: "informed"},
+            RESPONSIBLE: {name: translate('task.task_management.responsible'), value: "responsible"},
+            ACCOUNTABLE:  {name: translate('task.task_management.accountable'), value: "accountable"},
+            CONSULTED:  {name: translate('task.task_management.consulted'), value: "consulted"},
+            CREATOR:  {name: translate('task.task_management.creator'), value: "creator"},
+            INFORMED:  {name: translate('task.task_management.informed'), value: "informed"},
         };
 
         this.state = {

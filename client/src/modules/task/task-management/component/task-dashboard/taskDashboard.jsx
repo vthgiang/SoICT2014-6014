@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { TasksSchedule } from './tasksSchedule';
 import { taskManagementActions } from '../../redux/actions';
-import {withTranslate} from 'react-redux-multilingual';
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -250,7 +250,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
                             </div>
                             <TasksSchedule />
                         </div>

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components/index';
-import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DialogModal, ErrorLabel } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
-import { getStorage } from '../../../../config';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
+import { getStorage } from '../../../../config';
 
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {

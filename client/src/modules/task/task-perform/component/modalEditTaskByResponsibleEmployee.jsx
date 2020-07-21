@@ -38,7 +38,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('PARENT nextProps, prevState', nextProps, prevState);
         const { task } = nextProps;
 
         if (nextProps.id !== prevState.id) {
@@ -257,18 +256,20 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
 
     validateInfoBoolean = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = "Giá trị bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
     }
 
     validateTextInfo = (value) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = "Giá trị không được để trống"
+            msg = translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -305,9 +306,10 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     validateDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = "Ngày đánh giá bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -319,9 +321,10 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     validateTaskName = (value, willUpdateState) => {
+        let { translate } = this.props;
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Tên công việc không được để trống";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -341,9 +344,10 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     validateTaskDescription = (value, willUpdateState) => {
+        let { translate } = this.props;
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Mô tả công việc không được để trống";
+            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
             this.setState(state => {
