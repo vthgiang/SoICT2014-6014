@@ -21,7 +21,7 @@ import { Notifications } from "../modules/combine-modules";
 
 import { LogSystem } from '../modules/system-admin/log/components';
 import { Company } from '../modules/system-admin/company/components';
-import LinksDefaultManagement from '../modules/system-admin/system-link/components';
+import { ManageLinkSystem } from '../modules/system-admin/system-link/components';
 import ManageRoleDefault from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
@@ -121,7 +121,7 @@ class Routes extends Component {
                         component={ ManageRoleDefault }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.linksDefault.isLoading }
+                        isLoading={ this.props.systemLinks.isLoading }
                         key={ 'manage_links_default' }
                         arrPage={[
                             { link: '/system/links-default-management', name:'manage_link', icon: 'fa fa-link'}
@@ -132,7 +132,7 @@ class Routes extends Component {
                         path={ '/system/links-default-management' }
                         pageName={ 'manage_link' }
                         layout={ Layout }
-                        component={ LinksDefaultManagement }
+                        component={ ManageLinkSystem }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.systemComponents.isLoading }

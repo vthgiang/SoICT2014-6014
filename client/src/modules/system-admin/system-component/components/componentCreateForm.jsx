@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemComponentActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
 
 import { ComponentDefaultValidator } from './systemComponentValidator';
 
@@ -26,7 +26,7 @@ class ComponentCreateForm extends Component {
 
     componentDidMount() {
         this.props.getAllRootRoles();
-        this.props.getLink();
+        this.props.getAllSystemLinks();
     }
 
     // Xy ly va validate name
@@ -107,7 +107,7 @@ class ComponentCreateForm extends Component {
     }
 
     render() { 
-        const { translate, rootRoles, linksDefault } = this.props;
+        const { translate, rootRoles, systemLinks } = this.props;
         const { componentLink, componentNameError, componentDescriptionError } = this.state;
 
         return ( 
@@ -135,13 +135,13 @@ class ComponentCreateForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_component.link') }</label>
                             {
-                                linksDefault.list.length > 0 &&
+                                systemLinks.list.length > 0 &&
                                 <SelectBox
                                     id={`select-component-default-link`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {
-                                        linksDefault.list.map( link => {return {value: link._id, text: link.url}})
+                                        systemLinks.list.map( link => {return {value: link._id, text: link.url}})
                                     }
                                     value={componentLink}
                                     onChange={this.handleLink}
@@ -171,12 +171,12 @@ class ComponentCreateForm extends Component {
 }
  
 function mapState(state) {
-    const { rootRoles, linksDefault } = state;
-    return { rootRoles, linksDefault }
+    const { rootRoles, systemLinks } = state;
+    return { rootRoles, systemLinks }
 }
 const actions = {
     getAllRootRoles: RootRoleActions.getAllRootRoles,
-    getLink: LinkDefaultActions.get,
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
     createSystemComponent: SystemComponentActions.createSystemComponent
 }
  
