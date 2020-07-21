@@ -19,8 +19,8 @@ import Home from '../modules/home/components';
 
 import { Notifications } from "../modules/combine-modules";
 
-import System from '../modules/system-admin/log/components';
-import Company from '../modules/system-admin/company/components';
+import { LogSystem } from '../modules/system-admin/log/components';
+import { Company } from '../modules/system-admin/company/components';
 import LinksDefaultManagement from '../modules/system-admin/system-link/components';
 import RolesDefaultManagement from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
@@ -56,7 +56,7 @@ import {KPIPersonalManager} from "../modules/kpi/employee/management/component/e
 import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
-import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
+import {EmployeeKpiManagement} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
 import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 
@@ -104,7 +104,7 @@ class Routes extends Component {
                         path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ System }
+                        component={ LogSystem }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.rolesDefault.isLoading }
@@ -646,7 +646,7 @@ class Routes extends Component {
                         path={ '/kpi-member/manager' }
                         pageName= "kpi_member_manager"
                         layout={ Layout }
-                        component={ KPIMember }
+                        component={ EmployeeKpiManagement }
                     />
                     <PrivateRoute 
                         isLoading={ false }

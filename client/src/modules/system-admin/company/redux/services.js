@@ -17,6 +17,9 @@ export const CompanyServices = {
     editImportConfiguration,
 };
 
+/**
+ * Lấy danh sách tất cả các công ty
+ */
 function get(params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company`,
@@ -25,6 +28,10 @@ function get(params) {
     }, false, true, 'system_admin.company');
 }
 
+/**
+ * Tạo dữ liệu mới về 1 công ty
+ * @company dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
+ */
 function create(company) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company`,
@@ -33,7 +40,11 @@ function create(company) {
     }, true, true, 'system_admin.company');
 }
 
-
+/**
+ * Chỉnh sửa thông tin 1 công ty
+ * @id id của công ty trong database
+ * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
+ */
 function edit(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}`,
@@ -42,6 +53,13 @@ function edit(id, data) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Thêm link mới cho công ty
+ * @id id của công ty
+ * @data
+    * @linkUrl đường dẫn cho link muốn tạo
+    * @linkDescription mô tả về link
+ */
 function addNewLink(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}/add-new-link`,
@@ -50,6 +68,11 @@ function addNewLink(id, data) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Xóa 1 link của công ty
+ * @companyId id của công ty
+ * @linkId id của link muốn xóa
+ */
 function deleteLink(companyId, linkId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/delete-link/${linkId}`,
@@ -57,6 +80,14 @@ function deleteLink(companyId, linkId) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Thêm mới 1 component cho công ty
+ * @id id của công ty
+ * @data
+    * @componentname tên của component
+    * @componentDescription mô tả về component
+    * @linkId id của link được chứa component này
+ */
 function addNewComponent(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}/add-new-component`,
@@ -65,6 +96,11 @@ function addNewComponent(id, data) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Xóa một của component của công ty
+ * @companyId id của công ty
+ * @componentId id của component muốn xóa
+ */
 function deleteComponent(companyId, componentId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/delete-component/${componentId}`,
@@ -72,6 +108,10 @@ function deleteComponent(companyId, componentId) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Lấy danh sách tất cả các link của công ty
+ * @companyId id của công ty muốn lấy danh sách các link
+ */
 function linksList(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/links-list`,
@@ -80,6 +120,10 @@ function linksList(companyId, params) {
     }, false, true, 'system_admin.company');
 }
 
+/**
+ * Lấy danh sách các component của công ty
+ * @companyId id của công ty
+ */
 function componentsList(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/components-list`,
@@ -88,6 +132,11 @@ function componentsList(companyId, params) {
     }, false, true, 'system_admin.company');
 }
 
+/**
+ * Lấy thông tin cấu hình file import
+ * @data
+    * @type Thể loại file cấu hình(salary, taskTemplate);
+ */
 function getImportConfiguration(data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/import-file/${data.type}`,
@@ -95,6 +144,10 @@ function getImportConfiguration(data) {
     }, false, false, 'system_admin.company');
 }
 
+/**
+ * Tạo thông tin cấu hình file import
+ * @data Thông tin cấu hình file import
+ */
 function createImportConfiguration(data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/import-file/`,
@@ -103,6 +156,10 @@ function createImportConfiguration(data) {
     }, true, true, 'system_admin.company');
 }
 
+/**
+ * Chỉnh sửa thông tin cấu hình file import
+ * @data Dữ liệu chinhe sửa file cấu hình
+ */
 function editImportConfiguration(data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/import-file/${data.id}`,

@@ -25,18 +25,17 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     render() {
-        const { task, progress, date, info} = this.props; // props from parent component
-        
-        let taskInformations = task.taskInformations;
+        const { translate } = this.props;
+        const { task, progress, date, info, autoPoint } = this.props; // props from parent component
 
+        let taskInformations = task.taskInformations;
         let splitter = date.split('-');
         let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
-
         let totalDay = endDate.getTime() - startDate.getTime();
         let dayUsed = evaluationsDate.getTime() - startDate.getTime();
-        let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
+        let overdueDate = (dayUsed - totalDay > 0)? dayUsed - totalDay: 0;
 
         // chuyển về đơn vị ngày
         totalDay = totalDay/86400000;
@@ -45,6 +44,7 @@ class ModalShowAutoPointInfo extends Component {
 
         // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
         let taskActions = task.taskActions;
+        
         let actions = taskActions.filter(item => (
             item.rating !== -1 &&
             new Date(item.createdAt).getMonth() === evaluationsDate.getMonth() 
@@ -58,15 +58,13 @@ class ModalShowAutoPointInfo extends Component {
 
         // Tổng số điểm của các hoạt động
         let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
-        reduceAction = reduceAction > 0 ? reduceAction : 0;
-
+        reduceAction = reduceAction > 0? reduceAction: 0;
         let averageActionRating = reduceAction/a;
         let formula = task.taskTemplate && task.taskTemplate.formula;
         if(task.taskTemplate){
 
             let taskInformations = info;
-            // formula = task.taskTemplate.formula;
-        
+            
             // thay các biến bằng giá trị
             formula = formula.replace(/overdueDate/g, overdueDate);
             formula = formula.replace(/totalDay/g, totalDay);
@@ -97,55 +95,52 @@ class ModalShowAutoPointInfo extends Component {
                     size="50"
                     modalID={`modal-automatic-point-info`}
                     formID="form-automatic-point-info"
-                    title={`Thông tin điểm tự động của công việc`} 
+                    title={translate('task.task_management.calc_form')} 
                     hasSaveButton={false}
                 >
-                    {
-                        (task.taskTemplate !== null && task.taskTemplate !== undefined) &&
+                    {(task.taskTemplate) &&
                         <div>
-                            <p><strong>Công thức tính: </strong>{task.taskTemplate.formula}</p>
-                            <p>Trong đó: </p>
+                            <p><strong>{translate('task.task_management.calc_formula')}: </strong>{task.taskTemplate.formula}</p>
+                            <p>{translate('task.task_management.calc_where')}: </p>
                             <ul>
-                                <li>overdueDate: Thời gian quá hạn: {overdueDate} (ngày)</li>
-                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
-                                <li>averageActionRating: Trung bình cộng điểm đánh giá hoạt động: {averageActionRating} </li>
-                                <li>progress: Tiến độ công việc: {progress} (%)</li>
+                                <li>overdueDate: {translate('task.task_management.calc_overdue_date')}: {overdueDate} ({translate('task.task_management.calc_days')})</li>
+                                <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
+                                <li>averageActionRating: {translate('task.task_management.calc_average_action_rating')}: {averageActionRating} </li>
+                                <li>progress: {translate('task.task_management.calc_progress')}: {progress} (%)</li>
                                 {
                                     taskInformations && taskInformations.map(e => {
                                         if(e.type === 'Number'){
-                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value: "Chưa có giá trị" }</li>
+                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value)? info[`${e.code}`].value: translate('task.task_management.calc_no_value') }</li>
                                         }
                                     })
                                 }
                             </ul>
-                            <p><strong>Công thức hiện tại: </strong>{formula} = {this.props.autoPoint}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
                         </div> 
                     }
-                    {
-                        ((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
                         <div>
-                            <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay)</p>
-                            <p>Trong đó: </p>
+                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> progress/(dayUsed/totalDay)</p>
+                            <p>{translate('task.task_management.calc_where')}: </p>
                             <ul>
-                                <li>progress: Tiến độ công việc: {progress} (%)</li>
-                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
-                                <li>totalDay: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {totalDay} (ngày)</li>
+                                <li>progress: {translate('task.task_management.calc_progress')}: {progress} (%)</li>
+                                <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
+                                <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                            <p><strong>Công thức hiện tại: </strong>{progress}/({dayUsed}/{totalDay}) = {this.props.autoPoint}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
                         </div>
                     }
-                    {
-                        ((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
                         <div>
-                            <p><strong>Công thức tính: </strong> progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10</p>
-                            <p>Trong đó: </p>
+                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10</p>
+                            <p>{translate('task.task_management.calc_where')}: </p>
                             <ul>
-                                <li>progress: Tiến độ công việc: {progress} (%)</li>
-                                <li>averageActionRating: Trung bình cộng điểm đánh giá hoạt động: {averageActionRating}</li>
-                                <li>dayUsed: Thời gian làm việc tính đến ngày đánh giá: {dayUsed} (ngày)</li>
-                                <li>totalDay: Thời gian từ ngày bắt đầu đến ngày kết thúc công việc: {totalDay} (ngày)</li>
+                                <li>progress: {translate('task.task_management.calc_progress')}: {progress} (%)</li>
+                                <li>averageActionRating: {translate('task.task_management.calc_average_action_rating')}: {averageActionRating}</li>
+                                <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
+                                <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                        <p><strong>Công thức hiện tại: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {this.props.autoPoint}</p>
+                        <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
                         </div>
                     }
 

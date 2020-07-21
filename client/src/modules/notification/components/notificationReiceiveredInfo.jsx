@@ -29,14 +29,14 @@ class NotificationReiceiverdInfo extends Component {
     }
 
     render() { 
-        const {notifications, translate} = this.props;
-        const {notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent} = this.state;
+        const { notifications, translate } = this.props;
+        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent } = this.state;
         return ( 
             <DialogModal
-                    func={this.save} isLoading={notifications.isLoading}
-                    modalID={`modal-notification-receivered`}
-                    title={translate('notification.title')}
-                    hasSaveButton={false} hasNote={false}
+                func={this.save} isLoading={notifications.isLoading}
+                modalID={`modal-notification-receivered`}
+                title={translate('notification.title')}
+                hasSaveButton={false} hasNote={false}
             >
                 <div className="qlcv">
                     <div className="form-inline">

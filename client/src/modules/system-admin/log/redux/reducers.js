@@ -1,4 +1,4 @@
-import { SystemConsts } from "./constants";
+import { LogConstants } from "./constants";
 
 const initState = {
     status: false,
@@ -8,21 +8,21 @@ const initState = {
 export function log(state = initState, action) {
 
     switch (action.type) {
-        case SystemConsts.GET_LOG_STATE_REQUEST:
-        case SystemConsts.TOGGLE_LOG_STATE_REQUEST:
+        case LogConstants.GET_LOG_STATE_REQUEST:
+        case LogConstants.TOGGLE_LOG_STATE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
 
-        case SystemConsts.GET_LOG_STATE_REQUEST_SUCCESS:
+        case LogConstants.GET_LOG_STATE_REQUEST_SUCCESS:
             return {
                 ...state,
                 status: action.payload,
                 isLoading: false
             };
 
-        case SystemConsts.TOGGLE_LOG_STATE_REQUEST_SUCCESS:
+        case LogConstants.TOGGLE_LOG_STATE_REQUEST_SUCCESS:
             return {
                 ...state,
                 status: action.payload ? !state.status : state.status,

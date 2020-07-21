@@ -45,15 +45,15 @@ class Login extends Component {
 
     render() { 
         const { auth, translate } = this.props;
+        
         return ( 
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
-                
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
                         <a href="/"><b>VNIST</b>-Việc</a>
                     </div>
                     {
-                        auth.error !== undefined && auth.error !== null &&
+                        auth.error &&
                         <div className="alert alert-danger alert-dismissible">
                             <button type="button" className="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <i className="icon fa fa-ban" /> {translate(`auth.${auth.error}`)}

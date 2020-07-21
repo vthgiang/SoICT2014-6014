@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { TasksSchedule } from './tasksSchedule';
 import { taskManagementActions } from '../../redux/actions';
-
-import {withTranslate} from 'react-redux-multilingual';
-
 
 class TaskDashboard extends Component {
     constructor(props) {
@@ -25,9 +22,9 @@ class TaskDashboard extends Component {
         this.props.getTaskByUser();
     }
     generateDataPoints(noOfDps) {
-        var xVal = 1, yVal = 100;
-        var dps = [];
-        for (var i = 0; i < noOfDps; i++) {
+        let xVal = 1, yVal = 100;
+        let dps = [];
+        for (let i = 0; i < noOfDps; i++) {
             yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
             dps.push({ x: xVal, y: yVal });
             xVal++;
@@ -110,7 +107,7 @@ class TaskDashboard extends Component {
         }
         // Tinh tong so luong cong viec co trang thai Inprogess
         var numTask = [];
-        var totalTasks = 0;
+        let totalTasks = 0;
         if (tasks) {
             let tempObj = {};
             if (tasks.responsibleTasks)
@@ -138,7 +135,7 @@ class TaskDashboard extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Đã tạo</span>
+                                <span className="info-box-text">{translate('task.task_management.dashboard_created')}</span>
                                 <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
                             </div>
                         </div>
@@ -147,7 +144,7 @@ class TaskDashboard extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Cần thực hiện</span>
+                                <span className="info-box-text">{translate('task.task_management.dashboard_need_perform')}</span>
                                 <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
                             </div>
                         </div>
@@ -156,7 +153,7 @@ class TaskDashboard extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Cần phê duyệt</span>
+                                <span className="info-box-text">{translate('task.task_management.dashboard_need_approve')}</span>
                                 <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
                             </div>
                         </div>
@@ -166,7 +163,7 @@ class TaskDashboard extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Cần hỗ trợ</span>
+                                <span className="info-box-text">{translate('task.task_management.dashboard_need_consult')}</span>
                                 <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
                             </div>
                         </div>
@@ -176,7 +173,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Miền kết quả công việc</div>
+                                <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
                             </div>
                             <DomainOfTaskResultsChart />
                         </div>
@@ -184,7 +181,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Trạng thái công việc</div>
+                                <div className="box-title">{translate('task.task_management.detail_status')}</div>
                             </div>
                             <TaskStatusChart />
                         </div>
@@ -196,7 +193,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Công việc quá hạn</div>
+                                <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
                             <div className="box-body" style={{ height: "300px" }}>
@@ -211,7 +208,7 @@ class TaskDashboard extends Component {
                                                             <i className="fa fa-ellipsis-v" />
                                                         </span>
                                                         <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                        <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} days</small>
+                                                        <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                     </li>
                                                 )
                                             }
@@ -223,7 +220,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Công việc sắp hết hạn</div>
+                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
                             <div className="box-body" style={{ height: "300px" }}>
                                 {
@@ -237,7 +234,7 @@ class TaskDashboard extends Component {
                                                             <i className="fa fa-ellipsis-v" />
                                                         </span>
                                                         <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
-                                                        <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} days</small>
+                                                        <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                     </li>
                                                 )
                                             }
@@ -253,7 +250,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
                             </div>
                             <TasksSchedule />
                         </div>

@@ -17,6 +17,7 @@ router.post("/:id/add-new-link", auth, CompanyController.addCompanyLink);
 router.delete("/:id/delete-link/:linkId", auth, CompanyController.deleteCompanyLink);
 router.post("/:id/add-new-component", auth, CompanyController.addCompanyComponent);
 router.delete("/:id/delete-component/:componentId", auth, CompanyController.deleteCompanyComponent);
+
 //Lấy tất cả các category link
 router.get("/link-categories", auth, CompanyController.getAllLinkCategories);
 

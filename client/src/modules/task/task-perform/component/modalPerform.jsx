@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { TaskComponent } from './taskComponent';
-import { taskManagementActions } from '../../task-management/redux/actions';
 
 class ModalPerform extends Component {
     constructor(props) {
@@ -12,15 +11,10 @@ class ModalPerform extends Component {
         
     }
 
-    componentDidMount(){
-        // this.props.getTaskById(this.props.id)
-    }
-
     render() {
         var task;
         const { tasks} = this.props; 
         
-        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
         
         return (
@@ -35,7 +29,6 @@ class ModalPerform extends Component {
                 >
                     <TaskComponent 
                         id={this.props.id} 
-                        // task={task && task}
                     />
                 </DialogModal>
             </React.Fragment>
@@ -48,9 +41,7 @@ function mapState(state) {
     return { tasks };
 }
 
-const actionDispatch = {
-    // getTaskById: taskManagementActions.getTaskById
-}
+const actionDispatch = {}
 
 const modalPerform = connect(mapState, actionDispatch)(withTranslate(ModalPerform));
 export { modalPerform as ModalPerform }

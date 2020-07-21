@@ -92,6 +92,7 @@ const TaskSchema = new Schema({
         },
         progress: {
             type: Number,
+            default: 0,
         },
         kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
             employee:{ // Người thực hiện A nào đó

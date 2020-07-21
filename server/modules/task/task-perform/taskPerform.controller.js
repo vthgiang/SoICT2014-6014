@@ -186,7 +186,6 @@ exports.editTaskResult = async (req, res) => {
 exports.createTaskAction = async (req,res) => {
     try {
         var files=[] ;
-        
         if(req.files !== undefined){
             req.files.forEach((elem,index) => {
                 var path = elem.destination +'/'+ elem.filename;
@@ -559,8 +558,22 @@ exports.uploadFile = async(req,res) => {
  * Xóa tài liệu công việc
  */
 exports.deleteFile = async(req,res) => {
+        if(res.params.type === 1) {
+            deleteFileAction(req.params);
+        }else if (res.params.type === 2) {
+            deleteFileCommentOfAction(req.params);
+        }else if (res.params.type === 3) {
+            deleteFileTaskComment(req.params);
+        }else if (res.params.type === 4) {
+            deleteFileCommentOfTaskComment(req.params);
+        }
+}
+/**
+ * Xóa file của hoạt động
+ */
+deleteFileAction = async (params) => {
     try {
-        var comment = await PerformTaskService.deleteFile(req.params);
+        var comment = await PerformTaskService.deleteFileAction(params);
         await LogInfo(req.user.email, ` delete file of task  `,req.user.company);
         res.status(200).json({
             success: true,

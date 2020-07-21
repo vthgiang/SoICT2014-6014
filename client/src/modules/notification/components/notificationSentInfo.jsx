@@ -31,15 +31,15 @@ class NotificationSentInfo extends Component {
     }
 
     render() { 
-        const {notifications, translate} = this.props;
-        const {notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits} = this.state;
+        const { notifications, translate } = this.props;
+        const { notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits } = this.state;
         
         return ( 
             <DialogModal
-                    func={this.save} isLoading={notifications.isLoading}
-                    modalID='modal-notification-sent'
-                    title={translate('notification.title')}
-                    hasSaveButton={false} hasNote={false}
+                func={this.save} isLoading={notifications.isLoading}
+                modalID='modal-notification-sent'
+                title={translate('notification.title')}
+                hasSaveButton={false} hasNote={false}
             >
                 <div className="qlcv">
                     <div className="form-inline">
@@ -67,7 +67,7 @@ class NotificationSentInfo extends Component {
                     
                     <div style={{border: '1px solid lightgray', margin: '20px 0px 20px 0px' , padding: '15px'}}>{notificationContent}</div>
                     {
-                        notificationOrganizationalUnits!==undefined && notificationOrganizationalUnits.length > 0 &&
+                        notificationOrganizationalUnits && notificationOrganizationalUnits.length > 0 &&
                         <React.Fragment>
                             <p><b>{translate('notification.departments')}</b></p>
                             <ul>{
@@ -76,7 +76,7 @@ class NotificationSentInfo extends Component {
                         </React.Fragment>
                     }
                     {
-                        notificationUsers!==undefined && notificationUsers.length > 0 &&
+                        notificationUsers && notificationUsers.length > 0 &&
                         <React.Fragment>
                             <p><b>{translate('notification.users')}</b></p>
                             <ul>{

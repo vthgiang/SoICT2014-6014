@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
+import { connect } from 'react-redux';
 class TaskInformationForm extends Component {
     
     constructor(props) {
@@ -9,16 +10,12 @@ class TaskInformationForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        // console.log('Children nextProps, prevState', nextProps, prevState);
         if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,
-                // ...nextProps,
-                // TODO: ve sau can sửa
 
                 id: nextProps.id,
                 
-                // task: nextProps.task,
                 errorOnInfoDate: undefined,
                 errorOnProgress: undefined
             } 
@@ -28,27 +25,21 @@ class TaskInformationForm extends Component {
     }
 
     render() {
-        // const { errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnTextInfo, errorOnNumberInfo } = this.props;
-        const { value } = this.props;
-        
-        var task = this.props.task
-        
-        // console.log('taskkkkkkkkkkkkk', task);
-
+        const { value, task, translate } = this.props;
+            
         return (
             <React.Fragment>
                 <div>
                     
                     <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin đánh giá công việc tháng này</legend>
-                            {/* information task */}
+                            <legend className="scheduler-border">{translate('task.task_management.eval_on_month')}</legend>
                             <div className={`form-group ${value.errorOnProgress===undefined?"":"has-error"}`}>
-                                <label>Mức độ hoàn thành (<span style={{color:"red"}}>*</span>)</label>
+                                <label>{translate('task.task_management.detail_progress')} (<span style={{color:"red"}}>*</span>)</label>
                                 <input 
                                     className="form-control"
                                     type="number" 
                                     name="progress"
-                                    placeholder={"Nhập mức độ hoàn thành"}
+                                    placeholder={translate('task.task_management.edit_enter_progress')}
                                     onChange={this.props.handleChangeProgress}
                                     value={value.progress}
                                 />
@@ -61,7 +52,6 @@ class TaskInformationForm extends Component {
                                 task.taskInformations.map((info, index)=> 
                                 {
                                     if (info.type === 'Text'){
-                                        // return <div className={`form-group ${value.errorOnTextInfo === undefined ? "" : "has-error"}`}>
                                         return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             {
@@ -69,7 +59,7 @@ class TaskInformationForm extends Component {
                                                     className="form-control"
                                                     type="text" 
                                                     name={info.code}
-                                                    placeholder={'Nhập giá trị'}
+                                                    placeholder={translate('task.task_management.edit_enter_value')}
                                                     onChange={this.props.handleChangeTextInfo}
                                                     disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                     value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) ? value.info[`${info.code}`].value  : '' }
@@ -82,14 +72,13 @@ class TaskInformationForm extends Component {
                                      
                                     {
                                     if (info.type === 'Number') { 
-                                        // return <div className={`form-group ${value.errorOnNumberInfo === undefined ? "" : "has-error"}`}>
                                         return <div className={`form-group`}>
                                             <label>{info.name}(<span style={{color:"red"}}>*</span>)</label>
                                             <input 
                                                 className="form-control"
                                                 type="number" 
                                                 name={info.code}
-                                                placeholder={'Nhập giá trị'}
+                                                placeholder={translate('task.task_management.edit_enter_value')}
                                                 onChange={this.props.handleChangeNumberInfo}
                                                 disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value }
@@ -149,7 +138,6 @@ class TaskInformationForm extends Component {
                                                 multiple={false}
                                                 disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable" }
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined ) && value.info[`${info.code}`].value } 
-                                                // : [info.extra[0].value]
                                             />
                                         </div>
                                     }}
@@ -162,4 +150,5 @@ class TaskInformationForm extends Component {
     }
 }
 
-export { TaskInformationForm };
+const informationTaskForm = connect(null, null)(withTranslate(TaskInformationForm)); 
+export { informationTaskForm as TaskInformationForm };
