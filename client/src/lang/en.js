@@ -1976,7 +1976,17 @@ export default {
                     number_of_employee: 'Number of employees',
                     excellent_employee: 'Excellent Employees',
                     best_employee: 'Best employee',
-                    month: 'Month'
+                    month: 'Month',
+                    auto_point: 'Automatic Point',
+                    employee_point: 'Employee Point',
+                    approve_point: 'Approve Point',
+                    option: 'Options',
+                    analyze: 'Analyze',
+                    statistics_chart_title: 'Statistics KPI of employees',
+                    result_kpi_titile: 'Result KPI of all employees',
+                    auto_eva: 'Evaluated automatically',
+                    employee_eva: 'Evaluated by Employee',
+                    approver_eva: 'Evaluated by Approver',
                 },
 
                 employee_evaluation:{
@@ -2024,7 +2034,7 @@ export default {
                     calc_kpi_point: 'Caculate KPI point',
                     export_file: 'Export file',
                     KPI_info: 'Infomation of ',
-                    point_field: 'Point (Automatic - Yourself - Approver)',
+                    point_field: 'Point (Automatic - Employee - Approver)',
                     not_avaiable: 'Not evaluated',
                     lastest_evaluation: 'Lastest evaluation',
                     task_list: 'Task list',
@@ -2039,7 +2049,8 @@ export default {
                     /**
                      * Management
                      */
-                    wrong_time: 'Start time has to earlier than end time',
+                    wrong_time: 'Start time should be earlier than end time',
+                    confirm:'Confirm',
                     choose_employee: 'Choose employee',
                     employee: 'Employee',
                     choose_status: 'Choose status',
