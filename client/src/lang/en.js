@@ -1604,8 +1604,8 @@ export default {
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
                 
-                add_tempalte: 'Task template',
-                add_tempalte_notice: 'Selected task template',
+                add_template: 'Task template',
+                add_template_notice: 'Selected task template',
                 add_parent_task: 'Parent of task',
                 add_parent_task_notice: 'Select parent of task',
                 add_raci: 'Assignment of responsibility',
