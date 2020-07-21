@@ -56,22 +56,22 @@ exports.createManualNotification = async (data) => {
 // Tạo notification và gửi đến cho user
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
-    let or=data.organizationalUnits[0];
-    for (let i=1; i < data.organizationalUnits.length; i++){
-        or = or +","+ data.organizationalUnits[i];
+    let or = data.organizationalUnits[0];
+    for (let i = 1; i < data.organizationalUnits.length; i++){
+        or = or + "," + data.organizationalUnits[i];
     }
     let userArr = await UserService.getAllUsersInOrganizationalUnit(or);
-    let u=[],us=[];
+    let u = [], us = [];
     userArr.map(item => {
-        u=item.deans[(Object.keys(item.deans))]["members"];
-        us=us.concat(u);
-        u=item.viceDeans[(Object.keys(item.viceDeans))]["members"];
-        us=us.concat(u)
-        u=item.employees[(Object.keys(item.employees))]["members"];
-        us=us.concat(u);
+        u = item.deans[(Object.keys(item.deans))]["members"];
+        us = us.concat(u);
+        u = item.viceDeans[(Object.keys(item.viceDeans))]["members"];
+        us = s.concat(u)
+        u = item.employees[(Object.keys(item.employees))]["members"];
+        us = us.concat(u);
     })
     userArr = us.map(item => item._id);
-    usersArr=usersArr.concat(userArr);
+    usersArr = usersArr.concat(userArr);
 
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());

@@ -14,7 +14,7 @@ class TabNotificationSent extends Component {
          }
     }
     render() { 
-        const {translate, notifications} = this.props;
+        const { translate, notifications } = this.props;
         return ( 
             <React.Fragment>
                 {
@@ -106,6 +106,6 @@ const mapState = state => state;
 const actions = {
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
     paginateManualNotifications: NotificationActions.paginateManualNotifications,
-    deleteManualNotification: NotificationActions.deleteManualNotification
+    deleteManualNotification: NotificationActions.deleteManualNotification,
 }
 export default connect(mapState, actions)(withTranslate(TabNotificationSent));
