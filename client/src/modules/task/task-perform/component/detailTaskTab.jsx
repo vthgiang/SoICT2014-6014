@@ -323,11 +323,11 @@ class DetailTaskTab extends Component {
                                             <ul>
                                                 {
                                                     (task && task.responsibleEmployees.length !== 0) &&
-                                                    task.responsibleEmployees.map(item => {
+                                                    task.responsibleEmployees.map((item, key) => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <li><strike>{item.name}</strike></li>
+                                                            return <li key={key}><strike>{item.name}</strike></li>
                                                         } else {
-                                                            return <li>{item.name}</li>
+                                                            return <li key={key}>{item.name}</li>
                                                         }
 
                                                     })
@@ -339,11 +339,11 @@ class DetailTaskTab extends Component {
                                             <ul>
                                                 {
                                                     (task && task.accountableEmployees.length !== 0) &&
-                                                    task.accountableEmployees.map(item => {
+                                                    task.accountableEmployees.map((item, key) => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <li><strike>{item.name}</strike></li>
+                                                            return <li key={key}><strike>{item.name}</strike></li>
                                                         } else {
-                                                            return <li>{item.name}</li>
+                                                            return <li key={key}>{item.name}</li>
                                                         }
                                                     })
                                                 }
@@ -358,11 +358,11 @@ class DetailTaskTab extends Component {
                                                     <ul>
                                                         {
                                                             (task && task.consultedEmployees.length !== 0) &&
-                                                            task.consultedEmployees.map(item => {
+                                                            task.consultedEmployees.map((item, key) => {
                                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                    return <li><strike>{item.name}</strike></li>
+                                                                    return <li key={key}><strike>{item.name}</strike></li>
                                                                 } else {
-                                                                    return <li>{item.name}</li>
+                                                                    return <li key={key}>{item.name}</li>
                                                                 }
                                                             })
                                                         }
@@ -378,11 +378,11 @@ class DetailTaskTab extends Component {
                                                 <ul>
                                                     {
                                                         (task && task.informedEmployees.length !== 0) &&
-                                                        task.informedEmployees.map(item => {
+                                                        task.informedEmployees.map((item, key) => {
                                                             if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                return <li><strike>{item.name}</strike></li>
+                                                                return <li key={key}><strike>{item.name}</strike></li>
                                                             } else {
-                                                                return <li>{item.name}</li>
+                                                                return <li key={key}>{item.name}</li>
                                                             }
                                                         })
                                                     }
@@ -404,12 +404,12 @@ class DetailTaskTab extends Component {
                                                 } */}
                                                 {
                                                     (task && task.taskInformations.length !== 0) &&
-                                                    task.taskInformations.map(info => {
+                                                    task.taskInformations.map((info, key) => {
                                                         
                                                         if(info.type === "Date") {
-                                                            return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</li>
+                                                            return <li key={key}>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</li>
                                                         }
-                                                        return <li>{info.name}: &nbsp;&nbsp;{info.value? info.value: translate('task.task_management.detail_not_hasinfo')}</li>
+                                                        return <li key={key}>{info.name}: &nbsp;&nbsp;{info.value? info.value: translate('task.task_management.detail_not_hasinfo')}</li>
                                                     })
                                                 }
                                             </ul>
@@ -424,9 +424,9 @@ class DetailTaskTab extends Component {
                                     {/* Evaluations */}
                                     <div>
                                         {( evaluations ) && 
-                                            evaluations.map(eva => {
+                                            evaluations.map((eva, keyEva) => {
                                                 return (
-                                                <div style={{paddingBottom: 10}}>
+                                                <div key={keyEva} style={{paddingBottom: 10}}>
                                                     <dt>{translate('task.task_management.detail_eval_on_date')}&nbsp;{this.formatDate(eva.date)}</dt>                                                    
                                                     <dd>
                                                         {
@@ -435,12 +435,12 @@ class DetailTaskTab extends Component {
                                                             <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
                                                             <ul>
                                                             { (eva.results.length !== 0) ?
-                                                                eva.results.map((res) => {
+                                                                eva.results.map((res, index) => {
                                                                     if(task.inactiveEmployees.indexOf(res.employee._id) !== -1){
-                                                                        return <li><strike>{res.employee.name}</strike> - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
+                                                                        return <li key={index}><strike>{res.employee.name}</strike> - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
                                                                     }
                                                                     else {
-                                                                        return <li>{res.employee.name} - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
+                                                                        return <li key={index}>{res.employee.name} - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
                                                                     }
                                                                 }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                             }
@@ -452,11 +452,11 @@ class DetailTaskTab extends Component {
                                                             <ul>
                                                             <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {eva.progress}%</li>
                                                             {
-                                                                eva.taskInformations.map(info => {
+                                                                eva.taskInformations.map((info, key) => {
                                                                     if(info.type === "Date"){
-                                                                        return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? this.formatDate(info.value): translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                        return <li key={key}>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? this.formatDate(info.value): translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                     }
-                                                                    return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? info.value: ('task.task_management.detail_not_eval_on_month')}</li>
+                                                                    return <li key={key}>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? info.value: ('task.task_management.detail_not_eval_on_month')}</li>
                                                                 })
                                                             }
                                                             </ul>
@@ -466,13 +466,13 @@ class DetailTaskTab extends Component {
                                                         <ul>
                                                         {(eva.kpis.length !== 0)?
                                                             (
-                                                                eva.kpis.map(item => {
-                                                                    return (<li>KPI {item.employee.name}
+                                                                eva.kpis.map((item, key) => {
+                                                                    return (<li key={key}>KPI {item.employee.name}
                                                                         {(item.kpis.length !== 0)?
                                                                             <ol>
                                                                                 {
-                                                                                    item.kpis.map(kpi => {
-                                                                                        return <li>{kpi.name}</li>
+                                                                                    item.kpis.map((kpi, keyKpi) => {
+                                                                                        return <li key={keyKpi}>{kpi.name}</li>
                                                                                     })
                                                                                 }
                                                                             </ol>
