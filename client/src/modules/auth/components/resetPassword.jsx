@@ -26,7 +26,7 @@ class ResetPassword extends Component {
                     content={['auth.validator.confirm_password_invalid']}
                 />, 
                 {containerId: 'toast-notification'});
-        }else{
+        } else{
             this.props.resetPassword(
                 this.refs.otp.value,
                 this.refs.email.value,
@@ -40,7 +40,7 @@ class ResetPassword extends Component {
         const { isLoading, reset_password } = this.props.auth;
         const { translate } = this.props;
 
-        if(otp !== undefined && email !== undefined){
+        if(otp && email){
             return ( 
                 <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
                     {
@@ -92,7 +92,7 @@ class ResetPassword extends Component {
                     </div>
                 </div>
              );
-        }else{
+        } else{
             return <Redirect to='/login' />
         }
         
