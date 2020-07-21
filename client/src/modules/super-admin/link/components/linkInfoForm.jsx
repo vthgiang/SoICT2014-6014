@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { RoleActions } from '../../role/redux/actions';
 import { LinkActions } from '../redux/actions';
+
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { LinkValidator } from './linkValidator';
 
 class LinkInfoForm extends Component {
@@ -11,6 +14,7 @@ class LinkInfoForm extends Component {
         super(props);
         this.state = {}
     }
+
     // Thiet lap cac gia tri tu props vao state
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.linkId !== prevState.linkId) {
@@ -57,12 +61,16 @@ class LinkInfoForm extends Component {
 
     save = () => {
         const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError } = this.state;
+
         const link = { 
             url: linkUrl, 
             description: linkDescription, 
             roles: linkRoles
         };
-        if(this.isFormValidated()) return this.props.editLink(linkId, link);
+
+        if (this.isFormValidated()){
+            return this.props.editLink(linkId, link);
+        }
     }
 
     isFormValidated = () => {
@@ -77,6 +85,7 @@ class LinkInfoForm extends Component {
     render() { 
         const { translate, role, link } = this.props;
         const {linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError} = this.state;
+
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -89,23 +98,31 @@ class LinkInfoForm extends Component {
                     msg_faile={translate('manage_link.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
+
+                    {/* Form hỉnh sửa thông tin   */}
                     <form id="form-edit-link">
+
+                        {/* Đường link của trang web */}
                         <div className="form-group">
                             <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" value={linkUrl} disabled/>
                         </div>
-                        <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
+
+                        {/* Mô tả về trang web */}
+                        <div className={`form-group ${!linkDescriptionError? "": "has-error"}`}>
                             <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" value={linkDescription} onChange={this.handleLinkDescription} />
                             <ErrorLabel content={linkDescriptionError}/>
                         </div>
+
+                        {/* Những role được truy cập */}
                         <div className="form-group">
                             <label>{ translate('manage_link.roles') }</label>
                             <SelectBox
                                 id={`link-roles-${linkId}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                items = {role.list.map( role => {return {value: role._id, text: role.name}})}
+                                items = {role.list? role.list.map( role => { return { value: role._id, text: role.name } } ): null}
                                 onChange={this.handleLinkRoles}
                                 value={linkRoles}
                                 multiple={true}
@@ -119,9 +136,10 @@ class LinkInfoForm extends Component {
 }
  
 const mapState = state => state;
+
 const getState = {
     getRole: RoleActions.get,
-    editLink: LinkActions.edit
+    editLink: LinkActions.edit,
 }
  
 export default connect(mapState, getState) (withTranslate(LinkInfoForm));

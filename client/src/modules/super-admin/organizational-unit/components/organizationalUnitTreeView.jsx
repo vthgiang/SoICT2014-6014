@@ -1,68 +1,49 @@
 import React, { Component } from 'react';
-import './organizationalUnit.css';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
+import './organizationalUnit.css';
+
+import {DeleteNotification } from '../../../../common-components';
+
 import { DepartmentActions } from '../redux/actions';
+
 import DepartmentCreateForm from './organizationalUnitCreateForm';
 import DepartmentEditForm from './organizationalUnitEditForm';
-import {DeleteNotification, ButtonModal} from '../../../../common-components';
 import DepartmentCreateWithParent from './organizationalUnitCreateWithParent';
+
 
 class DepartmentTreeView extends Component {
     constructor(props) {
         super(props);
+
         this.departmentId = React.createRef();
+
         this.state = { 
-            zoom: 16
+            zoom: 16,
         }
-        this.displayTreeView = this.displayTreeView.bind(this);
-        this.showNodeContent = this.showNodeContent.bind(this);
-        this.zoomIn = this.zoomIn.bind(this);
-        this.zoomOut = this.zoomOut.bind(this);
     } 
 
     render() { 
         const { tree } = this.props.department;
         const { translate, department } = this.props;
         const {currentRow} = this.state;
+
         return ( 
             <React.Fragment>
+                {/* Button thêm mới một phòng ban */}
                 <div className="pull-right">
                     <DepartmentCreateForm />
                 </div>
 
                 {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
                 {
-                    department.list.length > 0 ?
+                    department.list && department.list.length > 0 ?
                     <React.Fragment >
                         <div className="pull-left">
                             <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
                             <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
                         </div>
-                        {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
-                            <select 
-                                className="select2"
-                                ref="departmentId"
-                                defaultValue={department.list[0]._id}
-                                style={{
-                                    backgroundColor: "#ECF0F5",
-                                    border: '1px solid lightgray',
-                                    width: '50%'
-                            }}>
-                                {
-                                    department.list.map( department => <option key={department._id} value={department._id}>{department.name}</option>)
-                                }
-                            </select>
-                            <a 
-                                className="btn btn-success" 
-                                href={`#department-${
-                                    this.refs.departmentId !== undefined ?
-                                    this.refs.departmentId.value :
-                                    department.list[0]._id
-                                }`}
-                                title={translate('form.search')}
-                            >{translate('form.search')}</a>
-                        </div> */}
                     </React.Fragment>
                     : department.isLoading ?
                     <p className="text-center">{translate('confirm.loading')}</p>:
@@ -73,7 +54,7 @@ class DepartmentTreeView extends Component {
             <div className="row">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     {
-                        tree !== null &&
+                        tree &&
                         tree.map((tree,index) => 
                             <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
                                 <ul>
@@ -89,7 +70,7 @@ class DepartmentTreeView extends Component {
 
             {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
             {
-                currentRow !== undefined &&
+                currentRow &&
                 <React.Fragment>
                     <DepartmentCreateWithParent
                         departmentId={currentRow.id}
@@ -134,19 +115,23 @@ class DepartmentTreeView extends Component {
     }
 
     toggleSetting = (id) => {
-        if(document.getElementById(id).style.display === 'none')
+        if (document.getElementById(id).style.display === 'none'){
             document.getElementById(id).style.display='block';
-        else document.getElementById(id).style.display='none';
+        } else{
+            document.getElementById(id).style.display='none';
+        } 
     }
 
     zoomIn = () => {
-        if(this.state.zoom < 72)
-        this.setState({ zoom : this.state.zoom + 1});
+        if (this.state.zoom < 72){
+            this.setState({ zoom : this.state.zoom + 1});
+        }
     }
 
     zoomOut = () => {
-        if(this.state.zoom > 0)
+        if (this.state.zoom > 0){
             this.setState({ zoom : this.state.zoom - 1});
+        }
     }
 
     showNodeContent = (data, translate) => {
@@ -179,13 +164,15 @@ class DepartmentTreeView extends Component {
     }
 
     displayTreeView = (data, translate) => {
-        if(data !== undefined){
-            if(typeof(data.children) === 'undefined') 
+        if (data){
+            if (!data.children){ 
                 return (
                     <li key={data.id}>
                         { this.showNodeContent(data, translate) }
                     </li>
                 )
+            }
+
             return (
                 <li key={data.id}>
                     { this.showNodeContent(data, translate) }
@@ -196,12 +183,15 @@ class DepartmentTreeView extends Component {
                     </ul>  
                 </li>
             )
+        } else{
+            return null
         }
-        else return null
     }
+
 }
  
 const mapState = state => state;
+
 const getState = {
     destroy: DepartmentActions.destroy
 }
