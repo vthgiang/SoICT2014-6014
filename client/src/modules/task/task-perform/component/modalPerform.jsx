@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { TaskComponent } from './taskComponent';
-import { taskManagementActions } from '../../task-management/redux/actions';
 
 class ModalPerform extends Component {
     constructor(props) {

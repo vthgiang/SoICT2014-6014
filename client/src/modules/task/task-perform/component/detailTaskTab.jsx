@@ -16,15 +16,16 @@ class DetailTaskTab extends Component {
     constructor(props) {
         super(props);
         
+        let { translate } = this.props;
         var idUser = getStorage("userId");
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.ROLE = {
-            RESPONSIBLE: {name: "Người thực hiện", value: "responsible"},
-            ACCOUNTABLE:  {name: "Người phê duyệt", value: "accountable"},
-            CONSULTED:  {name: "Người hỗ trợ", value: "consulted"},
-            CREATOR:  {name: "Người tạo", value: "creator"},
-            INFORMED:  {name: "Người quan sát", value: "informed"},
+            RESPONSIBLE: {name: translate('task.task_management.responsible'), value: "responsible"},
+            ACCOUNTABLE:  {name: translate('task.task_management.accountable'), value: "accountable"},
+            CONSULTED:  {name: translate('task.task_management.consulted'), value: "consulted"},
+            CREATOR:  {name: translate('task.task_management.creator'), value: "creator"},
+            INFORMED:  {name: translate('task.task_management.informed'), value: "informed"},
         };
 
         this.state = {
@@ -220,7 +221,7 @@ class DetailTaskTab extends Component {
     }
     
     render() {
-        const { tasks, performtasks } = this.props;
+        const { tasks, performtasks, translate } = this.props;
         const{ currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
         const { showToolbar, id } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         
@@ -243,45 +244,45 @@ class DetailTaskTab extends Component {
                 {(showToolbar) &&
                 <div style={{ marginLeft: "-10px" }}>
                     <a className="btn btn-app" onClick={this.refresh} title="Refresh">
-                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Refresh
+                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_refresh')}
                     </a>
                     
                     { ( (currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole)} title="Chỉnh sửa thông tin chung">
-                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
+                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                         </a>
                     }
                     
                     { ((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id,currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                            <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>Bấm giờ
+                            <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
                         </a>
                     }
                     { ( (currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive ) &&
                         <React.Fragment>
                             <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
-                                <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
+                                <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                             </a>
 
                             <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
-                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
+                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                             </a>
                         </React.Fragment>
                     }
                     {
                         (collapseInfo === false) ?
                         <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_hide_info')}
                         </a> :
                         <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                            <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_show_info')}
                         </a>
                     }
 
                     {roles && roles.length>1 &&
                     <div className="dropdown" style={{margin: "10px 0px 0px 10px", display: "inline-block"}}>
                         <a className="btn btn-app" style={{margin: "-10px 0px 0px 0px"}} data-toggle="dropdown">
-                            <i className="fa fa-user" style={{ fontSize: "16px" }}></i>Chọn Vai trò
+                            <i className="fa fa-user" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_choose_role')}
                         </a>
                         <ul className="dropdown-menu">
                             {roles.map(
@@ -297,27 +298,27 @@ class DetailTaskTab extends Component {
                 <div>
                     
                     <div id="info" className="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
-                        {task && <p><strong>Link công việc &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
-                        <p><strong>Độ ưu tiên công việc &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
-                        <p><strong>Trạng thái công việc &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
-                        <p><strong>Thời gian thực hiện &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
+                        {task && <p><strong>{translate('task.task_management.detail_link')} &nbsp;&nbsp; <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></strong></p>}
+                        <p><strong>{translate('task.task_management.detail_priority')} &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</p>
+                        <p><strong>{translate('task.task_management.detail_status')} &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</p>
+                        <p><strong>{translate('task.task_management.detail_time')} &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</p>
                         
                         <br />
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border" style={{ /*border: "1px solid #fff" */ }}>
-                                    <legend className="scheduler-border">Thông tin chung</legend>
+                                <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
 
                                     {/* Description */}
                                     <div>
-                                        <dt>Mô tả</dt>
+                                        <dt>{translate('task.task_management.detail_description')}</dt>
                                         <dd>
                                             {task && task.description}
                                         </dd>
                                     </div>
 
                                     <div>
-                                        <dt>Người thực hiện</dt>
+                                        <dt>{translate('task.task_management.responsible')}</dt>
                                         <dd>
                                             <ul>
                                                 {
@@ -333,7 +334,7 @@ class DetailTaskTab extends Component {
                                                 }
                                             </ul>
                                         </dd>
-                                        <dt>Người phê duyệt</dt>
+                                        <dt>{translate('task.task_management.accountable')}</dt>
                                         <dd>
                                             <ul>
                                                 {
@@ -352,7 +353,7 @@ class DetailTaskTab extends Component {
                                         {
                                             (task && task.consultedEmployees.length !== 0) &&
                                             <React-Fragment>
-                                                <dt>Người hỗ trợ</dt>
+                                                <dt>{translate('task.task_management.consulted')}</dt>
                                                 <dd>
                                                     <ul>
                                                         {
@@ -372,7 +373,7 @@ class DetailTaskTab extends Component {
                                         {
                                             (task && task.informedEmployees.length !== 0) &&
                                             <React-Fragment>
-                                            <dt>Người quan sát</dt>
+                                            <dt>{translate('task.task_management.informed')}</dt>
                                             <dd>
                                                 <ul>
                                                     {
@@ -393,10 +394,10 @@ class DetailTaskTab extends Component {
 
                                     <div>
                                         {/* Task information*/}
-                                        <dt>Thông tin công việc</dt>
+                                        <dt>{translate('task.task_management.detail_info')}</dt>
                                         <dd>
                                             <ul>
-                                                <li>Mức độ hoàn thành: &nbsp;&nbsp; {task && task.progress}%</li>
+                                                <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {task && task.progress}%</li>
                                                 {/* {(task && task.point && task.point !== -1) ?
                                                     <li>Điểm công việc &nbsp;&nbsp; {task && task.point}%</li> :
                                                     <li>Điểm công việc &nbsp;&nbsp; Chưa được tính</li>
@@ -406,9 +407,9 @@ class DetailTaskTab extends Component {
                                                     task.taskInformations.map(info => {
                                                         
                                                         if(info.type === "Date") {
-                                                            return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value ? this.formatDate(info.value) : "Chưa đánh giá tháng này"}</li>
+                                                            return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</li>
                                                         }
-                                                        return <li>{info.name}: &nbsp;&nbsp;{info.value? info.value: "Chưa có thông tin"}</li>
+                                                        return <li>{info.name}: &nbsp;&nbsp;{info.value? info.value: translate('task.task_management.detail_not_hasinfo')}</li>
                                                     })
                                                 }
                                             </ul>
@@ -418,7 +419,7 @@ class DetailTaskTab extends Component {
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Đánh giá công việc</legend>
+                                    <legend className="scheduler-border">{translate('task.task_management.detail_eval')}</legend>
 
                                     {/* Evaluations */}
                                     <div>
@@ -426,42 +427,42 @@ class DetailTaskTab extends Component {
                                             evaluations.map(eva => {
                                                 return (
                                                 <div style={{paddingBottom: 10}}>
-                                                    <dt>Đánh giá ngày {this.formatDate(eva.date)}</dt>                                                    
+                                                    <dt>{translate('task.task_management.detail_eval_on_date')}&nbsp;{this.formatDate(eva.date)}</dt>                                                    
                                                     <dd>
                                                         {
                                                         eva.results.length !== 0 &&
                                                         <div>
-                                                            <div><strong>Điểm các thành viên</strong> (Tự động - Tự đánh giá - Người phê duyệt đánh giá)</div>
+                                                            <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
                                                             <ul>
                                                             { (eva.results.length !== 0) ?
                                                                 eva.results.map((res) => {
                                                                     if(task.inactiveEmployees.indexOf(res.employee._id) !== -1){
-                                                                        return <li><strike>{res.employee.name}</strike> - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                        return <li><strike>{res.employee.name}</strike> - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
                                                                     }
                                                                     else {
-                                                                        return <li>{res.employee.name} - {res.automaticPoint?res.automaticPoint:"Chưa có điểm tự động"} - {res.employeePoint?res.employeePoint:"Chưa tự đánh giá"} - {res.approvedPoint?res.approvedPoint:"Chưa có điểm phê duyệt"}</li>
+                                                                        return <li>{res.employee.name} - {res.automaticPoint? res.automaticPoint: translate('task.task_management.detail_not_auto')} - {res.employeePoint? res.employeePoint: translate('task.task_management.detail_not_auto')} - {res.approvedPoint? res.approvedPoint: translate('task.task_management.detail_not_acc')}</li>
                                                                     }
-                                                                }) : <li>Chưa có ái đánh giá công việc tháng này</li>
+                                                                }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                             }
                                                             </ul>
                                                         </div>
                                                         }
                                                         <div>
-                                                            <div><strong>Thông tin công việc</strong></div>
+                                                            <div><strong>{translate('task.task_management.detail_info')}</strong></div>
                                                             <ul>
-                                                            <li>Mức độ hoàn thành &nbsp;&nbsp; {eva.progress}%</li>
+                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {eva.progress}%</li>
                                                             {
                                                                 eva.taskInformations.map(info => {
                                                                     if(info.type === "Date"){
-                                                                        return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value? this.formatDate(info.value): "Chưa đánh giá tháng này"}</li>
+                                                                        return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? this.formatDate(info.value): translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                     }
-                                                                    return <li>{info.name}&nbsp;-&nbsp;Giá trị: {info.value? info.value: "Chưa đánh giá tháng này"}</li>
+                                                                    return <li>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value? info.value: ('task.task_management.detail_not_eval_on_month')}</li>
                                                                 })
                                                             }
                                                             </ul>
                                                         </div>     
                                                         {/* KPI */}
-                                                        <div><strong>Liên kết KPI</strong></div>
+                                                        <div><strong>{translate('task.task_management.detail_kpi')}</strong></div>
                                                         <ul>
                                                         {(eva.kpis.length !== 0)?
                                                             (
@@ -475,18 +476,18 @@ class DetailTaskTab extends Component {
                                                                                     })
                                                                                 }
                                                                             </ol>
-                                                                            : <span>&nbsp;&nbsp; Chưa liên kết công việc với KPI</span>
+                                                                            : <span>&nbsp;&nbsp; {translate('task.task_management.detail_not_kpi')}</span>
                                                                         }
                                                                     </li>)
                                                                 })
-                                                            ): <li>Chưa ai liên kết công việc với KPI</li>
+                                                            ): <li>{translate('task.task_management.detail_all_not_kpi')}</li>
                                                         }
                                                         </ul>
                                                     </dd>
                                                 </div>);
                                             })
                                         }
-                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>Chưa được đánh giá lần nào</dt>}
+                                        {(task && (!task.evaluations || task.evaluations.length === 0 )) && <dt>{translate('task.task_management.detail_none_eval')}</dt>}
                                     
                                     </div>
                                 </fieldset>
@@ -502,7 +503,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Chỉnh sửa công việc với vai trò người thực hiện'
+                        title={translate('task.task_management.detail_resp_edit')}
                         perform={`edit-${currentRole}`}
                     />
                 }
@@ -513,7 +514,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Chỉnh sửa công việc với vai trò người phê duyệt'
+                        title={translate('task.task_management.detail_acc_edit')}
                         perform={`edit-${currentRole}`}
                     />
                 }
@@ -524,7 +525,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Đánh giá công việc với vai trò người thực hiện'
+                        title={translate('task.task_management.detail_resp_eval')}
                         perform='evaluate'
                     />
                 }
@@ -534,7 +535,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Đánh giá công việc với vai trò người phê duyệt'
+                        title={translate('task.task_management.detail_acc_eval')}
                         perform='evaluate'
                     />
                 }
@@ -544,7 +545,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Đánh giá công việc với vai trò người hỗ trợ'
+                        title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
                     />
                 }
@@ -556,7 +557,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Kết thúc công việc với vai trò người thực hiện'
+                        title={translate('task.task_management.detail_resp_stop')}
                         perform='stop'
                     />
                 }
@@ -566,7 +567,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Kết thúc công việc với vai trò người phê duyệt'
+                        title={translate('task.task_management.detail_acc_stop')}
                         perform='stop'
                     />
                 }
@@ -576,7 +577,7 @@ class DetailTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
-                        title='Kết thúc công việc với vai trò người hỗ trợ'
+                        title={translate('task.task_management.detail_cons_stop')}
                         perform='stop'
                     />
                 }

@@ -1,41 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../redux/actions';
-
 import { SelectBox } from '../../../../../common-components/index';
-
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-import { max } from 'd3-array';
 
 class DomainOfTaskResultsChart extends Component {
 
     constructor(props) {
         super(props);
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        let { translate } = this.props;
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
         this.ROLE_SELECTBOX = [
             {
-                text: 'Responsible',
+                text: translate('task.task_management.responsible'),
                 value: this.ROLE.RESPONSIBLE
             },
             {
-                text: 'Accountable',
+                text: translate('task.task_management.accountable'),
                 value: this.ROLE.ACCOUNTABLE
             },
             {
-                text: 'Consulted',
+                text: translate('task.task_management.consulted'),
                 value: this.ROLE.CONSULTED
             },
             {
-                text: 'Informed',
+                text: translate('task.task_management.informed'),
                 value: this.ROLE.INFORMED
             },
             {
-                text: 'Creator',
+                text: translate('task.task_management.creator'),
                 value: this.ROLE.CREATOR
             }
         ]
@@ -54,18 +51,18 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextState.role !== this.state.role) {
-            await this.setState(state =>{
+        if (nextState.role !== this.state.role) {
+            await this.setState(state => {
                 return {
                     ...state,
                     role: nextState.role,
                 };
             });
-            
+
             this.domainChart();
         }
 
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
+        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
             this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
             this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
@@ -81,7 +78,7 @@ class DomainOfTaskResultsChart extends Component {
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             // Kiểm tra tasks đã được bind vào props hay chưa
-            if(!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks) {
+            if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks) {
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
 
@@ -92,10 +89,10 @@ class DomainOfTaskResultsChart extends Component {
                 }
             });
             return false
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.domainChart();
 
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -121,21 +118,21 @@ class DomainOfTaskResultsChart extends Component {
         const { tasks } = this.props;
         let maxResults = [], minResults = [], maxResult, minResult;
         let listTask;
-        
+
         let now = new Date();
         let currentYear = now.getFullYear();
-        var beginningOfMonth = new Date(currentYear, currentMonth-1);
+        var beginningOfMonth = new Date(currentYear, currentMonth - 1);
 
-        if(tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
-            if(this.state.role === this.ROLE.RESPONSIBLE) {
+        if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
+            if (this.state.role === this.ROLE.RESPONSIBLE) {
                 listTask = tasks.responsibleTasks;
-            } else if(this.state.role === this.ROLE.ACCOUNTABLE) {
+            } else if (this.state.role === this.ROLE.ACCOUNTABLE) {
                 listTask = tasks.accountableTasks;
-            } else if(this.state.role === this.ROLE.CONSULTED) {
+            } else if (this.state.role === this.ROLE.CONSULTED) {
                 listTask = tasks.consultedTasks;
-            } else if(this.state.role === this.ROLE.INFORMED) {
+            } else if (this.state.role === this.ROLE.INFORMED) {
                 listTask = tasks.informedTasks;
-            } else if(this.state.role === this.ROLE.CREATOR) {
+            } else if (this.state.role === this.ROLE.CREATOR) {
                 listTask = tasks.creatorTasks;
             }
         };
@@ -150,31 +147,31 @@ class DomainOfTaskResultsChart extends Component {
         //     }
         // });
 
-        if(nextMonth === 13){
-            beginnigOfNextMonth = new Date(currentYear+1, 0);
+        if (nextMonth === 13) {
+            beginnigOfNextMonth = new Date(currentYear + 1, 0);
         } else {
             var beginnigOfNextMonth = new Date(currentYear, nextMonth);
         }
 
-        if(listTask !== undefined && listTask.evaluations !== null && listTask.evaluations !== null) {
-            listTask.filter(task => { 
-                if(new Date(task.startDate) < beginnigOfNextMonth && new Date(task.startDate) >= beginningOfMonth){
+        if (listTask !== undefined && listTask.evaluations !== null && listTask.evaluations !== null) {
+            listTask.filter(task => {
+                if (new Date(task.startDate) < beginnigOfNextMonth && new Date(task.startDate) >= beginningOfMonth) {
                     return 1;
-                } else if(new Date(task.endDate) < beginnigOfNextMonth && new Date(task.endDate) >= beginningOfMonth){
+                } else if (new Date(task.endDate) < beginnigOfNextMonth && new Date(task.endDate) >= beginningOfMonth) {
                     return 1;
-                } else if(new Date(task.endDate) >= beginnigOfNextMonth && new Date(task.startDate) < beginningOfMonth){
+                } else if (new Date(task.endDate) >= beginnigOfNextMonth && new Date(task.startDate) < beginningOfMonth) {
                     return 1;
                 }
                 return 0;
             }).map(task => {
                 task.evaluations.filter(evaluation => {
-                    if(new Date(evaluation.date) < beginnigOfNextMonth && new Date(evaluation.date) >= beginningOfMonth){
+                    if (new Date(evaluation.date) < beginnigOfNextMonth && new Date(evaluation.date) >= beginningOfMonth) {
                         return 1;
                     }
                     return 0;
                 }).map(evaluation => {
                     evaluation.results.filter(result => {
-                        if(result.employee === this.state.userId){
+                        if (result.employee === this.state.userId) {
                             return 1;
                         }
                         return 0;
@@ -186,13 +183,13 @@ class DomainOfTaskResultsChart extends Component {
             });
         }
 
-        if(maxResults.length === 0) {
+        if (maxResults.length === 0) {
             maxResult = null;
         } else {
             maxResult = Math.max.apply(Math, maxResults);
         }
 
-        if(minResults.length === 0) {
+        if (minResults.length === 0) {
             minResult = null;
         } else {
             minResult = Math.min.apply(Math, minResults);
@@ -212,9 +209,9 @@ class DomainOfTaskResultsChart extends Component {
         var now = new Date();
         var currentMonth = now.getMonth();
 
-        for(var i = 1; i <= currentMonth+1; i++) {
-            var data = this.filterTasksByMonth(i, i+1);
-            if(data.max) {
+        for (var i = 1; i <= currentMonth + 1; i++) {
+            var data = this.filterTasksByMonth(i, i + 1);
+            if (data.max) {
                 month.push(data.month);
                 maxResults.push(data.max);
                 minResults.push(data.min)
@@ -230,7 +227,7 @@ class DomainOfTaskResultsChart extends Component {
 
     removePreviosChart = () => {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()) {
+        while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
@@ -280,11 +277,12 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        <label style={{width: "auto"}}>Vai trò</label>
+                        <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
                         <SelectBox
                             id={`roleOfResultsTaskSelectBox`}
                             className="form-control select2"
@@ -315,5 +313,5 @@ const actions = {
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser
 }
 
-const connectedDomainOfTaskResultsChart = connect(mapState, actions)(DomainOfTaskResultsChart);
+const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));
 export { connectedDomainOfTaskResultsChart as DomainOfTaskResultsChart }
