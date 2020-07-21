@@ -114,7 +114,7 @@ class ComponentInfoForm extends Component {
     }
 
     render() { 
-        const { translate, linksDefault, rootRoles } = this.props;
+        const { translate, systemLinks, rootRoles } = this.props;
         const { componentId, componentName, componentDescription, componentLink, componentRoles, componentNameError, componentDescriptionError } = this.state;
 
         return ( 
@@ -142,13 +142,13 @@ class ComponentInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_component.link') }</label>
                             {
-                                linksDefault.list.length > 0 &&
+                                systemLinks.list.length > 0 &&
                                 <SelectBox
                                     id={`select-component-default-link-${componentId}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {
-                                        linksDefault.list.map( link => {return {value: link._id, text: link.url}})
+                                        systemLinks.list.map( link => {return {value: link._id, text: link.url}})
                                     }
                                     options={{placeholder: translate('system_admin.system_component.select_link')}}
                                     onChange={this.handleLink}
@@ -179,8 +179,8 @@ class ComponentInfoForm extends Component {
 }
  
 function mapState(state) {
-    const { linksDefault, rootRoles } = state;
-    return { linksDefault, rootRoles }
+    const { systemLinks, rootRoles } = state;
+    return { systemLinks, rootRoles }
 }
 const actions = {
     editSystemComponent: SystemComponentActions.editSystemComponent
