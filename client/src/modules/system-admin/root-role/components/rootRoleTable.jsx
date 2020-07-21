@@ -48,7 +48,7 @@ class RootRoleTable extends Component {
  
 function mapState(state) {
     const { rootRoles } = state;
-    return [ rootRoles ]
+    return { rootRoles }
 }
 const actions =  {
     getAllRootRoles: RootRoleActions.getAllRootRoles

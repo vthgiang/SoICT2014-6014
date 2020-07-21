@@ -71,6 +71,9 @@ class TaskComponent extends Component {
             if (info.creator?._id === id){
                 return true;
             }
+            if (info.organizationalUnit.deans){
+                return true;
+            }
         }
         return false;
     }

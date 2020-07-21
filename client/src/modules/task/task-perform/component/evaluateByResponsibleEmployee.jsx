@@ -690,8 +690,8 @@ class EvaluateByResponsibleEmployee extends Component {
                             <strong>{translate('task.task_management.action_not_rating')}: &nbsp; </strong>
                             <ul>
                                 {actionsNotRating.length === 0 ? <li>{translate('task.task_management.no_action')}.</li> :
-                                    actionsNotRating.map(item => {
-                                        return <li>
+                                    actionsNotRating.map((item, index) => {
+                                        return <li key={index}>
                                             {item.description}
                                         </li>
                                     })

@@ -2156,7 +2156,17 @@ export default {
                     number_of_employee: 'Số nhân viên',
                     excellent_employee: 'Nhân viên ưu tú',
                     best_employee: 'Nhân viên xuất sắc nhất',
-                    month: 'Tháng'
+                    month: 'Tháng',
+                    auto_point: 'Điểm tự động',
+                    employee_point: 'Điểm tự đánh giá',
+                    approve_point: 'Điểm người phê duyệt đánh giá',
+                    option: 'Tùy chọn',
+                    analyze: 'Phân tích',
+                    statistics_chart_title: 'Thống kê kết quả KPI của nhân viên',
+                    result_kpi_titile: 'Kết quả Kpi tất cả nhân viên',
+                    auto_eva: 'Hệ thống đánh giá',
+                    employee_eva: 'Cá nhân tự đánh giá',
+                    approver_eva: 'Người phê duyệt đánh giá',
                 },
 
                 employee_evaluation:{
@@ -2218,6 +2228,7 @@ export default {
                      * Management
                      */
                     wrong_time: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                    confirm: 'Xác nhận',
                     choose_employee: 'Chọn nhân viên',
                     employee: 'Nhân viên',
                     choose_status: 'Chọn trạng thái',

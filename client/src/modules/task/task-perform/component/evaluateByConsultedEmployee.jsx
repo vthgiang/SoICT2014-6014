@@ -216,13 +216,13 @@ class EvaluateByConsultedEmployee extends Component {
                                             {(evaluations.taskInformations.length !== 0) &&
                                                 <div>
                                                     {
-                                                        evaluations.taskInformations.map(info => {
+                                                        evaluations.taskInformations.map((info, index) => {
                                                             if (info.type === "Date") {
-                                                                return <div>
+                                                                return <div key={index}>
                                                                     <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value): translate('task.task_management.not_eval')}</p>
                                                                 </div>
                                                             }
-                                                            else return <div>
+                                                            else return <div key={index}>
                                                                 <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? info.value : translate('task.task_management.not_eval')}</p>
                                                             </div>
                                                         })
@@ -238,9 +238,9 @@ class EvaluateByConsultedEmployee extends Component {
                                                         </a>
                                                     </strong>
                                                     {
-                                                        evaluations.results.map((res) => {
+                                                        evaluations.results.map((res, index) => {
                                                             if (res.role === "Responsible") {
-                                                                return <div >
+                                                                return <div key={index} >
                                                                     <p><span style={{ fontWeight: "bold" }}>{translate('task.task_management.responsible')}-{res.employee.name}</span>-{translate('task.task_management.detail_emp_point')}:{res.employeePoint}</p>
                                                                 </div>
                                                             }

@@ -1,4 +1,4 @@
-import { ComponentDefaultConstants } from "./constants";
+import { SystemComponentConstants } from "./constants";
 
 var findIndex = (array, id) => {
     var result = -1;
@@ -27,41 +27,41 @@ const initState = {
     item: null
 }
 
-export function componentsDefault (state = initState, action) {
+export function systemComponents (state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
 
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_REQUEST:
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST:
-        case ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_REQUEST:
-        case ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_REQUEST:
-        case ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_REQUEST:
-        case ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_REQUEST:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_REQUEST:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_REQUEST:
+        case SystemComponentConstants.GET_COMPONENT_DEFAULT_REQUEST:
+        case SystemComponentConstants.CREATE_COMPONENT_DEFAULT_REQUEST:
+        case SystemComponentConstants.EDIT_COMPONENT_DEFAULT_REQUEST:
+        case SystemComponentConstants.DELETE_COMPONENT_DEFAULT_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
 
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_FAILE:
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_FAILE:
-        case ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_FAILE:
-        case ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_FAILE:
-        case ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_FAILE:
-        case ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_FAILE:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_FAILURE:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_FAILURE:
+        case SystemComponentConstants.GET_COMPONENT_DEFAULT_FAILURE:
+        case SystemComponentConstants.CREATE_COMPONENT_DEFAULT_FAILURE:
+        case SystemComponentConstants.EDIT_COMPONENT_DEFAULT_FAILURE:
+        case SystemComponentConstants.DELETE_COMPONENT_DEFAULT_FAILURE:
             return {
                 ...state,
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS:
+        case SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_SUCCESS:
             return {
                 ...state,
                 listPaginate: action.payload.docs,
@@ -77,14 +77,14 @@ export function componentsDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_SUCCESS:
+        case SystemComponentConstants.GET_COMPONENT_DEFAULT_SUCCESS:
             return {
                 ...state,
                 item: action.payload,
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_SUCCESS:
+        case SystemComponentConstants.CREATE_COMPONENT_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: [
@@ -98,7 +98,7 @@ export function componentsDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_SUCCESS:
+        case SystemComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
@@ -112,7 +112,7 @@ export function componentsDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_SUCCESS:
+        case SystemComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
             if(index !== -1) state.list.splice(index,1);

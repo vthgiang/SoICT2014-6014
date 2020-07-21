@@ -1,9 +1,9 @@
-const ComponentDefaultServices = require('./systemComponent.service');
+const SystemComponentServices = require('./systemComponent.service');
 const {LogInfo, LogError} = require('../../../logs');
 
 exports.getAllSystemComponents = async (req, res) => {
     try {
-        const components = await ComponentDefaultServices.getAllSystemComponents(req.query);
+        const components = await SystemComponentServices.getAllSystemComponents(req.query);
         
         LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -12,7 +12,6 @@ exports.getAllSystemComponents = async (req, res) => {
             content: components
         });
     } catch (error) {
-
         LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
@@ -26,11 +25,11 @@ exports.createSystemComponent = async (req, res) => {
     try {
         
         const { name, description, link, roles } = req.body;
-        const component = await ComponentDefaultServices.createSystemComponent(name, description, link, roles);
+        const component = await SystemComponentServices.createSystemComponent(name, description, link, roles);
         
-        await ComponentDefaultServices.addSystemComponentsToSystemLink(link, component._id);
+        await SystemComponentServices.addSystemComponentsToSystemLink(link, component._id);
        
-        const data = await ComponentDefaultServices.getSystemComponent(component._id);
+        const data = await SystemComponentServices.getSystemComponent(component._id);
 
         LogInfo(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -39,7 +38,6 @@ exports.createSystemComponent = async (req, res) => {
             content: data
         });
     } catch (error) {
-
         LogError(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
@@ -51,7 +49,7 @@ exports.createSystemComponent = async (req, res) => {
 
 exports.getSystemComponent = async (req, res) => {
     try {
-        const component = await ComponentDefaultServices.getSystemComponent(req.params.id);
+        const component = await SystemComponentServices.getSystemComponent(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -60,7 +58,6 @@ exports.getSystemComponent = async (req, res) => {
             content: component
         });
     } catch (error) {
-        
         LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
@@ -72,9 +69,9 @@ exports.getSystemComponent = async (req, res) => {
 
 exports.editSystemComponent = async (req, res) => {
     try {
-        const {name, description, link, roles} = req.body;
-        const component = await ComponentDefaultServices.editSystemComponent(req.params.id, name, description, link, roles);
-        const resComponent = await ComponentDefaultServices.getSystemComponent(component._id);
+        const { name, description, link, roles } = req.body;
+        const component = await SystemComponentServices.editSystemComponent(req.params.id, name, description, link, roles);
+        const resComponent = await SystemComponentServices.getSystemComponent(component._id);
         
         LogInfo(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -83,7 +80,6 @@ exports.editSystemComponent = async (req, res) => {
             content: resComponent
         });
     } catch (error) {
-        
         LogError(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
@@ -95,8 +91,8 @@ exports.editSystemComponent = async (req, res) => {
 
 exports.deleteSystemComponent = async (req, res) => {
     try {
-        const component = await ComponentDefaultServices.deleteSystemComponent(req.params.id);
-        await ComponentDefaultServices.removeSystemComponentFromSystemLink(component.link, component._id);
+        const component = await SystemComponentServices.deleteSystemComponent(req.params.id);
+        await SystemComponentServices.removeSystemComponentFromSystemLink(component.link, component._id);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -105,7 +101,6 @@ exports.deleteSystemComponent = async (req, res) => {
             content: component
         });
     } catch (error) {
-        
         LogError(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,

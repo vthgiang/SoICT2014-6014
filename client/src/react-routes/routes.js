@@ -22,7 +22,7 @@ import { Notifications } from "../modules/combine-modules";
 import { LogSystem } from '../modules/system-admin/log/components';
 import { Company } from '../modules/system-admin/company/components';
 import LinksDefaultManagement from '../modules/system-admin/system-link/components';
-import RolesDefaultManagement from '../modules/system-admin/root-role/components';
+import ManageRoleDefault from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
 import ManageUser from '../modules/super-admin/user/components';
@@ -107,7 +107,7 @@ class Routes extends Component {
                         component={ LogSystem }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.rolesDefault.isLoading }
+                        isLoading={ this.props.rootRoles.isLoading }
                         key={ 'manage_roles_default' }
                         arrPage={[
                             { link: '/system/roles-default-management', name:'manage_role', icon: 'fa fa-lock'}
@@ -118,7 +118,7 @@ class Routes extends Component {
                         path={ '/system/roles-default-management' }
                         pageName={ 'manage_role' }
                         layout={ Layout }
-                        component={ RolesDefaultManagement }
+                        component={ ManageRoleDefault }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.linksDefault.isLoading }
@@ -135,7 +135,7 @@ class Routes extends Component {
                         component={ LinksDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.componentsDefault.isLoading }
+                        isLoading={ this.props.systemComponents.isLoading }
                         key={ 'manage_components_default' }
                         arrPage={[
                             { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 import { DatePicker } from '../../../../../common-components/index'
-import { taskManagementActions } from '../../../task-management/redux/actions';
+import { taskManagementActions } from '../../../task-management/redux/actions'
 import { ModelDetailTask } from './detailTask'
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'
 import moment from 'moment'
-import Timeline from "react-calendar-timeline";
+import Timeline from "react-calendar-timeline"
 import './calendar.css'
 import 'react-calendar-timeline/lib/Timeline.css'
 
@@ -98,11 +98,12 @@ class TasksSchedule extends Component {
     }
     if (startdate_after && enddate_before &&
       Date.parse(startdate_after) > Date.parse(enddate_before)) {
+        const {translate} = this.props;
       Swal.fire({
-        title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+        title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
         type: 'warning',
         confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Xác nhận'
+        confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
       })
     }
     else {
@@ -259,8 +260,8 @@ class TasksSchedule extends Component {
             defaultTimeEnd={defaultTimeEnd}
           />
           <div className="form-inline pull-right" style={{ marginTop: "5px" }}>
-            <button className='btn btn-danger' onClick={this.onPrevClick}><i class="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
-            <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i class="fa fa-angle-right"></i></button>
+            <button className='btn btn-danger' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
+            <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
           </div>
         </div>
       </React.Fragment>

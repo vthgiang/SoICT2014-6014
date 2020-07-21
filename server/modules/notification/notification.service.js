@@ -52,11 +52,15 @@ exports.createManualNotification = async (data) => {
     ]);
 }
 
-
-// Tạo notification và gửi đến cho user
+/**
+ * Tạo thông báo và gửi đến cho người dùng
+ * @param {*} company 
+ * @param {*} data 
+ * @param {*} manualNotification 
+ */
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
-    let or = data.organizationalUnits[0];
+    let or = ""+data.organizationalUnits[0];
     for (let i = 1; i < data.organizationalUnits.length; i++){
         or = or + "," + data.organizationalUnits[i];
     }
@@ -66,13 +70,13 @@ exports.createNotification = async (company, data, manualNotification=undefined)
         u = item.deans[(Object.keys(item.deans))]["members"];
         us = us.concat(u);
         u = item.viceDeans[(Object.keys(item.viceDeans))]["members"];
-        us = s.concat(u)
+        us = us.concat(u);
         u = item.employees[(Object.keys(item.employees))]["members"];
         us = us.concat(u);
     })
     userArr = us.map(item => item._id);
     usersArr = usersArr.concat(userArr);
-
+ 
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());
     for(let i = 0, max = usersArr.length; i < max; i++) {

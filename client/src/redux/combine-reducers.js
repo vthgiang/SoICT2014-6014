@@ -40,7 +40,7 @@ import {dashboardEvaluationEmployeeKpiSet} from '../modules/kpi/evaluation/dashb
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
-import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
+import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
 
 //asset
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
@@ -56,7 +56,7 @@ const appReducer = combineReducers(Object.assign({
     company,
     linksDefault,
     rootRoles,
-    componentsDefault,
+    systemComponents,
     
     //admin
     user,
