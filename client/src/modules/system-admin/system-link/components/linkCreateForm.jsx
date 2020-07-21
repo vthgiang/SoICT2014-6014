@@ -17,7 +17,7 @@ class CreateLinkForm extends Component {
     }
 
     render() { 
-        const { translate, rolesDefault, linksDefault } = this.props;
+        const { translate, rootRoles, linksDefault } = this.props;
         const {linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
         return ( 
             <React.Fragment>
@@ -59,7 +59,7 @@ class CreateLinkForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
+                                    rootRoles.list.map( role => {return {value: role._id, text: role.name}})
                                 }
                                 onChange={this.handleRoles}
                                 multiple={true}
