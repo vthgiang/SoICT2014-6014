@@ -30,6 +30,29 @@ class CreateForm extends Component {
     handleParent = (value) => {
         this.setState({ domainParent: value[0] });
     };
+    validateName = (value, willUpdateState)=>{
+        let msg = undefined;
+        if(value === '')
+            msg = 'Tên không được để trống';
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    handleValidateName = (e)=>{
+        const value = e.target.value.trim();
+        this.validateName(value, true);
+    }
+    
+    isValidateForm = ()=>{
+        return this.validateName(this.state.documentName, false);
+    }
 
     save = () => {
         const {documentName, documentDescription, domainParent} = this.state;
@@ -54,7 +77,7 @@ class CreateForm extends Component {
     render() {
         const {translate, documents}=this.props;
         const {tree, list} = documents.administration.domains;
-        const {domainParent} = this.state;
+        const {domainParent, errorName} = this.state;
       
         return ( 
             <React.Fragment>
@@ -62,12 +85,14 @@ class CreateForm extends Component {
                     modalID="modal-create-document-domain"
                     formID="form-create-document-domain"
                     title={translate('document.administration.domains.add')}
+                    disableSubmit = {!this.isValidateForm()}
                     func={this.save}
                 >
                     <form id="form-create-document-domain">
-                            <div className="form-group">
+                            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                             <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleName}/>
+                            <input type="text" className="form-control" onChange={this.handleValidateName}/>
+                            <ErrorLabel content ={errorName}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }</label>
