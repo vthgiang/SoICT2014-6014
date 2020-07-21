@@ -51,17 +51,17 @@ exports.getSystemComponent = async (req, res) => {
     try {
         const component = await SystemComponentServices.getSystemComponent(req.params.id);
         
-        LogInfo(req.user.email, 'SHOW_COMPONENT_DEFAULT');
+        LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            messages: ['show_system_component_success'],
+            messages: ['get_system_component_success'],
             content: component
         });
     } catch (error) {
-        LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
+        LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_system_component_faile'],
+            messages: Array.isArray(error) ? error : ['get_system_component_faile'],
             content: error
         });
     }

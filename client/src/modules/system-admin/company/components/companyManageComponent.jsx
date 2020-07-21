@@ -79,11 +79,11 @@ class CompanyManageComponent extends Component {
         return this.props.deleteComponent(companyId, componentId);
     }
     
-    handleName= (e, componentsDefault) => {
+    handleName= (e, systemComponents) => {
         const value = e.target.value;
 
-        for (let index = 0; index < componentsDefault.list.length; index++) {
-            const componentDefault = componentsDefault.list[index];
+        for (let index = 0; index < systemComponents.list.length; index++) {
+            const componentDefault = systemComponents.list[index];
 
             if (value === componentDefault.name) {
                 this.setState({
@@ -138,7 +138,7 @@ class CompanyManageComponent extends Component {
     }
 
     render() { 
-        const { translate, company, componentsDefault } = this.props;
+        const { translate, company, systemComponents } = this.props;
         const { companyId, componentDescriptionError } = this.state;
 
         return ( 
@@ -176,12 +176,12 @@ class CompanyManageComponent extends Component {
                                 <select
                                     className="form-control"
                                     style={{width: '100%'}}
-                                    onChange={(e)=>this.handleName(e, componentsDefault)}
+                                    onChange={(e)=>this.handleName(e, systemComponents)}
                                     value={this.state.componentName}
                                 >
                                     <option key="noname" value="noname"> --- Chọn component ---</option>
                                     {
-                                        componentsDefault.list.map(componentDefault => 
+                                        systemComponents.list.map(componentDefault => 
                                         <option 
                                             key={componentDefault._id} 
                                             value={componentDefault.name}
@@ -229,8 +229,8 @@ class CompanyManageComponent extends Component {
 }
 
 function mapState(state) {
-    const { company, componentsDefault } = state;
-    return { company, componentsDefault };
+    const { company, systemComponents } = state;
+    return { company, systemComponents };
 }
 const action = {
     addNewComponent: CompanyActions.addNewComponent,

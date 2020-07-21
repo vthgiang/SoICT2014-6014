@@ -298,7 +298,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Add system component success',
-                show_system_component_success: 'Get data success',
+                get_system_component_success: 'Get data success',
                 edit_system_component_success: 'Edit system component success',
                 delete_system_component_success: 'Delete system component success',
 
@@ -1604,8 +1604,8 @@ export default {
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
                 
-                add_tempalte: 'Task template',
-                add_tempalte_notice: 'Selected task template',
+                add_template: 'Task template',
+                add_template_notice: 'Selected task template',
                 add_parent_task: 'Parent of task',
                 add_parent_task_notice: 'Select parent of task',
                 add_raci: 'Assignment of responsibility',
