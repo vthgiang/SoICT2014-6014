@@ -1838,6 +1838,110 @@ export default {
                 },
             },
             evaluation: {
+               
+                dashboard: {
+                    organizational_unit: 'Unit',
+                    select_units: 'Select organizational unit',
+                    all_unit: 'All organizational unit',
+                    search: 'Search',
+                    setting_up: 'Setting up',
+                    awaiting_approval: 'Awaiting approval',
+                    activated: 'Activated',
+                    number_of_employee: 'Number of employees',
+                    excellent_employee: 'Excellent Employees',
+                    best_employee: 'Best employee',
+                    month: 'Month'
+                },
+
+                employee_evaluation:{
+
+                    /**
+                     * Approve
+                     */
+                    approve_KPI_employee: 'Approve KPI employee',
+                    month: '',
+                    end_compare: 'End comparing',
+                    compare: 'Compare',
+                    approve_all: 'Approve all',
+                    choose_month_cmp: 'Choose month to compare',
+                    search: 'Search',
+                    index: 'ID',
+                    name: 'Name',
+                    target: 'Kpi unit',
+                    criteria: 'Criteria',
+                    weight: 'Weight',
+                    result: 'Result',
+                    data_not_found: 'There is no satisfied result',
+                    unsuitable_weight: 'Unsuitable weight',
+                    status: 'Status',
+                    action: 'Action',
+                    save_result: 'Save result',
+                    edit_target: 'Edit kpi',
+                    pass: 'Pass',
+                    fail: 'Fail',
+
+                    /**
+                     * Comment
+                     */
+                    edit_cmt: 'Edit comment',
+                    delete_cmt: 'Delete comment',
+                    add_cmt: 'Add comment',
+                    attached_file: 'Attach file',
+                    send_edition: 'Submit edition',
+                    cancel: 'Cancel',
+                    comment: 'Comment',
+
+                    /**
+                     * Evaluate
+                     */
+                    KPI_list: 'KPI list',
+                    calc_kpi_point: 'Caculate KPI point',
+                    export_file: 'Export file',
+                    KPI_info: 'Infomation of ',
+                    point_field: 'Point (Automatic - Yourself - Approver)',
+                    not_avaiable: 'Not evaluated',
+                    lastest_evaluation: 'Lastest evaluation',
+                    task_list: 'Task list',
+                    work_duration_time: 'Working duration time',
+                    evaluate_time: 'Evaluate time',
+                    contribution: 'Contribution',
+                    importance_level: 'Importance level',
+                    point: 'Point',
+                    new_value: 'New value',
+                    old_value: 'Old value',
+                    auto_value: 'Auto value',
+                    /**
+                     * Management
+                     */
+                    wrong_time: 'Start time has to earlier than end time',
+                    choose_employee: 'Choose employee',
+                    employee: 'Employee',
+                    choose_status: 'Choose status',
+                    establishing: 'Establishing',
+                    expecting: 'Waiting for approving',
+                    activated: 'Activated',
+                    time: 'Time',
+                    num_of_kpi: 'Number of KPI',
+                    kpi_status: 'KPI status',
+                    approve: 'Approve',
+                    evaluate: 'Evaluate',
+                    approve_this_kpi: 'Approve this KPI',
+                    evaluate_this_kpi: 'Evaluate this KPI',
+                    from: 'From',
+                    to: 'To',
+
+                    /**
+                     * Importance Dialog
+                     */
+                    num_of_working_day: 'Number of working day',
+                    priority: 'Priority',
+                    formula: 'Formula',
+                    explain_automatic_point: 'Explain automatic value'
+                },
+
+                /**
+                 * Thông báo từ service
+                 */
                 get_all_kpi_member_success: 'Get all KPI member successfully',
                 get_all_kpi_member_fail: 'Get all KPI member fail',
                 get_kpi_targets_success: 'Get KPI targets successfully',
@@ -1858,44 +1962,6 @@ export default {
                 get_system_point_fail: 'Get system point fail',
                 set_point_kpi_success: 'Get point KPI successfully',
                 set_point_kpi_fail: 'Get point KPI fail',
-
-                dashboard: {
-                    organizational_unit: 'Unit',
-                    select_units: 'Select organizational unit',
-                    all_unit: 'All organizational unit',
-                    search: 'Search',
-                    setting_up: 'Setting up',
-                    awaiting_approval: 'Awaiting approval',
-                    activated: 'Activated',
-                    number_of_employee: 'Number of employees',
-                    excellent_employee: 'Excellent Employees',
-                    best_employee: 'Best employee',
-                    month: 'Month'
-                },
-
-                employee_evaluation:{
-                    approve_KPI_employee:'Approve KPI employee',
-                    month:'Month',
-                    end_compare:'End comparing',
-                    compare:'Compare',
-                    approve_all:'Approve all',
-                    choose_month_cmp:'Choose month to compare',
-                    search:'Search',
-                    index:'ID',
-                    name:'Name',
-                    target:'Kpi unit',
-                    criteria:'Criteria',
-                    weight:'Weight',
-                    result:'Result',
-                    data_not_found:'There is no satisfied result',
-                    unsuitable_weight:'Unsuitable weight',
-                    status:'Status',
-                    action:'Action',
-                    save_result:'Save result',
-                    edit_target:'Edit kpi',
-                    pass:'Pass',
-                    fail:'Fail'
-                }
             },
             organizational_unit: {
                 // Module chính

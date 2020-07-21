@@ -248,9 +248,10 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
  * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ 
  */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var departmentIds = await OrganizationalUnit.find({ _id: {$in: [...departmentId.split(',')]} });
+    let departmentIds = await OrganizationalUnit.find({ _id: {$in: [...departmentId.split(',')]} });
+    let users = await _getAllUsersInOrganizationalUnits(departmentIds);
 
-    return _getAllUsersInOrganizationalUnits(departmentIds);
+    return users;
 }
 
 /* lấy tất cả các user cùng phòng ban với user hiện tại
@@ -374,7 +375,7 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
         }
         //Lấy tất cả user của từng đơn vị
         var userArray=[];
-        userArray=await _getAllUsersInOrganizationalUnits(departments);
+        userArray = await _getAllUsersInOrganizationalUnits(departments);
         return userArray;
     }
     //Lấy tất nhan vien trong moi đơn vị trong công ty
