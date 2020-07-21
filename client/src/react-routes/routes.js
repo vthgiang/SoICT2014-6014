@@ -135,7 +135,7 @@ class Routes extends Component {
                         component={ LinksDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.componentsDefault.isLoading }
+                        isLoading={ this.props.systemComponents.isLoading }
                         key={ 'manage_components_default' }
                         arrPage={[
                             { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}

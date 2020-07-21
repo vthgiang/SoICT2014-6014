@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
 import { RootRoleActions } from '../../root-role/redux/actions';
-import { ComponentDefaultActions } from '../redux/actions';
-import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { SystemComponentActions } from '../redux/actions';
 import { LinkDefaultActions } from '../../system-link/redux/actions';
+
 import { ComponentDefaultValidator } from './systemComponentValidator';
 
+import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class ComponentCreateForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             componentName: '',
             componentDescription: '',
@@ -19,8 +24,90 @@ class ComponentCreateForm extends Component {
         this.save = this.save.bind(this);
     }
 
+    componentDidMount() {
+        this.props.getAllRootRoles();
+        this.props.getLink();
+    }
+
+    // Xy ly va validate name
+    handleName = (e) => {
+        const {value} = e.target;
+        this.validateName(value, true);
+    }
+    validateName = (value, willUpdateState=true) => {
+        let msg = ComponentDefaultValidator.validateName(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    componentNameError: msg,
+                    componentName: value,
+                }
+            });
+        }
+
+        return msg === undefined;
+    }
+
+    // Xy ly va validate description
+    handleDescription = (e) => {
+        const {value} = e.target;
+        this.validateDescription(value, true);
+    }
+    validateDescription = (value, willUpdateState=true) => {
+        let msg = ComponentDefaultValidator.validateDescription(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    componentDescriptionError: msg,
+                    componentDescription: value,
+                }
+            });
+        }
+
+        return msg === undefined;
+    }
+
+    handleLink = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                componentLink: value[0]
+            }
+        })
+    }
+
+    handleRoles = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                componentRoles: value
+            }
+        })
+    }
+
+    isFormValidated = () => {
+        let result = 
+            this.validateName(this.state.componentName, false) &&
+            this.validateDescription(this.state.componentDescription, false);
+
+        return result;
+    }
+
+    save = () => {
+        const component = { 
+            name: this.state.componentName, 
+            description: this.state.componentDescription, 
+            link: this.state.componentLink,
+            roles: this.state.componentRoles 
+        };
+
+        if(this.isFormValidated()) return this.props.createSystemComponent(component);
+    }
+
     render() { 
-        const { translate, rolesDefault, linksDefault } = this.props;
+        const { translate, rootRoles, linksDefault } = this.props;
         const { componentLink, componentNameError, componentDescriptionError } = this.state;
 
         return ( 
@@ -70,7 +157,7 @@ class ComponentCreateForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
+                                    rootRoles.list.map( role => {return {value: role._id, text: role.name}})
                                 }
                                 onChange={this.handleRoles}
                                 multiple={true}
@@ -81,92 +168,17 @@ class ComponentCreateForm extends Component {
             </React.Fragment>
          );
     }
-
-
-    // Xy ly va validate name
-    handleName = (e) => {
-        const {value} = e.target;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateName(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Xy ly va validate description
-    handleDescription = (e) => {
-        const {value} = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateDescription(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    handleLink = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentLink: value[0]
-            }
-        })
-    }
-
-    handleRoles = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentRoles: value
-            }
-        })
-    }
-
-    isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.componentName, false) &&
-            this.validateDescription(this.state.componentDescription, false);
-        return result;
-    }
-
-    save = () => {
-        const component = { 
-            name: this.state.componentName, 
-            description: this.state.componentDescription, 
-            link: this.state.componentLink,
-            roles: this.state.componentRoles 
-        };
-        if(this.isFormValidated()) return this.props.createComponent(component);
-    }
-
-    componentDidMount(){
-        this.props.getAllRootRoles();
-        this.props.getLink();
-    }
 }
  
-const mapState = state => state;
-const getState = {
+function mapState(state) {
+    const { rootRoles, linksDefault } = state;
+    return { rootRoles, linksDefault }
+}
+const actions = {
     getAllRootRoles: RootRoleActions.getAllRootRoles,
     getLink: LinkDefaultActions.get,
-    createComponent: ComponentDefaultActions.create
+    createSystemComponent: SystemComponentActions.createSystemComponent
 }
  
-export default connect(mapState, getState) (withTranslate(ComponentCreateForm));
+const connectedComponentCreateForm = connect(mapState, actions)(withTranslate(ComponentCreateForm))
+export { connectedComponentCreateForm as ComponentCreateForm }

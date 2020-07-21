@@ -12,7 +12,7 @@ class Notifications extends Component {
     }
 
     checkHasComponent = (name) => {
-        let {auth} = this.props;
+        let { auth } = this.props;
         let result = false;
         auth.components.forEach(component => {
             if(component.name === name) result=true;

@@ -1,111 +1,118 @@
-import { ComponentDefaultServices } from "./services";
-import { ComponentDefaultConstants } from "./constants";
+import { SystemComponentServices } from "./services";
+import { SystemComponentConstants } from "./constants";
 
-export const ComponentDefaultActions = {
-    get,
-    edit,
-    create,
-    show,
-    destroy
+export const SystemComponentActions = {
+    getAllSystemComponents,
+    getSystemComponent,
+    createSystemComponent,
+    editSystemComponent,
+    deleteSystemComponent
 }
 
-
-function get(data){
-    if(data === undefined){
+function getAllSystemComponents(data) {
+    if (data === undefined) {
         return dispatch => {
-            dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_REQUEST});
-            ComponentDefaultServices.get()
+            dispatch({ type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_REQUEST });
+
+            SystemComponentServices.getAllSystemComponents()
                 .then(res => {
                     dispatch({
-                        type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
+                        type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_SUCCESS,
                         payload: res.data.content
                     })
                 })
-                .catch(err => {
-                    dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_FAILE});
+                .catch(error => {
+                    dispatch({ 
+                        type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_FAILURE,
+                        payload: error
+                    });
                     
                 })
         }
-    }else{
+    } else {
         return dispatch => {
-            dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
-            ComponentDefaultServices.get(data)
+            dispatch({ type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_REQUEST });
+
+            SystemComponentServices.getAllSystemComponents(data)
                 .then(res => {
                     dispatch({
-                        type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
+                        type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
                         payload: res.data.content
                     })
                 })
                 .catch(err => {
-                    dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_FAILE});
-                    
+                    dispatch({ type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_PAGINATE_FAILURE });
                 })
         }
     }
 }
 
-function show(id){
+function getSystemComponent(id) {
     return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_REQUEST});
-        ComponentDefaultServices.show(id)
+        dispatch({ type: SystemComponentConstants.GET_COMPONENT_DEFAULT_REQUEST });
+
+        SystemComponentServices.getSystemComponent(id)
             .then(res => {
                 dispatch({
-                    type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_SUCCESS,
+                    type: SystemComponentConstants.GET_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_FAILE});
+                dispatch({ type: SystemComponentConstants.GET_COMPONENT_DEFAULT_FAILURE });
                 
             })
     }
 }
 
-function create(component){
+function createSystemComponent(component) {
     return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_REQUEST});
-        ComponentDefaultServices.create(component)
+        dispatch({ type: SystemComponentConstants.CREATE_COMPONENT_DEFAULT_REQUEST });
+
+        SystemComponentServices.createSystemComponent(component)
             .then(res => {
                 dispatch({
-                    type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
+                    type: SystemComponentConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_FAILE});
+                dispatch({ type: SystemComponentConstants.CREATE_COMPONENT_DEFAULT_FAILURE });
             })
         
     }
 }
 
-function edit(id, component){
+function editSystemComponent(id, component){
     return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_REQUEST});
-        ComponentDefaultServices.edit(id, component)
+        dispatch({ type: SystemComponentConstants.EDIT_COMPONENT_DEFAULT_REQUEST });
+
+        SystemComponentServices.editSystemComponent(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
+                    type: SystemComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data.content
                 });
             })
-            .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemComponentConstants.EDIT_COMPONENT_DEFAULT_FAILURE });
             })
     }
 }
 
-function destroy(id, component){
+function deleteSystemComponent(id, component){
     return dispatch => {
-        dispatch({ type: ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_REQUEST});
-        ComponentDefaultServices.destroy(id, component)
+        dispatch({ type: SystemComponentConstants.DELETE_COMPONENT_DEFAULT_REQUEST });
+
+        SystemComponentServices.deleteSystemComponent(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_SUCCESS,
+                    type: SystemComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS,
                     payload: id
                 })
             })
             .catch(err => {
-                dispatch({ type: ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_FAILE});
+                dispatch({ type: SystemComponentConstants.DELETE_COMPONENT_DEFAULT_FAILURE });
             })
     }
 }

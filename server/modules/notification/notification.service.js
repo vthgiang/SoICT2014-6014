@@ -52,8 +52,12 @@ exports.createManualNotification = async (data) => {
     ]);
 }
 
-
-// Tạo notification và gửi đến cho user
+/**
+ * Tạo thông báo và gửi đến cho người dùng
+ * @param {*} company 
+ * @param {*} data 
+ * @param {*} manualNotification 
+ */
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
     let or = ""+data.organizationalUnits[0];
