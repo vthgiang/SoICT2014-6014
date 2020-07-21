@@ -2,6 +2,9 @@ const CompanyService = require('./company.service');
 const { LogInfo, LogError } = require('../../../logs');
 const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require('../../../seed/terms');
 
+/**
+ * Lấy danh sách tất cả các công ty
+ */
 exports.getAllCompanies = async (req, res) => {
     try {
         const companies = await CompanyService.getAllCompanies(req.query);
@@ -22,11 +25,39 @@ exports.getAllCompanies = async (req, res) => {
     }
 };
 
+/**
+ * Lấy thông tin về 1 công ty theo id
+ * @id id của công ty
+ */
+exports.getCompany = async (req, res) => {
+    try {
+        const company = await CompanyService.getCompany(req.params.id);
+        
+        LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
+        res.status(200).json({
+            success: true,
+            messages: ['show_company_success'],
+            content: company
+        });
+    } catch (error) {
+        LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['show_company_faile'],
+            content: error
+        });
+    }
+};
+
+/**
+ * Tạo dữ liệu mới về 1 công ty
+ * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
+ */
 exports.createCompany = async (req, res) => {
     try {
         const company = await CompanyService.createCompany(req.body);
-
         const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
+
         await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
         await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
         await CompanyService.createCompanyComponents(company._id, req.body.links);
@@ -49,31 +80,16 @@ exports.createCompany = async (req, res) => {
     }
 };
 
-exports.getCompany = async (req, res) => {
-    try {
-        const company = await CompanyService.getCompany(req.params.id);
-        
-        LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
-        res.status(200).json({
-            success: true,
-            messages: ['show_company_success'],
-            content: company
-        });
-    } catch (error) {
-        
-        LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['show_company_faile'],
-            content: error
-        });
-    }
-};
-
+/**
+ * Chỉnh sửa thông tin 1 công ty
+ * @id id của công ty trong database
+ * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
+ */
 exports.editCompany = async (req, res) => {
     try {
         const company = await CompanyService.editCompany(req.params.id, req.body);
         await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
+
         const resCompany = await CompanyService.getCompany(company._id);
 
         LogInfo(req.user.email, 'EDIT_COMPANY');
@@ -92,6 +108,10 @@ exports.editCompany = async (req, res) => {
     }
 };
 
+/**
+ * Xóa dữ liệu 1 công ty
+ * @id id của công ty trong database
+ */
 exports.deleteCompany = async (req, res) => {
     try {
         const company = await CompanyService.deleteCompany(req.params.id);
@@ -103,7 +123,6 @@ exports.deleteCompany = async (req, res) => {
             content: company
         });
     } catch (error) {
-        
         LogError(req.user.email, 'DELETE_COMPANY');
         res.status(400).json({
             success: false,
@@ -113,9 +132,13 @@ exports.deleteCompany = async (req, res) => {
     }
 };
 
+/**
+ * Lấy danh sách tất cả các link của công ty
+ * @id id của công ty muốn lấy danh sách các link
+ */
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getCompanyLinks(req.params.id,req.query);
+        const links = await CompanyService.getCompanyLinks(req.params.id, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
@@ -124,7 +147,6 @@ exports.getCompanyLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        console.log("ERR: ",error)
         LogError(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(400).json({
             success: false,
@@ -134,6 +156,13 @@ exports.getCompanyLinks = async (req, res) => {
     }
 };
 
+/**
+ * Thêm link mới cho công ty
+ * @id id của công ty
+ * @body
+    * @linkUrl đường dẫn cho link muốn tạo
+    * @linkDescription mô tả về link
+ */
 exports.addCompanyLink = async (req, res) => {
     try {
         const link = await CompanyService.addCompanyLink(req.params.id, req.body);
@@ -155,6 +184,11 @@ exports.addCompanyLink = async (req, res) => {
     }
 };
 
+/**
+ * Xóa 1 link của công ty
+ * @id id của công ty
+ * @linkId id của link muốn xóa
+ */
 exports.deleteCompanyLink = async (req, res) => {
     try {
         const link = await CompanyService.deleteCompanyLink(req.params.id, req.params.linkId);
@@ -166,7 +200,6 @@ exports.deleteCompanyLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
         LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(400).json({
             success: false,
@@ -176,6 +209,14 @@ exports.deleteCompanyLink = async (req, res) => {
     }
 };
 
+/**
+ * Thêm mới 1 component cho công ty
+ * @id id của công ty
+ * @body 
+    * @componentname tên của component
+    * @componentDescription mô tả về component
+    * @linkId id của link được chứa component này
+ */
 exports.addCompanyComponent = async (req, res) => {
     try {
         const component = await CompanyService.addCompanyComponent(req.params.id, req.body);
@@ -188,7 +229,6 @@ exports.addCompanyComponent = async (req, res) => {
             content: resComponent
         });
     } catch (error) {
-        
         LogError(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
@@ -198,6 +238,11 @@ exports.addCompanyComponent = async (req, res) => {
     }
 };
 
+/**
+ * Xóa một của component của công ty
+ * @id id của công ty
+ * @componentId id của component muốn xóa
+ */
 exports.deleteCompanyComponent = async (req, res) => {
     try {
         const component = await CompanyService.deleteCompanyComponent(req.params.id, req.params.componentId);
@@ -219,6 +264,10 @@ exports.deleteCompanyComponent = async (req, res) => {
     }
 };
 
+/**
+ * Lấy danh sách tất cả các link của công ty
+ * @companyId id của công ty muốn lấy danh sách các link
+ */
 exports.getCompanyLinks = async (req, res) => {
     try {
         const links = await CompanyService.getCompanyLinks(req.params.id, req.query);
@@ -239,6 +288,10 @@ exports.getCompanyLinks = async (req, res) => {
     }
 };
 
+/**
+ * Lấy danh sách các component của công ty
+ * @id id của công ty
+ */
 exports.getCompanyComponents = async (req, res) => {
     try {
         const components = await CompanyService.getCompanyComponents(req.params.id, req.query);
@@ -250,8 +303,6 @@ exports.getCompanyComponents = async (req, res) => {
             content: components
         });
     } catch (error) {
-        
-        console.log("ERR component: ",error)
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(400).json({
             success: false,
@@ -281,42 +332,75 @@ exports.getAllLinkCategories = async (req, res) => {
 
 /**
  * Lấy thông tin cấu hình file import
+ * @type Thể loại file cấu hình(salary, taskTemplate);
+ * @company id công ty
  */
-exports.getImportConfiguraion =  async(req, res)=>{
+exports.getImportConfiguraion =  async (req, res) => {
     try {
-        let data = await CompanyService.getImportConfiguraion(req.params.type, req.user.company._id);
+        const data = await CompanyService.getImportConfiguraion(req.params.type, req.user.company._id);
+
         await LogInfo(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
-        res.status(200).json({ success: true, messages:["get_import_configuration_success"], content: data});
+        res.status(200).json({ 
+            success: true, 
+            messages: ['get_import_configuration_success'], 
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
-        res.status(400).json({success: false, messages:["get_import_configuration_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false, 
+            messages: ['get_import_configuration_faile'], 
+            content: error
+        });
     }
 };
 
 /**
  * Tạo thông tin cấu hình file import
+ * @body Thông tin cấu hình file import
+ * @company id công ty
  */
-exports.createImportConfiguraion = async(req, res)=>{
+exports.createImportConfiguraion = async (req, res) => {
     try {
-        let data = await CompanyService.createImportConfiguraion(req.body, req.user.company._id);
+        const data = await CompanyService.createImportConfiguraion(req.body, req.user.company._id);
+
         await LogInfo(req.user.email, 'CREATE_IMPORT_CONFIGURATION', req.user.company);
-        res.status(200).json({ success: true, messages:["create_import_configuration_success"], content: data});
+        res.status(200).json({ 
+            success: true, 
+            messages: ['create_import_configuration_success'], 
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'CRETATE_IMPORT_CONFIGURATION', req.user.company);
-        res.status(400).json({success: false, messages:["create_import_configuration_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false, 
+            messages: ['create_import_configuration_faile'], 
+            content: error
+        });
     }
 };
 
 /**
- * chỉnh sửa thông tin cấu hình file import
+ * Chỉnh sửa thông tin cấu hình file import
+ * @id id thông tin cấu hình file import cần sửa
+ * @body Dữ liệu chinhe sửa file cấu hình
  */
-exports.editImportConfiguraion =  async(req, res)=>{
+exports.editImportConfiguraion =  async (req, res) => {
     try {
-        let data = await CompanyService.editImportConfiguraion(req.params.id, req.body);
+        const data = await CompanyService.editImportConfiguraion(req.params.id, req.body);
+
         await LogInfo(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
-        res.status(200).json({ success: true, messages:["edit_import_configuration_success"], content: data});
+        res.status(200).json({ 
+            success: true, 
+            messages: ['edit_import_configuration_success'], 
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
-        res.status(400).json({success: false, messages:["edit_import_configuration_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false, 
+            messages: ['edit_import_configuration_faile'], 
+            content: error
+        });
     }
 };

@@ -1534,6 +1534,47 @@ export default {
                 
             },
             task_perform: {
+                actions: "Actions",
+                communication: "Communications",
+                documents: "Documents",
+                timesheetlogs: "Timesheet Logs",
+                subtasks: "Subtasks",
+                change_history: "Change logs",
+                edit_action: "Edit action",
+                delete_action: "Delete action",
+                mandatory_action: "Mandatory action",
+                confirm_action: "Confirm action",
+                evaluation: "Evaluation",
+                attach_file: "Attach file",
+                comment: "Comment",
+                re_evaluation: "Re-evaluation",
+                question_delete_file: "Are you sure to delete",
+                edit_comment: "Edit comment",
+                delete_comment: "Delete comment",
+                file_attach: "Attach file",
+                save_edit: "Save edit",
+                cancel: "Cancel",
+                enter_comment: "Comment",
+                create_comment: "Create comment",
+                enter_description: "Description",
+                create_desciprtion: "Create description",
+                none_description: "No description",
+                enter_action: "Action",
+                create_action: "Create action",
+                total_time: "Total time",
+                time: "Time",
+                none_subtask: "No subtask",
+                enter_comment_action: "Comment of action",
+                create_comment_action: "Create comment",
+
+
+
+
+
+
+
+
+
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
                 edit_result_task_success: 'Edit result task successfully',

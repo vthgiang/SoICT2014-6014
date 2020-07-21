@@ -1,11 +1,15 @@
 import React, { Component } from 'react';import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
 import { CompanyActions } from '../redux/actions';
+
 import { PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
 
+import { withTranslate } from 'react-redux-multilingual';
 class CompanyManageLinks extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = { 
             limit: 5,
             page: 1,
@@ -14,9 +18,134 @@ class CompanyManageLinks extends Component {
          }
     }
 
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.companyId !== prevState.companyId) {
+            return {
+                ...prevState,
+                companyId: nextProps.companyId
+            } 
+        } else {
+            return null;
+        }
+    }
+
+    companyHasLink = (linkUrl, companyLinks) => {
+        let result = false;
+
+        for (let i = 0; i < companyLinks.length; i++) {
+            const link = companyLinks[i];
+
+            if (linkUrl === link.url) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    // Kiem tra thong tin da validated het chua?
+    isFormCreateLinkValidated = () => {
+        const {linkUrl, linkDescription, linkDescriptionError} = this.state;
+
+        if (linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined) {
+            if (linkUrl !== 'noturl') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false; 
+        }
+    }
+
+    showCreateLinkForm = () => {
+        window.$("#add-new-link-default").slideDown();
+    }
+
+    closeCreateLinkForm = () => {
+        window.$("#add-new-link-default").slideUp();
+    }
+
+    saveAndCloseLinkForm = async () => {
+        const {companyId, linkUrl, linkCategory, linkDescription} = this.state;
+        
+        await window.$("#add-new-link-default").slideUp();
+        return this.props.addNewLink(companyId, {
+            url: linkUrl,
+            category: linkCategory,
+            description: linkDescription
+        });
+    }
+
+    deleteLink = (companyId, linkId) => {
+        return this.props.deleteLink(companyId, linkId);
+    }
+    
+    // Xu ly thay doi va validate cho url link moi cho cong ty
+    handleLinkUrl= (e, linksDefault) => {
+        const value = e.target.value;
+
+        for (let index = 0; index < linksDefault.list.length; index++) {
+            const linkDefault = linksDefault.list[index];
+
+            if (value === linkDefault.url) {
+                this.setState({
+                    linkUrl: linkDefault.url,
+                    linkCategory: linkDefault.category,
+                    linkDescription: linkDefault.description
+                });
+            }
+        }
+        
+    }
+    
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = async () => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+
+        await this.props.linksList(this.state.companyId, data);
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+
+        this.props.linksList(this.state.companyId, data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+
+        this.props.linksList(this.state.companyId, data);
+    }
+
     render() { 
-        const {translate, company, linksDefault} = this.props;
-        const {companyId} = this.state;
+        const { translate, company, linksDefault } = this.props;
+        const { companyId } = this.state;
         
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
@@ -31,6 +160,7 @@ class CompanyManageLinks extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
+
                 <table className="table table-hover table-striped table-bordered" id="company-manage-link-table">
                     <thead>
                         <tr>
@@ -46,6 +176,7 @@ class CompanyManageLinks extends Component {
                             </th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <tr id="add-new-link-default" style={{display: "none"}}>
                             <td>
@@ -76,6 +207,7 @@ class CompanyManageLinks extends Component {
                                 }
                             </td>
                         </tr> 
+                        
                         {
                             company.item.links.listPaginate.length > 0 ? 
                             company.item.links.listPaginate.map( link => 
@@ -100,126 +232,17 @@ class CompanyManageLinks extends Component {
             </div>
          );
     }
-    
-    companyHasLink = (linkUrl, companyLinks) => {
-        let result = false;
-        for (let i = 0; i < companyLinks.length; i++) {
-            const link = companyLinks[i];
-            if(linkUrl === link.url){
-                result = true;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.companyId !== prevState.companyId) {
-            return {
-                ...prevState,
-                companyId: nextProps.companyId
-            } 
-        } else {
-            return null;
-        }
-    }
-
-    // Kiem tra thong tin da validated het chua?
-    isFormCreateLinkValidated = () => {
-        const {linkUrl, linkDescription, linkDescriptionError} = this.state;
-        if(linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined){
-            if(linkUrl !== 'noturl') return true;
-            else return false;
-        }
-        else return false; 
-    }
-
-    
-    showCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideDown();
-    }
-
-    closeCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideUp();
-    }
-
-    saveAndCloseLinkForm = async() => {
-        const {companyId, linkUrl, linkCategory, linkDescription} = this.state;
-        
-        await window.$("#add-new-link-default").slideUp();
-        return this.props.addNewLink(companyId, {
-            url: linkUrl,
-            category: linkCategory,
-            description: linkDescription
-        });
-    }
-
-    deleteLink = (companyId, linkId) => {
-        return this.props.deleteLink(companyId, linkId);
-    }
-    
-    // Xu ly thay doi va validate cho url link moi cho cong ty
-    handleLinkUrl= (e, linksDefault) => {
-        const value = e.target.value;
-        for (let index = 0; index < linksDefault.list.length; index++) {
-            const linkDefault = linksDefault.list[index];
-            if(value === linkDefault.url){
-                this.setState({
-                    linkUrl: linkDefault.url,
-                    linkCategory: linkDefault.category,
-                    linkDescription: linkDefault.description
-                });
-            }
-        }
-        
-    }
-    
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.linksList(this.state.companyId, data);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.linksList(this.state.companyId, data);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.linksList(this.state.companyId, data);
-    }
 }
- 
-const mapStateToProps = state => state;
 
-const mapDispatchToProps =  {
+function mapState(state) {
+    const { company, linksDefault } = state;
+    return { company, linksDefault };
+}
+const action = {
     addNewLink: CompanyActions.addNewLink,
     deleteLink: CompanyActions.deleteLink,
     linksList: CompanyActions.linksList
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyManageLinks) );
+const connectedCompanyManageLinks = connect(mapState, action)(withTranslate(CompanyManageLinks))
+export { connectedCompanyManageLinks as CompanyManageLinks }

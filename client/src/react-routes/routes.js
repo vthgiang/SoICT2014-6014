@@ -20,7 +20,7 @@ import Home from '../modules/home/components';
 import { Notifications } from "../modules/combine-modules";
 
 import System from '../modules/system-admin/log/components';
-import Company from '../modules/system-admin/company/components';
+import { Company } from '../modules/system-admin/company/components';
 import LinksDefaultManagement from '../modules/system-admin/system-link/components';
 import RolesDefaultManagement from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
