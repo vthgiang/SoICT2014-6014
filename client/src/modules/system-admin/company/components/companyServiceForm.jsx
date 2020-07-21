@@ -217,6 +217,7 @@ class CompanyServicesForm extends Component {
                             <a href="#company_manage_component" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/${systemComponents.list.length})`}</a>
                             </li>
                         </ul>
+                        
                         {/* Tab panes */}
                         <div className="tab-content">
                             <div role="tabpanel" className="tab-pane active" id="company_manage_link">
