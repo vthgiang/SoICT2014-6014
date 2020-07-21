@@ -84,11 +84,13 @@ exports.addSystemComponentsToSystemLink = async (linkId, componentId) => {
 exports.removeSystemComponentFromSystemLink = async (linkId, componentId) => {
     
     let link = await SystemLink.findById(linkId);
-    let index = link.components.indexOf(componentId);
-    if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
-    
-    await link.save();
+    if(link) {
+        let index = link.components.indexOf(componentId);
+        if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
 
+        await link.save();
+    }
+    
     return link;
 }
 
