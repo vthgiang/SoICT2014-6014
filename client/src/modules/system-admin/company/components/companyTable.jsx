@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { CompanyActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
-import { ComponentDefaultActions } from '../../system-component/redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
+import { SystemComponentActions } from '../../system-component/redux/actions';
 
 import { CompanyEditForm } from './companyEditForm';
 import { CompanyServicesForm } from './companyServiceForm';
@@ -29,8 +29,8 @@ class CompanyTable extends Component {
     componentDidMount(){
         this.props.get();
         this.props.get({page: this.state.page, limit: this.state.limit});
-        this.props.getLinksDefault();
-        this.props.getComponentsDefault();
+        this.props.getAllSystemLinks();
+        this.props.getAllSystemComponents();
     }
     
     setOption = (title, option) => {
@@ -223,8 +223,8 @@ function mapState(state) {
 const action = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
-    getLinksDefault: LinkDefaultActions.get,
-    getComponentsDefault: ComponentDefaultActions.get,
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
+    getAllSystemComponents: SystemComponentActions.getAllSystemComponents,
     linksList: CompanyActions.linksList,
     linksPaginate: CompanyActions.linksPaginate,
     componentsList: CompanyActions.componentsList,

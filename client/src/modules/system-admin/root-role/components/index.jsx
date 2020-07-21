@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { RootRoleTable } from './rootRoleTable';
 
-class ManageRoleDefault extends Component {
+class ManageRootRoles extends Component {
 
     constructor(props) {
         super(props);
@@ -21,4 +21,4 @@ class ManageRoleDefault extends Component {
     }
 }
 
-export default ManageRoleDefault;
+export default ManageRootRoles;

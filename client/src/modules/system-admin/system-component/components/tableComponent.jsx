@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { ComponentDefaultActions } from '../redux/actions';
-import ComponentInfoForm from './componentInfoForm';
-import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar } from '../../../../common-components';
-import ComponentCreateForm from './componentCreateForm';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
 
+import { SystemComponentActions } from '../redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
+
+import { ComponentInfoForm } from './componentInfoForm';
+import { ComponentCreateForm } from './componentCreateForm';
+
+import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar } from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class TableComponent extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = { 
             limit: 5,
             page: 1,
@@ -18,6 +23,12 @@ class TableComponent extends Component {
         }
     }
 
+    componentDidMount(){
+        this.props.getAllSystemComponents();
+        this.props.getAllSystemComponents({page: this.state.page, limit: this.state.limit});
+        this.props.getAllSystemLinks();
+    }
+    
     // Cac ham xu ly du lieu voi modal
     handleEdit = async (component) => {
         await this.setState(state => {
@@ -29,9 +40,48 @@ class TableComponent extends Component {
         window.$('#modal-edit-component-default').modal('show');
     }
 
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getAllSystemComponents(data);
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getAllSystemComponents(data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getAllSystemComponents(data);
+    }
+
     render() { 
-        const { componentsDefault, translate } = this.props;
+        const { systemComponents, translate } = this.props;
         const { currentRow } = this.state;
+
         return ( 
             <React.Fragment>
                 <ComponentCreateForm />
@@ -41,7 +91,7 @@ class TableComponent extends Component {
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
                         componentDescription={ currentRow.description }
-                        componentLink={ currentRow.link !== undefined ? currentRow.link._id : null }
+                        componentLink={ currentRow.link ? currentRow.link._id : null }
                         componentRoles={ currentRow.roles.map(role => role._id) }
                     />
                 }
@@ -74,12 +124,12 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
-                            componentsDefault.listPaginate.length > 0 ?
-                            componentsDefault.listPaginate.map( component => 
-                                <tr key={component._id}>
+                            systemComponents.listPaginate.length > 0 ?
+                            systemComponents.listPaginate.map( component => 
+                                <tr key={ component._id }>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
-                                    <td>{component.link !== undefined && component.link.url}</td>
+                                    <td>{ component.link && component.link.url }</td>
                                     <td>{ component.roles.map((role, i, arr) => {
                                         if(i !== arr.length - 1)
                                             return <span key={role._id}>{role.name}, </span>
@@ -94,72 +144,33 @@ class TableComponent extends Component {
                                                 id: component._id,
                                                 info: component.name
                                             }}
-                                            func={this.props.destroy}
+                                            func={this.props.deleteSystemComponent}
                                         />
                                     </td>
                                 </tr>
-                            ): componentsDefault.isLoading ?
+                            ): systemComponents.isLoading ?
                             <tr><td colSpan={"5"}>{translate('general.loading')}</td></tr> : 
                             <tr><td colSpan={"5"}>{translate('general.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
+
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={componentsDefault.totalPages} currentPage={componentsDefault.page} func={this.setPage}/>
+                <PaginateBar pageTotal={systemComponents.totalPages} currentPage={systemComponents.page} func={this.setPage}/>
             </React.Fragment>
          );
     }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.get(data);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    componentDidMount(){
-        this.props.get();
-        this.props.get({page: this.state.page, limit: this.state.limit});
-        this.props.getLinks();
-    }
 }
  
-const mapState = state => state;
-const getState = {
-    get: ComponentDefaultActions.get,
-    destroy: ComponentDefaultActions.destroy,
-    getLinks: LinkDefaultActions.get,
+function mapState(state) {
+    const { systemComponents } = state;
+    return { systemComponents }
+}
+const actions = {
+    getAllSystemComponents: SystemComponentActions.getAllSystemComponents,
+    deleteSystemComponent: SystemComponentActions.deleteSystemComponent,
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
 }
  
-export default connect(mapState, getState) (withTranslate(TableComponent));
+const connectedTableComponent = connect(mapState, actions)(withTranslate(TableComponent))
+export { connectedTableComponent as TableComponent }

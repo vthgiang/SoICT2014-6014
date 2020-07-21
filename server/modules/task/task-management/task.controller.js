@@ -341,7 +341,7 @@ exports.createTask = async (req, res) => {
         var user = tasks.user;
         var email = tasks.email;
         var html = tasks.html;
-        var data = { "organizationalUnits": task.organizationalUnit.company, "title": "Tạo mới công việc", "level": "general", "content": "Bạn được giao nhiệm vụ mới trong công việc", "sender": task.organizationalUnit.name, "users": user };
+        var data = { "organizationalUnits": [task.organizationalUnit._id], "title": "Tạo mới công việc", "level": "general", "content": "Bạn được giao nhiệm vụ mới trong công việc", "sender": task.organizationalUnit.name, "users": user };
         NotificationServices.createNotification(task.organizationalUnit.company, data,);
         sendEmail("vnist.qlcv@gmail.com", email, "Tạo mới công việc hành công", '', html);
         await LogInfo(req.user.email, ` create task `, req.user.company)

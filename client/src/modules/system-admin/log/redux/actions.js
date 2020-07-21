@@ -13,13 +13,13 @@ function getLogState() {
         LogServices.getLogState()
             .then(res => {
                 dispatch({
-                    type: LogConstants.GET_LOG_STATE_REQUEST_SUCCESS,
+                    type: LogConstants.GET_LOG_STATE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: LogConstants.GET_LOG_STATE_REQUEST_FAILE,
+                    type: LogConstants.GET_LOG_STATE_FAILURE,
                     payload: error
                 })
                 
@@ -34,13 +34,13 @@ function toggleLogState() {
         LogServices.toggleLogState()
             .then(res => {
                 dispatch({
-                    type: LogConstants.TOGGLE_LOG_STATE_REQUEST_SUCCESS,
+                    type: LogConstants.TOGGLE_LOG_STATE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: LogConstants.TOGGLE_LOG_STATE_REQUEST_FAILE,
+                    type: LogConstants.TOGGLE_LOG_STATE_FAILURE,
                     payload: error
                 })
                 

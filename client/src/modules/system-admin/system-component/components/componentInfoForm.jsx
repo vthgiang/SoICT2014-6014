@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { ComponentDefaultActions } from '../redux/actions';
-import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+
+import { SystemComponentActions } from '../redux/actions';
+
 import { ComponentDefaultValidator } from './systemComponentValidator';
 
+import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class ComponentInfoForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {}
     }
-    
+
     // Thiet lap cac gia tri tu props vao state
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.componentId !== prevState.componentId) {
@@ -29,8 +34,87 @@ class ComponentInfoForm extends Component {
         }
     }
 
+    // Xy ly va validate name
+    handleName = (e) => {
+        const {value} = e.target;
+        this.validateName(value, true);
+    }
+
+    validateName = (value, willUpdateState=true) => {
+        let msg = ComponentDefaultValidator.validateName(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    componentNameError: msg,
+                    componentName: value,
+                }
+            });
+        }
+
+        return msg === undefined;
+    }
+
+    // Xy ly va validate description
+    handleDescription = (e) => {
+        const {value} = e.target;
+        this.validateDescription(value, true);
+    }
+
+    validateDescription = (value, willUpdateState=true) => {
+        let msg = ComponentDefaultValidator.validateDescription(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    componentDescriptionError: msg,
+                    componentDescription: value,
+                }
+            });
+        }
+
+        return msg === undefined;
+    }
+
+    handleLink = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                componentLink: value
+            }
+        })
+    }
+
+    handleRoles = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                componentRoles: value
+            }
+        })
+    }
+
+    isFormValidated = () => {
+        let result = 
+            this.validateName(this.state.componentName, false) &&
+            this.validateDescription(this.state.componentDescription, false);
+
+        return result;
+    }
+
+    save = () => {
+        const component = { 
+            name: this.state.componentName, 
+            description: this.state.componentDescription, 
+            link: this.state.componentLink,
+            roles: this.state.componentRoles 
+        };
+
+        if(this.isFormValidated()) return this.props.editSystemComponent(this.state.componentId, component);
+    }
+
     render() { 
-        const { translate, linksDefault, rolesDefault } = this.props;
+        const { translate, systemLinks, rootRoles } = this.props;
         const { componentId, componentName, componentDescription, componentLink, componentRoles, componentNameError, componentDescriptionError } = this.state;
 
         return ( 
@@ -58,13 +142,13 @@ class ComponentInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_component.link') }</label>
                             {
-                                linksDefault.list.length > 0 &&
+                                systemLinks.list.length > 0 &&
                                 <SelectBox
                                     id={`select-component-default-link-${componentId}`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {
-                                        linksDefault.list.map( link => {return {value: link._id, text: link.url}})
+                                        systemLinks.list.map( link => {return {value: link._id, text: link.url}})
                                     }
                                     options={{placeholder: translate('system_admin.system_component.select_link')}}
                                     onChange={this.handleLink}
@@ -80,7 +164,7 @@ class ComponentInfoForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
+                                    rootRoles.list.map( role => {return {value: role._id, text: role.name}})
                                 }
                                 onChange={this.handleRoles}
                                 value={componentRoles}
@@ -92,85 +176,15 @@ class ComponentInfoForm extends Component {
             </React.Fragment>
          );
     }
-
-    
-    // Xy ly va validate name
-    handleName = (e) => {
-        const {value} = e.target;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateName(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Xy ly va validate description
-    handleDescription = (e) => {
-        const {value} = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateDescription(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    handleLink = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentLink: value
-            }
-        })
-    }
-
-    handleRoles = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentRoles: value
-            }
-        })
-    }
-
-    isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.componentName, false) &&
-            this.validateDescription(this.state.componentDescription, false);
-        return result;
-    }
-
-    save = () => {
-        const component = { 
-            name: this.state.componentName, 
-            description: this.state.componentDescription, 
-            link: this.state.componentLink,
-            roles: this.state.componentRoles 
-        };
-        if(this.isFormValidated()) return this.props.editComponent(this.state.componentId, component);
-    }
 }
  
-const mapState = state => state;
-const getState = {
-    editComponent: ComponentDefaultActions.edit
+function mapState(state) {
+    const { systemLinks, rootRoles } = state;
+    return { systemLinks, rootRoles }
+}
+const actions = {
+    editSystemComponent: SystemComponentActions.editSystemComponent
 }
  
-export default connect(mapState, getState) (withTranslate(ComponentInfoForm));
+const connectedComponentInfoForm = connect(mapState, actions)(withTranslate(ComponentInfoForm));
+export { connectedComponentInfoForm as ComponentInfoForm }
