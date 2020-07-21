@@ -201,8 +201,8 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser && tasks.tasksbyuser.expire.length !== 0) ?
                                         <ul className="todo-list">
                                             {
-                                                tasks.tasksbyuser.expire.map(item =>
-                                                    <li>
+                                                tasks.tasksbyuser.expire.map((item, key) =>
+                                                    <li key={key}>
                                                         <span className="handle">
                                                             <i className="fa fa-ellipsis-v" />
                                                             <i className="fa fa-ellipsis-v" />
@@ -227,8 +227,8 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser && tasks.tasksbyuser.deadlineincoming.length !== 0) ?
                                         <ul className="todo-list">
                                             {
-                                                tasks.tasksbyuser.deadlineincoming.map(item =>
-                                                    <li>
+                                                tasks.tasksbyuser.deadlineincoming.map((item, key) =>
+                                                    <li key={key}>
                                                         <span className="handle">
                                                             <i className="fa fa-ellipsis-v" />
                                                             <i className="fa fa-ellipsis-v" />

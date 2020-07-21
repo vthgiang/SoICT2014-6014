@@ -101,7 +101,7 @@ class AdministrationDocumentDomains extends Component {
                             <EditForm
                                 domainId={this.state.currentDomain.id}
                                 domainName={this.state.currentDomain.text}
-                                domainDescription={this.state.currentDomain.original.description}
+                                domainDescription={this.state.currentDomain.original.description? this.state.currentDomain.original.description: "" }
                                 domainParent={this.state.currentDomain.parent}
                             />
                         }

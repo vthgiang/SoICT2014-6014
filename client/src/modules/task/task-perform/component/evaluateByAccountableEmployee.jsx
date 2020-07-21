@@ -616,7 +616,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg =translate('task.task_perform.modal_approve_task.err_empty')
+            msg = translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -954,9 +954,9 @@ class EvaluateByAccountableEmployee extends Component {
                             <br />
                             <strong>{translate('task.task_management.action_not_rating')}: &nbsp; </strong>
                             <ul>
-                                {actionsNotRating.length === 0? <li>{translate('task.task_management.no_action')}</li>:
-                                    actionsNotRating.map(item => {
-                                        return <li>
+                                {actionsNotRating.length === 0 ? <li>{translate('task.task_management.no_action')}</li> :
+                                    actionsNotRating.map((item, key) => {
+                                        return <li key={key}>
                                             {item.description}
                                         </li>
                                     })
@@ -990,7 +990,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     {
                                         task && task.responsibleEmployees.map((item, index) =>
                                             (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                <tr>
+                                                <tr key={index}>
                                                     <td>{item.name}</td>
                                                     <td>{this.formatRole('Responsible')}</td>
                                                     <td>{this.state.empPoint[`responsible${item._id}`] ? this.state.empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</td>
@@ -1016,7 +1016,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     {
                                         task && task.consultedEmployees.map((item, index) =>
                                             (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                <tr>
+                                                <tr key={index}>
                                                     <td>{item.name}</td>
                                                     <td>{this.formatRole('Consulted')}</td>
                                                     <td>{this.state.empPoint[`consulted${item._id}`] ? this.state.empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</td>
@@ -1042,7 +1042,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     {
                                         task && task.accountableEmployees.map((item, index) =>
                                             (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                <tr>
+                                                <tr key={index}>
                                                     <td>{item.name}</td>
                                                     <td>{this.formatRole('Accountable')}</td>
                                                     <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`] ? this.state.empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></td>

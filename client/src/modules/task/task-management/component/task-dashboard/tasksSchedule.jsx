@@ -259,8 +259,8 @@ class TasksSchedule extends Component {
             defaultTimeEnd={defaultTimeEnd}
           />
           <div className="form-inline pull-right" style={{ marginTop: "5px" }}>
-            <button className='btn btn-danger' onClick={this.onPrevClick}><i class="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
-            <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i class="fa fa-angle-right"></i></button>
+            <button className='btn btn-danger' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
+            <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
           </div>
         </div>
       </React.Fragment>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RoleDefaultActions } from '../../root-role/redux/actions';
+import { RootRoleActions } from '../../root-role/redux/actions';
 import { LinkDefaultActions } from '../redux/actions';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { LinkDefaultValidator } from './systemLinkValidator';
@@ -146,13 +146,13 @@ class CreateLinkForm extends Component {
     }
 
     componentDidMount(){
-        this.props.getRole();
+        this.props.getAllRootRoles();
     }
 }
  
 const mapState = state => state;
 const getState = {
-    getRole: RoleDefaultActions.get,
+    getAllRootRoles: RootRoleActions.getAllRootRoles,
     createLink: LinkDefaultActions.create
 }
  
