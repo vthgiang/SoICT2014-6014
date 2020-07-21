@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
+const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 
@@ -142,29 +142,48 @@ exports.getTask = async (id, userId) => {
     accountableEmployees = task.accountableEmployees;
     consultedEmployees = task.consultedEmployees;
     informedEmployees = task.informedEmployees;
-    var flag = 0;
+    let flag = 0;
     for (let n in responsibleEmployees) {
-        if (JSON.stringify(responsibleEmployees[n]._id) === JSON.stringify(userId)) {
+        if (responsibleEmployees[n]._id.equals(userId)) {
             flag = 1;
             break;
         }
     }
-    for (let n in accountableEmployees) {
-        if (JSON.stringify(accountableEmployees[n]._id) === JSON.stringify(userId)) {
-            flag = 1;
-            break;
+    if (!flag){
+        for (let n in accountableEmployees) {
+            if (accountableEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
         }
     }
-    for (let n in consultedEmployees) {
-        if (JSON.stringify(consultedEmployees[n]._id) === JSON.stringify(userId)) {
-            flag = 1;
-            break;
+    if (!flag){
+        for (let n in consultedEmployees) {
+            if (consultedEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
         }
     }
-    for (let n in informedEmployees) {
-        if (JSON.stringify(informedEmployees[n]._id) === JSON.stringify(userId)) {
-            flag = 1;
-            break;
+    if (!flag){
+        for (let n in informedEmployees) {
+            if (informedEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
+        }
+    }
+    if (!flag){    // Trưởng đơn vị được phép xem thông tin công việc
+        let roleId =  task.organizationalUnit.deans;
+        let user = await UserRole.find({roleId: roleId});
+        userList = user.map( item => item.userId );
+        if (!flag){
+            for (let n in userList){
+                if (userList[n].equals(userId)){
+                    flag = 1;
+                    break;
+                }
+            }
         }
     }
     if (task.creator._id.equals(userId)) {
@@ -839,15 +858,11 @@ exports.createTask = async (task) => {
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
-    var email, userId, user, users, userIds;
+    var email, user, userIds;
     var resId = task.responsibleEmployees;  // lấy id người thực hiện
-    // console.log("res :"+resId);
     var res = await User.find({ _id: { $in: resId } });
-    // console.log("res :"+res);
     res = res.map(item => item.name);
-    console.log("res :" + res);
     userIds = resId;
-    // console.log(userIds);
     var accId = task.accountableEmployees;  // lấy id người phê duyệt
     var acc = await User.find({ _id: { $in: accId } });
     userIds.push(...accId);
