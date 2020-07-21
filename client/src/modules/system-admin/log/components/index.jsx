@@ -11,7 +11,7 @@ class LogSystem extends Component {
         this.state = {}
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getLogState();
     }
 
@@ -25,7 +25,7 @@ class LogSystem extends Component {
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <p>{ translate('manage_system.log') }</p>
-                    <button className={`btn btn-${type}`} onClick={ this.props.toggleLogState() }>{ toggleButton }</button>
+                    <button className={`btn btn-${type}`} onClick={ this.props.toggleLogState }>{ toggleButton }</button>
                 </div>
             </div>
          );
