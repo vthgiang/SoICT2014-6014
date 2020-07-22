@@ -26,7 +26,33 @@ class EditForm extends Component {
 
     handleParent = (value) => {
         this.setState({ domainParent: value[0] });
-    };
+    }; 
+
+    validateName = async(value, willUpdateState)=>{
+        let msg = undefined;
+        if(value === ''){
+            msg = 'Tên không được để trống'
+        }
+        if(willUpdateState){
+           await this.setState(state=>{
+                return{
+                    ...state,
+                    domainName:value,
+                    errorName: msg
+                }
+            })
+        }
+        
+        return msg === undefined;
+    }
+
+    handleValidateName = (e)=>{
+        const value = e.target.value.trim();
+        this.validateName(value, true);
+    }
+    isValidateForm =() =>{
+        return this.validateName(this.state.domainName, false);
+    }
 
     save = () => {
         const {domainId,  domainName, domainDescription, domainParent} = this.state;
@@ -54,21 +80,21 @@ class EditForm extends Component {
     render() {
         const {translate, documents}=this.props;
         const {tree,list} = documents.administration.domains;
-        const {domainId, domainName, domainDescription, domainParent} = this.state;
-        console.log("edit domain: ",this.state)
+        const {domainId, domainName, domainDescription, domainParent, errorName} = this.state;
         
         return ( 
             <div id="edit-document-domain">
-                <div className="form-group">
+                <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                     <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleName} value={domainName}/>
+                    <input type="text" className="form-control" onChange={this.handleValidateName} value={domainName}/>
+                    <ErrorLabel content = {errorName} />
                 </div>
                 <div className="form-group">
-                    <label>{ translate('document.administration.domains.parent') }<span className="text-red">*</span></label>
+                    <label>{ translate('document.administration.domains.parent') }</label>
                     <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
                 </div>
                 <div className="form-group">
-                    <label>{ translate('document.administration.domains.description') }<span className="text-red">*</span></label>
+                    <label>{ translate('document.administration.domains.description') }</label>
                     <textarea style={{minHeight: '120px'}} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
                 </div> 
                 <div className="form-group">

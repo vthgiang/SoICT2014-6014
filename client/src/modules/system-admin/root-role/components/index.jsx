@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import RoleDefaultTable from './rootRoleTable';
 
-class ManageRoleDefault extends Component {
+import { RootRoleTable } from './rootRoleTable';
+
+class ManageRootRoles extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {}
     }
 
@@ -11,12 +14,11 @@ class ManageRoleDefault extends Component {
         return (
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
-                    <RoleDefaultTable />
+                    <RootRoleTable/>
                 </div>
             </div>
         );
     }
-
 }
 
-export default ManageRoleDefault;
+export default ManageRootRoles;

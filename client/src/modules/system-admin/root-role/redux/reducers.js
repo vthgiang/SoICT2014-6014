@@ -1,4 +1,4 @@
-import { RoleDefaultConstants } from "./constants";
+import { RootRoleConstants } from "./constants";
 
 const initState = {
     list: [],
@@ -6,26 +6,26 @@ const initState = {
     isLoading: true
 }
 
-export function rolesDefault(state = initState, action) {
+export function rootRoles(state = initState, action) {
     switch (action.type) {
-        case RoleDefaultConstants.GET_ROLES_DEFAULT_REQUEST:
+        case RootRoleConstants.GET_ALL_ROOT_ROLE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             }
 
-        case RoleDefaultConstants.GET_ROLES_DEFAULT_REQUEST:
-            return {
-                ...state,
-                isLoading: false,
-            }
-
-        case RoleDefaultConstants.GET_ROLES_DEFAULT_SUCCESS:
+        case RootRoleConstants.GET_ALL_ROOT_ROLE_SUCCESS:
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
+
+        case RootRoleConstants.GET_ALL_ROOT_ROLE_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+            }
 
         default:
             return state;

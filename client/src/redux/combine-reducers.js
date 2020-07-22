@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
-import { linksDefault } from '../modules/system-admin/system-link/redux/reducers';
+import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
 import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
@@ -39,8 +39,8 @@ import {dashboardEvaluationEmployeeKpiSet} from '../modules/kpi/evaluation/dashb
 
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
-import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
-import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
+import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
+import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
 
 //asset
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
@@ -54,9 +54,10 @@ const appReducer = combineReducers(Object.assign({
     //system
     log,
     company,
-    linksDefault,
-    rolesDefault,
-    componentsDefault,
+    systemLinks,
+    rootRoles,
+    systemComponents,
+    
     //admin
     user,
     role,

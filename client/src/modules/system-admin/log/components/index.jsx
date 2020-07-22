@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
-import { getLogState, toggleLogState } from '../redux/actions';
+import { LogActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class System extends Component {
+class LogSystem extends Component {
+
     constructor(props) {
         super(props);
-        this.state = {  }
+
+        this.state = {}
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getLogState();
     }
 
     render() { 
-        const { translate } = this.props;
-        var type = this.props.log.status ? 'danger' : 'success';
-        var toggleButton = this.props.log.status  ? translate('manage_system.turn_off') : translate('manage_system.turn_on');
+        const { translate, log } = this.props;
+
+        var type = log.status ? 'danger' : 'success';
+        var toggleButton = log.status  ? translate('manage_system.turn_off') : translate('manage_system.turn_on');
+        
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
@@ -28,19 +32,14 @@ class System extends Component {
     }
 }
  
-const mapStateToProps = state => {
-    return state;
+function mapState(state) {
+    const { log } = state;
+    return { log }
+}
+const actions = {
+    getLogState: LogActions.getLogState,
+    toggleLogState: LogActions.toggleLogState
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        getLogState: () => {
-            dispatch(getLogState());
-        },
-        toggleLogState: () => {
-            dispatch(toggleLogState());
-        },
-    }
-}
-
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(System) );
+const connectedLogSystem = connect(mapState, actions)(withTranslate(LogSystem));
+export { connectedLogSystem as LogSystem }

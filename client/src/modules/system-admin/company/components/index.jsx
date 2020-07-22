@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import CompanyTable from './companyTable';
+
+import { CompanyTable } from './companyTable';
 
 class Company extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = { 
          }
     }
@@ -19,9 +22,5 @@ class Company extends Component {
          );
     }
 }
- 
-const mapStateToProps = state => {
-    return state;
-}
 
-export default connect( mapStateToProps, null )( Company );
+export { Company }

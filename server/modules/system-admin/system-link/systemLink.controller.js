@@ -3,7 +3,7 @@ const {LogInfo, LogError} =  require('../../../logs');
 
 exports.getAllSystemLinks = async (req, res) => {
     try {
-        var links = await SystemLinkServices.getAllSystemLinks(req.query);
+        const links = await SystemLinkServices.getAllSystemLinks(req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(200).json({
@@ -12,7 +12,6 @@ exports.getAllSystemLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        console.log("ERROR: ", error)
         LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
@@ -33,7 +32,6 @@ exports.getAllSystemLinkCategories = async (req, res) => {
             content: categories
         });
     } catch (error) {
-        
         LogError(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(400).json({
             success: false,
@@ -45,10 +43,9 @@ exports.getAllSystemLinkCategories = async (req, res) => {
 
 exports.createSystemLink = async (req, res) => {
     try {
-        
         const { url, description, roles, category } = req.body;
+
         const link = await SystemLinkServices.createSystemLink(url, description, roles, category);
-        
         const data = await SystemLinkServices.getSystemLink(link._id);
         
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
@@ -58,7 +55,6 @@ exports.createSystemLink = async (req, res) => {
             content: data
         });
     } catch (error) {
-        
         LogError(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
@@ -70,7 +66,7 @@ exports.createSystemLink = async (req, res) => {
 
 exports.getSystemLink = async (req, res) => {
     try {
-        var link = await SystemLinkServices.getSystemLink(req.params.id);
+        const link = await SystemLinkServices.getSystemLink(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(200).json({
@@ -79,7 +75,6 @@ exports.getSystemLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
         LogError(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(400).json({
             success: false,
@@ -92,6 +87,7 @@ exports.getSystemLink = async (req, res) => {
 exports.editSystemLink = async (req, res) => {
     try {
         const { url, description, roles, category } = req.body;
+
         const link = await SystemLinkServices.editSystemLink(req.params.id, url, description, roles, category);
         const data = await SystemLinkServices.getSystemLink(link._id);
         
@@ -102,7 +98,6 @@ exports.editSystemLink = async (req, res) => {
             content: data
         });
     } catch (error) {
-        
         LogError(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(400).json({
             success: false,
@@ -123,7 +118,6 @@ exports.deleteSystemLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
         LogError(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(400).json({
             success: false,

@@ -3,13 +3,13 @@ import { CompanyConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
+
     return result;
 }
-
 
 const initState = {
     list: [],
@@ -63,6 +63,7 @@ export function company(state = initState, action) {
     var indexPaginate = -1;
     var indexLink = -1;
     var indexLinkPaginate = -1;
+
     switch (action.type) {
         case CompanyConstants.GET_COMPANIES_REQUEST:
         case CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST:
@@ -360,7 +361,7 @@ export function company(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                error: action.payload
             };
         default:
             return state;

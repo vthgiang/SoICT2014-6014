@@ -298,7 +298,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Add system component success',
-                show_system_component_success: 'Get data success',
+                get_system_component_success: 'Get data success',
                 edit_system_component_success: 'Edit system component success',
                 delete_system_component_success: 'Delete system component success',
 
@@ -1458,7 +1458,7 @@ export default {
                 accountable: 'Acountable',
                 consulted: 'Consulted',
                 creator: 'Creator',
-                informed: 'informed',
+                informed: 'Informed',
 
                 add_task: 'Add task',
                 add_title: 'Add a new task',
@@ -1531,6 +1531,121 @@ export default {
                 err_end_date: 'End date deleted',
                 err_progress: 'Progress deleted',
                 err_total_log_time: 'Total logged time deleted',
+
+                detail_refresh: 'Refresh',
+                detail_edit: 'Edit',
+                detail_end: 'Finish',
+                detail_evaluate: 'Evaluate',
+                detail_start_timer: 'Start timer',
+                detail_hide_info: 'Hide information',
+                detail_show_info: 'Show information',
+                detail_choose_role: 'Change role',
+
+                detail_link: 'Task link',
+                detail_priority: 'Priority',
+                detail_status: 'Status',
+                detail_time: 'Working duration',
+                
+                detail_general_info: 'General infomation',
+                detail_description: 'Description',
+                detail_info: 'Task infomation',
+                detail_progress: 'Progress',
+                detail_value: 'Value',
+                detail_not_hasinfo: 'Not has infomation',
+                detail_eval: 'Evaluation',
+                detail_eval_on_date: 'Evaluation on',
+                detail_point: 'Member Point',
+                detail_auto_point: 'Automatic point',
+                detail_emp_point: 'Employee point',
+                detail_acc_point: 'Approve point',
+                detail_not_auto: 'Unset automatic point',
+                detail_not_emp: 'Unset employee point',
+                detail_not_acc: 'Unset accountable po',
+
+                detail_not_eval_on_month: 'Not evaluate this month',
+                detail_not_eval: 'Nobody evaluate this month',
+                detail_kpi: 'Linked KPI',
+                detail_not_kpi: 'Task has not linked to KPI',
+                detail_all_not_kpi: 'Nobody linked KPI',
+                detailt_none_eval: 'Task has not evaluated any time',
+
+                detail_resp_edit: 'Edit task by responsible employee',
+                detail_acc_edit: 'Edit task by accountable employee',
+                detail_resp_eval: 'Evaluate task by responsible employee',
+                detail_acc_eval: 'Evaluate task by accountable employee',
+                detail_cons_eval: 'Evaluate task by consulted employee',
+                detail_resp_stop: 'Finish task by responsible employee',
+                detail_acc_stop: 'Finish task by accountable employee',
+                detail_cons_stop: 'Finish task by consulted employee',
+                detail_task_permission: 'Task is invalid or you do not have permission',
+
+                evaluate_date: 'Evaluate date',
+                evaluate_member: 'Evaluate members of task',
+                detail_not_calc_auto_point: 'Not calculate',
+                detail_auto_on_system: 'Automatic point on system',
+                detail_not_auto_on_system: 'Not has automatic point on system',
+                action_not_rating: 'List of action has not been rate',
+                no_action: 'Empty',
+                contribution: 'Contribution',
+                not_eval: 'Not evaluate',
+                acc_evaluate: 'Accountable evaluation',
+                name_employee: 'Name',
+                role_employee: 'Role',
+
+                enter_emp_point: 'Enter employee point',
+                eval_on_month: 'Evaluation information of this month',
+                responsible_not_eval: 'Responsible employee has not evaluated',
+                not_eval_on_month: 'Not has evaluation information of this month',
+
+                edit_basic_info: 'Basic information',
+                edit_detail_info: 'Detail information',
+                edit_member_info: 'Member information',
+                edit_inactive_emp: 'Inactive employee information',
+                edit_enter_progress: 'Enter progress',
+                edit_enter_value: 'Enter value',
+                
+                add_template: 'Task template',
+                add_template_notice: 'Selected task template',
+                add_parent_task: 'Parent of task',
+                add_parent_task_notice: 'Select parent of task',
+                add_raci: 'Assignment of responsibility',
+                add_resp: 'Select responsible employee',
+                add_acc: 'Select accountable employee',
+                add_cons: 'Select consulted employee',
+                add_inform: 'Select informed employee',
+
+                calc_form: 'Automatic point informtion',
+                calc_formula: 'Formula',
+                calc_overdue_date: 'Overdue date of task',
+                calc_day_used: 'Time from start date to today',
+                calc_average_action_rating: 'Average action of task rating',
+                calc_progress: 'Progress of task',
+                calc_new_formula: 'Current formula',
+                calc_total_day: 'Time from start date to end date',
+                calc_days: 'days',
+                calc_where: 'Where',
+                calc_no_value: 'No value',
+                calc_nan: 'NAN',
+
+                dashboard_created: 'Created',
+                dashboard_need_perform: 'Need to perform',
+                dashboard_need_approve: 'Need to approve',
+                dashboard_need_consult: 'Need to consult',
+                dashboard_area_result: 'Result area dashboard',
+                dashboard_overdue: 'Overdue task',
+                dashboard_about_to_overdue: 'Task is about to overdue',
+                dashboard_max: 'Max',
+                dashboard_min: 'Min',
+
+                err_require: 'Field is required',
+                err_date_required: 'Date is required',
+                err_nan: 'The value must be number',
+                
+                // mes_notice
+                edit_task_success: 'Edit task success',
+                evaluate_task_success: 'Evaluate task success',
+                edit_task_fail: 'Edit task fail',
+                evaluate_task_fail: 'Evaluate task fail',
                 
             },
             task_perform: {
@@ -1634,6 +1749,17 @@ export default {
                 evaluation_action_fail: 'Evaluation action fail',
                 confirm_action_fail: 'Confirm action fail',
 
+                // error label
+                err_require: 'Field is required',
+                err_date_required: 'Date is required',
+                err_nan: 'The value must be number',
+                err_has_accountable: 'Must be have accountable employee at least one',
+                err_has_consulted: 'Must be have consulted employee at least one',
+                err_has_responsible: 'Must be have responsible employee at least one',
+
+                // swal
+                confirm: 'Confirm',
+
                 // modal approve task
                 modal_approve_task: {
                     title: 'Request to finish task',
@@ -1652,7 +1778,7 @@ export default {
                     accountable: 'Accountable role',
 
                     err_range: 'Value must be between 0 and 100',
-                    err_empty: "Value must be filled"
+                    err_empty: "Value must be required"
                 }
             },
             task_template: {
@@ -1850,7 +1976,17 @@ export default {
                     number_of_employee: 'Number of employees',
                     excellent_employee: 'Excellent Employees',
                     best_employee: 'Best employee',
-                    month: 'Month'
+                    month: 'Month',
+                    auto_point: 'Automatic Point',
+                    employee_point: 'Employee Point',
+                    approve_point: 'Approve Point',
+                    option: 'Options',
+                    analyze: 'Analyze',
+                    statistics_chart_title: 'Statistics KPI of employees',
+                    result_kpi_titile: 'Result KPI of all employees',
+                    auto_eva: 'Evaluated automatically',
+                    employee_eva: 'Evaluated by Employee',
+                    approver_eva: 'Evaluated by Approver',
                 },
 
                 employee_evaluation:{
@@ -1898,7 +2034,7 @@ export default {
                     calc_kpi_point: 'Caculate KPI point',
                     export_file: 'Export file',
                     KPI_info: 'Infomation of ',
-                    point_field: 'Point (Automatic - Yourself - Approver)',
+                    point_field: 'Point (Automatic - Employee - Approver)',
                     not_avaiable: 'Not evaluated',
                     lastest_evaluation: 'Lastest evaluation',
                     task_list: 'Task list',
@@ -1913,7 +2049,8 @@ export default {
                     /**
                      * Management
                      */
-                    wrong_time: 'Start time has to earlier than end time',
+                    wrong_time: 'Start time should be earlier than end time',
+                    confirm:'Confirm',
                     choose_employee: 'Choose employee',
                     employee: 'Employee',
                     choose_status: 'Choose status',

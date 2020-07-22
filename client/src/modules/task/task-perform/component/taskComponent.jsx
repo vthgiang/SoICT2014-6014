@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
 import { taskManagementActions } from "../../task-management/redux/actions";
@@ -72,6 +71,9 @@ class TaskComponent extends Component {
             if (info.creator?._id === id){
                 return true;
             }
+            if (info.organizationalUnit.deans){
+                return true;
+            }
         }
         return false;
     }
@@ -86,6 +88,8 @@ class TaskComponent extends Component {
     }
 
     render = () => {
+        const { translate } = this.props;
+
         let taskId = this.props.id;;
         let task;
 
@@ -100,7 +104,7 @@ class TaskComponent extends Component {
         if (performtasks.task && !this.checkPermission(performtasks)) {
             return (
                 <div>
-                    <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
+                    <h2>{translate('task.task_management.detail_task_permission')}</h2>
                 </div>
             );
         }

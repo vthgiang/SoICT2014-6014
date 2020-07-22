@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import RoleTable from './roleTable';
 
 class ManageRole extends Component {

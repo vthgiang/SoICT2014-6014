@@ -83,7 +83,7 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
-                            component.listPaginate.length > 0 ?
+                            component.listPaginate && component.listPaginate.length > 0 ?
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>

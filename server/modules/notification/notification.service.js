@@ -15,7 +15,7 @@ exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
  * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
 exports.paginateManualNotifications = async (creator, data) => {
-    var info = Object.assign({creator}, data.content);
+    let info = Object.assign({creator}, data.content);
     
     return await ManualNotification
         .paginate( info , { 
@@ -52,29 +52,31 @@ exports.createManualNotification = async (data) => {
     ]);
 }
 
-
-// Tạo notification và gửi đến cho user
+/**
+ * Tạo thông báo và gửi đến cho người dùng
+ * @param {*} company 
+ * @param {*} data 
+ * @param {*} manualNotification 
+ */
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
-    console.log("User nhận thông báo1:", usersArr)
-    var or=data.organizationalUnits[0];
-    for (let i=1; i < data.organizationalUnits.length; i++){
-        or = or +","+ data.organizationalUnits[i];
+    let or = ""+data.organizationalUnits[0];
+    for (let i = 1; i < data.organizationalUnits.length; i++){
+        or = or + "," + data.organizationalUnits[i];
     }
     let userArr = await UserService.getAllUsersInOrganizationalUnit(or);
-    var u=[],us=[];
+    let u = [], us = [];
     userArr.map(item => {
-        u=item.deans[(Object.keys(item.deans))]["members"];
-        us=us.concat(u);
-        u=item.viceDeans[(Object.keys(item.viceDeans))]["members"];
-        us=us.concat(u)
-        u=item.employees[(Object.keys(item.employees))]["members"];
-        us=us.concat(u);
+        u = item.deans[(Object.keys(item.deans))]["members"];
+        us = us.concat(u);
+        u = item.viceDeans[(Object.keys(item.viceDeans))]["members"];
+        us = us.concat(u);
+        u = item.employees[(Object.keys(item.employees))]["members"];
+        us = us.concat(u);
     })
     userArr = us.map(item => item._id);
-    usersArr=usersArr.concat(userArr);
-    console.log("User nhận thông báo2:", usersArr)
-
+    usersArr = usersArr.concat(userArr);
+ 
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());
     for(let i = 0, max = usersArr.length; i < max; i++) {
@@ -113,7 +115,7 @@ exports.getAllNotifications = async (user) => {
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
 exports.paginateNotifications = async (user, data) => {
-    var info = Object.assign({user}, data.content);
+    let info = Object.assign({user}, data.content);
     
     return await Notification
         .paginate( info , { 

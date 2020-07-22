@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
 import { CompanyActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
+import { SystemLinkActions } from '../../system-link/redux/actions';
+
 import { CompanyFormValidator } from './companyFormValidator';
 
+import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class CompanyCreateForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = { 
             companyName: "",
             companyShortName: "",
@@ -18,95 +23,10 @@ class CompanyCreateForm extends Component {
         }
     }
 
-    render() { 
-        const { translate, linksDefault } = this.props;
-        const {
-            // Phần edit nội dung của công ty
-            nameError, 
-            shortNameError, 
-            descriptionError, 
-            emailError,
-        } = this.state;
-
-        return ( 
-            <React.Fragment>
-                <ButtonModal modalID="modal-create-company" button_name={translate('general.add')} title={translate('system_admin.company.add')}/>
-                <DialogModal
-                    modalID="modal-create-company" size="75"
-                    formID="form-create-company" isLoading={this.props.company.isLoading}
-                    title={translate('system_admin.company.add')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-create-company">
-                        <div className="row" style={{padding: '20px'}}>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div className={`form-group ${nameError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('system_admin.company.table.name') }<span className="text-red"> * </span></label>
-                                    <input type="text" className="form-control" onChange={ this.handleChangeName }/>
-                                    <ErrorLabel content={nameError}/>
-                                </div>
-                                <div className={`form-group ${shortNameError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('system_admin.company.table.short_name') }<span className="text-red"> * </span></label>
-                                    <input type="text" className="form-control" onChange={ this.handleChangeShortName }/>
-                                    <ErrorLabel content={shortNameError}/>
-                                </div>
-                                <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('system_admin.company.table.super_admin') }<span className="text-red"> * </span></label>
-                                    <input type="email" className="form-control" onChange={ this.handleChangeEmail }/>
-                                    <ErrorLabel content={emailError}/>
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('system_admin.company.table.description') }<span className="text-red"> * </span></label>
-                                    <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription }/>
-                                    <ErrorLabel content={descriptionError}/>
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
-                                    <legend className="scheduler-border">{ translate('system_admin.company.service') }</legend>
-                                    <table className="table table-hover table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th style={{width: '32px'}} className="col-fixed"></th>
-                                                <th>{ translate('system_admin.system_link.table.category') }</th>
-                                                <th>{ translate('system_admin.system_link.table.url') }</th>
-                                                <th>{ translate('system_admin.system_link.table.description') }</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                linksDefault.list.length > 0 ? linksDefault.list.map( link => 
-                                                    <tr key={link._id}>
-                                                        <td>
-                                                            <input 
-                                                                type="checkbox" 
-                                                                value={link._id} 
-                                                                onChange={this.handleCheckbox} 
-                                                                checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
-                                                            />
-                                                        </td>
-                                                        <td>{ link.category }</td>
-                                                        <td>{ link.url }</td>
-                                                        <td>{ link.description }</td>
-                                                    </tr> 
-                                                ): linksDefault.isLoading ?
-                                                <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
-                                                <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
-                            </div>
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-         );
+    componentDidMount() {
+        this.props.getAllSystemLinks();
     }
-    
+
     checkCheckBoxAll = (arr) => {
         if(arr.length > 0 && arr.length === this.state.linkDefaultArr.length){
             return true;
@@ -130,7 +50,7 @@ class CompanyCreateForm extends Component {
         const {checked} = e.target;
         if(checked){
             this.setState({
-                linkDefaultArr: this.props.linksDefault.list.map(link => link._id)
+                linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
             })
         }else{
             this.setState({
@@ -140,18 +60,18 @@ class CompanyCreateForm extends Component {
     }
 
     handleCheckbox = (e) => {
-        const {value, checked} = e.target;
-        if(checked){
+        const { value, checked } = e.target;
+        if (checked) {
             this.setState({
                 linkDefaultArr: [
                     ...this.state.linkDefaultArr,
                     value
                 ]
             });
-        } 
-        else{
+        } else {
             const arr = this.state.linkDefaultArr;
             const index = arr.indexOf(value);
+
             arr.splice(index,1);
             this.setState({
                 linkDefaultArr: arr
@@ -167,11 +87,8 @@ class CompanyCreateForm extends Component {
             email: this.state.companyEmail, 
             links: this.state.linkDefaultArr
         };
-        if(this.isFormValidated()) return this.props.create(company);
-    }
 
-    componentDidMount() {
-        this.props.getLinksDefault();
+        if(this.isFormValidated()) return this.props.create(company);
     }
 
     // Xu ly thay doi va validate cho ten cong ty
@@ -183,7 +100,8 @@ class CompanyCreateForm extends Component {
     validateName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateName(value);
         const {translate} = this.props;
-        if (willUpdateState){
+
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -192,6 +110,7 @@ class CompanyCreateForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -204,7 +123,8 @@ class CompanyCreateForm extends Component {
     validateShortName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateShortName(value);
         const {translate} = this.props;
-        if (willUpdateState){
+
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -213,6 +133,7 @@ class CompanyCreateForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -225,7 +146,8 @@ class CompanyCreateForm extends Component {
     validateDescription = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateDescription(value);
         const {translate} = this.props;
-        if (willUpdateState){
+
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -234,6 +156,7 @@ class CompanyCreateForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -246,7 +169,8 @@ class CompanyCreateForm extends Component {
     validateEmail = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
         const {translate} = this.props;
-        if (willUpdateState){
+
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -255,6 +179,7 @@ class CompanyCreateForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -266,17 +191,113 @@ class CompanyCreateForm extends Component {
             this.validateShortName(companyShortName, false) &&
             this.validateDescription(companyDescription, false) &&
             this.validateEmail(companyEmail, false);
+
         return result;
+    }
+
+    render() { 
+        const { translate, systemLinks, company } = this.props;
+        const {
+            // Phần edit nội dung của công ty
+            nameError, 
+            shortNameError, 
+            descriptionError, 
+            emailError,
+        } = this.state;
+
+        return ( 
+            <React.Fragment>
+                <ButtonModal modalID="modal-create-company" button_name={translate('general.add')} title={translate('system_admin.company.add')}/>
+                
+                <DialogModal
+                    modalID="modal-create-company" size="75"
+                    formID="form-create-company" isLoading={company.isLoading}
+                    title={translate('system_admin.company.add')}
+                    func={this.save}
+                    disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-create-company">
+                        <div className="row" style={{padding: '20px'}}>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div className={`form-group ${nameError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('system_admin.company.table.name') }<span className="text-red"> * </span></label>
+                                    <input type="text" className="form-control" onChange={ this.handleChangeName }/>
+                                    <ErrorLabel content={nameError}/>
+                                </div>
+                                <div className={`form-group ${shortNameError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('system_admin.company.table.short_name') }<span className="text-red"> * </span></label>
+                                    <input type="text" className="form-control" onChange={ this.handleChangeShortName }/>
+                                    <ErrorLabel content={shortNameError}/>
+                                </div>
+                                <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('system_admin.company.table.super_admin') }<span className="text-red"> * </span></label>
+                                    <input type="email" className="form-control" onChange={ this.handleChangeEmail }/>
+                                    <ErrorLabel content={emailError}/>
+                                </div>
+                            </div>
+
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('system_admin.company.table.description') }<span className="text-red"> * </span></label>
+                                    <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription }/>
+                                    <ErrorLabel content={descriptionError}/>
+                                </div>
+                            </div>
+
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
+                                    <legend className="scheduler-border">{ translate('system_admin.company.service') }</legend>
+                                    
+                                    <table className="table table-hover table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: '32px'}} className="col-fixed"></th>
+                                                <th>{ translate('system_admin.system_link.table.category') }</th>
+                                                <th>{ translate('system_admin.system_link.table.url') }</th>
+                                                <th>{ translate('system_admin.system_link.table.description') }</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            {
+                                                systemLinks.list.length > 0 ? systemLinks.list.map( link => 
+                                                    <tr key={link._id}>
+                                                        <td>
+                                                            <input 
+                                                                type="checkbox" 
+                                                                value={link._id} 
+                                                                onChange={this.handleCheckbox} 
+                                                                checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
+                                                            />
+                                                        </td>
+                                                        <td>{ link.category }</td>
+                                                        <td>{ link.url }</td>
+                                                        <td>{ link.description }</td>
+                                                    </tr> 
+                                                ): systemLinks.isLoading ?
+                                                <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
+                                                <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </DialogModal>
+            </React.Fragment>
+         );
     }
 }
  
-const mapStateToProps = state => {
-    return state;
+function mapState(state) {
+    const { systemLinks, company } = state;
+    return { systemLinks, company };
 }
-
-const mapDispatchToProps = {
+const action = {
     create: CompanyActions.create,
-    getLinksDefault: LinkDefaultActions.get
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyCreateForm) );
+const connectedCompanyCreateForm = connect(mapState, action)(withTranslate(CompanyCreateForm))
+export { connectedCompanyCreateForm as CompanyCreateForm }
