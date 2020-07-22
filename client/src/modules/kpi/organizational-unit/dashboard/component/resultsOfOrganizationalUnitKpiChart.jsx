@@ -123,8 +123,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
 
         if(listOrganizationalUnitKpiSetEachYear) {
-
-            let name = translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point');
             automaticPoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point')];
             employeePoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.employee_point')];
             approvedPoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.approved_point')];
