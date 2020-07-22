@@ -15,7 +15,6 @@ exports.getAllTasks = async () => {
  * get task evaluations
  * @param {*} data 
  */
-
 exports.getTaskEvaluations = async (data) => {
     // Lấy keySearch tu client gui
     let idTemplate = data.taskTemplate;
@@ -120,7 +119,7 @@ exports.getTaskEvaluations = async (data) => {
 /**
  * Lấy mẫu công việc theo Id
  */
-exports.getTask = async (id, userId) => {
+exports.getTaskById = async (id, userId) => {
     //req.params.id
     var superTask = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
@@ -143,6 +142,11 @@ exports.getTask = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
+    if (!task){
+        return {
+            "info": true
+        }
+    }
     var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
     responsibleEmployees = task.responsibleEmployees;
     accountableEmployees = task.accountableEmployees;
@@ -197,7 +201,7 @@ exports.getTask = async (id, userId) => {
     }
     if (flag === 0) {
         return {
-            "info": null
+            "info": true
         }
     }
     task.evaluations.reverse();
@@ -238,7 +242,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit.split(",")
+                $in: organizationalUnit,
             }
         };
     }
@@ -247,7 +251,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         keySearch = {
             ...keySearch,
             status: {
-                $in: status.split(",")
+                $in: status,
             }
         };
     }
@@ -256,13 +260,12 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         keySearch = {
             ...keySearch,
             priority: {
-                $in: priority.split(",")
+                $in: priority,
             }
         };
     }
 
     if (special !== '[]') {
-        special = special.split(",");
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -279,7 +282,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     }
 
-    if (name !== 'null') {
+    if (name) {
         keySearch = {
             ...keySearch,
             name: {
@@ -289,7 +292,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     };
 
-    if (startDate !== 'null') {
+    if (startDate ) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -303,7 +306,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     }
 
-    if (endDate !== 'null') {
+    if (endDate) {
         let endTime = endDate.split("-");
         let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
@@ -317,7 +320,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     }
 
-    if (startDateAfter !== 'null') {
+    if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
         let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
 
@@ -329,7 +332,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     }
 
-    if (endDateBefore !== 'null') {
+    if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
         let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
 
@@ -375,7 +378,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit.split(",")
+                $in: organizationalUnit,
             }
         };
     }
@@ -384,7 +387,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         keySearch = {
             ...keySearch,
             status: {
-                $in: status.split(",")
+                $in: status,
             }
         };
     }
@@ -393,13 +396,12 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         keySearch = {
             ...keySearch,
             priority: {
-                $in: priority.split(",")
+                $in: priority,
             }
         };
     }
 
     if (special !== '[]') {
-        special = special.split(",");
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -416,7 +418,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         }
     }
 
-    if (name !== 'null') {
+    if (name) {
         keySearch = {
             ...keySearch,
             name: {
@@ -426,7 +428,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         }
     };
 
-    if (startDate !== 'null') {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -440,7 +442,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         }
     }
 
-    if (endDate !== 'null') {
+    if (endDate) {
         let endTime = endDate.split("-");
         let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
@@ -486,7 +488,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit.split(",")
+                $in: organizationalUnit,
             }
         };
     }
@@ -495,7 +497,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         keySearch = {
             ...keySearch,
             status: {
-                $in: status.split(",")
+                $in: status,
             }
         };
     }
@@ -504,13 +506,12 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         keySearch = {
             ...keySearch,
             priority: {
-                $in: priority.split(",")
+                $in: priority,
             }
         };
     }
 
     if (special !== '[]') {
-        special = special.split(",");
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -527,7 +528,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         }
     }
 
-    if (name !== 'null') {
+    if (name) {
         keySearch = {
             ...keySearch,
             name: {
@@ -537,7 +538,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         }
     };
 
-    if (startDate !== 'null') {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -551,7 +552,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         }
     }
 
-    if (endDate !== 'null') {
+    if (endDate) {
         let endTime = endDate.split("-");
         let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
@@ -597,7 +598,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit.split(",")
+                $in: organizationalUnit,
             }
         };
     }
@@ -606,7 +607,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         keySearch = {
             ...keySearch,
             status: {
-                $in: status.split(",")
+                $in: status,
             }
         };
     }
@@ -615,13 +616,12 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         keySearch = {
             ...keySearch,
             priority: {
-                $in: priority.split(",")
+                $in: priority,
             }
         };
     }
 
     if (special !== '[]') {
-        special = special.split(",");
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -638,7 +638,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     }
 
-    if (name !== 'null') {
+    if (name) {
         keySearch = {
             ...keySearch,
             name: {
@@ -648,7 +648,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     };
 
-    if (startDate !== 'null') {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -662,7 +662,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     }
 
-    if (endDate !== 'null') {
+    if (endDate) {
         let endTime = endDate.split("-");
         let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);
@@ -708,7 +708,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit.split(",")
+                $in: organizationalUnit,
             }
         };
     }
@@ -717,7 +717,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         keySearch = {
             ...keySearch,
             status: {
-                $in: status.split(",")
+                $in: status,
             }
         };
     }
@@ -726,13 +726,12 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         keySearch = {
             ...keySearch,
             priority: {
-                $in: priority.split(",")
+                $in: priority,
             }
         };
     }
 
     if (special !== '[]') {
-        special = special.split(",");
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -749,7 +748,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         }
     }
 
-    if (name !== 'null') {
+    if (name) {
         keySearch = {
             ...keySearch,
             name: {
@@ -759,7 +758,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         }
     };
 
-    if (startDate !== 'null') {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -773,7 +772,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         }
     }
 
-    if (endDate !== 'null') {
+    if (endDate) {
         let endTime = endDate.split("-");
         let start = new Date(endTime[1], endTime[0] - 1, 1);
         let end = new Date(endTime[1], endTime[0], 1);

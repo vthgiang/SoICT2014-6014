@@ -250,7 +250,7 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
  * @id id role hiện tại
  */
 exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
-    console.log("dẻnole");
+    
     const roles = await OrganizationalUnit.findOne({ 
         $or:[
             {'deans':id}, 

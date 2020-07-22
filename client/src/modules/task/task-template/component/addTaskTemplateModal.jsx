@@ -141,7 +141,7 @@ class ModalAddTaskTemplate extends Component {
                 let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
                 if (dept){
                     this.props.getChildrenOfOrganizationalUnits(singleValue);
-                    this.props.getRoleSameDepartment(dept.dean);
+                    this.props.getRoleSameDepartment(dept.deans);
                 }
             }
         }

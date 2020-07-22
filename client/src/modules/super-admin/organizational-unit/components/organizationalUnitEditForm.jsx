@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { DepartmentActions } from '../redux/actions';
+
 import { DepartmentValidator } from './organizationalUnitValidator';
+
 class DepartmentEditForm extends Component {
     constructor(props) {
         super(props);
@@ -89,19 +93,28 @@ class DepartmentEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin về đơn vị */}
                     <form id="form-edit-department">  
+
+                    {/* Thông tin về đơn vị */}
                     <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
-                            <div className={`form-group ${departmentNameError===undefined?"":"has-error"}`}>
+
+                            {/* Tên đơn vị */}
+                            <div className={`form-group ${!departmentNameError? "": "has-error"}`}>
                                 <label>{ translate('manage_department.name')  }<span className="attention"> * </span></label>
                                 <input type="text" className="form-control" onChange={this.handleName} value={departmentName}/><br/>
                                 <ErrorLabel content={departmentNameError}/>
                             </div>
-                            <div className={`form-group ${departmentDescriptionError===undefined?"":"has-error"}`}>
+
+                            {/* Mô tả về đơn vị */}
+                            <div className={`form-group ${!departmentDescriptionError? "": "has-error"}`}>
                                 <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
                                 <textarea type="text" className="form-control" onChange={this.handleDescription} value={departmentDescription}/><br/>
                                 <ErrorLabel content={departmentDescriptionError}/>
                             </div>
+
+                            {/* Đơn vị cha */}
                             <div className="form-group">
                                 <label>{ translate('manage_department.parent') }</label>
                                 <SelectBox
@@ -117,8 +130,12 @@ class DepartmentEditForm extends Component {
                                 />
                             </div>
                         </fieldset>
+
+                        {/* Các chức danh của đơn vị */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
+
+                             {/* Tên chức danh cho trưởng đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -129,21 +146,25 @@ class DepartmentEditForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            deans.length > 0 &&
+                                            deans && deans.length > 0 &&
                                             deans.map((dean, index)=>{
                                                 return <tr key={`dean-add-${index}`}>
-                                                    <td><input type="text" 
-                                                        className="form-control" 
-                                                        name={`dean${index}`}
-                                                        placeholder={ translate('manage_department.dean_example')}
-                                                        value={dean.name}
-                                                        onChange={(e)=>this.handleChangeDean(e, index)}
-                                                    /></td>
-                                                    <td><a href="#delete-dean" 
-                                                        className="text-red" 
-                                                        style={{border: 'none'}} 
-                                                        onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
-                                                    </a></td>
+                                                    <td>
+                                                        <input type="text" 
+                                                            className="form-control" 
+                                                            name={`dean${index}`}
+                                                            placeholder={ translate('manage_department.dean_example')}
+                                                            value={dean.name}
+                                                            onChange={(e)=>this.handleChangeDean(e, index)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-dean" 
+                                                            className="text-red" 
+                                                            style={{border: 'none'}} 
+                                                            onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             })
                                         }
@@ -151,6 +172,7 @@ class DepartmentEditForm extends Component {
                                 </table>
                             </div> 
 
+                            {/* Tên chức danh cho phó đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -161,21 +183,25 @@ class DepartmentEditForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            viceDeans.length > 0 &&
+                                            viceDeans && viceDeans.length > 0 &&
                                             viceDeans.map((vicedean, index)=>{
                                                 return <tr key={`vicedean-add-${index}`}>
-                                                    <td><input type="text" 
-                                                        className="form-control" 
-                                                        name={`vicedean${index}`}
-                                                        placeholder={ translate('manage_department.vice_dean_example')}
-                                                        value={vicedean.name}
-                                                        onChange={(e)=>this.handleChangeViceDean(e, index)}
-                                                    /></td>
-                                                    <td><a href="#delete-vice-dean" 
-                                                        className="text-red" 
-                                                        style={{border: 'none'}} 
-                                                        onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
-                                                    </a></td>
+                                                    <td>
+                                                        <input type="text" 
+                                                            className="form-control" 
+                                                            name={`vicedean${index}`}
+                                                            placeholder={ translate('manage_department.vice_dean_example')}
+                                                            value={vicedean.name}
+                                                            onChange={(e)=>this.handleChangeViceDean(e, index)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-vice-dean" 
+                                                            className="text-red" 
+                                                            style={{border: 'none'}} 
+                                                            onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             })
                                         }
@@ -183,6 +209,7 @@ class DepartmentEditForm extends Component {
                                 </table>
                             </div>
 
+                            {/* Tên chức danh cho nhân viên đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -193,7 +220,7 @@ class DepartmentEditForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            employees.length > 0 &&
+                                            employees && employees.length > 0 &&
                                             employees.map((employee, index)=>{
                                                 return <tr key={`employee-add${index}`}>
                                                     <td><input type="text" 
@@ -261,7 +288,10 @@ class DepartmentEditForm extends Component {
             viceDeans: this.state.viceDeans,
             employees: this.state.employees
         };
-        if(this.isFormValidated()) return this.props.edit(data);
+        
+        if (this.isFormValidated()){ 
+            return this.props.edit(data);
+        }
     }
 
     handleParent = (value) => {

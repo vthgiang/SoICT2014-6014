@@ -298,7 +298,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Tạo system component thành công',
-                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                get_system_component_success: 'Lấy dữ liệu system component thành công',
                 edit_system_component_success: 'Chỉnh sửa system admin thành công',
                 delete_system_component_success: 'Xóa system component thành công',
 

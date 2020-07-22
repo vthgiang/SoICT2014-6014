@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
-import { linksDefault } from '../modules/system-admin/system-link/redux/reducers';
+import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
 import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
@@ -54,7 +54,7 @@ const appReducer = combineReducers(Object.assign({
     //system
     log,
     company,
-    linksDefault,
+    systemLinks,
     rootRoles,
     systemComponents,
     

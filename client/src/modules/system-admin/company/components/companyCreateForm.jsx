@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { CompanyActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
 
 import { CompanyFormValidator } from './companyFormValidator';
 
@@ -24,7 +24,7 @@ class CompanyCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getLinksDefault();
+        this.props.getAllSystemLinks();
     }
 
     checkCheckBoxAll = (arr) => {
@@ -50,7 +50,7 @@ class CompanyCreateForm extends Component {
         const {checked} = e.target;
         if(checked){
             this.setState({
-                linkDefaultArr: this.props.linksDefault.list.map(link => link._id)
+                linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
             })
         }else{
             this.setState({
@@ -196,7 +196,7 @@ class CompanyCreateForm extends Component {
     }
 
     render() { 
-        const { translate, linksDefault, company } = this.props;
+        const { translate, systemLinks, company } = this.props;
         const {
             // Phần edit nội dung của công ty
             nameError, 
@@ -260,7 +260,7 @@ class CompanyCreateForm extends Component {
                                         
                                         <tbody>
                                             {
-                                                linksDefault.list.length > 0 ? linksDefault.list.map( link => 
+                                                systemLinks.list.length > 0 ? systemLinks.list.map( link => 
                                                     <tr key={link._id}>
                                                         <td>
                                                             <input 
@@ -274,7 +274,7 @@ class CompanyCreateForm extends Component {
                                                         <td>{ link.url }</td>
                                                         <td>{ link.description }</td>
                                                     </tr> 
-                                                ): linksDefault.isLoading ?
+                                                ): systemLinks.isLoading ?
                                                 <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
                                                 <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
                                             }
@@ -291,12 +291,12 @@ class CompanyCreateForm extends Component {
 }
  
 function mapState(state) {
-    const { linksDefault, company } = state;
-    return { linksDefault, company };
+    const { systemLinks, company } = state;
+    return { systemLinks, company };
 }
 const action = {
     create: CompanyActions.create,
-    getLinksDefault: LinkDefaultActions.get
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks
 }
 
 const connectedCompanyCreateForm = connect(mapState, action)(withTranslate(CompanyCreateForm))

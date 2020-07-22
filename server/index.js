@@ -152,7 +152,7 @@ app.use("/components-default-management", systemComponent);
 app.use("/links-default-management", systemLink);
 app.use("/roles-default-management", rootRole);
 
-app.use("/tasks", taskManagement);
+app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/tasktemplates", tasktemplate);
 

@@ -5,7 +5,7 @@ exports.getAllSystemComponents = async (query) => {
     let page = query.page;
     let limit = query.limit;
     
-    if (page === undefined && limit === undefined ) {
+    if (!page && !limit) {
         return await SystemComponent
             .find()
             .populate([
@@ -13,7 +13,7 @@ exports.getAllSystemComponents = async (query) => {
                 { path: 'link', model: SystemLink }
             ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
             ? {[`${query.key}`]: new RegExp(query.value, "i")}
             : {};
 
@@ -42,7 +42,7 @@ exports.getSystemComponent = async (id) => {
 exports.createSystemComponent = async (name, description, link, roles) => {
 
     const component = await SystemComponent.findOne({ name });
-    if(component !== null) throw ['system_component_name_invalid', 'system_component_name_exist'];
+    if(component) throw ['system_component_name_invalid', 'system_component_name_exist'];
 
     return await SystemComponent.create({ name, description, link, roles });
 }
@@ -51,7 +51,7 @@ exports.editSystemComponent = async (id, name, description, link, roles) => {
     
     const component = await SystemComponent.findById(id);
     const checkComponent = await SystemComponent.findOne({ name });
-    if(JSON.stringify(component._id) !== JSON.stringify(checkComponent._id)) throw ['system_component_name_invalid', 'system_component_name_exist'];
+    if(checkComponent) throw ['system_component_name_invalid', 'system_component_name_exist'];
     
     component.name = name;
     component.description = description;
@@ -73,7 +73,7 @@ exports.deleteSystemComponent = async (id) => {
 exports.addSystemComponentsToSystemLink = async (linkId, componentId) => {
 
     let link = await SystemLink.findById(linkId);
-    if (link !== null) {
+    if (link) {
         link.components.push(componentId);
         await link.save();
     }
@@ -82,11 +82,15 @@ exports.addSystemComponentsToSystemLink = async (linkId, componentId) => {
 }
 
 exports.removeSystemComponentFromSystemLink = async (linkId, componentId) => {
+    
     let link = await SystemLink.findById(linkId);
-    let index = link.components.indexOf(componentId);
-    if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
-    await link.save();
+    if(link) {
+        let index = link.components.indexOf(componentId);
+        if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
 
+        await link.save();
+    }
+    
     return link;
 }
 

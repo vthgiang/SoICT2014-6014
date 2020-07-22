@@ -44,12 +44,6 @@ class ActionTab extends Component {
             showChildComment: "",
             showChildTaskComment: "",
             showEvaluations: [],
-            newCommentOfAction: {
-                creator: idUser,
-                description: "",
-                files: [],
-                taskActionId: null
-            },
             newAction: {
                 creator: idUser,
                 description: "",
@@ -59,6 +53,12 @@ class ActionTab extends Component {
                 creator: idUser,
                 description: "",
                 files: []
+            },  
+            newCommentOfAction: {
+                creator: idUser,
+                description: "",
+                files: [],
+                taskActionId: null
             },
             newCommentOfActionEdited: {
                 creator: idUser,
@@ -70,11 +70,22 @@ class ActionTab extends Component {
                 description: "",
                 files: []
             },
+            newTaskCommentEdited: {
+                creator: idUser,
+                description: "",
+                files: []
+            },
             newCommentOfTaskComment: {
                 creator: idUser,
                 description: "",
                 files: []
             },
+            newCommentOfTaskCommentEdited: {
+                creator: idUser,
+                description: "",
+                files: []
+            },
+
             showEdit: false,
             timer: {
                 startTimer: "",
@@ -155,7 +166,7 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (id,newValue,index) => {
+    setValueRating = async (id, newValue, firstTime) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -163,7 +174,8 @@ class ActionTab extends Component {
                 evaluations: {
                     ...state.evaluations,
                     rating: newValue*2,
-                    type: index
+                    firstTime: firstTime,
+                    type: "evaluation"
                 }
             }
         })
@@ -254,18 +266,16 @@ class ActionTab extends Component {
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
-    submitComment = async ( id,taskId) => {
+    submitComment = async ( actionId, taskId) => {
         var { newCommentOfAction } = this.state;
         const data = new FormData();
-        data.append("task", taskId);
         data.append("creator", newCommentOfAction.creator);
         data.append("description", newCommentOfAction.description);
-        data.append("taskActionId", id)
         newCommentOfAction && newCommentOfAction.files.forEach(x=>{
             data.append("files", x);
         })
         if (newCommentOfAction.description && newCommentOfAction.creator) {
-            this.props.addActionComment(data);
+            this.props.addActionComment(taskId, actionId, data);
         }
         await this.setState(state => {
             return {
@@ -283,7 +293,6 @@ class ActionTab extends Component {
     submitAction = async (taskId) => {
         var { newAction } = this.state;
         const data = new FormData();
-        data.append("task", taskId);
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
         newAction.files && newAction.files.forEach(x=>{
@@ -291,7 +300,7 @@ class ActionTab extends Component {
         })
         
         if(newAction.creator && newAction.description){
-            this.props.addTaskAction(data);
+            this.props.addTaskAction(taskId, data);
         }
 
         // Reset state cho việc thêm mới action
@@ -312,14 +321,13 @@ class ActionTab extends Component {
         var { newTaskComment } = this.state;
 
         const data = new FormData();
-        data.append("task", taskId);
         data.append("creator", newTaskComment.creator);
         data.append("description", newTaskComment.description);
         newTaskComment.files.forEach(x => {
             data.append("files", x);
         })
         if (newTaskComment.description && newTaskComment.creator) {
-            this.props.createTaskComment(data);
+            this.props.createTaskComment(taskId,data);
         }
        // Reset state cho việc thêm mới bình luận
        await this.setState(state => {
@@ -333,18 +341,17 @@ class ActionTab extends Component {
         }
     })
     }
-    submitCommentOfTaskComment = async (id,taskId) => {
-        var { newCommentOfTaskComment } = this.state;
+    submitCommentOfTaskComment = async ( commentId ,taskId) => {
+        let { newCommentOfTaskComment } = this.state;
         const data = new FormData();
-        data.append("task", taskId);
+
         data.append("creator", newCommentOfTaskComment.creator);
         data.append("description", newCommentOfTaskComment.description);
-        data.append("id", id);
         newCommentOfTaskComment.files.forEach(x=>{
             data.append("files", x);
         })
         if (newCommentOfTaskComment.description && newCommentOfTaskComment.creator) {
-            this.props.createCommentOfTaskComment(data);
+            this.props.createCommentOfTaskComment(commentId ,taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
          await this.setState(state => {
@@ -358,16 +365,17 @@ class ActionTab extends Component {
             }
         })
     }
-    handleUploadFile = async (task,creator) => {
+    handleUploadFile = async (taskId,creator) => {
         const data  = new FormData();
         let { taskFiles } = this.state;
         taskFiles.files.forEach(x => {
             data.append("files", x)
         })
         data.append("description", taskFiles.description)
-        data.append("creator", creator)
+        data.append("creator", creator);
+        data.append("taskId",taskId)
         if (taskFiles.files) {
-            this.props.uploadFile(task, data); 
+            this.props.uploadFile(data); 
         }
         // Reset state cho việc thêm mới bình luận
         await this.setState(state => {
@@ -409,32 +417,42 @@ class ActionTab extends Component {
         })
     }
     //Lưu hoạt động
-    handleSaveEditActionComment = async (e, id) => {
+    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
         e.preventDefault();
         let { newCommentOfActionEdited } = this.state;
         let data = new FormData();
-        newCommentOfActionEdited.files.forEach(x=> {
-            data.append("files", x);
+        newCommentOfActionEdited.files.forEach(x => {
+            data.append("files", x)
         })
-        data.append("description", newCommentOfActionEdited.description);
-        data.append("creator", newCommentOfActionEdited.creator);
-        if(newCommentOfActionEdited.description){
-            this.props.editActionComment(id, data);
+        if(newCommentOfActionEdited.description === "" ) {
+            data.append("description", description)
+        }else {
+            data.append("description", newCommentOfActionEdited.description)
+        }
+        data.append("creator",newCommentOfActionEdited.creator)
+        if(newCommentOfActionEdited.description || newCommentOfActionEdited.files){
+            this.props.editActionComment(taskId, actionId, commentId, data);
         }
         await this.setState(state => {
             return {
                 ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    description: "", 
+                    files: []
+                },
                 editComment: ""
             }
         })
     }
-    handleSaveEditAction = async (e,id,description) => {
+    handleSaveEditAction = async (e,id,description,taskId) => {
         e.preventDefault();
         let { newActionEdited } = this.state;
         let data = new FormData();
         newActionEdited.files.forEach(x => {
             data.append("files", x)
         })
+        data.append("type","edit")
         if(newActionEdited.description === "" ) {
             data.append("description", description)
         }else {
@@ -442,7 +460,7 @@ class ActionTab extends Component {
         }
         data.append("creator",newActionEdited.creator)
         if(newActionEdited.description || newActionEdited.files){
-            this.props.editTaskAction(id, data);
+            this.props.editTaskAction(id, data,taskId);
         }
         await this.setState(state => {
             return {
@@ -456,45 +474,71 @@ class ActionTab extends Component {
             }
         })
     }
-    handleSaveEditTaskComment = async (e,index) => {
+    handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
         e.preventDefault();
+        let { newTaskCommentEdited } = this.state;
+        let data = new FormData();
+        newTaskCommentEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if(newTaskCommentEdited.description === "" ) {
+            data.append("description", description)
+        }else {
+            data.append("description", newTaskCommentEdited.description)
+        }
+        data.append("creator",newTaskCommentEdited.creator)
+        if(newTaskCommentEdited.description || newTaskCommentEdited.files){
+            this.props.editTaskComment(taskId, commentId, data);
+        }
         await this.setState(state => {
             return {
                 ...state,
-                newTaskComment: {
+                newTaskCommentEdited: {
                     ...state.newTaskComment,
-                    description: this.newContentTaskComment[index].value,
+                    description: "",
+                    files: []
                 },
                 editTaskComment: ""
             }
         })
-        var { newTaskComment } = this.state;
-        if (newTaskComment.description) {
-            this.props.editTaskComment(index, newTaskComment);
-        }
     }
-    handleSaveEditCommentOfTaskComment = async (e,index) => {
+    handleSaveEditCommentOfTaskComment = async (e,commentId, taskId, description) => {
         e.preventDefault();
+        let { newCommentOfTaskCommentEdited } = this.state;
+        let data = new FormData();
+
+        newCommentOfTaskCommentEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if(newCommentOfTaskCommentEdited.description === "" ) {
+            data.append("description", description)
+        }else {
+            data.append("description", newCommentOfTaskCommentEdited.description)
+        }
+        data.append("creator",newCommentOfTaskCommentEdited.creator)
+        if(newCommentOfTaskCommentEdited.description || newCommentOfTaskCommentEdited.files){
+            this.props.editCommentOfTaskComment(commentId, taskId, data);
+        }
+
         await this.setState(state => {
             return {
                 ...state,
-                newCommentOfTaskComment: {
-                    ...state.newCommentOfTaskComment,
-                    description: this.newContentCommentOfTaskComment[index].value,
-                    id : index
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
+                    description: "",
+                    files: []
                 },
                 editCommentOfTaskComment: ""
             }
         })
-        var { newCommentOfTaskComment } = this.state;
-        
-        if (newCommentOfTaskComment.description) {
-            this.props.editCommentOfTaskComment(index, newCommentOfTaskComment);
-        }
+
     }
-    handleConfirmAction = async (e, actionId, userId) => {
+    onEditCommentOfTaskCommentFilesChange = async (files) => {
+
+    }
+    handleConfirmAction = async (e, actionId, userId,taskId) => {
         e.preventDefault();
-        this.props.confirmAction(actionId, userId)
+        this.props.confirmAction(actionId, userId, taskId)
     }
     handleChange = (event) => {
 
@@ -549,6 +593,28 @@ class ActionTab extends Component {
             }
         })
     }
+    onEditCommentOfTaskCommentFilesChange = async (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
+                    files: files
+                }
+            }
+        });
+    }
+    onEditTaskCommentFilesChange = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newTaskCommentEdited: {
+                    ...state.newTaskCommentEdited,
+                    files: files
+                }
+            }
+        });
+    }
     onTaskCommentFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -582,6 +648,7 @@ class ActionTab extends Component {
             }
         })
     }  
+    
     onTaskFilesChange  = (files) => {
         this.setState(state => {
             return {
@@ -644,23 +711,33 @@ class ActionTab extends Component {
             })
         }
     }
-    handleDeleteFile = async (fileId, fileName, actionId) => {
-        //Todo: truyền thêm type vào body, service server check type rồi xóa theo yêu cầu
+    handleDeleteFile = async (fileId, fileName, actionId,type) => {
+
         await this.setState(state => {
             return {
                 ...state,
-                showModalDelete : actionId,
-                deleteFile : {
-                    fileId : fileId,
+                showModalDelete: actionId,
+                deleteFile: {
+                    fileId: fileId,
                     actionId: actionId,
-                    fileName: fileName
+                    fileName: fileName,
+                    type: type
                 }
             } 
         });
         window.$(`#modal-confirm-deletefile`).modal('show');
     }
-    save = (type) => {   
-       this.props.deleteFile(this.state.deleteFile.fileId, this.state.deleteFile.actionId, type)
+    save = (taskId) => {   
+        const { deleteFile } = this.state
+        if (deleteFile.type === "action") {
+            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId,taskId,2);
+        }else if (deleteFile.type === "commentofaction") {
+            this.props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+        }else if (deleteFile.type === "taskcomment") {
+            this.props.deleteFileTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+        }else if (deleteFile.type === "commentoftaskcomment") {
+            this.props.deleteFileChildTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+        }  
     }
     render() {
         const { role } = this.props;
@@ -670,7 +747,13 @@ class ActionTab extends Component {
         let actionComments, taskActions, taskComments, actions, logTimer, logs;
         const { tasks, performtasks, user, auth, translate } = this.props;
         const subtasks = tasks.subtasks;
-        const { showEvaluations, selected, comment, editComment, showChildComment, editAction, action, editTaskComment, showChildTaskComment, editCommentOfTaskComment, valueRating, currentUser, hover, showModalDelete, showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,newCommentOfAction } = this.state;
+        const { 
+            showEvaluations, selected, comment, editComment, showChildComment, editAction, action,
+            editTaskComment, showChildTaskComment, 
+            editCommentOfTaskComment, valueRating, currentUser, hover, showModalDelete,
+            showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
+            newCommentOfAction,newTaskCommentEdited, newCommentOfTaskComment, newTaskComment,newCommentOfTaskCommentEdited
+        } = this.state;
         const checkUserId = obj =>  obj.creator._id === currentUser;
 
         if(typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
@@ -691,7 +774,7 @@ class ActionTab extends Component {
                 <div className="nav-tabs-custom" style={{boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none"}}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
-                        <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">{translate("task.task_perform.communication")} ({taskComments && taskComments.length})</a></li>
+                        <li><a href="#taskComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">{translate("task.task_perform.communication")} ({taskComments && taskComments.length})</a></li>
                         <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">{translate("task.task_perform.documents")} ({files && files.length})</a></li>
                         <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
                         <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
@@ -733,7 +816,7 @@ class ActionTab extends Component {
                                                 <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                                 <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                 {((item.creator === undefined || item.creator === null) && role ==="responsible") &&
-                                                <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
+                                                <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e,item._id, currentUser,task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
 
                                                 {/* Các chức năng tương tác với action */}
                                                 {item.creator &&
@@ -752,7 +835,7 @@ class ActionTab extends Component {
                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                     initialRating = {0}
                                                                     onClick={(value) => {
-                                                                    this.setValueRating(item._id,value,0);
+                                                                    this.setValueRating(item._id,value, 1);
                                                                     }}
                                                                     onHover={(value)=> {                                                                                                                                                   
                                                                         this.setHover(item._id,value)
@@ -810,7 +893,7 @@ class ActionTab extends Component {
                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                     initialRating = {0}
                                                                     onClick={(value) => {
-                                                                    this.setValueRating(item._id,value,1);
+                                                                    this.setValueRating(item._id, value, 0);
                                                                     }}
                                                                     onHover={(value)=> {                                                                                                                                                   
                                                                         this.setHover(item._id,value)
@@ -854,13 +937,13 @@ class ActionTab extends Component {
                                                             return { ...state, newActionEdited: {...state.newActionEdited, description: value}}
                                                         })
                                                     }}
-                                                    onSubmit={(e)=>{this.handleSaveEditAction(e,item._id,item.description)}}
+                                                    onSubmit={(e)=>{this.handleSaveEditAction(e, item._id, item.description, task._id)}}
                                                 />
                                                 {item.files.length >0 && 
                                                 <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
                                                         {item.files.map(file => {
                                                         return <li>
-                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id)}}><i className="fa fa-times"></i></a>
+                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id,"action")}}><i className="fa fa-times"></i></a>
                                                         </li>
                                                         })}
                                                 </ul>}
@@ -871,7 +954,7 @@ class ActionTab extends Component {
                                                     modalID={`modal-confirm-deletefile`}
                                                     formID={`from-confirm-deletefile`}
                                                     isLoading={false}
-                                                    func={this.save}
+                                                    func={() => this.save(task._id)}
                                                 >
                                                     {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
                                                 </DialogModal>
@@ -900,7 +983,7 @@ class ActionTab extends Component {
                                                                     </span>
                                                                     <ul className="dropdown-menu">
                                                                         <li><a href="javascript:void(0)" onClick={() => this.handleEditActionComment(child._id)} >{translate("task.task_perform.edit_comment")}</a></li>
-                                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteActionComment(child._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
+                                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteActionComment(task._id, item._id, child._id)} >{translate("task.task_perform.delete_comment")}</a></li>
                                                                     </ul>
                                                                 </div>}
                                                             </p>
@@ -931,8 +1014,9 @@ class ActionTab extends Component {
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2"
                                                                     onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                     onFilesError={this.onFilesError}
-                                                                    files={this.state.newCommentOfActionEdited.files}
+                                                                    files={newCommentOfActionEdited.files}
                                                                     defaultValue = {child.description}
+                                                                    styletext = {{marginLeft: "40px",width:"94%"}}
                                                                     submitButtonText={"Gửi chỉnh sửa"}
                                                                     cancelButtonText= {"Hủy bỏ"}
                                                                     handleEdit = {(e) => this.handleEditActionComment(e)}
@@ -942,14 +1026,14 @@ class ActionTab extends Component {
                                                                             return { ...state, newCommentOfActionEdited: {...state.newCommentOfActionEdited, description: value}}
                                                                         })
                                                                     }}
-                                                                    onSubmit={(e)=>{this.handleSaveEditActionComment(e,child._id)}}
+                                                                    onSubmit={(e)=>{this.handleSaveEditActionComment(e, task._id, item._id, child._id,child.description)}}
                                                                 />
                                                                 {/* Hiện file đã tải lên */}
                                                                 {child.files.length >0 && 
                                                                 <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
                                                                         {child.files.map(file => {
                                                                         return <li>
-                                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,child._id)}}><i className="fa fa-times"></i></a>
+                                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id,"commentofaction")}}><i className="fa fa-times"></i></a>
                                                                         </li>
                                                                         })}
                                                                 </ul>}
@@ -962,7 +1046,7 @@ class ActionTab extends Component {
                                                                         modalID={`modal-confirm-deletefile`}
                                                                         formID={`from-confirm-deletefile`}
                                                                         isLoading = { false }
-                                                                        func = { this.save }
+                                                                        func = { () => this.save(task._id) }
                                                                     >
                                                                         {translate("task.task_perform.question_delete_file")} { deleteFile.fileName }?
                                                                     </DialogModal>
@@ -1024,14 +1108,13 @@ class ActionTab extends Component {
                             </React.Fragment>}
                         </div>
                         {/* Chuyển qua tab trao đổi */}
-                        <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
+                        <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map(item => {
-                                    // if (item.parent === null)
                                     return (
                                     <div className="clearfix"  key={item._id}>
                                         <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
-                                        
+        
                                         { editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                         <React.Fragment>
                                             <p className="content-level1">
@@ -1071,21 +1154,51 @@ class ActionTab extends Component {
 
                                         {/*Chỉnh sửa nội dung trao đổi của công việc */}
                                         {editTaskComment === item._id &&
+                                            <React.Fragment>
                                             <div>
-                                                <div className="text-input-level1">
-                                                    <textarea
-                                                        defaultValue={item.description}
-                                                        ref={input => this.newContentTaskComment[item._id] = input}
-                                                    />
-                                                </div>
-                                                <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
-                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>{translate("task.task_perform.save_edit")}</a></li>
-                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditTaskComment(e)}>{translate("task.task_perform.cancel")}</a></li>
-                                                </ul>
-                                                <div className="tool-level1">
-                                                   
-                                                </div>
-                                            </div>}
+                                                <ContentMaker 
+                                                    inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                    onFilesChange={this.onEditTaskCommentFilesChange}
+                                                    onFilesError={this.onFilesError}
+                                                    files={newTaskCommentEdited.files}
+                                                    defaultValue = {item.description}
+                                                    submitButtonText={translate("task.task_perform.save_edit")}
+                                                    cancelButtonText= {translate("task.task_perform.cancel")}
+                                                    handleEdit = {(e) => this.handleEditTaskComment(e)}
+                                                    onTextChange={(e)=>{
+                                                        let value = e.target.value;
+                                                        this.setState(state => {
+                                                            return { ...state, newTaskCommentEdited: {...state.newTaskCommentEdited, description: value}}
+                                                        })
+                                                    }}
+                                                    onSubmit={(e)=>{this.handleSaveEditTaskComment(e,task._id, item._id, item.description)}}
+                                                />
+                                                {/* Hiện file đã tải lên */}
+                                                {item.files.length >0 && 
+                                                <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
+                                                        {item.files.map(file => {
+                                                        return <li>
+                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id,"taskcomment")}}><i className="fa fa-times"></i></a>
+                                                        </li>
+                                                        })}
+                                                </ul>}
+                                                {/* modal confirm delete file */}
+                                                {showModalDelete === item._id &&
+                                                    <DialogModal
+                                                        marginTop
+                                                        size= { 75 }
+                                                        maxWidth= { 200 }
+                                                        modalID={`modal-confirm-deletefile`}
+                                                        formID={`from-confirm-deletefile`}
+                                                        isLoading = { false }
+                                                        func = { () => this.save(task._id) }
+                                                    >
+                                                        {translate("task.task_perform.question_delete_file")} { deleteFile.fileName }?
+                                                    </DialogModal>
+                                                }             
+                                            </div>
+                                            </React.Fragment>
+                                        }
                                         
                                         {/* Hiển thị bình luận cho bình luận */}
                                         {showChildTaskComment === item._id &&
@@ -1131,21 +1244,51 @@ class ActionTab extends Component {
 
                                                         {/* Sửa bình luận của bình luận */}
                                                         {editCommentOfTaskComment === child._id &&
+                                                            <React.Fragment>
                                                             <div>
-                                                                <div className="text-input-level2">
-                                                                    <textarea
-                                                                        defaultValue={child.description}
-                                                                        ref={input => this.newContentCommentOfTaskComment[child._id] = input}
-                                                                    />
-                                                                </div>
-                                                                <ul className="list-inline tool-level2" style={{textAlign: "right"}}>
-                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>{translate("task.task_perform.save_edit")} </a></li>
-                                                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>{translate("task.task_perform.cancel")}</a></li>
-                                                                </ul>
-                                                                <div className="tool-level2">
-                                                                    
-                                                                </div>
+                                                                <ContentMaker 
+                                                                    inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                    onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
+                                                                    onFilesError={this.onFilesError}
+                                                                    styletext = {{marginLeft: "40px",width:"94%"}}
+                                                                    files={newCommentOfTaskCommentEdited.files}
+                                                                    defaultValue = {child.description}
+                                                                    submitButtonText={"Gửi chỉnh sửa"}
+                                                                    cancelButtonText= {"Hủy bỏ"}
+                                                                    handleEdit = {(e) => this.handleEditCommentOfTaskComment(e)}
+                                                                    onTextChange={(e)=>{
+                                                                        let value = e.target.value;
+                                                                        this.setState(state => {
+                                                                            return { ...state, newCommentOfTaskCommentEdited: {...state.newCommentOfTaskCommentEdited, description: value}}
+                                                                        })
+                                                                    }}
+                                                                    onSubmit={(e)=>{this.handleSaveEditCommentOfTaskComment(e,child._id,child.description)}}
+                                                                />
+                                                                {/* Hiện file đã tải lên */}
+                                                                {child.files.length >0 && 
+                                                                <ul  style={{marginTop:'-40px',marginLeft:'50px',listStyle:'none'}}>
+                                                                        {child.files.map(file => {
+                                                                        return <li>
+                                                                            <a href="javascript:void(0)" className="link-black text-sm">{file.name} &nbsp;</a><a href="javascript:void(0)" className="link-black text-sm btn-box-tool" onClick={()=>{this.handleDeleteFile(file._id,file.name,item._id,"commentoftaskcomment")}}><i className="fa fa-times"></i></a>
+                                                                        </li>
+                                                                        })}
+                                                                </ul>}
+                                                                {/* modal confirm delete file */}
+                                                                {showModalDelete === item._id &&
+                                                                    <DialogModal
+                                                                        marginTop
+                                                                        size= { 75 }
+                                                                        maxWidth= { 200 }
+                                                                        modalID={`modal-confirm-deletefile`}
+                                                                        formID={`from-confirm-deletefile`}
+                                                                        isLoading = { false }
+                                                                        func = { () => this.save(task._id) }
+                                                                    >
+                                                                        {translate("task.task_perform.question_delete_file")} { deleteFile.fileName }?
+                                                                    </DialogModal>
+                                                                }             
                                                             </div>
+                                                            </React.Fragment>
                                                         }
                                                     </div>;
                                                     return true;
@@ -1158,8 +1301,8 @@ class ActionTab extends Component {
                                                         inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                         onFilesChange={this.onCommentOfTaskCommentFilesChange}
                                                         onFilesError={this.onFilesError}
-                                                        files={this.state.newCommentOfTaskComment.files}
-                                                        text={this.state.newCommentOfTaskComment.description}
+                                                        files={newCommentOfTaskComment.files}
+                                                        text={newCommentOfTaskComment.description}
                                                         placeholder={translate("task.task_perform.enter_comment")}
                                                         submitButtonText={translate("task.task_perform.create_comment")}
                                                         onTextChange={(e)=>{
@@ -1168,7 +1311,7 @@ class ActionTab extends Component {
                                                                 return { ...state, newCommentOfTaskComment: {...state.newCommentOfTaskComment, description: value}}
                                                             })
                                                         }}
-                                                        onSubmit={(e)=>{this.submitCommentOfTaskComment(item._id,task._id)}}
+                                                        onSubmit={(e)=>{this.submitCommentOfTaskComment(item._id, task._id)}}
                                                     />
                                                 </div>
                                             </div>
@@ -1183,8 +1326,8 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.newTaskComment.files}
-                                text={this.state.newTaskComment.description}
+                                files={newTaskComment.files}
+                                text={newTaskComment.description}
                                 placeholder={translate("task.task_perform.enter_comment")}
                                 submitButtonText={translate("task.task_perform.create_comment")}
                                 onTextChange={(e)=>{
@@ -1219,8 +1362,8 @@ class ActionTab extends Component {
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                 onFilesChange={this.onTaskFilesChange}
                                 onFilesError={this.onFilesError}
-                                files={this.state.taskFiles.files}
-                                text={this.state.taskFiles.description}
+                                files={taskFiles.files}
+                                text={taskFiles.description}
                                 placeholder={translate("task.task_perform.enter_description")}
                                 submitButtonText={translate("task.task_perform.create_description")}
                                 onTextChange={(e)=>{
@@ -1300,7 +1443,10 @@ const actionCreators = {
     downloadFile: performTaskAction.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile,
-    deleteFile: performTaskAction.deleteFile,
+    deleteFileAction: performTaskAction.deleteFileAction,
+    deleteFileCommentOfAction: performTaskAction.deleteFileCommentOfAction,
+    deleteFileTaskComment: performTaskAction.deleteFileTaskComment,
+    deleteFileChildTaskComment: performTaskAction.deleteFileChildTaskComment,
     getTaskLog: performTaskAction.getTaskLog,
 };
 

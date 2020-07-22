@@ -48,7 +48,7 @@ class CompanyManageLinks extends Component {
     isFormCreateLinkValidated = () => {
         const {linkUrl, linkDescription, linkDescriptionError} = this.state;
 
-        if (linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined) {
+        if (!linkDescriptionError && linkUrl && linkDescription) {
             if (linkUrl !== 'noturl') {
                 return true;
             } else {
@@ -83,11 +83,11 @@ class CompanyManageLinks extends Component {
     }
     
     // Xu ly thay doi va validate cho url link moi cho cong ty
-    handleLinkUrl= (e, linksDefault) => {
+    handleLinkUrl= (e, systemLinks) => {
         const value = e.target.value;
 
-        for (let index = 0; index < linksDefault.list.length; index++) {
-            const linkDefault = linksDefault.list[index];
+        for (let index = 0; index < systemLinks.list.length; index++) {
+            const linkDefault = systemLinks.list[index];
 
             if (value === linkDefault.url) {
                 this.setState({
@@ -144,7 +144,7 @@ class CompanyManageLinks extends Component {
     }
 
     render() { 
-        const { translate, company, linksDefault } = this.props;
+        const { translate, company, systemLinks } = this.props;
         const { companyId } = this.state;
         
         return ( 
@@ -183,12 +183,12 @@ class CompanyManageLinks extends Component {
                                 <select
                                     className="form-control"
                                     style={{width: '100%'}}
-                                    onChange={(e) => this.handleLinkUrl(e, linksDefault)}
+                                    onChange={(e) => this.handleLinkUrl(e, systemLinks)}
                                     value={this.state.linkUrl}
                                 >
                                     <option key="noturl" value="noturl" disabled> --- Chọn url ---</option>
                                     {
-                                        linksDefault.list.map(linkDefault => 
+                                        systemLinks.list.map(linkDefault => 
                                         <option 
                                             key={linkDefault._id} 
                                             value={linkDefault.url}
@@ -235,8 +235,8 @@ class CompanyManageLinks extends Component {
 }
 
 function mapState(state) {
-    const { company, linksDefault } = state;
-    return { company, linksDefault };
+    const { company, systemLinks } = state;
+    return { company, systemLinks };
 }
 const action = {
     addNewLink: CompanyActions.addNewLink,

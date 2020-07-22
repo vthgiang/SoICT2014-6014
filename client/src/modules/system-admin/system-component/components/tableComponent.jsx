@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 
 import { SystemComponentActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
 
 import { ComponentInfoForm } from './componentInfoForm';
 import { ComponentCreateForm } from './componentCreateForm';
@@ -26,7 +26,7 @@ class TableComponent extends Component {
     componentDidMount(){
         this.props.getAllSystemComponents();
         this.props.getAllSystemComponents({page: this.state.page, limit: this.state.limit});
-        this.props.getLinks();
+        this.props.getAllSystemLinks();
     }
     
     // Cac ham xu ly du lieu voi modal
@@ -169,7 +169,7 @@ function mapState(state) {
 const actions = {
     getAllSystemComponents: SystemComponentActions.getAllSystemComponents,
     deleteSystemComponent: SystemComponentActions.deleteSystemComponent,
-    getLinks: LinkDefaultActions.get,
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
 }
  
 const connectedTableComponent = connect(mapState, actions)(withTranslate(TableComponent))

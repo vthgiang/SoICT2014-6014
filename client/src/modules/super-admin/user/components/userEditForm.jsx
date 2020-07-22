@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { UserActions } from '../redux/actions';
+
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { UserActions } from '../redux/actions';
+
 import { UserFormValidator} from './userFormValidator';
 
 class UserEditForm extends Component {
@@ -14,7 +17,6 @@ class UserEditForm extends Component {
                 { id: 2, name: "enable", value: true }
             ]
         }
-        this.save = this.save.bind(this);
     }
 
     checkSuperAdmin = (roleArr) => {
@@ -48,6 +50,7 @@ class UserEditForm extends Component {
         let result = 
             this.validateUserEmail(this.state.userEmail, false) &&
             this.validateUserName(this.state.userName, false); // Kết hợp với kết quả validate các trường khác (nếu có trong form)
+
         return result;
     }
 
@@ -126,6 +129,7 @@ class UserEditForm extends Component {
     render() { 
         const { translate, role, user, auth } = this.props;
         const { userId, userEmail, userName, userActive, userRoles, status, errorOnUserName, userEmailError } = this.state;
+
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -139,15 +143,16 @@ class UserEditForm extends Component {
                     size={50}
                     maxWidth={500}
                 >
+                    {/* Form chỉnh sửa thông tin tài khoản người dùng */}
                     <form id={`form-edit-user`}>
                         <div className="row">
                             {
-                                this.checkSuperAdmin(userRoles) ? // là super admin của công ty
+                                this.checkSuperAdmin(userRoles)? // Là super admin của công ty
                                 <React.Fragment>
-                                    <div className={`form-group col-sm-8 ${userEmailError===undefined?"":"has-error"}`}>
+                                    <div className={`form-group col-sm-8 ${!userEmailError? "": "has-error"}`}>
                                         <label>{ translate('table.email') }<span className="text-red">*</span></label>
                                         {
-                                            auth.user._id === userId ?
+                                            auth.user._id === userId?
                                             <input type="text" className="form-control" value={ userEmail } onChange={this.handleUserEmailChange}/>:
                                             <input type="text" className="form-control" value={ userEmail } disabled/>
                                         }
@@ -167,7 +172,7 @@ class UserEditForm extends Component {
                                     </div>
                                 </React.Fragment> :
                                 <React.Fragment>
-                                    <div className={`form-group col-sm-8 ${userEmailError===undefined?"":"has-error"}`}>
+                                    <div className={`form-group col-sm-8 ${!userEmailError? "": "has-error"}`}>
                                         <label>{ translate('table.email') }<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" value={ userEmail } onChange={this.handleUserEmailChange}/>
                                         <ErrorLabel content={userEmailError}/>
@@ -187,14 +192,14 @@ class UserEditForm extends Component {
                                 </React.Fragment>
                             }
                         </div>
-                        <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${!errorOnUserName? "": "has-error"}`}>
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={ userName } onChange = {this.handleUserNameChange}/>
                             <ErrorLabel content={errorOnUserName}/>
                         </div>
                         {
-                            this.checkSuperAdmin(userRoles) && auth.user._id !== userId ?
-                            null :
+                            this.checkSuperAdmin(userRoles) && auth.user._id !== userId?
+                            null:
                             <div className="form-group">
                                 <label>{ translate('manage_user.roles') }</label>
                                 <SelectBox
@@ -202,7 +207,7 @@ class UserEditForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {
-                                        this.checkSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
+                                        this.checkSuperAdmin(userRoles)? // Neu tai khoan nay hien tai khong co role la Super Admin
                                         role.list.map( role => {return {value: role._id, text: role.name}}):
                                         role.list.filter( role => {
                                             return role.name !== 'Super Admin'
@@ -222,6 +227,7 @@ class UserEditForm extends Component {
 }
  
 const mapStateToProps = state => state;
+
 const action = {
     edit: UserActions.edit
 }
