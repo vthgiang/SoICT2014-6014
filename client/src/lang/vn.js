@@ -2173,6 +2173,7 @@ export default {
                     compare:'So sánh',
                     approve_all:'Phê duyệt tất cả',
                     choose_month_cmp:'Chọn tháng so sánh',
+                    kpi_this_month: 'KPI tháng này',
                     search:'Tìm kiếm',
                     index:'STT',
                     name:'Tên',

@@ -225,7 +225,7 @@ class EmployeeKpiApproveModal extends Component {
                             <div>
                                 <div className="form-inline">
                                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                        <label style={{ width: "140px" }}>{translate('kpi.evaluation.employee_evaluation.choose_mpnth_cmp')}</label>
+                                        <label style={{ marginLeft: "-10px" }}>{translate('kpi.evaluation.employee_evaluation.choose_month_cmp')}</label>
                                         <DatePicker
                                             id="create_date"
                                             dateFormat="month-year"
@@ -268,6 +268,7 @@ class EmployeeKpiApproveModal extends Component {
                         }
                         <br></br>
                         <br></br>
+                        <label>{translate('kpi.evaluation.employee_evaluation.kpi_this_month')}</label>
                         {this.state.checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
