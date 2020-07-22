@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -114,7 +115,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataMultiLineChart = () => {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
         if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
@@ -123,9 +124,10 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
         if(listOrganizationalUnitKpiSetEachYear) {
 
-            automaticPoint = ['Hệ thống đánh giá'];
-            employeePoint = ['Cá nhân tự đánh giá'];
-            approvedPoint = ['Quản lý đánh giá'];
+            let name = translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point');
+            automaticPoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point')];
+            employeePoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.employee_point')];
+            approvedPoint = [ translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.approved_point')];
             date = ['x'];
 
             listOrganizationalUnitKpiSetEachYear.map(x => {
@@ -166,13 +168,13 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     handleSearchData = async () => {
         var startDate = new Date(this.INFO_SEARCH.startDate);
         var endDate = new Date(this.INFO_SEARCH.endDate);
-
+        const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
-                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
             })
         } else {
             await this.setState(state => {
@@ -196,7 +198,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     // Khởi tạo MultiLineChart bằng C3
     multiLineChart = () => {
         this.removePreviosMultiLineChart();
-        
+        const {translate} = this.props;
         // Tạo mảng dữ liệu
         var dataMultiLineChart = this.setDataMultiLineChart();
 
@@ -226,7 +228,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                     max: 100,
                     min: 0,
                     label: {
-                        text: 'Điểm',
+                        text: translate('kpi.organizational_unit.dashboard.point'),
                         position: 'outer-right'
                     },
                     padding: {
@@ -243,6 +245,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
+        var {translate} = this.props;
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -259,7 +262,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Từ tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 
                             id="monthStartInResultsOfOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -271,7 +274,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                 </section>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Đến tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
                         <DatePicker 
                             id="monthEndInResultsOfOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -281,7 +284,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
                     </div>
                 </section>
 
@@ -300,5 +303,5 @@ const actions = {
     getAllOrganizationalUnitKpiSetByTime: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
 }
 
-const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfOrganizationalUnitKpiChart);
+const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfOrganizationalUnitKpiChart));
 export { connectedResultsOfOrganizationalUnitKpiChart as ResultsOfOrganizationalUnitKpiChart }

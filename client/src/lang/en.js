@@ -2215,7 +2215,44 @@ export default {
                     edit_target_success: 'Edit KPI target successful',
                     edit_target_failure: 'You have not entered enough information'
                 },
+                // Dashboard KPI Unit
+                dashboard: {
+                    organizational_unit: 'Department',
+                    month: 'Month',
+                    trend: 'Implement target trend of employee',
+                    distributive: 'Distributive KPI unit in ',
+                    statiscial: 'Statistical result of KPI unit in',
+                    result_kpi_unit: 'Result of KPI unit',
+                    result_kpi_units: 'Result of KPI units',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    search: 'Search',
+                    point: 'Point',
+                    no_data: 'No data',
+                    trend_chart: {
+                        execution_time: 'Execution time (Days)',
+                        participants: 'Participants',
+                        amount_tasks: 'Amount of tasks',
+                        amount_child_kpi: 'Amount of child KPI',
+                        weight: 'Weight'
+                    },
+                    result_kpi_unit_chart: {
+                        automatic_point: 'Automatic point',
+                        employee_point: 'Employee point',
+                        approved_point: 'Approved point',
+                    },
+                    alert_search: {
+                        search: 'The start time must be before or equal to the end time!',
+                        confirm: 'Confirm'
+                    },
+                    statistic_kpi_unit:{
+                        count_employee_same_point: 'Count Employee With The Same Point',
+                        automatic_point: 'Automatic point',
+                        employee_point: 'Employee point',
+                        approved_point: 'Approved point',
 
+                    }
+                },
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success: 'Get KPI by parent unit successfully',
                 get_parent_by_unit_failure: 'Get KPI by parent unit unsuccessfully',

@@ -2393,6 +2393,40 @@ export default {
                     edit_target_failure: 'Bạn chưa nhập đủ thông tin'
                 },
 
+                // Dashboard KPI Unit
+                dashboard: {
+                    organizational_unit: 'Đơn vị',
+                    month: 'Tháng',
+                    trend: 'Xu hướng thực hiện mục tiêu của nhân viên',
+                    distributive: 'Phân phối KPI đơn vị tháng ',
+                    statiscial: 'Thống kê kết quả KPI đơn vị tháng ',
+                    result_kpi_unit: 'Kết quả KPI đơn vị',
+                    start_date: 'Từ tháng',
+                    end_date: 'Đến tháng',
+                    search: 'Tìm kiếm',
+                    point: 'Điểm',
+                    no_data: 'Không có dữ liệu',
+                    trend_chart: {
+                        execution_time: 'Thời gian thực hiện (Ngày)',
+                        participants: 'Người tham gia',
+                        amount_tasks: 'Số lượng công việc',
+                        amount_child_kpi: 'Số lượng KPI con',
+                        weight: 'Trọng số'
+                    },
+                    result_kpi_unit_chart: {
+                        automatic_point: 'Hệ thống đánh giá',
+                        employee_point: 'Cá nhân tự đánh giá',
+                        approved_point: 'Quản lý đánh giá',
+                    },
+                    alert_search: {
+                        search: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                        confirm: 'Xác nhận'
+                    },
+                    statistic_kpi_unit:{
+                        count_employee_same_point: 'Số người có cùng điểm'
+                    }
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
                 get_parent_by_unit_failure: 'Lấy KPI đơn vị của đơn vị cha không thành công',

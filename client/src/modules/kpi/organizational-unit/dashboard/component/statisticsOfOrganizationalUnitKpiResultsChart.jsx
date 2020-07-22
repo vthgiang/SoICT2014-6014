@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -123,9 +124,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     // Lọc và đếm số người có cùng điểm
     filterAndCountEmployeeWithTheSamePoint = (arrayPoint) => {
-        var point = Array.from(new Set(arrayPoint));
-        var employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
-
+        let point = Array.from(new Set(arrayPoint));
+        let employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
+        const {translate} = this.props;
         point.sort(function(a, b) {
             return a - b;
         });
@@ -143,7 +144,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         })
 
         point.unshift('x');
-        countEmployeeWithTheSamePoint.unshift('Số người cùng điểm');
+        countEmployeeWithTheSamePoint.unshift(translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.count_employee_same_point'));
 
         employeeWithTheSamePoints = [
             point,
@@ -155,7 +156,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     // Thiết lập dataChart
     setDataColumnChart = () => {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
         var employeeWithTheSamePoints, textLabel;
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
@@ -173,13 +174,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         // Lấy dữ liệu các loại điểm mà this.state.kindOfPoint có
         if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
-            textLabel = 'Giá trị điểm hệ thống đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.automatic_point');
         } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(employeePoint);
-            textLabel = 'Giá trị điểm cá nhân tự đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.employee_point');
         } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
-            textLabel = 'Giá trị điểm quản lý đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.approved_point');
         }
         
         
@@ -270,7 +271,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var listEmployeeKpiSet;
 
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
@@ -289,7 +290,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
                         <section ref="chart"></section>
                     </section>
-                    : <section>Không có dữ liệu</section>
+                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
@@ -304,5 +305,5 @@ const actions = {
     getAllEmployeeKpiSetInOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-const connectedStatisticsOfOrganizationalUnitKpiResultsChart = connect(mapState, actions)(StatisticsOfOrganizationalUnitKpiResultsChart);
+const connectedStatisticsOfOrganizationalUnitKpiResultsChart = connect(mapState, actions)(withTranslate(StatisticsOfOrganizationalUnitKpiResultsChart));
 export { connectedStatisticsOfOrganizationalUnitKpiResultsChart as StatisticsOfOrganizationalUnitKpiResultsChart }

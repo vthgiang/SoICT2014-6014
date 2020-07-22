@@ -7,11 +7,8 @@ const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
 const mongoose = require("mongoose");
 
 
-// get all kpi unit của một đơn vị
+//Lấy tất cả KPI của đơn vị
 exports.get = async (id) => {
-    //req.params.id
-    // console.log(id);
-
     var department = await Department.findOne({
         $or: [
             { 'deans': id },
@@ -19,8 +16,9 @@ exports.get = async (id) => {
             { 'employees': id }
         ]
     });
-    // console.log(department);
-    var kpiunits = await KPIUnit.find({ organizationalUnit: department._id }).sort({ 'date': 'desc' }).skip(0).limit(12)
+
+    var kpiunits = await KPIUnit.find({ organizationalUnit: department._id })
+        .sort({ 'date': 'desc' }).skip(0).limit(12)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;
@@ -34,23 +32,22 @@ exports.getKPIUnits = async (data) => {
             { 'employees': data.role }
         ]
     });
-    var status = Number(data.status);
+    let status = Number(data.status);
     if (data.startDate !== "undefined") {
-        var startDate = data.startDate.split("-");
-        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
+        let startDate = data.startDate.split("-");
+        let startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
     }
     if (data.endDate !== "undefined") {
-        var endDate = data.endDate.split("-");
+        let endDate = data.endDate.split("-");
         if (endDate[0] === "12") {
             endDate[1] = String(parseInt(endDate[1]) + 1);
             endDate[0] = "1";
         }
         endDate[0] = String(parseInt(endDate[0]) + 1);
-        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
+        let enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
-    var keySearch = {
+    let keySearch = {
         organizationalUnit: department._id
-
     };
     if (status !== -1) {
         keySearch = {
@@ -68,7 +65,6 @@ exports.getKPIUnits = async (data) => {
         keySearch = {
             ...keySearch,
             date: { "$gte": startdate }
-
         }
     }
     if (data.startDate == "undefined" && data.endDate !== "undefined") {
@@ -78,13 +74,13 @@ exports.getKPIUnits = async (data) => {
         }
     }
     var kpiunits = await KPIUnit.find(keySearch)
-        .skip(0).limit(12).populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } });
+        .skip(0).limit(12).populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;
 }
 
-// Lấy tất cả mục tiêu con của mục tiêu hiện tại
+//Lấy tất cả mục tiêu con của mục tiêu hiện tại
 exports.getChildTargetByParentId = async (data) => {
-    //req.params.id
     var date = new Date(data.date);
     var monthkpi = date.getMonth() + 1;
     var yearkpi = date.getFullYear();
@@ -102,7 +98,6 @@ exports.getChildTargetByParentId = async (data) => {
 
             }
         },
-
         { $unwind: "$kpis" },
         {
             $lookup: {
@@ -226,7 +221,7 @@ exports.copyKPI = async (data) => {
     var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-       
+
     var check = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
     if (check == undefined) {
         var list = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
@@ -249,8 +244,8 @@ exports.copyKPI = async (data) => {
             );
         }
         organizationalUnitKpi = await KPIUnit.find({ organizationalUnit: data.idunit })
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
     }
 
     return organizationalUnitKpi;
