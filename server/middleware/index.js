@@ -142,7 +142,6 @@ exports.authFunc = (checkPage=true) => {
         }   
     }
 }
-
 exports.auth = this.authFunc();
 
 

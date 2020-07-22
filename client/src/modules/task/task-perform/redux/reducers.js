@@ -335,18 +335,58 @@ export function performtasks(state = {}, action) {
                 task : files
             }
         case performTaskConstants.UPLOAD_FILE_FAILURE:    
-        case performTaskConstants.DELETE_FILE_REQUEST:
+        case performTaskConstants.DELETE_FILE_ACTION_REQUEST:
             return {
                 ...state,
                 deleting : true
             }
-        case performTaskConstants.DELETE_FILE_SUCCESS:
+        case performTaskConstants.DELETE_FILE_ACTION_SUCCESS:
             var taskactions = {...state.task,taskActions:action.payload.data.content}
              return {
                 ...state,
                 task : taskactions
             }
-        case performTaskConstants.DELETE_FILE_FAILURE:    
+        case performTaskConstants.DELETE_FILE_ACTION_FAILURE:    
+        case performTaskConstants.DELETE_FILE_COMMENT_OF_ACTION_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case performTaskConstants.DELETE_FILE_COMMENT_OF_ACTION_SUCCESS:
+            var taskactions = {...state.task,taskActions:action.payload.data.content}
+            return {
+                ...state,
+                task: taskactions
+            }    
+        case performTaskConstants.DELETE_FILE_COMMENT_OF_ACTION_FAILURE:
+        case performTaskConstants.DELETE_FILE_TASK_COMMENT_REQUEST:
+            
+            return {
+                ...state,
+                deleting: true
+            }        
+        case performTaskConstants.DELETE_FILE_TASK_COMMENT_SUCCESS:
+            var taskcomments = {...state.task,taskComments:action.payload.data.content}
+            return {
+                ...state,
+                task: taskcomments
+            } 
+        case performTaskConstants.DELETE_FILE_TASK_COMMENT_FAILURE:    
+
+
+
+        case performTaskConstants.DELETE_FILE_CHILD_TASK_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }   
+        case performTaskConstants.DELETE_FILE_CHILD_TASK_COMMENT_SUCCESS:
+            var taskcomments = {...state.task,taskComments:action.payload.data.content}
+            return {
+                ...state,
+                task: taskcomments
+            }     
+        case performTaskConstants.DELETE_FILE_CHILD_TASK_COMMENT_FAILURE:    
         case performTaskConstants.ADD_TASK_LOG_REQUEST:
             return {
                 ...state,
