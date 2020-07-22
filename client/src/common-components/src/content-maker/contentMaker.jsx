@@ -39,7 +39,7 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple=true, maxFiles=10, maxFileSize=10000000, minFileSize=0, clickable=false,
             text, onTextChange, placeholder, minRows=3, maxRows=20,
             onSubmit, submitButtonText,
-            inputCssClass, controlCssClass,defaultValue,handleEdit,cancelButtonText
+            inputCssClass, controlCssClass,defaultValue,handleEdit,cancelButtonText,styletext
         } = this.props
 
         return (
@@ -58,16 +58,16 @@ class ContentMaker extends Component {
                     <div className={inputCssClass} style={{position: "relative"}}>
                         <TextareaAutosize
                             placeholder={placeholder}
-                            useCacheForDOMMeasurements
                             minRows={minRows}
                             maxRows={maxRows}
                             onDragEnter={this.handleDragEnter}
                             onDragLeave={this.handleDragLeave}
                             onDrop={this.handleDragLeave}
                             value={text}
+                            style = {styletext}
                             defaultValue={defaultValue}
                             onChange={onTextChange}/>
-                            
+                           
                             
                         {this.state.showDropFileHere &&
                         <div style={{fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center"}}>
@@ -78,7 +78,7 @@ class ContentMaker extends Component {
                 </Files>
                 <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm tệp&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a href="javascript:void(0)" className="link-black text-sm" onClick={(e)=>{
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit

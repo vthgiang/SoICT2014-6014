@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import TableComponent from './tableComponent';
+
+import { TableComponent } from './tableComponent';
 
 class ManageComponent extends Component {
+
     constructor(props) {
         super(props);
+        
         this.state = {  }
     }
 

@@ -2,7 +2,7 @@ const { Log } = require('../../../models').schema;
 
 exports.getLogState = async () => {
     let log =  await Log.findOne({ name: 'log' }); 
-    if (log !== null) {
+    if (log) {
         return log.status;
     } 
 
@@ -11,7 +11,7 @@ exports.getLogState = async () => {
 
 exports.toggleLogState = async () => {
     let log =  await Log.findOne({ name: 'log' }); 
-    if (log !== null) {
+    if (log) {
         log.status = !log.status; //chuyển đổi lại trạng thái ghi log
         log.save();
         isLog = !isLog;

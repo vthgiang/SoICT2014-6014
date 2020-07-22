@@ -283,28 +283,28 @@ exports.data = [
     { path: '/kpimembers/task/:id/:employeeId/:date/:kpiType', method: 'GET', roles: ['Dean'] },
     { path: '/kpimembers/taskImportanceLevel/:id/:kpiType', method: 'PUT', roles: ['Dean'] },
     // Task-management
-    { path: '/tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/role/:id/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate/:startDateAfter/:endDateBefore', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/user/task-responsible-bydate/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/archived/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/task/role/:id/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate/:startDateAfter/:endDateBefore', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // { path: '/tasks/user/task-responsible-bydate/:unit/:user/:number/:perPage/:status/:priority/:special/:name/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId/archived', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/tasks/edit/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/edit/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/evaluate/task-consulted/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/evaluate/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasks/evaluate/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/edit/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/edit/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/evaluate/task-consulted/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/evaluate/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/evaluate/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/tasks/sub-task/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId/sub-task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/tasks/get-task/evaluations', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-evaluations', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Perform-task
     { path: '/performtask/log-timer/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -314,26 +314,38 @@ exports.data = [
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/:task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    //comment of task action
-    { path: '/performtask/action-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/action-comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/action-comment/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+    
     //task action
-    { path: '/performtask/task-action', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/:id/:idUser', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-action/files/:id/:actionId/:type', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    //taskcomment
-    { path: '/performtask/task-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-comment/:task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+   
+
+    //comment of task action
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/comment', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/comment/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/comments/files/:fileId/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+
+
+    //task comment
+    { path: '/performtask/tasks/:taskId/task-comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+    
+    
     //comment of task comment
-    { path: '/performtask/task-comment/comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-comment/comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/task-comment/comment/:id/:task', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+
 
     { path: '/performtask/add-result/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/information-task-template/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },

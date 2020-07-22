@@ -122,7 +122,7 @@ class LinkInfoForm extends Component {
                                 id={`link-roles-${linkId}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                items = {role.list? role.list.map( role => { return { value: role._id, text: role.name } } ): null}
+                                items = {role.list? role.list.map( role => { return { value: role._id, text: role.name } } ): []}
                                 onChange={this.handleLinkRoles}
                                 value={linkRoles}
                                 multiple={true}

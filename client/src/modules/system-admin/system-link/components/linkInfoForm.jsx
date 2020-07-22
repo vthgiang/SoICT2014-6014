@@ -1,77 +1,28 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
 import { RootRoleActions } from '../../root-role/redux/actions';
-import { LinkDefaultActions } from '../redux/actions';
-import {DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+import { SystemLinkActions } from '../redux/actions';
+
 import {LinkDefaultValidator} from './systemLinkValidator';
 
+import {DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class LinkInfoForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {}
     }
 
-    render() { 
-        const { translate, rolesDefault, linksDefault } = this.props;
-        const {linkId, linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
-        
-        return ( 
-            <DialogModal
-                size='50' func={this.save} isLoading={this.props.linksDefault.isLoading}
-                modalID="modal-edit-link-default"
-                formID="form-edit-link-default"
-                title={translate('manage_link.edit')}
-                msg_success={translate('manage_link.edit_success')}
-                msg_faile={translate('manage_link.edit_faile')}
-                disableSubmit={!this.isFormValidated()}
-            >
-                <form id="form-edit-link-default">
-                    <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>
-                        <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={linkUrl} onChange={this.handleUrl}/>
-                        <ErrorLabel content={linkUrlError}/>
-                    </div>
-                    <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
-                        <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={linkDescription} onChange={this.handleDescription}/>
-                        <ErrorLabel content={linkDescriptionError}/>
-                    </div>
-                    <div className="form-group">
-                        <label>{ translate('manage_link.category') }<span className="text-red"> * </span></label>
-                        <SelectBox
-                            id={`select-link-default-category-${linkId}`}
-                            className="form-control select2"
-                            style={{width: "100%"}}
-                            items = {
-                                linksDefault.categories.map( category => {return {value: category.name, text: category.name+"-"+category.description}})
-                            }
-                            onChange={this.handleCategory}
-                            value={linkCategory}
-                            multiple={false}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{ translate('manage_link.roles') }</label>
-                        <SelectBox
-                            id={`select-link-default-roles-${linkId}`}
-                            className="form-control select2"
-                            style={{width: "100%"}}
-                            items = {
-                                rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
-                            }
-                            onChange={this.handleRoles}
-                            value={linkRoles}
-                            multiple={true}
-                        />
-                    </div>
-                </form>
-            </DialogModal>
-         );
+    componentDidMount() {
+        this.props.getAllRootRoles();
     }
 
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.linkId !== prevState.linkId) {
             return {
                 ...prevState,
@@ -95,7 +46,7 @@ class LinkInfoForm extends Component {
     }
     validateUrl = (value, willUpdateState=true) => {
         let msg = LinkDefaultValidator.validateUrl(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -104,6 +55,7 @@ class LinkInfoForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -114,7 +66,7 @@ class LinkInfoForm extends Component {
     }
     validateDescription = (value, willUpdateState=true) => {
         let msg = LinkDefaultValidator.validateDescription(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -123,6 +75,7 @@ class LinkInfoForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -148,29 +101,89 @@ class LinkInfoForm extends Component {
         let result = 
             this.validateUrl(this.state.linkUrl, false) &&
             this.validateDescription(this.state.linkDescription, false);
+
         return result;
     }
 
     save = () => {
-        const {linkId, linkUrl, linkDescription, linkRoles, linkCategory} = this.state;
-        if(this.isFormValidated())
-            return this.props.editLink(linkId, {
+        const { linkId, linkUrl, linkDescription, linkRoles, linkCategory } = this.state;
+        if(this.isFormValidated()) {
+            return this.props.editSystemLink(linkId, {
                 url: linkUrl,
                 description: linkDescription,
                 roles: linkRoles,
                 category: linkCategory
             });
+        }  
     }
 
-    componentDidMount(){
-        this.props.getAllRootRoles();
+    render() { 
+        const { translate, rootRoles, systemLinks } = this.props;
+        const { linkId, linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError } = this.state;
+        
+        return ( 
+            <DialogModal
+                size='50' func={this.save} isLoading={systemLinks.isLoading}
+                modalID="modal-edit-link-default"
+                formID="form-edit-link-default"
+                title={translate('manage_link.edit')}
+                msg_success={translate('manage_link.edit_success')}
+                msg_faile={translate('manage_link.edit_faile')}
+                disableSubmit={!this.isFormValidated()}
+            >
+                <form id="form-edit-link-default">
+                    <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>
+                        <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
+                        <input type="text" className="form-control" value={linkUrl} onChange={this.handleUrl}/>
+                        <ErrorLabel content={linkUrlError}/>
+                    </div>
+                    <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
+                        <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
+                        <input type="text" className="form-control" value={linkDescription} onChange={this.handleDescription}/>
+                        <ErrorLabel content={linkDescriptionError}/>
+                    </div>
+                    <div className="form-group">
+                        <label>{ translate('manage_link.category') }<span className="text-red"> * </span></label>
+                        <SelectBox
+                            id={`select-link-default-category-${linkId}`}
+                            className="form-control select2"
+                            style={{width: "100%"}}
+                            items = {
+                                systemLinks.categories.map( category => {return {value: category.name, text: category.name+"-"+category.description}})
+                            }
+                            onChange={this.handleCategory}
+                            value={linkCategory}
+                            multiple={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{ translate('manage_link.roles') }</label>
+                        <SelectBox
+                            id={`select-link-default-roles-${linkId}`}
+                            className="form-control select2"
+                            style={{width: "100%"}}
+                            items = {
+                                rootRoles.list.map( role => {return {value: role._id, text: role.name}})
+                            }
+                            onChange={this.handleRoles}
+                            value={linkRoles}
+                            multiple={true}
+                        />
+                    </div>
+                </form>
+            </DialogModal>
+        );
     }
 }
  
-const mapState = state => state;
-const getState = {
+function mapState(state) {
+    const { rootRoles, systemLinks } = state
+    return { rootRoles, systemLinks }
+}
+const actions = {
     getAllRootRoles: RootRoleActions.getAllRootRoles,
-    editLink: LinkDefaultActions.edit
+    editSystemLink: SystemLinkActions.editSystemLink
 }
  
-export default connect(mapState, getState) (withTranslate(LinkInfoForm));
+const connectedLinkInfoForm = connect(mapState, actions)(withTranslate(LinkInfoForm))
+export { connectedLinkInfoForm as LinkInfoForm }

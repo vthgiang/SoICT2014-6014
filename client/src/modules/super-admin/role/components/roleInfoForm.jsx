@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { RoleActions } from '../redux/actions';
+
 import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
+
 import { RoleValidator } from './roleValidator';
 
 class RoleInfoForm extends Component {
@@ -14,6 +17,7 @@ class RoleInfoForm extends Component {
     render() { 
         const { role, user, translate } = this.props;
         const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError } = this.state;
+
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -25,8 +29,11 @@ class RoleInfoForm extends Component {
                     msg_faile={translate('manage_role.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin phân quyền */}
                     <form id="form-edit-role">
-                        <div className={`form-group ${roleNameError===undefined?"":"has-error"}`}>
+
+                        {/* Tên phân quyền */}
+                        <div className={`form-group ${!roleNameError? "": "has-error"}`}>
                             <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
                             {
                                 roleType === 'Abstract' ?
@@ -35,6 +42,8 @@ class RoleInfoForm extends Component {
                             }
                             <ErrorLabel content={roleNameError}/>
                         </div>
+
+                        {/* Kế thừa phân quyền */}
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
                             <SelectBox
@@ -42,15 +51,18 @@ class RoleInfoForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    role.list
-                                    .filter( role => (role.name !== 'Super Admin' && role.name !== roleName))
-                                    .map( role => {return {value: role._id, text: role.name}})
+                                    role.list?
+                                    role.list.filter( role => (role.name !== 'Super Admin' && role.name !== roleName))
+                                    .map( role => {return {value: role._id, text: role.name}}):
+                                    []
                                 }
                                 onChange={this.handleParents}
                                 value={roleParents}
                                 multiple={true}
                             />
                         </div>
+
+                        {/* Những người dùng có phân quyền */}
                         <div className="form-group">
                             <label>{ translate('manage_role.users') } { roleName }</label>
                             <SelectBox
@@ -58,7 +70,7 @@ class RoleInfoForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    user.list.map( user => {return {value: user._id, text: `${user.name} - ${user.email}`}})
+                                    user.list? user.list.map( user => {return {value: user._id, text: `${user.name} - ${user.email}`}}): []
                                 }
                                 onChange={this.handleUsers}
                                 value={roleUsers}
@@ -148,7 +160,9 @@ class RoleInfoForm extends Component {
             users: this.state.roleUsers
         };
         
-        if(this.isFormValidated()) return this.props.edit(role);
+        if (this.isFormValidated()){ 
+            return this.props.edit(role);
+        }
     }
 }
  
