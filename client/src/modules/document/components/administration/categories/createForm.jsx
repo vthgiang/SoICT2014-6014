@@ -38,8 +38,9 @@ class CreateForm extends Component {
 
     validateTypeName = (value, willUpdateState)=>{
         let msg = undefined;
+        const {translate} = this.props;
         if(value === "")
-            msg = "Tên không được để trống";
+            msg =  translate('document.no_blank_name');
         if(willUpdateState){
             this.setState(state=>{
                return{
@@ -57,9 +58,10 @@ class CreateForm extends Component {
         this.validateTypeName(value, true);
     }
     validateTypeDescription = (value, willUpdateState)=>{
+        const {translate} = this.props;
         let msg = undefined;
         if(value === "")
-            msg = "Tên không được để trống";
+            msg = translate('document.no_blank_description');
         if(willUpdateState){
             this.setState(state=>{
                return{
@@ -81,7 +83,7 @@ class CreateForm extends Component {
         
         let cons = this.validateTypeName(this.state.documentTypeName, false) 
         &&  this.validateTypeDescription(this.state.documentTypeDescription, false);
-        console.log('qqqqqqqqq', cons);
+     
         return cons;
     }
 

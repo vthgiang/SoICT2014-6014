@@ -11,13 +11,12 @@ router.post('/add-result/create', auth, PerformTaskController.createResultInfoTa
 router.post('/information-task-template/create', auth, PerformTaskController.createTaskInformation);
 router.put('/information-task-template', auth, PerformTaskController.editTaskInformation);
 router.post('/logs/history', auth, PerformTaskController.addTaskLog);
-router.get('/logs/:id', auth, PerformTaskController.getTaskLog);
+router.get('/logs/:taskId', auth, PerformTaskController.getTaskLog);
 
 
-//result task
-router.post('/', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
-router.post('/result-task/create', auth, PerformTaskController.createTaskResult);
-router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
+//upload file
+router.post('/tasks/:taskId/upload-files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
+
 
 
 //Task Action
@@ -50,14 +49,16 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 
 
+router.patch('/tasks/:taskId/edit', auth, PerformTaskController.editTask);
+router.patch('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 
 
-router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
-router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);
+// router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
+// router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);
 
-router.patch('/evaluate/task-consulted/:id', auth, PerformTaskController.evaluateTaskByConsultedEmployees);
-router.patch('/evaluate/task-responsible/:id', auth, PerformTaskController.evaluateTaskByResponsibleEmployees);
-router.patch('/evaluate/task-accountable/:id', auth, PerformTaskController.evaluateTaskByAccountableEmployees);
+// router.patch('/evaluate/task-consulted/:id', auth, PerformTaskController.evaluateTaskByConsultedEmployees);
+// router.patch('/evaluate/task-responsible/:id', auth, PerformTaskController.evaluateTaskByResponsibleEmployees);
+// router.patch('/evaluate/task-accountable/:id', auth, PerformTaskController.evaluateTaskByAccountableEmployees);
 
 
 module.exports = router;

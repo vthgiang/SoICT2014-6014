@@ -419,6 +419,12 @@ export default {
             upload_file_scan: 'Upload file scan',
             download: 'Download',
             no_version: 'Not have different version',
+            no_blank_description: "Description should'n empty",
+            no_blank_name: "Name should'n empty",
+            infomation_docs: "Document Infomation",
+            relationship_role_store: "Relationship, role and store",
+            statistical_document: "Statistical type of document",
+            statistical_view_down: "Statistical of view and download type of document",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -433,6 +439,10 @@ export default {
                 number_download: 'Number of download',
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
+                exp_issuing_body: 'Example: Administrative agencies',
+                exp_official_number:'Example: 05062020VN',
+                exp_signer: "Example: Nguyễn Việt Anh",
+                exp_version: "Version 1",
             },
             relationship: {
                 title: 'Document relationship',
@@ -1646,7 +1656,17 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
-
+                
+                // add_err: 
+                add_err_empty_unit: 'Unit should not be empty',
+                add_err_empty_name: 'Name should not be empty',
+                add_err_empty_description: 'Description should not be empty',
+                add_err_empty_start_date: 'Start date should not be empty',
+                add_err_empty_end_date: 'End date should not be empty',
+                add_err_empty_responsible: 'Responsible should not be empty',
+                add_err_empty_accountable: 'Accountable should not be empty',
+                add_err_special_character: 'This field should not be have special character',
+                add_err_end_date: 'End date should be after start date',
             },
             task_perform: {
                 actions: "Actions",
@@ -1681,14 +1701,6 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
-
-
-
-
-
-
-
-
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',

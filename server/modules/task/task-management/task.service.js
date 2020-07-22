@@ -159,7 +159,7 @@ exports.getTaskById = async (id, userId) => {
             break;
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in accountableEmployees) {
             if (accountableEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -167,7 +167,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in consultedEmployees) {
             if (consultedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -175,7 +175,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in informedEmployees) {
             if (informedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -183,13 +183,13 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){    // Trưởng đơn vị được phép xem thông tin công việc
-        let roleId =  task.organizationalUnit.deans;
-        let user = await UserRole.find({roleId: roleId});
-        userList = user.map( item => item.userId );
-        if (!flag){
-            for (let n in userList){
-                if (userList[n].equals(userId)){
+    if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
+        let roleId = task.organizationalUnit.deans;
+        let user = await UserRole.find({ roleId: roleId });
+        userList = user.map(item => item.userId);
+        if (!flag) {
+            for (let n in userList) {
+                if (userList[n].equals(userId)) {
                     flag = 1;
                     break;
                 }
@@ -292,7 +292,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     };
 
-    if (startDate ) {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -963,6 +963,7 @@ exports.getSubTask = async (taskId) => {
     var task = await Task.find({
         parent: taskId
     }).sort("createdAt")
+
     return task;
 }
 

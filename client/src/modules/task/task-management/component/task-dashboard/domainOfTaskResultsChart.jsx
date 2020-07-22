@@ -203,8 +203,8 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     setDataDomainChart = () => {
-        const { tasks } = this.props;
-        var month = ['x'], maxResults = ['Cao nhất'], minResults = ['Thấp nhất'];
+        const { tasks, translate } = this.props;
+        var month = ['x'], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
 
         var now = new Date();
         var currentMonth = now.getMonth();

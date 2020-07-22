@@ -419,6 +419,12 @@ export default {
             upload_file_scan: 'Upload File scan',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
+            no_blank_description: 'Mô tả không được để trống',
+            no_blank_name: 'Tên không được để trống',
+            infomation_docs: "Thông tin văn bản",
+            relationship_role_store: "Liên kết, phân quyền và lưu trữ",
+            statistical_document: "Thống kê các loại văn bản tài liệu",
+            statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -433,6 +439,10 @@ export default {
                 number_download: 'Số lần tải',
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
+                exp_issuing_body: 'Ví dụ: Cơ quan hành chính',
+                exp_official_number:'Ví dụ: 05062020VN',
+                exp_signer: "Ví dụ: Nguyễn Việt Anh",
+                exp_version: "Phiên bản 1",
             },
             relationship: {
                 title: 'Liên kết văn bản',
@@ -1752,8 +1762,8 @@ export default {
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
                 
-                add_tempalte: 'Mẫu công việc',
-                add_tempalte_notice: 'Hãy chọn mẫu công việc',
+                add_template: 'Mẫu công việc',
+                add_template_notice: 'Hãy chọn mẫu công việc',
                 add_parent_task: 'Công việc cha',
                 add_parent_task_notice: 'Hãy chọn công việc cha',
                 add_raci: 'Phân định trách nhiệm',
@@ -1795,6 +1805,18 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                // add_err: 
+                add_err_empty_unit: 'Đơn vị không được để trống',
+                add_err_empty_name: 'Tên không được để trống',
+                add_err_empty_description: 'Mô tả công việc không được để trống',
+                add_err_empty_start_date: 'Hãy chọn ngày bắt đầu',
+                add_err_empty_end_date: 'Hãy chọn ngày kết thúc',
+                add_err_empty_responsible: 'Cần chọn người thực hiện',
+                add_err_empty_accountable: 'Cần chọn người phê duyệt',
+
+                add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
+                add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
             },
             task_perform: {
 
@@ -1830,34 +1852,6 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 // TODO: code_mesage_task_perform

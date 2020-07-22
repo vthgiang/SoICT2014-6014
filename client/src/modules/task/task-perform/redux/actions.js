@@ -75,11 +75,11 @@ function editResultTask(result, taskid) {
 }
 
 // Get log timer task
-function getTimesheetLogs(task) {
+function getTimesheetLogs(taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_REQUEST });
 
-        performTaskService.getTimesheetLogs(task)
+        performTaskService.getTimesheetLogs(taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.GET_TIMESHEETLOGS_FAILURE, error })
@@ -316,10 +316,10 @@ function downloadFile(path, fileName) {
             .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE }) })
     }
 }
-function uploadFile(data) {
+function uploadFile(taskId, data) {
     return dispatch => {
         dispatch({ type: performTaskConstants.UPLOAD_FILE_REQUEST });
-        performTaskService.uploadFile(data)
+        performTaskService.uploadFile(taskId, data)
             .then(
                 payload => dispatch({ type: performTaskConstants.UPLOAD_FILE_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.UPLOAD_FILE_FAILURE, error })
@@ -383,10 +383,10 @@ function addTaskLog(log) {
 }
 
 // Hàm lấy tất cả nhật ký của một công việc
-function getTaskLog(id) {
+function getTaskLog(taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TASK_LOG_REQUEST });
-        performTaskService.getTaskLog(id)
+        performTaskService.getTaskLog(taskId)
             .then(
                 res => dispatch({
                     type: performTaskConstants.GET_TASK_LOG_SUCCESS,
