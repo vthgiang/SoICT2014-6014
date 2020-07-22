@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components/index';
-import { taskManagementActions } from '../../../task-management/redux/actions'
+import { taskManagementActions } from '../../redux/actions'
 import { DetailTaskTab } from '../../../task-perform/component/detailTaskTab';
 
-class ModelDetailTask extends Component {
+class ModalDetailTask extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -66,5 +66,5 @@ function mapState(state) {
 const Actions = {
     getTaskById: taskManagementActions.getTaskById
 }
-const connectedModelDetailTask = connect(mapState, Actions)(withTranslate(ModelDetailTask));
-export { connectedModelDetailTask as ModelDetailTask };
+const connectedModalDetailTask = connect(mapState, Actions)(withTranslate(ModalDetailTask));
+export { connectedModalDetailTask as ModalDetailTask };
