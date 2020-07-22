@@ -12,6 +12,9 @@ import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrg
 
 import { SelectBox } from '../../../../../common-components/index';
 import { DatePicker } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
+
+
 class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
@@ -125,7 +128,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     render() {
         var childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
-        const { user, dashboardEvaluationEmployeeKpiSet } = this.props;
+        const { user, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
 
         if(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -195,7 +198,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                 <div className="qlcv">
                     {childOrganizationalUnit &&
                         <span className="form-inline">
-                            <label style={{width: "auto"}}>Đơn vị</label>
+                            <label style={{width: "auto"}}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                             <SelectBox
                                 id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
                                 className="form-control select2"
@@ -209,7 +212,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                     }
 
                     <span className="form-inline">
-                        <label style={{width: "auto"}}>Tháng</label>
+                        <label style={{width: "auto"}}>{translate('kpi.organizational_unit.dashboard.month')}</label>
                         <DatePicker 
                             id="monthInOrganizationalUnitKpiDashboard"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -223,7 +226,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                 {/* Xu hướng thực hiện mục tiêu */}
                 <div className=" box box-primary">
                     <div className="box-header with-border">
-                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</div>
+                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
                     </div>
                     <div className="box-body qlcv">
                         <TrendsInOrganizationalUnitKpiChart 
@@ -239,7 +242,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         {childOrganizationalUnit &&
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="box-title">Phân bố KPI đơn vị tháng {this.state.date}</div>
+                                    <div class="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
@@ -257,7 +260,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Thống kê kết quả KPI tháng {this.state.date}</div>
+                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <StatisticsOfOrganizationalUnitKpiResultsChart
@@ -274,7 +277,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Kết quả KPI đơn vị</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
@@ -290,7 +293,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Kết quả KPI các đơn vị</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <ResultsOfAllOrganizationalUnitKpiChart/>
@@ -313,5 +316,5 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };
-const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);
+const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));
 export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };
