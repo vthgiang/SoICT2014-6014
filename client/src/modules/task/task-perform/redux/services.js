@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../../helpers/handleResponse';
+import { handleResponse } from '../../../../helpers/handleResponse';
 import { AuthenticateHeader } from '../../../../config';
 import {
     LOCAL_SERVER_API
@@ -63,7 +63,7 @@ export const performTaskService = {
 */
 
 // Create result task
-function createResultTask(result) { 
+function createResultTask(result) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/create`,
         method: 'POST',
@@ -72,7 +72,7 @@ function createResultTask(result) {
 }
 
 // Create result task
-function editResultTask(listResult, taskid) { 
+function editResultTask(listResult, taskid) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/${taskid}`,
         method: 'PUT',
@@ -91,17 +91,17 @@ function getTimesheetLogs(task) {
 // get current status task
 function getTimerStatusTask() { //function getTimerStatusTask(task, user)
     var user = getStorage("userId");
-    return  sendRequest ({
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${user}`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
 // start timer task
-function startTimerTask(newTimer) {        
+function startTimerTask(newTimer) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
-        method : 'POST',
-        data : newTimer,
+        method: 'POST',
+        data: newTimer,
     }, false, true, 'task.task_perform');
 }
 
@@ -109,8 +109,8 @@ function startTimerTask(newTimer) {
 function stopTimerTask(newTimer) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer`,
-        method : 'POST',
-        data : newTimer
+        method: 'POST',
+        data: newTimer
     }, false, true, 'task.task_perform');
 }
 
@@ -118,44 +118,44 @@ function stopTimerTask(newTimer) {
 function pauseTimerTask(id, newTimer) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/pause-timer/${id}`,
-        method :'PUT',
-        data : newTimer
+        method: 'PUT',
+        data: newTimer
     }, false, true, 'task.task_perform');
 }
 
 // continue timer task
 function continueTimerTask(id, newTimer) {
     return sendRequest({
-        url : `${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`,
-        method : 'PUT',
-        data : newTimer
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`,
+        method: 'PUT',
+        data: newTimer
     }, false, true, 'task.task_perform')
 }
 
 // add comment task
 function addActionComment(taskId, actionId, newComment) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/action/${actionId}/comments`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
-        data : newComment
+        data: newComment
     }, false, true, 'task.task_perform');
 }
-function addTaskAction(taskId, newAction){ 
+function addTaskAction(taskId, newAction) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
-        method : 'POST',
-        data : newAction
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
+        method: 'POST',
+        data: newAction
     }, false, true, 'task.task_perform');
 }
 // edit comment task
 function editActionComment(taskId, actionId, commentId, newComment) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task/${taskId}/task-action/${actionId}/comments/${commentId}`,
-        method:'PATCH',
-        data : newComment
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
+        method: 'PATCH',
+        data: newComment
     }, false, true, 'task.task_perform');
 }
-function editTaskAction(id,newAction, taskId) {
+function editTaskAction(id, newAction, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${id}`,
         method: 'PATCH',
@@ -166,130 +166,132 @@ function editTaskAction(id,newAction, taskId) {
 // delete comment task
 function deleteActionComment(taskId, actionId, commentId) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-action/${actionId}/comment/${commentId}/delete`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}/delete`,
         method: 'PATCH'
     }, false, true, 'task.task_perform')
 }
 
-function deleteTaskAction(actionId, taskId){
+function deleteTaskAction(actionId, taskId) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/delete`,
-        method:'PATCH'
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/delete`,
+        method: 'PATCH'
     }, false, true, 'task.task_perform');
 }
-function createTaskComment(taskId, newComment){
+function createTaskComment(taskId, newComment) {
     return sendRequest({
-        url : `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments`,
-        method : 'POST',
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments`,
+        method: 'POST',
         data: newComment
-    },false, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
-function editTaskComment(taskId, commentId ,newComment){
+function editTaskComment(taskId, commentId, newComment) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}`,
         method: 'PATCH',
         data: newComment
-    },false, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
-function deleteTaskComment(commentId, taskId){
+function deleteTaskComment(commentId, taskId) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/delete`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/delete`,
         method: 'PATCH'
-    },false, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
-function createCommentOfTaskComment(commentId, taskId, newComment){
+function createCommentOfTaskComment(commentId, taskId, newComment) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments`,
         method: 'POST',
         data: newComment
-    },false, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
-function editCommentOfTaskComment(commentId, taskId, newComment){
+function editCommentOfTaskComment(commentId, taskId, newComment) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
-        method : 'PATCH',
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
+        method: 'PATCH',
         data: newComment
-    },false, true, 'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
-function deleteCommentOfTaskComment(commentId,taskId){
+function deleteCommentOfTaskComment(commentId, taskId) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}/delete`,
-        method : 'PATCH',
-    },false, true, 'task.task_perform')
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}/delete`,
+        method: 'PATCH',
+    }, false, true, 'task.task_perform')
 }
-function evaluationAction(actionId,evaluation){
+function evaluationAction(actionId, evaluation) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/task-actions/${actionId}`,
-        method : 'PATCH',
+        url: `${LOCAL_SERVER_API}/performtask/tasks/task-actions/${actionId}`,
+        method: 'PATCH',
         data: evaluation,
-    },false,true,'task.task_perform')
+    }, false, true, 'task.task_perform')
 }
 
 //getall Action task
-function confirmAction(actionId,idUser, taskId) {
+function confirmAction(actionId, idUser, taskId) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
-        method : 'GET',
-        params: {actionId: actionId, idUser: idUser}
-    }, false, true, 'task.task_perform');  
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
+        method: 'GET',
+        params: { actionId: actionId, idUser: idUser }
+    }, false, true, 'task.task_perform');
 };
-function downloadFile(path) {  
+function downloadFile(path) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/auth/download-file/`,
         method: 'GET',
         responseType: 'blob',
-        params:{path:path}
+        params: { path: path }
     }, false, false, 'task.task_perform');
 }
 function uploadFile(data) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask`,
-        method : 'POST',
-        data : data
-    }, false, true, 'task.task_perform');  
+        url: `${LOCAL_SERVER_API}/performtask`,
+        method: 'POST',
+        data: data
+    }, false, true, 'task.task_perform');
 };
 function deleteFileAction(fileId, actionId, taskId, type) {
+    console.log(type)
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/files/${fileId}`,
         method: 'PATCH',
-        data: type
-    }, false, true, 'task.task_perform');  
+        data: type,
+    }, false, true, 'task.task_perform');
 };
 function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
+    console.log("Chạy đến đây")
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/files/${fileId}`,
         method: 'PATCH',
-        data: type
-    }, false, true, 'task.task_perform');  
+
+    }, false, true, 'task.task_perform');
 };
 function deleteFileTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/files/${fileId}`,
         method: 'PATCH',
-        data: type
-    }, false, true, 'task.task_perform');  
+
+    }, false, true, 'task.task_perform');
 };
 function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments/files/${fileId}`,
         method: 'PATCH',
-        data: type
-    }, false, true, 'task.task_perform');  
+        // data: type
+    }, false, true, 'task.task_perform');
 }
 // Hàm thêm nhật ký cho một công việc
-function addTaskLog(log) {    
+function addTaskLog(log) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/logs/history`,
-        method : 'POST',
-        data : log
+        url: `${LOCAL_SERVER_API}/performtask/logs/history`,
+        method: 'POST',
+        data: log
     }, false, false, 'task.task_perform');
 };
 
 // Hàm thêm nhật ký cho một công việc
-function getTaskLog(id) {    
+function getTaskLog(id) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/logs/${id}`,
-        method : 'GET',
+        url: `${LOCAL_SERVER_API}/performtask/logs/${id}`,
+        method: 'GET',
     }, false, false, 'task.task_perform');
 };
 

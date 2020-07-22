@@ -115,9 +115,10 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
  * Sửa nội dung bình luận hoạt động
  */
 exports.editCommentOfTaskAction = async (params, body, files) => {
+    console.log(params)
     const now = new Date()
     let action = await Task.updateOne(
-        { "taskActions.comments._id": params.id },
+        { "taskActions.comments._id": params.commentId },
         {
             $set:
             {
@@ -129,13 +130,13 @@ exports.editCommentOfTaskAction = async (params, body, files) => {
             arrayFilters:
                 [
                     {
-                        "elem._id": params.id
+                        "elem._id": params.commentId
                     }
                 ]
         }
     )
     let action1 = await Task.updateOne(
-        { "taskActions.comments._id": params.id },
+        { "taskActions.comments._id": params.commentId },
         {
             $push:
             {
@@ -146,12 +147,12 @@ exports.editCommentOfTaskAction = async (params, body, files) => {
             arrayFilters:
                 [
                     {
-                        "elem._id": params.id
+                        "elem._id": params.commentId
                     }
                 ]
         }
     )
-    let task = await Task.findOne({ "taskActions.comments._id": params.id }).populate([
+    let task = await Task.findOne({ "taskActions.comments._id": params.commentId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }
@@ -164,26 +165,26 @@ exports.editCommentOfTaskAction = async (params, body, files) => {
  */
 exports.deleteCommentOfTaskAction = async (params) => {
     let files = await Task.aggregate([
-        { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
-        { $match: { "comments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "comments._id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$comments" },
         { $replaceRoot: { newRoot: "$comments" } },
-        { $match: { "_id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } }
     ])
 
     var action = await Task.update(
-        { "taskActions.comments._id": params.id },
-        { $pull: { "taskActions.$.comments": { _id: params.id } } },
+        { "taskActions.comments._id": params.commentId },
+        { $pull: { "taskActions.$.comments": { _id: params.commentId } } },
         { safe: true })
     let i = 0
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    var task = await Task.findOne({ _id: params.task }).populate([
+    var task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }
@@ -225,9 +226,9 @@ exports.createTaskAction = async (params, body, files) => {
 /**
  * Sửa hoạt động của cộng việc
  */
-exports.editTaskAction = async (id, body, files) => {
+exports.editTaskAction = async (params, body, files) => {
     var action = await Task.updateOne(
-        { "taskActions._id": id },
+        { "taskActions._id": params.actionId },
         {
             $set:
             {
@@ -236,7 +237,7 @@ exports.editTaskAction = async (id, body, files) => {
         }
     )
     let action1 = await Task.updateOne(
-        { "taskActions._id": id },
+        { "taskActions._id": params.actionId },
         {
             $push:
             {
@@ -244,7 +245,7 @@ exports.editTaskAction = async (id, body, files) => {
             }
         }
     )
-    var task = await Task.findOne({ "taskActions._id": id }).populate([
+    var task = await Task.findOne({ "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -257,21 +258,21 @@ exports.editTaskAction = async (id, body, files) => {
  */
 exports.deleteTaskAction = async (params) => {
     let files = await Task.aggregate([
-        { $match: { "taskActions._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "taskActions._id": mongoose.Types.ObjectId(params.actionId) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
-        { $match: { _id: mongoose.Types.ObjectId(params.id) } },
+        { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
     ])
 
 
     let action = await Task.update(
-        { "taskActions._id": params.id },
+        { "taskActions._id": params.actionId },
         {
             $pull:
             {
-                taskActions: { _id: params.id }
+                taskActions: { _id: params.actionId }
             }
         },
         { safe: true }
@@ -281,7 +282,7 @@ exports.deleteTaskAction = async (params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    let task = await Task.findOne({ _id: params.task }).populate([
+    let task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -476,10 +477,10 @@ exports.editTaskComment = async (params, body, files) => {
  */
 exports.deleteTaskComment = async (params) => {
     let files = await Task.aggregate([
-        { $match: { "taskComments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "taskComments._id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$taskComments" },
         { $replaceRoot: { newRoot: "$taskComments" } },
-        { $match: { _id: mongoose.Types.ObjectId(params.id) } },
+        { $match: { _id: mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
     ])
@@ -489,10 +490,10 @@ exports.deleteTaskComment = async (params) => {
         fs.unlinkSync(files[i].url)
     }
     var action = await Task.update(
-        { "taskComments._id": params.id },
-        { $pull: { taskComments: { _id: params.id } } },
+        { "taskComments._id": params.commentId },
+        { $pull: { taskComments: { _id: params.commentId } } },
         { safe: true })
-    var task = await Task.findOne({ _id: params.task }).populate([
+    var task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -579,22 +580,22 @@ exports.editCommentOfTaskComment = async (params, body, files) => {
  */
 exports.deleteCommentOfTaskComment = async (params) => {
     let files = await Task.aggregate([
-        { $match: { "taskComments.comments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "taskComments.comments._id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$taskComments" },
         { $replaceRoot: { newRoot: "$taskComments" } },
-        { $match: { "comments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "comments._id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$comments" },
         { $replaceRoot: { newRoot: "$comments" } },
-        { $match: { "_id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } }
     ])
     let comment = await Task.update(
-        { "taskComments.comments._id": params.id },
+        { "taskComments.comments._id": params.commentId },
         {
             $pull:
             {
-                "taskComments.$.comments": { _id: params.id }
+                "taskComments.$.comments": { _id: params.commentId }
             }
         },
         { safe: true })
@@ -1862,7 +1863,6 @@ exports.deleteFileOfAction = async (params) => {
  * Xóa file bình luận của hoạt động
  */
 exports.deleteFileCommentOfAction = async (params) => {
-
     let file = await Task.aggregate([
         { $match: { "taskActions.comments.files._id": mongoose.Types.ObjectId(params.fileId) } },
         { $unwind: "$taskActions" },
@@ -1874,7 +1874,6 @@ exports.deleteFileCommentOfAction = async (params) => {
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
     ])
-
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
