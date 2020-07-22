@@ -12,16 +12,9 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 class TaskAddModal extends Component {
 
-    componentDidMount() {
-        // get id current role
-        this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
-        // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserOfCompany();
-        this.props.getAllUserInAllUnitsOfCompany()
-    }
-
     constructor(props) {
         super(props);
+        var { translate } = this.props;
         this.state = {
             newTask: {
                 name: "",
@@ -43,10 +36,16 @@ class TaskAddModal extends Component {
         };
     }
 
+    componentDidMount() {
+        // get id current role
+        this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
+        // Lấy tất cả nhân viên trong công ty
+        this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
+    }
 
     handleSubmit = async (event) => {
         const { newTask } = this.state;
-        console.log('oooooooooooooooooooooooooooooooo', newTask);
         this.props.addTask(newTask);
     }
 
@@ -101,10 +100,6 @@ class TaskAddModal extends Component {
         return msg === undefined;
     }
 
-
-
-
-
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
@@ -141,8 +136,6 @@ class TaskAddModal extends Component {
         return msg === undefined;
     }
 
-
-
     handleChangeTaskPriority = (event) => {
         this.state.newTask.priority = event.target.value;
         this.setState(state => {
@@ -151,7 +144,6 @@ class TaskAddModal extends Component {
             };
         });
     }
-
 
     handleChangeTaskOrganizationalUnit = (event) => {
         event.preventDefault();

@@ -241,9 +241,9 @@ function downloadFile(path) {
         params: { path: path }
     }, false, false, 'task.task_perform');
 }
-function uploadFile(data) {
+function uploadFile(taskId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/upload-files`,
         method: 'POST',
         data: data
     }, false, true, 'task.task_perform');
@@ -284,9 +284,9 @@ function addTaskLog(log) {
 };
 
 // Hàm thêm nhật ký cho một công việc
-function getTaskLog(id) {
+function getTaskLog(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/logs/${id}`,
+        url: `${LOCAL_SERVER_API}/performtask/logs/${taskId}`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };

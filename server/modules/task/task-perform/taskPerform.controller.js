@@ -581,7 +581,7 @@ exports.uploadFile = async (req, res) => {
 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.body, files);
+        var comment = await PerformTaskService.uploadFile(req.params, req.body, files);
         await LogInfo(req.user.email, ` upload file of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -689,7 +689,7 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        var taskLog = await PerformTaskService.getTaskLog(req.params.id);
+        var taskLog = await PerformTaskService.getTaskLog(req.params);
         await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,

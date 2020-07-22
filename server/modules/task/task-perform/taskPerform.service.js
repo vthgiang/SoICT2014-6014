@@ -729,7 +729,7 @@ exports.confirmAction = async (query) => {
         }
     )
 
-    var task = await Task.findOne({ "taskActions._id": query.actionId }).populate([
+    let task = await Task.findOne({ "taskActions._id": query.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -738,16 +738,24 @@ exports.confirmAction = async (query) => {
 /**
  * Upload tài liệu cho cộng việc
  */
-exports.uploadFile = async (params, files) => {
-    var evaluationActionRating = await Task.updateOne(
-        { _id: params.task },
-        {
-            $push: { files: files }
-        }
+exports.uploadFile = async (params, body, files) => {
+    let evaluationActionRating = await Task.findOne(
+        { _id: params.taskId }
     )
-    var task = await Task.findOne({ _id: params.task }).populate([
+
+
+    let abc = [...evaluationActionRating.files, ...files]
+
+
+    let abc1 = await Task.updateOne(
+        { _id: params.taskId },
+        { $set: { files: abc } }
+    )
+
+    let task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
+
     return task.files
 }
 
@@ -775,8 +783,8 @@ exports.addTaskLog = async (data) => {
 /**
  * Lấy tất cả nhật ký của một công việc
  */
-exports.getTaskLog = async (id) => {
-    var task = await Task.findById(id).populate("logs.creator")
+exports.getTaskLog = async (params) => {
+    var task = await Task.findById(params.taskId).populate("logs.creator")
 
     return task.logs.reverse();
 }

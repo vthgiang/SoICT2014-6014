@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 class DatePicker extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            value: ""
+        }
         this.zIndex = 1050;
     }
     componentDidMount = () => {
