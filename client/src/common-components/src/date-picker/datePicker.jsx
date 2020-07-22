@@ -94,7 +94,7 @@ class DatePicker extends Component {
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" className="form-control" value={this.state.value? this.state.value: ""} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

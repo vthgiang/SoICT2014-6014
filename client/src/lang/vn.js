@@ -1752,8 +1752,8 @@ export default {
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
                 
-                add_tempalte: 'Mẫu công việc',
-                add_tempalte_notice: 'Hãy chọn mẫu công việc',
+                add_template: 'Mẫu công việc',
+                add_template_notice: 'Hãy chọn mẫu công việc',
                 add_parent_task: 'Công việc cha',
                 add_parent_task_notice: 'Hãy chọn công việc cha',
                 add_raci: 'Phân định trách nhiệm',
@@ -1795,6 +1795,18 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                // add_err: 
+                add_err_empty_unit: 'Đơn vị không được để trống',
+                add_err_empty_name: 'Tên không được để trống',
+                add_err_empty_description: 'Mô tả công việc không được để trống',
+                add_err_empty_start_date: 'Hãy chọn ngày bắt đầu',
+                add_err_empty_end_date: 'Hãy chọn ngày kết thúc',
+                add_err_empty_responsible: 'Cần chọn người thực hiện',
+                add_err_empty_accountable: 'Cần chọn người phê duyệt',
+
+                add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
+                add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
             },
             task_perform: {
 
@@ -1830,34 +1842,6 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 // TODO: code_mesage_task_perform

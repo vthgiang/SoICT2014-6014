@@ -1647,6 +1647,16 @@ export default {
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
                 
+                // add_err: 
+                add_err_empty_unit: 'Unit should not be empty',
+                add_err_empty_name: 'Name should not be empty',
+                add_err_empty_description: 'Description should not be empty',
+                add_err_empty_start_date: 'Start date should not be empty',
+                add_err_empty_end_date: 'End date should not be empty',
+                add_err_empty_responsible: 'Responsible should not be empty',
+                add_err_empty_accountable: 'Accountable should not be empty',
+                add_err_special_character: 'This field should not be have special character',
+                add_err_end_date: 'End date should be after start date',
             },
             task_perform: {
                 actions: "Actions",
@@ -1681,14 +1691,6 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
-
-
-
-
-
-
-
-
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
