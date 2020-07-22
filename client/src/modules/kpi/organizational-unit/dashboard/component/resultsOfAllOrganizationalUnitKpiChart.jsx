@@ -160,7 +160,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     /** Select month start in box */
     handleSelectMonthStart = (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
@@ -222,19 +222,19 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {                              // Căn lề biểu đồ
+            padding: {                              
                 top: 20,
                 bottom: 20,
                 right: 20
             },
 
-            data: {                                 // Dữ liệu biểu đồ
+            data: {                                 
                 xs: xs,
                 columns: dataChart,
                 type: 'spline'
             },
 
-            axis : {                                // Config trục tọa độ
+            axis : {                                
                 x : {
                     type : 'timeseries',
                     tick: {
@@ -266,7 +266,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
         }
 
-        var d = new Date(),
+        let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -275,8 +275,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultEndDate = [month, year].join('-');
-        var defaultStartDate = ['01', year].join('-');
+        let defaultEndDate = [month, year].join('-');
+        let defaultStartDate = ['01', year].join('-');
 
         return (
             <React.Fragment>
@@ -285,10 +285,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 
                             id="monthStartInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultStartDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultStartDate}                
                             onChange={this.handleSelectMonthStart}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                    
                         />
                     </div>
                 </section>
@@ -297,10 +297,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                         <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
                         <DatePicker 
                             id="monthEndInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultEndDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultEndDate}                   
                             onChange={this.handleSelectMonthEnd}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                    
                         />
                     </div>
                     <div className="form-group">

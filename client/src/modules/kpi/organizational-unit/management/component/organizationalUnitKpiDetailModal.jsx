@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { managerActions } from '../redux/actions';
-import { createUnitKpiActions } from '../../creation/redux/actions';
 import { DialogModal } from '../../../../../common-components/index';
-
+import { withTranslate } from 'react-redux-multilingual';
 
 class ModalDetailKPI extends Component {
     constructor(props) {
@@ -33,9 +32,6 @@ class ModalDetailKPI extends Component {
         }
         return true;
     }
-    componentDidMount() {
-
-    }
 
     handleChangeContent = async (id) => {
         await this.setState(state => {
@@ -46,7 +42,7 @@ class ModalDetailKPI extends Component {
         })
     }
     formatMonth(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -60,24 +56,22 @@ class ModalDetailKPI extends Component {
     }
     render() {
         var currentKPI, listchildtarget;
-        const { managerKpiUnit } = this.props;
+        const { managerKpiUnit, translate } = this.props;
         if (managerKpiUnit.childtarget) {
-            // console.log("=======================")
             listchildtarget = managerKpiUnit.childtarget;
         }
-        //  console.log("++++++++++++", this.props.kpiunit._id);
 
         return (
             <DialogModal
                 modalID={`dataResultTask`}
-                title={`Thông tin chi tiết kpi đơn vị tháng ${this.formatMonth(this.props.date)}`}
+                title={translate('kpi.organizational_unit.management.detail_modal.title') + `${this.formatMonth(this.props.date)}`}
                 hasSaveButton={false}
                 size={100}>
 
                 <div className="col-xs-12 col-sm-4">
                     <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
                         <div className="box-header with-border">
-                            <h3 className="box-title" style={{fontWeight: 800}}>Danh sách KPI đơn vị</h3>
+                            <h3 className="box-title" style={{fontWeight: 800}}>{translate('kpi.organizational_unit.management.detail_modal.list_kpi_unit')}</h3>
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
@@ -100,43 +94,40 @@ class ModalDetailKPI extends Component {
                     {
                         listchildtarget && listchildtarget.map(item => {
                             if (item._id === this.state.content) return <React.Fragment key={item._id}>
-                                <h4>{`Thông tin KPI "${item.name}"`}</h4>
+                                <h4>{translate('kpi.organizational_unit.management.detail_modal.information_kpi') + `"${item.name}"`}</h4>
                                 <div style={{lineHeight: 2}}>
                                     <div>
-                                        <label>Tiêu chí:</label>
+                                        <label>{translate('kpi.organizational_unit.management.detail_modal.criteria')}</label>
                                         <span> {item.criteria}</span>
                                     </div>
                                     
                                     <div>
-                                        <label>Trọng số:</label>
+                                        <label>{translate('kpi.organizational_unit.management.detail_modal.weight')}</label>
                                         <span> {item.weight}/100</span>
                                     </div>
-
                                     <div>
-                                        <label>Kết quả thực hiện (Tự động - Tự đánh giá - Người phê duyệt đánh giá):</label>
-                                        <span> {item.approvedPoint === null ? "Chưa đánh giá" : item.automaticPoint + "-" + item.employeePoint + "-" + item.approvedPoint}</span>
+                                        <label>{translate('kpi.organizational_unit.management.detail_modal.point_field')}:</label>
+                                        <span> {item.approvedPoint === null ? translate('kpi.organizational_unit.management.detail_modal.not_eval') : item.automaticPoint + "-" + item.employeePoint + "-" + item.approvedPoint}</span>
                                     </div>
                                 </div>
                                 <br/>
                                 <br/>
 
-                                
-                                <h4>Danh sách các KPI con</h4>
+                                <h4>{translate('kpi.organizational_unit.management.detail_modal.list_child_kpi')}</h4>
                                 <table id="example1" className="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style={{width:"35px"}} className="col-fixed">STT</th>
-                                            <th>Tên mục tiêu</th>
-                                            <th style={{ width: "108px" }}>Người tạo</th>
-                                            <th>Đơn vị</th>
-                                            <th>Tiêu chí đánh giá</th>
-                                            <th>Kết quả đánh giá</th>
+                                            <th style={{width:"50px"}} className="col-fixed">{translate('kpi.organizational_unit.management.detail_modal.index')}</th>
+                                            <th>{translate('kpi.organizational_unit.management.detail_modal.target_name')}</th>
+                                            <th style={{ width: "108px" }}>{translate('kpi.organizational_unit.management.detail_modal.creator')}</th>
+                                            <th>{translate('kpi.organizational_unit.management.detail_modal.organization_unit')}</th>
+                                            <th>{translate('kpi.organizational_unit.management.detail_modal.criteria')}</th>
+                                            <th>{translate('kpi.organizational_unit.management.detail_modal.result')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {(typeof item !== "undefined" && item.arrtarget) ?
                                             (item.arrtarget.map((data, index) =>
-
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{data.target.name}</td>
@@ -144,14 +135,14 @@ class ModalDetailKPI extends Component {
                                                     <td>{data.organizationalUnit.name}</td>
                                                     <td>{data.target.criteria}</td>
                                                     <td>{data.target.approvedPoint}</td>
-                                                </tr>)) : <tr><td colSpan={6}>Không có dữ liệu</td></tr>
+                                                </tr>)) : <tr><td colSpan={6}>{translate('kpi.organizational_unit.management.detail_modal.no_data')}</td></tr>
 
                                         }
 
                                     </tbody>
                                 </table>
                                 <div>
-                                    <button className="btn btn-primary pull-right">Xuất file</button>
+                                    <button className="btn btn-primary pull-right">{translate('kpi.organizational_unit.management.detail_modal.export_file')}</button>
                                 </div>
                             </React.Fragment>;
                             return true;
@@ -174,5 +165,5 @@ function mapState(state) {
 const actionCreators = {
     getChildTarget: managerActions.getChildTargetOfCurrentTarget
 };
-const connectedModalDetailKPI = connect(mapState, actionCreators)(ModalDetailKPI);
+const connectedModalDetailKPI = connect(mapState, actionCreators)(withTranslate(ModalDetailKPI));
 export { connectedModalDetailKPI as ModalDetailKPI };

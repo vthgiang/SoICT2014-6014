@@ -2369,7 +2369,14 @@ export default {
                     kpi_status: 'Trạng thái KPI',
                     result: 'Kết quả',
                     approve: 'Phê duyệt',
-                    evaluate: 'Đánh giá'
+                    evaluate: 'Đánh giá',
+                    index: 'STT',
+                    target_name: 'Tên mục tiêu',
+                    creator: 'Người tạo',
+                    organization_unit: 'Đơn vị',
+                    criteria: 'Tiêu chí đánh giá',
+                    result: 'Kết quả',
+                    no_data: 'Không có dữ liệu'
                 },
 
                 create_organizational_unit_kpi_set_modal: { // Module con
@@ -2427,6 +2434,59 @@ export default {
                     }
                 },
 
+                management: {
+                    copy_modal:{
+                        alert: {
+                            check_new_date: 'Chưa chọn tháng khởi tạo',
+                            confirm: 'Xác nhận',
+                            coincide_month: 'Đã tồn tại KPI của tháng',
+                            unable_kpi: 'Không thể tạo KPI trong quá khứ',
+                            change_link: 'Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!'
+                        },
+                        create: 'Thiết lập KPI tháng mới từ tháng ',
+                        organizational_unit: 'Đơn vị',
+                        month: 'Tháng',
+                        list_target: 'Danh sách mục tiêu'
+                    },
+                    detail_modal:{
+                        list_kpi_unit: 'Danh sách KPI đơn vị',
+                        title: 'Thông tin chi tiết KPI đơn vị tháng ',
+                        information_kpi: 'Thông tin KPI ',
+                        criteria: 'Tiêu chí:',
+                        weight: 'Trọng số:',
+                        export_file: 'Xuất file',
+                        point_field: 'Điểm (Tự động - Tự đánh giá - Quản lý đánh giá)',
+                        list_child_kpi: 'Danh sách KPI con',
+                        not_eval: 'Chưa đánh giá',
+                        index: 'STT',
+                        target_name: 'Tên mục tiêu',
+                        creator: 'Người tạo',
+                        organization_unit: 'Đơn vị',
+                        criteria: 'Tiêu chí đánh giá',
+                        result: 'Kết quả đánh giá',
+                        no_data: 'Không có dữ liệu'
+                    },
+                    over_view: {
+                        start_date: 'Từ tháng',
+                        end_date: 'Đến tháng',
+                        search: 'Tìm kiếm',
+                        status: 'Trạng thái',
+                        all_status: 'Tất cả trạng thái',
+                        setting_up: 'Đang thiết lập',
+                        activated: 'Đã kích hoạt',
+                        time: 'Thời gian',
+                        creator: 'Người tạo',
+                        number_target: 'Số lượng mục tiêu',
+                        result: 'Kết quả đánh giá',
+                        no_data: 'Không có dữ liệu',
+                        action: 'Hành động',
+                        not_eval: 'Chưa đánh giá',
+                        alert_search: {
+                            search: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                            confirm: 'Xác nhận'
+                        },
+                    }
+                },
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
                 get_parent_by_unit_failure: 'Lấy KPI đơn vị của đơn vị cha không thành công',
