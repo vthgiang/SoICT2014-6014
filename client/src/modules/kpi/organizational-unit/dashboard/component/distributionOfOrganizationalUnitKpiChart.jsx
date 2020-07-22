@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
-
+import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -154,7 +154,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        const { createKpiUnit } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var currentKpi;
 
         if(createKpiUnit) {
@@ -165,7 +165,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 {currentKpi ?
                     <section ref="chart"></section>
-                    : <section>Không có dữ liệu</section>
+                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
@@ -181,5 +181,5 @@ const actions = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit
 }
 
-const connectedDistributionOfOrganizationalUnitKpiChart = connect(mapState, actions)(DistributionOfOrganizationalUnitKpiChart);
+const connectedDistributionOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(DistributionOfOrganizationalUnitKpiChart));
 export { connectedDistributionOfOrganizationalUnitKpiChart as DistributionOfOrganizationalUnitKpiChart}

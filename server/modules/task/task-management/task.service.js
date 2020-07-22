@@ -990,11 +990,13 @@ exports.getTasksByUser = async (data) => {
         if (test < 0) {
             test = olddate - nowdate;
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            var tasktest = {
-                task: tasks[i],
-                totalDays: totalDays
+            if(totalDays <= 7) {
+                var tasktest = {
+                    task: tasks[i],
+                    totalDays: totalDays
+                }
+                deadlineincoming.push(tasktest);
             }
-            deadlineincoming.push(tasktest);
         } else {
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
             var tasktest = {
