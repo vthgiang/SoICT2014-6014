@@ -21,14 +21,6 @@ export const taskManagementService = {
     deleteTaskById,
     editStatusOfTask,
     getSubTask,
-
-    editTaskByAccountableEmployees,
-    editTaskByResponsibleEmployees,
-
-    evaluateTaskByAccountableEmployees,
-    evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees,
-
     getTasksByUser,
 };
 
@@ -330,74 +322,8 @@ function getSubTask(taskId) {
 }
 
 /**
- * edit Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function editTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/edit/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * edit Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function editTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/edit/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Consulted Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByConsultedEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-consulted/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
  * lấy công việc theo người dùng
  */
-
 function getTasksByUser() {
     var id = getStorage("userId")
 
