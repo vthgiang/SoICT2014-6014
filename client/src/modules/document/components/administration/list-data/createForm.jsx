@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker, TreeSelect } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DataTableSetting, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import {convertJsonObjectToFormData} from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
@@ -9,14 +9,14 @@ import {convertJsonObjectToFormData} from '../../../../../helpers/jsonObjectToFo
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            documentName: '',
+        }
     }
 
     handleName = (e) => {
-        const value = e.target.value;
-        this.setState({
-            documentName: value
-        })
+        const value = e.target.value.trim();
+        this.validateName(value, true);
     }
 
     handleCategory = (value) => {
@@ -24,26 +24,26 @@ class CreateForm extends Component {
             documentCategory: value[0]
         })
     }
-
+ 
     handleDomains = value => {
         this.setState({ documentDomains: value });
     }
-
+ 
     handleDescription = (e) => {
         const {value} = e.target;
         this.setState({documentDescription: value});
     }
-
+ 
     handleVersionName = (e) => {
         const {value} = e.target;
         this.setState({ documentVersionName: value });
     }
-
+ 
     handleIssuingBody = (e) => {
         const {value} = e.target;
         this.setState({ documentIssuingBody: value }); 
     }
-
+ 
     handleOfficialNumber = e => {
         const {value} = e.target;
         this.setState({documentOfficialNumber: value})
@@ -99,6 +99,235 @@ class CreateForm extends Component {
 
     handleUploadFileScan = (e) => {
         this.setState({ documentFileScan: e.target.files[0] });
+    }
+    validateName = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = translate('document.no_blank_name');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    validateCategory = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Category khong duoc de trong";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentCategory: value,
+                    errorCategory: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    validateDomains =(value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Category khong duoc de trong";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentDomains: value,
+                    errorDomains: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateDescription = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Mô tả không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentDescription: value,
+                    errorDescription: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateIssuingBody = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Cơ quan không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentIssuingBody: value,
+                    errorIssuingBody: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateIssuingBody = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Cơ quan không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentIssuingBody: value,
+                    errorIssuingBody: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateVersionName = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Tên phiên bản không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentVersionName: value,
+                    errorVersionName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateOfficialNumber = (value, willUpdateState)=>{
+        const regex = /^[1-9]/g
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Số hiệu không được để trống";
+        }
+        else if(!regex.test(value))
+            msg = "Số hiệu phải bắt đầu là 1 kí tự số";
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentOfficialNumber: value,
+                    errorOfficialNumber: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateIssuingDate = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Ngày tháng không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentIssuingDate: value,
+                    errorIssuingDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateEffectiveDate = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Ngày tháng không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentEffectiveDate: value,
+                    errorEffectiveDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateExpiredDate = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Ngày tháng không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentExpiredDate: value,
+                    errorExpiredDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateSinger = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Tên người đăng kí không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentSigner: value,
+                    errorSigner: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateSinger = (value, willUpdateState)=>{
+        const msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = "Tên người đăng kí không được để trống";
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentSigner: value,
+                    errorSigner: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+     isValidateForm = ()=>{
+        return this.validateName(this.state.documentName, false);
     }
 
     save = () => {
@@ -164,6 +393,7 @@ class CreateForm extends Component {
         const documentRoles = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
+        const {errorName} = this.state;
 
         return ( 
             <React.Fragment>
@@ -173,37 +403,39 @@ class CreateForm extends Component {
                     formID="form-create-document"
                     title={translate('document.add')}
                     func={this.save} size="100"
+                    disableSubmit = {!this.isValidateForm()}
                 >
                     <form id="form-create-document">
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#doc-info" data-toggle="tab">Thông tin văn bản</a></li>
-                                <li><a href="#doc-sub-info" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a></li>
+                                <li className="active"><a href="#doc-info" data-toggle="tab">{ translate('document.infomation_docs') }</a></li>
+                                <li><a href="#doc-sub-info" data-toggle="tab">{ translate('document.relationship_role_store') }</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className="tab-pane active" id="doc-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
+                                            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                                                 <label>{ translate('document.name') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" onChange={this.handleName}/>
+                                                <ErrorLabel content ={errorName} />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder="VD: Cơ quan hành chính"/>
+                                                <label>{ translate('document.doc_version.issuing_body') }</label>
+                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')}/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder="VD: 05062020VN"/>
+                                                <label>{ translate('document.doc_version.official_number') }</label>
+                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')}/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleSigner} placeholder="VD: Nguyễn Việt Anh"/>
+                                                <label>{ translate('document.doc_version.signer') }</label>
+                                                <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')}/>
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
-                                                <label>{ translate('document.category') }<span className="text-red">*</span></label>
+                                                <label>{ translate('document.category') }</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-relationship"
                                                     className="form-control select2"
@@ -215,11 +447,11 @@ class CreateForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.domain') }<span className="text-red">*</span></label>
+                                                <label>{ translate('document.domain') }</label>
                                                 <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical"/>
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.description') }<span className="text-red">*</span></label>
+                                                <label>{ translate('document.description') }</label>
                                                 <textarea style={{height: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
                                             </div>
                                         </div>
@@ -227,19 +459,19 @@ class CreateForm extends Component {
                                     <div className="row">
                                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                                    <input type="text" className="form-control" onChange={this.handleVersionName} placeholder="VD: Phiên bản 1"/>
+                                                    <label>{ translate('document.doc_version.name') }</label>
+                                                    <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')}/>
                                                 </div>  
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                                    <label>{ translate('document.doc_version.file') }</label>
                                                     <input type="file" onChange={this.handleUploadFile}/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                                    <label>{ translate('document.doc_version.scanned_file_of_signed_document') }</label>
                                                     <input type="file" onChange={this.handleUploadFileScan}/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
+                                                    <label>{ translate('document.doc_version.issuing_date') }</label>
                                                     <DatePicker
                                                         id="create-document-version-issuing-date"
                                                         value={this.state.documentIssuingDate}
@@ -247,7 +479,7 @@ class CreateForm extends Component {
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
+                                                    <label>{ translate('document.doc_version.effective_date') }</label>
                                                     <DatePicker
                                                         id="create-document-version-effective-date"
                                                         value={this.state.documentEffectiveDate}
@@ -255,7 +487,7 @@ class CreateForm extends Component {
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
+                                                    <label>{ translate('document.doc_version.expired_date') }</label>
                                                     <DatePicker
                                                         id="create-document-version-expired-date"
                                                         value={this.state.documentExpiredDate}

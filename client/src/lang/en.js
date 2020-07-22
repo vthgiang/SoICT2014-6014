@@ -419,6 +419,12 @@ export default {
             upload_file_scan: 'Upload file scan',
             download: 'Download',
             no_version: 'Not have different version',
+            no_blank_description: "Description should'n empty",
+            no_blank_name: "Name should'n empty",
+            infomation_docs: "Document Infomation",
+            relationship_role_store: "Relationship, role and store",
+            statistical_document: "Statistical type of document",
+            statistical_view_down: "Statistical of view and download type of document",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -433,6 +439,10 @@ export default {
                 number_download: 'Number of download',
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
+                exp_issuing_body: 'Example: Administrative agencies',
+                exp_official_number:'Example: 05062020VN',
+                exp_signer: "Example: Nguyễn Việt Anh",
+                exp_version: "Version 1",
             },
             relationship: {
                 title: 'Document relationship',

@@ -89,6 +89,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
+    console.log('3333', data);
     const newDoc = {
         company,
         name: data.name,
@@ -101,7 +102,7 @@ exports.createDocument = async (company, data) => {
         
         versions: [{
             versionName: data.versionName,
-            issuingDate: data.issuingDate,
+            issuingDate: (data.issuingDate === 'Invalid date')?"":data.issuingDate,
             effectiveDate: data.effectiveDate,
             expiredDate: data.expiredDate,
             file: data.file,

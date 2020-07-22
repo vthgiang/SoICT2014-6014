@@ -419,6 +419,12 @@ export default {
             upload_file_scan: 'Upload File scan',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
+            no_blank_description: 'Mô tả không được để trống',
+            no_blank_name: 'Tên không được để trống',
+            infomation_docs: "Thông tin văn bản",
+            relationship_role_store: "Liên kết, phân quyền và lưu trữ",
+            statistical_document: "Thống kê các loại văn bản tài liệu",
+            statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -433,6 +439,10 @@ export default {
                 number_download: 'Số lần tải',
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
+                exp_issuing_body: 'Ví dụ: Cơ quan hành chính',
+                exp_official_number:'Ví dụ: 05062020VN',
+                exp_signer: "Ví dụ: Nguyễn Việt Anh",
+                exp_version: "Phiên bản 1",
             },
             relationship: {
                 title: 'Liên kết văn bản',

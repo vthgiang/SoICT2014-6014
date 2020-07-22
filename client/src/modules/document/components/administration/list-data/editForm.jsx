@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker,TreeSelect } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker,TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { LOCAL_SERVER_API } from '../../../../../env';
@@ -13,10 +13,8 @@ class EditForm extends Component {
     }
 
     handleName = (e) => {
-        const value = e.target.value;
-        this.setState({
-            documentName: value
-        })
+        const value = e.target.value.trim();
+        this.validateName(value, true)
     }
 
     handleCategory = (value) => {
@@ -118,7 +116,26 @@ class EditForm extends Component {
     handleExpiredDate = value => {
         this.setState({ documentExpiredDate: value})
     }
-    
+    validateName = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(value === ""){
+            msg = translate('document.no_blank_name');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    isValidateForm = ()=>{
+        return this.validateName(this.state.documentName, false);
+    }
     save = () => {
         const {
             documentId,
@@ -219,6 +236,7 @@ class EditForm extends Component {
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
+                errorName: undefined,
             } 
         }else if(nextProps.documentVersions.length > prevState.documentVersions.length){
             return {
@@ -253,6 +271,7 @@ class EditForm extends Component {
         const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
         const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
+        const {errorName} = this.state;
 
         console.log("STATE:", this.state);
 
@@ -264,20 +283,22 @@ class EditForm extends Component {
                     formID="form-edit-document"
                     title={translate('document.add')}
                     func={this.save}
+                    disableSubmit = {!this.isValidateForm()}
                 >
                     <form id="form-edit-document">
                     <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">Thông tin văn bản</a></li>
-                                <li><a href="#doc-edit-sub-info" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a></li>
+                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">{ translate('document.infomation_docs') }</a></li>
+                                <li><a href="#doc-edit-sub-info" data-toggle="tab">{ translate('document.relationship_role_store') }</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className="tab-pane active" id="doc-edit-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
+                                            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                                                 <label>{ translate('document.name') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" value={documentName} onChange={this.handleName}/>
+                                                <ErrorLabel content={errorName} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>

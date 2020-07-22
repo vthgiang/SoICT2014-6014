@@ -30,8 +30,9 @@ class EditForm extends Component {
 
     validateName = async(value, willUpdateState)=>{
         let msg = undefined;
+        const {translate} = this.props;
         if(value === ''){
-            msg = 'Tên không được để trống'
+            msg = translate('document.no_blank_name');
         }
         if(willUpdateState){
            await this.setState(state=>{
@@ -70,7 +71,8 @@ class EditForm extends Component {
                 domainId: nextProps.domainId,
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
-                domainParent: nextProps.domainParent
+                domainParent: nextProps.domainParent,
+                errorName : undefined,
             } 
         } else {
             return null;
