@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import UserEditForm from './userEditForm';
-import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
-import UserCreateForm from './userCreateForm';
 import parse from 'html-react-parser';
+
+import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
+
+import { UserActions } from '../redux/actions';
+
+import UserEditForm from './userEditForm';
+import UserCreateForm from './userCreateForm';
+
+
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             limit: 5,
             page: 1,
-            option: 'name', //mặc định tìm kiếm theo tên
+            option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
         }
     }
@@ -33,7 +38,10 @@ class ManageUserTable extends Component {
         
         return (
             <React.Fragment>
+                {/* Button thêm tài khoản người dùng mới */}
                 <UserCreateForm />
+
+                {/* Thanh tìm kiếm */}
                 <SearchBar 
                     columns={[
                         { title: translate('manage_user.name'), value: 'name' },
@@ -43,17 +51,20 @@ class ManageUserTable extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                {
-                    this.state.currentRow !== undefined &&
 
+                {/* Form chỉnh sửa thông tin tài khoản người dùng */}
+                {
+                    this.state.currentRow &&
                     <UserEditForm
                         userId={this.state.currentRow._id}
                         userEmail={this.state.currentRow.email}
                         userName={this.state.currentRow.name}
                         userActive={this.state.currentRow.active}
-                        userRoles={this.state.currentRow.roles.map(role => role.roleId._id)}
+                        userRoles={this.state.currentRow.roles? this.state.currentRow.roles.map(role => role.roleId._id): []}
                     />
                 }
+
+                {/* Bảng dữ liệu tài khoản người dùng */}
                 <table className="table table-hover table-striped table-bordered" id="table-manage-user">
                     <thead>
                         <tr>
@@ -80,7 +91,7 @@ class ManageUserTable extends Component {
                     </thead>
                     <tbody>
                         {
-                            !user.isLoading && user.listPaginate.length > 0 && user.listPaginate.map(u => (
+                            !user.isLoading && user.listPaginate && user.listPaginate.length > 0 && user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
                                 >
@@ -120,10 +131,11 @@ class ManageUserTable extends Component {
 
     checkSuperRole = (roles) => {
         var result = false;
-        if(roles !== undefined){
+        if (roles !== undefined) {
             roles.map( role => {
-                if(role.roleId.name === 'Super Admin')
+                if (role.roleId.name === 'Super Admin') {
                     result = true;
+                }
                 return true;
             });
         }
@@ -131,26 +143,30 @@ class ManageUserTable extends Component {
         return result;
     }
 
-    setPage = async(page) => {
+    setPage = async (page) => {
         this.setState({ page });
+
         const data = {
             limit: this.state.limit,
             page: page,
             key: this.state.option,
             value: this.state.value
         };
+
         await this.props.getUser(data);
     }
 
     setLimit = (number) => {
-        if (this.state.limit !== number){
+        if (this.state.limit !== number) {
             this.setState({ limit: number });
+
             const data = { 
                 limit: number, 
                 page: this.state.page,
                 key: this.state.option,
                 value: this.state.value
             };
+
             this.props.getUser(data);
         }
     }

@@ -51,7 +51,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-link-${componentId}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                items = {link.list.map( link => {return {value: link._id, text: link.url}})}
+                                items = {link.list? link.list.map( link => {return {value: link._id, text: link.url}}): null}
                                 onChange={this.handleComponentLink}
                                 value={componentLink}
                                 multiple={false}
@@ -65,7 +65,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-roles-${componentId}`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
-                                items = {role.list.map( role => {return {value: role._id, text: role.name}})}
+                                items = {role.list? role.list.map( role => {return {value: role._id, text: role.name}}): []}
                                 onChange={this.handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}
