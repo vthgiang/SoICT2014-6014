@@ -218,9 +218,9 @@ exports.createTaskAction = async (req, res) => {
 }
 
 exports.editTaskAction = async (req, res) => {
-    
+
     if (req.body.type === "evaluation") {
-        
+
         evaluationAction(req, res);
 
     } else
@@ -233,7 +233,7 @@ exports.editTaskAction = async (req, res) => {
 
                 })
             }
-            var taskAction = await PerformTaskService.editTaskAction(req.params.id, req.body, files);
+            var taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
             await LogInfo(req.user.email, ` edit task action  `, req.user.company)
             res.status(200).json({
                 success: true,
@@ -279,6 +279,7 @@ exports.createCommentOfTaskAction = async (req, res) => {
 
             })
         }
+        console.log("Chạy vào đây")
         var actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` create  action comment  `, req.user.company);
         res.status(200).json({
@@ -326,6 +327,7 @@ exports.editCommentOfTaskAction = async (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
+        console.log("Comment of task action")
         var task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
         await LogInfo(req.user.email, ` delete action comment  `, req.user.company);
         res.status(200).json({
@@ -386,7 +388,7 @@ exports.editTaskComment = async (req, res) => {
 
             })
         }
-        let taskComment = await PerformTaskService.editTaskComment(req.params, req.body,files);
+        let taskComment = await PerformTaskService.editTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` edit task comments  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -426,7 +428,7 @@ exports.deleteTaskComment = async (req, res) => {
 /**
  * Xóa bình luận của bình luận
  */
-exports.deleteFileChildTaskComment = async (req,res) => {
+exports.deleteFileChildTaskComment = async (req, res) => {
     try {
         let taskComment = await PerformTaskService.deleteFileChildTaskComment(req.params);
         await LogInfo(req.user.email, ` delete task comments  `, req.user.company);
@@ -486,7 +488,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.editCommentOfTaskComment(req.params, req.body,files);
+        let comment = await PerformTaskService.editCommentOfTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` edit comment of task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -598,28 +600,29 @@ exports.uploadFile = async (req, res) => {
 /**
  * Xóa file của hoạt động
  */
-exports.deleteFileOfAction = async (req,res) => {
-    try {
-        let comment = await PerformTaskService.deleteFileOfAction(req.params);
-        await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['delete_file_success'],
-            content: comment
-        })
-    } catch (error) {
-        await LogError(req.user.email, `delete file of task  `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['delete_file_fail'],
-            content: error
-        })
-    }
+exports.deleteFileOfAction = async (req, res) => {
+    // try {
+    console.log(req.params)
+    let comment = await PerformTaskService.deleteFileOfAction(req.params);
+    // await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['delete_file_success'],
+        content: comment
+    })
+    // } catch (error) {
+    // await LogError(req.user.email, `delete file of task  `, req.user.company);
+    // res.status(400).json({
+    //     success: false,
+    //     messages: ['delete_file_fail'],
+    //     content: error
+    // })
+    // }
 }
 /**
  * Xóa file của bình luận hoạt động
  */
-exports.deleteFileCommentOfAction = async (req,res) => {
+exports.deleteFileCommentOfAction = async (req, res) => {
     try {
         let file = await PerformTaskService.deleteFileCommentOfAction(req.params);
         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
@@ -640,7 +643,7 @@ exports.deleteFileCommentOfAction = async (req,res) => {
 /**
  * Xóa file của trao đổi
  */
-exports.deleteFileTaskComment = async (req,res) => {
+exports.deleteFileTaskComment = async (req, res) => {
     try {
         let file = await PerformTaskService.deleteFileTaskComment(req.params);
         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);

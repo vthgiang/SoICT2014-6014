@@ -128,10 +128,9 @@ exports.authFunc = (checkPage=true) => {
                 const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
                 const checkSP = await checkServicePermission(data, path, req.method, currentRole);
                 if(!checkSP) throw ['service_permission_invalid'];
-
             }
 
-            // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
+            
             next();
             
         } catch (error) { 

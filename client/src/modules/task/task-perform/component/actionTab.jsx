@@ -419,29 +419,29 @@ class ActionTab extends Component {
     //Lưu hoạt động
     handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
         e.preventDefault();
-        let { newTaskCommentEdited } = this.state;
+        let { newCommentOfActionEdited } = this.state;
         let data = new FormData();
-        newTaskCommentEdited.files.forEach(x => {
+        newCommentOfActionEdited.files.forEach(x => {
             data.append("files", x)
         })
-        if(newTaskCommentEdited.description === "" ) {
+        if(newCommentOfActionEdited.description === "" ) {
             data.append("description", description)
         }else {
-            data.append("description", newTaskCommentEdited.description)
+            data.append("description", newCommentOfActionEdited.description)
         }
-        data.append("creator",newTaskCommentEdited.creator)
-        if(newTaskCommentEdited.description || newTaskCommentEdited.files){
-            this.props.editTaskComment(taskId, actionId, commentId, data);
+        data.append("creator",newCommentOfActionEdited.creator)
+        if(newCommentOfActionEdited.description || newCommentOfActionEdited.files){
+            this.props.editActionComment(taskId, actionId, commentId, data);
         }
         await this.setState(state => {
             return {
                 ...state,
-                newTaskCommentEdited: {
-                    ...state.newTaskCommentEdited,
-                    description: "",
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    description: "", 
                     files: []
                 },
-                editTaskComment: ""
+                editComment: ""
             }
         })
     }
@@ -730,7 +730,7 @@ class ActionTab extends Component {
     save = (taskId) => {   
         const { deleteFile } = this.state
         if (deleteFile.type === "action") {
-            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId,taskId,deleteFile.type);
+            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId,taskId,2);
         }else if (deleteFile.type === "commentofaction") {
             this.props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         }else if (deleteFile.type === "taskcomment") {
