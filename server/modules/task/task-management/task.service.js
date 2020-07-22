@@ -143,6 +143,11 @@ exports.getTask = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
+    if (!task){
+        return {
+            "info": true
+        }
+    }
     var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
     responsibleEmployees = task.responsibleEmployees;
     accountableEmployees = task.accountableEmployees;
@@ -197,7 +202,7 @@ exports.getTask = async (id, userId) => {
     }
     if (flag === 0) {
         return {
-            "info": null
+            "info": true
         }
     }
     task.evaluations.reverse();
