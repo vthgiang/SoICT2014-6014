@@ -2097,8 +2097,8 @@ export default {
                 get_task_by_id_fail: 'Get all tasks by Id fail',
                 get_system_point_success: 'Get system point successfully',
                 get_system_point_fail: 'Get system point fail',
-                set_point_kpi_success: 'Get point KPI successfully',
-                set_point_kpi_fail: 'Get point KPI fail',
+                set_task_importance_level_success: 'Set task importance level successfully',
+                set_task_importance_level_fail:'Set task importance level fail'
             },
             organizational_unit: {
                 // Module chính

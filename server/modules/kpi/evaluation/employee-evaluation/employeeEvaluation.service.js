@@ -12,9 +12,9 @@ const mongoose = require("mongoose");
 exports.getKPIAllMember = async (data) => {
     let department = await Department.findOne({
         $or: [
-            { 'deans': data.role },
-            { 'viceDeans': data.role },
-            { 'employees': data.role }
+            { 'deans': data.roleId },
+            { 'viceDeans': data.roleId },
+            { 'employees': data.roleId }
         ]
     });
 
@@ -25,22 +25,22 @@ exports.getKPIAllMember = async (data) => {
     let enddate = null;
     let status = null;
 
-    if (data.startDate !== 'null') {
+    if (data.startDate) {
         startDate = data.startDate.split("-");
         startdate = new Date(startDate[1], startDate[0], 0);
     }
-    if (data.endDate !== 'null') {
+    if (data.endDate) {
         endDate = data.endDate.split("-");
         enddate = new Date(endDate[1], endDate[0], 28);
     }
-    if (data.status !== 'null') status = parseInt(data.status);
+    if (data.status) status = parseInt(data.status);
 
     let keySearch = {
         organizationalUnit: {
             $in: department._id
         }
     }
-    if (data.user !== 'null') {
+    if (data.user) {
         keySearch = {
             ...keySearch,
             creator: {
@@ -104,10 +104,10 @@ exports.getKpiByCreator = async (creatorID) => {
  * Lấy tất cả kpi cá nhân theo tháng
  * @param {*} data 
  */
-exports.getKpiByMonth = async (data) => {
-    let date = data.date.split("-");
+exports.getKpiByMonth = async (data, query) => {
+    let date = query.date.split("-");
     let month = new Date(date[1], date[0], 0);
-    let kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
+    let kpipersonals = await KPIPersonal.findOne({ creator: data.userId, date: month })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonals;
@@ -117,12 +117,12 @@ exports.getKpiByMonth = async (data) => {
  * Phê duyệt tất cả các mục tiêu
  * @param {*} id 
  */
-exports.approveAllTarget = async (id) => {
-    let kpipersonal = await KPIPersonal.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
+exports.approveAllTarget = async (kpiId) => {
+    let kpipersonal = await KPIPersonal.findByIdAndUpdate(kpiId, { $set: { status: 2 } }, { new: true });
     let targets;
     if (kpipersonal.kpis) targets = kpipersonal.kpis;
     if (targets !== []) {
-        let targets = await Promise.all(targets.map(async (item) => {
+        targets = await Promise.all(targets.map(async (item) => {
             let defaultT = await DetailKPIPersonal.findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
             return defaultT;
         }))
@@ -137,15 +137,15 @@ exports.approveAllTarget = async (id) => {
  * Phê duyệt từng mục tiêu
  * @param {*} data 
  */
-exports.editStatusTarget = async (data) => {
+exports.editStatusTarget = async (data, query) => {
 
-    let target = await DetailKPIPersonal.findByIdAndUpdate(data.id, { $set: { status: data.status } }, { new: true });
-    let kpipersonal = await KPIPersonal.findOne({ kpis: { $in: data.id } }).populate("kpis");
+    let target = await DetailKPIPersonal.findByIdAndUpdate(data.kpiId, { $set: { status: query.status } }, { new: true });
+    let kpipersonal = await KPIPersonal.findOne({ kpis: { $in: data.kpiId } }).populate("kpis");
     let kpis = kpipersonal.kpis;
     let checkFullApprove = 2;
     await kpis.map(item => {
         if (item.status === null || item.status === 0) {
-            if (parseInt(data.status) === 1) {
+            if (parseInt(data.query) === 1) {
                 checkFullApprove = 1;
             } else {
                 checkFullApprove = 0;
@@ -165,14 +165,14 @@ exports.editStatusTarget = async (data) => {
  * @param {*} id 
  * @param {*} data 
  */
-exports.editTarget = async (id, data) => {
+exports.editTarget = async (kpiId, data) => {
     let objUpdate = {
         name: data.name,
         parent: data.parent,
         weight: data.weight,
         criteria: data.criteria
     }
-    let target = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
+    let target = await DetailKPIPersonal.findByIdAndUpdate(kpiId, { $set: objUpdate }, { new: true }).populate("parent");
     return target;
 }
 
@@ -180,8 +180,8 @@ exports.editTarget = async (id, data) => {
  * Lấy kpi cá nhân theo id
  * @param {*} id 
  */
-exports.getById = async (id) => {
-    let kpipersonal = await KPIPersonal.findById(id)
+exports.getKpiByEmployeeKpiId = async (kpiId) => {
+    let kpipersonal = await KPIPersonal.findById(kpiId)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -195,14 +195,14 @@ exports.getById = async (id) => {
  * Lấy tất cả công việc theo Id
  * @param {*} data 
  */
-exports.getTaskById = async (data) => {
+exports.getTaskByKpiId = async (data) => {
     let task = await getResultTaskByMonth(data);
 
     for (let i = 0; i < task.length; i++) {
         let date1 = await task[i].preEvaDate;
         let date2 = await task[i].date;
-        let Difference_In_Time = await date2.getTime() - date1.getTime();
-        let daykpi = await Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+        let difference_In_Time = await date2.getTime() - date1.getTime();
+        let daykpi = await Math.ceil(difference_In_Time / (1000 * 3600 * 24));
 
         if (daykpi > 30) 
             daykpi = 30;
@@ -218,10 +218,10 @@ exports.getTaskById = async (data) => {
  * Lấy điểm hệ thống
  * @param {*} id 
  */
-exports.getSystemPoint = async (id) => {
-    let task = await Task.find({ kpi: id })
+exports.getSystemPoint = async (kpiId) => {
+    let task = await Task.find({ kpi: kpiId })
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
-    let kpi = await DetailKPIPersonal.findById(id);
+    let kpi = await DetailKPIPersonal.findById(kpiId);
 
     let sum = 0, i = 0;
     for (i = 0; i < task.length; i++) {
@@ -230,23 +230,9 @@ exports.getSystemPoint = async (id) => {
 
     let systempoint = sum / task.length * kpi.weight / 100;
 
-    let kpipersonal = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint } }, { new: true });
+    let kpipersonal = await DetailKPIPersonal.findByIdAndUpdate(kpiId, { $set: { systempoint: systempoint } }, { new: true });
     return kpipersonal;
 }
-
-/**
- * Chấm điểm KPI
- * @param {*} id_kpi 
- * @param {*} id_target 
- * @param {*} data 
- */
-exports.setPointKPI = async (id_kpi, id_target, data) => {
-    let kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, { $set: { approverpoint: data.point } }, { new: true });
-    let kpipersonal = await KPIPersonal.findById(id_kpi)
-        .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonal;
-};
 
 /**
  * Chấm điểm độ quan trọng của công việc
@@ -254,14 +240,14 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
  * @param {*} kpiType 
  * @param {*} data 
  */
-exports.setTaskImportanceLevel = async (id, kpiType, data) => {
+exports.setTaskImportanceLevel = async (kpiId, kpiType, data) => {
 
     let date = new Date(data[0].date);
     for (const element of data) {
         let setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, parseInt(element.point), element.date);
     };
     let key = {
-        id: id,
+        id: kpiId,
         date: data[0].date,
         employeeId: data[0].employeeId,
         kpiType: kpiType
@@ -281,8 +267,8 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
         let date1 = element.preEvaDate;
         let date2 = element.date;
-        let Difference_In_Time = date2.getTime() - date1.getTime();
-        let daykpi = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+        let difference_In_Time = date2.getTime() - date1.getTime();
+        let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         if (daykpi > 30) daykpi = 30;
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
@@ -291,7 +277,7 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
     }
     let n = task.length;
-    let result = await DetailKPIPersonal.findByIdAndUpdate(id, {
+    let result = await DetailKPIPersonal.findByIdAndUpdate(kpiId, {
         $set: {
             "automaticPoint": Math.round(autoPoint / sumTaskImportance),
             "employeePoint": Math.round(employPoint / sumTaskImportance),
@@ -348,7 +334,7 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
         { $match: { year: year } }
     ])
     if (task.length !== 0) {
-        let setPoint = await Task.findOneAndUpdate(
+        var setPoint = await Task.findOneAndUpdate(
             {
                 "evaluations._id": task[0]._id
             },
@@ -397,7 +383,7 @@ async function getResultTaskByMonth(data) {
     ]
     if (kpiType === "Responsible") {
         conditions.unshift({
-            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
+            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.kpiId) }
         });
     }
 

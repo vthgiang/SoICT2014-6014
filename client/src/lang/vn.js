@@ -2273,8 +2273,8 @@ export default {
                 get_task_by_id_fail: 'Lấy danh sách công việc theo Id lỗi',
                 get_system_point_success: 'Lấy điểm hệ thống cho KPI thành công',
                 get_system_point_fail: 'Lấy điểm hệ thống cho KPI lỗi',
-                set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
-                set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
+                set_task_importance_level_success: 'Thêm độ quan trọng cho công việc thành công',
+                set_task_importance_level_fail:'Thêm độ quan trọng cho công việc lỗi'
             },
             organizational_unit: {
                 // Module chính
