@@ -928,8 +928,8 @@ class ActionTab extends Component {
                                                     onFilesError={this.onFilesError}
                                                     files={newActionEdited.files}
                                                     defaultValue = {item.description}
-                                                    submitButtonText={"Gửi chỉnh sửa"}
-                                                    cancelButtonText= {"Hủy bỏ"}
+                                                    submitButtonText={translate("task.task_perform.save_edit")}
+                                                    cancelButtonText= {translate("task.task_perform.cancel")}
                                                     handleEdit = {(e) => this.handleEditAction(e)}
                                                     onTextChange={(e)=>{
                                                         let value = e.target.value;

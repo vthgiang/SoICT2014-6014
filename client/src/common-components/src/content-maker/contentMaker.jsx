@@ -32,7 +32,16 @@ class ContentMaker extends Component {
             }
         });
     }
-
+    pressEnter = (event) => {
+        let code = event.keyCode || event.which;
+        if(code === 13) { 
+            let { onSubmit } = this.props
+            onSubmit(event)
+        } 
+        if (code == 13 && !event.shiftKey) {
+            event.preventDefault();
+        }
+    }
     render() {
         const { translate } = this.props;
         const {
@@ -66,7 +75,9 @@ class ContentMaker extends Component {
                             value={text}
                             style = {styletext}
                             defaultValue={defaultValue}
-                            onChange={onTextChange}/>
+                            onChange={onTextChange}
+                            onKeyPress={(e) => {this.pressEnter(e)}}
+                        />
                            
                             
                         {this.state.showDropFileHere &&

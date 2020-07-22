@@ -253,11 +253,9 @@ function deleteFileAction(fileId, actionId, taskId, type) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/files/${fileId}`,
         method: 'PATCH',
-        data: type,
     }, false, true, 'task.task_perform');
 };
 function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
-    console.log("Chạy đến đây")
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/files/${fileId}`,
         method: 'PATCH',
@@ -267,15 +265,13 @@ function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
 function deleteFileTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/files/${fileId}`,
-        method: 'PATCH',
-
+        method: 'PATCH'
     }, false, true, 'task.task_perform');
 };
 function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments/files/${fileId}`,
         method: 'PATCH',
-        // data: type
     }, false, true, 'task.task_perform');
 }
 // Hàm thêm nhật ký cho một công việc
