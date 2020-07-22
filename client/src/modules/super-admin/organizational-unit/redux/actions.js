@@ -9,6 +9,9 @@ export const DepartmentActions = {
     getDepartmentsThatUserIsDean,
 }
 
+/**
+ * Lấy danh sách các đơn vị trong công ty
+ */
 function get(){
     return dispatch => {
         dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_REQUEST});
@@ -25,6 +28,10 @@ function get(){
     }
 }
 
+/**
+ * Tạo đơn vị 
+ * @data thông tin về đơn vị
+ */
 function create(data){
     return dispatch => {
         dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_REQUEST});
@@ -42,6 +49,10 @@ function create(data){
     }
 }
 
+/**
+ * Chỉnh sửa thông tin đơn vị
+ * @data dữ liệu sửa
+ */
 function edit(data){
     return dispatch => {
         dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_REQUEST});
@@ -59,6 +70,10 @@ function edit(data){
     }
 }
 
+/**
+ * Xóa đơn vị
+ * @departmentId id của đơn vị
+ */
 function destroy(departmentId){
     return dispatch => {
         dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
@@ -78,7 +93,9 @@ function destroy(departmentId){
     }
 }
 
-
+/**
+ * Lấy thông tin đơn vị mà user làm trưởng
+ */
 function getDepartmentsThatUserIsDean(){
     return dispatch => {
         dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});

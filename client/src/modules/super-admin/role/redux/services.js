@@ -6,7 +6,7 @@ export const RoleServices = {
     show,
     create,
     edit,
-    destroy
+    destroy,
 };
 
 function get(params) {

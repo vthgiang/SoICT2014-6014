@@ -9,9 +9,11 @@ export const ComponentActions = {
     destroy,
 }
 
-
+/**
+ * Lấy danh sách các component của công ty
+ */
 function get(data){
-    if (data !== undefined){
+    if (data){
         return dispatch => {
             dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
             ComponentServices.get(data)
@@ -36,6 +38,10 @@ function get(data){
     }
 }
 
+/**
+ * Lấy component theo id
+ * @id id component
+ */
 function show(id){
     return dispatch => {
         dispatch({ type: ComponentConstants.SHOW_COMPONENT_REQUEST});
@@ -52,6 +58,10 @@ function show(id){
     }
 }
 
+/**
+ * Tạo component
+ * @component dữ liệu component
+ */
 function create(component){
     return dispatch => {
         dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
@@ -68,6 +78,11 @@ function create(component){
     }
 }
 
+/**
+ * Sửa component
+ * @id id component
+ * @component dữ liệu
+ */
 function edit(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
@@ -83,6 +98,10 @@ function edit(id, component){
     }
 }
 
+/**
+ * Xóa component
+ * @id id component
+ */
 function destroy(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.DELETE_COMPONENT_REQUEST});
