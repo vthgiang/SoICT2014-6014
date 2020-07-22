@@ -11,13 +11,12 @@ router.post('/add-result/create', auth, PerformTaskController.createResultInfoTa
 router.post('/information-task-template/create', auth, PerformTaskController.createTaskInformation);
 router.put('/information-task-template', auth, PerformTaskController.editTaskInformation);
 router.post('/logs/history', auth, PerformTaskController.addTaskLog);
-router.get('/logs/:id', auth, PerformTaskController.getTaskLog);
+router.get('/logs/:taskId', auth, PerformTaskController.getTaskLog);
 
 
-//result task
-router.post('/', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
-router.post('/result-task/create', auth, PerformTaskController.createTaskResult);
-router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
+//upload file
+router.post('/tasks/:taskId/upload-files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
+
 
 
 //Task Action

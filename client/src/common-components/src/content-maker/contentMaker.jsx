@@ -89,14 +89,14 @@ class ContentMaker extends Component {
                 </Files>
                 <div className={controlCssClass}>
                     <div style={{textAlign: "right"}}>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e)=>{
+                        <a style = {{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a style = {{ cursor: "pointer" }} className="link-black text-sm" onClick={(e)=>{
                                 onSubmit(e);
                                 this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
                             }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
                         </a>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick ={handleEdit}>{cancelButtonText}</a>
+                        <a style = {{ cursor: "pointer" }} className="link-black text-sm" onClick ={handleEdit}>{cancelButtonText}</a>
                     </div>           
                     {files && files.length>0 &&
                         <div className='files-list'>
@@ -109,7 +109,7 @@ class ContentMaker extends Component {
                                     </React.Fragment>    
                                     : 
                                     <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        <a style = {{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>

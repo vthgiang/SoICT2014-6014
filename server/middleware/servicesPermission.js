@@ -314,7 +314,7 @@ exports.data = [
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/:task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    
+    { path: '/performtask/tasks/:taskId/upload-files', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     
     //task action
     { path: '/performtask/tasks/:taskId/task-actions', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -342,7 +342,7 @@ exports.data = [
     
     //comment of task comment
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
@@ -354,7 +354,7 @@ exports.data = [
     { path: '/performtask/result-task', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     // add task log
     { path: '/performtask/logs/history', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/logs/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/logs/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     // edit task - evaluate task
     { path: '/performtask/edit/task-responsible/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/edit/task-accountable/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
