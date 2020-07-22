@@ -142,6 +142,11 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
+    if (!task){
+        return {
+            "info": true
+        }
+    }
     var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
     responsibleEmployees = task.responsibleEmployees;
     accountableEmployees = task.accountableEmployees;
@@ -154,7 +159,7 @@ exports.getTaskById = async (id, userId) => {
             break;
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in accountableEmployees) {
             if (accountableEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -162,7 +167,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in consultedEmployees) {
             if (consultedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -170,7 +175,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in informedEmployees) {
             if (informedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -178,13 +183,13 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){    // Trưởng đơn vị được phép xem thông tin công việc
-        let roleId =  task.organizationalUnit.deans;
-        let user = await UserRole.find({roleId: roleId});
-        userList = user.map( item => item.userId );
-        if (!flag){
-            for (let n in userList){
-                if (userList[n].equals(userId)){
+    if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
+        let roleId = task.organizationalUnit.deans;
+        let user = await UserRole.find({ roleId: roleId });
+        userList = user.map(item => item.userId);
+        if (!flag) {
+            for (let n in userList) {
+                if (userList[n].equals(userId)) {
                     flag = 1;
                     break;
                 }
@@ -196,7 +201,7 @@ exports.getTaskById = async (id, userId) => {
     }
     if (flag === 0) {
         return {
-            "info": null
+            "info": true
         }
     }
     task.evaluations.reverse();
@@ -287,7 +292,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     };
 
-    if (startDate ) {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -958,6 +963,7 @@ exports.getSubTask = async (taskId) => {
     var task = await Task.find({
         parent: taskId
     }).sort("createdAt")
+
     return task;
 }
 
@@ -984,11 +990,13 @@ exports.getTasksByUser = async (data) => {
         if (test < 0) {
             test = olddate - nowdate;
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            var tasktest = {
-                task: tasks[i],
-                totalDays: totalDays
+            if(totalDays <= 7) {
+                var tasktest = {
+                    task: tasks[i],
+                    totalDays: totalDays
+                }
+                deadlineincoming.push(tasktest);
             }
-            deadlineincoming.push(tasktest);
         } else {
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
             var tasktest = {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { DatePicker } from '../../../../../common-components/index'
 import { taskManagementActions } from '../../../task-management/redux/actions'
-import { ModelDetailTask } from './detailTask'
+import { ModalDetailTask } from './modalDetailTask'
 import Swal from 'sweetalert2'
 import moment from 'moment'
 import Timeline from "react-calendar-timeline"
@@ -219,7 +219,7 @@ class TasksSchedule extends Component {
     return (
       <React.Fragment>
         <div className="box-body qlcv">
-          {<ModelDetailTask task={task} />}
+          {<ModalDetailTask task={task} />}
           <div className="flex-right">
             <div className="form-inline">
               <div className="form-group">

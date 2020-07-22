@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -159,7 +160,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     /** Select month start in box */
     handleSelectMonthStart = (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
@@ -179,13 +180,13 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     handleSearchData = async () => {
         var startDate = new Date(this.INFO_SEARCH.startDate);
         var endDate = new Date(this.INFO_SEARCH.endDate);
-
+        const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
-                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                title:  translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
             })
         } else {
             await this.setState(state => {
@@ -209,7 +210,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.removePreviosChart();
         
         var dataChart, xs = {};
-
+        const {translate}= this.props;
         dataChart = this.setDataMultiLineChart();
         
         for(let i=0; i<dataChart.length; i=i+2) {
@@ -221,19 +222,19 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {                              // Căn lề biểu đồ
+            padding: {                              
                 top: 20,
                 bottom: 20,
                 right: 20
             },
 
-            data: {                                 // Dữ liệu biểu đồ
+            data: {                                 
                 xs: xs,
                 columns: dataChart,
                 type: 'spline'
             },
 
-            axis : {                                // Config trục tọa độ
+            axis : {                                
                 x : {
                     type : 'timeseries',
                     tick: {
@@ -244,7 +245,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     max: 100,
                     min: 0,
                     label: {
-                        text: 'Điểm',
+                        text: translate('kpi.organizational_unit.dashboard.point'),
                         position: 'outer-right'
                     },
                     padding: {
@@ -258,14 +259,14 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var organizationalUnitKpiSetsOfChildUnit;
 
         if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
         }
 
-        var d = new Date(),
+        let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -274,36 +275,36 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultEndDate = [month, year].join('-');
-        var defaultStartDate = ['01', year].join('-');
+        let defaultEndDate = [month, year].join('-');
+        let defaultStartDate = ['01', year].join('-');
 
         return (
             <React.Fragment>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Từ tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 
                             id="monthStartInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultStartDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultStartDate}                
                             onChange={this.handleSelectMonthStart}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                    
                         />
                     </div>
                 </section>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Đến tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
                         <DatePicker 
                             id="monthEndInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultEndDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultEndDate}                   
                             onChange={this.handleSelectMonthEnd}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                    
                         />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
                     </div>
                 </section>
 
@@ -329,5 +330,5 @@ const actions = {
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
 }
 
-const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfAllOrganizationalUnitKpiChart);
+const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfAllOrganizationalUnitKpiChart));
 export { connectedResultsOfAllOrganizationalUnitKpiChart as ResultsOfAllOrganizationalUnitKpiChart };

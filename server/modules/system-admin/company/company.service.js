@@ -345,12 +345,17 @@ exports.addCompanyLink = async (companyId, data) => {
                 foreignField: "name",
                 as: "roles"
             } },
+
+            { $unwind: '$roles' },
+            { $replaceRoot: { newRoot: '$roles' } },
+
+            { $match: { 'company': newLink.company } },
         ])
         
         await Privilege.create({
             'resourceId': newLink._id,
             'resourceType': 'Link',
-            'roleId': role[0].roles[0]._id
+            'roleId': role[0]._id
         })
     }
 

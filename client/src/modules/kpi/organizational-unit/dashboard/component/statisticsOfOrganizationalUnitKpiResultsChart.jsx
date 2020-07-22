@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -28,7 +29,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     componentDidMount = () => {
         if(this.props.organizationalUnitId) {
-            // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
         }
     }
@@ -45,7 +45,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             this.columnChart();
         }
 
-        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
             
@@ -60,7 +59,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
-            // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
 
             this.setState(state => {
@@ -71,9 +69,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             });
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            // Kiểm tra currentKPI đã được bind vào props hay chưa
             if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpiSets) {
-                return false            // Đang lấy dữ liệu, ko cần render lại
+                return false           
             }
 
             this.setState(state =>{
@@ -123,9 +120,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     // Lọc và đếm số người có cùng điểm
     filterAndCountEmployeeWithTheSamePoint = (arrayPoint) => {
-        var point = Array.from(new Set(arrayPoint));
-        var employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
-
+        let point = Array.from(new Set(arrayPoint));
+        let employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
+        const {translate} = this.props;
         point.sort(function(a, b) {
             return a - b;
         });
@@ -143,7 +140,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         })
 
         point.unshift('x');
-        countEmployeeWithTheSamePoint.unshift('Số người cùng điểm');
+        countEmployeeWithTheSamePoint.unshift(translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.count_employee_same_point'));
 
         employeeWithTheSamePoints = [
             point,
@@ -155,9 +152,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     // Thiết lập dataChart
     setDataColumnChart = () => {
-        const { dashboardOrganizationalUnitKpi } = this.props;
-        var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
-        var employeeWithTheSamePoints, textLabel;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
+        let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
+        let employeeWithTheSamePoints, textLabel;
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
@@ -173,13 +170,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         // Lấy dữ liệu các loại điểm mà this.state.kindOfPoint có
         if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
-            textLabel = 'Giá trị điểm hệ thống đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.automatic_point');
         } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(employeePoint);
-            textLabel = 'Giá trị điểm cá nhân tự đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.employee_point');
         } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
-            textLabel = 'Giá trị điểm quản lý đánh giá';
+            textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.approved_point');
         }
         
         
@@ -201,7 +198,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     columnChart = () => {
         this.removePreviosChart();
 
-        var dataPoints, dataChart, textLabel;
+        let dataPoints, dataChart, textLabel;
 
         dataPoints = this.setDataColumnChart();
         dataChart = dataPoints.employeeWithTheSamePoints;
@@ -210,7 +207,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {                              // Căn lề biểu đồ
+            padding: {                             
                 top: 20,
                 bottom: 20,
                 right: 20
@@ -233,12 +230,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     label: {
                         text: textLabel,
                         position: 'outer-center',
-                        // inner-right : default
-                        // inner-center
-                        // inner-left
-                        // outer-right
-                        // outer-center
-                        // outer-left
                     },
                     padding: {
                         right: 10,
@@ -249,12 +240,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     label: {
                         text: 'Số người cùng điểm',
                         position: 'outer-middle',
-                        // inner-top : default
-                        // inner-middle
-                        // inner-bottom
-                        // outer-top
-                        // outer-middle
-                        // outer-bottom
                     },
                     padding: {
                         right: 10,
@@ -270,7 +255,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var listEmployeeKpiSet;
 
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
@@ -289,7 +274,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
                         <section ref="chart"></section>
                     </section>
-                    : <section>Không có dữ liệu</section>
+                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
@@ -304,5 +289,5 @@ const actions = {
     getAllEmployeeKpiSetInOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiSetInOrganizationalUnit
 }
 
-const connectedStatisticsOfOrganizationalUnitKpiResultsChart = connect(mapState, actions)(StatisticsOfOrganizationalUnitKpiResultsChart);
+const connectedStatisticsOfOrganizationalUnitKpiResultsChart = connect(mapState, actions)(withTranslate(StatisticsOfOrganizationalUnitKpiResultsChart));
 export { connectedStatisticsOfOrganizationalUnitKpiResultsChart as StatisticsOfOrganizationalUnitKpiResultsChart }

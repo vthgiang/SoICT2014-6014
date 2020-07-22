@@ -119,7 +119,7 @@ class TaskStatusChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { tasks } = this.props;
+        const { tasks, translate } = this.props;
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
         let listTask;
 
@@ -185,11 +185,11 @@ class TaskStatusChart extends Component {
         }
 
         dataPieChart = [
-            ["Inprocess", numberOfInprocess],
-            ["WaitForApproval", numberOfWaitForApproval],
-            ["Finished", numberOfFinished],
-            ["Delayed", numberOfDelayed],
-            ["Canceled", numberOfCanceled]
+            [translate('task.task_management.inprocess'), numberOfInprocess],
+            [translate('task.task_management.wait_for_approval'), numberOfWaitForApproval],
+            [translate('task.task_management.finished'), numberOfFinished],
+            [translate('task.task_management.delayed'), numberOfDelayed],
+            [translate('task.task_management.canceled'), numberOfCanceled]
         ];
 
         return dataPieChart;

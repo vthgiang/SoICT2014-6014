@@ -191,10 +191,14 @@ class TaskTemplate extends Component {
 
     render() {
         const { translate } = this.props;
-        var list, pageTotal, units = [], currentUnit;
         const { tasktemplates, user } = this.props;
         const { currentPage } = this.state;
-        if (tasktemplates.pageTotal) pageTotal = tasktemplates.pageTotal;
+
+        var list, pageTotal, units = [], currentUnit;
+
+        if (tasktemplates.pageTotal){
+            pageTotal = tasktemplates.pageTotal;
+        } 
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
@@ -218,9 +222,9 @@ class TaskTemplate extends Component {
                         <ModalAddTaskTemplate />
                         <div class = "form-inline">
                             <div class ="dropdown pull-right" style={{marginBottom: 15}}>
-                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>Thêm mới</button>
+                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                 <ul className="dropdown-menu pull-right">
-                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>Add</a></li>
+                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>{translate('task_template.add')}</a></li>
                                     <li><a href="#modal_import_file" title="ImportForm" onClick={(event)=>{this.handImportFile(event)}}>ImportFile</a></li>
                                 </ul>
                             </div>

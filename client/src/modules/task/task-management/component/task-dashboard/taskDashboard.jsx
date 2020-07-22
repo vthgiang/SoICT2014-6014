@@ -198,9 +198,10 @@ class TaskDashboard extends Component {
 
                             <div className="box-body" style={{ height: "300px" }}>
                                 {
-                                    (tasks && tasks.tasksbyuser && tasks.tasksbyuser.expire.length !== 0) ?
+                                    (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
+                                                (tasks.tasksbyuser.expire.length !== 0)?
                                                 tasks.tasksbyuser.expire.map((item, key) =>
                                                     <li key={key}>
                                                         <span className="handle">
@@ -210,9 +211,9 @@ class TaskDashboard extends Component {
                                                         <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
                                                         <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                     </li>
-                                                )
+                                                ): "Không có công việc quá hạn"
                                             }
-                                        </ul> : "Không có công việc quá hạn"
+                                        </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
                         </div>
@@ -224,9 +225,10 @@ class TaskDashboard extends Component {
                             </div>
                             <div className="box-body" style={{ height: "300px" }}>
                                 {
-                                    (tasks && tasks.tasksbyuser && tasks.tasksbyuser.deadlineincoming.length !== 0) ?
+                                    (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
+                                                (tasks.tasksbyuser.deadlineincoming.length !== 0)?
                                                 tasks.tasksbyuser.deadlineincoming.map((item, key) =>
                                                     <li key={key}>
                                                         <span className="handle">
@@ -236,9 +238,9 @@ class TaskDashboard extends Component {
                                                         <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
                                                         <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                     </li>
-                                                )
+                                                ):"Không có công việc nào sắp hết hạn"
                                             }
-                                        </ul> : "Không có công việc nào sắp hết hạn"
+                                        </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
 
