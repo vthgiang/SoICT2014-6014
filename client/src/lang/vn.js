@@ -298,7 +298,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Tạo system component thành công',
-                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                get_system_component_success: 'Lấy dữ liệu system component thành công',
                 edit_system_component_success: 'Chỉnh sửa system admin thành công',
                 delete_system_component_success: 'Xóa system component thành công',
 
@@ -1762,8 +1762,8 @@ export default {
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
                 
-                add_tempalte: 'Mẫu công việc',
-                add_tempalte_notice: 'Hãy chọn mẫu công việc',
+                add_template: 'Mẫu công việc',
+                add_template_notice: 'Hãy chọn mẫu công việc',
                 add_parent_task: 'Công việc cha',
                 add_parent_task_notice: 'Hãy chọn công việc cha',
                 add_raci: 'Phân định trách nhiệm',
@@ -1805,6 +1805,18 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                // add_err: 
+                add_err_empty_unit: 'Đơn vị không được để trống',
+                add_err_empty_name: 'Tên không được để trống',
+                add_err_empty_description: 'Mô tả công việc không được để trống',
+                add_err_empty_start_date: 'Hãy chọn ngày bắt đầu',
+                add_err_empty_end_date: 'Hãy chọn ngày kết thúc',
+                add_err_empty_responsible: 'Cần chọn người thực hiện',
+                add_err_empty_accountable: 'Cần chọn người phê duyệt',
+
+                add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
+                add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
             },
             task_perform: {
 
@@ -1840,34 +1852,6 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 // TODO: code_mesage_task_perform
@@ -2166,7 +2150,17 @@ export default {
                     number_of_employee: 'Số nhân viên',
                     excellent_employee: 'Nhân viên ưu tú',
                     best_employee: 'Nhân viên xuất sắc nhất',
-                    month: 'Tháng'
+                    month: 'Tháng',
+                    auto_point: 'Điểm tự động',
+                    employee_point: 'Điểm tự đánh giá',
+                    approve_point: 'Điểm người phê duyệt đánh giá',
+                    option: 'Tùy chọn',
+                    analyze: 'Phân tích',
+                    statistics_chart_title: 'Thống kê kết quả KPI của nhân viên',
+                    result_kpi_titile: 'Kết quả Kpi tất cả nhân viên',
+                    auto_eva: 'Hệ thống đánh giá',
+                    employee_eva: 'Cá nhân tự đánh giá',
+                    approver_eva: 'Người phê duyệt đánh giá',
                 },
 
                 employee_evaluation:{
@@ -2228,6 +2222,7 @@ export default {
                      * Management
                      */
                     wrong_time: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                    confirm: 'Xác nhận',
                     choose_employee: 'Chọn nhân viên',
                     employee: 'Nhân viên',
                     choose_status: 'Chọn trạng thái',
@@ -2390,6 +2385,40 @@ export default {
                     weight: 'Trọng số',
                     edit_target_success: 'Chỉnh sửa mục tiêu KPI thành công',
                     edit_target_failure: 'Bạn chưa nhập đủ thông tin'
+                },
+
+                // Dashboard KPI Unit
+                dashboard: {
+                    organizational_unit: 'Đơn vị',
+                    month: 'Tháng',
+                    trend: 'Xu hướng thực hiện mục tiêu của nhân viên',
+                    distributive: 'Phân phối KPI đơn vị tháng ',
+                    statiscial: 'Thống kê kết quả KPI đơn vị tháng ',
+                    result_kpi_unit: 'Kết quả KPI đơn vị',
+                    start_date: 'Từ tháng',
+                    end_date: 'Đến tháng',
+                    search: 'Tìm kiếm',
+                    point: 'Điểm',
+                    no_data: 'Không có dữ liệu',
+                    trend_chart: {
+                        execution_time: 'Thời gian thực hiện (Ngày)',
+                        participants: 'Người tham gia',
+                        amount_tasks: 'Số lượng công việc',
+                        amount_child_kpi: 'Số lượng KPI con',
+                        weight: 'Trọng số'
+                    },
+                    result_kpi_unit_chart: {
+                        automatic_point: 'Hệ thống đánh giá',
+                        employee_point: 'Cá nhân tự đánh giá',
+                        approved_point: 'Quản lý đánh giá',
+                    },
+                    alert_search: {
+                        search: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                        confirm: 'Xác nhận'
+                    },
+                    statistic_kpi_unit:{
+                        count_employee_same_point: 'Số người có cùng điểm'
+                    }
                 },
 
                 //Thông điệp khác trả về từ server

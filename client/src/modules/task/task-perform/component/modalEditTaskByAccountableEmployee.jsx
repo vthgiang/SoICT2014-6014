@@ -123,6 +123,30 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
 
+    
+    componentDidMount() {
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorTaskName: undefined,
+                errorTaskDescription: undefined
+
+            }
+        } else {
+            return null;
+        }
+    }
+
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
         let d = new Date(date),
@@ -227,18 +251,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
 
     validateInfoBoolean = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = "Giá trị bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
     }
 
     validateTextInfo = (value) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = "Giá trị không được để trống"
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -829,30 +855,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.props.editTaskByAccountableEmployees(data, taskId);
 
         this.handleAddTaskLog(inactiveEmployees);
-    }
-
-    componentDidMount() {
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('PARENT nextProps, prevState', nextProps, prevState);
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined,
-                errorTaskName: undefined,
-                errorTaskDescription: undefined
-
-            }
-        } else {
-            return null;
-        }
     }
 
     formatPriority = (data) => {

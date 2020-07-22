@@ -298,7 +298,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Add system component success',
-                show_system_component_success: 'Get data success',
+                get_system_component_success: 'Get data success',
                 edit_system_component_success: 'Edit system component success',
                 delete_system_component_success: 'Delete system component success',
 
@@ -1614,8 +1614,8 @@ export default {
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
                 
-                add_tempalte: 'Task template',
-                add_tempalte_notice: 'Selected task template',
+                add_template: 'Task template',
+                add_template_notice: 'Selected task template',
                 add_parent_task: 'Parent of task',
                 add_parent_task_notice: 'Select parent of task',
                 add_raci: 'Assignment of responsibility',
@@ -1657,6 +1657,16 @@ export default {
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
                 
+                // add_err: 
+                add_err_empty_unit: 'Unit should not be empty',
+                add_err_empty_name: 'Name should not be empty',
+                add_err_empty_description: 'Description should not be empty',
+                add_err_empty_start_date: 'Start date should not be empty',
+                add_err_empty_end_date: 'End date should not be empty',
+                add_err_empty_responsible: 'Responsible should not be empty',
+                add_err_empty_accountable: 'Accountable should not be empty',
+                add_err_special_character: 'This field should not be have special character',
+                add_err_end_date: 'End date should be after start date',
             },
             task_perform: {
                 actions: "Actions",
@@ -1691,14 +1701,6 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
-
-
-
-
-
-
-
-
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -1986,7 +1988,17 @@ export default {
                     number_of_employee: 'Number of employees',
                     excellent_employee: 'Excellent Employees',
                     best_employee: 'Best employee',
-                    month: 'Month'
+                    month: 'Month',
+                    auto_point: 'Automatic Point',
+                    employee_point: 'Employee Point',
+                    approve_point: 'Approve Point',
+                    option: 'Options',
+                    analyze: 'Analyze',
+                    statistics_chart_title: 'Statistics KPI of employees',
+                    result_kpi_titile: 'Result KPI of all employees',
+                    auto_eva: 'Evaluated automatically',
+                    employee_eva: 'Evaluated by Employee',
+                    approver_eva: 'Evaluated by Approver',
                 },
 
                 employee_evaluation:{
@@ -2034,7 +2046,7 @@ export default {
                     calc_kpi_point: 'Caculate KPI point',
                     export_file: 'Export file',
                     KPI_info: 'Infomation of ',
-                    point_field: 'Point (Automatic - Yourself - Approver)',
+                    point_field: 'Point (Automatic - Employee - Approver)',
                     not_avaiable: 'Not evaluated',
                     lastest_evaluation: 'Lastest evaluation',
                     task_list: 'Task list',
@@ -2049,7 +2061,8 @@ export default {
                     /**
                      * Management
                      */
-                    wrong_time: 'Start time has to earlier than end time',
+                    wrong_time: 'Start time should be earlier than end time',
+                    confirm:'Confirm',
                     choose_employee: 'Choose employee',
                     employee: 'Employee',
                     choose_status: 'Choose status',
@@ -2214,7 +2227,44 @@ export default {
                     edit_target_success: 'Edit KPI target successful',
                     edit_target_failure: 'You have not entered enough information'
                 },
+                // Dashboard KPI Unit
+                dashboard: {
+                    organizational_unit: 'Department',
+                    month: 'Month',
+                    trend: 'Implement target trend of employee',
+                    distributive: 'Distributive KPI unit in ',
+                    statiscial: 'Statistical result of KPI unit in',
+                    result_kpi_unit: 'Result of KPI unit',
+                    result_kpi_units: 'Result of KPI units',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    search: 'Search',
+                    point: 'Point',
+                    no_data: 'No data',
+                    trend_chart: {
+                        execution_time: 'Execution time (Days)',
+                        participants: 'Participants',
+                        amount_tasks: 'Amount of tasks',
+                        amount_child_kpi: 'Amount of child KPI',
+                        weight: 'Weight'
+                    },
+                    result_kpi_unit_chart: {
+                        automatic_point: 'Automatic point',
+                        employee_point: 'Employee point',
+                        approved_point: 'Approved point',
+                    },
+                    alert_search: {
+                        search: 'The start time must be before or equal to the end time!',
+                        confirm: 'Confirm'
+                    },
+                    statistic_kpi_unit:{
+                        count_employee_same_point: 'Count Employee With The Same Point',
+                        automatic_point: 'Automatic point',
+                        employee_point: 'Employee point',
+                        approved_point: 'Approved point',
 
+                    }
+                },
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success: 'Get KPI by parent unit successfully',
                 get_parent_by_unit_failure: 'Get KPI by parent unit unsuccessfully',

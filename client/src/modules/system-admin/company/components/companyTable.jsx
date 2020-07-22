@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { CompanyActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../system-link/redux/actions';
-import { ComponentDefaultActions } from '../../system-component/redux/actions';
+import { SystemLinkActions } from '../../system-link/redux/actions';
+import { SystemComponentActions } from '../../system-component/redux/actions';
 
 import { CompanyEditForm } from './companyEditForm';
 import { CompanyServicesForm } from './companyServiceForm';
@@ -29,8 +29,8 @@ class CompanyTable extends Component {
     componentDidMount(){
         this.props.get();
         this.props.get({page: this.state.page, limit: this.state.limit});
-        this.props.getLinksDefault();
-        this.props.getComponentsDefault();
+        this.props.getAllSystemLinks();
+        this.props.getAllSystemComponents();
     }
     
     setOption = (title, option) => {
@@ -184,31 +184,33 @@ class CompanyTable extends Component {
                     <tbody>
                         {
                             company.listPaginate.length > 0 ?
-                            <React.Fragment>
-                                {
-                                    company.listPaginate.map( com => 
-                                        <tr 
-                                            key={ com._id } 
-                                            className={com.active ? "bg bg-white" : "bg bg-gray"}
-                                        >
-                                            <td>{ com.name }</td>
-                                            <td>{ com.shortName }</td>
-                                            <td>{ com.description }</td>
-                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
-                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
-                                            <td style={{ textAlign: 'center'}}>
-                                            <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('system_admin.company.edit')}><i className="material-icons">edit</i></a>
-                                            <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('system_admin.company.service')}><i className="material-icons">dvr</i></a>
-                                            </td>
-                                        </tr>    
-                                    )
-                                }
-                            </React.Fragment> : company.isLoading ?
-                            <tr><td colSpan='6'>{translate('general.loading')}</td></tr>:
-                            <tr><td colSpan='6'>{translate('general.no_data')}</td></tr>
+                                <React.Fragment>
+                                    {
+                                        company.listPaginate.map(com => 
+                                            <tr 
+                                                key={ com._id } 
+                                                className={com.active ? "bg bg-white" : "bg bg-gray"}
+                                            >
+                                                <td>{ com.name }</td>
+                                                <td>{ com.shortName }</td>
+                                                <td>{ com.description }</td>
+                                                <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
+                                                <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
+                                                <td style={{ textAlign: 'center'}}>
+                                                <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('system_admin.company.edit')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('system_admin.company.service')}><i className="material-icons">dvr</i></a>
+                                                </td>
+                                            </tr>    
+                                        )
+                                    }
+                                </React.Fragment> 
+                                : company.isLoading ?
+                                    <tr><td colSpan='6'>{translate('general.loading')}</td></tr>
+                                    : <tr><td colSpan='6'>{translate('general.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
+                
                 {/* Paginate Bar */}
                 <PaginateBar pageTotal={company.totalPages} currentPage={company.page} func={this.setPage}/>
             </React.Fragment>
@@ -223,8 +225,8 @@ function mapState(state) {
 const action = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
-    getLinksDefault: LinkDefaultActions.get,
-    getComponentsDefault: ComponentDefaultActions.get,
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
+    getAllSystemComponents: SystemComponentActions.getAllSystemComponents,
     linksList: CompanyActions.linksList,
     linksPaginate: CompanyActions.linksPaginate,
     componentsList: CompanyActions.componentsList,

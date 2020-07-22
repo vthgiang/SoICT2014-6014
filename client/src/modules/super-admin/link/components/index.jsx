@@ -34,7 +34,7 @@ class ManageLink extends Component {
                                 linkId={ currentRow._id }
                                 linkUrl={ currentRow.url }
                                 linkDescription={ currentRow.description }
-                                linkRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): null }
+                                linkRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): [] }
                             />
                         }
 
@@ -81,7 +81,7 @@ class ManageLink extends Component {
                                             <td>{ link.url }</td>
                                             <td>{ link.category }</td>
                                             <td>{ link.description }</td>
-                                            <td><ToolTip dataTooltip={link.roles? link.roles.map(role => role.roleId.name): "Role is deleted"}/></td>
+                                            <td><ToolTip dataTooltip={link.roles? link.roles.map(role => role.roleId.name): ["Role is deleted"]}/></td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>

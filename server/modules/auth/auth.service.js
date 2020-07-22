@@ -205,9 +205,9 @@ exports.changeInformation = async (id, name, email, avatar=undefined) => {
 
 /**
  * Thay đổi mật khẩu
- * @param {*} id 
- * @param {*} password 
- * @param {*} new_password 
+ * @param {*} id : id người dùng
+ * @param {*} password : mật khẩu cũ
+ * @param {*} new_password : mật khẩu mới
  */
 exports.changePassword = async (id, password, new_password) => {
     const user = await User.findById(id).populate([
@@ -247,7 +247,7 @@ exports.getLinksThatRoleCanAccess = async (idRole) => {
 
 /**
  * Lấy ra thông tn người dùng
- * @param {*} id 
+ * @param {*} id : id người dùng
  */
 exports.getProfile = async (id) => {
     let user = await User

@@ -23,9 +23,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
             parent: undefined,
             weight: "",
             criteria: "",
-
             editing: false,
-
             errorOnName: undefined,
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
@@ -34,7 +32,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
     handleEditTarget = async () => { 
         let id = this.state._id;
-        var newTarget = {
+        let newTarget = {
             name: this.state.name,
             parent: this.state.parent ? this.state.parent : null,
             weight: this.state.weight,
@@ -156,12 +154,12 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         const { translate } = this.props; // Hàm để chuyển sang song ngữ
         const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         
-        var parentKPI;
+        let parentKPI;
         if (createKpiUnit.parent) {
             parentKPI = createKpiUnit.parent;
         }
 
-        var items;
+        let items;
         if (parentKPI === undefined) {
             items = [];
         } else {    

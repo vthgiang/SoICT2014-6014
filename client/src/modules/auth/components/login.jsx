@@ -33,8 +33,8 @@ class Login extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        var { email, password } = this.state;
-        var user = { email, password };
+        let { email, password } = this.state;
+        let user = { email, password };
 		this.props.login(user);
     }
 

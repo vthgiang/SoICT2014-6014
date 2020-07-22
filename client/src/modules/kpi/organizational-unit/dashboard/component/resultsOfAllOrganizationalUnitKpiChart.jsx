@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -179,13 +180,13 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     handleSearchData = async () => {
         var startDate = new Date(this.INFO_SEARCH.startDate);
         var endDate = new Date(this.INFO_SEARCH.endDate);
-
+        const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
-                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                title:  translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
             })
         } else {
             await this.setState(state => {
@@ -209,7 +210,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.removePreviosChart();
         
         var dataChart, xs = {};
-
+        const {translate}= this.props;
         dataChart = this.setDataMultiLineChart();
         
         for(let i=0; i<dataChart.length; i=i+2) {
@@ -244,7 +245,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     max: 100,
                     min: 0,
                     label: {
-                        text: 'Điểm',
+                        text: translate('kpi.organizational_unit.dashboard.point'),
                         position: 'outer-right'
                     },
                     padding: {
@@ -258,7 +259,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate } = this.props;
         var organizationalUnitKpiSetsOfChildUnit;
 
         if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
@@ -281,7 +282,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Từ tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 
                             id="monthStartInResultsOfAllOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -293,7 +294,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                 </section>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Đến tháng</label>
+                        <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
                         <DatePicker 
                             id="monthEndInResultsOfAllOrganizationalUnitKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -303,7 +304,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
                     </div>
                 </section>
 
@@ -329,5 +330,5 @@ const actions = {
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
 }
 
-const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(ResultsOfAllOrganizationalUnitKpiChart);
+const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfAllOrganizationalUnitKpiChart));
 export { connectedResultsOfAllOrganizationalUnitKpiChart as ResultsOfAllOrganizationalUnitKpiChart };

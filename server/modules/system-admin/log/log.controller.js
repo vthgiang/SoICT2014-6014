@@ -1,9 +1,9 @@
-const SystemService = require('./log.service');
+const LogServices = require('./log.service');
 const { LogInfo, LogError } = require('../../../logs');
 
 exports.getLogState = async (req, res) => {
     try {
-        const logState = await SystemService.getLogState();
+        const logState = await LogServices.getLogState();
         
         await LogInfo(req.user.email, 'GET_LOG_STATE');
         res.status(200).json({
@@ -23,7 +23,7 @@ exports.getLogState = async (req, res) => {
 
 exports.toggleLogState = async (req, res) => {
     try {
-        const action = await SystemService.toggleLogState();
+        const action = await LogServices.toggleLogState();
         
         await LogInfo(req.user.email, 'TOGGLE_LOG_STATE');
         res.status(200).json({

@@ -15,14 +15,14 @@ export function log(state = initState, action) {
                 isLoading: true
             }
 
-        case LogConstants.GET_LOG_STATE_REQUEST_SUCCESS:
+        case LogConstants.GET_LOG_STATE_SUCCESS:
             return {
                 ...state,
                 status: action.payload,
                 isLoading: false
             };
 
-        case LogConstants.TOGGLE_LOG_STATE_REQUEST_SUCCESS:
+        case LogConstants.TOGGLE_LOG_STATE_SUCCESS:
             return {
                 ...state,
                 status: action.payload ? !state.status : state.status,

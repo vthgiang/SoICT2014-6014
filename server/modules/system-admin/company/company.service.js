@@ -12,14 +12,15 @@ exports.getAllCompanies = async (query) => {
     let page = query.page;
     let limit = query.limit;
     
-    if (page === undefined && limit === undefined) {
-        return await Company.find()
-        .populate([
-            { path: "links", model: Link },
-            { path: "superAdmin", model: User, select: '_id name email' }
-        ]);
+    if (!page && !limit) {
+        return await Company
+            .find()
+            .populate([
+                { path: "links", model: Link },
+                { path: "superAdmin", model: User, select: '_id name email' }
+            ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
                         ? { [`${query.key}`] : new RegExp(query.value, "i") }
                         : {};
 
@@ -43,7 +44,8 @@ exports.getAllCompanies = async (query) => {
  */
 exports.getCompany = async (id) => {
 
-    return await Company.findById(id)
+    return await Company
+        .findById(id)
         .populate([
             { path: "links", model: Link },
             { path: "superAdmin", model: User, select: '_id name email' }
@@ -127,7 +129,7 @@ exports.createCompanyRootRoles = async (companyId) => {
 exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmail) => {
     
     const checkEmail = await User.findOne({ email: userEmail });
-    if(checkEmail !== null) throw ['email_exist'];
+    if(checkEmail) throw ['email_exist'];
     
     const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
     const salt = await bcrypt.genSaltSync(10);
@@ -322,7 +324,7 @@ exports.addCompanyLink = async (companyId, data) => {
         company: companyId,
         url: data.url
     });
-    if(check !== null) throw['url_exist'];
+    if(check) throw ['url_exist'];
 
     const newLink = await Link.create({
         url: data.url,
@@ -330,6 +332,32 @@ exports.addCompanyLink = async (companyId, data) => {
         category: data.category,
         company: companyId
     });
+
+    const systemLink = await SystemLink.findOne({ 'url': data.url });
+
+    for (let i=0; i<systemLink.roles.length; i++) {
+        const role = await RootRole.aggregate([
+            { $match: { '_id': systemLink.roles[i]._id } },
+
+            { $lookup: {
+                from: "roles",
+                localField: "name",
+                foreignField: "name",
+                as: "roles"
+            } },
+
+            { $unwind: '$roles' },
+            { $replaceRoot: { newRoot: '$roles' } },
+
+            { $match: { 'company': newLink.company } },
+        ])
+        
+        await Privilege.create({
+            'resourceId': newLink._id,
+            'resourceType': 'Link',
+            'roleId': role[0]._id
+        })
+    }
 
     return newLink;
 }
@@ -364,13 +392,13 @@ exports.addCompanyComponent = async (companyId, data) => {
         company: companyId,
         name: data.name
     });
-    if(check !== null) throw['component_exist'];
+    if(check) throw ['component_exist'];
 
     const link = await Link.findOne({ company: companyId, url: data.link });
     const newComponent = await Component.create({
         name: data.name,
         description: data.description,
-        link: link._id,
+        link: link ? link._id : null,
         company: companyId
     });
 
@@ -393,7 +421,7 @@ exports.deleteCompanyComponent = async (companyId, componentId) => {
         company: companyId, 
         components: componentId
     });
-    if(link !== null){
+    if(link){
         link.components.splice(link.components.indexOf(componentId), 1);
         await link.save();
     }
@@ -410,17 +438,17 @@ exports.deleteCompanyComponent = async (companyId, componentId) => {
 exports.getCompanyLinks = async (companyId, query) => {
 
     const check = await Company.findById(companyId);
-    if(check === null) throw ['company_not_found'];
+    if(!check) throw ['company_not_found'];
 
     let page = query.page;
     let limit = query.limit;
-    if (page === undefined && limit === undefined) {
+    if (!page && !limit) {
 
         return await Link
             .find({ company: companyId })
             .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
             ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
             : { company: companyId };
 
@@ -444,17 +472,17 @@ exports.getCompanyLinks = async (companyId, query) => {
 exports.getCompanyComponents = async (companyId, query) => {
 
     const check = await Company.findById(companyId);
-    if(check === null) throw ['company_not_found'];
+    if(!check) throw ['company_not_found'];
 
     let page = query.page;
     let limit = query.limit;
-    if (page === undefined && limit === undefined) {
+    if (!page && !limit) {
         return await Component.find({ company: companyId })
             .populate([
                 { path: 'link', model: Link }
             ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
             ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
             : { company: companyId };
         const rescom = await Component
