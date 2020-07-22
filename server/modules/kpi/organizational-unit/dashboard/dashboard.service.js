@@ -1,4 +1,4 @@
-const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, Task, User } = require('../../../../models/index').schema;
+const { OrganizationalUnit, OrganizationalUnitKpiSet, Task } = require('../../../../models/index').schema;
 
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
 

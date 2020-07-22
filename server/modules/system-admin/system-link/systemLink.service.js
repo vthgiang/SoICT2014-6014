@@ -17,7 +17,7 @@ exports.getAllSystemLinks = async (query) => {
                 { path: 'components', model: SystemComponent }
             ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
             ? {[`${query.key}`]: new RegExp(query.value, "i")}
             : {};
 
@@ -46,7 +46,7 @@ exports.getAllSystemLinkCategories = async () => {
  * @id id của system link
  */
 exports.getSystemLink = async (id) => {
-
+    console.log(id)
     return await SystemLink
         .findById(id)
         .populate({path: 'roles', model: RootRole});
@@ -63,8 +63,10 @@ exports.createSystemLink = async (url, description, roles, category) => {
 
     const link = await SystemLink.findOne({ url });
     if (link) throw ['system_link_url_exist'];
+    
+    const systemLink = await SystemLink.create({ url, description, category, roles });
 
-    return await SystemLink.create({ url, description, category, roles });
+    return systemLink;
 }
 
 /**

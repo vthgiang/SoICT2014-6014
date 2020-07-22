@@ -83,13 +83,13 @@ class CompanyManageComponent extends Component {
         const value = e.target.value;
 
         for (let index = 0; index < systemComponents.list.length; index++) {
-            const componentDefault = systemComponents.list[index];
+            const systemComponent = systemComponents.list[index];
 
-            if (value === componentDefault.name) {
+            if (value === systemComponent.name) {
                 this.setState({
-                    componentName: componentDefault.name,
-                    componentLink: componentDefault.link.url,
-                    componentDescription: componentDefault.description
+                    componentName: systemComponent.name,
+                    componentLink: systemComponent.url,
+                    componentDescription: systemComponent.description
                 });
             }
         }
@@ -181,12 +181,12 @@ class CompanyManageComponent extends Component {
                                 >
                                     <option key="noname" value="noname"> --- Chọn component ---</option>
                                     {
-                                        systemComponents.list.map(componentDefault => 
+                                        systemComponents.list.map(systemComponent => 
                                         <option 
-                                            key={componentDefault._id} 
-                                            value={componentDefault.name}
-                                            disabled={this.companyHasComponent(componentDefault.name, company.item.components.list)}
-                                        >{componentDefault.name}</option>)
+                                            key={systemComponent._id} 
+                                            value={systemComponent.name}
+                                            disabled={this.companyHasComponent(systemComponent.name, company.item.components.list)}
+                                        >{systemComponent.name}</option>)
                                     }
                                 </select>
                             </td>
@@ -203,10 +203,10 @@ class CompanyManageComponent extends Component {
 
                         {
                             company.item.components.listPaginate.length > 0 ? 
-                            company.item.components.listPaginate.map( component => 
+                            company.item.components.listPaginate.map(component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
-                                    <td>{ component.link !== undefined ? component.link.url : null}</td>
+                                    <td>{ component.link ? component.link.url : null}</td>
                                     <td>{ component.description }</td>
                                     <td>
                                         <a className="delete" onClick={() => this.deleteComponent(companyId, component._id)}><i className="material-icons">delete</i></a>

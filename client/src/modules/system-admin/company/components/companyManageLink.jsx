@@ -48,7 +48,7 @@ class CompanyManageLinks extends Component {
     isFormCreateLinkValidated = () => {
         const {linkUrl, linkDescription, linkDescriptionError} = this.state;
 
-        if (linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined) {
+        if (!linkDescriptionError && linkUrl && linkDescription) {
             if (linkUrl !== 'noturl') {
                 return true;
             } else {

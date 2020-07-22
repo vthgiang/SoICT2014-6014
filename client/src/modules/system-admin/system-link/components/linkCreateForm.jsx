@@ -70,7 +70,7 @@ class CreateLinkForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                linkCategory: value
+                linkCategory: value[0]
             }
         })
     }
@@ -118,12 +118,12 @@ class CreateLinkForm extends Component {
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-page">
-                        <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${!linkUrlError ? "" : "has-error"}`}>
                             <label>{ translate('system_admin.system_link.table.url') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" onChange={this.handleUrl}/>
                             <ErrorLabel content={linkUrlError}/>
                         </div>
-                        <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${!linkDescriptionError ? "" : "has-error"}`}>
                             <label>{ translate('system_admin.system_link.table.description') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" onChange={this.handleDescription}/>
                             <ErrorLabel content={linkDescriptionError}/>
@@ -135,7 +135,7 @@ class CreateLinkForm extends Component {
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
-                                    systemLinks.categories.map( category => {return {value: category.name, text: category.name+"-"+category.description}})
+                                    systemLinks.categories.map(category => {return {value: category.name, text: category.name+"-"+category.description}})
                                 }
                                 onChange={this.handleCategory}
                                 multiple={false}
