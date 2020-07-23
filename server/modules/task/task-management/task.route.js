@@ -8,7 +8,7 @@ router.get('/tasks/:taskId', auth, TaskManagementController.getTaskById);
 router.get('/tasks/:taskId/sub-task', auth, TaskManagementController.getSubTask);
 router.get('/task-evaluations', auth, TaskManagementController.getTaskEvaluations);
 
-router.post('/create', auth, TaskManagementController.createTask);
+router.post('/', auth, TaskManagementController.createTask);
 
 router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 

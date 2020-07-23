@@ -1795,6 +1795,7 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                add_new_task: 'Thêm công việc mới',
                 // add_err: 
                 add_err_empty_unit: 'Đơn vị không được để trống',
                 add_err_empty_name: 'Tên không được để trống',
