@@ -75,6 +75,7 @@ class ModalCopyKPIUnit extends Component {
                     }
                 }
             }
+
             if (check != 0) {
                 if (date[1] < nowDate.getFullYear()) {
                     check = 2;
@@ -84,6 +85,7 @@ class ModalCopyKPIUnit extends Component {
                     }
                 }
             }
+
             if (check == 0) {
                 Swal.fire({
                     title: translate('kpi.organizational_unit.management.copy_modal.alert.coincide_month')+`${date[0]}-${date[1]} `,
@@ -93,6 +95,7 @@ class ModalCopyKPIUnit extends Component {
                     confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                 })
             }
+
             if (check == 2) {
                 Swal.fire({
                     title: translate('kpi.organizational_unit.management.copy_modal.alert.unable_kpi'),
@@ -102,9 +105,15 @@ class ModalCopyKPIUnit extends Component {
                     confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                 })
             }
+
             if (check == 1) {
-                this.props.copyKPIUnit(id, idunit, oldkpiunit.date, this.state.NewDate);
-                if (kpiunit.unit && kpiunit.date) {//&& kpiunit.creater
+                let data = {  
+                    idunit: idunit,
+                    dateold: oldkpiunit.date,
+                    datenew:  this.state.NewDate
+                }
+                this.props.copyKPIUnit(id, data);
+                if (kpiunit.unit && kpiunit.date) {
                     Swal.fire({
                         title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
                         type: 'warning',

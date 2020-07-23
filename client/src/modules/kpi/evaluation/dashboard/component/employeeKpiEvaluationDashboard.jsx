@@ -159,11 +159,12 @@ class DashBoardKPIMember extends Component {
     }
 
     handleUpdateData = () => {
-        if (this.state.ids.length > 0) {
-            this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
-            this.props.getAllEmployeeOfUnitByIds(this.state.ids);
+        let {ids} = this.state;
+        if (ids.length > 0) {
+            this.props.getAllEmployeeKpiSetOfUnitByIds(ids);
+            this.props.getAllEmployeeOfUnitByIds(ids);
             this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-            this.props.getAllUserOfDepartment(this.state.ids);
+            this.props.getAllUserOfDepartment(ids);
 
             this.setState((state) => {
                 return {
@@ -175,15 +176,6 @@ class DashBoardKPIMember extends Component {
                 }
             });
         }
-    }
-
-    handleShowEditing = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                editing: !state.editing
-            }
-        });
     }
 
     handleSelectEmployee = (value) => {
@@ -235,7 +227,7 @@ class DashBoardKPIMember extends Component {
 
     render() {
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
-        let { dateOfExcellentEmployees, numberOfExcellentEmployees } = this.state;
+        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
         let currentDate = new Date();
@@ -255,7 +247,6 @@ class DashBoardKPIMember extends Component {
 
         if (employeeKpiSets) {
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
-
             totalKpi = currentMonthEmployeeKpiSets.length;
             settingUpKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 0);
             settingUpKpi = settingUpKpi.length;
@@ -297,7 +288,7 @@ class DashBoardKPIMember extends Component {
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
 
-            if (!this.state.infosearch.userId) {
+            if (!infosearch.userId) {
                 this.setState(state => {
                     return {
                         ...state,
@@ -345,12 +336,12 @@ class DashBoardKPIMember extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                            {this.state.ids &&
+                            {ids &&
                                 <SelectMulti id="multiSelectOrganizationalUnit"
                                     items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
                                     options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
                                     onChange={this.handleSelectOrganizationalUnit}
-                                    value={this.state.ids}
+                                    value={ids}
                                 >
                                 </SelectMulti>
                             }
@@ -358,7 +349,6 @@ class DashBoardKPIMember extends Component {
                         </div>
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-md-3 col-sm-6 form-inline">
                         <div className="info-box">
@@ -420,7 +410,7 @@ class DashBoardKPIMember extends Component {
                                                 <DatePicker
                                                     id="kpi_month"
                                                     dateFormat="month-year"             
-                                                    value={this.state.dateOfExcellentEmployees}     
+                                                    value={dateOfExcellentEmployees}     
                                                     onChange={this.handleChangeDate}
                                                     disabled={false}                     
                                                 />
@@ -510,9 +500,9 @@ class DashBoardKPIMember extends Component {
                                 <div className="col-sm-12 col-xs-12">
                                     {unitMembers &&
                                         <StatisticsOfEmployeeKpiSetChart
-                                            userId={this.state.infosearch.userId}
-                                            startMonth={this.state.infosearch.startMonth}
-                                            endMonth={this.state.infosearch.endMonth}
+                                            userId={infosearch.userId}
+                                            startMonth={infosearch.startMonth}
+                                            endMonth={infosearch.endMonth}
                                         />
                                     }
                                 </div>
