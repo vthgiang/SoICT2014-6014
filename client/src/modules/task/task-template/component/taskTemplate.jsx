@@ -11,11 +11,7 @@ import {TaskTemplateImportForm} from './taskTemplateImportForm';
 import Swal from 'sweetalert2';
 
 class TaskTemplate extends Component {
-    componentDidMount() {
-        this.props.getDepartment();
-        //edit later
-        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
-    }
+   
     constructor(props) {
         super(props);
         this.state = {
@@ -26,6 +22,11 @@ class TaskTemplate extends Component {
             currentRole: localStorage.getItem("currentRole"),
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
+    }
+    componentDidMount() {
+        this.props.getDepartment();
+        //edit later
+        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
     }
 
     setLimit = async (limit) => {
@@ -220,8 +221,8 @@ class TaskTemplate extends Component {
                     {this.checkHasComponent('create-task-template-button') && 
                     <React.Fragment>
                         <ModalAddTaskTemplate />
-                        <div class = "form-inline">
-                            <div class ="dropdown pull-right" style={{marginBottom: 15}}>
+                        <div className = "form-inline">
+                            <div className ="dropdown pull-right" style={{marginBottom: 15}}>
                                 <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                 <ul className="dropdown-menu pull-right">
                                     <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>{translate('task_template.add')}</a></li>
@@ -286,18 +287,18 @@ class TaskTemplate extends Component {
                                             <td title={item.name}>{item.name}</td>
                                             <td title={item.description}>{item.description}</td>
                                             <td title={item.numberOfUse}>{item.numberOfUse}</td>
-                                            <td title={item.creator.name}>{item.creator.name}</td>
-                                            <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
+                                            <td title={item.creator&&item.creator.name}>{item.creator?item.creator.name:translate('task.task_template.error_task_template_creator_null')}</td>
+                                            <td title={item.organizationalUnit&&item.organizationalUnit.name}>{item.organizationalUnit?item.organizationalUnit.name:translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
-                                                <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
+                                                <a href="#abc" onClick={()=>this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
                                                 {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
-                                                        <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
+                                                        <a onClick={()=>this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a onClick={()=>this.handleDelete(item._id, item.numberOfUse)} className="delete" title="Xóa mẫu công việc này">
+                                                        <a onClick={()=>this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>

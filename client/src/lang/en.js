@@ -103,6 +103,7 @@ export default {
             search: 'Search',
             add: 'Add',
             edit: 'Edit',
+            delete: 'Delete',
             save: 'Save',
             close: 'Close',
             accept: 'Accept',
@@ -1420,7 +1421,7 @@ export default {
             add: 'Add new',
             confirm: 'Confirm',
             confirm_title: 'Are you sure you want to delete this task template?',
-            error_title: 'This work template cannot be deleted because it is already in use.',
+            error_title: 'This work template cannot be deleted because itedirt is already in use.',
             name: 'Template name',
             unit: 'Unit',
             tasktemplate_name: 'Task template name',
@@ -1448,7 +1449,10 @@ export default {
             text: 'Text',
             number: 'Number',
             date: 'Date',
-            value_set: 'Value set'
+            value_set: 'Value set',
+            view_detail_of_this_task_template: 'View detail of this task',
+            edit_this_task_template: 'Edit this task template',
+            delete_this_task_template: 'Delete this task template',
         },
 
         task: {
@@ -1657,6 +1661,7 @@ export default {
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
                 
+                add_new_task: 'Add new task',
                 // add_err: 
                 add_err_empty_unit: 'Unit should not be empty',
                 add_err_empty_name: 'Name should not be empty',
@@ -1701,6 +1706,14 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
+                stop_timer: "Stop timer",
+
+
+
+
+
+
+
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -1800,6 +1813,7 @@ export default {
                 edit_task_template_fail: 'Edit task template fail !',
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
+                error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
 
             }
         },
@@ -2011,7 +2025,8 @@ export default {
                     end_compare: 'End comparing',
                     compare: 'Compare',
                     approve_all: 'Approve all',
-                    choose_month_cmp: 'Choose month to compare',
+                    choose_month_cmp: 'Choose month',
+                    kpi_this_month: 'KPI this month',
                     search: 'Search',
                     index: 'ID',
                     name: 'Name',
@@ -2109,8 +2124,8 @@ export default {
                 get_task_by_id_fail: 'Get all tasks by Id fail',
                 get_system_point_success: 'Get system point successfully',
                 get_system_point_fail: 'Get system point fail',
-                set_point_kpi_success: 'Get point KPI successfully',
-                set_point_kpi_fail: 'Get point KPI fail',
+                set_task_importance_level_success: 'Set task importance level successfully',
+                set_task_importance_level_fail:'Set task importance level fail'
             },
             organizational_unit: {
                 // Module chính

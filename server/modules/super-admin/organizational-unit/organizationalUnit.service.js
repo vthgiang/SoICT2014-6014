@@ -1,8 +1,10 @@
-const { OrganizationalUnit, UserRole, Role } = require('../../../models').schema;
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
+
 const RoleService = require('../role/role.service');
 const Terms = require('../../../seed/terms');
+
+const { OrganizationalUnit, UserRole, Role } = require('../../../models').schema;
 
 /**
  * Lấy danh sách các đơn vị trong công ty
@@ -48,48 +50,47 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
  * @id đơn vị
  */
 exports.getOrganizationalUnit = async (id) => {
-
     return await OrganizationalUnit.findById(id);
 }
 
 exports.getIndex = async(node, array) => {
     var result = -1;
+    
     array.forEach((value, index) => {
-        if(node._id !== undefined && value._id !== undefined && value._id.toString() === node._id.toString()){
+        if(node._id && value._id && value._id.toString() === node._id.toString()){
             result = index;
         }
     });
+
     return result;
 }
 
 /**
- * phân loại các role được thêm, sửa, xóa
- * mảng chứa các cặp giá trị {id, value} - id của role và tên role
+ * Phân loại các role được thêm, sửa, xóa
+ * Mảng chứa các cặp giá trị {id, value} - id của role và tên role
  */
 exports.getDiffRolesInOrganizationalUnit = async (oldArr, newArr) => {
     let deleteRoles = [];
     let createRoles = [];
     let editRoles = [];
 
-    //phân loại các role xóa
+    // Phân loại các role xóa
     for (let i = 0; i < oldArr.length; i++) {
         const index = await this.getIndex(oldArr[i], newArr);
-        if(index === -1){ //ko thấy role này trong mảng mới -> role xóa
-            deleteRoles.push(oldArr[i]);//thêm vào mảng các role bị xóa
-            // console.log("index check delete: ", index, oldArr[i]._id, oldArr[i].name)
+
+        if( index === -1) { // Không thấy role này trong mảng mới -> role xóa
+            deleteRoles.push(oldArr[i]); // Thêm vào mảng các role bị xóa
         }
     }
 
-    //phân loại role thêm mới
+    // Phân loại role thêm mới
     for (let i = 0; i < newArr.length; i++) {
         const index = await this.getIndex(newArr[i], oldArr);
-        if(index === -1)//ko thấy role này trong mảng mới -> role xóa
-        {
-            // console.log("index check create: ", index);
+
+        if (index === -1) { // Không thấy role này trong mảng mới -> role xóa
             createRoles = [...createRoles, newArr[i]];
-        }else{
-            // console.log("index check edit: ", index);
-            editRoles = [...editRoles, newArr[i]]; //thêm vào mảng các role giữ nguyên hoặc chỉnh sửa
+        } else {
+            editRoles = [...editRoles, newArr[i]]; // Thêm vào mảng các role giữ nguyên hoặc chỉnh sửa
         } 
     }
 
@@ -110,7 +111,11 @@ exports.getDiffRolesInOrganizationalUnit = async (oldArr, newArr) => {
  */
 exports.createOrganizationalUnit = async(data,companyId, deanArr=[], viceDeanArr=[], employeeArr=[]) => {
     const check = await OrganizationalUnit.findOne({name: data.name, company: companyId});
-    if(check !== null) throw['department_name_exist'];
+
+    if (check) {
+        throw['department_name_exist'];
+    }
+
     const department = await OrganizationalUnit.create({
         name: data.name,
         description: data.description,
@@ -135,7 +140,10 @@ exports.editOrganizationalUnit = async(id, data) => {
         { path: 'viceDeans', model: Role },
         { path: 'employees', model: Role }
     ]);
-    if(department === null) throw['department_not_found'];
+    
+    if(department === null) {
+        throw['department_not_found'];
+    }
 
     //Chỉnh sửa thông tin phòng ban
     department.name = data.name;
@@ -164,16 +172,19 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
 
     //1.Chỉnh sửa nhân viên đơn vị
     const employees = await this.getDiffRolesInOrganizationalUnit(department.employees, data.employees);
-    console.log("EMPLOYEES CHECK:", employees)
+    console.log("EMPLOYEES CHECK:", employees);
+
     for (let i = 0; i < employees.editRoles.length; i++) {
         const updateRole = await Role.findById(employees.editRoles[i]._id);
         updateRole.name = employees.editRoles[i].name;
         await updateRole.save();
     }
+
     for (let j = 0; j < employees.deleteRoles.length; j++) {
         await RoleService.deleteRole(employees.deleteRoles[j]._id);
         await department.employees.splice(this.getIndex(employees.deleteRoles[j], department.employees), 1);
     }
+
     const newDataEmployees = employees.createRoles.map(role=>{
         return {
             name: role.name,
@@ -182,22 +193,26 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
             company: department.company
         }
     });
+
     const newEmployees = await Role.insertMany(newDataEmployees);
     const employeeIdArr = [...newEmployees.map(em=>em._id), ...department.employees.map(em=>em._id)]; //id của tất cả các employee trong đơn vị dùng để kế thừa cho vicedean
 
     //2.Chỉnh sửa phó đơn vị
     const viceDeans = await this.getDiffRolesInOrganizationalUnit(department.viceDeans, data.viceDeans);
-    console.log("VICEDEANS CHECK:", viceDeans)
+    console.log("VICEDEANS CHECK:", viceDeans);
+
     for (let i = 0; i < viceDeans.editRoles.length; i++) {
         await Role.updateOne({_id: viceDeans.editRoles[i]._id}, {
             name: viceDeans.editRoles[i].name,
             parents: [viceDeanAb._id, ...employeeIdArr]
         });
     }
+
     for (let j = 0; j < viceDeans.deleteRoles.length; j++) {
         await RoleService.deleteRole(viceDeans.deleteRoles[j]._id);
         await department.viceDeans.splice(this.getIndex(viceDeans.deleteRoles[j], department.viceDeans), 1);
     }
+
     const newDataViceDeans = viceDeans.createRoles.map(role=>{
         return {
             name: role.name,
@@ -206,21 +221,25 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
             company: department.company
         }
     });
+
     const newViceDeans = await Role.insertMany(newDataViceDeans);
     const viceDeanIdArr = [...newViceDeans.map(vice=>vice._id), ...department.viceDeans.map(vice=>vice._id)]; //id của tất cả các viceDean trong đơn vị dùng để kế thừa cho dean
 
     //3.Chỉnh sửa trưởng đơn vị
     const deans = await this.getDiffRolesInOrganizationalUnit(department.deans, data.deans);
-    console.log("DEANS CHECK:", deans)
+    console.log("DEANS CHECK:", deans);
+
     for (let i = 0; i < deans.editRoles.length; i++) {
         await Role.updateOne({_id: deans.editRoles[i]._id}, {
             name: deans.editRoles[i].name,
             parents: [deanAb._id, ...employeeIdArr, ...viceDeanIdArr]
         });
     }
+
     for (let j = 0; j < deans.deleteRoles.length; j++) {
         await RoleService.deleteRole(deans.deleteRoles[j]._id);
     }
+
     const newDataDeans = deans.createRoles.map(role=>{
         return {
             name: role.name,
@@ -229,6 +248,7 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
             company: department.company
         }
     });
+
     const newDeans = await Role.insertMany(newDataDeans);
     const deanIdArr = [...newDeans.map(dean=>dean._id), ...department.deans.map(dean=>dean._id)]; //id của tất cả các dean
 
@@ -258,12 +278,11 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
     });
     
     if(userroles.length === 0){
-
         await Role.deleteMany({
             _id: { $in: roles.map(role=>role._id)}
         });
 
-        if(department.parent !== undefined || department.parent !== null){
+        if(department.parent){
             await OrganizationalUnit.updateMany({ 
                 parent: department._id
             },{

@@ -271,22 +271,20 @@ exports.data = [
     { path: '/kpipersonals/copykpi/:id/:idunit/:dateold/:datenew', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
 
-    { path: '/kpimembers/all-member/:role/:user/:status/:startDate/:endDate', method: 'GET', roles: ['Dean', 'Employee'] },
-    { path: '/kpimembers/user/:member', method: 'GET', roles: ['Dean', 'Employee'] },
-    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean', 'Employee'] },
-    { path: '/kpimembers/member/:id/:date', method: 'GET', roles: ['Dean'] },
-    { path: '/kpimembers/approve/:id', method: 'PUT', roles: ['Dean'] },
-    { path: '/kpimembers/target/:id', method: 'PUT', roles: ['Dean'] },
-    { path: '/kpimembers/status-target/:id/:status', method: 'PUT', roles: ['Dean'] },
-    { path: '/detailkpi/:id', method: 'GET', roles: ['Dean'] },
-    { path: '/appovepoint/:id_kpi/:id_target', method: 'PUT', roles: ['Dean'] },
-    { path: '/kpimembers/task/:id/:employeeId/:date/:kpiType', method: 'GET', roles: ['Dean'] },
-    { path: '/kpimembers/taskImportanceLevel/:id/:kpiType', method: 'PUT', roles: ['Dean'] },
-    
+    { path: '/kpimembers', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpis/:userId/user', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpis/:kpiId', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/approve', method: 'PUT', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/target', method: 'PUT', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/status-target', method: 'PUT', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/detailkpi', method: 'GET', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/appovepoint', method: 'PUT', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/task', method: 'GET', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/taskImportanceLevel', method: 'PUT', roles: ['Dean'] },
     // Task-management
     { path: '/task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/task/tasks/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/task/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/task/tasks/:taskId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/task/tasks/:taskId/archived', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/task/tasks/:taskId/sub-task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -343,7 +341,7 @@ exports.data = [
     { path: '/performtask/logs/history', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/logs/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     // edit task - evaluate task
-    { path: '/performtask/tasks/:taskId/edit', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/evaluate', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
    
     // Module TaskTemplate

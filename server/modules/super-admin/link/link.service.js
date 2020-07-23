@@ -9,14 +9,12 @@ exports.getAllLinks = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
-        
+    if (!page && !limit) {
         return await Link
             .find({ company })
             .populate({ path: 'roles', model: Privilege });
-
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
+    } else {
+        const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
         console.log("link option: ", option);
@@ -36,7 +34,6 @@ exports.getAllLinks = async (company, query) => {
  * @id id link
  */
 exports.getLink = async (id) => {
-
     return await Link
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
@@ -48,9 +45,15 @@ exports.getLink = async (id) => {
  * @companyId id công ty
  */
 exports.createLink = async(data, companyId) => {
-    if(data.url === '/system') throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
+    if (data.url === '/system') {
+        throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
+    }
+
     const check = await Link.findOne({company: componentId, url: data.url});
-    if(check !== null) throw ['url_exist'];
+
+    if(check !== null) {
+        throw ['url_exist'];
+    }
 
     return await Link.create({
         url: data.url,
@@ -58,18 +61,18 @@ exports.createLink = async(data, companyId) => {
         company: companyId
     });
 }
+
 /**
  * Chỉnh sửa link
  * @id id link
  * @data dữ liệu về link
  */
-
 exports.editLink = async(id, data) => {
     const link = await Link.findById(id);
 
     link.url = data.url;
     link.description = data.description;
-    link.company = data.company ? data.company : link.company;
+    link.company = data.company? data.company: link.company;
     await link.save();
 
     return link;
@@ -84,6 +87,7 @@ exports.deleteLink = async(id) => {
         resourceId: id,
         resourceType: 'Link'
     });
+    
     var deleteRole = await Link.deleteOne({ _id: id});
 
     return {relationshiopDelete, deleteRole};

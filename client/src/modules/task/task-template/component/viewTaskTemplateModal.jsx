@@ -170,7 +170,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <dt>{translate('task_template.no_data')}</dt> :
                                                 taskTemplate.taskActions.map((item, index) =>
                                                     <React.Fragment key={index}>
-                                                        <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
+                                                        <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : translate('general.no')} {translate('task_template.mandatory')}</dt>
                                                         <dd>{item.description}</dd>
                                                     </React.Fragment>
                                             )

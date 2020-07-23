@@ -231,7 +231,7 @@ class EmployeeKpiComment extends Component {
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                 {editComment !== item._id &&
                                     <React.Fragment>
-                                        <p className="content-level1">
+                                        <div className="content-level1">
                                             <a style={{ cursor: 'pointer' }}>{item.creator.name} </a>
                                             {item.description}
                                             {item.creator._id === currentUser &&
@@ -244,7 +244,7 @@ class EmployeeKpiComment extends Component {
                                                         <li><a style={{ cursor: 'pointer' }} onClick={() => this.props.deleteComment(item._id, currentKPI._id)} >{translate('kpi.evaluation.employee_evaluation.delete_cmt')}</a></li>
                                                     </ul>
                                                 </div>}
-                                        </p>
+                                        </div>
                                         <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                             <li><a style={{ cursor: 'pointer' }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('kpi.evaluation.employee_evaluation.add_cmt')} ({item.comments.length}) &nbsp;</a></li>
