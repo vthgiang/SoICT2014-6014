@@ -13,17 +13,20 @@ exports.getAllUsers = async (company, query) => {
     var limit = query.limit;
     var name = query.name;
     var keySearch = {company: company};
-    if(page === undefined && limit === undefined ){
-        if(name!==undefined){
+
+    if(!page && !limit){
+        if(name){
             keySearch = {...keySearch, name: {$regex: name, $options: "i"}};
+
             let searchUses = await User.find(keySearch)
             .select('-password -status -deleteSoft -tokens')
             .populate([
                 { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
                 { path: 'company' }
             ]);
+
             return {searchUses}
-        }else{
+        } else {
             return await User.find({ company })
             .select('-password -status -deleteSoft -tokens')
             .populate([
@@ -31,8 +34,8 @@ exports.getAllUsers = async (company, query) => {
                 { path: 'company' }
             ]);
         }
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
+    } else {
+        const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
         console.log("option: ", option);
@@ -60,7 +63,10 @@ exports.getUser = async (id) => {
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ['user_not_found'];
+
+    if (!user) {
+        throw ['user_not_found'];
+    }
     
     return user;
 }
@@ -76,13 +82,18 @@ exports.createUser = async (data, company) => {
     var hash = bcrypt.hashSync(password, salt);
 
     var checkUser = await User.findOne({ email: data.email });
-    if(checkUser !== null) throw['email_exist'];
+
+    if (checkUser) {
+        throw['email_exist'];
+    }
+
     var user = await User.create({
         name: data.name,
         email: data.email,
         password: hash,
         company: company
     });
+    
     await this.sendMailAboutCreatedAccount(data.email, password)
 
     return user;
@@ -98,6 +109,7 @@ exports.sendMailAboutCreatedAccount = async(email, password) => {
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
+
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: email,
@@ -131,6 +143,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
+
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: newEmail,
@@ -165,21 +178,32 @@ exports.editUser = async (id, data) => {
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ['user_not_found'];
+
+    if(!user) {
+        throw ['user_not_found']
+    };
+
     if(user.email !== data.email){
         const checkEmail = await User.findOne({email: data.email});
         if(checkEmail !== null) throw ['email_exist'];
         await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
     }
     user.name = data.name;
-    if(data.password !== undefined && data.password !== null){
+
+    if(data.password){
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(data.password, salt);
         user.password = hash;
     }
-    if(data.active !== undefined && data.active !== null) user.active = data.active;
-    if(user.active === false) 
+
+    if(data.active) {
+        user.active = data.active;
+    }
+
+    if(user.active === false) {
         user.tokens = [];
+    }
+        
     user.email = data.email;
     user.save();
 
@@ -316,7 +340,7 @@ _getAllUsersInOrganizationalUnit = async (department) => {
 exports.checkUserExited = async (email) => {
     var user = await User.findOne({email : email},{field1: 1});
     var checkUser = false;
-    if (user !== null) {
+    if (user) {
         checkUser = true
     }
     return checkUser;
@@ -362,16 +386,17 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
         //BFS tìm tât cả đơn vị con-hàm của Đức
         departments.push(data);
         queue.push(data);    
-        while(queue.length > 0){
-            var v = queue.shift();
-            if(v.children){
-            for(var i = 0; i < v.children.length; i++){
-                var u = v.children[i];
-                queue.push(u);
-                departments.push(u);
 
+        while (queue.length > 0) {
+            var v = queue.shift();
+            if (v.children) {
+                for (var i = 0; i < v.children.length; i++) {
+                    var u = v.children[i];
+                    queue.push(u);
+                    departments.push(u);
+
+                }
             }
-        }
         }
         //Lấy tất cả user của từng đơn vị
         var userArray=[];
@@ -379,7 +404,7 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
         return userArray;
     }
     //Lấy tất nhan vien trong moi đơn vị trong công ty
-    if(getAllUserInCompany) {
+    if (getAllUserInCompany) {
         
         const allUnits = await OrganizationalUnit.find({ company: id });    
         const newData = allUnits.map( department => {return {
