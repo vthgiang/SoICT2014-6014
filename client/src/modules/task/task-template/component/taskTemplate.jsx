@@ -220,8 +220,8 @@ class TaskTemplate extends Component {
                     {this.checkHasComponent('create-task-template-button') && 
                     <React.Fragment>
                         <ModalAddTaskTemplate />
-                        <div class = "form-inline">
-                            <div class ="dropdown pull-right" style={{marginBottom: 15}}>
+                        <div className = "form-inline">
+                            <div className ="dropdown pull-right" style={{marginBottom: 15}}>
                                 <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                 <ul className="dropdown-menu pull-right">
                                     <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>{translate('task_template.add')}</a></li>

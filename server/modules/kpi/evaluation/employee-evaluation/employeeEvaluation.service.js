@@ -49,7 +49,7 @@ exports.getKPIAllMember = async (data) => {
 
         }
     }
-    if (status !== null && status !== 5) {
+    if ( status !== -1 && status !== null && status !== 5) {
         keySearch = {
             ...keySearch,
             status: {
