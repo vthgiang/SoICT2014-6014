@@ -23,17 +23,17 @@ class TaskManagement extends Component {
             status: '[]',
             priority: '[]',
             special: '[]',
-            name: null,
-            startDate: null,
-            endDate: null,
-            startDateAfter: null,
-            endDateBefore: null,
+            name: "",
+            startDate: "",
+            endDate: "",
+            startDateAfter: "",
+            endDateBefore: "",
             startTimer: false,
             pauseTimer: false,
             timer: {
-                startedAt: null,
+                startedAt: "",
                 creator: userId,
-                task: null
+                task: ""
             },
         };
     }

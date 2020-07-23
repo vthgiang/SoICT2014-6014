@@ -251,18 +251,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
 
     validateInfoBoolean = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = "Giá trị bắt buộc phải chọn";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
     }
 
     validateTextInfo = (value) => {
+        let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = "Giá trị không được để trống"
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }

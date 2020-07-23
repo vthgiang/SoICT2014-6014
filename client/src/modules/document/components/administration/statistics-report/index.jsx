@@ -5,6 +5,7 @@ import { DocumentActions } from '../../../redux/actions';
 import {
     BarChart, XAxis, YAxis, Tooltip, Legend, Bar, CartesianGrid, Pie, PieChart, Cell
 } from 'recharts';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class AdministrationStatisticsReport extends Component {
     constructor(props) {
@@ -135,7 +136,7 @@ class AdministrationStatisticsReport extends Component {
     }
 
     render() { 
-        const {documents} = this.props;
+        const {documents, translate} = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         
@@ -143,7 +144,7 @@ class AdministrationStatisticsReport extends Component {
                 
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <b className="text-left" style={{fontSize: '20px'}}>Thống kê các loại văn bản tài liệu</b>
+                        <b className="text-left" style={{fontSize: '20px'}}>{translate('document.statistical_document')}</b>
                         <div className="text-right">
                             <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changePieWidth} value={this.state.pieWidth}/></span>
                             <span>Y <input type="number" min={100} onChange={this.changePieHeight} value={this.state.pieHeight}/></span>
@@ -154,7 +155,7 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                     
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '50px', paddingTop: '10px'}}>
-                        <b className="text-left" style={{fontSize: '20px'}}>Thống kê số lượng xem và download các loại tài liệu</b>
+                        <b className="text-left" style={{fontSize: '20px'}}>{translate('document.statistical_view_down')}</b>
                         <div className="text-right">
                             <span style={{marginLeft: '34px', marginRight: '8px'}}>X <input type="number" min={100} onChange={this.changeBarWidth} value={this.state.barWidth}/></span>
                             <span>Y <input type="number" min={100} onChange={this.changeBarHeight} value={this.state.barHeight}/></span>

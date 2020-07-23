@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 class DatePicker extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            value: ""
+        }
         this.zIndex = 1050;
     }
     componentDidMount = () => {
@@ -92,7 +94,7 @@ class DatePicker extends Component {
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" className="form-control" value={this.state.value? this.state.value: ""} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

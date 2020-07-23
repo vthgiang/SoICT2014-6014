@@ -19,7 +19,7 @@ export const createUnitKpiActions = {
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-function getCurrentKPIUnit(roleId, organizationalUnitId=undefined, month=undefined) {
+function getCurrentKPIUnit(roleId, organizationalUnitId = undefined, month = undefined) {
     return dispatch => {
         dispatch({ type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST });
 
@@ -28,7 +28,7 @@ function getCurrentKPIUnit(roleId, organizationalUnitId=undefined, month=undefin
                 dispatch({
                     type: createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS,
                     payload: res.data.content
-                });                
+                });
             })
             .catch(error => {
                 dispatch({
@@ -42,7 +42,7 @@ function getCurrentKPIUnit(roleId, organizationalUnitId=undefined, month=undefin
 // Chỉnh sửa kpi đơn vị
 function editKPIUnit(id, newKPI) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.EDIT_KPIUNIT_REQUEST,
             payload: id
         });
@@ -67,7 +67,7 @@ function editKPIUnit(id, newKPI) {
 // Xóa KPI đơn vị
 function deleteKPIUnit(id) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.DELETE_KPIUNIT_REQUEST,
             payload: id
         });
@@ -91,7 +91,7 @@ function deleteKPIUnit(id) {
 // Xóa mục tiêu KPI đơn vị
 function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.DELETETARGET_KPIUNIT_REQUEST,
             payload: id
         });
@@ -115,7 +115,7 @@ function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
 // Chỉnh sửa trạng thái KPI đơn vị
 function editStatusKPIUnit(id, status) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST,
             payload: id
         });
@@ -140,7 +140,7 @@ function editStatusKPIUnit(id, status) {
 // lấy kpi đơn vị cha
 function getKPIParent(currentRole) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.GETPARENT_KPIUNIT_REQUEST,
             payload: currentRole
         });
@@ -164,7 +164,7 @@ function getKPIParent(currentRole) {
 // Thêm mục tiêu cho KPI đơn vị
 function addTargetKPIUnit(newTarget) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.ADDTARGET_KPIUNIT_REQUEST,
             payload: newTarget
         });
@@ -188,7 +188,7 @@ function addTargetKPIUnit(newTarget) {
 // Chỉnh sửa mục tiêu của kpi đơn vị
 function editTargetKPIUnit(id, newTarget) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.EDITTARGET_KPIUNIT_REQUEST,
             payload: id
         });
@@ -212,7 +212,7 @@ function editTargetKPIUnit(id, newTarget) {
 // Khởi tạo KPI đơn vị
 function addKPIUnit(newKPI) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createUnitKpiConstants.ADD_KPIUNIT_REQUEST,
             payload: newKPI
         });

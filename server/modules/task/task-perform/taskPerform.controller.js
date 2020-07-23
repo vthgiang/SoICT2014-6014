@@ -2,6 +2,7 @@ const PerformTaskService = require('./taskPerform.service');
 const { LogInfo, LogError } = require('../../../logs');
 const NotificationServices = require('../../notification/notification.service');
 const { sendEmail } = require('../../../helpers/emailHelper');
+
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
 exports.getTaskTimesheetLogs = async (req, res) => {
@@ -580,7 +581,7 @@ exports.uploadFile = async (req, res) => {
 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.body, files);
+        var comment = await PerformTaskService.uploadFile(req.params, req.body, files);
         await LogInfo(req.user.email, ` upload file of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -688,7 +689,7 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        var taskLog = await PerformTaskService.getTaskLog(req.params.id);
+        var taskLog = await PerformTaskService.getTaskLog(req.params);
         await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -705,15 +706,37 @@ exports.getTaskLog = async (req, res) => {
     }
 }
 
+
+exports.editTask = async (req, res) => {
+    if(req.query.role === 'responsible') {
+        editTaskByResponsibleEmployees(req, res);
+    }
+    else if(req.query.role === 'accountable'){
+        editTaskByAccountableEmployees(req, res);
+    }
+}
+
+
+exports.evaluateTask = async (req, res) => {
+    if(req.query.role === 'responsible'){
+        evaluateTaskByResponsibleEmployees(req, res);
+    }
+    else if(req.query.role === 'consulted') {
+        evaluateTaskByConsultedEmployees(req, res);
+    }
+    else if(req.query.role === 'accountable') {
+        evaluateTaskByAccountableEmployees(req, res);
+    }
+}
 /**
  * edit task by responsible employee
  */
-exports.editTaskByResponsibleEmployees = async (req, res) => {
+editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
+        var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
@@ -734,12 +757,12 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
 /**
  * edit task by responsible employee
  */
-exports.editTaskByAccountableEmployees = async (req, res) => {
+editTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body, req.params.id);
+        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
+        var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
@@ -760,9 +783,9 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
 /**
  * evaluate task by consulted employee
  */
-exports.evaluateTaskByConsultedEmployees = async (req, res) => {
+evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body, req.params.id);
+        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -781,9 +804,9 @@ exports.evaluateTaskByConsultedEmployees = async (req, res) => {
 /**
  * evaluate task by responsible employee
  */
-exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
+evaluateTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body, req.params.id);
+        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -802,9 +825,9 @@ exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
 /**
  * evaluate task by accountable employee
  */
-exports.evaluateTaskByAccountableEmployees = async (req, res) => {
+evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body, req.params.id);
+        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
