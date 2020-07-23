@@ -30,6 +30,7 @@ export const taskManagementService = {
     evaluateTaskByResponsibleEmployees,
 
     getTasksByUser,
+    getTaskEvaluations,
 };
 
 // get all task
@@ -59,11 +60,11 @@ function getAllTaskByRole(id, role) {
 // get all task by Role
 function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) {//param -- user,
     var user = getStorage("userId");
-    
+
     return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}/${startDateAfter}/${endDateBefore}`,
         method: 'GET',
-        
+
     }, false, true, 'task.task_management');
 }
 
@@ -150,11 +151,11 @@ function editArchivedOfTask(id) {
     }, false, true, 'task.task_management');
 }
 
-function getSubTask(taskId){
+function getSubTask(taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/sub-task/${taskId}`,
         method: 'GET'
-    },false,true,'task.task_management');
+    }, false, true, 'task.task_management');
 }
 
 /**
@@ -223,13 +224,22 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
 }
 
 function getTasksByUser() {
-    var id  = getStorage("userId")
+    var id = getStorage("userId")
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks`,
         method: 'GET',
-        params: {userId: id}
+        params: { userId: id }
     }, false, true, 'task.task_management');
 }
 
+
+function getTaskEvaluations(data) {
+    console.log('printData::::', data)
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/get-task/evaluations`,
+        method: 'GET',
+        params: data,
+    }, false, true, 'task.task_management');
+}
 

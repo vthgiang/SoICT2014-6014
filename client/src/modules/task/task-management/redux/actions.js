@@ -24,6 +24,8 @@ export const taskManagementActions = {
     evaluateTaskByResponsibleEmployees,
 
     getTasksByUser,
+
+    getTaskEvaluations,
 };
 
 // Get all task
@@ -155,16 +157,16 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
         });
 
         taskManagementService.getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
-            .then( res => {
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS, 
+                    type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS,
                     // payload: res.data.content.informedTasks
                     payload: res.data.content
                 });
             })
             .catch(error => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE, 
+                    type: taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE,
                     error
                 });
             })
@@ -179,16 +181,16 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
         });
 
         taskManagementService.getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
-            .then( res=> {
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS, 
+                    type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS,
                     // payload: res.data.content.creatorTasks 
                     payload: res.data.content
                 })
             })
-            .catch(error=>{
+            .catch(error => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE, 
+                    type: taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE,
                     error
                 })
             })
@@ -199,21 +201,21 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 function getTaskById(id) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GETTASK_BYID_REQUEST, 
+            type: taskManagementConstants.GETTASK_BYID_REQUEST,
             id
         });
 
         taskManagementService.getById(id)
-            .then(res=> {
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_BYID_SUCCESS, 
+                    type: taskManagementConstants.GETTASK_BYID_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_BYID_FAILURE, 
+                    type: taskManagementConstants.GETTASK_BYID_FAILURE,
                     error
                 })
             })
@@ -223,12 +225,12 @@ function getTaskById(id) {
 // Add a new task of user
 function addTask(task) {
     return dispatch => {
-        dispatch({type: taskManagementConstants.ADDNEW_TASK_REQUEST, task});
+        dispatch({ type: taskManagementConstants.ADDNEW_TASK_REQUEST, task });
 
         taskManagementService.addNewTask(task)
-            .then(res=>{
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.ADDNEW_TASK_SUCCESS, 
+                    type: taskManagementConstants.ADDNEW_TASK_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 })
@@ -247,16 +249,16 @@ function editTask(id, task) {
         dispatch({ type: taskManagementConstants.EDIT_TASK_REQUEST, id });
 
         taskManagementService.editTaskTemplate(id, task)
-            .then(res=> {
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.EDIT_TASK_SUCCESS, 
+                    type: taskManagementConstants.EDIT_TASK_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: taskManagementConstants.EDIT_TASK_FAILURE, 
+                    type: taskManagementConstants.EDIT_TASK_FAILURE,
                     error
                 })
             })
@@ -269,18 +271,18 @@ function _delete(id) {
         dispatch({ type: taskManagementConstants.DELETE_TASK_REQUEST, id });
 
         taskManagementService.deleteTaskById(id)
-            .then(res=> {
+            .then(res => {
                 dispatch({
-                    type: taskManagementConstants.DELETE_TASK_SUCCESS, 
-                    id 
+                    type: taskManagementConstants.DELETE_TASK_SUCCESS,
+                    id
                 })
             })
-            .catch(error=>{
-               dispatch({
-                    type: taskManagementConstants.DELETE_TASK_FAILURE, 
-                    id, 
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.DELETE_TASK_FAILURE,
+                    id,
                     error
-               })
+                })
             })
     }
 }
@@ -325,7 +327,7 @@ function editArchivedOfTask(id) {
 }
 
 // Get SubTask
-function getSubTask(taskId){
+function getSubTask(taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_SUBTASK_REQUEST, taskId });
         taskManagementService.getSubTask(taskId)
@@ -338,7 +340,7 @@ function getSubTask(taskId){
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_SUBTASK_FAILURE, error });
             })
-        };
+    };
 }
 /**
  * edit Task By Accountable Employees
@@ -348,7 +350,7 @@ function getSubTask(taskId){
 function editTaskByAccountableEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
-        taskManagementService.editTaskByAccountableEmployees(data, taskId) 
+        taskManagementService.editTaskByAccountableEmployees(data, taskId)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
@@ -370,7 +372,7 @@ function editTaskByAccountableEmployees(data, taskId) {
 function editTaskByResponsibleEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST, taskId });
-        taskManagementService.editTaskByResponsibleEmployees(data, taskId) 
+        taskManagementService.editTaskByResponsibleEmployees(data, taskId)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
@@ -392,7 +394,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
 function evaluateTaskByAccountableEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
-        taskManagementService.evaluateTaskByAccountableEmployees(data, taskId) 
+        taskManagementService.evaluateTaskByAccountableEmployees(data, taskId)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS,
@@ -414,7 +416,7 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
 function evaluateTaskByConsultedEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST, taskId });
-        taskManagementService.evaluateTaskByConsultedEmployees(data, taskId) 
+        taskManagementService.evaluateTaskByConsultedEmployees(data, taskId)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS,
@@ -436,7 +438,7 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
 function evaluateTaskByResponsibleEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
-        taskManagementService.evaluateTaskByResponsibleEmployees(data, taskId) 
+        taskManagementService.evaluateTaskByResponsibleEmployees(data, taskId)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
@@ -463,6 +465,23 @@ function getTasksByUser() {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_FAILURE, error });
+            });
+    };
+}
+
+function getTaskEvaluations(data) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_REQUEST });
+        taskManagementService.getTaskEvaluations(data)
+            .then(res => {
+                console.log("res.data.content", res.data.content)
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_FAILURE, error });
             });
     };
 }
