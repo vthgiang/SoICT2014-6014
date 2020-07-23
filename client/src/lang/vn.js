@@ -1830,6 +1830,7 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
+                stop_timer: "Dừng bấm giờ",
 
             
 

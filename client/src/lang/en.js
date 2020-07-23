@@ -1681,7 +1681,7 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
-
+                stop_timer: "Stop timer",
 
 
 
