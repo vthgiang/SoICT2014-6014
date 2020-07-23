@@ -298,7 +298,7 @@ function getTaskLog(taskId) {
  */
 function editTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/edit`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
         method: 'PATCH',
         data: data,
         params: {
@@ -314,7 +314,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
  */
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/edit`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
         method: 'PATCH',
         data: data,
         params: {
