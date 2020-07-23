@@ -79,6 +79,39 @@ class CompanyCreateForm extends Component {
         }
     }
 
+    /**
+     * Hàm xử lý khi chọn theo danh mục
+     */
+    handleCategoryCheckbox = async (e, link) => {
+        const { value, checked } = e.target;
+        const { systemLinks } = this.props;
+
+        if (checked) {
+            for (const element of systemLinks.list) {
+                if (element.category === link.category) {
+                    await this.setState({
+                        linkDefaultArr: [
+                            ...this.state.linkDefaultArr,
+                            element._id
+                        ]
+                    });
+                }
+            }
+        } else {
+            for (const element of systemLinks.list) {
+                if (element.category === link.category) {
+                    const arr = this.state.linkDefaultArr;
+                    const index = arr.indexOf(element);
+
+                    arr.splice(index,1);
+                    await this.setState({
+                        linkDefaultArr: arr
+                    })
+                }
+            }
+        }
+    }
+
     save = () => {
         const company = {
             name: this.state.companyName, 
@@ -205,6 +238,26 @@ class CompanyCreateForm extends Component {
             emailError,
         } = this.state;
 
+        let list = [];
+        let category;
+
+        for (let i = 0; i < systemLinks.list.length; i++) {
+            const element = systemLinks.list[i];
+            
+            if (element.category !== category){
+                const group = {
+                    _id: i,
+                    category: element.category,
+                    isGroup: true,
+                }
+
+                list.push(group);
+                category = element.category;
+            }
+
+            list.push(element);
+        }
+
         return ( 
             <React.Fragment>
                 <ButtonModal modalID="modal-create-company" button_name={translate('general.add')} title={translate('system_admin.company.add')}/>
@@ -252,7 +305,10 @@ class CompanyCreateForm extends Component {
                                         <thead>
                                             <tr>
                                                 <th style={{width: '32px'}} className="col-fixed">
-                                                    <input type="checkbox" />
+                                                    <input 
+                                                        type="checkbox" 
+                                                        onChange={this.checkAll} 
+                                                    />
                                                 </th>
                                                 <th>{ translate('system_admin.system_link.table.category') }</th>
                                                 <th>{ translate('system_admin.system_link.table.url') }</th>
@@ -262,20 +318,34 @@ class CompanyCreateForm extends Component {
                                         
                                         <tbody>
                                             {
-                                                systemLinks.list.length > 0 ? systemLinks.list.map( link => 
-                                                    <tr key={link._id}>
-                                                        <td>
-                                                            <input 
-                                                                type="checkbox" 
-                                                                value={link._id} 
-                                                                onChange={this.handleCheckbox} 
-                                                                checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
-                                                            />
-                                                        </td>
-                                                        <td>{ link.category }</td>
-                                                        <td>{ link.url }</td>
-                                                        <td>{ link.description }</td>
-                                                    </tr> 
+                                                list.length > 0 ? list.map( link => 
+                                                    link.isGroup ?
+                                                        <tr key={link._id}>
+                                                            <td>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    value={link._id} 
+                                                                    onChange={ (e) => this.handleCategoryCheckbox(e, link) } 
+                                                                />
+                                                            </td>
+                                                            <td>{ link.category }</td>
+                                                            <td>{ link.url }</td>
+                                                            <td>{ link.description }</td>
+                                                        </tr>
+                                                    :
+                                                        <tr key={link._id}>
+                                                            <td>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    value={link._id} 
+                                                                    onChange={this.handleCheckbox} 
+                                                                    checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
+                                                                />
+                                                            </td>
+                                                            <td>{ link.category }</td>
+                                                            <td>{ link.url }</td>
+                                                            <td>{ link.description }</td>
+                                                        </tr> 
                                                 ): systemLinks.isLoading ?
                                                 <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
                                                 <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
