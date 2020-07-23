@@ -65,7 +65,8 @@ export function department(state = initState, action) {
 
         case DepartmentConstants.EDIT_DEPARTMENT_SUCCESS:
             index = findIndex(state.list, action.payload.department._id);
-            if(index !== -1){
+
+            if (index !== -1) {
                 state.list[index] = action.payload.department;
             }
 
@@ -77,9 +78,11 @@ export function department(state = initState, action) {
 
         case DepartmentConstants.DELETE_DEPARTMENT_SUCCESS:
             index = findIndex(state.list, action.payload.id);
-            if(index !== -1){
+
+            if (index !== -1) {
                 state.list.splice(index, 1);
             }
+            
             return {
                 ...state,
                 tree: action.payload.data.tree,

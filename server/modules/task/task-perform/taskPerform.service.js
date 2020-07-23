@@ -115,7 +115,6 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
  * Sửa nội dung bình luận hoạt động
  */
 exports.editCommentOfTaskAction = async (params, body, files) => {
-    console.log(params)
     const now = new Date()
     let action = await Task.updateOne(
         { "taskActions.comments._id": params.commentId },
