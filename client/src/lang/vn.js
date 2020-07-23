@@ -103,6 +103,7 @@ export default {
             search: 'Tìm kiếm',
             add: 'Thêm',
             edit: 'Sửa',
+            delete: 'Xóa',
             save: 'Lưu',
             close: 'Đóng',
             accept: 'Xác nhận',
@@ -1587,7 +1588,10 @@ export default {
             text: 'Văn bản',
             number: 'Số',
             date: 'Ngày tháng',
-            value_set: 'Tập giá trị'
+            value_set: 'Tập giá trị',
+            view_detail_of_this_task_template:'Xem chi tiết mẫu công việc này',
+            edit_this_task_template: 'Sửa mẫu công việc này',
+            delete_this_task_template: 'Xóa mẫu công việc này',
         },
 
         task: {
@@ -1969,6 +1973,9 @@ export default {
                 edit_task_template_fail: 'Sửa mẫu công việc thất bại !',
                 delete_task_template_success: 'Xóa mẫu công việc thành công !',
                 delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
+                error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
+                error_task_template_organizational_unit : 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !'
+
             }
         },
 
