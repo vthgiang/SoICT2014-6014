@@ -29,7 +29,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     componentDidMount = () => {
         if(this.props.organizationalUnitId) {
-            // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
         }
     }
@@ -46,7 +45,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             this.columnChart();
         }
 
-        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
             
@@ -61,7 +59,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
-            // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
 
             this.setState(state => {
@@ -72,9 +69,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             });
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            // Kiểm tra currentKPI đã được bind vào props hay chưa
             if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpiSets) {
-                return false            // Đang lấy dữ liệu, ko cần render lại
+                return false           
             }
 
             this.setState(state =>{
@@ -157,8 +153,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     // Thiết lập dataChart
     setDataColumnChart = () => {
         const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
-        var employeeWithTheSamePoints, textLabel;
+        let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
+        let employeeWithTheSamePoints, textLabel;
         if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
@@ -202,7 +198,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     columnChart = () => {
         this.removePreviosChart();
 
-        var dataPoints, dataChart, textLabel;
+        let dataPoints, dataChart, textLabel;
 
         dataPoints = this.setDataColumnChart();
         dataChart = dataPoints.employeeWithTheSamePoints;
@@ -211,7 +207,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {                              // Căn lề biểu đồ
+            padding: {                             
                 top: 20,
                 bottom: 20,
                 right: 20
@@ -234,12 +230,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     label: {
                         text: textLabel,
                         position: 'outer-center',
-                        // inner-right : default
-                        // inner-center
-                        // inner-left
-                        // outer-right
-                        // outer-center
-                        // outer-left
                     },
                     padding: {
                         right: 10,
@@ -250,12 +240,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     label: {
                         text: 'Số người cùng điểm',
                         position: 'outer-middle',
-                        // inner-top : default
-                        // inner-middle
-                        // inner-bottom
-                        // outer-top
-                        // outer-middle
-                        // outer-bottom
                     },
                     padding: {
                         right: 10,

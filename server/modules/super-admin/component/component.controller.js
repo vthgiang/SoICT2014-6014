@@ -21,7 +21,7 @@ exports.getAllComponents = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_components_faile'],
+            messages: Array.isArray(error)? error: ['get_components_faile'],
             content: error
         });
     }
@@ -33,7 +33,7 @@ exports.createComponent = async (req, res) => {
         const createComponent = await ComponentService.createComponent(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
         const component = await ComponentService.getComponent(createComponent._id);
-        await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); //thêm component đó vào trang
+        await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); // Thêm component đó vào trang
 
         await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(200).json({
@@ -46,7 +46,7 @@ exports.createComponent = async (req, res) => {
         await LogError(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_component_faile'],
+            messages: Array.isArray(error)? error: ['create_component_faile'],
             content: error
         });
     }
@@ -67,7 +67,7 @@ exports.getComponent = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_component_faile'],
+            messages: Array.isArray(error)? error: ['show_component_faile'],
             content: error
         });
     }
@@ -90,7 +90,7 @@ exports.editComponent = async (req, res) => {
         await LogError(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_component_faile'],
+            messages: Array.isArray(error)? error: ['edit_component_faile'],
             content: error
         });
     }
@@ -111,7 +111,7 @@ exports.deleteComponent = async (req, res) => {
         await LogError(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_component_faile'],
+            messages: Array.isArray(error)? error: ['delete_component_faile'],
             content: error
         });
     }
@@ -133,7 +133,7 @@ exports.getComponentsOfUserInLink = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_components_of_user_in_link_faile'],
+            messages: Array.isArray(error)? error: ['get_components_of_user_in_link_faile'],
             content: error
         });
     }

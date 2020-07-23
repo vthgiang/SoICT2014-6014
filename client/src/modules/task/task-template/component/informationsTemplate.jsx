@@ -9,11 +9,6 @@ import './tasktemplate.css';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 class InformationForm extends Component{
-    componentDidMount(){
-        // Load library for sort action table
-        this.handleSortable();
-    }
-
     constructor(props){
         super(props);
         this.INFO_TYPE = {
@@ -36,6 +31,10 @@ class InformationForm extends Component{
             taskInformations: this.props.initialData,
             editInfo: false,
         }
+    }
+    componentDidMount(){
+        // Load library for sort action table
+        this.handleSortable();
     }
 
     // Drag and drop item in action table
@@ -89,7 +88,6 @@ class InformationForm extends Component{
     // Save new data after edit information in information table
     handleSaveEditedInformation = async (event) => {
         event.preventDefault(); // Ngăn không submit
-
         const { indexInfo } = this.state;
         
         let taskInformations  = this.state.taskInformations;
@@ -112,21 +110,18 @@ class InformationForm extends Component{
 
     handleCancelEditInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-
         this.setState(state => {
             return {
                 ...state,
                 editInfo: false,
                 information: Object.assign({}, this.EMPTY_INFORMATION),
             }
-        });
-        
+        });        
     }
     
     // function: reset all data fields of information table
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-
         this.setState(state => {
             return {
                 ...state,
@@ -340,10 +335,10 @@ class InformationForm extends Component{
                                     <td>{item.name}</td>
                                     <td>{item.description}</td>
                                     <td>{item.type}</td>
-                                    <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
+                                    <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
                                     <td>
-                                        <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                        <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
                                     </td>
                                 </tr>
                             )

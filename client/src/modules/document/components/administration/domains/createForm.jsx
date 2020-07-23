@@ -32,8 +32,9 @@ class CreateForm extends Component {
     };
     validateName = (value, willUpdateState)=>{
         let msg = undefined;
+        const {translate} = this.props;
         if(value === '')
-            msg = 'Tên không được để trống';
+            msg = translate('document.no_blank_name');
         if(willUpdateState){
             this.setState(state=>{
                 return{
@@ -56,6 +57,7 @@ class CreateForm extends Component {
 
     save = () => {
         const {documentName, documentDescription, domainParent} = this.state;
+        console.log(domainParent);
         this.props.createDocumentDomain({
             name: documentName,
             description: documentDescription,
@@ -63,11 +65,18 @@ class CreateForm extends Component {
         });
     }
 
+    // shouldComponentUpdate(nextProps, nextState){
+    //     if(nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined)
+    // }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined) {
+            console.log(nextProps, prevState);
+            let dm = [];
+            dm.push(prevState.domainParent);
             return {
                 ...prevState,
-                domainParent: nextProps.domainParent
+                domainParent: dm,
             } 
         } else {
             return null;

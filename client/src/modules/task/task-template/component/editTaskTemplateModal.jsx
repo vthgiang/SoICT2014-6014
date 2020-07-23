@@ -6,10 +6,8 @@ import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import { withTranslate } from 'react-redux-multilingual';
 import {ActionForm} from '../component/actionsTemplate';
-
 import {DialogModal, SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
-
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 class ModalEditTaskTemplate extends Component {
@@ -43,12 +41,12 @@ class ModalEditTaskTemplate extends Component {
         // get department of current user 
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
-        this.props.getAllUserOfCompany();
-        
+        this.props.getAllUserOfCompany();        
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả các role là dean 
         this.props.getDepartmentsThatUserIsDean();
+        // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserInAllUnitsOfCompany();
     }
 
@@ -535,7 +533,6 @@ class ModalEditTaskTemplate extends Component {
                         </fieldset>
                     </div>
                 </div>
-
             </DialogModal>
         );
     }
