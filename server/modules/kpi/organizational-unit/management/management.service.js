@@ -35,16 +35,16 @@ exports.getKPIUnits = async (data) => {
     let status = Number(data.status);
     if (data.startDate !== "undefined") {
         let startDate = data.startDate.split("-");
-        let startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
+        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
     }
     if (data.endDate !== "undefined") {
-        let endDate = data.endDate.split("-");
+        var endDate = data.endDate.split("-");
         if (endDate[0] === "12") {
             endDate[1] = String(parseInt(endDate[1]) + 1);
             endDate[0] = "1";
         }
         endDate[0] = String(parseInt(endDate[0]) + 1);
-        let enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
+        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
     let keySearch = {
         organizationalUnit: department._id
@@ -178,7 +178,6 @@ exports.evaluateKPI = async (id) => {
     if (kpis) {
         kpis = await Promise.all(kpis.map(async (item) => {
             var pointUnit, pointPersonal, totalunit, totalpersonal, target;
-            // var temp = Object.assign({}, item);
             childUnitTarget = await DetailKPIUnit.find({ parent: item._id });
             if (childUnitTarget) {
                 pointUnit = childUnitTarget.reduce((sum, item) => sum + item.result, 0);
@@ -189,7 +188,6 @@ exports.evaluateKPI = async (id) => {
                 pointPersonal = childPersonalTarget.reduce((sum, item) => sum + item.approverpoint, 0);
                 totalpersonal = childPersonalTarget.length;
             }
-            // temp.result = Math.round(((pointUnit + pointPersonal) / (totalunit + totalpersonal)) * 10) / 10;
             if (totalunit + totalpersonal !== 0) {
                 target = await DetailKPIUnit.findByIdAndUpdate(item._id, { result: Math.round(((pointUnit + pointPersonal) / (totalunit + totalpersonal)) * 10) / 10 }, { new: true });
                 return target;
@@ -208,7 +206,6 @@ exports.evaluateKPI = async (id) => {
 
 }
 exports.copyKPI = async (data) => {
-
     var date = data.dateold.split("-");
     var dateold = new Date(date[0], date[1], 0);
     var date = data.datenew.split("-");
@@ -217,7 +214,6 @@ exports.copyKPI = async (data) => {
     var yearOldKPI = dateold.getFullYear();
     var monthNewKPI = dateNewKPIUnit.getMonth();
     var yearNewKPI = dateNewKPIUnit.getFullYear();
-    // console.log("=========-----", department);
     var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
