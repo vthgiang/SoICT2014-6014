@@ -105,9 +105,14 @@ class ModalCopyKPIUnit extends Component {
                     confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                 })
             }
-            
+
             if (check == 1) {
-                this.props.copyKPIUnit(id, idunit, oldkpiunit.date, this.state.NewDate);
+                let data = {  
+                    idunit: idunit,
+                    dateold: oldkpiunit.date,
+                    datenew:  this.state.NewDate
+                }
+                this.props.copyKPIUnit(id, data);
                 if (kpiunit.unit && kpiunit.date) {
                     Swal.fire({
                         title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),

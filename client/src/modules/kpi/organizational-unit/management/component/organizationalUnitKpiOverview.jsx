@@ -18,15 +18,15 @@ class KPIUnitManager extends Component {
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 status: -1,
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now())
+                startDate: null,
+                endDate: null
             },
         };
     }
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
+        this.props.getAllKPIUnit(this.state.infosearch);
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
@@ -53,7 +53,7 @@ class KPIUnitManager extends Component {
     }
 
     checkStatusKPI = (status) => {
-        const {translate} = this.props
+        const { translate } = this.props
         if (status === 0) {
             return translate('kpi.organizational_unit.management.over_view.setting_up');
         } else if (status === 1) {
@@ -115,6 +115,8 @@ class KPIUnitManager extends Component {
     }
 
     handleSearchData = async () => {
+        if (this.state.startDate === "") this.state.startDate = null;
+        if (this.state.endDate === "") this.state.endDate = null;
         await this.setState(state => {
             return {
                 ...state,
@@ -127,31 +129,28 @@ class KPIUnitManager extends Component {
             }
         })
         const { infosearch } = this.state;
-        const { translate} = this.props;
-        if (infosearch.role && infosearch.status && infosearch.startDate && !infosearch.endDate) {
-            this.props.getKPIUnits(infosearch);
+        const { translate } = this.props;
+        let startDate, endDate;
+        let startdate = null, enddate = null;
+        if (infosearch.startDate) {
+            startDate = infosearch.startDate.split("-");
+            startdate = new Date(startDate[1], startDate[0]);
         }
-        if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            this.props.getKPIUnits(infosearch);
+
+        if (infosearch.endDate) {
+            endDate = infosearch.endDate.split("-");
+            enddate = new Date(endDate[1], endDate[0]);
         }
-        if (infosearch.role && infosearch.status && infosearch.startDate && !infosearch.endDate) {
-            this.props.getKPIUnits(infosearch);
-        }
-        if (infosearch.role && infosearch.status && infosearch.startDate && infosearch.endDate) {
-            var startDate = infosearch.startDate.split("-");
-            var startDate = new Date(startDate[1], startDate[0]);
-            var endDate = infosearch.endDate.split("-");
-            var endDate = new Date(endDate[1], endDate[0]);
-            if (Date.parse(startDate) > Date.parse(endDate)) {
-                Swal.fire({
-                    title: translate('kpi.organizational_unit.management.over_view.alert_search.search'),
-                    type: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: translate('kpi.organizational_unit.management.over_view.alert_search.confirm')
-                })
-            } else {
-                this.props.getKPIUnits(infosearch);
-            }
+
+        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: translate('kpi.organizational_unit.management.over_view.alert_search.search'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.management.over_view.alert_search.confirm')
+            })
+        } else {
+            this.props.getAllKPIUnit(infosearch);
         }
     };
 
@@ -185,8 +184,7 @@ class KPIUnitManager extends Component {
         }
         if (managerKpiUnit.kpis) {
             listkpi = managerKpiUnit.kpis;
-            if (typeof listkpi !== "undefined" && listkpi.length !== 0)
-            {
+            if (typeof listkpi !== "undefined" && listkpi.length !== 0) {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 datachat1 = kpiApproved.map(item => {
@@ -324,7 +322,6 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getAllKPIUnit: managerActions.getAllKPIUnit,
     refreshData: managerActions.evaluateKPIUnit,
-    getKPIUnits: managerActions.getKPIUnits,
 };
 const connectedKPIUnitManager = connect(mapState, actionCreators)(withTranslate(KPIUnitManager));
 export { connectedKPIUnitManager as KPIUnitManager };
