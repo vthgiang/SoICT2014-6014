@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import { DataTableSetting } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components/index';
-import { ModelDetailTask } from '../../../../task/task-management/component/task-dashboard/detailTask';
+import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 class EmployeeKpiEvaluateModal extends Component {
@@ -301,7 +301,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                 />
 
                             }
-                            {<ModelDetailTask id={taskId} />}
+                            {<ModalDetailTask id={taskId} />}
                         </React.Fragment>;
                         return true;
                     })}

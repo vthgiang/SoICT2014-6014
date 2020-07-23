@@ -56,7 +56,7 @@ class DashBoardKPIMember extends Component {
 
         let infosearch = {
             role: localStorage.getItem("currentRole"),
-            user: "null",
+            user: null,
             status: 5,
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))

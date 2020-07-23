@@ -12,12 +12,12 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     constructor(props) {
         super(props);
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
             currentRole: null,
             dataStatus: this.DATA_STATUS.QUERYING
-        }; 
+        };
     }
 
     componentDidMount = () => {
@@ -33,7 +33,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         // Call action again when currentRole changes
-        if(this.state.currentRole !== localStorage.getItem("currentRole")) {
+        if (this.state.currentRole !== localStorage.getItem("currentRole")) {
             await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
 
             this.setState(state => {
@@ -47,9 +47,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         }
 
         // Call action again when this.state.organizationalUnitId or this.state.month changes
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+        if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -59,11 +59,11 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
             return false;
         }
-        
+
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createKpiUnit.currentKPI)
                 return false;
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -72,7 +72,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             });
 
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.pieChart();
 
             this.setState(state => {
@@ -86,14 +86,14 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return false;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
                 organizationalUnitId: nextProps.organizationalUnitId,
                 month: nextProps.month
             }
-        } else{
+        } else {
             return null;
         }
     }
@@ -101,27 +101,26 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { createKpiUnit } = this.props;
-        var listOrganizationalUnitKpi, dataPieChart;
+        let listOrganizationalUnitKpi, dataPieChart;
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        if(listOrganizationalUnitKpi){
-            dataPieChart = listOrganizationalUnitKpi.map(x => { 
-                return [ x.name, x.weight ]
+        if (listOrganizationalUnitKpi) {
+            dataPieChart = listOrganizationalUnitKpi.map(x => {
+                return [x.name, x.weight]
             })
         }
-
         return dataPieChart;
     }
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
-    removePreviousChart(){
+    removePreviousChart() {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()){
+        while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
-    } 
+    }
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
@@ -129,11 +128,11 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         // Tạo mảng dữ liệu
         var dataPieChart;
-        dataPieChart = this.setDataPieChart(); 
+        dataPieChart = this.setDataPieChart();
 
         this.chart = c3.generate({
-            bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="pieChart"
-
+            // Đẩy chart vào thẻ div có id="pieChart"
+            bindto: this.refs.chart,
             // Căn lề biểu đồ
             padding: {
                 top: 20,
@@ -141,13 +140,13 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 right: 20,
                 left: 20
             },
-
-            data: {                                 // Dữ liệu biểu đồ
+            // Dữ liệu biểu đồ
+            data: {
                 columns: dataPieChart,
-                type : 'pie',
+                type: 'pie',
             },
-
-            legend: {                               // Ẩn chú thích biểu đồ
+            // Ẩn chú thích biểu đồ
+            legend: {
                 show: true
             }
         });
@@ -156,8 +155,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     render() {
         const { createKpiUnit, translate } = this.props;
         var currentKpi;
-
-        if(createKpiUnit) {
+        if (createKpiUnit) {
             currentKpi = createKpiUnit.currentKPI
         }
 
@@ -182,4 +180,4 @@ const actions = {
 }
 
 const connectedDistributionOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(DistributionOfOrganizationalUnitKpiChart));
-export { connectedDistributionOfOrganizationalUnitKpiChart as DistributionOfOrganizationalUnitKpiChart}
+export { connectedDistributionOfOrganizationalUnitKpiChart as DistributionOfOrganizationalUnitKpiChart }

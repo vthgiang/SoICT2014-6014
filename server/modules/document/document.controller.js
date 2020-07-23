@@ -26,8 +26,9 @@ exports.getDocuments = async (req, res) => {
 };
 
 exports.createDocument = async (req, res) => {
-    try {
-        if(req.files !== undefined){
+    //try {
+        if(req.files.file !== undefined && req.files.fileScan !== undefined){
+            console.log(req.files.file)
             var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
             var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
 
@@ -43,15 +44,15 @@ exports.createDocument = async (req, res) => {
             messages: ['create_document_success'],
             content: document
         });
-    } catch (error) {
-        console.log(error)
-        await LogError(req.user.email, 'CREATE_DOCUMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_document_faile'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     console.log(error)
+    //     await LogError(req.user.email, 'CREATE_DOCUMENT', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['create_document_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.increaseNumberView = async (req, res) => {

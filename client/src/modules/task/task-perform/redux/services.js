@@ -298,9 +298,12 @@ function getTaskLog(taskId) {
  */
 function editTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/edit/task-responsible/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/edit`,
         method: 'PATCH',
         data: data,
+        params: {
+            role: 'responsible',
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -311,9 +314,12 @@ function editTaskByResponsibleEmployees(data, taskId) {
  */
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/edit/task-accountable/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/edit`,
         method: 'PATCH',
         data: data,
+        params: {
+            role: 'accountable',
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -324,9 +330,12 @@ function editTaskByAccountableEmployees(data, taskId) {
  */
 function evaluateTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-responsible/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'PATCH',
         data: data,
+        params: { 
+            role: 'responsible',
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -337,9 +346,12 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
  */
 function evaluateTaskByConsultedEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-consulted/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'PATCH',
         data: data,
+        params: { 
+            role: 'consulted',
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -350,9 +362,12 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
  */
 function evaluateTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/evaluate/task-accountable/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'PATCH',
         data: data,
+        params: { 
+            role: 'accountable',
+        }
     }, true, true, 'task.task_management');
 }
 

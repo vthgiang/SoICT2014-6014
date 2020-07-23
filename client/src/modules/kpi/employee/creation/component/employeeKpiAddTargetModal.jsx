@@ -33,8 +33,10 @@ class ModalCreateEmployeeKpi extends Component {
             submitted: false
         };
     }
-
-    // function: create new target of personal kpi
+    
+    /**
+     * function: create new target of personal kpi
+     */
     handleCreateEmployeeKpi = async () => {
         let currentOrganizationalKpiSet = null;
         let items;

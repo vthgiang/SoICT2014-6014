@@ -31,8 +31,9 @@ class EditForm extends Component {
 
     validateName = (value, willUpdateState)=>{
         let msg = undefined;
+        const {translate} = this.props;
         if(value === "")
-            msg = "Tên không được để trống";
+            msg = translate('document.no_blank_name');
         if(willUpdateState){
             this.setState(state=>{
                 return{
@@ -52,8 +53,9 @@ class EditForm extends Component {
 
     validateDescription = (value, willUpdateState)=>{
         let msg = undefined;
+        const {translate} = this.props;
         if(value === '')
-            msg = 'Mô tả không được để trống';
+            msg = translate('document.no_blank_description');
         if(willUpdateState){
             this.setState(state=>{
                 return{
