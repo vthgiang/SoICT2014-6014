@@ -2,15 +2,15 @@ import { CompanyServices } from "./services";
 import { CompanyConstants } from "./constants";
 
 export const CompanyActions = {
-    get,
-    create,
-    edit,
-    addNewLink,
-    addNewComponent,
-    deleteLink,
-    deleteComponent,
-    linksList,
-    componentsList,
+    getAllCompanies,
+    createCompany,
+    editCompany,
+    addCompanyLink,
+    deleteCompanyLink,
+    addCompanyComponent,
+    deleteCompanyComponent,
+    getCompanyLinks,
+    getCompanyComponents,
 
     getImportConfiguration,
     createImportConfiguration,
@@ -20,12 +20,12 @@ export const CompanyActions = {
 /**
  * Lấy danh sách tất cả các công ty
  */
-function get(data) {
-    if (data === undefined) {
+function getAllCompanies(data) {
+    if (!data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPANIES_REQUEST });
 
-            CompanyServices.get()
+            CompanyServices.getAllCompanies()
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPANIES_SUCCESS,
@@ -65,11 +65,11 @@ function get(data) {
  * Tạo dữ liệu mới về 1 công ty
  * @company dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
-function create(company) {
+function createCompany(company) {
     return dispatch => {
         dispatch({ type: CompanyConstants.CREATE_COMPANY_REQUEST });
 
-        CompanyServices.create(company)
+        CompanyServices.createCompany(company)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.CREATE_COMPANY_SUCCESS,
@@ -91,11 +91,11 @@ function create(company) {
  * @id id của công ty trong database
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
-function edit(id, data) {
+function editCompany(id, data) {
     return dispatch => {
         dispatch({ type: CompanyConstants.EDIT_COMPANY_REQUEST });
 
-        CompanyServices.edit(id, data)
+        CompanyServices.editCompany(id, data)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.EDIT_COMPANY_SUCCESS,
@@ -119,11 +119,11 @@ function edit(id, data) {
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
-function addNewLink(id, data) {
+function addCompanyLink(id, data) {
     return dispatch => {
         dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST });
 
-        CompanyServices.addNewLink(id, data)
+        CompanyServices.addCompanyLink(id, data)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
@@ -145,11 +145,11 @@ function addNewLink(id, data) {
  * @companyId id của công ty
  * @linkId id của link muốn xóa
  */
-function deleteLink(companyId, linkId) {
+function deleteCompanyLink(companyId, linkId) {
     return dispatch => {
         dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST });
 
-        CompanyServices.deleteLink(companyId, linkId)
+        CompanyServices.deleteCompanyLink(companyId, linkId)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS,
@@ -174,11 +174,11 @@ function deleteLink(companyId, linkId) {
     * @componentDescription mô tả về component
     * @linkId id của link được chứa component này
  */
-function addNewComponent(id, data) {
+function addCompanyComponent(id, data) {
     return dispatch => {
         dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_REQUEST });
 
-        CompanyServices.addNewComponent(id, data)
+        CompanyServices.addCompanyComponent(id, data)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_SUCCESS,
@@ -199,11 +199,11 @@ function addNewComponent(id, data) {
  * @companyId id của công ty
  * @componentId id của component muốn xóa
  */
-function deleteComponent(companyId, componentId) {
+function deleteCompanyComponent(companyId, componentId) {
     return dispatch => {
         dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_REQUEST });
 
-        CompanyServices.deleteComponent(companyId, componentId)
+        CompanyServices.deleteCompanyComponent(companyId, componentId)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_SUCCESS,
@@ -224,12 +224,12 @@ function deleteComponent(companyId, componentId) {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-function linksList(companyId, data) {
+function getCompanyLinks(companyId, data) {
     if(data === undefined) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST });
 
-            CompanyServices.linksList(companyId)
+            CompanyServices.getCompanyLinks(companyId)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_SUCCESS,
@@ -268,12 +268,12 @@ function linksList(companyId, data) {
  * Lấy danh sách các component của công ty
  * @companyId id của công ty
  */
-function componentsList(companyId, data) {
+function getCompanyComponents(companyId, data) {
     if(data === undefined) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST });
 
-            CompanyServices.componentsList(companyId)
+            CompanyServices.getCompanyComponents(companyId)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS,

@@ -7,7 +7,7 @@ import { CompanyFormValidator } from './companyFormValidator';
 import { CompanyManageLinks } from './companyManageLink';
 import { CompanyManageComponent } from './companyManageComponent';
 
-import { ErrorLabel, DialogModal, PaginateBar} from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 class CompanyServicesForm extends Component {
@@ -52,7 +52,7 @@ class CompanyServicesForm extends Component {
         };
 
         if (this.isFormValidated()) {
-            return this.props.edit( this.state.companyId, data );
+            return this.props.editCompany( this.state.companyId, data );
         }
     }
 
@@ -98,7 +98,7 @@ class CompanyServicesForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xu ly thay doi va validate short_name cong ty
@@ -120,7 +120,7 @@ class CompanyServicesForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xu ly thay doi va validate cho phan description cua cong ty
@@ -142,7 +142,7 @@ class CompanyServicesForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xu ly thay doi va validate cho email cua super admin cong ty
@@ -164,7 +164,7 @@ class CompanyServicesForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Kiem tra thong tin da validated het chua?
@@ -184,16 +184,6 @@ class CompanyServicesForm extends Component {
         const {
             // Phần edit nội dung của công ty
             companyId,
-            companyName, 
-            companyShortName, 
-            companyDescription, 
-            companyLog, 
-            companyActive, 
-            companyEmail, 
-            nameError, 
-            shortNameError, 
-            descriptionError, 
-            emailError,
         } = this.state;
 
         return ( 
@@ -239,7 +229,7 @@ function mapState(state) {
     return { systemLinks, systemComponents, company };
 }
 const action = {
-    edit: CompanyActions.edit
+    editCompany: CompanyActions.editCompany
 }
 
 const connectedCompanyServicesForm = connect(mapState, action)(withTranslate(CompanyServicesForm))
