@@ -1,5 +1,7 @@
 const AssetType = require('../../../models/asset/assetType.model');
-
+const arrayToTree = require('array-to-tree');
+const fs = require('fs');
+const ObjectId = require('mongoose').Types.ObjectId;
 /**
  * Lấy danh sách loại tài sản
  */
@@ -89,4 +91,65 @@ exports.checkAssetTypeExisted = async (typeNumber, company) => {
         checkTypeNumber = true
     }
     return checkTypeNumber;
+}
+
+
+/**
+ * Danh mục văn bản
+ */
+exports.getAssetTypes = async (company) => {
+    const list = await AssetType.find({ company });
+    console.log(list, 'list')
+    const dataConverted = list.map( type => {
+        return {
+            id: type._id.toString(),
+            key: type._id.toString(),
+            value: type._id.toString(),
+            label: type.typeName,
+            title: type.typeName,
+            parent_id: type.parent !== undefined ? type.parent.toString() : null
+        }
+    });
+    const tree = await arrayToTree(dataConverted, {});
+
+    return {list, tree};
+}
+
+exports.createAssetTypes = async (company, data) => {
+    console.log(data, 'data')
+    await AssetType.create({
+        company,
+        typeNumber: data.typeNumber,
+        typeName: data.typeName,
+        description: data.description,
+        parent: data.parent
+    });
+
+    return await this.getAssetTypes(company);
+}
+
+exports.editAssetType = async (id, data) => {
+    const type = await AssetType.findById(id);
+    type.typeNumber = data.typeNumber,
+    type.typeName = data.typeName,
+    type.description = data.description,
+    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    await type.save();
+
+    return type;
+}
+
+exports.deleteAssetTypes = async (id) => {
+    const type = await AssetType.findById(id);
+    if(type === null) throw ['document_domain_not_found']
+    await AssetType.deleteOne({_id: id});
+
+    return await this.getAssetTypes(type.company);
+}
+
+
+exports.deleteManyAssetType = async (array, company) => {
+    await AssetType.deleteMany({_id: {$in: array}});
+
+    return await this.getAssetTypes(company);
 }
