@@ -111,7 +111,8 @@ exports.getAssetTypes = async (company) => {
         }
     });
     const tree = await arrayToTree(dataConverted, {});
-
+    console.log(tree, 'tree')
+    
     return {list, tree};
 }
 
@@ -123,12 +124,14 @@ exports.createAssetTypes = async (company, data) => {
         typeName: data.typeName,
         description: data.description,
         parent: data.parent
+        // parent: data.parent ? data.parent : null,
     });
 
     return await this.getAssetTypes(company);
 }
 
 exports.editAssetType = async (id, data) => {
+    console.log(data, 'data')
     const type = await AssetType.findById(id);
     type.typeNumber = data.typeNumber,
     type.typeName = data.typeName,

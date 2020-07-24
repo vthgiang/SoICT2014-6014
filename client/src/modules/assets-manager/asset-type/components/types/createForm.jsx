@@ -68,12 +68,12 @@ class CreateForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-create-document-domain"
-                    formID="form-create-document-domain"
-                    title={translate('document.administration.domains.add')}
+                    modalID="modal-create-asset-type"
+                    formID="form-create-asset-type"
+                    title="Thêm mới loại tài sản"
                     func={this.save}
                 >
-                    <form id="form-create-document-domain">
+                    <form id="form-create-asset-type">
                         <div className="form-group">
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />
@@ -84,7 +84,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <TreeSelect data={list} value={typeParent.length > 1 ? [] : typeParent} handleChange={this.handleParent} mode="radioSelect" />
+                            <TreeSelect data={list} value={typeParent.length > 0 ? [] : typeParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>

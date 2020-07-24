@@ -61,13 +61,13 @@ class EditForm extends Component {
     }
 
     render() {
-        const {translate, assetType}=this.props;
+        const { translate, assetType}=this.props;
         const {tree,list} = assetType.administration.types;
-        const {domainId, domainCode, domainName, domainDescription, domainParent} = this.state;
+        const {_id, domainId, domainCode, domainName, domainDescription, domainParent} = this.state;
         console.log("edit domain: ",this.state)
         
         return ( 
-            <div id="edit-document-domain">
+            <div id="edit-asset-type">
                 <div className="form-group">
                     <label>Mã loại tài sản<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleCode} value={domainCode}/>
@@ -87,7 +87,7 @@ class EditForm extends Component {
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>Lưu</button>
                     <button className="btn btn-danger" onClick={()=>{
-                        window.$(`#edit-document-domain`).slideUp()
+                        window.$(`#edit-asset-type`).slideUp()
                     }}>Đóng</button>
                 </div>
             </div>

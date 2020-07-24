@@ -22,7 +22,7 @@ class AdministrationAssetTypes extends Component {
 
     onChanged = async (e, data) => {
         await this.setState({currentDomain: data.node})
-        window.$(`#edit-document-domain`).slideDown();;
+        window.$(`#edit-asset-type`).slideDown();;
     }
 
     checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
@@ -76,7 +76,7 @@ class AdministrationAssetTypes extends Component {
         return ( 
             <React.Fragment>
                 <button className="btn btn-success" onClick={()=>{
-                    window.$('#modal-create-document-domain').modal('show');
+                    window.$('#modal-create-asset-type').modal('show');
                 }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
@@ -100,8 +100,8 @@ class AdministrationAssetTypes extends Component {
                             this.state.currentDomain !== undefined &&
                             <EditForm
                                 domainId={this.state.currentDomain.id}
-                                domainCode={this.state.currentDomain.text}
-                                domainName={this.state.currentDomain.text}
+                                domainCode={this.state.currentDomain.typeNumber}
+                                domainName={this.state.currentDomain.typeName}
                                 domainDescription={this.state.currentDomain.original.description}
                                 domainParent={this.state.currentDomain.parent}
                             />
