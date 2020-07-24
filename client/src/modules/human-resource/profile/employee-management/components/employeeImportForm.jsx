@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ImportFileExcel, SlimScroll, PaginateBar, DatePicker } from '../../../../../common-components';
+import { DialogModal, ShowImportData, ImportFileExcel, ConFigImportFile, DatePicker } from '../../../../../common-components';
 import { configurationEmployeeInfo } from './fileConfigurationImportEmployee';
 import { LOCAL_SERVER_API } from '../../../../../env';
 
@@ -11,33 +11,36 @@ class EmployeeImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // rowError: [],
-            // importData: [],
             // month: null,
-            // configData: this.convertConfigurationToString(configurationSalary),
-            // importConfiguration: configurationSalary,
-            // limit: 100,
-            // page: 0
+            limit: 100,
+            page: 0
         };
     }
-    handleImportExcel = (value) => {
-        let importData = [], rowError = [];
-        value.forEach(row => {
-            for (let index in row) {
-                if (index === 'bonus') {
-                    let bonus = [];
-                    row[index].forEach((y, n) => {
-                        if (y !== null) {
-                            bonus = [...bonus, { nameBonus: configurationEmployeeInfo.bonus[n], number: Number(y) }];
-                        }
-                    })
-                    row[index] = bonus;
-                }
-            }
 
+    // Function Thay đổi cấu hình file import
+    handleChangeConfig = (value) => {
+        this.setState({
+            configData: value,
         })
+    }
 
-        // TODO 
+    // Function thay đổi file import
+    handleImportExcel = (value) => {
+        let rowError = [];
+        // value.forEach(row => {
+        //     for (let index in row) {
+        //         if (index === 'bonus') {
+        //             let bonus = [];
+        //             row[index].forEach((y, n) => {
+        //                 if (y !== null) {
+        //                     bonus = [...bonus, { nameBonus: configurationEmployeeInfo.bonus[n], number: Number(y) }];
+        //                 }
+        //             })
+        //             row[index] = bonus;
+        //         }
+        //     }
+        // })
+
         // Check dữ liệu import có hợp lệ hay không
         let checkImportData = value;
         value = value.map((x, index) => {
@@ -57,10 +60,25 @@ class EmployeeImportForm extends Component {
 
             x = { ...x, errorAlert: errorAlert }
             return x;
+        });
+        this.setState({
+            importData: value,
+            rowError: rowError,
         })
-        console.log(value);
     }
+
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+    }
+
     render() {
+        const { limit, page, importData, rowError, configData } = this.state;
+        let configuration = configData ? configData : configurationEmployeeInfo;
         return (
             <React.Fragment>
                 <DialogModal
@@ -77,11 +95,46 @@ class EmployeeImportForm extends Component {
                         <div>
 
                         </div>
-                        <ImportFileExcel
-                            id="import_employees_info"
-                            configData={configurationEmployeeInfo}
-                            handleImportExcel={this.handleImportExcel}
+                        <ConFigImportFile
+                            id="import_employees_config"
+                            configData={configuration}
+                            scrollTableWidth={1000}
+                            titleArr={[
+                                { key: "rowHeader", value: "Số dòng tiêu đề của bảng" },
+                                { key: "sheets", value: "Tên các sheet" },
+                                { key: "employeeNumber", value: "Tên tiêu đề ứng với mã số nhân viên" },
+                                { key: "employeeName", value: "Tên tiêu để ứng với họ và tên" },
+                                { key: "mainSalary", value: "Tên tiêu để ứng với tiền lương chính" },
+                                { key: "bonus", value: "Tên tiêu để ứng với lương thưởng khác" },
+                            ]}
+                            handleChangeConfig={this.handleChangeConfig}
                         />
+                        <div className="row">
+                            <div className="form-group col-md-4 col-xs-12">
+                                <ImportFileExcel
+                                    configData={configuration}
+                                    handleImportExcel={this.handleImportExcel}
+                                />
+                            </div>
+                            <div className="form-group col-md-4 col-xs-12">
+                                <label></label>
+                                <a className='pull-right' href={LOCAL_SERVER_API + configuration.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
+                                    download={configuration.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                            </div>
+                            <div className="form-group col-md-12 col-xs-12">
+                                <ShowImportData
+                                    id="import_employee_show_data"
+                                    configData={configuration}
+                                    importData={importData}
+                                    rowError={rowError}
+                                    scrollTableWidth={1000}
+                                    limit={limit}
+                                    page={page}
+                                    setPage={this.setPage}
+                                />
+                            </div>
+                        </div>
+
 
                     </form>
                 </DialogModal>

@@ -467,6 +467,7 @@ class TaskReportCreateForm extends Component {
         }
     }
     handleChangeChecked = (item) => {
+
         if (this.checkedCheckbox.has(item)) {
             this.checkedCheckbox.delete(item);
         } else {
@@ -588,9 +589,9 @@ class TaskReportCreateForm extends Component {
                                         onChange={this.handleChangeStatus}
                                         items={
                                             [
-                                                { text: 'Tất cả' },
-                                                { value: "0", text: 'Đã hoàn thành' },
-                                                { value: "1", text: 'Đang thực hiện' },
+                                                { value: "0", text: 'Tất cả' },
+                                                { value: "1", text: 'Đã hoàn thành' },
+                                                { value: "2", text: 'Đang thực hiện' },
                                             ]
                                         }
                                         multiple={false}
@@ -690,7 +691,6 @@ class TaskReportCreateForm extends Component {
                                         <th>Kiểu dữ liệu</th>
                                         <th>Điều kiện lọc</th>
                                         <th>Hiển thị trong báo cáo</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}> Hệ số</th>
                                         <th>Tên mới</th>
                                         <th>Cách tính</th>
                                         <th>Dạng biểu đồ</th>
@@ -714,8 +714,12 @@ class TaskReportCreateForm extends Component {
                                                             : ''
                                                         }
                                                     </td>
-                                                    <td><input style={{ width: '100%' }} type="number" value={newReport.coefficient} onChange={this.handleChangeCoefficient} /></td>
-                                                    <td><input style={{ width: '100%' }} type="text" onChange={this.handleChangeNewName} /></td>
+                                                    <td>
+                                                        {(item2.type === 'Number') ?
+                                                            <input style={{ width: '100%' }} type="text" onChange={this.handleChangeNewName} /> : ''
+                                                        }
+
+                                                    </td>
                                                     <td>
                                                         {(item2.type === 'Number') ?
                                                             <SelectBox
@@ -725,8 +729,7 @@ class TaskReportCreateForm extends Component {
                                                                 onChange={this.handleChangeCalulator}
                                                                 items={
                                                                     [
-                                                                        { value: '0', text: 'Trung bình cộng' },
-                                                                        { value: '1', text: 'Tổng' },
+                                                                        { value: '1', text: 'Trung bình cộng' },
                                                                     ]
                                                                 }
                                                                 multiple={false}
