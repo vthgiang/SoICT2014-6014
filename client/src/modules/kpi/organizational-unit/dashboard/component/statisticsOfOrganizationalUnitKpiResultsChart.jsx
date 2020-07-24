@@ -10,45 +10,45 @@ import * as d3 from "d3";
 
 class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
-        
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
+
         this.today = new Date();
 
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
-            month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
+            month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
             dataStatus: this.DATA_STATUS.QUERYING,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
         };
     }
 
     componentDidMount = () => {
-        if(this.props.organizationalUnitId) {
+        if (this.props.organizationalUnitId) {
             // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
         }
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextState.kindOfPoint !== this.state.kindOfPoint) {
-            await this.setState(state =>{
+        if (nextState.kindOfPoint !== this.state.kindOfPoint) {
+            await this.setState(state => {
                 return {
                     ...state,
                     kindOfPoint: nextState.kindOfPoint,
                 };
             });
-            
+
             this.columnChart();
         }
 
         // Call action again when this.state.organizationalUnitId or this.state.month changes
-        if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+        if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -59,7 +59,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             return false;
         }
 
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE){
+        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
             this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
 
@@ -72,21 +72,21 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             // Kiểm tra currentKPI đã được bind vào props hay chưa
-            if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpiSets) {
+            if (!nextProps.dashboardOrganizationalUnitKpi.employeeKpiSets) {
                 return false            // Đang lấy dữ liệu, ko cần render lại
             }
 
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.AVAILABLE,
                 };
             });
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.columnChart();
 
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -97,21 +97,21 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         return false;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
                 organizationalUnitId: nextProps.organizationalUnitId,
                 month: nextProps.month
             }
-        } else{
+        } else {
             return null;
         }
     }
 
     /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
-        if(Number(value) !== this.state.kindOfPoint) {
+        if (Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
                 return {
                     ...state,
@@ -126,7 +126,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         var point = Array.from(new Set(arrayPoint));
         var employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
 
-        point.sort(function(a, b) {
+        point.sort(function (a, b) {
             return a - b;
         });
 
@@ -134,7 +134,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             var index = arrayPoint.indexOf(x);
             var theSamePoints = [];
 
-            while(index !== -1) {
+            while (index !== -1) {
                 theSamePoints.push(index);
                 index = arrayPoint.indexOf(x, index + 1);
             }
@@ -156,13 +156,14 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     // Thiết lập dataChart
     setDataColumnChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
+        console.log('dashboardOrganizationalUnitKpi', dashboardOrganizationalUnitKpi)
         var listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
         var employeeWithTheSamePoints, textLabel;
-        if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
+        if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
 
-        if(listEmployeeKpiSet) {
+        if (listEmployeeKpiSet) {
             listEmployeeKpiSet.map(kpi => {
                 automaticPoint.push(kpi.automaticPoint);
                 employeePoint.push(kpi.employeePoint);
@@ -171,18 +172,18 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         // Lấy dữ liệu các loại điểm mà this.state.kindOfPoint có
-        if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
+        if (this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
             textLabel = 'Giá trị điểm hệ thống đánh giá';
-        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
+        } else if (this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(employeePoint);
             textLabel = 'Giá trị điểm cá nhân tự đánh giá';
-        } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
+        } else if (this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
             textLabel = 'Giá trị điểm quản lý đánh giá';
         }
-        
-        
+
+
         return {
             'employeeWithTheSamePoints': employeeWithTheSamePoints,
             'textLabel': textLabel
@@ -191,8 +192,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     removePreviosChart = () => {
         const chart = this.refs.chart;
-        if(chart) {
-            while(chart.hasChildNodes()) {
+        if (chart) {
+            while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
@@ -206,7 +207,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         dataPoints = this.setDataColumnChart();
         dataChart = dataPoints.employeeWithTheSamePoints;
         textLabel = dataPoints.textLabel;
-
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
@@ -215,7 +215,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                 bottom: 20,
                 right: 20
             },
-            
+
             data: {
                 x: 'x',
                 columns: dataChart,
@@ -273,13 +273,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         const { dashboardOrganizationalUnitKpi } = this.props;
         var listEmployeeKpiSet;
 
-        if(dashboardOrganizationalUnitKpi.employeeKpiSets) {
+        if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
         }
 
         return (
             <React.Fragment>
-                { listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
+                {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
                     <section className="box-body" style={{ textAlign: "right" }}>
                         <section className="btn-group">
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>

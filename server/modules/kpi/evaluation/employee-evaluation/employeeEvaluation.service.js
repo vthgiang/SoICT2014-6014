@@ -164,8 +164,8 @@ exports.getById = async (id) => {
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
-            {path: 'comments.creator', model: User,select: 'name email avatar '},
-            {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
         ])
     return kpipersonal;
 }
@@ -176,22 +176,22 @@ exports.getTaskById = async (data) => {
     var task = await getResultTaskByMonth(data);
     // tính điểm taskImportanceLevel:2
     console.log('rrreerr', task);
-  
-    for(let i = 0; i < task.length; i++){
+
+    for (let i = 0; i < task.length; i++) {
         var date1 = await task[i].preEvaDate;
         var date2 = await task[i].date;
         var Difference_In_Time = await date2.getTime() - date1.getTime();
         var daykpi = await Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
-        if(daykpi>30) daykpi = 30;
+        if (daykpi > 30) daykpi = 30;
         console.log('daykpi = ', daykpi);
         task[i].taskImportanceLevelCal = await Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
-            task[i].results.taskImportanceLevel =  await task[i].taskImportanceLevelCal;
-        task[i].daykpi =await daykpi;
-       
-       }
-   
-   
+            task[i].results.taskImportanceLevel = await task[i].taskImportanceLevelCal;
+        task[i].daykpi = await daykpi;
+
+    }
+
+
     console.log("----", task);
     return task;
 }
@@ -242,11 +242,11 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
     let employPoint = 0;
     let sumTaskImportance = 0;
     let priority;
-   // console.log('taskkkk', task);
+    // console.log('taskkkk', task);
     //console.log('#######', task);
     // từ độ quan trọng của cv, ta tính điểm kpi theo công thức : Giả sử có việc A, B, C  hệ số là 5, 6, 7 Thì điểm là (A*3 + B*6 + C*9 + D*2)/18
     for (element of task) {
-        
+
         autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
         approvePoint += element.results.approvedPoint * element.results.taskImportanceLevel;
         employPoint += element.results.employeePoint * element.results.taskImportanceLevel;
@@ -258,7 +258,7 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
         var Difference_In_Time = date2.getTime() - date1.getTime();
         var daykpi = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
         //console.log('daykpi = ', daykpi);
-        if(daykpi > 30) daykpi = 30;
+        if (daykpi > 30) daykpi = 30;
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
             element.results.taskImportanceLevel = element.taskImportanceLevelCal;
@@ -266,7 +266,7 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
     }
     //console.log('#######', task);
-    
+
     //update diem kpi  (employeeKpi)
     var n = task.length;
     var result = await DetailKPIPersonal.findByIdAndUpdate(id, {
@@ -287,20 +287,20 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
     let autoPointSet = 0;
     let employeePointSet = 0;
     let approvedPointSet = 0;
-    var kpiSet = await KPIPersonal.findOne({kpis : result._id});
+    var kpiSet = await KPIPersonal.findOne({ kpis: result._id });
 
-    for(let i = 0; i < kpiSet.kpis.length; i++){
+    for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpi = await DetailKPIPersonal.findById(kpiSet.kpis[i]);
-        if(kpi.automaticPoint !== 0 && kpi.automaticPoint !== null){
-            let weight = kpi.weight/100;
+        if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
+            let weight = kpi.weight / 100;
             autoPointSet = kpi.automaticPoint * weight;
             employeePointSet = kpi.employeePoint * weight;
             approvedPointSet = kpi.approvedPoint * weight;
-        }else{
+        } else {
             autoPointSet = -1;
         }
     };
-    if(autoPointSet !== -1){
+    if (autoPointSet !== -1) {
         var updateKpiSet = await KPIPersonal.findByIdAndUpdate(kpiSet._id, {
             $set: {
                 "automaticPoint": Math.round(autoPointSet),
@@ -372,7 +372,7 @@ async function getResultTaskByMonth(data) {
 
     var monthkpi = parseInt(date.getMonth() + 1);
     var yearkpi = parseInt(date.getFullYear());
-    
+
 
     let conditions = [
         {

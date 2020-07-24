@@ -6,7 +6,7 @@ const Privilege = require('../models/auth/privilege.model');
 const Link = require('../models/super-admin/link.model');
 const Company = require('../models/system-admin/company.model');
 const ObjectId = require('mongoose').Types.ObjectId;
-const {data, checkServicePermission} = require('./servicesPermission');
+const { data, checkServicePermission } = require('./servicesPermission');
 const multer = require('multer');
 const fs = require('fs');
 const CryptoJS = require("crypto-js");
@@ -22,43 +22,43 @@ const CryptoJS = require("crypto-js");
  */
 
 
-exports.authFunc = (checkPage=true) => {
+exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
             const token = req.header('auth-token');//JWT nhận từ người dùng
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
              */
-            if(!token) throw ['access_denied'];
+            if (!token) throw ['access_denied'];
 
             /**
              * Giải mã token gửi lên để check dữ liệu trong token
              */
             let verified;
-            try{
+            try {
                 verified = await jwt.verify(token, process.env.TOKEN_SECRET);
-            } catch (error){ // jwt malformed
+            } catch (error) { // jwt malformed
                 throw ['access_denied'];
             }
-            req.user = verified; 
+            req.user = verified;
             req.token = token;
 
-            if(process.env.DEVELOPMENT !== 'true'){
-                
+            if (process.env.DEVELOPMENT !== 'true') {
+
                 const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
                 const currentRole = req.header('current-role');
-                if(!ObjectId.isValid(currentRole)){
+                if (!ObjectId.isValid(currentRole)) {
                     throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                 }
 
                 const role = await Role.findById(currentRole); //current role của người dùng
-                if(role === null) throw ["role_invalid"];
+                if (role === null) throw ["role_invalid"];
                 /**
                  * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
                  * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
                  * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
                  */
-                if(verified.fingerprint !== fingerprint) throw ['fingerprint_invalid']; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+                if (verified.fingerprint !== fingerprint) throw ['fingerprint_invalid']; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
                 /**
                  * Kiểm tra xem token có còn hoạt động hay không ?
@@ -67,23 +67,23 @@ exports.authFunc = (checkPage=true) => {
                  * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
                  */
                 const userToken = await User.findById(req.user._id);
-                if(userToken.numberDevice === 0) throw ['acc_log_out'];
+                if (userToken.numberDevice === 0) throw ['acc_log_out'];
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?
                  */
                 const userId = req.user._id;
-                const userrole = await UserRole.findOne({userId, roleId: role._id});
-                if(userrole === null) throw ['user_role_invalid'];
+                const userrole = await UserRole.findOne({ userId, roleId: role._id });
+                if (userrole === null) throw ['user_role_invalid'];
                 /**
                  * Riêng đối với system admin của hệ thống thì bỏ qua bước này
                  */
-                if(role.name !== 'System Admin'){
+                if (role.name !== 'System Admin') {
                     /**
                      * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
                      */
                     const company = await Company.findById(req.user.company._id);
-                    if(!company.active){ //dịch vụ của công ty người dùng đã tạm dừng
+                    if (!company.active) { //dịch vụ của công ty người dùng đã tạm dừng
                         const resetUser = await User.findById(req.user._id);
                         resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
                         await resetUser.save();
@@ -104,13 +104,13 @@ exports.authFunc = (checkPage=true) => {
                 const link = role.name !== 'System Admin' ?
                     await Link.findOne({
                         url,
-                        company: req.user.company._id 
+                        company: req.user.company._id
                     }) :
                     await Link.findOne({
                         url,
                         company: undefined
                     });
-                if(link === null) throw ['url_invalid'];
+                if (link === null) throw ['url_invalid'];
 
                 if (checkPage) {
                     const roleArr = [role._id].concat(role.parents);
@@ -119,7 +119,7 @@ exports.authFunc = (checkPage=true) => {
                         resourceType: 'Link',
                         roleId: { $in: roleArr }
                     });
-                    if(privilege === null) throw ('page_access_denied');
+                    if (privilege === null) throw ('page_access_denied');
                 }
 
                 /**
@@ -127,19 +127,19 @@ exports.authFunc = (checkPage=true) => {
                  */
                 const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
                 const checkSP = await checkServicePermission(data, path, req.method, currentRole);
-                if(!checkSP) throw ['service_permission_invalid'];
+                if (!checkSP) throw ['service_permission_invalid'];
 
             }
 
             // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
             next();
-            
-        } catch (error) { 
+
+        } catch (error) {
             res.status(400).json({
                 success: false,
                 messages: error
             });
-        }   
+        }
     }
 }
 
@@ -157,20 +157,21 @@ exports.uploadFile = (arrData, type) => {
     // Tạo folder chứa file khi chưa có folder
     arrData.forEach(x => {
         let dir = `./upload${x.path}`;
-        if (!fs.existsSync(dir)){
+        if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
     })
 
-    const getFile = multer({ storage: multer.diskStorage({
+    const getFile = multer({
+        storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                if(type === 'single' || type === 'array'){
+                if (type === 'single' || type === 'array') {
                     cb(null, `./upload${arrData[0].path}`);
-                } else if(type === 'fields'){
-                    for(let n in arrData){
-                        
+                } else if (type === 'fields') {
+                    for (let n in arrData) {
+
                         console.log('req:', file)
-                        if(file.fieldname === arrData[n].name){
+                        if (file.fieldname === arrData[n].name) {
                             cb(null, `./upload${arrData[n].path}`);
                             break;
                         }
@@ -178,15 +179,15 @@ exports.uploadFile = (arrData, type) => {
                 }
             },
             filename: function (req, file, cb) {
-                let  extend = file.originalname.split('.');
-                let oldNameFile = extend.splice(0, extend.length-1);
-                    oldNameFile = oldNameFile.join('.');
-                let hash =`${req.user._id}_${Date.now()}_`+ CryptoJS.MD5(oldNameFile).toString();
-                cb(null, `${hash}.${extend[extend.length-1]}`);
+                let extend = file.originalname.split('.');
+                let oldNameFile = extend.splice(0, extend.length - 1);
+                oldNameFile = oldNameFile.join('.');
+                let hash = `${req.user._id}_${Date.now()}_` + CryptoJS.MD5(oldNameFile).toString();
+                cb(null, `${hash}.${extend[extend.length - 1]}`);
             }
         }),
     });
-    
+
     switch (type) {
         case 'single':
             name = arrData[0].name;
@@ -195,8 +196,8 @@ exports.uploadFile = (arrData, type) => {
             name = arrData[0].name;
             return getFile.array(name, 20);
         case 'fields':
-            arrFile = arrData.map(x=>{
-                return {name: x.name, maxCount:20}
+            arrFile = arrData.map(x => {
+                return { name: x.name, maxCount: 20 }
             })
             return getFile.fields(arrFile);
         default:
