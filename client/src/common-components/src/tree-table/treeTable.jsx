@@ -35,7 +35,7 @@ class TreeTable extends Component {
                     id = $row.data('id'),
                     $columnName = $row.find('td[data-column="name"]'),
                     children = $table.find('tr[data-parent="' + id + '"]')
-                //var tagSpan = $columnName.find("span").length;
+                //  var tagSpan = $columnName.find("span").length;
 
 
                 var div = window.$("<div/>").attr({
@@ -112,7 +112,7 @@ class TreeTable extends Component {
         });
     }
 
-    // function thực hiện format dữ liệu truyền vào
+    // Function thực hiện format dữ liệu truyền vào
     dataTreetable = (column, data) => {
         var keyColumn = column.map(col => col.key);
         var newarr = [];
@@ -182,7 +182,7 @@ class TreeTable extends Component {
         return data;
     }
 
-    // function hiện thị các action tương ứng cho các dòng 
+    // Function hiện thị các action tương ứng cho các dòng 
     showActionColumn = (data, id) => {
         var { titleAction, performtasks } = this.props;
         switch (data) {
