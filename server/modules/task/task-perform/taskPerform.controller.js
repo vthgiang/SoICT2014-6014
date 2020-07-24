@@ -280,7 +280,6 @@ exports.createCommentOfTaskAction = async (req, res) => {
 
             })
         }
-        console.log("Chạy vào đây")
         var actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` create  action comment  `, req.user.company);
         res.status(200).json({
@@ -328,7 +327,6 @@ exports.editCommentOfTaskAction = async (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        console.log("Comment of task action")
         var task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
         await LogInfo(req.user.email, ` delete action comment  `, req.user.company);
         res.status(200).json({
@@ -602,23 +600,22 @@ exports.uploadFile = async (req, res) => {
  * Xóa file của hoạt động
  */
 exports.deleteFileOfAction = async (req, res) => {
-    // try {
-    console.log(req.params)
+    try {
     let comment = await PerformTaskService.deleteFileOfAction(req.params);
-    // await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+                                                                                                                                                                                                                                                                                                         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
     res.status(200).json({
         success: true,
         messages: ['delete_file_success'],
         content: comment
     })
-    // } catch (error) {
-    // await LogError(req.user.email, `delete file of task  `, req.user.company);
-    // res.status(400).json({
-    //     success: false,
-    //     messages: ['delete_file_fail'],
-    //     content: error
-    // })
-    // }
+    } catch (error) {
+    await LogError(req.user.email, `delete file of task  `, req.user.company);
+    res.status(400).json({
+        success: false,
+        messages: ['delete_file_fail'],
+        content: error
+    })
+    }
 }
 /**
  * Xóa file của bình luận hoạt động

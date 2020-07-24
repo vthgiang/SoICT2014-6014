@@ -46,7 +46,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
             if (!parentKPI){
                 parent = null;
             } else {    
-                items = parentKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = parentKPI.kpis.filter(item => item.type === 0).map(x => {
                     return {value: x._id, text: x.name}
                 });
 

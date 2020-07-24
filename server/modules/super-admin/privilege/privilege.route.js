@@ -8,7 +8,6 @@ router.post("/", auth, PrivilegeController.createPrivelege);
 router.get("/:id", auth, PrivilegeController.getPrivelege);
 router.patch("/:id", auth, PrivilegeController.editPrivelege);
 router.delete("/:id", auth, PrivilegeController.deletePrivelege);
-
 router.get("/get-links-of-role/:idRole", auth, PrivilegeController.getLinksThatRoleCanAccess);
 
 module.exports = router;

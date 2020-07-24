@@ -380,7 +380,7 @@ class TaskAddModal extends Component {
                     formID="form-add-new-task"
                     disableSubmit={!this.isTaskFormValidated()}
                     func={this.handleSubmit}
-                    title="Thêm công việc mới"
+                    title={translate('task.task_management.add_new_task')}
                 >
 
                     <div className="col-sm-6">

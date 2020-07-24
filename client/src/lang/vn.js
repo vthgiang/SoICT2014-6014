@@ -446,6 +446,17 @@ export default {
                 exp_official_number:'Ví dụ: 05062020VN',
                 exp_signer: "Ví dụ: Nguyễn Việt Anh",
                 exp_version: "Phiên bản 1",
+                no_blank_issuingbody: "Cơ quan không được để trống",
+                no_blank_version_name: "Tên phiên bản không được để trống",
+                no_blank_official_number: "Số hiệu không được để trống",
+                error_office_number: "Số hiệu phải có kí tự số",
+                no_blank_issuingdate: "Ngày ban hành không được để trống",
+                no_blank_effectivedate: "Ngày áp dụng không được để trống",
+                no_blank_expired_date: "Ngày hết hạn không được để trống",
+                no_blank_signer: "Tên người đăng kí không được để trống",
+                no_blank_file: "File chưa được upload",
+                no_blank_file_scan: "File scan không được để trống",
+                no_blank_category: "Loại văn bản không được để trống",
             },
             relationship: {
                 title: 'Liên kết văn bản',
@@ -1811,6 +1822,7 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                add_new_task: 'Thêm công việc mới',
                 // add_err: 
                 add_err_empty_unit: 'Đơn vị không được để trống',
                 add_err_empty_name: 'Tên không được để trống',
@@ -1858,6 +1870,7 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
+                stop_timer: "Dừng bấm giờ",
 
 
                 // TODO: code_mesage_task_perform

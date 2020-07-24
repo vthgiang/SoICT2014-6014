@@ -446,6 +446,17 @@ export default {
                 exp_official_number:'Example: 05062020VN',
                 exp_signer: "Example: Nguyễn Việt Anh",
                 exp_version: "Version 1",
+                no_blank_issuingbody: "Issuing body should'n empty",
+                no_blank_version_name: "Version name should'n empty",
+                no_blank_official_number: "Official number should'n empty",
+                error_office_number: "Offical must have at least one number character",
+                no_blank_issuingdate: "Issuing date should'n empty",
+                no_blank_effectivedate: "Effective date should'n empty",
+                no_blank_expired_date: "Expired date should'n empty",
+                no_blank_signer: "Signer should'n empty",
+                no_blank_file: "Not have file",
+                no_blank_file_scan: "Note have file scan",
+                no_blank_category: "Categoty should'n empty",
             },
             relationship: {
                 title: 'Document relationship',
@@ -1663,6 +1674,7 @@ export default {
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
                 
+                add_new_task: 'Add new task',
                 // add_err: 
                 add_err_empty_unit: 'Unit should not be empty',
                 add_err_empty_name: 'Name should not be empty',
@@ -1707,6 +1719,14 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
+                stop_timer: "Stop timer",
+
+
+
+
+
+
+
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
