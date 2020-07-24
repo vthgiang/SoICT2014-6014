@@ -56,7 +56,7 @@ class LinkInfoForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xy ly va validate role name
@@ -76,7 +76,7 @@ class LinkInfoForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     handleCategory = (value) => {

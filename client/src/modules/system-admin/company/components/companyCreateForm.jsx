@@ -28,35 +28,35 @@ class CompanyCreateForm extends Component {
     }
 
     checkCheckBoxAll = (arr) => {
-        if(arr.length > 0 && arr.length === this.state.linkDefaultArr.length){
+        if (arr.length > 0 && arr.length === this.state.linkDefaultArr.length) {
             return true;
-        }
-        else{
+        } else {
             return false;
-        };
+        }
     }
 
     checkedCheckbox = (item, arr) => {
-        var index = arr.indexOf(item);
-        if(index !== -1){
+        let index = arr.indexOf(item);
+
+        if (index !== -1) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     checkAll = (e) => {
-        const {checked} = e.target;
-        if(checked){
+        const { checked } = e.target;
+
+        if (checked) {
             this.setState({
                 linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
             })
-        }else{
+        } else { 
             this.setState({
                 linkDefaultArr: []
             })
-        }
+        } 
     }
 
     handleCheckbox = (e) => {
@@ -121,7 +121,7 @@ class CompanyCreateForm extends Component {
             links: this.state.linkDefaultArr
         };
 
-        if(this.isFormValidated()) return this.props.create(company);
+        if (this.isFormValidated()) return this.props.createCompany(company);
     }
 
     // Xu ly thay doi va validate cho ten cong ty
@@ -132,7 +132,7 @@ class CompanyCreateForm extends Component {
 
     validateName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateName(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -155,7 +155,7 @@ class CompanyCreateForm extends Component {
 
     validateShortName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateShortName(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -178,7 +178,7 @@ class CompanyCreateForm extends Component {
 
     validateDescription = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateDescription(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -201,7 +201,7 @@ class CompanyCreateForm extends Component {
 
     validateEmail = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -218,7 +218,7 @@ class CompanyCreateForm extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormValidated = () => {
-        const {companyName, companyShortName, companyDescription, companyEmail} = this.state;
+        const { companyName, companyShortName, companyDescription, companyEmail } = this.state;
         let result = 
             this.validateName(companyName, false) &&
             this.validateShortName(companyShortName, false) &&
@@ -367,7 +367,7 @@ function mapState(state) {
     return { systemLinks, company };
 }
 const action = {
-    create: CompanyActions.create,
+    createCompany: CompanyActions.createCompany,
     getAllSystemLinks: SystemLinkActions.getAllSystemLinks
 }
 

@@ -26,9 +26,9 @@ class CompanyTable extends Component {
         }
     }
 
-    componentDidMount(){
-        this.props.get();
-        this.props.get({page: this.state.page, limit: this.state.limit});
+    componentDidMount() {
+        this.props.getAllCompanies();
+        this.props.getAllCompanies({ page: this.state.page, limit: this.state.limit });
         this.props.getAllSystemLinks();
         this.props.getAllSystemComponents();
     }
@@ -39,14 +39,15 @@ class CompanyTable extends Component {
         });
     }
 
-    searchWithOption = async() => {
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.get(data);
+
+        await this.props.getAllCompanies(data);
     }
 
     setPage = (page) => {
@@ -57,6 +58,7 @@ class CompanyTable extends Component {
             key: this.state.option,
             value: this.state.value
         };
+
         this.props.get(data);
     }
 
@@ -68,7 +70,8 @@ class CompanyTable extends Component {
             key: this.state.option,
             value: this.state.value
         };
-        this.props.get(data);
+
+        this.props.getAllCompanies(data);
     }
 
     toggle = (id, data, title, name, btnNo, btnYes, value) => {
@@ -83,7 +86,7 @@ class CompanyTable extends Component {
             confirmButtonText: btnYes
         }).then((result) => {
             if (result.value) {
-                this.props.edit(id, {
+                this.props.editCompany(id, {
                     name: data.name,
                     shortName: data.shortName,
                     description: data.description,
@@ -112,10 +115,10 @@ class CompanyTable extends Component {
             }
         });
         await window.$('#modal-edit-services-company').modal('show');
-        await this.props.linksList(company._id);
-        await this.props.linksList(company._id, {page: 1, limit: 5});
-        await this.props.componentsList(company._id);
-        await this.props.componentsList(company._id, {page: 1, limit: 5});
+        await this.props.getCompanyLinks(company._id);
+        await this.props.getCompanyLinks(company._id, { page: 1, limit: 5 });
+        await this.props.getCompanyComponents(company._id);
+        await this.props.getCompanyComponents(company._id, { page: 1, limit: 5 });
     }
 
     render() { 
@@ -223,14 +226,12 @@ function mapState(state) {
     return { company };
 }
 const action = {
-    get: CompanyActions.get,
-    edit: CompanyActions.edit,
+    getAllCompanies: CompanyActions.getAllCompanies,
+    editCompany: CompanyActions.editCompany,
     getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
     getAllSystemComponents: SystemComponentActions.getAllSystemComponents,
-    linksList: CompanyActions.linksList,
-    linksPaginate: CompanyActions.linksPaginate,
-    componentsList: CompanyActions.componentsList,
-    componentsPaginate: CompanyActions.componentsPaginate
+    getCompanyLinks: CompanyActions.getCompanyLinks,
+    getCompanyComponents: CompanyActions.getCompanyComponents
 }
 
 const connectedCompanyTable = connect(mapState, action)(withTranslate(CompanyTable))
