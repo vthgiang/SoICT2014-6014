@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
 import { taskManagementActions } from "../../task-management/redux/actions";
@@ -47,35 +46,6 @@ class TaskComponent extends Component {
         return true;
     }
 
-    checkPermission(tasks) {
-        var id = localStorage.getItem("userId");
-        var info, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-
-        if (tasks.task) info = tasks.task;
-        if (typeof info !== 'undefined' && info !== null) {
-            responsibleEmployees = info.responsibleEmployees;
-            accountableEmployees = info.accountableEmployees;
-            consultedEmployees = info.consultedEmployees;
-            informedEmployees = info.informedEmployees;
-            for (let n in responsibleEmployees) {
-                if (responsibleEmployees[n]._id === id) return true;
-            }
-            for (let n in accountableEmployees) {
-                if (accountableEmployees[n]._id === id) return true;
-            }
-            for (let n in consultedEmployees) {
-                if (consultedEmployees[n]._id === id) return true;
-            }
-            for (let n in informedEmployees) {
-                if (informedEmployees[n]._id === id) return true;
-            }
-            if (info.creator?._id === id){
-                return true;
-            }
-        }
-        return false;
-    }
-
     onChangeTaskRole = (role) => {
         this.setState(state => {
             return {
@@ -86,6 +56,8 @@ class TaskComponent extends Component {
     }
 
     render = () => {
+        const { translate } = this.props;
+
         let taskId = this.props.id;;
         let task;
 
@@ -96,11 +68,13 @@ class TaskComponent extends Component {
         }
         
         const { tasks, performtasks } = this.props;
-        if (performtasks.task) task = performtasks.task;
-        if (performtasks.task && !this.checkPermission(performtasks)) {
+        if (performtasks.task) {
+            task = performtasks.task;
+        }
+        if (performtasks.task && performtasks.task.info){
             return (
                 <div>
-                    <h2>Công việc không tồn tại hoặc bạn không có quyền truy cập</h2>
+                    <h2>{translate('task.task_management.detail_task_permission')}</h2>
                 </div>
             );
         }

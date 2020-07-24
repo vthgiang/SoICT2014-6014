@@ -4,19 +4,19 @@ const KPIUnitController = require("./creation.controller");
 const {auth} = require('../../../../middleware/index');
 
 // Lấy KPI đơn vị hiện tại qua vai trò
-router.get('/roles/:id',auth, KPIUnitController.getOrganizationalUnitKpiSet);
+router.get('/kpi-units/:role',auth, KPIUnitController.getOrganizationalUnitKpiSet);
 
 // edit kpi unit by id
-router.patch('/:id',auth, KPIUnitController.editOrganizationalUnitKpiSet);
+router.patch('/kpi-units/:kpiId',auth, KPIUnitController.editOrganizationalUnitKpiSet);
 
 // delete kpi unit
-router.delete('/:id',auth, KPIUnitController.deleteOrganizationalUnitKpiSet);
+router.delete('/kpi-units/:kpiId',auth, KPIUnitController.deleteOrganizationalUnitKpiSet);
 
 // delete target of unit
-router.delete('/:kpiunit/organizational-unit-kpis/:id',auth, KPIUnitController.deleteOrganizationalUnitKpi);
+router.delete('/kpi-units/:kpiunit/organizational-unit-kpis/:id',auth, KPIUnitController.deleteOrganizationalUnitKpi);
 
 // edit status of unit by id
-router.patch('/:id/:status',auth, KPIUnitController.editOrganizationalUnitKpiSetStatus);
+router.patch('/kpi-units/:kpiId/status-kpi',auth, KPIUnitController.editOrganizationalUnitKpiSetStatus);
 
 // get all parent target kpi of a unit
 router.get('/:id/parent-organizational-unit-kpi-sets',auth, KPIUnitController.getParentOrganizationalUnitKpiSet);

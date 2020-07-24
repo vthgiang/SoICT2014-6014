@@ -3,7 +3,7 @@ const { LogInfo, LogError } = require('../../logs');
 
 exports.login = async (req, res) => {
     try {
-        var loginUser = await AuthService.login(req.header('fingerprint'), req.body);
+        const loginUser = await AuthService.login(req.header('fingerprint'), req.body);
 
         await LogInfo(loginUser.user.email, 'LOGIN', loginUser.user.company);
         res.status(200).json({
@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
     try {
-        var logout = await AuthService.logout(req.user._id, req.token);
+        const logout = await AuthService.logout(req.user._id, req.token);
 
         await LogInfo(req.user.email, 'LOG_OUT', req.user.company);
         res.status(200).json({
@@ -45,7 +45,7 @@ exports.logout = async (req, res) => {
 
 exports.logoutAllAccount = async (req, res) => {
     try {
-        var logout = await AuthService.logoutAllAccount(req.user._id);
+        const logout = await AuthService.logoutAllAccount(req.user._id);
         
         await LogInfo(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
         res.status(200).json({
@@ -66,7 +66,7 @@ exports.logoutAllAccount = async (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
     try {
-        var forgetPassword = await AuthService.forgetPassword(req.body.email);
+        const forgetPassword = await AuthService.forgetPassword(req.body.email);
 
         await LogInfo(req.body.email, 'FORGET_PASSWORD');
         res.status(200).json({
@@ -87,7 +87,7 @@ exports.forgetPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        var resetPassword = await AuthService.resetPassword(req.body.otp, req.body.email, req.body.password);
+        const resetPassword = await AuthService.resetPassword(req.body.otp, req.body.email, req.body.password);
 
         await LogInfo(req.body.email, 'RESET_PASSWORD');
         res.status(200).json({
@@ -109,9 +109,9 @@ exports.resetPassword = async (req, res) => {
 exports.changeInformation = async (req, res) => {
 
     try {
-        var avatar;
-        if(req.file !== undefined){
-            var path = req.file.destination +'/'+ req.file.filename;
+        let avatar;
+        if(req.file){
+            let path = req.file.destination +'/'+ req.file.filename;
             avatar = path.substr(1, path.length)
             console.log("file: ", req.files)
         }
@@ -136,7 +136,7 @@ exports.changeInformation = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
-        var user = await AuthService.changePassword(req.params.id, req.body.password, req.body.new_password);
+        const user = await AuthService.changePassword(req.params.id, req.body.password, req.body.new_password);
 
         await LogInfo(req.user.email, 'CHANGE_USER_PASSWORD', req.user.company);
         res.status(200).json({
@@ -157,7 +157,7 @@ exports.changePassword = async (req, res) => {
 
 exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        var data = await AuthService.getLinksThatRoleCanAccess(req.params.id);
+        const data = await AuthService.getLinksThatRoleCanAccess(req.params.id);
 
         await LogInfo(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(200).json({
@@ -178,7 +178,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        var profile = await AuthService.getProfile(req.params.id);
+        const profile = await AuthService.getProfile(req.params.id);
 
         await LogInfo(req.user.email, 'GET_PROFILE', req.user.company);
         res.status(200).json({
@@ -203,9 +203,8 @@ exports.getProfile = async (req, res) => {
  * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
  */
 exports.downloadFile = async (req, res) => {
-    console.log("hihihihihiihhi")
     try {
-        const {path} = req.query;
+        const { path } = req.query;
        // await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
         res.download(path, "file");
     } catch (error) {

@@ -3,17 +3,11 @@ import { connect } from 'react-redux';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
-
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 import { withTranslate } from 'react-redux-multilingual';
 
 class ActionForm extends Component{
-
-    componentDidMount(){
-        // Load library for sort action table
-        this.handleSortable();
-    }
 
     constructor(props){
         super(props);
@@ -28,6 +22,10 @@ class ActionForm extends Component{
             action:  Object.assign({}, EMPTY_ACTION),
             taskActions:this.props.initialData
         }
+    }    
+    componentDidMount(){
+        // Load library for sort action table
+        this.handleSortable();
     }
 
     // Drag and drop item in action table

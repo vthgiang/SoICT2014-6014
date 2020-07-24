@@ -1,16 +1,16 @@
 import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
-export const LinkDefaultServices = {
-    get,
-    getCategories,
-    show,
-    create,
-    edit,
-    destroy
+export const SystemLinkServices = {
+    getAllSystemLinks,
+    getAllSystemLinkCategories,
+    getSystemLink,
+    createSystemLink,
+    editSystemLink,
+    deleteSystemLink
 };
 
-function get(params) {
+function getAllSystemLinks(params) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'GET',
@@ -18,7 +18,7 @@ function get(params) {
     }, false, true, 'system_admin.system_link')
 }
 
-function getCategories() {
+function getAllSystemLinkCategories() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
         method: 'GET'
@@ -33,14 +33,14 @@ function getPaginate(data) {
     }, false, true, 'system_admin.system_link');
 }
 
-function show(id) {
+function getSystemLink(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'GET'
     }, false, true, 'system_admin.system_link');
 }
 
-function create(data) {
+function createSystemLink(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
@@ -48,7 +48,7 @@ function create(data) {
     }, true, true, 'system_admin.system_link');
 }
 
-function edit(id, data) {
+function editSystemLink(id, data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
@@ -56,7 +56,7 @@ function edit(id, data) {
     }, true, true, 'system_admin.system_link');
 }
 
-function destroy(id) {
+function deleteSystemLink(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'DELETE'

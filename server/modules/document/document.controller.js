@@ -27,7 +27,8 @@ exports.getDocuments = async (req, res) => {
 
 exports.createDocument = async (req, res) => {
     try {
-        if(req.files !== undefined){
+        if(req.files.file !== undefined && req.files.fileScan !== undefined){
+            console.log(req.files.file)
             var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
             var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
 

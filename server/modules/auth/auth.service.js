@@ -24,14 +24,6 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     if(!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
-        // if(user.active) user.status = user.status + 1;
-        // if(user.status > 5){
-        //     user.active = false;
-        //     user.status = 0;
-        //     user.save();
-        //     throw ['wrong5_block'];
-        // }
-        // user.save();
         throw ['email_password_invalid'];
     }
     if(user.roles.length < 1) throw ['acc_have_not_role'];
@@ -66,7 +58,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
                 company: user.company
             }
         };
-    }else{
+    } else{
         //Phiên đăng nhập của system admin
         const token = await jwt.sign(
             {
@@ -93,7 +85,11 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         };
     }
 }
-
+/**
+ * Đăng xuất tài khoản người dùng
+ * @param {*} id : id người dùng
+ * @param {*} token 
+ */
 exports.logout = async (id, token) => {
     var user = await User.findById(id);
     if(user.numberDevice >= 1) user.numberDevice -= 1;
@@ -101,7 +97,10 @@ exports.logout = async (id, token) => {
 
     return user;
 }
-
+/**
+ * Đăng xuất tất cả tài khoản người dùng
+ * @param {*} id : id người dùng
+ */
 exports.logoutAllAccount = async (id) => {
     var user = await User.findById(id);
     user.numberDevice = 0;
@@ -162,7 +161,12 @@ exports.forgetPassword = async (email) => {
     return true;
 }
 
-//Thiết lập lại mật khẩu tài khoản người dùng ------------------------------//
+/**
+ * Thiết lập lại mật khẩu người dùng
+ * @param {*} otp 
+ * @param {*} email 
+ * @param {*} password 
+ */
 exports.resetPassword = async (otp, email, password) => {
     var user = await User.findOne({ email, resetPasswordToken: otp });
     if(user === null) throw ['otp_invalid'];
@@ -175,15 +179,22 @@ exports.resetPassword = async (otp, email, password) => {
     return user;
 }
 
+/**
+ * Thay đổi thông tin người dùng
+ * @param {*} id 
+ * @param {*} name 
+ * @param {*} email 
+ * @param {*} avatar 
+ */
 exports.changeInformation = async (id, name, email, avatar=undefined) => {
-    var user = await User.findById(id).populate([
+    let user = await User.findById(id).populate([
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
-    var deleteAvatar = '.'+user.avatar;
+    let deleteAvatar = '.'+user.avatar;
     user.email = email;
     user.name = name;
-    if(avatar !== undefined){
+    if(avatar){
         if(deleteAvatar !== './upload/avatars/user.png' && fs.existsSync(deleteAvatar)) fs.unlinkSync(deleteAvatar);
         user.avatar = avatar;
     };
@@ -192,6 +203,12 @@ exports.changeInformation = async (id, name, email, avatar=undefined) => {
     return user;
 }
 
+/**
+ * Thay đổi mật khẩu
+ * @param {*} id : id người dùng
+ * @param {*} password : mật khẩu cũ
+ * @param {*} new_password : mật khẩu mới
+ */
 exports.changePassword = async (id, password, new_password) => {
     const user = await User.findById(id).populate([
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
@@ -210,10 +227,14 @@ exports.changePassword = async (id, password, new_password) => {
     return user;
 }
 
+/**
+ * Lấy ra các trang mà người dùng có quyền truy cập
+ * @param {*} idRole : id role người dùng
+ */
 exports.getLinksThatRoleCanAccess = async (idRole) => {
     
     const role = await Role.findById(idRole); //lay duoc role hien tai
-    var roles = [role._id];
+    let roles = [role._id];
     roles = roles.concat(role.parents);
     const privilege = await Privilege.find({ 
         roleId: { $in: roles },
@@ -224,8 +245,12 @@ exports.getLinksThatRoleCanAccess = async (idRole) => {
     return links;
 }
 
+/**
+ * Lấy ra thông tn người dùng
+ * @param {*} id : id người dùng
+ */
 exports.getProfile = async (id) => {
-    var user = await User
+    let user = await User
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
         .populate([

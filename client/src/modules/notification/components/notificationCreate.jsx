@@ -128,7 +128,7 @@ class NotificationCreate extends Component {
     }
 
     render() { 
-        const {translate, department, user} = this.props;
+        const { translate, department, user } = this.props;
         
         return ( 
             <React.Fragment>
@@ -211,7 +211,7 @@ const mapStateToProps = state => state;
 const actions = {
     getDepartment: DepartmentActions.get,
     getUser: UserActions.get,
-    create: NotificationActions.create
+    create: NotificationActions.create,
 }
 
 export default connect( mapStateToProps, actions )( withTranslate(NotificationCreate) );

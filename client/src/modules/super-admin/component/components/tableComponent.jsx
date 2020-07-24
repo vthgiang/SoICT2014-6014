@@ -42,7 +42,7 @@ class TableComponent extends Component {
                         componentName={ currentRow.name }
                         componentLink={ currentRow.link ? currentRow.link._id : null }
                         componentDescription={ currentRow.description }
-                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): null }
+                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): [] }
                     />
                 }
 
@@ -83,13 +83,13 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
-                            component.listPaginate.length > 0 ?
+                            component.listPaginate && component.listPaginate.length > 0 ?
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
                                     <td>{ component.link? component.link.url: "Link is deleted" }</td>
                                     <td>{ component.description }</td>
-                                    <td><ToolTip dataTooltip={component.roles? component.roles.map(role => role.roleId.name): "Role is deleted"}/></td>
+                                    <td><ToolTip dataTooltip={component.roles? component.roles.map(role => role.roleId.name): ["Role is deleted"]}/></td>
                                     <td style={{ textAlign: 'center'}}>
                                         <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                     </td>

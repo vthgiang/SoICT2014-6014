@@ -10,28 +10,28 @@ export const TaskFormValidator = {
     validateTaskEndDate,
 }
 
-function validateTaskUnit(value) {
+function validateTaskUnit(value, translate) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Cần chọn đơn vị";
+        msg = translate('task.task_management.add_err_empty_unit');
     }
     return msg;
 }
 
-function validateTaskName(value) {
+function validateTaskName(value, translate) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Tên không được để trống";
+        msg = translate('task.task_management.add_err_empty_name');
     } else if (!VALIDATOR.isValidName(value)){
-        msg = "Tên không chứa ký tự đặc biệt";
+        msg = translate('task.task_management.add_err_special_character');
     }
     return msg;
 }
 
-function validateTaskDescription(value) {
+function validateTaskDescription(value, translate) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Mô tả không được để trống";
+        msg = translate('task.task_management.add_err_empty_description');
     }
     return msg;
 }
@@ -39,13 +39,13 @@ function validateTaskDescription(value) {
 /**
  * @param {*} value Định dạng: dd-mm-yyyy
  */
-function validateTaskStartDate(startDate, endDate) {
+function validateTaskStartDate(startDate, endDate, translate) {
     let msg = undefined;
 
     if (startDate.trim() === ""){
-        msg = "Hãy chọn ngày bắt đầu công việc";
+        msg = translate('task.task_management.add_err_empty_start_date');
     } else if (endDate !== ""){
-        msg = _validateTaskDate(startDate, endDate);
+        msg = _validateTaskDate(startDate, endDate, translate);
     }
     return msg;
 }
@@ -54,13 +54,13 @@ function validateTaskStartDate(startDate, endDate) {
  * @param {*} startDate Định dạng: dd-mm-yyyy
  * @param {*} endDate Định dạng: dd-mm-yyyy
  */
-function validateTaskEndDate(startDate, endDate) {
+function validateTaskEndDate(startDate, endDate, translate) {
     let msg = undefined;
 
     if (endDate.trim() === ""){
-        msg = "Hãy chọn ngày kết thúc công việc";
+        msg = translate('task.task_management.add_err_empty_end_date');
     } else if (startDate !== ""){
-        msg = _validateTaskDate(startDate, endDate);
+        msg = _validateTaskDate(startDate, endDate, translate);
     }
     return msg;
 }
@@ -70,30 +70,30 @@ function validateTaskEndDate(startDate, endDate) {
  * @param {*} startDate ngày bắt đầu
  * @param {*} endDate ngày kết thúc
  */
-function _validateTaskDate(startDate, endDate){
+function _validateTaskDate(startDate, endDate, translate){
     let msg = undefined;
     var pattern = /(\d{2})\-(\d{2})\-(\d{4})/;
 
     var startDate = new Date(startDate.replace(pattern,'$3-$2-$1'));
     var endDate = new Date(endDate.replace(pattern,'$3-$2-$1'));
     if (startDate > endDate){
-        msg = "Thời gian kết thúc phải sau thời gian bắt đầu!"
+        msg = translate('task.task_management.add_err_end_date');
     }
     return msg;
 }
 
 
-function validateTaskResponsibleEmployees(value) {
+function validateTaskResponsibleEmployees(value, translate) {
     let msg = undefined;
     if (value.length === 0){
-        msg = "Cần chỉ rõ người thực hiện công việc";
+        msg = translate('task.task_management.add_err_empty_responsible');
     }
     return msg;
 }
-function validateTaskAccountableEmployees(value) {
+function validateTaskAccountableEmployees(value, translate) {
     let msg = undefined;
     if (value.length === 0){
-        msg = "Cần chỉ rõ người phê duyệt công việc";
+        msg = translate('task.task_management.add_err_empty_accountable');
     }
     return msg;
 }

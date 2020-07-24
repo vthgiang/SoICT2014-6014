@@ -1,20 +1,69 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { LinkDefaultActions } from '../redux/actions';
-import LinkInfoForm from './linkInfoForm';
-import CreateLinkForm from './linkCreateForm';
+
+import { SystemLinkActions } from '../redux/actions';
+
+import { LinkInfoForm } from './linkInfoForm';
+import { CreateLinkForm } from './linkCreateForm';
+
 import { SearchBar, DataTableSetting, PaginateBar, DeleteNotification, ModalEditButton } from '../../../../common-components';
 
-class ManageLink extends Component {
+import { withTranslate } from 'react-redux-multilingual';
+class ManageLinkSystem extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = { 
             limit: 5,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
             value: ''
         }
+    }
+
+    componentDidMount(){
+        this.props.getAllSystemLinks();
+        this.props.getAllSystemLinks({page: this.state.page, limit: this.state.limit});
+        this.props.getAllSystemLinkCategories();
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getAllSystemLinks(data);
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getAllSystemLinks(data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { 
+            limit: number, 
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getAllSystemLinks(data);
     }
 
     // Cac ham xu ly du lieu voi modal
@@ -29,7 +78,7 @@ class ManageLink extends Component {
     }
 
     render() { 
-        const { translate, linksDefault } = this.props;
+        const { translate, systemLinks } = this.props;
         const {currentRow} = this.state;
         
         return ( 
@@ -38,7 +87,7 @@ class ManageLink extends Component {
                     <React.Fragment>
                         <CreateLinkForm/>
                         {
-                            currentRow !== undefined &&
+                            currentRow &&
                             <LinkInfoForm
                                 linkId={currentRow._id}
                                 linkUrl={currentRow.url}
@@ -82,7 +131,7 @@ class ManageLink extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    linksDefault.listPaginate.length > 0 ? linksDefault.listPaginate.map( link => 
+                                    systemLinks.listPaginate.length > 0 ? systemLinks.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.category }</td>
@@ -101,75 +150,36 @@ class ManageLink extends Component {
                                                         id: link._id,
                                                         info: link.url
                                                     }}
-                                                    func={this.props.destroy}
+                                                    func={this.props.deleteSystemLink}
                                                 />
                                             </td>
                                         </tr> 
-                                    ): linksDefault.isLoading ?
+                                    ): systemLinks.isLoading ?
                                     <tr><td colSpan={5}>{translate('general.loading')}</td></tr>:
                                     <tr><td colSpan={5}>{translate('general.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>
+
                         {/* PaginateBar */}
-                        <PaginateBar pageTotal={linksDefault.totalPages} currentPage={linksDefault.page} func={this.setPage}/>
+                        <PaginateBar pageTotal={systemLinks.totalPages} currentPage={systemLinks.page} func={this.setPage}/>
                     </React.Fragment>
                 </div>
             </div>
         );
 
     }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.get(data);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    componentDidMount(){
-        this.props.get();
-        this.props.get({page: this.state.page, limit: this.state.limit});
-        this.props.getCategories();
-    }
 }
  
-const mapState = state => state;
-const getState =  {
-    get: LinkDefaultActions.get,
-    getCategories: LinkDefaultActions.getCategories,
-    destroy: LinkDefaultActions.destroy
+function mapState(state) {
+    const { systemLinks } = state;
+    return { systemLinks }
+}
+const actions =  {
+    getAllSystemLinks: SystemLinkActions.getAllSystemLinks,
+    getAllSystemLinkCategories: SystemLinkActions.getAllSystemLinkCategories,
+    deleteSystemLink: SystemLinkActions.deleteSystemLink
 }
  
-export default connect(mapState, getState) (withTranslate(ManageLink));
+const connectedManageLinkSystem = connect(mapState, actions)(withTranslate(ManageLinkSystem));
+export { connectedManageLinkSystem as ManageLinkSystem }

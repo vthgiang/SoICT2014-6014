@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DepartmentActions } from '../redux/actions';
+
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { DepartmentValidator } from './organizationalUnitValidator';
 
 class DepartmentCreateForm extends Component {
@@ -68,10 +71,13 @@ class DepartmentCreateForm extends Component {
     render() { 
         const { translate, department } = this.props;
         const {departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError} = this.state;
-        console.log("state deans:", this.state)
+        console.log("state deans:", this.state);
+
         return ( 
             <React.Fragment>
+                {/* Button thêm đơn vị mới */}
                 <ButtonModal modalID="modal-create-department" button_name={translate('manage_department.add')} title={translate('manage_department.add_title')}/>
+                
                 <DialogModal
                     isLoading={department.isLoading}
                     modalID="modal-create-department"
@@ -80,19 +86,28 @@ class DepartmentCreateForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form thêm đơn vị mới */}
                     <form id="form-create-department">
+
+                        {/* Thông tin về đơn vị */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
-                            <div className={`form-group ${departmentNameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('manage_department.name')  }<span className="attention"> * </span></label>
+
+                            {/* Tên đơn vị */}
+                            <div className={`form-group ${!departmentNameError? "": "has-error"}`}>
+                                <label>{ translate('manage_department.name') }<span className="attention"> * </span></label>
                                 <input type="text" className="form-control" onChange={this.handleName}/><br/>
                                 <ErrorLabel content={departmentNameError}/>
                             </div>
-                            <div className={`form-group ${departmentDescriptionError===undefined?"":"has-error"}`}>
+
+                            {/* Mô tả về đơn vị */}
+                            <div className={`form-group ${!departmentDescriptionError? "": "has-error"}`}>
                                 <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
                                 <textarea type="text" className="form-control" onChange={this.handleDescription}/><br/>
                                 <ErrorLabel content={departmentDescriptionError}/>
                             </div>
+
+                            {/* Đơn vị cha */}
                             <div className="form-group">
                                 <label>{ translate('manage_department.parent') }</label>
                                 <SelectBox
@@ -107,8 +122,12 @@ class DepartmentCreateForm extends Component {
                                 />
                             </div>
                         </fieldset>
+
+                        {/* Các chức danh của đơn vị */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
+
+                            {/* Tên chức danh cho trưởng đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -122,17 +141,21 @@ class DepartmentCreateForm extends Component {
                                             this.state.deans.length > 0 &&
                                             this.state.deans.map((dean, index)=>{
                                                 return <tr key={index}>
-                                                    <td><input type="text" 
-                                                        className="form-control" 
-                                                        placeholder={ translate('manage_department.dean_example')}
-                                                        value={dean}
-                                                        onChange={(e)=>this.handleChangeDean(e, index)}
-                                                    /></td>
-                                                    <td><a href="#delete-dean" 
-                                                        className="text-red" 
-                                                        style={{border: 'none'}} 
-                                                        onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
-                                                    </a></td>
+                                                    <td>
+                                                        <input type="text" 
+                                                            className="form-control" 
+                                                            placeholder={ translate('manage_department.dean_example')}
+                                                            value={dean}
+                                                            onChange={(e)=>this.handleChangeDean(e, index)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-dean" 
+                                                            className="text-red" 
+                                                            style={{border: 'none'}} 
+                                                            onClick={()=>this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             })
                                         }
@@ -140,6 +163,7 @@ class DepartmentCreateForm extends Component {
                                 </table>
                             </div> 
 
+                            {/* Tên chức danh cho phó đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -153,17 +177,21 @@ class DepartmentCreateForm extends Component {
                                             this.state.viceDeans.length > 0 &&
                                             this.state.viceDeans.map((vicedean, index)=>{
                                                 return <tr key={index}>
-                                                    <td><input type="text" 
-                                                        className="form-control" 
-                                                        placeholder={ translate('manage_department.vice_dean_example')}
-                                                        value={vicedean}
-                                                        onChange={(e)=>this.handleChangeViceDean(e, index)}
-                                                    /></td>
-                                                    <td><a href="#delete-vice-dean" 
-                                                        className="text-red" 
-                                                        style={{border: 'none'}} 
-                                                        onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
-                                                    </a></td>
+                                                    <td>
+                                                        <input type="text" 
+                                                            className="form-control" 
+                                                            placeholder={ translate('manage_department.vice_dean_example')}
+                                                            value={vicedean}
+                                                            onChange={(e)=>this.handleChangeViceDean(e, index)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-vice-dean" 
+                                                            className="text-red" 
+                                                            style={{border: 'none'}} 
+                                                            onClick={()=>this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             })
                                         }
@@ -171,6 +199,7 @@ class DepartmentCreateForm extends Component {
                                 </table>
                             </div>
 
+                            {/* Tên chức danh cho nhân viên đơn vị */}
                             <div className="form-group">
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
@@ -184,17 +213,21 @@ class DepartmentCreateForm extends Component {
                                             this.state.employees.length > 0 &&
                                             this.state.employees.map((employee, index)=>{
                                                 return <tr key={index}>
-                                                    <td><input type="text" 
-                                                        className="form-control" 
-                                                        placeholder={ translate('manage_department.employee_example')}
-                                                        value={employee}
-                                                        onChange={(e)=>this.handleChangeEmployee(e, index)}
-                                                    /></td>
-                                                    <td><a href="#delete-employee" 
-                                                        className="text-red" 
-                                                        style={{border: 'none'}} 
-                                                        onClick={()=>this.handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
-                                                    </a></td>
+                                                    <td>
+                                                        <input type="text" 
+                                                            className="form-control" 
+                                                            placeholder={ translate('manage_department.employee_example')}
+                                                            value={employee}
+                                                            onChange={(e)=>this.handleChangeEmployee(e, index)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-employee" 
+                                                            className="text-red" 
+                                                            style={{border: 'none'}} 
+                                                            onClick={()=>this.handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             })
                                         }
@@ -208,15 +241,22 @@ class DepartmentCreateForm extends Component {
          );
     }
 
+    /**
+     * Validate form
+     */
     isFormValidated = () => {
         let result = 
             this.validateName(this.state.departmentName, false) &&
             this.validateDescription(this.state.departmentDescription, false)
+
         return result;
     }
 
+    /**
+     * Thực hiện thêm đơn vị mới
+     */
     save = () => {
-        if(this.isFormValidated())
+        if (this.isFormValidated()){
             return this.props.create({
                 name: this.state.departmentName, 
                 description: this.state.departmentDescription, 
@@ -225,6 +265,7 @@ class DepartmentCreateForm extends Component {
                 employees: this.state.employees, 
                 parent: this.state.departmentParent
             });
+        }
     }
 
     handleParent = (value) => {

@@ -5,11 +5,11 @@ import { toast } from 'react-toastify';
 import React from 'react';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
-const AuthenticateHeader = (name='jwt',) => {
+const AuthenticateHeader = (name = 'jwt',) => {
     const token = getStorage(name);
     const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
-    
+
     return {
         'current-page': window.location.pathname,
         'auth-token': token,
@@ -24,7 +24,7 @@ const AuthenticateHeader = (name='jwt',) => {
  * @error_auth mảng các mã lỗi
  */
 const checkErrorAuth = (code) => {
-    
+
     const error_auth = [
         'access_denied',
         'page_access_denied',
@@ -35,12 +35,12 @@ const checkErrorAuth = (code) => {
         'service_permisson_denied',
     ];
 
-    if(error_auth.indexOf(code) !== -1) return true;
+    if (error_auth.indexOf(code) !== -1) return true;
     return false;
 }
 
 const showAuthResponseAlertAndRedirectToLoginPage = async () => {
-    await window.$(`#alert-error-auth`).modal({backdrop: 'static', keyboard: false, display: 'show'});
+    await window.$(`#alert-error-auth`).modal({ backdrop: 'static', keyboard: false, display: 'show' });
 }
 
 /**
@@ -50,16 +50,17 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showSuccessAlert=false, showFailAlert=true, module, successTitle='general.success', errorTitle='general.error') {
-    
+export function sendRequest(options, showSuccessAlert = false, showFailAlert = true, module, successTitle = 'general.success', errorTitle = 'general.error') {
+
     const requestOptions = {
-        url: options.url, 
+        url: options.url,
         method: options.method,
         data: options.data,
         params: options.params,
         responseType: options.responseType,
         headers: AuthenticateHeader()
     };
+
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
@@ -69,28 +70,28 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
                 type='success'
                 title={successTitle}
                 content={messages.map(message => `${module}.${message}`)}
-            />, 
-            {containerId: 'toast-notification'});
+            />,
+            { containerId: 'toast-notification' });
 
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
 
         console.log("error: ", err)
-        if(messages){
-            if(checkErrorAuth(messages[0]))
+        if (messages) {
+            if (checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            else if(messages[0] === 'acc_log_out'){
+            else if (messages[0] === 'acc_log_out') {
                 clearStorage();
             }
-            else{
+            else {
                 showFailAlert && toast.error(
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}
                         content={messages.map(message => `${module}.${message}`)}
-                    />, 
-                    {containerId: 'toast-notification'}
+                    />,
+                    { containerId: 'toast-notification' }
                 );
             }
         }

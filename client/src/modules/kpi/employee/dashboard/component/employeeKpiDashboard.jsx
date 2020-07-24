@@ -8,16 +8,17 @@ import { ResultsOfEmployeeKpiChart } from './resultsOfEmployeeKpiChart';
 
 import { dashboardEmployeeKpiSetActions } from '../redux/actions';
 import { managerKpiActions } from '../../management/redux/actions';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
-
+var translate='';
 class DashBoardEmployeeKpiSet extends Component {
 
     constructor(props) {
         super(props);
-
+        translate =this.props.translate;
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
         var currentMonth = currentDate.getMonth();
@@ -85,10 +86,10 @@ class DashBoardEmployeeKpiSet extends Component {
 
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
-                title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText:  translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             await this.setState(state => {
@@ -120,12 +121,12 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                                <div class="box-title">Kết quả KPI cá nhân</div>
+                            <div class="box-title">{translate('kpi.evaluation.dashboard.result_kpi_personal')}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label>Từ tháng</label>
+                                    <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
                                         <DatePicker 
                                             id="monthStartInDashBoardEmployeeKpiSet"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -137,7 +138,7 @@ class DashBoardEmployeeKpiSet extends Component {
                                 </div>
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label>Đến tháng</label>
+                                    <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                                         <DatePicker 
                                             id="monthEndInDashBoardEmployeeKpiSet"      
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -147,7 +148,7 @@ class DashBoardEmployeeKpiSet extends Component {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>Tìm kiếm</button>
+                                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                     </div>
                                 </div>
                                 
@@ -161,7 +162,7 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                                <div class="box-title">Phân bố KPI cá nhân</div>
+                                <div class="box-title">{translate('kpi.evaluation.dashboard.distribution_kpi_personal')}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <DistributionOfEmployeeKpiChart/>
@@ -182,5 +183,5 @@ function mapState(state) {
 const actionCreators = {
     getEmployeeKpiSetByMember: managerKpiActions.getAllKPIPersonalByMember
 };
-const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(DashBoardEmployeeKpiSet);
+const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(DashBoardEmployeeKpiSet));
 export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };

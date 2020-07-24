@@ -12,29 +12,28 @@ import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrg
 
 import { SelectBox } from '../../../../../common-components/index';
 import { DatePicker } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
+
+
 class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
-        
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.today = new Date();
-
         this.state = {
             currentYear: new Date().getFullYear(),
             currentRole: null,
-
             organizationalUnitId: null,
-            month: this.today.getFullYear() + '-' + (this.today.getMonth()+1),
-            date: (this.today.getMonth()+1) + '-' + this.today.getFullYear(),
-
+            month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
+            date: (this.today.getMonth() + 1) + '-' + this.today.getFullYear(),
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
     componentDidMount() {
-        this.props.getDepartment();//localStorage.getItem('id')
+        this.props.getDepartment();
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
 
         this.setState(state => {
@@ -61,8 +60,8 @@ class OrganizationalUnitKpiDashboard extends Component {
             return false;
         }
 
-        if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
                 return false
             }
 
@@ -73,7 +72,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                 }
             })
             return false;
-        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             return true;
         }
 
@@ -81,7 +80,7 @@ class OrganizationalUnitKpiDashboard extends Component {
     }
 
     formatDate(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -90,19 +89,18 @@ class OrganizationalUnitKpiDashboard extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-            
+
         return [month, year].join('-');
     }
 
     checkPermisson = (deanCurrentUnit) => {
-        var currentRole = localStorage.getItem("currentRole");
+        let currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
-        
+
     }
 
     /** Select organizational unit in box*/
     handleSelectOrganizationalUnitId = (value) => {
-
         this.setState(state => {
             return {
                 ...state,
@@ -113,7 +111,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     /** Select month in box*/
     handleSelectMonth = async (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
             return {
                 ...state,
@@ -124,15 +122,15 @@ class OrganizationalUnitKpiDashboard extends Component {
     }
 
     render() {
-        var childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
-        const { user, dashboardEvaluationEmployeeKpiSet } = this.props;
+        let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
+        const { user, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
 
-        if(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+        if (dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
         }
 
-        if(childrenOrganizationalUnit) {
-            var temporaryChild;
+        if (childrenOrganizationalUnit) {
+            let temporaryChild;
 
             childOrganizationalUnit = [{
                 'name': childrenOrganizationalUnit.name,
@@ -142,7 +140,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
             temporaryChild = childrenOrganizationalUnit.children;
 
-            while(temporaryChild) {
+            while (temporaryChild) {
                 temporaryChild.map(x => {
                     childOrganizationalUnit = childOrganizationalUnit.concat({
                         'name': x.name,
@@ -150,15 +148,15 @@ class OrganizationalUnitKpiDashboard extends Component {
                         'viceDean': x.viceDean
                     });
                 })
-                
-                var hasNodeChild = [];
+
+                let hasNodeChild = [];
                 temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
                     x.children.map(x => {
                         hasNodeChild = hasNodeChild.concat(x)
                     })
                 });
-                
-                if(hasNodeChild.length === 0) {
+
+                if (hasNodeChild.length === 0) {
                     temporaryChild = undefined;
                 } else {
                     temporaryChild = hasNodeChild
@@ -166,10 +164,10 @@ class OrganizationalUnitKpiDashboard extends Component {
             }
         }
 
-        if(childOrganizationalUnit) {
+        if (childOrganizationalUnit) {
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
 
-            if(organizationalUnitSelectBox && this.state.organizationalUnitId === null) {
+            if (organizationalUnitSelectBox && this.state.organizationalUnitId === null) {
                 this.setState(state => {
                     return {
                         ...state,
@@ -178,24 +176,24 @@ class OrganizationalUnitKpiDashboard extends Component {
                 })
             }
         }
-        
-        var d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+
+        let d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
         if (month.length < 2)
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultDate = [month, year].join('-');
+        let defaultDate = [month, year].join('-');
 
         return (
             <React.Fragment>
                 <div className="qlcv">
                     {childOrganizationalUnit &&
                         <span className="form-inline">
-                            <label style={{width: "auto"}}>Đơn vị</label>
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                             <SelectBox
                                 id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
                                 className="form-control select2"
@@ -209,55 +207,55 @@ class OrganizationalUnitKpiDashboard extends Component {
                     }
 
                     <span className="form-inline">
-                        <label style={{width: "auto"}}>Tháng</label>
-                        <DatePicker 
-                            id="monthInOrganizationalUnitKpiDashboard"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultDate}                 // giá trị mặc định cho datePicker    
+                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                        <DatePicker
+                            id="monthInOrganizationalUnitKpiDashboard"
+                            dateFormat="month-year"             
+                            value={defaultDate}                     
                             onChange={this.handleSelectMonth}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                   
                         />
                     </span>
                 </div>
-                
+
                 {/* Xu hướng thực hiện mục tiêu */}
                 <div className=" box box-primary">
                     <div className="box-header with-border">
-                        <div className="box-title">Xu hướng thực hiện mục tiêu của nhân viên tháng {this.state.date}</div>
+                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
                     </div>
                     <div className="box-body qlcv">
-                        <TrendsInOrganizationalUnitKpiChart 
+                        <TrendsInOrganizationalUnitKpiChart
                             organizationalUnitId={this.state.organizationalUnitId}
                             month={this.state.month}
                         />
                     </div>
                 </div>
-                    
+
                 <div className="row">
                     {/* Phân bố KPI đơn vị */}
                     <div className="col-xs-6">
                         {childOrganizationalUnit &&
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="box-title">Phân bố KPI đơn vị tháng {this.state.date}</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                        <DistributionOfOrganizationalUnitKpiChart 
+                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
+                                        <DistributionOfOrganizationalUnitKpiChart
                                             organizationalUnitId={this.state.organizationalUnitId}
                                             month={this.state.month}
                                         />
                                     }
                                 </div>
                             </div>
-                        }   
+                        }
                     </div>
 
                     {/* Thống kê kết quả KPI */}
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Thống kê kết quả KPI tháng {this.state.date}</div>
+                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <StatisticsOfOrganizationalUnitKpiResultsChart
@@ -274,30 +272,30 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Kết quả KPI đơn vị</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) && 
-                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId}/>
+                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
+                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId} />
                                     }
                                 </div>
                             </div>
                         </div>
-                    }   
+                    }
 
                     {/* Kết quả KPI các đơn vị */}
                     {childOrganizationalUnit &&
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Kết quả KPI các đơn vị</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <ResultsOfAllOrganizationalUnitKpiChart/>
+                                    <ResultsOfAllOrganizationalUnitKpiChart />
                                 </div>
                             </div>
                         </div>
-                    }   
+                    }
                 </div>
             </React.Fragment>
         );
@@ -313,5 +311,5 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };
-const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);
+const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));
 export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };

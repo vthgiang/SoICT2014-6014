@@ -1,124 +1,130 @@
-import { LinkDefaultServices } from "./services";
-import { LinkDefaultConstants } from "./constants";
+import { SystemLinkServices } from "./services";
+import { SystemLinkConstants } from "./constants";
 
-export const LinkDefaultActions = {
-    get,
-    getCategories,
-    show,
-    create,
-    edit,
-    destroy
+export const SystemLinkActions = {
+    getAllSystemLinks,
+    getAllSystemLinkCategories,
+    getSystemLink,
+    createSystemLink,
+    editSystemLink,
+    deleteSystemLink
 };
 
-function get(data){
-    if(data === undefined){
+function getAllSystemLinks(data) {
+    if (!data) {
         return dispatch => {
-            dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST});
-            LinkDefaultServices.get()
+            dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_REQUEST });
+
+            SystemLinkServices.getAllSystemLinks()
                 .then(res => {
                     dispatch({
-                        type: LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS,
+                        type: SystemLinkConstants.GET_LINKS_DEFAULT_SUCCESS,
                         payload: res.data.content
                     })
                 })
-                .catch(err => {
-                    dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
+                .catch(error => {
+                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_FAILE });
                 })
         }
-    }else{
+    } else {
         return dispatch => {
-            dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST});
-            LinkDefaultServices.get(data)
+            dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST });
+
+            SystemLinkServices.getAllSystemLinks(data)
                 .then(res => {
                     dispatch({
-                        type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
+                        type: SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
                         payload: res.data.content
                     })
                 })
-                .catch(err => {
-                    dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE});
+                .catch(error => {
+                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE });
                 })
         }
     }
 }
 
-function getCategories(){
+function getAllSystemLinkCategories() {
     return dispatch => {
-        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST});
-        LinkDefaultServices.getCategories()
+        dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST });
+
+        SystemLinkServices.getAllSystemLinkCategories()
             .then(res => {
                 dispatch({
-                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS,
+                    type: SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS,
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE });
             })
     }
 }
 
-function show(id){
+function getSystemLink(id) {
     return dispatch => {
-        dispatch({ type: LinkDefaultConstants.SHOW_LINK_DEFAULT_REQUEST});
-        LinkDefaultServices.show(id)
+        dispatch({ type: SystemLinkConstants.SHOW_LINK_DEFAULT_REQUEST });
+
+        SystemLinkServices.getSystemLink(id)
             .then(res => {
                 dispatch({
-                    type: LinkDefaultConstants.SHOW_LINK_DEFAULT_SUCCESS,
+                    type: SystemLinkConstants.SHOW_LINK_DEFAULT_SUCCESS,
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.SHOW_LINK_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemLinkConstants.SHOW_LINK_DEFAULT_FAILE });
             })
     }
 }
 
-function create(link){
+function createSystemLink(link) {
     return dispatch => {
-        dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_REQUEST});
-        LinkDefaultServices
-            .create(link)
+        dispatch({ type: SystemLinkConstants.CREATE_LINK_DEFAULT_REQUEST });
+
+        SystemLinkServices.createSystemLink(link)
             .then(res => {
                 dispatch({
-                    type: LinkDefaultConstants.CREATE_LINK_DEFAULT_SUCCESS,
+                    type: SystemLinkConstants.CREATE_LINK_DEFAULT_SUCCESS,
                     payload: res.data.content
                 });
             })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemLinkConstants.CREATE_LINK_DEFAULT_FAILE });
             })
     }
 }
 
-function edit(id, link){
+function editSystemLink(id, link) {
     return dispatch => {
-        dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_REQUEST});
-        LinkDefaultServices.edit(id, link)
+        dispatch({ type: SystemLinkConstants.EDIT_LINK_DEFAULT_REQUEST });
+
+        SystemLinkServices.editSystemLink(id, link)
             .then(res => {
                 dispatch({
-                    type: LinkDefaultConstants.EDIT_LINK_DEFAULT_SUCCESS,
+                    type: SystemLinkConstants.EDIT_LINK_DEFAULT_SUCCESS,
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemLinkConstants.EDIT_LINK_DEFAULT_FAILE });
             })
     }
 }
 
-function destroy(id, link){
+function deleteSystemLink(id, link) {
     return dispatch => {
-        dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_REQUEST});
-        LinkDefaultServices.destroy(id, link)
+        dispatch({ type: SystemLinkConstants.DELETE_LINK_DEFAULT_REQUEST });
+
+        SystemLinkServices.deleteSystemLink(id, link)
             .then(res => {
                 dispatch({
-                    type: LinkDefaultConstants.DELETE_LINK_DEFAULT_SUCCESS,
+                    type: SystemLinkConstants.DELETE_LINK_DEFAULT_SUCCESS,
                     payload: id
                 })
             })
-            .catch(err => {
-                dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE});
+            .catch(error => {
+                dispatch({ type: SystemLinkConstants.DELETE_LINK_DEFAULT_FAILE });
             })
     }
 }

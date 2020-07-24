@@ -23,9 +23,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
             parent: undefined,
             weight: "",
             criteria: "",
-
             editing: false,
-
             errorOnName: undefined,
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
@@ -34,7 +32,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
     handleEditTarget = async () => { 
         let id = this.state._id;
-        var newTarget = {
+        let newTarget = {
             name: this.state.name,
             parent: this.state.parent ? this.state.parent : null,
             weight: this.state.weight,
@@ -156,13 +154,13 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         const { translate } = this.props; // Hàm để chuyển sang song ngữ
         const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         
-        var parentKPI;
+        let parentKPI;
         if (createKpiUnit.parent) {
             parentKPI = createKpiUnit.parent;
         }
 
-        var items;
-        if (parentKPI === undefined) {
+        let items;
+        if (!parentKPI) {
             items = [];
         } else {    
             items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
@@ -182,7 +180,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                 >
                     {/* Form chỉnh sửa tiêu */}
                     <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('kpi.organizational_unit.edit_target_kpi_modal.success'))}>
-                        <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${ !errorOnName ? "" : "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>

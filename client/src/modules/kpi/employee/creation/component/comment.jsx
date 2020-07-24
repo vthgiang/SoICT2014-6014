@@ -7,7 +7,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import TextareaAutosize from 'react-textarea-autosize';
 import {performTaskAction} from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../redux/actions';
-import moment from 'moment'
+import moment from 'moment';
+
 class Comment extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -216,7 +217,7 @@ class Comment extends Component {
         var comment
         var minRows=3, maxRows=20
         const {editComment,editCommentOfComment,showChildComment,currentUser} = this.state
-        const {currentKPI,auth} = this.props
+        const {currentKPI,auth,translate} = this.props
         comment = currentKPI.comments
         return (
             <React.Fragment>
@@ -236,19 +237,19 @@ class Comment extends Component {
                                             <i className="fa fa-ellipsis-h"></i>
                                         </span>
                                         <ul className="dropdown-menu">
-                                            <li><a href="javascript:void(0)" onClick={() => this.handleEditComment(item._id)} >Sửa bình luận</a></li>
-                                            <li><a href="javascript:void(0)" onClick={() => this.props.deleteComment(item._id,currentKPI._id)} >Xóa bình luận</a></li>
+                                    <li><a href="javascript:void(0)" onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
+                                            <li><a href="javascript:void(0)" onClick={() => this.props.deleteComment(item._id,currentKPI._id)} >{translate('task.task_perform.delete_comment')}</a></li>
                                         </ul>
                                     </div>}
                                 </p>
                                 <ul className="list-inline tool-level1">
                                     <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                     
-                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
+                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')} ({item.comments.length}) &nbsp;</a></li>
                                     {item.files.length> 0 &&
                                     <React.Fragment>
                                     <li style={{display:"inline-table"}}>
-                                    <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
+                                    <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                     {this.state.showfile.some(obj => obj === item._id ) &&
                                         <li style={{display:"inline-table"}}>{item.files.map(elem => {
                                             return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
@@ -278,8 +279,8 @@ class Comment extends Component {
                                     />
                                     </div>
                                     <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
-                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.editComment(item._id)}>Gửi chỉnh sửa</a></li>
-                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</a></li>
+                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.editComment(item._id)}>{translate('task.task_perform.save_edit')}</a></li>
+                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditComment(e)}>{translate('task.task_perform.cancel')}</a></li>
                                     </ul>
                                     <div className="tool-level1">
                                     </div>
@@ -358,8 +359,8 @@ class Comment extends Component {
                                             onFilesError={this.onFilesError}
                                             files={this.state.commentOfComment.files}
                                             text={this.state.commentOfComment.description}
-                                            placeholder={"Nhập bình luận"}
-                                            submitButtonText={"Thêm bình luận"}
+                                            placeholder={translate('task.task_perform.enter_comment')}
+                                            submitButtonText={translate('task.task_perform.create_comment')}
                                             onTextChange={(e)=> {
                                                 let value = e.target.value;
                                                 this.setState(state => {
@@ -382,8 +383,8 @@ class Comment extends Component {
                         onFilesError={this.onFilesError}
                         files={this.state.comment.files}
                         text={this.state.comment.description} 
-                        placeholder={"Nhập bình luận"}
-                        submitButtonText={"Thêm bình luận"}
+                        placeholder={translate('task.task_perform.enter_comment')}
+                        submitButtonText={translate('task.task_perform.create_comment')}
                         onTextChange={(e)=>{
                             let value = e.target.value;
                             this.setState(state => {

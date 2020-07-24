@@ -1,84 +1,38 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { RoleDefaultActions } from '../../root-role/redux/actions';
-import { LinkDefaultActions } from '../redux/actions';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { RootRoleActions } from '../../root-role/redux/actions';
+import { SystemLinkActions } from '../redux/actions';
+
 import { LinkDefaultValidator } from './systemLinkValidator';
 
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { withTranslate } from 'react-redux-multilingual';
 class CreateLinkForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             linkUrl: '',
             linkDescription: ''
         }
-        this.save = this.save.bind(this);
     }
 
-    render() { 
-        const { translate, rolesDefault, linksDefault } = this.props;
-        const {linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
-        return ( 
-            <React.Fragment>
-                <ButtonModal modalID="modal-create-page" button_name={translate('general.add')} title={translate('system_admin.system_link.add')}/>
-                <DialogModal
-                    modalID="modal-create-page"
-                    formID="form-create-page"
-                    title={translate('system_admin.system_link.add')}
-                    func={this.save} disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-create-page">
-                        <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>
-                            <label>{ translate('system_admin.system_link.table.url') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleUrl}/>
-                            <ErrorLabel content={linkUrlError}/>
-                        </div>
-                        <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('system_admin.system_link.table.description') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleDescription}/>
-                            <ErrorLabel content={linkDescriptionError}/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('system_admin.system_link.table.category') }<span className="text-red"> * </span></label>
-                            <SelectBox
-                                id={`select-link-default-category`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    linksDefault.categories.map( category => {return {value: category.name, text: category.name+"-"+category.description}})
-                                }
-                                onChange={this.handleCategory}
-                                multiple={false}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('system_admin.system_link.table.roles') }</label>
-                            <SelectBox
-                                id={`select-link-default-roles`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
-                                }
-                                onChange={this.handleRoles}
-                                multiple={true}
-                            />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-         );
+    componentDidMount(){
+        this.props.getAllRootRoles();
     }
-    
+
     // Xy ly va validate role name
     handleUrl = (e) => {
         const {value} = e.target;
         this.validateUrl(value, true);
     }
+
     validateUrl = (value, willUpdateState=true) => {
         let msg = LinkDefaultValidator.validateUrl(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -87,6 +41,7 @@ class CreateLinkForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -95,9 +50,10 @@ class CreateLinkForm extends Component {
         const {value} = e.target;
         this.validateDescription(value, true);
     }
+
     validateDescription = (value, willUpdateState=true) => {
         let msg = LinkDefaultValidator.validateDescription(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -106,6 +62,7 @@ class CreateLinkForm extends Component {
                 }
             });
         }
+
         return msg === undefined;
     }
 
@@ -113,7 +70,7 @@ class CreateLinkForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                linkCategory: value
+                linkCategory: value[0]
             }
         })
     }
@@ -131,29 +88,87 @@ class CreateLinkForm extends Component {
         let result = 
             this.validateUrl(this.state.linkUrl, false) &&
             this.validateDescription(this.state.linkDescription, false);
+            
         return result;
     }
 
     save = () => {
-        const {linkUrl, linkDescription, linkRoles, linkCategory} = this.state;
-        if(this.isFormValidated())
-            return this.props.createLink({
+        const { linkUrl, linkDescription, linkRoles, linkCategory } = this.state;
+        if(this.isFormValidated()) {
+            return this.props.createSystemLink({
                 url: linkUrl,
                 description: linkDescription,
                 roles: linkRoles,
                 category: linkCategory
             });
+        } 
     }
 
-    componentDidMount(){
-        this.props.getRole();
+    render() { 
+        const { translate, rootRoles, systemLinks } = this.props;
+        const { linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError } = this.state;
+        
+        return ( 
+            <React.Fragment>
+                <ButtonModal modalID="modal-create-page" button_name={translate('general.add')} title={translate('system_admin.system_link.add')}/>
+                <DialogModal
+                    modalID="modal-create-page"
+                    formID="form-create-page"
+                    title={translate('system_admin.system_link.add')}
+                    func={this.save} disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-create-page">
+                        <div className={`form-group ${!linkUrlError ? "" : "has-error"}`}>
+                            <label>{ translate('system_admin.system_link.table.url') }<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" onChange={this.handleUrl}/>
+                            <ErrorLabel content={linkUrlError}/>
+                        </div>
+                        <div className={`form-group ${!linkDescriptionError ? "" : "has-error"}`}>
+                            <label>{ translate('system_admin.system_link.table.description') }<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" onChange={this.handleDescription}/>
+                            <ErrorLabel content={linkDescriptionError}/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('system_admin.system_link.table.category') }<span className="text-red"> * </span></label>
+                            <SelectBox
+                                id={`select-link-default-category`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    systemLinks.categories.map(category => {return {value: category.name, text: category.name+"-"+category.description}})
+                                }
+                                onChange={this.handleCategory}
+                                multiple={false}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('system_admin.system_link.table.roles') }</label>
+                            <SelectBox
+                                id={`select-link-default-roles`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    rootRoles.list.map( role => {return {value: role._id, text: role.name}})
+                                }
+                                onChange={this.handleRoles}
+                                multiple={true}
+                            />
+                        </div>
+                    </form>
+                </DialogModal>
+            </React.Fragment>
+         );
     }
 }
  
-const mapState = state => state;
-const getState = {
-    getRole: RoleDefaultActions.get,
-    createLink: LinkDefaultActions.create
+function mapState(state) {
+    const { rootRoles, systemLinks } = state;
+    return { rootRoles, systemLinks }
+}
+const actions = {
+    getAllRootRoles: RootRoleActions.getAllRootRoles,
+    createSystemLink: SystemLinkActions.createSystemLink
 }
  
-export default connect(mapState, getState) (withTranslate(CreateLinkForm));
+const connectedCreateLinkForm = connect(mapState, actions) (withTranslate(CreateLinkForm))
+export { connectedCreateLinkForm as CreateLinkForm }

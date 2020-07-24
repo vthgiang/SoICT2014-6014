@@ -31,15 +31,15 @@ class NotificationSentInfo extends Component {
     }
 
     render() { 
-        const {notifications, translate} = this.props;
-        const {notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits} = this.state;
+        const { notifications, translate } = this.props;
+        const { notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits } = this.state;
         
         return ( 
             <DialogModal
-                    func={this.save} isLoading={notifications.isLoading}
-                    modalID='modal-notification-sent'
-                    title={translate('notification.title')}
-                    hasSaveButton={false} hasNote={false}
+                func={this.save} isLoading={notifications.isLoading}
+                modalID='modal-notification-sent'
+                title={translate('notification.title')}
+                hasSaveButton={false} hasNote={false}
             >
                 <div className="qlcv">
                     <div className="form-inline">

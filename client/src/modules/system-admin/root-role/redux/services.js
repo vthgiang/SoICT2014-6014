@@ -1,12 +1,11 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
-export const RoleDefaultServices = {
-    get
+export const RootRoleServices = {
+    getAllRootRoles
 };
 
-function get() {  
+function getAllRootRoles() {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/roles-default-management`,
         method: 'GET',
