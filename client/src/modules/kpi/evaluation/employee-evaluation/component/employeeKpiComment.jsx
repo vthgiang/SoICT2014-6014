@@ -63,7 +63,6 @@ class EmployeeKpiComment extends Component {
                 }
             })
         }
-
     }
 
     handleShowFile = (id) => {
@@ -138,7 +137,7 @@ class EmployeeKpiComment extends Component {
                 ...state,
                 editComment: ""
             }
-        });
+        })
     }
     editCommentOfComment = async (e, index) => {
         e.preventDefault();
@@ -224,7 +223,7 @@ class EmployeeKpiComment extends Component {
         }
         return (
             <React.Fragment>
-                {comments ?
+                {comments?
                     comments.map(item => {
                         return (
                             <div className="clearfix" key={item._id}>

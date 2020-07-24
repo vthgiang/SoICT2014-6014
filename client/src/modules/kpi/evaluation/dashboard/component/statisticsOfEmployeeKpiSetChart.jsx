@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -11,7 +9,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     constructor(props) {
         super(props);
-
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
@@ -21,7 +18,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     componentDidMount = () => {
         this.props.getAllEmployeeKpiSetByMonth(this.props.userId, this.props.startMonth, this.props.endMonth);
-
         this.setState(state => {
             return {
                 ...state,
@@ -34,7 +30,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextProps.userId !== this.state.userId || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
             await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
-
             this.setState(state => {
                 return {
                     ...state,
@@ -42,14 +37,12 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                     willUpdate: true,
                 }
             });
-
             return false;
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
                 return false;
-
             this.setState(state => {
                 return {
                     ...state,
@@ -68,7 +61,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 };
             });
         }
-
         return false;
     }
 
@@ -91,26 +83,19 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         if (createEmployeeKpiSet && this.state.willUpdate) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
-
         if (listEmployeeKpiSet !== null) {
             automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint));
-
             employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint));
-
             approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint));
-
             date = listEmployeeKpiSet.map(x => {
                 date = new Date(x.date);
                 return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() - 1);
             })
         }
-
         dataMultiLineChart = [['x'].concat(date), automaticPoint, employeePoint, approvedPoint];
-
         return dataMultiLineChart;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
         const chart = this.refs.chart;
         while (chart.hasChildNodes()) {
@@ -121,22 +106,19 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     multiLineChart = () => {
         const { translate } = this.props;
         this.removePreviousChart();
-        var dataMultiLineChart = this.setDataMultiLineChart();
+        let dataMultiLineChart = this.setDataMultiLineChart();
         this.chart = c3.generate({
             bindto: this.refs.chart,
-
             padding: {
                 top: 20,
                 right: 20,
                 left: 20
             },
-
             data: {                                
                 x: 'x',
                 columns: dataMultiLineChart,
                 type: 'spline'
             },
-
             axis: {                               
                 x: {
                     type: 'timeseries',
@@ -157,7 +139,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                     }
                 }
             },
-
             zoom: {                         
                 enabled: false
             }
@@ -180,6 +161,5 @@ function mapState(state) {
 const actions = {
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 }
-
 const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(StatisticsOfEmployeeKpiSetChart));
 export { connectedStatisticsOfEmployeeKpiSetChart as StatisticsOfEmployeeKpiSetChart };
