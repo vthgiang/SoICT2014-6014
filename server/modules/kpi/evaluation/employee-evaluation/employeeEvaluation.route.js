@@ -5,19 +5,19 @@ const { auth } = require('../../../../middleware');
 // Tìm kiếm KPI nhân viên
 router.get('/', auth, KPIPersonalController.getKPIAllMember);
 
-// get all kpi personal
+// Lấy kpi nhân viên theo người khởi tạo
 router.get('/employee-kpis/:userId/user', auth, KPIPersonalController.getKpiByCreator);
 
-// Lấy kpi cá nhân theo id
+// Lấy kpi cá nhân theo id của kpi
 router.get('/employee-kpis/:kpiId', auth, KPIPersonalController.getKpiByEmployeeKpiId);
 
-// phê duyệt tất cả mục tiêu của kpi cá nhân
+// phê duyệt tất cả mục tiêu của kpi 
 router.put('/employee-kpis/:kpiId/approve', auth, KPIPersonalController.approveAllTarget);
 
-// edit target of personal by id
+// Chỉnh sửa kpi 
 router.put('/employee-kpis/:kpiId/target', auth, KPIPersonalController.editTarget);
 
-// chỉnh sửa trạng thái từng mục tiêu của kpi cá nhân
+// chỉnh sửa trạng thái từng mục tiêu của kpi
 router.put('/employee-kpis/:kpiId/status-target', auth, KPIPersonalController.editStatusTarget);
 
 // lấy task cho kpi

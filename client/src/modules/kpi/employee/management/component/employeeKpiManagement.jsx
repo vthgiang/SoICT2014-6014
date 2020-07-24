@@ -10,10 +10,13 @@ import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { DatePicker, SelectBox } from '../../../../../common-components/index';
 import { kpiMemberServices } from '../../../evaluation/employee-evaluation/redux/services';
+import { withTranslate } from 'react-redux-multilingual';
 
+var translate ='';
 class KPIPersonalManager extends Component {
     constructor(props) {
         super(props);
+        translate=this.props.translate
         this.state = {
             commenting: false,
             user:null,
@@ -78,11 +81,11 @@ class KPIPersonalManager extends Component {
     }
     checkStatusKPI = (status) => {
         if (status === 0) {
-            return "Đang thiết lập";
+            return translate('kpi.evaluation.employee_evaluation.establishing');
         } else if (status === 1) {
-            return "Chờ phê duyệt";
+            return translate('kpi.evaluation.employee_evaluation.expecting');
         } else if (status === 2) {
-            return "Đã kích hoạt";
+            return translate('kpi.evaluation.employee_evaluation.activated');
         }
     }
     handleStartDateChange = (value) => {
@@ -149,10 +152,10 @@ class KPIPersonalManager extends Component {
 
             if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
-                    title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
+                    title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
+                    confirmButtonText: translate('general.accept')
                 })
             } 
             else {
@@ -171,6 +174,7 @@ class KPIPersonalManager extends Component {
     render() {
         var kpipersonal;
         var userdepartments;
+        const {translate} =this.props;
         const {status,startDate, endDate} = this.state;
         // var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
         const {  kpimembers, user } = this.props;
@@ -209,16 +213,16 @@ class KPIPersonalManager extends Component {
                         </div> */}
 
                         <div className="form-group">
-                            <label>Trạng thái:</label>
+                            <label>{translate('general.status')}:</label>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                 id={`status-kpi`}
                                 // className="form-control"
                                 style={{width: "100%"}}
                                 items = {[
-                                    {value:"null", text : "--Chọn trạng thái--"},
-                                    {value:0, text : "Đang thiết lập"},
-                                    {value:1, text : "Chờ phê duyệt"},
-                                    {value:2, text : "Đã kích hoạt"},]}
+                                    {value:"null", text : "--"+translate('kpi.evaluation.employee_evaluation.choose_status')+"--"},
+                                    {value:0, text : translate('kpi.evaluation.employee_evaluation.establishing')},
+                                    {value:1, text : translate('kpi.evaluation.employee_evaluation.expecting')},
+                                    {value:2, text : translate('kpi.evaluation.employee_evaluation.activated')},]}
                                 // items = {items}
                                 onChange={this.handleStatusChange}
                                 // multiple={true}
@@ -230,7 +234,7 @@ class KPIPersonalManager extends Component {
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Từ tháng:</label>
+                            <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                             <DatePicker id='start_date'
                             value = {startDate}
                             onChange={this.handleStartDateChange}
@@ -239,7 +243,7 @@ class KPIPersonalManager extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label>Đến tháng:</label>
+                            <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                             <DatePicker
                             id='end_date'
                             
@@ -250,22 +254,22 @@ class KPIPersonalManager extends Component {
                         </div>
 
                         <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
-                            kiếm</button>
+                        <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>{
+                        translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
 
                     </div>
 
                     <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                     columnArr={[ 
-                        'STT' ,
-                        'Thời gian' , 
-                        "Trạng thái",
-                        'Số lượng mục tiêu' , 
-                        'Hệ thống đánh giá' ,
-                        'Kết quả tự đánh giá' ,
-                        'Quản lý đánh giá',
-                        'Hành động']} 
+                        translate('kpi.evaluation.employee_evaluation.index'),
+                        translate('kpi.evaluation.employee_evaluation.time') , 
+                        translate('kpi.evaluation.employee_evaluation.status'),
+                        translate('kpi.evaluation.employee_evaluation.number_of_targets') , 
+                        translate('kpi.evaluation.employee_evaluation.system_evaluate') ,
+                        translate('kpi.evaluation.employee_evaluation.result_self_evaluate') ,
+                        translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                        translate('kpi.evaluation.employee_evaluation.action')]} 
                     limit={this.state.perPage} 
                     setLimit={this.setLimit} 
                     hideColumnOption={true} />
@@ -273,14 +277,14 @@ class KPIPersonalManager extends Component {
                     <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
-                                <th title="Thời gian">Thời gian</th>
-                                <th title="Trạng thái">Trạng thái</th>
-                                <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
-                                <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
-                                <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
-                                <th title="Quản lý đánh giá">Quản lý đánh giá</th>
-                                <th title="Hành động">Hành động</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                <th title={ translate('kpi.evaluation.employee_evaluation.time')}>{ translate('kpi.evaluation.employee_evaluation.time')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.number_of_targets')}>{translate('kpi.evaluation.employee_evaluation.number_of_targets')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -290,15 +294,15 @@ class KPIPersonalManager extends Component {
                                     <td>{this.formatDate(item.date)}</td>
                                     <td>{this.checkStatusKPI(item.status)}</td>
                                     <td>{item.kpis.length}</td>
-                                    <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
-                                    <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
-                                    <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
+                                    <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
+                                    <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
+                                    <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                     <td>
                                         {/* item.creator.name, item.creator._id, item._id, item.date */}
                                         <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item)} data-toggle="modal"
-                                        title="Xem chi tiết"><i className="material-icons">view_list</i></a>
+                                        title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
-                                        className="copy" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>
+                                        className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
                                         {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
                                     </td>
                                 </tr>)
@@ -323,5 +327,5 @@ const actionCreators = {
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
-const connectedKPIPersonalManager = connect(mapState, actionCreators)(KPIPersonalManager);
+const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));
 export { connectedKPIPersonalManager as KPIPersonalManager };

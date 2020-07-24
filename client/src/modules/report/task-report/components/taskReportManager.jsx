@@ -9,7 +9,7 @@ import { DataTableSetting, PaginateBar, SelectBox } from '../../../../common-com
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
-import TaskReportViewForm from './taskReportViewForm';
+import { TaskReportViewForm } from './taskReportViewForm';
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -135,7 +135,6 @@ class TaskReportManager extends Component {
 
     render() {
         const { reports, translate, deleteTaskReport, user } = this.props;
-        console.log('1minh', user);
         let pageTotal = (reports.totalList % this.state.limit === 0) ?
             parseInt(reports.totalList / this.state.limit) :
             parseInt((reports.totalList / this.state.limit) + 1);

@@ -189,7 +189,9 @@ exports.editEmployeeKpi = async (req, res) => {
         })
     }
 }
-
+/**
+ * Tạo comment trong trang create KPI employee
+ */
 exports.createComment = async (req,res)=> {
     try {
         var files=[] ;
@@ -212,6 +214,10 @@ exports.createComment = async (req,res)=> {
     }
 }
 
+/**
+ * 
+ * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
+ */
 exports.createCommentOfComment = async (req,res)=> {
     try {
         var files=[] ;
@@ -234,6 +240,10 @@ exports.createCommentOfComment = async (req,res)=> {
     }
 }
 
+/**
+ * 
+ *Sửa comment trong trang create KPI employee
+ */
 exports.editComment = async (req,res)=> {
     try {
         var comments = await EmployeeKpiSetService.editComment(req.params,req.body);
@@ -253,6 +263,9 @@ exports.editComment = async (req,res)=> {
     }
 }
 
+/**
+ * Xóa comment trong trang create KPI employee
+ */
 exports.deleteComment = async (req,res)=> {
     try {
         var comments = await EmployeeKpiSetService.deleteComment(req.params);
@@ -270,7 +283,9 @@ exports.deleteComment = async (req,res)=> {
         })
     }
 }
-
+/**
+ * Sửa 1 comment trong trang create KPI employee (xóa comment replied)
+ */
 exports.editCommentOfComment = async (req,res)=> {
     try {
         var comments = await EmployeeKpiSetService.editCommentOfComment(req.params,req.body);
@@ -289,6 +304,9 @@ exports.editCommentOfComment = async (req,res)=> {
     }
 }
 
+/**
+ * Xóa comment của commnent trong trang create KPI employee (xóa comment replied)
+ */
 exports.deleteCommentOfComment = async (req,res)=> {
     try {
         var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params);
