@@ -44,6 +44,10 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
     
 }
 
+/**
+ * 
+ * service Khởi tạo KPI tháng mới từ KPI tháng này
+ */
 exports.copyKPI = async (data) => {
     var date = data.dateold.split("-");
     var dateold = new Date(date[0], date[1], 0);
