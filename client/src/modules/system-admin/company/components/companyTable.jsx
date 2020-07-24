@@ -59,7 +59,7 @@ class CompanyTable extends Component {
             value: this.state.value
         };
 
-        this.props.get(data);
+        this.props.getAllCompanies(data);
     }
 
     setLimit = (number) => {

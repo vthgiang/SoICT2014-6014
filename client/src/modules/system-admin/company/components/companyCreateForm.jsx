@@ -46,11 +46,12 @@ class CompanyCreateForm extends Component {
     }
 
     checkAll = (e) => {
+        const { systemLinks } = this.props;
         const { checked } = e.target;
 
         if (checked) {
             this.setState({
-                linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
+                linkDefaultArr: systemLinks.list.map(link => link._id)
             })
         } else { 
             this.setState({

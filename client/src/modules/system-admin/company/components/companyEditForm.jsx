@@ -180,7 +180,7 @@ class CompanyEditForm extends Component {
     }
 
     render() { 
-        const { translate } = this.props;
+        const { translate, company } = this.props;
         const {
             // Phần edit nội dung của công ty
             companyName, 
@@ -199,7 +199,7 @@ class CompanyEditForm extends Component {
             <React.Fragment>
                 <DialogModal
                     modalID="modal-edit-company"
-                    formID="form-edit-company" isLoading={this.props.company.isLoading}
+                    formID="form-edit-company" isLoading={company.isLoading}
                     title={translate('system_admin.company.edit')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
@@ -251,8 +251,8 @@ class CompanyEditForm extends Component {
 }
 
 function mapState(state) {
-    const { linksDefault } = state;
-    return { linksDefault };
+    const { linksDefault, company } = state;
+    return { linksDefault, company };
 }
 const action = {
     editCompany: CompanyActions.editCompany
