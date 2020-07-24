@@ -6,7 +6,7 @@ const { LogInfo, LogError } = require('../../../../logs');
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.id, req.query.organizationalUnitId, req.query.month);
+        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.role, req.query.organizationalUnitId, req.query.month);
         LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
         res.status(200).json({
             success: true,
@@ -29,8 +29,8 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
 exports.editOrganizationalUnitKpiSet = async (req, res) => {
     try {
         let dateString = req.body.date;
-        let id = req.params.id;
-        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(dateString,id);
+        let kpiId = req.params.kpiId;
+        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(dateString, kpiId);
         LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(200).json({
             success: true,
@@ -52,7 +52,7 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.params.id);
+        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.params.kpiId);
         kpiunit = arr[0];
         listTarget = arr[1];
         LogInfo(req.user.email, 'delete kpi unit',req.user.company)
@@ -80,7 +80,7 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.params.id,req.params.kpiunit);
+        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.params.id, req.params.kpiunit);
         LogInfo(req.user.email, 'delete target kpi unit',req.user.company);
         res.status(200).json({
             success: true,
@@ -102,7 +102,7 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
  */
 exports.editOrganizationalUnitKpiSetStatus =async (req, res) => {
     try {
-        var kpiunit= await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.id,req.params.status);
+        var kpiunit= await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.kpiId, req.query);
         LogInfo(req.user.email, 'edit status kpi unit',req.user.company)
         res.status(200).json({
             success: true,

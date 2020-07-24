@@ -184,7 +184,7 @@ class KPIUnitManager extends Component {
         }
         if (managerKpiUnit.kpis) {
             listkpi = managerKpiUnit.kpis;
-            if (typeof listkpi !== "undefined" && listkpi.length !== 0) {
+            if (listkpi && listkpi.length !== 0) {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 datachat1 = kpiApproved.map(item => {
@@ -215,7 +215,7 @@ class KPIUnitManager extends Component {
                             idkpiunit={this.state.idkpiunit}
                         />
                         <div className="form-inline">
-                            <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorOnDate ? "" : "has-error"}`}>
                                 <label>{translate('kpi.organizational_unit.management.over_view.start_date')}</label>
                                 <DatePicker
                                     id="start_date"
@@ -259,7 +259,7 @@ class KPIUnitManager extends Component {
                             </div>
                         </div>
 
-                        <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+                        <DataTableSetting className="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
                             columnArr={['Người tạo', 'Thời gian', 'Trạng thái', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật']}
                             limit={this.state.perPage}
                             setLimit={this.setLimit} hideColumnOption={true} />
@@ -277,7 +277,7 @@ class KPIUnitManager extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (typeof listkpi !== "undefined" && listkpi.length !== 0) ?
+                                    (listkpi && listkpi.length !== 0) ?
                                         listkpi.map((item, index) =>
                                             <tr key={index + 1}>
                                                 <td>{item.creator.name}</td>

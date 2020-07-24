@@ -51,7 +51,8 @@ exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
     var time = dateString.split("-");
     var date = new Date(time[1], time[0], 0)
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-    organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator")
+                                    .populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     
     return organizationalUnitKpiSet;
 }
@@ -208,11 +209,11 @@ exports.deleteOrganizationalUnitKpi = async (id, organizationalUnitKpiSetId) => 
 
 /**
  * Chỉnh sửa trạng thái của tập KPI đơn vị
- * @id Id của tập KPI đơn vị
+ * @kpiId Id của tập KPI đơn vị
  * @statusId trạng thái mới của tập KPI đơn vị
  */
-exports.editOrganizationalUnitKpiSetStatus = async (id, statusId) => {
-    var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
+exports.editOrganizationalUnitKpiSetStatus = async (kpiId, query) => {
+    var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(kpiId, { $set: { status: query.status } }, { new: true });
     kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return kpiunit;     
 }
@@ -221,16 +222,16 @@ exports.editOrganizationalUnitKpiSetStatus = async (id, statusId) => {
  * Xóa tập KPI đơn vị
  * @id Id của tập KPI đơn vị
  */
-exports.deleteOrganizationalUnitKpiSet = async (id) => {
+exports.deleteOrganizationalUnitKpiSet = async (kpiId) => {
     //req.params.id
     var kpis = [];
-        var kpiunit = await OrganizationalUnitKpiSet.findById(id);
+        var kpiunit = await OrganizationalUnitKpiSet.findById(kpiId);
         if (kpiunit.kpis) kpis = kpiunit.kpis;
         if (kpis !== []) {
             kpis = await Promise.all(kpis.map(async (item) => {
                 return OrganizationalUnitKpi.findByIdAndDelete(item._id);
             }))
         }
-        kpiunit = await OrganizationalUnitKpiSet.findByIdAndDelete(id);
+        kpiunit = await OrganizationalUnitKpiSet.findByIdAndDelete(kpiId);
         return [kpiunit,kpis];      
 }
