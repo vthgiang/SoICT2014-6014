@@ -1,4 +1,4 @@
-export const configurationSalary = {
+export const configurationEmployeeInfo = {
     rowHeader: 1,
     sheets: ["Sheet1"],
     employeeNumber: "Mã số nhân viên",

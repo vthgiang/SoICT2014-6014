@@ -365,6 +365,26 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             }
+
+        case taskManagementConstants.GET_TASK_EVALUATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_TASK_EVALUATION_SUCCESS:
+            console.log('action.payload', action.payload)
+            return {
+                ...state,
+                listTaskEvaluations: action.payload.result,
+                TotalTaskInfo: action.payload.result2,
+                isLoading: false,
+            };
+        case taskManagementConstants.GET_TASK_EVALUATION_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error,
+
+            }
         default:
             return state
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeManagerActions } from '../redux/actions';
-import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './combinedContent';
+import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
@@ -52,6 +52,18 @@ class EmployeeManagement extends Component {
         if (monthYear === true) {
             return [month, year].join('-');
         } else return [day, month, year].join('-');
+    }
+    // Function bắt sự kiện thêm lương nhân viên bằng tay
+    createEmployee = () => {
+        window.$('#modal-create-employee').modal('show');
+    }
+
+    // Function bắt sự kiện thêm lương nhân viên bằng import file
+    importEmployee = async () => {
+        await this.setState({
+            importEmployee: true
+        })
+        window.$('#modal_import_file').modal('show');
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
@@ -144,9 +156,11 @@ class EmployeeManagement extends Component {
         this.props.getAllEmployee(this.state);
     }
     render() {
-        const { list } = this.props.department;
-        var { employeesManager, translate } = this.props;
-        var lists, listPosition = [];
+        const { importEmployee } = this.state;
+        var { employeesManager, translate, department } = this.props;
+        // const { list } = this.props.department;
+
+        var lists, listPosition = [], list = department.list;
         if (this.state.organizationalUnits !== null) {
             let organizationalUnits = this.state.organizationalUnits;
             organizationalUnits.forEach(u => {
@@ -171,7 +185,18 @@ class EmployeeManagement extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <EmployeeCreateForm />
+                    <div className="form-inline">
+                        <div className="dropdown pull-right">
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={'Thêm mới thông tin nhân viên'} >Thêm mới nhân viên</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} title={'Thêm nhiều thông tin nhân viên'} onClick={this.importEmployee}>{'Import file excel'}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={'Thêm một thông tin nhân viên'} onClick={this.createEmployee}>{'Thêm bằng tay'}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* <EmployeeImportForm />
+                    <EmployeeCreateForm /> */}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
@@ -288,6 +313,9 @@ class EmployeeManagement extends Component {
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
+                <EmployeeCreateForm />
+                {importEmployee && <EmployeeImportForm />}
+
                 {
                     this.state.currentRowView !== undefined &&
                     <EmployeeDetailForm

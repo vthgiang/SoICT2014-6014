@@ -16,13 +16,13 @@ class EmployeeKpiManagement extends Component {
         this.state = {
             commenting: false,
             user:null,
-            status:null,
+            status: -1,
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: null,
-                status: null,
+                status: -1,
                 startDate: null,
                 endDate: null
             },
@@ -101,6 +101,7 @@ class EmployeeKpiManagement extends Component {
         });
     }
     handleStatusChange =(value) => {
+        if(value === -1) value = null;
         this.setState(state => {
             return {
                 ...state,
@@ -145,7 +146,7 @@ class EmployeeKpiManagement extends Component {
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'), 
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } 
         else {
@@ -206,7 +207,7 @@ class EmployeeKpiManagement extends Component {
                                     id={`status-kpi`}
                                     style={{width: "100%"}}
                                     items = {[
-                                        {value: "null", text: translate('kpi.evaluation.employee_evaluation.choose_status')},
+                                        {value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status')},
                                         {value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing')},
                                         {value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting')},
                                         {value: 2, text: translate('kpi.evaluation.employee_evaluation.activated')}
