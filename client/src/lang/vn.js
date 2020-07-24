@@ -1711,7 +1711,7 @@ export default {
                 detail_general_info: 'Thông tin chung',
                 detail_description: 'Mô tả',
                 detail_info: 'Thông tin công việc',
-                detail_progress: 'Thông tin công việc',
+                detail_progress: 'Mức độ hoàn thành công việc',
                 detail_value: 'Giá trị',
                 detail_not_hasinfo: 'Chưa có thông tin',
                 detail_eval: 'Đánh giá công việc',
