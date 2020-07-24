@@ -6,11 +6,14 @@ export const RoleActions = {
     edit,
     create,
     show,
-    destroy
+    destroy,
 }
 
+/**
+ * Lấy danh sách tất cả các role của 1 công ty
+ */
 function get(data){
-    if(data !== undefined){
+    if (data) {
         return dispatch => {
             dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
             RoleServices.get(data)
@@ -25,6 +28,7 @@ function get(data){
             })
         }
     }
+
     return dispatch => {
         dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
         RoleServices.get()
@@ -41,6 +45,10 @@ function get(data){
     }
 }
 
+/**
+ * Lấy thông tin của 1 role
+ * @id id role
+ */
 function show(id){
     return dispatch => {
         dispatch({ type: RoleConstants.SHOW_ROLE_REQUEST});
@@ -58,6 +66,10 @@ function show(id){
     }
 }
 
+/**
+ * Tạo role do công ty tự định nghĩa
+ * @role dữ liệu tạo
+ */
 function create(role){
     return dispatch => {
         dispatch({ type: RoleConstants.CREATE_ROLE_REQUEST});
@@ -75,6 +87,10 @@ function create(role){
     }
 }
 
+/**
+ * Chỉnh sửa thông tin role
+ * @role dữ liệu chỉnh sửa
+ */
 function edit(role){
     return dispatch => {
         dispatch({ type: RoleConstants.EDIT_ROLE_REQUEST});
@@ -91,6 +107,10 @@ function edit(role){
     }
 }
 
+/**
+ * Xóa role theo id
+ * @roleId id role
+ */
 function destroy(roleId){
     return dispatch => {
         dispatch({ type: RoleConstants.DELETE_ROLE_REQUEST});

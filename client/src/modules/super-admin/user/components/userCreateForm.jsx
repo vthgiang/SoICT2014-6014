@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { UserFormValidator} from './userFormValidator';
 
 class UserCreateForm extends Component {
@@ -14,7 +17,6 @@ class UserCreateForm extends Component {
             userEmail: "",
             userRoles:[]
         }
-        this.save = this.save.bind(this);
     }
 
     save = () => {
@@ -31,6 +33,7 @@ class UserCreateForm extends Component {
         let result = 
             this.validateUserName(this.state.userName, false) &&
             this.validateUserEmail(this.state.userEmail, false);
+
         return result;
     }
 
@@ -87,13 +90,15 @@ class UserCreateForm extends Component {
         const{ translate, role, user } = this.props;
         const{ userName, userEmail, errorOnUserName, errorOnUserEmail} = this.state;
         
-        const items = role.list.filter( role => {
+        const items = role.list? role.list.filter( role => {
             return role.name !== 'Super Admin'
-        }).map( role => {return {value: role._id, text: role.name}})
+        }).map( role => {return {value: role._id, text: role.name}}): []
     
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>
+                {/* Button thêm tài khoản người dùng mới */}
+                <ButtonModal modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>.
+
                 <DialogModal
                     modalID="modal-create-user" isLoading={user.isLoading}
                     formID="form-create-user"
@@ -105,17 +110,24 @@ class UserCreateForm extends Component {
                     size={50}
                     maxWidth={500}
                 >
+                    {/* Form thêm tài khoản người dùng mới */}
                     <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
-                        <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
+
+                        {/* Tên người dùng */}
+                        <div className={`form-group ${!errorOnUserName? "": "has-error"}`}>
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange = {this.handleUserNameChange}/>
                             <ErrorLabel content={errorOnUserName}/>
                         </div>
-                        <div className={`form-group ${errorOnUserEmail===undefined?"":"has-error"}`}>
+
+                        {/* Email */}
+                        <div className={`form-group ${!errorOnUserEmail? "": "has-error"}`}>
                             <label>{ translate('table.email') }<span className="text-red">*</span></label>
                             <input type="email" className="form-control" onChange = {this.handleUserEmailChange}/>
                             <ErrorLabel content={errorOnUserEmail}/>
                         </div>
+
+                        {/* Phân quyền được cấp */}
                         <div className="form-group">
                             <label>{ translate('manage_user.roles') }</label>
                             {items.length !== 0 &&

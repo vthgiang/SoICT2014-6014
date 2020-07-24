@@ -1,6 +1,6 @@
 import { dashboardOrganizationalUnitKpiConstants } from "./constants";
 import { dashboardOrganizationalUnitKpiServices } from "./services";
-import { dashboardEmployeeKpiConstants } from "../../../evaluation/dashboard/redux/constants";
+
 
 export const dashboardOrganizationalUnitKpiActions = {
     getAllEmployeeKpiInOrganizationalUnit,
@@ -11,7 +11,7 @@ export const dashboardOrganizationalUnitKpiActions = {
 }
 
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
-function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId=undefined, month=undefined) {
+function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId = undefined, month = undefined) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_REQUEST });
 
@@ -32,7 +32,7 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId=unde
 }
 
 // Lấy tất cả task của organizationalUnit theo tháng hiện tại
-function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId=undefined, month=undefined) {
+function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId = undefined, month = undefined) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });
 
@@ -76,7 +76,7 @@ function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, e
 // Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
 function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST});
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST });
 
         dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate)
             .then(res => {

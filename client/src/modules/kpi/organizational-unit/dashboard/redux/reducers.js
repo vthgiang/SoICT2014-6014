@@ -10,7 +10,7 @@ const initState = {
     error: null
 }
 
-export function dashboardOrganizationalUnitKpi (state = initState, action){
+export function dashboardOrganizationalUnitKpi(state = initState, action) {
     switch (action.type) {
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_REQUEST:
             return {
@@ -113,6 +113,6 @@ export function dashboardOrganizationalUnitKpi (state = initState, action){
                 error: action.payload
             }
         default:
-          return state
+            return state
     }
 }

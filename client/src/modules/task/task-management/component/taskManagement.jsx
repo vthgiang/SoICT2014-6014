@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { ModalAddTask } from './taskAddModal';
+import { TaskAddModal } from './taskAddModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
-import Swal from 'sweetalert2';
-
-import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
-import {
-    getStorage
-} from '../../../../config';
+import { getStorage } from '../../../../config';
+import Swal from 'sweetalert2';
 
 class TaskManagement extends Component {
     constructor(props) {
-        var userId = getStorage("userId");
+        let userId = getStorage("userId");
         super(props);
         this.state = {
             perPage: 20,
@@ -26,17 +23,17 @@ class TaskManagement extends Component {
             status: '[]',
             priority: '[]',
             special: '[]',
-            name: null,
-            startDate: null,
-            endDate: null,
-            startDateAfter: null,
-            endDateBefore: null,
+            name: "",
+            startDate: "",
+            endDate: "",
+            startDateAfter: "",
+            endDateBefore: "",
             startTimer: false,
             pauseTimer: false,
             timer: {
-                startedAt: null,
+                startedAt: "",
                 creator: userId,
-                task: null
+                task: ""
             },
         };
     }
@@ -67,7 +64,7 @@ class TaskManagement extends Component {
 
     UNSAFE_componentWillUpdate() {
         let script = document.createElement('script');
-        script.src = '../lib/main/js/GridTableVers1.js';//fix /lib/...
+        script.src = '../lib/main/js/GridTableVers1.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -80,7 +77,7 @@ class TaskManagement extends Component {
     }
 
     formatDate(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -94,7 +91,7 @@ class TaskManagement extends Component {
     }
 
     list_to_tree = (list) => {
-        var map = {}, node, roots = [], i, newarr = [];
+        let map = {}, node, roots = [], i, newarr = [];
         for (i = 0; i < list.length; i += 1) {
             map[list[i]._id] = i; // initialize the map
             list[i].children = []; // initialize the children
@@ -143,8 +140,8 @@ class TaskManagement extends Component {
     }
 
     startTimer = async (taskId) => {
-        var userId = getStorage("userId");
-        var timer = {
+        let userId = getStorage("userId");
+        let timer = {
             startedAt: Date.now(),
             creator: userId,
             task: taskId
@@ -179,10 +176,10 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
-        var oldCurrentPage = this.state.currentPage;
-        var perPage = this.state.perPage;
+        let oldCurrentPage = this.state.currentPage;
+        let perPage = this.state.perPage;
 
         await this.setState(state => {
             return {
@@ -190,9 +187,9 @@ class TaskManagement extends Component {
                 currentPage: index
             }
         })
-        var newCurrentPage = this.state.currentPage;
+        let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
-            var content = this.state.currentTab;
+            let content = this.state.currentTab;
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
@@ -208,18 +205,18 @@ class TaskManagement extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
-        var oldCurrentPage = this.state.currentPage;
+        let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
             return {
                 ...state,
                 currentPage: state.currentPage === pageTotal ? pageTotal : state.currentPage + 1
             }
         })
-        var newCurrentPage = this.state.currentPage;
+        let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            var content = this.state.currentTab;
+            let content = this.state.currentTab;
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
@@ -235,18 +232,18 @@ class TaskManagement extends Component {
     }
 
     backPage = async () => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
-        var oldCurrentPage = this.state.currentPage;
+        let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
             return {
                 ...state,
                 currentPage: state.currentPage === 1 ? 1 : state.currentPage - 1
             }
         })
-        var newCurrentPage = this.state.currentPage;
+        let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            var content = this.state.currentTab;
+            let content = this.state.currentTab;
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
             } else if (content === "accountable") {
@@ -262,10 +259,9 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPerPage = (perPage) => {
-        // this.props.getResponsibleTaskByUser( "[]", "1", "20", "[]", "[]", "[]", null);
-        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
-        var content = this.state.currentTab;
+        let content = this.state.currentTab;
 
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -287,10 +283,10 @@ class TaskManagement extends Component {
     }
 
     handleUpdateData = () => {
-        var { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
 
-        var content = this.state.currentTab;
-        var { perPage } = this.state;
+        let content = this.state.currentTab;
+        let { perPage } = this.state;
 
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -312,8 +308,7 @@ class TaskManagement extends Component {
         // this.loadJS();
     }
     convertTime = (duration) => {
-        // var milliseconds = parseInt((duration % 1000) / 100),
-        var seconds = Math.floor((duration / 1000) % 60),
+        let seconds = Math.floor((duration / 1000) % 60),
             minutes = Math.floor((duration / (1000 * 60)) % 60),
             hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
@@ -442,7 +437,7 @@ class TaskManagement extends Component {
     }
 
     handleChangeName = (e) => {
-        var name = e.target.value;
+        let name = e.target.value;
         if (name === '') {
             name = null;
         }
@@ -482,12 +477,12 @@ class TaskManagement extends Component {
     }
 
     render() {
-        const { currentTab } = this.state;
-
-        var currentTasks, units = [];
-        var pageTotals;
         const { tasks, user, translate } = this.props;
-        const { startTimer, currentTimer, currentPage } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage } = this.state;
+
+        let currentTasks, units = [];
+        let pageTotals;
+
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
@@ -497,7 +492,7 @@ class TaskManagement extends Component {
         const items = [];
 
         // khởi tạo dữ liệu TreeTable
-        var column = [
+        let column = [
             { name: translate('task.task_management.col_name'), key: "name" },
             { name: translate('task.task_management.col_organization'), key: "organization" },
             { name: translate('task.task_management.col_priority'), key: "priority" },
@@ -507,16 +502,15 @@ class TaskManagement extends Component {
             { name: translate('task.task_management.col_progress'), key: "progress" },
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
-        var data = [];
+        let data = [];
         if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
-            var dataTemp = currentTasks;
+            let dataTemp = currentTasks;
 
             for (let n in dataTemp) {
-                // "Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : "Đơn vị đã bị xóa",
+                    organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
@@ -527,14 +521,14 @@ class TaskManagement extends Component {
                 }
             }
 
-            var archived = "store";
+            let archived = "store";
             if (dataTemp[0].isArchived === true) {
                 archived = "restore";
             }
 
-            if (this.state.currentTab === "creator" || this.state.currentTab === "informed") {
+            if (currentTab === "creator" || currentTab === "informed") {
                 let del = null;
-                if (this.state.currentTab === "creator") {
+                if (currentTab === "creator") {
                     del = "delete";
                 }
 
@@ -542,13 +536,13 @@ class TaskManagement extends Component {
                     data[i] = { ...data[i], action: ["edit", ["add", archived, del]] }
                 }
             }
-            if (this.state.currentTab === "responsible" || this.state.currentTab === "consulted") {
+            if (currentTab === "responsible" || currentTab === "consulted") {
                 for (let i in data) {
                     data[i] = { ...data[i], action: ["edit", "startTimer", ["add", archived]] }
                 }
             }
 
-            if (this.state.currentTab === "accountable") {
+            if (currentTab === "accountable") {
                 for (let i in data) {
                     data[i] = { ...data[i], action: ["edit", "startTimer", ["add", archived, "delete"]] }
                 }
@@ -560,10 +554,10 @@ class TaskManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div style={{ height: "40px" }}>
-                        {this.state.currentTab !== "informed" &&
+                        {currentTab !== "informed" &&
                             <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
-                        <ModalAddTask currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={this.state.parentTask} />
+                        <TaskAddModal currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
                     <div className="form-inline">
@@ -656,7 +650,7 @@ class TaskManagement extends Component {
                             <DatePicker
                                 id="start-date"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={this.state.startDate} // giá trị mặc định cho datePicker    
+                                value={startDate} // giá trị mặc định cho datePicker    
                                 onChange={this.handleChangeStartDate}
                                 disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                             />
@@ -667,7 +661,7 @@ class TaskManagement extends Component {
                             <DatePicker
                                 id="end-date"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={this.state.endDate} // giá trị mặc định cho datePicker    
+                                value={endDate} // giá trị mặc định cho datePicker    
                                 onChange={this.handleChangeEndDate}
                                 disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                             />
@@ -695,7 +689,7 @@ class TaskManagement extends Component {
                             translate('task.task_management.col_progress'),
                             translate('task.task_management.col_logged_time')
                         ]}
-                        limit={this.state.perPage}
+                        limit={perPage}
                         setLimit={this.setLimit}
                         hideColumnOption={true}
                     />
@@ -722,49 +716,17 @@ class TaskManagement extends Component {
 
                     </div>
                     {
-                        this.state.currentTaskId !== undefined &&
-
+                        currentTaskId !== undefined &&
                         <ModalPerform
-                            id={this.state.currentTaskId}
+                            id={currentTaskId}
                         />
                     }
-                    {/* {
-                        // this.state.showModal !== undefined &&
-
-                        <ModalPerformTask
-                            // responsible={item.responsibleEmployees}
-                            // unit={item.organizationalUnit._id}
-                            // responsible={this.getResponsibleOfItem(data, this.state.showModal)}
-                            // unit={this.getUnitIdOfItem(data, this.state.showModal)}
-                            id={this.state.showModal}
-                            role={this.state.currentTab}
-                        />
-                    } */}
-
 
                     <PaginateBar
                         pageTotal={tasks.pages}
-                        currentPage={this.state.currentPage}
+                        currentPage={currentPage}
                         func={this.handleGetDataPagination}
                     />
-
-                    {/*                     
-                    {tasks.isLoading?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div>:
-                        tasks.pages===0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }  
-                    */}
-
-                    {/*   
-                                        
-                    <div className="row pagination-new">
-                        <ul className="pagination" style={{ margin: "auto" }}>
-                            <li><a href="#abc" onClick={() => this.backPage()}>«</a></li>
-                            {items}
-                            <li><a href="#abc" onClick={() => this.nextPage(pageTotals)}>»</a></li>
-                        </ul>
-                    </div> 
-                    */}
 
                 </div>
             </div>
@@ -791,4 +753,3 @@ const actionCreators = {
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };
-// export default ( withTranslate(TaskManagement) ) ;

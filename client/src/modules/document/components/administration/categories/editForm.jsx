@@ -7,7 +7,12 @@ import { DocumentActions } from '../../../redux/actions';
 class EditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            categoryName: '',
+            categoryDescription: '',
+            errorName: '',
+            errorDescription: '',
+        }
     }
 
     handleName = (e) => {
@@ -24,6 +29,52 @@ class EditForm extends Component {
         })
     }
 
+    validateName = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(value === "")
+            msg = translate('document.no_blank_name');
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    categoryName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleValidateName = (e)=>{
+        const value = e.target.value.trim();
+        this.validateName(value, true);
+    }
+
+    validateDescription = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(value === '')
+            msg = translate('document.no_blank_description');
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    categoryDescription: value,
+                    errorDescription: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    handleValidateDescription = (e)=>{
+        const value = e.target.value.trim();
+        this.validateDescription(value, true);
+    }
+    isValidateForm = ()=>{
+        return this.validateDescription(this.state.categoryDescription, false) 
+                && this.validateName(this.state.validateName, false);
+    }
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.categoryId !== prevState.categoryId) {
             return {
@@ -31,9 +82,12 @@ class EditForm extends Component {
                 categoryId: nextProps.categoryId,
                 categoryName: nextProps.categoryName,
                 categoryDescription: nextProps.categoryDescription,
+
+                errorName: undefined,
+                errorDescription: undefined,
             } 
         } else {
-            return null;
+            return null
         }
     }
 
@@ -47,22 +101,26 @@ class EditForm extends Component {
 
     render() {
         const {translate}=this.props;
-        const {categoryName, categoryDescription} = this.state;
+        const {categoryName, categoryDescription, errorName, errorDescription} = this.state;
+    
         return ( 
             <DialogModal
                 modalID="modal-edit-document-category"
                 formID="form-edit-document-category"
                 title={translate('document.administration.categories.edit')}
+                disableSubmit = {!this.isValidateForm()}
                 func={this.save}
             >
                 <form id="form-edit-document-category">
-                    <div className="form-group">
+                    <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                         <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" onChange={this.handleName} value={categoryName}/>
+                        <input type="text" className="form-control" onChange={this.handleValidateName} value={categoryName}/>
+                        <ErrorLabel content = {errorName}/>
                     </div>
-                    <div className="form-group">
+                    <div className={`form-group ${errorDescription === undefined ? "" : "has-error"}`}>
                         <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
-                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={categoryDescription}/>
+                        <textarea type="text" className="form-control" onChange={this.handleValidateDescription} value={categoryDescription}/>
+                        <ErrorLabel content = {errorDescription} />
                     </div>
                 </form>
             </DialogModal>

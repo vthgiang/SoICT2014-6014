@@ -8,24 +8,33 @@ const Terms = require("../../../seed/terms");
  * Lấy danh sách tất cả các công ty
  */
 exports.getAllCompanies = async (query) => {
-    var page = query.page;
-    var limit = query.limit;
+
+    let page = query.page;
+    let limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
-        return await Company.find()
-        .populate([
-            { path: "links", model: Link },
-            { path: "superAdmin", model: User, select: '_id name email' }
-        ]);
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? {[`${query.key}`]: new RegExp(query.value, "i")}
-            : {};
-        console.log("option: ", option);
-        return await Company.paginate( option , {page, limit, populate: [
-            { path: 'links', model: Link },
-            { path: "superAdmin", model: User, select: '_id name email' }
-        ]});
+    if (!page && !limit) {
+        return await Company
+            .find()
+            .populate([
+                { path: "links", model: Link },
+                { path: "superAdmin", model: User, select: '_id name email' }
+            ]);
+    } else {
+        const option = (query.key && query.value)
+                        ? { [`${query.key}`] : new RegExp(query.value, "i") }
+                        : {};
+
+        return await Company.paginate(
+            option, 
+            {   
+                page, 
+                limit, 
+                populate: [
+                    { path: 'links', model: Link },
+                    { path: "superAdmin", model: User, select: '_id name email' }
+                ]
+            }
+        );
     }
 }
 
@@ -34,17 +43,20 @@ exports.getAllCompanies = async (query) => {
  * @id id của công ty
  */
 exports.getCompany = async (id) => {
-    return await Company.findById(id).populate([
-        { path: "links", model: Link },
-        { path: "superAdmin", model: User, select: '_id name email' }
-    ]);
+
+    return await Company
+        .findById(id)
+        .populate([
+            { path: "links", model: Link },
+            { path: "superAdmin", model: User, select: '_id name email' }
+        ]);
 }
 
 /**
  * Tạo dữ liệu mới về 1 công ty
  * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
-exports.createCompany = async(data) => {
+exports.createCompany = async (data) => {
     
     return await Company.create({
         name: data.name,
@@ -58,15 +70,18 @@ exports.createCompany = async(data) => {
  * @id id của công ty trong database
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
-exports.editCompany = async(id, data) => {
+exports.editCompany = async (id, data) => {
     
     const company = await Company.findById(id);
     if(company === null) throw ['company_not_found'];
+
     company.name = data.name;
     company.description = data.description;
     company.shortName = data.shortName;
     company.log = data.log;
+
     if(data.active !== null) company.active = data.active;
+
     await company.save();
 
     return company;
@@ -76,7 +91,7 @@ exports.editCompany = async(id, data) => {
  * Xóa dữ liệu 1 công ty
  * @id id của công ty trong database
  */
-exports.deleteCompany = async(id) => {
+exports.deleteCompany = async (id) => {
 
     return await Company.deleteOne({ _id: id, customer: true });
 }
@@ -89,7 +104,8 @@ exports.deleteCompany = async(id) => {
  * @ViceDean phó đơn vị
  * @Employee nhân viên đơn vị
  */
-exports.createCompanyRootRoles = async(companyId) => {
+exports.createCompanyRootRoles = async (companyId) => {
+
     const data = await RootRole.find();
     const rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     const roles = await data.map(role => {
@@ -110,12 +126,12 @@ exports.createCompanyRootRoles = async(companyId) => {
  * @userEmail email của tài khoản được chọn làm super admin của công ty
  * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
  */
-exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail) => {
-    console.log("dữ liệu nhận được: ", companyId, companyName, userEmail)
-    const checkEmail = await User.findOne({email: userEmail});
-    if(checkEmail !== null) throw ['email_exist'];
-    const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name});
-    console.log("role Super admin cong ty: ", roleSuperAdmin)
+exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmail) => {
+    
+    const checkEmail = await User.findOne({ email: userEmail });
+    if(checkEmail) throw ['email_exist'];
+    
+    const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
     const salt = await bcrypt.genSaltSync(10);
     const password = await generator.generate({ length: 10, numbers: true });
     const hash = await bcrypt.hashSync(password, salt);
@@ -124,6 +140,7 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
+    
     const mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
@@ -144,7 +161,7 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
                 <li>Password : ${password}</li>
             </ul>
             <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
-        </div>
+        </div>tr45
         `
     }
     
@@ -154,6 +171,7 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
         password: hash,
         company: companyId
     });
+
     const companyUpdate = await Company.findById(companyId);
     companyUpdate.superAdmin = user._id;
     await companyUpdate.save();
@@ -174,13 +192,12 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
  * @linkArr mảng các SystemLink làm chuẩn để tạo link cho công ty
  * @roleArr mảng các RootRole của công ty đó
  */
-exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
+exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
-    const systemLinks = await SystemLink.find({
-        _id: { $in: linkArr }
-    }).populate({ path: 'roles', model: RootRole });
+    const systemLinks = await SystemLink.find({ _id: { $in: linkArr } })
+        .populate({ path: 'roles', model: RootRole });
 
-    const dataLinks = systemLinks.map( link => {
+    const dataLinks = systemLinks.map(link => {
         return {
             url: link.url,
             category: link.category,
@@ -193,17 +210,18 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
     const dataPrivilege = [];
     for (let i = 0; i < links.length; i++) {
         const link = links[i];
+
         for (let j = 0; j < systemLinks.length; j++) {
             const systemLink = systemLinks[j];
+
             if(link.url === systemLink.url){
-                
                 for (let x = 0; x < systemLink.roles.length; x++) {
                     const rootRole = systemLink.roles[x];
                     
                     for (let y = 0; y < roleArr.length; y++) {
                         const role = roleArr[y];
+                        
                         if(role.name === rootRole.name){
-                            
                             dataPrivilege.push({
                                 resourceId: link._id,
                                 resourceType: 'Link',
@@ -217,7 +235,8 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
     }
     await Privilege.insertMany(dataPrivilege);
 
-    return await Link.find({company: companyId}).populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
+    return await Link.find({ company: companyId })
+        .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
 } 
 
 /**
@@ -225,9 +244,10 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
  * @companyId id của công ty
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
-exports.createCompanyComponents = async(companyId, linkArr) => {
-    const systemLinks = await SystemLink.find({ _id: { $in: linkArr }})
-        .populate({ path: 'components', model: SystemComponent, populate:{ path: 'roles', model: RootRole}});
+exports.createCompanyComponents = async (companyId, linkArr) => {
+
+    const systemLinks = await SystemLink.find({ _id: { $in: linkArr } })
+        .populate({ path: 'components', model: SystemComponent, populate: { path: 'roles', model: RootRole } });
     
     for (let i = 0; i < systemLinks.length; i++) {
         const systemLink = systemLinks[i];
@@ -244,9 +264,10 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
             const updateLink = await Link.findById(link._id);
             updateLink.components = [component._id, ...updateLink.components];
             await updateLink.save();
+
             for (let k = 0; k < systemComponent.roles.length; k++) {
                 const rootRole = systemComponent.roles[k];
-                const role = await Role.findOne({name: rootRole.name, company: companyId});
+                const role = await Role.findOne({ name: rootRole.name, company: companyId });
                 await Privilege.create({
                     resourceId: component._id,
                     resourceType: 'Component',
@@ -256,7 +277,7 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
         }
     }
 
-    return await Component.find({company: companyId});
+    return await Component.find({ company: companyId });
 }
 
 /**
@@ -264,23 +285,24 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
  * @companyId id của công ty
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
-exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
+exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
     
-    const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name});
+    const com = await Company.findById(companyId)
+        .populate({ path: 'superAdmin', model: User });
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
+    
     const oldSuperAdmin = await User.findById(com.superAdmin._id);
-
-    if(oldSuperAdmin.email === superAdminEmail)
+    if (oldSuperAdmin.email === superAdminEmail) {
         return oldSuperAdmin;
-    else{
+    } else {
         await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
         const user = await User.findOne({ company: com._id, email: superAdminEmail });
-        if(user === null){
+        if (user === null) {
             const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail);
     
             return newUser;
-        }else{
+        } else {
             com.superAdmin = user._id;
             await com.save();
             await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
@@ -296,18 +318,46 @@ exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
  * @linkUrl đường dẫn cho link muốn tạo
  * @linkDescription mô tả về link
  */
-exports.addCompanyLink = async(companyId, data) => {
+exports.addCompanyLink = async (companyId, data) => {
+
     const check = await Link.findOne({
         company: companyId,
         url: data.url
     });
-    if(check !== null) throw['url_exist'];
+    if(check) throw ['url_exist'];
+
     const newLink = await Link.create({
         url: data.url,
         description: data.description,
         category: data.category,
         company: companyId
     });
+
+    const systemLink = await SystemLink.findOne({ 'url': data.url });
+
+    for (let i=0; i<systemLink.roles.length; i++) {
+        const role = await RootRole.aggregate([
+            { $match: { '_id': systemLink.roles[i]._id } },
+
+            { $lookup: {
+                from: "roles",
+                localField: "name",
+                foreignField: "name",
+                as: "roles"
+            } },
+
+            { $unwind: '$roles' },
+            { $replaceRoot: { newRoot: '$roles' } },
+
+            { $match: { 'company': newLink.company } },
+        ])
+        
+        await Privilege.create({
+            'resourceId': newLink._id,
+            'resourceType': 'Link',
+            'roleId': role[0]._id
+        })
+    }
 
     return newLink;
 }
@@ -317,14 +367,14 @@ exports.addCompanyLink = async(companyId, data) => {
  * @companyId id của công ty
  * @linkId id của link muốn xóa
  */
-exports.deleteCompanyLink = async(companyId, linkId) => {
+exports.deleteCompanyLink = async (companyId, linkId) => {
     
     await Privilege.deleteMany({
         resourceId: linkId,
         resourceType: 'Link'
     });
     
-    await Link.deleteOne({_id: linkId});
+    await Link.deleteOne({ _id: linkId });
 
     return linkId;
 }
@@ -336,17 +386,19 @@ exports.deleteCompanyLink = async(companyId, linkId) => {
  * @componentDescription mô tả về component
  * @linkId id của link được chứa component này
  */
-exports.addCompanyComponent = async(companyId, data) => {
+exports.addCompanyComponent = async (companyId, data) => {
+
     const check = await Component.findOne({
         company: companyId,
         name: data.name
     });
-    if(check !== null) throw['component_exist'];
-    const link = await Link.findOne({company: companyId, url: data.link});
+    if(check) throw ['component_exist'];
+
+    const link = await Link.findOne({ company: companyId, url: data.link });
     const newComponent = await Component.create({
         name: data.name,
         description: data.description,
-        link: link._id,
+        link: link ? link._id : null,
         company: companyId
     });
 
@@ -358,22 +410,23 @@ exports.addCompanyComponent = async(companyId, data) => {
  * @companyId id của công ty
  * @componentId id của component muốn xóa
  */
-exports.deleteCompanyComponent = async(companyId, componentId) => {
+exports.deleteCompanyComponent = async (companyId, componentId) => {
     
     await Privilege.deleteMany({
         resourceId: componentId,
         resourceType: 'Component'
     });
+
     const link = await Link.findOne({
         company: companyId, 
         components: componentId
     });
-    if(link !== null){
+    if(link){
         link.components.splice(link.components.indexOf(componentId), 1);
         await link.save();
     }
 
-    await Component.deleteOne({_id: componentId});
+    await Component.deleteOne({ _id: componentId });
 
     return componentId;
 }
@@ -382,25 +435,33 @@ exports.deleteCompanyComponent = async(companyId, componentId) => {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-exports.getCompanyLinks = async(companyId, query) => {
-    const check = await Company.findById(companyId);
-    if(check === null) throw ['company_not_found'];
+exports.getCompanyLinks = async (companyId, query) => {
 
-    var page = query.page;
-    var limit = query.limit;
-    
-    if(page === undefined && limit === undefined ){
+    const check = await Company.findById(companyId);
+    if(!check) throw ['company_not_found'];
+
+    let page = query.page;
+    let limit = query.limit;
+    if (!page && !limit) {
+
         return await Link
-            .find({company: companyId})
-            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} });
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({company: companyId}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company: companyId};
-        console.log("option: ", option);
-        return await Link.paginate( option , {page, limit, populate: [
-            { path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} }
-        ]});
+            .find({ company: companyId })
+            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
+    } else {
+        const option = (query.key && query.value)
+            ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company: companyId };
+
+        return await Link.paginate( 
+            option, 
+            {
+                page, 
+                limit, 
+                populate: [
+                    { path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } }
+                ]
+            }
+        );
     }
 }
 
@@ -409,31 +470,33 @@ exports.getCompanyLinks = async(companyId, query) => {
  * @companyId id của công ty
  */
 exports.getCompanyComponents = async (companyId, query) => {
-    const check = await Company.findById(companyId);
-    if(check === null) throw ['company_not_found'];
 
-    var page = query.page;
-    var limit = query.limit;
-    
-    if(page === undefined && limit === undefined ){
+    const check = await Company.findById(companyId);
+    if(!check) throw ['company_not_found'];
+
+    let page = query.page;
+    let limit = query.limit;
+    if (!page && !limit) {
         return await Component.find({ company: companyId })
             .populate([
-                { path: 'link', model: Link}
+                { path: 'link', model: Link }
             ]);
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({company: companyId}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company: companyId};
-        console.log("option link: ", option);
+    } else {
+        const option = (query.key && query.value)
+            ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company: companyId };
         const rescom = await Component
-            .paginate( option , { 
-                page, 
-                limit,
-                populate: [
-                    {path: 'link', model: Link}
-                ]
-            });
-            console.log('rescom: ', rescom)
+            .paginate( 
+                option, 
+                { 
+                    page, 
+                    limit,
+                    populate: [
+                        { path: 'link', model: Link }
+                    ]
+                }
+            );
+
         return rescom;
     }
 }
@@ -443,18 +506,20 @@ exports.getCompanyComponents = async (companyId, query) => {
  * @componentId id của component
  */
 exports.getComponentById = async (componentId) => {
+
     return await Component.findById(componentId)
         .populate([
-            { path: 'link', model: Link}
+            { path: 'link', model: Link }
         ]);
 }
 
 /**
  * Lấy thông tin cấu hình file import
- * @param {*} type : thể loại file cấu hình(salary, taskTemplate);
- * @param {*} company :id công ty
+ * @type Thể loại file cấu hình(salary, taskTemplate);
+ * @company id công ty
  */
 exports.getImportConfiguraion = async (type, company) => {
+
     return await ImportConfiguraion.findOne({
         type: type,
         company: company
@@ -463,10 +528,11 @@ exports.getImportConfiguraion = async (type, company) => {
 
 /**
  * Tạo thông tin cấu hình file import
- * @param {*} data : thông tin cấu hình file import
- * @param {*} company : id công ty
+ * @data Thông tin cấu hình file import
+ * @company id công ty
  */
 exports.createImportConfiguraion = async (data, company) => {
+
     return await ImportConfiguraion.create({
         company: company,
         configuration: data.configuration,
@@ -476,15 +542,18 @@ exports.createImportConfiguraion = async (data, company) => {
 
 /**
  * Chỉnh sửa thông tin cấu hình file import
- * @param {*} id :id thông tin cấu hình file import cần sửa
- * @param {*} data : dữ liệu chinhe sửa file cấu hình
+ * @id id thông tin cấu hình file import cần sửa
+ * @data Dữ liệu chinhe sửa file cấu hình
  */
 exports.editImportConfiguraion = async (id, data) => {
+
     let oldImportConfiguraion = await ImportConfiguraion.findById(id);
-    console.log(oldImportConfiguraion);
+
     oldImportConfiguraion.configuration = {
         ...data.configuration
     };
+
     await oldImportConfiguraion.save();
+
     return await ImportConfiguraion.findById(id);
 };

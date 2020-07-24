@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { LinkActions } from '../redux/actions';
+
 import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
+
 import LinkInfoForm from './linkInfoForm';
 
 class ManageLink extends Component {
@@ -11,7 +14,7 @@ class ManageLink extends Component {
         this.state = { 
             limit: 5,
             page: 1,
-            option: "url", //mặc định tìm kiếm theo tên
+            option: "url", // Mặc định tìm kiếm theo tên
             value: ""
         }
     }
@@ -24,15 +27,18 @@ class ManageLink extends Component {
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <React.Fragment>
+                        {/* Form hỉnh sửa thông tin   */}
                         {
-                            currentRow !== undefined &&
+                            currentRow &&
                             <LinkInfoForm 
                                 linkId={ currentRow._id }
                                 linkUrl={ currentRow.url }
                                 linkDescription={ currentRow.description }
-                                linkRoles={ currentRow.roles.map(role => role.roleId._id) }
+                                linkRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): [] }
                             />
                         }
+
+                        {/* Thanh tìm kiếm */}
                         <SearchBar 
                             columns={[
                                 { title: translate('manage_link.url'), value:'url' },
@@ -44,6 +50,7 @@ class ManageLink extends Component {
                             search={this.searchWithOption}
                         />
                         
+                        {/* Bảng dữ liệu */}
                         <table className="table table-hover table-striped table-bordered" id="table-manage-link">
                             <thead>
                                 <tr>
@@ -69,12 +76,12 @@ class ManageLink extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    link.listPaginate.length > 0 ? link.listPaginate.map( link => 
+                                    link.listPaginate && link.listPaginate.length > 0? link.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.category }</td>
                                             <td>{ link.description }</td>
-                                            <td><ToolTip dataTooltip={link.roles.map(role => role.roleId.name)}/></td>
+                                            <td><ToolTip dataTooltip={link.roles? link.roles.map(role => role.roleId.name): ["Role is deleted"]}/></td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
@@ -85,6 +92,7 @@ class ManageLink extends Component {
                                 }
                             </tbody>
                         </table>
+
                         {/* PaginateBar */}
                         <PaginateBar pageTotal={link.totalPages} currentPage={link.page} func={this.setPage}/>
                     </React.Fragment>
@@ -150,9 +158,10 @@ class ManageLink extends Component {
 }
  
 const mapState = state => state;
+
 const getState =  {
     getLinks: LinkActions.get,
-    destroy: LinkActions.destroy
+    destroy: LinkActions.destroy,
 }
  
 export default connect(mapState, getState) (withTranslate(ManageLink));

@@ -37,7 +37,6 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
- 
     case  kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST:
       return {
         ...state,
@@ -71,7 +70,6 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
- 
     case  kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST:
       return {
         ...state,
@@ -82,8 +80,8 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         currentKPI: action.payload,
-        kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload._id?action.payload:item),
+        kpimembers: state.kpimembers.map(item =>
+          item._id === action.payload._id? action.payload: item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
@@ -97,9 +95,7 @@ export function kpimembers(state = {}, action) {
         currentKPI: {
           ...state.currentKPI,
           kpis: state.currentKPI.kpis.map(target =>
-            target._id === action.id
-              ? { ...target, editing: true }
-              : target)
+            target._id === action.id? { ...target, editing: true }: target)
         },
         isLoading: false
       };
@@ -132,7 +128,7 @@ export function kpimembers(state = {}, action) {
         editing: false,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload._id?action.payload:item),
+          item._id === action.payload._id? action.payload: item),
         isLoading: false
       };
     case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE:
@@ -156,45 +152,40 @@ export function kpimembers(state = {}, action) {
         loading: false,
         tasks: action.payload, 
       };
-
-    //----------------------------------------------
     case  kpiMemberConstants.SET_POINTKPI_REQUEST:
         return {
           ...state,
         editing: true
         };
-      case kpiMemberConstants.SET_POINTKPI_SUCCESS:
-        return {
-            ...state,
-            tasks: action.payload.task,
-            currentKPI : {
-              ...state.currentKPI,
-              kpis:state.currentKPI.kpis.map(kpi =>
-                (kpi._id === action.payload.result._id) ? action.payload.result : kpi )
-            }
-        };
-      case kpiMemberConstants.SET_POINTKPI_FAILURE:
-        return { 
-          error: action.payload
-        };
-    //----------------------------------------------------------------
-  
+    case kpiMemberConstants.SET_POINTKPI_SUCCESS:
+      return {
+          ...state,
+          tasks: action.payload.task,
+          currentKPI: {
+            ...state.currentKPI,
+            kpis: state.currentKPI.kpis.map(kpi =>
+              (kpi._id === action.payload.result._id)? action.payload.result: kpi )
+          }
+      };
+    case kpiMemberConstants.SET_POINTKPI_FAILURE:
+      return { 
+        error: action.payload
+      };
     case  kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
         return {
           ...state,
         editing: true
         };
-      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS:
-        return {
-            ...state,
-            currentKPI : action.payload,
-            
-        };
-      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
-        return { 
-          error: action.payload
-        };
-    //----------------------------------------------------------------------------------------
+    case kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS:
+      return {
+          ...state,
+          currentKPI : action.payload,
+          
+      };
+    case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
+      return { 
+        error: action.payload
+      };
     case createKpiSetConstants.CREATE_COMMENT_REQUEST:
       return {
         ...state,

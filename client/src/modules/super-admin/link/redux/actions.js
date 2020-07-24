@@ -6,11 +6,14 @@ export const LinkActions = {
     show,
     create,
     edit,
-    destroy
+    destroy,
 };
 
+/**
+ * Lấy danh sách tất cả các link của 1 công ty
+ */
 function get(data){
-    if(data !== undefined){
+    if(data){
         return dispatch => {
             dispatch({ type: LinkConstants.GET_LINKS_PAGINATE_REQUEST});
             LinkServices.get(data)
@@ -34,6 +37,10 @@ function get(data){
     }
 }
 
+/**
+ * Lấy thông tin link theo id
+ * @id id link
+ */
 function show(id){
     return dispatch => {
         dispatch({ type: LinkConstants.SHOW_LINK_REQUEST});
@@ -47,6 +54,10 @@ function show(id){
     }
 }
 
+/**
+ * Tạo link mới
+ * @link dữ liệu về link
+ */
 function create(link){
     return dispatch => {
         dispatch({ type: LinkConstants.CREATE_LINK_REQUEST});
@@ -61,6 +72,11 @@ function create(link){
     }
 }
 
+/**
+ * Chỉnh sửa link
+ * @id id link
+ * @link dữ liệu về link
+ */
 function edit(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.EDIT_LINK_REQUEST});
@@ -74,6 +90,10 @@ function edit(id, link){
     }
 }
 
+/**
+ * Xóa link
+ * @id id link
+ */
 function destroy(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.DELETE_LINK_REQUEST});

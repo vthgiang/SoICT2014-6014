@@ -32,14 +32,24 @@ class ContentMaker extends Component {
             }
         });
     }
-
+    pressEnter = (event) => {
+        let code = event.keyCode || event.which;
+        console.log(code)
+        if (code === 13 && !event.shiftKey) {
+            let { onSubmit } = this.props
+            onSubmit(event)
+        }
+        if (code == 13 && !event.shiftKey) {
+            event.preventDefault();
+        }
+    }
     render() {
         const { translate } = this.props;
         const {
-            files, onFilesChange, onFilesError, multiple=true, maxFiles=10, maxFileSize=10000000, minFileSize=0, clickable=false,
-            text, onTextChange, placeholder, minRows=3, maxRows=20,
+            files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
+            text, onTextChange, placeholder, minRows = 3, maxRows = 20,
             onSubmit, submitButtonText,
-            inputCssClass, controlCssClass,defaultValue,handleEdit,cancelButtonText
+            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext,onKeyPress
         } = this.props
 
         return (
@@ -54,51 +64,53 @@ class ContentMaker extends Component {
                     maxFileSize={maxFileSize}
                     minFileSize={minFileSize}
                     clickable={clickable}>
-                
-                    <div className={inputCssClass} style={{position: "relative"}}>
+
+                    <div className={inputCssClass} style={{ position: "relative" }}>
                         <TextareaAutosize
                             placeholder={placeholder}
-                            useCacheForDOMMeasurements
                             minRows={minRows}
                             maxRows={maxRows}
                             onDragEnter={this.handleDragEnter}
                             onDragLeave={this.handleDragLeave}
                             onDrop={this.handleDragLeave}
                             value={text}
+                            style={styletext}
                             defaultValue={defaultValue}
-                            onChange={onTextChange}/>
-                            
-                            
+                            onChange={onTextChange}
+                            onKeyPress={this.pressEnter}
+                        />
+
+
                         {this.state.showDropFileHere &&
-                        <div style={{fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center"}}>
-                            DROP FILES HERE
+                            <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>
+                                DROP FILES HERE
                         </div>
                         }
                     </div>
                 </Files>
                 <div className={controlCssClass}>
-                    <div style={{textAlign: "right"}}>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>Đính kèm tệp&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick={(e)=>{
-                                onSubmit(e);
-                                this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
-                            }}>
+                    <div style={{ textAlign: "right" }}>
+                        <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => {
+                            onSubmit(e);
+                            this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
+                        }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
                         </a>
-                        <a href="javascript:void(0)" className="link-black text-sm" onClick ={handleEdit}>{cancelButtonText}</a>
-                    </div>           
-                    {files && files.length>0 &&
+                        <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleEdit}>{cancelButtonText}</a>
+                    </div>
+                    {files && files.length > 0 &&
                         <div className='files-list'>
                             <ul>{files.map((file) =>
                                 <li className='files-list-item' key={file.id}>
                                     <div className='files-list-item-preview'>
-                                    {file.preview.type === 'image' ?  
-                                    <React.Fragment>
-                                        <img className='files-list-item-preview-image'src={file.preview.url} />
-                                    </React.Fragment>    
-                                    : 
-                                    <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a href="javascript:void(0)" className="pull-right btn-box-tool" onClick={(e)=>{this.refs.fileComponent.removeFile(file)}}><i className="fa fa-times"></i></a>
+                                        {file.preview.type === 'image' ?
+                                            <React.Fragment>
+                                                <img className='files-list-item-preview-image' src={file.preview.url} />
+                                            </React.Fragment>
+                                            :
+                                            <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file) }}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>

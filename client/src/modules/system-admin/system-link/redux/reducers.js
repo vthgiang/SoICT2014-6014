@@ -1,4 +1,4 @@
-import { LinkDefaultConstants } from "./constants";
+import { SystemLinkConstants } from "./constants";
 
 var findIndex = (array, id) => {
     var result = -1;
@@ -28,50 +28,50 @@ const initState = {
     item: null
 }
 
-export function linksDefault (state = initState, action) {
+export function systemLinks (state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
 
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST:
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST:
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST:
-        case LinkDefaultConstants.SHOW_LINK_DEFAULT_REQUEST:
-        case LinkDefaultConstants.CREATE_LINK_DEFAULT_REQUEST:
-        case LinkDefaultConstants.EDIT_LINK_DEFAULT_REQUEST:
-        case LinkDefaultConstants.DELETE_LINK_DEFAULT_REQUEST:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_REQUEST:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST:
+        case SystemLinkConstants.SHOW_LINK_DEFAULT_REQUEST:
+        case SystemLinkConstants.CREATE_LINK_DEFAULT_REQUEST:
+        case SystemLinkConstants.EDIT_LINK_DEFAULT_REQUEST:
+        case SystemLinkConstants.DELETE_LINK_DEFAULT_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
 
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE:
-            case LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE:
-            case LinkDefaultConstants.SHOW_LINK_DEFAULT_FAILE:
-            case LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE:
-            case LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE:
-            case LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE:
-            case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_FAILE:
+            case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE:
+            case SystemLinkConstants.SHOW_LINK_DEFAULT_FAILE:
+            case SystemLinkConstants.CREATE_LINK_DEFAULT_FAILE:
+            case SystemLinkConstants.EDIT_LINK_DEFAULT_FAILE:
+            case SystemLinkConstants.DELETE_LINK_DEFAULT_FAILE:
+            case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE:
                 return {
                     ...state,
                     isLoading: false
                 };
 
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
 
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS:
             return {
                 ...state,
                 categories: action.payload,
                 isLoading: false
             };
 
-        case LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS:
             return {
                 ...state,
                 listPaginate: action.payload.docs,
@@ -87,14 +87,14 @@ export function linksDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkDefaultConstants.SHOW_LINK_DEFAULT_SUCCESS:
+        case SystemLinkConstants.SHOW_LINK_DEFAULT_SUCCESS:
             return {
                 ...state,
                 item: action.payload,
                 isLoading: false
             };
 
-        case LinkDefaultConstants.CREATE_LINK_DEFAULT_SUCCESS:
+        case SystemLinkConstants.CREATE_LINK_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: [
@@ -108,7 +108,7 @@ export function linksDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkDefaultConstants.EDIT_LINK_DEFAULT_SUCCESS:
+        case SystemLinkConstants.EDIT_LINK_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
@@ -122,7 +122,7 @@ export function linksDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkDefaultConstants.DELETE_LINK_DEFAULT_SUCCESS:
+        case SystemLinkConstants.DELETE_LINK_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
             if(index !== -1){

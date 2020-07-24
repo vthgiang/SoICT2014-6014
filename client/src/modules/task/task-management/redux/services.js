@@ -21,215 +21,317 @@ export const taskManagementService = {
     deleteTaskById,
     editStatusOfTask,
     getSubTask,
-
-    editTaskByAccountableEmployees,
-    editTaskByResponsibleEmployees,
-
-    evaluateTaskByAccountableEmployees,
-    evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees,
-
     getTasksByUser,
     getTaskEvaluations,
 };
 
-// get all task
+/**
+ * lấy công việc theo id
+ * @param {*} taskId id công việc
+ */
+function getById(taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
+        method: 'GET',
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * lấy tất cả công việc
+ */
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'all',
+        }
     }, false, true, 'task.task_management');
 }
 
-// get a task by id 
-function getById(id) {
+
+/**
+ * lấy tất cả công việc theo vai trò
+ * @param {*} userId id nhân viên
+ * @param {*} role vai trò nhân viên
+ */
+
+function getAllTaskByRole(userId, roleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/${id}`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'get_all_task_created_by_user',
+            userId: userId,
+            roleId: roleId,
+        }
     }, false, true, 'task.task_management');
 }
 
-// get all task by Role
-function getAllTaskByRole(id, role) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/role/${id}/${role}`,
-        method: 'GET',
-    }, false, true, 'task.task_management');
-}
 
-// get all task by Role
+/**
+ * lấy công việc theo người thực hiện
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) {//param -- user,
     var user = getStorage("userId");
 
-    return sendRequest({//user = localStorage.getItem('id')
-        url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}/${startDateAfter}/${endDateBefore}`,
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
-
+        params: {
+            type: 'responsible',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+            startDateAfter: startDateAfter,
+            endDateBefore: endDateBefore,
+        }
     }, false, true, 'task.task_management');
 }
 
-// get all task by Role
+
+/**
+ * lấy công việc theo người phê duyệt
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'accountable',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, true, 'task.task_management');
 }
 
-// get all task by Role
+
+/**
+ * lấy công việc theo người hỗ trợ
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'consulted',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, true, 'task.task_management');
 }
 
-// get all task by Role
+
+/**
+ * lấy công việc theo người quan sát
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'informed',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, true, 'task.task_management');
 }
 
-// get all task by Role
+
+/**
+ * lấy công việc theo người tạo
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
 function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
+        params: {
+            type: 'creator',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, true, 'task.task_management');
 }
 
-// add new task
+/**
+ * thêm công việc mới
+ * @param {*} newTask công việc mới 
+ */
+
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/create`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
 }
 
-// edit a task
-function editTask(id, newTask) {
+/**
+ * chỉnh sửa công việc
+ * @param {*} id id công việc
+ * @param {*} newTask công việc mới sau khi sửa
+ */
+
+function editTask(taskId, newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/${id}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
         method: 'PUT',
         data: newTask
     }, true, true, 'task.task_management');
 }
 
-// delete a task
-function deleteTaskById(id) {
+/**
+ * xóa công việc theo id
+ * @param {*} id id công việc 
+ */
+
+function deleteTaskById(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/${id}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
         method: 'DELETE',
     }, true, true, 'task.task_management');
 }
 
 /**
  * edit status of task
- * @param {*} id id cua task
+ * @param {*} taskId id cua task
  * @param {*} status trang thai muon cap nhat
  */
-function editStatusOfTask(id, status) {
+function editStatusOfTask(taskId, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/${id}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
         method: 'PATCH',
         data: status,
     }, false, true, 'task.task_management');
 }
 
-// Chỉnh sửa lưu kho của công việc
-function editArchivedOfTask(id) {
+/**
+ * chỉnh sửa trạng thái lưu kho
+ * @param {*} taskId id công việc
+ */
+
+function editArchivedOfTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/archived/${id}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/archived`,
         method: 'PATCH',
     }, false, true, 'task.task_management');
 }
 
+/**
+ * lấy công việc con
+ * @param {*} taskId id công việc cha
+ */
+
 function getSubTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/sub-task/${taskId}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-task`,
         method: 'GET'
     }, false, true, 'task.task_management');
 }
 
 /**
- * edit Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
+ * lấy công việc theo người dùng
  */
-function editTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/edit/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * edit Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function editTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/edit/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/evaluate/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Consulted Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByConsultedEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/evaluate/task-consulted/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks/evaluate/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
 function getTasksByUser() {
     var id = getStorage("userId")
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasks`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'GET',
-        params: { userId: id }
+        params: { userId: id, type: 'all' }
     }, false, true, 'task.task_management');
 }
 

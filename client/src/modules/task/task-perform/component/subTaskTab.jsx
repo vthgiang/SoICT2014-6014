@@ -8,7 +8,7 @@ import qs from 'qs';
 class SubTaskTab extends Component {
     constructor(props) {
         super(props);
-        this.state = this.props;
+        this.state = {};
     }
     
     componentDidMount = () => {
@@ -56,7 +56,7 @@ class SubTaskTab extends Component {
                     )
                 })}
 
-                {subtasks && subtasks.length==0 && <dt>Không có công việc con</dt>}
+                {subtasks && subtasks.length==0 && <dt>{translate("task.task_perform.none_subtask")}</dt>}
             </div>
         )
     }

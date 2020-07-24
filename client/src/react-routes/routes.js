@@ -19,10 +19,10 @@ import Home from '../modules/home/components';
 
 import { Notifications } from "../modules/combine-modules";
 
-import System from '../modules/system-admin/log/components';
-import Company from '../modules/system-admin/company/components';
-import LinksDefaultManagement from '../modules/system-admin/system-link/components';
-import RolesDefaultManagement from '../modules/system-admin/root-role/components';
+import { LogSystem } from '../modules/system-admin/log/components';
+import { Company } from '../modules/system-admin/company/components';
+import { ManageLinkSystem } from '../modules/system-admin/system-link/components';
+import ManageRoleDefault from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
 import ManageUser from '../modules/super-admin/user/components';
@@ -56,7 +56,7 @@ import {KPIPersonalManager} from "../modules/kpi/employee/management/component/e
 import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
-import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
+import {EmployeeKpiManagement} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
 import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 
@@ -104,10 +104,10 @@ class Routes extends Component {
                         path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ System }
+                        component={ LogSystem }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.rolesDefault.isLoading }
+                        isLoading={ this.props.rootRoles.isLoading }
                         key={ 'manage_roles_default' }
                         arrPage={[
                             { link: '/system/roles-default-management', name:'manage_role', icon: 'fa fa-lock'}
@@ -118,10 +118,10 @@ class Routes extends Component {
                         path={ '/system/roles-default-management' }
                         pageName={ 'manage_role' }
                         layout={ Layout }
-                        component={ RolesDefaultManagement }
+                        component={ ManageRoleDefault }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.linksDefault.isLoading }
+                        isLoading={ this.props.systemLinks.isLoading }
                         key={ 'manage_links_default' }
                         arrPage={[
                             { link: '/system/links-default-management', name:'manage_link', icon: 'fa fa-link'}
@@ -132,10 +132,10 @@ class Routes extends Component {
                         path={ '/system/links-default-management' }
                         pageName={ 'manage_link' }
                         layout={ Layout }
-                        component={ LinksDefaultManagement }
+                        component={ ManageLinkSystem }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.componentsDefault.isLoading }
+                        isLoading={ this.props.systemComponents.isLoading }
                         key={ 'manage_components_default' }
                         arrPage={[
                             { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}
@@ -646,7 +646,7 @@ class Routes extends Component {
                         path={ '/kpi-member/manager' }
                         pageName= "kpi_member_manager"
                         layout={ Layout }
-                        component={ KPIMember }
+                        component={ EmployeeKpiManagement }
                     />
                     <PrivateRoute 
                         isLoading={ false }

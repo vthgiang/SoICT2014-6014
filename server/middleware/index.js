@@ -131,7 +131,7 @@ exports.authFunc = (checkPage = true) => {
 
             }
 
-            // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
+
             next();
 
         } catch (error) {
@@ -142,7 +142,6 @@ exports.authFunc = (checkPage = true) => {
         }
     }
 }
-
 exports.auth = this.authFunc();
 
 

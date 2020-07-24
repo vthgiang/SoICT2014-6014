@@ -9,7 +9,10 @@ export const DashboardEvaluationEmployeeKpiSetAction = {
     getChildrenOfOrganizationalUnitsAsTree
 };
 
-// Lấy tất cả KPI cá nhân theo role
+/**
+ * Lấy tất cả KPI cá nhân theo role
+ * @param {*} role 
+ */
 function getAllEmployeeKpiSetOfUnitByRole(role) {
     return dispatch => {
         dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST});
@@ -30,7 +33,10 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
     };
 }
 
-// Lấy tất cả nhân viên của đơn vị theo role
+/**
+ * Lấy tất cả nhân viên của đơn vị theo role
+ * @param {*} role 
+ */
 function getAllEmployeeOfUnitByRole(role) {
     return dispatch => {
         dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST});
@@ -51,7 +57,10 @@ function getAllEmployeeOfUnitByRole(role) {
     };
 }
 
-// Lấy tất cả KPI cá nhân theo mảng id đơn vị
+/**
+ * Lấy tất cả KPI cá nhân theo mảng id đơn vị
+ * @param {*} ids 
+ */
 function getAllEmployeeKpiSetOfUnitByIds(ids) {
     return dispatch => {
         dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST});
@@ -72,7 +81,10 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
     };
 }
 
-// Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
+/**
+ * Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
+ * @param {*} ids 
+ */
 function getAllEmployeeOfUnitByIds(ids) {
     return dispatch => {
         dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST});
@@ -92,9 +104,10 @@ function getAllEmployeeOfUnitByIds(ids) {
             })
     };
 }
-
-
-// Lấy các đơn vị con của một đơn vị và đơn vị đó
+/**
+ * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @param {*} role 
+ */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return dispatch => {
         dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST});

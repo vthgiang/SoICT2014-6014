@@ -8,17 +8,15 @@ exports.getAllComponents = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
-        
+    if (!page && limit){
         return await Component
-            .find({ company})
+            .find({ company })
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
             ]);
-
-    }else{
-        const option = (query.key !== undefined && query.value !== undefined)
+    } else{
+        const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
         console.log("option: ", option);
@@ -39,7 +37,6 @@ exports.getAllComponents = async (company, query) => {
  * @id id component
  */
 exports.getComponent = async (id) => {
-
     return await Component
         .findById(id)
         .populate([
@@ -54,7 +51,10 @@ exports.getComponent = async (id) => {
  */
 exports.createComponent = async(data) => {
     const check = await Component.findOne({name: data.name});
-    if(check !== null) throw ['component_name_exist'];
+
+    if(check) {
+        throw ['component_name_exist'];
+    }
 
     return await Component.create({
         name: data.name,
@@ -92,7 +92,7 @@ exports.deleteComponent = async(id) => {
         resourceId: id,
         resourceType: 'Component'
     });
-    const deleteComponent = await Component.deleteOne({ _id: id});
+    const deleteComponent = await Component.deleteOne({ _id: id });
 
     return {relationshiopDelete, deleteComponent};
 }
@@ -107,6 +107,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceId: componentId,
         resourceType: 'Component'
     });
+
     const data = roleArr.map( role => {
         return {
             resourceId: componentId,
@@ -114,6 +115,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
             roleId: role
         };
     });
+
     const privilege = await Privilege.insertMany(data);
 
     return privilege;
@@ -125,7 +127,6 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
  * @linkId id của trang user muốn lấy
  */
 exports.getComponentsOfUserInLink = async(roleId, linkId) => {
-
     const role = await Role.findById(roleId);
     let roleArr = [role._id];
     roleArr = roleArr.concat(role.parents);
@@ -136,12 +137,12 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
         ]);
         
     const data = await Privilege.find({
-        roleId: {$in: roleArr},
+        roleId: { $in: roleArr },
         resourceType: 'Component',
         resourceId: { $in: link.components }
     }).distinct('resourceId');
 
-    const components = await Component.find({_id: {$in: data}});
+    const components = await Component.find({ _id: { $in: data } });
 
     return components;
 }

@@ -30,9 +30,34 @@ class CreateForm extends Component {
     handleParent = (value) => {
         this.setState({ domainParent: value[0] });
     };
+    validateName = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(value === '')
+            msg = translate('document.no_blank_name');
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    handleValidateName = (e)=>{
+        const value = e.target.value.trim();
+        this.validateName(value, true);
+    }
+    
+    isValidateForm = ()=>{
+        return this.validateName(this.state.documentName, false);
+    }
 
     save = () => {
         const {documentName, documentDescription, domainParent} = this.state;
+        console.log(domainParent);
         this.props.createDocumentDomain({
             name: documentName,
             description: documentDescription,
@@ -40,11 +65,18 @@ class CreateForm extends Component {
         });
     }
 
+    // shouldComponentUpdate(nextProps, nextState){
+    //     if(nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined)
+    // }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined) {
+            console.log(nextProps, prevState);
+            let dm = [];
+            dm.push(prevState.domainParent);
             return {
                 ...prevState,
-                domainParent: nextProps.domainParent
+                domainParent: dm,
             } 
         } else {
             return null;
@@ -54,7 +86,7 @@ class CreateForm extends Component {
     render() {
         const {translate, documents}=this.props;
         const {tree, list} = documents.administration.domains;
-        const {domainParent} = this.state;
+        const {domainParent, errorName} = this.state;
       
         return ( 
             <React.Fragment>
@@ -62,12 +94,14 @@ class CreateForm extends Component {
                     modalID="modal-create-document-domain"
                     formID="form-create-document-domain"
                     title={translate('document.administration.domains.add')}
+                    disableSubmit = {!this.isValidateForm()}
                     func={this.save}
                 >
                     <form id="form-create-document-domain">
-                            <div className="form-group">
+                            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
                             <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleName}/>
+                            <input type="text" className="form-control" onChange={this.handleValidateName}/>
+                            <ErrorLabel content ={errorName}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.parent') }</label>

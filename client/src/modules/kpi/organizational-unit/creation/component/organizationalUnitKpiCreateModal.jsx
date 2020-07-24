@@ -32,7 +32,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
     handleSubmit = async () => {
         const { translate } = this.props;
 
-        var d = new Date(),
+        let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -45,7 +45,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
             day = '0' + day;
         }
             
-        var defaultTime =  [month, year].join('-');
+        let defaultTime =  [month, year].join('-');
 
         if(this.state.organizationalUnitKpi.date === ""){
             await this.setState(state => {
@@ -68,7 +68,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                 }
             }
         })
-        var { organizationalUnitKpi } = this.state;
+        let { organizationalUnitKpi } = this.state;
         
         if (organizationalUnitKpi.organizationalUnit && organizationalUnitKpi.date) {            
             this.props.addKPIUnit(organizationalUnitKpi);
@@ -82,7 +82,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
         const { organizationalUnit } = this.props;
         const { translate } = this.props; // Hàm để chuyển sang song ngữ
 
-        var d = new Date(),
+        let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -95,7 +95,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
             day = '0' + day;
         }
 
-        var defaultTime =  [month, year].join('-');
+        let defaultTime =  [month, year].join('-');
 
         return (
             <React.Fragment>
