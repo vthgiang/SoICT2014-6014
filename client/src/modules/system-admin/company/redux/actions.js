@@ -43,7 +43,7 @@ function getAllCompanies(data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST });
 
-            CompanyServices.get(data)
+            CompanyServices.getAllCompanies(data)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPANIES_PAGINATE_SUCCESS,
@@ -247,7 +247,7 @@ function getCompanyLinks(companyId, data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST });
 
-            CompanyServices.linksList(companyId, data)
+            CompanyServices.getCompanyLinks(companyId, data)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS,
@@ -291,7 +291,7 @@ function getCompanyComponents(companyId, data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST });
 
-            CompanyServices.componentsList(companyId, data)
+            CompanyServices.getCompanyComponents(companyId, data)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS,

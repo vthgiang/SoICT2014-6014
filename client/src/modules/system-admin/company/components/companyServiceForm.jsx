@@ -190,7 +190,7 @@ class CompanyServicesForm extends Component {
             <React.Fragment>
                 <DialogModal
                     modalID="modal-edit-services-company" size="75"
-                    formID="form-edit-services-company" isLoading={this.props.company.isLoading}
+                    formID="form-edit-services-company" isLoading={company.isLoading}
                     title={translate('manage_company.service')}
                     msg_success={translate('manage_company.add_success')}
                     msg_faile={translate('manage_company.add_faile')}
