@@ -49,16 +49,8 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 
 
-router.patch('/tasks/:taskId/edit', auth, PerformTaskController.editTask);
+router.patch('/tasks/:taskId', auth, PerformTaskController.editTask);
 router.patch('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
-
-
-// router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
-// router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);
-
-// router.patch('/evaluate/task-consulted/:id', auth, PerformTaskController.evaluateTaskByConsultedEmployees);
-// router.patch('/evaluate/task-responsible/:id', auth, PerformTaskController.evaluateTaskByResponsibleEmployees);
-// router.patch('/evaluate/task-accountable/:id', auth, PerformTaskController.evaluateTaskByAccountableEmployees);
 
 
 module.exports = router;

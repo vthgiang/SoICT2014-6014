@@ -6,7 +6,7 @@ export const LinkServices = {
     show,
     create,
     edit,
-    destroy
+    destroy,
 };
 
 function get(params) {

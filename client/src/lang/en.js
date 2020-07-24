@@ -103,6 +103,7 @@ export default {
             search: 'Search',
             add: 'Add',
             edit: 'Edit',
+            delete: 'Delete',
             save: 'Save',
             close: 'Close',
             accept: 'Accept',
@@ -623,7 +624,7 @@ export default {
             taskmanagement: 'Task Management',
             manageDocument: 'Manage Document',
             manageDocumentType: 'Manage Document Type',
-            
+
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
@@ -1431,7 +1432,7 @@ export default {
             add: 'Add new',
             confirm: 'Confirm',
             confirm_title: 'Are you sure you want to delete this task template?',
-            error_title: 'This work template cannot be deleted because it is already in use.',
+            error_title: 'This work template cannot be deleted because itedirt is already in use.',
             name: 'Template name',
             unit: 'Unit',
             tasktemplate_name: 'Task template name',
@@ -1459,7 +1460,10 @@ export default {
             text: 'Text',
             number: 'Number',
             date: 'Date',
-            value_set: 'Value set'
+            value_set: 'Value set',
+            view_detail_of_this_task_template: 'View detail of this task',
+            edit_this_task_template: 'Edit this task template',
+            delete_this_task_template: 'Delete this task template',
         },
 
         task: {
@@ -1520,13 +1524,13 @@ export default {
 
                 search: "Search",
 
-                
+
                 from: 'From',
                 to: 'To',
                 prev: 'Prev',
-                next:'Next',
-                tasks_calendar:'Tasks Calendar',
-                model_detail_task_title:'Detail task',
+                next: 'Next',
+                tasks_calendar: 'Tasks Calendar',
+                model_detail_task_title: 'Detail task',
 
                 col_name: 'Name of task',
                 col_organization: 'Department',
@@ -1566,7 +1570,7 @@ export default {
                 detail_priority: 'Priority',
                 detail_status: 'Status',
                 detail_time: 'Working duration',
-                
+
                 detail_general_info: 'General infomation',
                 detail_description: 'Description',
                 detail_info: 'Task infomation',
@@ -1624,7 +1628,7 @@ export default {
                 edit_inactive_emp: 'Inactive employee information',
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
-                
+
                 add_template: 'Task template',
                 add_template_notice: 'Selected task template',
                 add_parent_task: 'Parent of task',
@@ -1661,13 +1665,14 @@ export default {
                 err_require: 'Field is required',
                 err_date_required: 'Date is required',
                 err_nan: 'The value must be number',
-                
+
                 // mes_notice
                 edit_task_success: 'Edit task success',
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
                 
+                add_new_task: 'Add new task',
                 // add_err: 
                 add_err_empty_unit: 'Unit should not be empty',
                 add_err_empty_name: 'Name should not be empty',
@@ -1712,6 +1717,14 @@ export default {
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
+                stop_timer: "Stop timer",
+
+
+
+
+
+
+
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -1811,6 +1824,7 @@ export default {
                 edit_task_template_fail: 'Edit task template fail !',
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
+                error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
 
             }
         },
@@ -1987,7 +2001,7 @@ export default {
                 },
             },
             evaluation: {
-               
+
                 dashboard: {
                     organizational_unit: 'Unit',
                     select_units: 'Select organizational unit',
@@ -2012,7 +2026,7 @@ export default {
                     approver_eva: 'Evaluated by Approver',
                 },
 
-                employee_evaluation:{
+                employee_evaluation: {
 
                     /**
                      * Approve
@@ -2022,7 +2036,8 @@ export default {
                     end_compare: 'End comparing',
                     compare: 'Compare',
                     approve_all: 'Approve all',
-                    choose_month_cmp: 'Choose month to compare',
+                    choose_month_cmp: 'Choose month',
+                    kpi_this_month: 'KPI this month',
                     search: 'Search',
                     index: 'ID',
                     name: 'Name',
@@ -2073,7 +2088,7 @@ export default {
                      * Management
                      */
                     wrong_time: 'Start time should be earlier than end time',
-                    confirm:'Confirm',
+                    confirm: 'Confirm',
                     choose_employee: 'Choose employee',
                     employee: 'Employee',
                     choose_status: 'Choose status',
@@ -2120,8 +2135,8 @@ export default {
                 get_task_by_id_fail: 'Get all tasks by Id fail',
                 get_system_point_success: 'Get system point successfully',
                 get_system_point_fail: 'Get system point fail',
-                set_point_kpi_success: 'Get point KPI successfully',
-                set_point_kpi_fail: 'Get point KPI fail',
+                set_task_importance_level_success: 'Set task importance level successfully',
+                set_task_importance_level_fail:'Set task importance level fail'
             },
             organizational_unit: {
                 // Module chính
@@ -2268,12 +2283,66 @@ export default {
                         search: 'The start time must be before or equal to the end time!',
                         confirm: 'Confirm'
                     },
-                    statistic_kpi_unit:{
+                    statistic_kpi_unit: {
                         count_employee_same_point: 'Count Employee With The Same Point',
                         automatic_point: 'Automatic point',
                         employee_point: 'Employee point',
                         approved_point: 'Approved point',
 
+                    }
+                },
+
+                management: {
+                    copy_modal: {
+                        alert: {
+                            check_new_date: 'No initialization month selected',
+                            confirm: 'Confirm',
+                            coincide_month: 'KPI already exists on ',
+                            unable_kpi: 'Unable to create new KPI in the past',
+                            change_link: 'Remember to change the link to the parent target to get the new KPI!'
+                        },
+                        create: 'Copy a new KPI from the KPI on ',
+                        organizational_unit: 'Department',
+                        month: 'Month',
+                        list_target: 'List target',
+                    },
+                    detail_modal: {
+                        list_kpi_unit: 'List KPI unit',
+                        title: 'Detailed information KPI unit on ',
+                        information_kpi: 'Information KPI ',
+                        criteria: 'Criteria:',
+                        weight: 'Weight:',
+                        export_file: 'Export file',
+                        point_field: 'Point (Automatic - Employee - Approver)',
+                        list_child_kpi: 'List child KPI',
+                        not_eval: 'Not evaluate',
+                        index: 'Index',
+                        target_name: 'Target Name',
+                        creator: 'Creator',
+                        organization_unit: 'Department',
+                        criteria: 'Criteria',
+                        result: 'Result',
+                        no_data: 'No data'
+                    },
+                    over_view: {
+                        start_date: 'Start date',
+                        end_date: 'End date',
+                        search: 'Search',
+                        status: 'Status',
+                        all_status: 'All status',
+                        setting_up: 'Setting-up',
+                        activated: 'Activated',
+                        time: 'Time',
+                        creator: 'Creator',
+                        number_target: 'Number target',
+                        result: 'Result',
+                        no_data: 'No data',
+                        action: 'Action',
+                        not_eval: 'Not evaluate',
+                        alert_search: {
+                            search: 'The start time must be before or equal to the end time!',
+                            confirm: 'Confirm'
+                        },
                     }
                 },
                 //Thông điệp khác trả về từ server
@@ -2309,15 +2378,15 @@ export default {
             search_by_name: 'Search by name report',
 
             //message trả về từ server
-            
+
             create_report_manager_success: 'Create report success !',
             create_report_manager_faile: 'Create report fail ! ',
-            edit_report_manager_success:'Edit report success !',
-            edit_report_manager_faile:'Edit report fail !',
-            delete_report_manager_success:'Delete report success !',
-            delete_report_manager_faile:'Delete report fail !',
+            edit_report_manager_success: 'Edit report success !',
+            edit_report_manager_faile: 'Edit report fail !',
+            delete_report_manager_success: 'Delete report success !',
+            delete_report_manager_faile: 'Delete report fail !',
         },
-        
+
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

@@ -19,7 +19,7 @@ import Files from 'react-files'
 
 import './actionTab.css';
 
-class  ActionTab extends Component {
+class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
         super(props);
@@ -291,7 +291,7 @@ class  ActionTab extends Component {
 
     //Thêm mới hoạt động
     submitAction = async (taskId) => {
-        var { newAction } = this.state;
+        let { newAction } = this.state;
         const data = new FormData();
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
@@ -300,9 +300,9 @@ class  ActionTab extends Component {
         })
 
         if (newAction.creator && newAction.description) {
+            console.log(newAction.description)
             this.props.addTaskAction(taskId, data);
         }
-
         // Reset state cho việc thêm mới action
         await this.setState(state => {
             return {
@@ -738,6 +738,15 @@ class  ActionTab extends Component {
             this.props.deleteFileChildTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         }
     }
+    pressEnter = (event, taskId) => {
+        let code = event.keyCode || event.which;
+        if (code === 13 && !event.shiftKey) {
+            this.submitAction(taskId)
+        }
+        if (code == 13 && !event.shiftKey) {
+            event.preventDefault();
+        }
+    }
     render() {
         const { role } = this.props;
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
@@ -797,7 +806,15 @@ class  ActionTab extends Component {
                                                         {item.creator ?
                                                             <a style={{ cursor: "pointer" }}>{item.creator.name} </a> :
                                                             item.name && <b>{item.name} </b>}
-                                                        {item.description}
+                                                        {item.description.split('\n').map((item, idx) => {
+                                                            return (
+                                                                <span key={idx}>
+                                                                    {item}
+                                                                    <br />
+                                                                </span>
+                                                            );
+                                                        })
+                                                        }
                                                         {(role === 'responsible' && item.creator) &&
                                                             <div className="btn-group pull-right">
                                                                 <span data-toggle="dropdown">
@@ -973,7 +990,14 @@ class  ActionTab extends Component {
                                                                 <div>
                                                                     <div className="content-level2">
                                                                         <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
-                                                                        {child.description}
+                                                                        {child.description.split('\n').map((item, idx) => {
+                                                                            return (
+                                                                                <span key={idx}>
+                                                                                    {item}
+                                                                                    <br />
+                                                                                </span>
+                                                                            );
+                                                                        })}
 
                                                                         {child.creator._id === currentUser &&
                                                                             <div className="btn-group pull-right">
@@ -1016,8 +1040,8 @@ class  ActionTab extends Component {
                                                                             files={newCommentOfActionEdited.files}
                                                                             defaultValue={child.description}
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
-                                                                            submitButtonText={"Gửi chỉnh sửa"}
-                                                                            cancelButtonText={"Hủy bỏ"}
+                                                                            submitButtonText={translate("task.task_perform.save_edit")}
+                                                                            cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditActionComment(e)}
                                                                             onTextChange={(e) => {
                                                                                 let value = e.target.value;
@@ -1072,8 +1096,9 @@ class  ActionTab extends Component {
                                                             submitButtonText={translate("task.task_perform.create_comment_action")}
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
+                                                                console.log(value);
                                                                 this.setState(state => {
-                                                                    return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: value } }
+                                                                    return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: `${value}` } }
                                                                 })
                                                             }}
                                                             onSubmit={(e) => { this.submitComment(item._id, task._id) }}
@@ -1096,6 +1121,7 @@ class  ActionTab extends Component {
                                         text={newAction.description}
                                         placeholder={translate("task.task_perform.enter_action")}
                                         submitButtonText={translate("task.task_perform.create_action")}
+                                        //onKeyPress = {this.pressEnter}
                                         onTextChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
@@ -1109,16 +1135,23 @@ class  ActionTab extends Component {
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
-                                taskComments.map((item,key) => {
+                                taskComments.map((item, key) => {
                                     return (
-                                        <div className="clearfix" key = {key}>
+                                        <div className="clearfix" key={key}>
                                             <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
 
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
                                                         <a style={{ cursor: "pointer" }}>{item.creator.name} </a>
-                                                        {item.description}
+                                                        {item.description.split('\n').map((item, idx) => {
+                                                            return (
+                                                                <span key={idx}>
+                                                                    {item}
+                                                                    <br />
+                                                                </span>
+                                                            );
+                                                        })}
                                                         {item.creator._id === currentUser &&
                                                             <div className="btn-group pull-right">
                                                                 <span data-toggle="dropdown">
@@ -1210,7 +1243,14 @@ class  ActionTab extends Component {
                                                                 <div>
                                                                     <div className="content-level2">
                                                                         <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
-                                                                        {child.description}
+                                                                        {child.description.split('\n').map((item, idx) => {
+                                                                            return (
+                                                                                <span key={idx}>
+                                                                                    {item}
+                                                                                    <br />
+                                                                                </span>
+                                                                            );
+                                                                        })}
 
                                                                         {child.creator._id === currentUser &&
                                                                             <div className="btn-group pull-right">
@@ -1252,8 +1292,8 @@ class  ActionTab extends Component {
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             files={newCommentOfTaskCommentEdited.files}
                                                                             defaultValue={child.description}
-                                                                            submitButtonText={"Gửi chỉnh sửa"}
-                                                                            cancelButtonText={"Hủy bỏ"}
+                                                                            submitButtonText={translate("task.task_perform.save_edit")}
+                                                                            cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditCommentOfTaskComment(e)}
                                                                             onTextChange={(e) => {
                                                                                 let value = e.target.value;
@@ -1347,7 +1387,7 @@ class  ActionTab extends Component {
                                 {files &&
                                     files.map((item, index) => {
                                         return (
-                                            <div style={{ marginBottom: 20 }}>
+                                            <div style={{ marginBottom: 20 }} key={index}>
                                                 <div><strong>{item.creator.name} - </strong>{item.description}</div>
                                                 <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, item.url, item.name)} >{item.name}</a>
                                             </div>

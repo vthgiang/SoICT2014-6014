@@ -22,6 +22,7 @@ export const taskManagementService = {
     editStatusOfTask,
     getSubTask,
     getTasksByUser,
+    getTaskEvaluations,
 };
 
 /**
@@ -252,7 +253,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/create`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
@@ -334,4 +335,13 @@ function getTasksByUser() {
     }, false, true, 'task.task_management');
 }
 
+
+function getTaskEvaluations(data) {
+    console.log('printData::::', data)
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/get-task/evaluations`,
+        method: 'GET',
+        params: data,
+    }, false, true, 'task.task_management');
+}
 

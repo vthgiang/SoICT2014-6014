@@ -20,13 +20,6 @@ import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper
 
 var translate = '';
 class CreateEmployeeKpiSet extends Component {
-    componentDidMount() {
-        this.props.getDepartment();
-        this.props.getEmployeeKpiSet()
-        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    }
-
     constructor(props) {
         super(props);
         var idUser = getStorage("userId");
@@ -60,6 +53,12 @@ class CreateEmployeeKpiSet extends Component {
             }
         };
     }
+    componentDidMount() {
+        this.props.getDepartment();
+        this.props.getEmployeeKpiSet()
+        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+    }
 
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user } = this.props;
@@ -82,7 +81,6 @@ class CreateEmployeeKpiSet extends Component {
                 }
             }
         }
-
         return true;
     }
 

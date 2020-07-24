@@ -225,7 +225,7 @@ class EmployeeKpiApproveModal extends Component {
                             <div>
                                 <div className="form-inline">
                                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                        <label style={{ width: "140px" }}>{translate('kpi.evaluation.employee_evaluation.choose_mpnth_cmp')}</label>
+                                        <label style={{ minWidth : "160px", marginLeft: "-40px" }}>{translate('kpi.evaluation.employee_evaluation.choose_month_cmp')}</label>
                                         <DatePicker
                                             id="create_date"
                                             dateFormat="month-year"
@@ -252,7 +252,7 @@ class EmployeeKpiApproveModal extends Component {
                                     <tbody >
                                         {kpimembercmp ?
                                             kpimembercmp.kpis.map((item, index) =>
-                                                <tr >
+                                                <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{item ? item.name : "Deleted"}</td>
                                                     <td>{item.parent ? item.parent.name : "Deleted"}</td>
@@ -268,6 +268,7 @@ class EmployeeKpiApproveModal extends Component {
                         }
                         <br></br>
                         <br></br>
+                        <label>{translate('kpi.evaluation.employee_evaluation.kpi_this_month')}</label>
                         {this.state.checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
@@ -300,7 +301,7 @@ class EmployeeKpiApproveModal extends Component {
                             </thead>
                             <tbody>
                                 {kpimember && kpimember.kpis.map((item, index) =>
-                                    <tr >
+                                    <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{item ? item.name : "Deleted"}</td>
                                         <td>{item.parent ? item.parent.name : "Deleted"}</td>

@@ -35,22 +35,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         }
     }
 
-    componentDidMount = () => {
-
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-
-    }
-
-    static getDerivedStateFromProps = (nextProps, prevState) => {
-
-    }
-
-    setDataMultiLineChart = () => {
-
-    }
-
     /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if (Number(value) !== this.state.kindOfPoint) {

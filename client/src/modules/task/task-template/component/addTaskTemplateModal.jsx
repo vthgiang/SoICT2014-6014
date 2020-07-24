@@ -7,10 +7,8 @@ import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import {InformationForm} from '../component/informationsTemplate';
 import {ActionForm} from '../component/actionsTemplate';
-
 import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
-
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
 class ModalAddTaskTemplate extends Component {
