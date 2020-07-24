@@ -37,7 +37,7 @@ exports.getTaskEvaluations = async (data) => {
         accountable = data.accountableEmployees.toString();
     }
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
-
+    console.log(taskStatus)
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
@@ -69,48 +69,32 @@ exports.getTaskEvaluations = async (data) => {
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-
+        { $unwind: "$responsibleEmployees" },
+        { $unwind: "$accountableEmployees" },
+        { $unwind: "$evaluations" },
+        {
+            $replaceRoot: {
+                newRoot: {
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
+                    { accountableEmployees: "$accountableEmployees" },
+                    { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                }
+            }
+        },
     ];
 
-    // if ()
     // nếu không lọc theo người thực hiện và người phê duyệt
     if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
         condition = [
-            ...condition,
             { $match: { status: taskStatus } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            },
+            ...condition,
             filterDate
         ]
 
     } else {
         condition = [
-            ...condition,
             { $match: { status: taskStatus } },
-            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            },
+            ...condition,
             filterDate
         ]
     }
@@ -119,23 +103,8 @@ exports.getTaskEvaluations = async (data) => {
     let condition2;
     if (calulator === 0) {
         condition2 = [
-            ...condition,
             { $match: { status: taskStatus } },
-
-            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            },
+            ...condition,
             filterDate,
             { $unwind: "$taskInformations" },
             {
@@ -149,11 +118,8 @@ exports.getTaskEvaluations = async (data) => {
                 }
 
             },
-
         ]
     }
-
-
     let result2 = await Task.aggregate(condition2);
     return { result, result2 };
 }
