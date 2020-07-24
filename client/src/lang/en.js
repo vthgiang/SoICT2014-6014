@@ -108,8 +108,10 @@ export default {
             close: 'Close',
             accept: 'Accept',
             cancel: 'Cancel',
+            status: 'Status',
             yes: 'Yes',
             no: 'No',
+            month:'Month',
             loading: 'Loading',
             no_data: 'No data',
             success: 'Successfully',
@@ -1854,9 +1856,13 @@ export default {
                             not_satisfied: 'Not satisfied',
                             satisfied: 'Satisfied'
                         },
+                        satisfied: 'Satisfied',
+                        not_satisfied: 'Not Satisfied',
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
+                        not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit', 
+                        not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -2024,6 +2030,8 @@ export default {
                     auto_eva: 'Evaluated automatically',
                     employee_eva: 'Evaluated by Employee',
                     approver_eva: 'Evaluated by Approver',
+                    result_kpi_personal:'Personal KPI result',
+                    distribution_kpi_personal: 'Distribution of KPI personal'
                 },
 
                 employee_evaluation: {
@@ -2039,12 +2047,20 @@ export default {
                     choose_month_cmp: 'Choose month',
                     kpi_this_month: 'KPI this month',
                     search: 'Search',
+                    number_of_targets:'Number of targets',
+                    system_evaluate: 'System evaluate',
+                    result_self_evaluate: 'Result self evaluate',
+                    evaluation_management: 'Evaluation management',
+                    not_evaluated_yet: 'Not evaluated yet',
+                    view_detail: 'View detail',
+                    clone_to_new_kpi: 'Create new kpi based on kpi in this month',
                     index: 'ID',
                     name: 'Name',
                     target: 'Kpi unit',
                     criteria: 'Criteria',
                     weight: 'Weight',
                     result: 'Result',
+                    target : 'targets',
                     data_not_found: 'There is no satisfied result',
                     unsuitable_weight: 'Unsuitable weight',
                     status: 'Status',
@@ -2074,6 +2090,7 @@ export default {
                     KPI_info: 'Infomation of ',
                     point_field: 'Point (Automatic - Employee - Approver)',
                     not_avaiable: 'Not evaluated',
+                    no_point: 'No Point',
                     lastest_evaluation: 'Lastest evaluation',
                     task_list: 'Task list',
                     work_duration_time: 'Working duration time',
@@ -2081,6 +2098,7 @@ export default {
                     contribution: 'Contribution',
                     importance_level: 'Importance level',
                     point: 'Point',
+                    evaluated_value:'Evaluate value',
                     new_value: 'New value',
                     old_value: 'Old value',
                     auto_value: 'Auto value',
@@ -2305,6 +2323,8 @@ export default {
                         organizational_unit: 'Department',
                         month: 'Month',
                         list_target: 'List target',
+                        setting: 'Constitute',
+                        cancel: 'Cancel'
                     },
                     detail_modal: {
                         list_kpi_unit: 'List KPI unit',

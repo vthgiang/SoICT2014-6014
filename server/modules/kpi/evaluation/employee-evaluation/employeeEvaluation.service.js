@@ -89,7 +89,7 @@ exports.getKPIAllMember = async (data) => {
 
 /**
  * Lấy tất cả KPI cá nhân theo người thiết lập
- * @param {*} creatorID 
+ * @param {*} creatorID : id của người thiết lập
  */
 exports.getKpiByCreator = async (creatorID) => {
 
@@ -102,7 +102,8 @@ exports.getKpiByCreator = async (creatorID) => {
 
 /**
  * Lấy tất cả kpi cá nhân theo tháng
- * @param {*} data 
+ * @param {*} data.userId : id người tạo
+ * @param {*} date :  tháng
  */
 exports.getKpiByMonth = async (data, query) => {
     let date = query.date.split("-");
@@ -115,7 +116,8 @@ exports.getKpiByMonth = async (data, query) => {
 
 /**
  * Phê duyệt tất cả các mục tiêu
- * @param {*} id 
+ * @param {*} kpiId id của kpi cha
+ * 
  */
 exports.approveAllTarget = async (kpiId) => {
     let kpipersonal = await KPIPersonal.findByIdAndUpdate(kpiId, { $set: { status: 2 } }, { new: true });
@@ -135,10 +137,10 @@ exports.approveAllTarget = async (kpiId) => {
 
 /**
  * Phê duyệt từng mục tiêu
- * @param {*} data 
+ * @param {*} data.kpiId: id của kpi con
+ * @param {*} status: trạng thái
  */
 exports.editStatusTarget = async (data, query) => {
-
     let target = await DetailKPIPersonal.findByIdAndUpdate(data.kpiId, { $set: { status: query.status } }, { new: true });
     let kpipersonal = await KPIPersonal.findOne({ kpis: { $in: data.kpiId } }).populate("kpis");
     let kpis = kpipersonal.kpis;
@@ -162,7 +164,7 @@ exports.editStatusTarget = async (data, query) => {
 
 /**
  * Chỉnh sửa mục tiêu của KPI cá nhân
- * @param {*} id 
+ * @param {*} kpiId id kpi con
  * @param {*} data 
  */
 exports.editTarget = async (kpiId, data) => {
@@ -178,7 +180,7 @@ exports.editTarget = async (kpiId, data) => {
 
 /**
  * Lấy kpi cá nhân theo id
- * @param {*} id 
+ * @param {*} kpiId id của kpi con
  */
 exports.getKpiByEmployeeKpiId = async (kpiId) => {
     let kpipersonal = await KPIPersonal.findById(kpiId)
@@ -216,7 +218,7 @@ exports.getTaskByKpiId = async (data) => {
 }
 /**
  * Lấy điểm hệ thống
- * @param {*} id 
+ * @param {*} kpiId : id kpi con
  */
 exports.getSystemPoint = async (kpiId) => {
     let task = await Task.find({ kpi: kpiId })
@@ -236,7 +238,7 @@ exports.getSystemPoint = async (kpiId) => {
 
 /**
  * Chấm điểm độ quan trọng của công việc
- * @param {*} id 
+ * @param {*} kpiId id kpi con
  * @param {*} kpiType 
  * @param {*} data 
  */

@@ -6,19 +6,16 @@ const arrayToTree = require('array-to-tree');
  * @role id của role
  */
 exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
-
-    var organizationalUnit = await OrganizationalUnit.findOne({
+    let organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
             {'deans': { $in: role }}, 
             {'viceDeans':{ $in: role }}, 
             {'employees':{ $in: role }}
         ]
     });
-
-    var employeekpis = await EmployeeKpiSet.find({
+    let employeekpis = await EmployeeKpiSet.find({
         organizationalUnit: organizationalUnit._id
     }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-
     return employeekpis;
 }
 
@@ -27,16 +24,14 @@ exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
  * @role id của role
  */
 exports.getAllEmployeeOfUnitByRole = async (role) => {
-        var organizationalUnit = await OrganizationalUnit.findOne({
+        let organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
                 {'deans': { $in: role }}, 
                 {'viceDeans':{ $in: role }}, 
                 {'employees':{ $in: role }}
             ]
         });
-
-        var employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
-        
+        let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
         return employees;
 }
 
@@ -44,18 +39,14 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
  * Lấy tất cả KPI của nhân viên theo mảng id đơn vị
  * @id Mảng id các đơn vị
  */
-exports.getAllEmployeeKpiSetOfUnitByIds = async (id) => {
-    var data = [];
-    
-    for(var i = 0; i < id.length; i++) {
-        var employeekpis = await EmployeeKpiSet.find({
-            organizationalUnit: id[i]
+exports.getAllEmployeeKpiSetOfUnitByIds = async (ids) => {
+    let data = [];
+    for(let i = 0; i < ids.length; i++) {
+        let employeekpis = await EmployeeKpiSet.find({
+            organizationalUnit: ids[i]
         }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-
         data = data.concat(employeekpis);
-        
     };
-       
     return data;
 }
 
@@ -64,13 +55,11 @@ exports.getAllEmployeeKpiSetOfUnitByIds = async (id) => {
  * @id Mảng id các đơn vị
  */
 exports.getAllEmployeeOfUnitByIds = async (id) => {
-    var data = [];
+    let data = [];
 
-    for(var i = 0; i < id.length; i++) {
-        var organizationalUnit = await OrganizationalUnit.findById(id[i]);
-
-        var employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
-
+    for(let i = 0; i < id.length; i++) {
+        let organizationalUnit = await OrganizationalUnit.findById(id[i]);
+        let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
         data = data.concat(employees);
     };
     
@@ -83,14 +72,13 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
  * @role Id của role ứng với đơn vị cần lấy đơn vị con
  */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
-    var organizationalUnit = await OrganizationalUnit.findOne({
+    let organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
             {'deans': { $in: role }}, 
             {'viceDeans':{ $in: role }}, 
             {'employees':{ $in: role }}
         ]
     });
-    
     const data = await OrganizationalUnit.find({ company: id });
     
     const newData = data.map( department => {return {
@@ -105,21 +93,17 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
     });
     
     const tree = await arrayToTree(newData);
-    
-    // BFS tìm các phòng ban con của role hiện tại
-    for(var j = 0; j < tree.length; j++){
-        var queue = [];
+    for(let j = 0; j < tree.length; j++){
+        let queue = [];
         if(organizationalUnit.name === tree[j].name){
             return tree[j];
         }
         queue.push(tree[j]);
-        
         while(queue.length > 0){
             v = queue.shift();
-
             if(v.children !== undefined){
-                for(var i = 0; i < v.children.length; i++){
-                    var u = v.children[i];
+                for(let i = 0; i < v.children.length; i++){
+                    let u = v.children[i];
                     if(organizationalUnit.name === u.name){                        
                         return u;
                     }

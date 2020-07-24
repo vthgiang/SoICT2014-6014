@@ -160,7 +160,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         }
 
         let items;
-        if (parentKPI === undefined) {
+        if (!parentKPI) {
             items = [];
         } else {    
             items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
@@ -180,7 +180,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                 >
                     {/* Form chỉnh sửa tiêu */}
                     <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('kpi.organizational_unit.edit_target_kpi_modal.success'))}>
-                        <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${ !errorOnName ? "" : "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>

@@ -1,86 +1,112 @@
 const { LogInfo, LogError } = require('../../../../logs');
 const DashboardService = require('./dashboard.service');
+const { query } = require('express');
 
-// Lấy tất cả KPI của nhân viên theo vai trò
+/**
+ * Lấy tất cả KPI của nhân viên theo vai trò
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getAllEmployeeKpiSetOfUnitByRole = async (req, res) => {
-    try {
+    if(req.query.ids) {
+        getAllEmployeeKpiSetOfUnitByIds(req, res);
+    }
+    else{
+         try {
         const employeeKpis = await DashboardService.getAllEmployeeKpiSetOfUnitByRole(req.params.role);
-        await LogInfo(req.user.emai, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
+        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_all_kpi_member_success'],
             content: employeeKpis
         });
     } catch (error) {
-        await LogError(req.user.emai, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
+        await LogError(req.user.email, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
         res.status(400).json({
             messages: ['get_all_kpi_member_fail'],
             content: error
         });
     }
+    }
+   
 };
-
-// Lấy tất cả nhân viên theo vai trò
+/**
+ * Lấy tất cả nhân viên theo vai trò
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getAllEmployeeOfUnitByRole = async (req, res) => {
-    try {
-        const employees = await DashboardService.getAllEmployeeOfUnitByRole(req.params.role);
-        await LogInfo(req.user.emai, `GET_ALL_EMPLOYEE`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_employee_success'],
-            content: employees
-        });
-    } catch (error) {
-        await LogError(req.user.emai, `GET_ALL_EMPLOYEE`, req.user.company);
-        res.status(400).json({
-            messages: ['get_all_employee_fail'],
-            content: error
-        });
+    if(req.query.ids) {
+        getAllEmployeeOfUnitByIds(req, res);
+    }
+    else {
+        try {
+                const employees = await DashboardService.getAllEmployeeOfUnitByRole(req.params.role);
+                await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+                res.status(200).json({
+                    success: true,
+                    messages: ['get_all_employee_success'],
+                    content: employees
+                });
+            } catch (error) {
+                await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+                res.status(400).json({
+                    messages: ['get_all_employee_fail'],
+                    content: error
+                });
+            }
     }
 };
-
-
-// Lấy tất cả KPI của nhân viên theo mảng id đơn vị
-exports.getAllEmployeeKpiSetOfUnitByIds = async (req, res) => {
+/**
+ * Lấy tất cả KPI của nhân viên theo mảng id đơn vị
+ * @param {*} req 
+ * @param {*} res 
+ */
+getAllEmployeeKpiSetOfUnitByIds = async (req, res) => {
     try {
-        const employeeKpis = await DashboardService.getAllEmployeeKpiSetOfUnitByIds(req.params.id.split(','));
-        await LogInfo(req.user.emai, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
+        const employeeKpis = await DashboardService.getAllEmployeeKpiSetOfUnitByIds(req.query.ids);
+        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_all_kpi_member_success'],
             content: employeeKpis
         });
     } catch (error) {
-        await LogError(req.user.emai, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
+        await LogError(req.user.email, `GET_ALL_EMPLOYEE_KPI_SET`, req.user.company);
         res.status(400).json({
             messages: ['get_all_kpi_member_fail'],
             content: error
         });
     }
 };
-
-// Lấy tất cả nhân viên theo mảng id đơn vị
-exports.getAllEmployeeOfUnitByIds = async (req, res) => {
+/**
+ *  Lấy tất cả nhân viên theo mảng id đơn vị
+ * @param {*} req 
+ * @param {*} res 
+ */
+getAllEmployeeOfUnitByIds = async (req, res) => {
     try {
-        const employees = await DashboardService.getAllEmployeeOfUnitByIds(req.params.id.split(','));
-        await LogInfo(req.user.emai, `GET_ALL_EMPLOYEE`, req.user.company);
+        console.log(req.query.ids);
+        const employees = await DashboardService.getAllEmployeeOfUnitByIds(req.query.ids);
+        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_success'],
             content: employees
         });
     } catch (error) {
-        await LogError(req.user.emai, `GET_ALL_EMPLOYEE`, req.user.company);
+        await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
         res.status(400).json({
             messages: ['get_all_employee_fail'],
             content: error
         });
     }
 };
-
-
-
-// Lấy các đơn vị con của một đơn vị và đơn vị đó
+/**
+ *  Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
     try {
         var tree = await DashboardService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.params.role);

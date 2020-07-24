@@ -6,11 +6,14 @@ import { ErrorLabel, DatePicker, DialogModal } from '../../../../../common-compo
 import {
     getStorage
 } from '../../../../../config';
+import { withTranslate } from 'react-redux-multilingual';
 
 
+var translate ='';
 class ModalCopyKPIPersonal extends Component {
     constructor(props) {
         super(props);
+        translate=this.props.translate;
         this.state = {
             kpipersonal: {
                 organizationalUnit: "",
@@ -60,11 +63,11 @@ class ModalCopyKPIPersonal extends Component {
         var { kpipersonal } = this.state;
         if (this.state.NewDate == undefined) {
             Swal.fire({
-                title: `Chưa chọn tháng khởi tạo`,
+                title: translate('kpi.organizational_unit.management.copy_modal.alert.check_new_date'),
                 type: 'warning',
                 icon: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             var date = this.state.NewDate.split("-");
@@ -92,20 +95,20 @@ class ModalCopyKPIPersonal extends Component {
             }
             if (check == 0) {
                 Swal.fire({
-                    title: `Đã tồn tại KPI của tháng ${date[0]}-${date[1]} `,
+                    title: `${translate('kpi.organizational_unit.management.copy_modal.alert.coincide_month')} ${date[0]}-${date[1]} `,
                     type: 'warning',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
                 })
             }
             if (check == 2) {
                 Swal.fire({
-                    title: `Tháng đã qua không thể tạo KPI`,
+                    title: translate('kpi.organizational_unit.management.copy_modal.alert.unable_kpi'),
                     type: 'warning',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
                 })
             }
 
@@ -113,10 +116,10 @@ class ModalCopyKPIPersonal extends Component {
                 this.props.copyEmployeeKPI(id, idunit, oldkpipersonal.date, this.state.NewDate);
                 if (kpipersonal.unit && kpipersonal.time) {//&& kpiunit.creater
                     Swal.fire({
-                        title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
+                        title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
                         type: 'warning',
                         confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Xác nhận'
+                        confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
                     });
                 }
             }
@@ -132,17 +135,17 @@ class ModalCopyKPIPersonal extends Component {
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpipersonal._id}`}
-                title={`Thiết lập KPI tháng mới từ KPI tháng ${this.formatDate(kpipersonal.date)}`}
+                title={`${translate('kpi.organizational_unit.management.copy_modal.create')} ${this.formatDate(kpipersonal.date)}`}
                 size={10}
                 func={this.save}
                 closeOnSave={false}
             >
                 <div className="form-group">
-                    <label className="col-sm-5">Đơn vị:</label>
+                    <label className="col-sm-5">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}:</label>
                     <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpipersonal && kpipersonal.organizationalUnit.name}</label>
                 </div>
                 <div className="form-group">
-                    <label className="col-sm-2">Tháng:</label>
+                    <label className="col-sm-2">{translate('kpi.organizational_unit.management.copy_modal.month')}:</label>
                     <DatePicker
                         id="new_date"
                         value={NewDate}
@@ -150,7 +153,7 @@ class ModalCopyKPIPersonal extends Component {
                         dateFormat="month-year"
                     />
                     <div className="form-group" >
-                        <label className="col-sm-12">Danh sách mục tiêu:</label>
+                        <label className="col-sm-12">{translate('kpi.organizational_unit.management.copy_modal.list_target')}:</label>
                         <ul>
                             {typeof kpipersonal !== "undefined" && kpipersonal.kpis.length !== 0 &&
                                 kpipersonal.kpis.map(item => {
@@ -159,11 +162,7 @@ class ModalCopyKPIPersonal extends Component {
                             }
                         </ul>
                     </div>
-                </div>
-                {/* <div className="modal-footer">
-                                <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, kpipersonal, listkpipersonal)}>Thiết lập</button>
-                                <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(kpipersonal._id)}>Hủy bỏ</button>
-                            </div> */}
+                </div>                
             </DialogModal >
         );
     }
@@ -178,5 +177,5 @@ function mapState(state) {
 const actionCreators = {
     copyEmployeeKPI: managerKpiActions.copyEmployeeKPI,
 };
-const connectedModalCopyKPIPersonal = connect(mapState, actionCreators)(ModalCopyKPIPersonal);
+const connectedModalCopyKPIPersonal = connect(mapState, actionCreators)(withTranslate(ModalCopyKPIPersonal));
 export { connectedModalCopyKPIPersonal as ModalCopyKPIPersonal };

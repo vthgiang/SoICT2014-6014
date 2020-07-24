@@ -7,7 +7,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../redux/actions';
-import moment from 'moment'
+import moment from 'moment';
+
 class Comment extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -213,83 +214,86 @@ class Comment extends Component {
     }
     render() {
         var comment
-        var minRows = 3, maxRows = 20
-        const { editComment, editCommentOfComment, showChildComment, currentUser } = this.state
-        const { currentKPI, auth } = this.props
+        var minRows=3, maxRows=20
+        const {editComment,editCommentOfComment,showChildComment,currentUser} = this.state
+        const {currentKPI,auth,translate} = this.props
         comment = currentKPI.comments
         return (
             <React.Fragment>
                 {comment ?
                     comment.map(item => {
                         return (
-                            <div className="clearfix" key={item._id}>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
-                                {editComment !== item._id && // Khi đang edit thì ẩn đi
-                                    <React.Fragment>
-                                        <p className="content-level1">
-                                            <a href="javascript:void(0)">{item.creator.name} </a>
-                                            {item.description.split('\n').map((item, idx) => {
-                                                return (
-                                                    <span key={idx}>
-                                                        {item}
-                                                        <br />
-                                                    </span>
-                                                );
-                                            })}
-                                            {item.creator._id === currentUser &&
-                                                <div className="btn-group pull-right">
-                                                    <span data-toggle="dropdown">
-                                                        <i className="fa fa-ellipsis-h"></i>
-                                                    </span>
-                                                    <ul className="dropdown-menu">
-                                                        <li><a href="javascript:void(0)" onClick={() => this.handleEditComment(item._id)} >Sửa bình luận</a></li>
-                                                        <li><a href="javascript:void(0)" onClick={() => this.props.deleteComment(item._id, currentKPI._id)} >Xóa bình luận</a></li>
-                                                    </ul>
-                                                </div>}
-                                        </p>
-                                        <ul className="list-inline tool-level1">
-                                            <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-
-                                            <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Bình luận ({item.comments.length}) &nbsp;</a></li>
-                                            {item.files.length > 0 &&
-                                                <React.Fragment>
-                                                    <li style={{ display: "inline-table" }}>
-                                                        <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({item.files && item.files.length})</i></b></a> </div></li>
-                                                    {this.state.showfile.some(obj => obj === item._id) &&
-                                                        <li style={{ display: "inline-table" }}>{item.files.map(elem => {
-                                                            return <div><a href="javascript:void(0)" onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
-                                                        })}</li>
-                                                    }
-                                                </React.Fragment>
-                                            }
+                        <div className="clearfix"  key={item._id}>
+                            <img className="user-img-level1" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
+                            { editComment !== item._id && // Khi đang edit thì ẩn đi
+                            <React.Fragment>
+                                <p className="content-level1">
+                                    <a href="javascript:void(0)">{item.creator.name} </a>
+                                    {item.description}
+                                    {item.creator._id === currentUser &&
+                                    <div className="btn-group pull-right">
+                                        <span data-toggle="dropdown">
+                                            <i className="fa fa-ellipsis-h"></i>
+                                        </span>
+                                        <ul className="dropdown-menu">
+                                    <li><a href="javascript:void(0)" onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
+                                            <li><a href="javascript:void(0)" onClick={() => this.props.deleteComment(item._id,currentKPI._id)} >{translate('task.task_perform.delete_comment')}</a></li>
                                         </ul>
+                                    </div>}
+                                </p>
+                                <ul className="list-inline tool-level1">
+                                    <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
+                                    
+                                    <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')} ({item.comments.length}) &nbsp;</a></li>
+                                    {item.files.length> 0 &&
+                                    <React.Fragment>
+                                    <li style={{display:"inline-table"}}>
+                                    <div><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
+                                    {this.state.showfile.some(obj => obj === item._id ) &&
+                                        <li style={{display:"inline-table"}}>{item.files.map(elem => {
+                                            return <div><a href="javascript:void(0)" onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
+                                        })}</li>
+                                    }
                                     </React.Fragment>
                                 }
 
-                                {/*Chỉnh sửa nội dung trao đổi của công việc */}
-                                {editComment === item._id &&
-                                    <div>
-                                        <div className="text-input-level1">
-                                            <TextareaAutosize
-                                                defaultValue={item.description}
-                                                useCacheForDOMMeasurements
-                                                minRows={minRows}
-                                                maxRows={maxRows}
-                                                onChange={(e) => {
-                                                    let value = e.target.value;
-                                                    this.setState(state => {
-                                                        return { ...state, newComment: { ...state.newComment, description: value } }
-                                                    })
-                                                }}
-                                            />
-                                        </div>
-                                        <ul className="list-inline tool-level1" style={{ textAlign: "right" }}>
-                                            <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.editComment(item._id)}>Gửi chỉnh sửa</a></li>
-                                            <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</a></li>
-                                        </ul>
-                                        <div className="tool-level1">
-                                        </div>
-                                    </div>}
+                            {/*Chỉnh sửa nội dung trao đổi của công việc */}
+                            {editComment === item._id &&
+                                <div>
+                                    <div className="text-input-level1">
+                                    <TextareaAutosize
+                                        defaultValue={item.description}
+                                        useCacheForDOMMeasurements
+                                        minRows={minRows}
+                                        maxRows={maxRows}
+                                        onChange={(e) => {
+                                            let value = e.target.value;
+                                            this.setState(state => {
+                                                return { ...state, newComment: {...state.newComment, description: value}}
+                                            })  
+                                        }}
+                                    />
+                                    </div>
+                                    <ul className="list-inline tool-level1" style={{textAlign: "right"}}>
+                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={() => this.editComment(item._id)}>{translate('task.task_perform.save_edit')}</a></li>
+                                        <li><a href="javascript:void(0)" className="link-black text-sm" onClick={(e) => this.handleEditComment(e)}>{translate('task.task_perform.cancel')}</a></li>
+                                    </ul>
+                                    <div className="tool-level1">
+                                    </div>
+                                </div>}
+                            
+                            {/* Hiển thị bình luận cho bình luận */}
+                            {showChildComment === item._id &&
+                                <div className="comment-content-child">
+                                    {item.comments.map(child => {
+                                        return <div key={child._id}>
+                                            <img className="user-img-level2" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
+                                            
+                                            {editCommentOfComment !== child._id && // Đang edit thì ẩn đi
+                                            <div>
+                                                <p className="content-level2">
+                                                    <a href="javascript:void(0)">{child.creator.name} </a>
+                                                    {child.description}
 
                                 {/* Hiển thị bình luận cho bình luận */}
                                 {showChildComment === item._id &&
@@ -357,54 +361,54 @@ class Comment extends Component {
 
                                                         </div>
                                                     </div>
-                                                }
-                                            </div>;
-                                            return true;
-                                        })
-                                        }
-                                        {/*Thêm bình luận cho bình luận */}
-                                        <div>
-                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
-                                            <ContentMaker
-                                                inputCssClass="text-input-level2" controlCssClass="tool-level2"
-                                                onFilesChange={this.onCommentFilesChange}
-                                                onFilesError={this.onFilesError}
-                                                files={this.state.commentOfComment.files}
-                                                text={this.state.commentOfComment.description}
-                                                placeholder={"Nhập bình luận"}
-                                                submitButtonText={"Thêm bình luận"}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
-                                                    this.setState(state => {
-                                                        return { ...state, commentOfComment: { ...state.commentOfComment, description: value } }
-                                                    })
-                                                }}
-                                                onSubmit={() => this.submitCommentOfComment(item._id)}
-                                            />
-                                        </div>
+                                                </div>
+                                            }
+                                        </div>;
+                                        return true;
+                                    })
+                                    }
+                                    {/*Thêm bình luận cho bình luận */}
+                                    <div>
+                                        <img className="user-img-level2" src={(LOCAL_SERVER_API+auth.user.avatar)} alt="user avatar"/>
+                                        <ContentMaker
+                                            inputCssClass="text-input-level2" controlCssClass="tool-level2"
+                                            onFilesChange={this.onCommentFilesChange}
+                                            onFilesError={this.onFilesError}
+                                            files={this.state.commentOfComment.files}
+                                            text={this.state.commentOfComment.description}
+                                            placeholder={translate('task.task_perform.enter_comment')}
+                                            submitButtonText={translate('task.task_perform.create_comment')}
+                                            onTextChange={(e)=> {
+                                                let value = e.target.value;
+                                                this.setState(state => {
+                                                    return { ...state, commentOfComment: {...state.commentOfComment, description: value}}
+                                                })
+                                            }}
+                                            onSubmit={()=>this.submitCommentOfComment(item._id)}
+                                        />
                                     </div>
                                 }
                             </div>
                         )
                     }) : null
-                }
-                <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="User Image" />
-                <ContentMaker
-                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
-                    onFilesChange={this.onFilesChange}
-                    onFilesError={this.onFilesError}
-                    files={this.state.comment.files}
-                    text={this.state.comment.description}
-                    placeholder={"Nhập bình luận"}
-                    submitButtonText={"Thêm bình luận"}
-                    onTextChange={(e) => {
-                        let value = e.target.value;
-                        this.setState(state => {
-                            return { ...state, comment: { ...state.comment, description: value } }
-                        })
-                    }}
-                    onSubmit={(e) => this.submitComment(currentKPI._id)}
-                />
+                    }
+                    <img className="user-img-level1" src={(LOCAL_SERVER_API+ auth.user.avatar)} alt="User Image" />
+                    <ContentMaker
+                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                        onFilesChange={this.onFilesChange}
+                        onFilesError={this.onFilesError}
+                        files={this.state.comment.files}
+                        text={this.state.comment.description} 
+                        placeholder={translate('task.task_perform.enter_comment')}
+                        submitButtonText={translate('task.task_perform.create_comment')}
+                        onTextChange={(e)=>{
+                            let value = e.target.value;
+                            this.setState(state => {
+                                return { ...state, comment: {...state.comment, description: value}}
+                            })        
+                        }}
+                        onSubmit={(e)=>this.submitComment(currentKPI._id)}
+                    />
             </React.Fragment>
         );
     }
