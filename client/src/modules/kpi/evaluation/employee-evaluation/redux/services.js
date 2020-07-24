@@ -31,7 +31,7 @@ function getAllKPIMemberOfUnit(infosearch) {
     }, false, true, 'kpi.evaluation');
 }
 /**
-* Lấy tất cả kpi cá nhân 
+* Lấy tất cả kpi cá nhân theo người tạo
 */
 function getAllKPIMemberByMember() {
     let userId = getStorage("userId");
@@ -41,7 +41,7 @@ function getAllKPIMemberByMember() {
     }, false, true, 'kpi.evaluation');
 }
 /**
-* Lấy KPI cá nhân của nhân vien theo id 
+* Lấy KPI cá nhân của nhân vien theo id của kpi
 */
 function getKPIMemberById(kpiId) {
     return sendRequest({
@@ -93,7 +93,7 @@ function editStatusTarget(kpiId, status) {
     }, true, true, 'kpi.evaluation');
 }
 /**
- *  Lấy danh sách công việc theo id
+ *  Lấy danh sách công việc theo id của kpi con
 */
 function getTaskById(kpiId, employeeId, date, kpiType) {
     return sendRequest({
