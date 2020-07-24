@@ -8,10 +8,10 @@ class ModalDetailKPI extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: '5dcadf02f0343012f09c1193',
             content: ""
         };
     }
+    
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -41,6 +41,7 @@ class ModalDetailKPI extends Component {
             }
         })
     }
+
     formatMonth(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -54,8 +55,9 @@ class ModalDetailKPI extends Component {
 
         return [month, year].join('-');
     }
+
     render() {
-        var currentKPI, listchildtarget;
+        let listchildtarget;
         const { managerKpiUnit, translate } = this.props;
         if (managerKpiUnit.childtarget) {
             listchildtarget = managerKpiUnit.childtarget;
@@ -69,38 +71,37 @@ class ModalDetailKPI extends Component {
                 size={100}>
 
                 <div className="col-xs-12 col-sm-4">
-                    <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
+                    <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                         <div className="box-header with-border">
-                            <h3 className="box-title" style={{fontWeight: 800}}>{translate('kpi.organizational_unit.management.detail_modal.list_kpi_unit')}</h3>
+                            <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.organizational_unit.management.detail_modal.list_kpi_unit')}</h3>
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
-                                {typeof listchildtarget !== 'undefined' && listchildtarget !== null && 
-                                listchildtarget.map((item, index) =>
-                                    <li key={index} className={this.state.content===item._id && "active"}>
-                                        <a href="#abc" onClick={() => this.handleChangeContent(item._id)}>
-                                            {item.name}
-                                            <span className="label label-primary pull-right">{item.arrtarget.length}</span>
-                                        </a>
-                                    </li>
-                                )}
+                                {typeof listchildtarget !== 'undefined' && listchildtarget !== null &&
+                                    listchildtarget.map((item, index) =>
+                                        <li key={index} className={this.state.content === item._id && "active"}>
+                                            <a href="#abc" onClick={() => this.handleChangeContent(item._id)}>
+                                                {item.name}
+                                                <span className="label label-primary pull-right">{item.arrtarget.length}</span>
+                                            </a>
+                                        </li>
+                                    )}
                             </ul>
                         </div>
                     </div>
                 </div>
-
 
                 <div className="col-xs-12 col-sm-8">
                     {
                         listchildtarget && listchildtarget.map(item => {
                             if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.information_kpi') + `"${item.name}"`}</h4>
-                                <div style={{lineHeight: 2}}>
+                                <div style={{ lineHeight: 2 }}>
                                     <div>
                                         <label>{translate('kpi.organizational_unit.management.detail_modal.criteria')}</label>
                                         <span> {item.criteria}</span>
                                     </div>
-                                    
+
                                     <div>
                                         <label>{translate('kpi.organizational_unit.management.detail_modal.weight')}</label>
                                         <span> {item.weight}/100</span>
@@ -110,14 +111,14 @@ class ModalDetailKPI extends Component {
                                         <span> {item.approvedPoint === null ? translate('kpi.organizational_unit.management.detail_modal.not_eval') : item.automaticPoint + "-" + item.employeePoint + "-" + item.approvedPoint}</span>
                                     </div>
                                 </div>
-                                <br/>
-                                <br/>
+                                <br />
+                                <br />
 
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.list_child_kpi')}</h4>
                                 <table id="example1" className="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style={{width:"50px"}} className="col-fixed">{translate('kpi.organizational_unit.management.detail_modal.index')}</th>
+                                            <th style={{ width: "50px" }} className="col-fixed">{translate('kpi.organizational_unit.management.detail_modal.index')}</th>
                                             <th>{translate('kpi.organizational_unit.management.detail_modal.target_name')}</th>
                                             <th style={{ width: "108px" }}>{translate('kpi.organizational_unit.management.detail_modal.creator')}</th>
                                             <th>{translate('kpi.organizational_unit.management.detail_modal.organization_unit')}</th>
@@ -149,12 +150,9 @@ class ModalDetailKPI extends Component {
                         })
                     }
                 </div>
-            
             </DialogModal>
-            
-                       
-
-        )}
+        )
+    }
 }
 
 function mapState(state) {

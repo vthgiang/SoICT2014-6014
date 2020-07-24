@@ -8,43 +8,27 @@ const mongoose = require("mongoose");
 
 
 //Lấy tất cả KPI của đơn vị
-exports.get = async (id) => {
-    var department = await Department.findOne({
-        $or: [
-            { 'deans': id },
-            { 'viceDeans': id },
-            { 'employees': id }
-        ]
-    });
-
-    var kpiunits = await KPIUnit.find({ organizationalUnit: department._id })
-        .sort({ 'date': 'desc' }).skip(0).limit(12)
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpiunits;
-}
-
 exports.getKPIUnits = async (data) => {
     var department = await Department.findOne({
         $or: [
-            { 'deans': data.role },
-            { 'viceDeans': data.role },
-            { 'employees': data.role }
+            { 'deans': data.roleId },
+            { 'viceDeans': data.roleId },
+            { 'employees': data.roleId }
         ]
     });
     let status = Number(data.status);
-    if (data.startDate !== "undefined") {
+    if (data.startDate) {
         let startDate = data.startDate.split("-");
-        let startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
+        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
     }
-    if (data.endDate !== "undefined") {
-        let endDate = data.endDate.split("-");
+    if (data.endDate) {
+        var endDate = data.endDate.split("-");
         if (endDate[0] === "12") {
             endDate[1] = String(parseInt(endDate[1]) + 1);
             endDate[0] = "1";
         }
         endDate[0] = String(parseInt(endDate[0]) + 1);
-        let enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
+        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
     let keySearch = {
         organizationalUnit: department._id
@@ -55,19 +39,19 @@ exports.getKPIUnits = async (data) => {
             status: status
         };
     }
-    if (data.startDate !== "undefined" && data.endDate !== "undefined") {
+    if (data.startDate && data.endDate) {
         keySearch = {
             ...keySearch,
             date: { "$gte": startdate, "$lt": enddate }
         }
     }
-    if (data.startDate !== "undefined" && data.endDate == "undefined") {
+    if (data.startDate) {
         keySearch = {
             ...keySearch,
             date: { "$gte": startdate }
         }
     }
-    if (data.startDate == "undefined" && data.endDate !== "undefined") {
+    if (data.endDate) {
         keySearch = {
             ...keySearch,
             date: { "$lt": enddate }
@@ -80,12 +64,12 @@ exports.getKPIUnits = async (data) => {
 }
 
 //Lấy tất cả mục tiêu con của mục tiêu hiện tại
-exports.getChildTargetByParentId = async (data) => {
-    var date = new Date(data.date);
+exports.getChildTargetByParentId = async (data, query) => {
+    var date = new Date(query.date);
     var monthkpi = date.getMonth() + 1;
     var yearkpi = date.getFullYear();
     var kpiunits = await KPIUnit.aggregate([
-        { $match: { organizationalUnit: mongoose.Types.ObjectId(data.id) } },
+        { $match: { organizationalUnit: mongoose.Types.ObjectId(data.kpiId) } },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
         { $match: { month: monthkpi } },
         { $match: { year: yearkpi } },
@@ -163,62 +147,18 @@ exports.getChildTargetByParentId = async (data) => {
     return childTarget;
 }
 
-// Cập nhật điểm mới nhất (Refresh Data)
-exports.evaluateKPI = async (id) => {
-    //req.params.id
-    // Tìm kiếm KPI đơn vị => Để lấy danh sách các mục tiêu của kpi đơn vị
-    // Lấy tất cả các mục tiêu hướng đến từng mục tiêu đơn vị
-    // Tính điểm cho từng mục tiêu
-    // Cập nhật lại data cho từng mục tiêu đơn vị
-    // Cập nhật dữ liệu cho KPI đơn vị
-    var kpis, childUnitTarget, childPersonalTarget, pointkpi;
-    var kpiunit = await KPIUnit.findById(id).populate('kpis');
-    if (kpiunit.kpis) kpis = kpiunit.kpis;
-    // Tính điểm cho từng mục tiêu của KPI đơn vị
-    if (kpis) {
-        kpis = await Promise.all(kpis.map(async (item) => {
-            var pointUnit, pointPersonal, totalunit, totalpersonal, target;
-            // var temp = Object.assign({}, item);
-            childUnitTarget = await DetailKPIUnit.find({ parent: item._id });
-            if (childUnitTarget) {
-                pointUnit = childUnitTarget.reduce((sum, item) => sum + item.result, 0);
-                totalunit = childUnitTarget.length;
-            }
-            childPersonalTarget = await DetailKPIPersonal.find({ parent: item._id });
-            if (childPersonalTarget) {
-                pointPersonal = childPersonalTarget.reduce((sum, item) => sum + item.approverpoint, 0);
-                totalpersonal = childPersonalTarget.length;
-            }
-            // temp.result = Math.round(((pointUnit + pointPersonal) / (totalunit + totalpersonal)) * 10) / 10;
-            if (totalunit + totalpersonal !== 0) {
-                target = await DetailKPIUnit.findByIdAndUpdate(item._id, { result: Math.round(((pointUnit + pointPersonal) / (totalunit + totalpersonal)) * 10) / 10 }, { new: true });
-                return target;
-            }
-            return item;
-        }));
-        // tính điểm cho cả KPI đơn vị
-        var totaltarget = kpis.length;
-        var totalpoint = kpis.reduce((sum, item) => sum + item.result, 0);
-        // console.log(totalpoint);
-        pointkpi = Math.round((totalpoint / totaltarget) * 10) / 10;
-        kpiunit = await KPIUnit.findByIdAndUpdate(id, { result: pointkpi }, { new: true });
-        kpiunit = await kpiunit.populate("organizationalUnit creater").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
-    }
-    return kpiunit;
 
-}
-exports.copyKPI = async (data) => {
-
-    var date = data.dateold.split("-");
-    var dateold = new Date(date[0], date[1], 0);
-    var date = data.datenew.split("-");
-    var dateNewKPIUnit = new Date(date[1], date[0], 0);
-    var monthOldKPI = dateold.getMonth();
-    var yearOldKPI = dateold.getFullYear();
-    var monthNewKPI = dateNewKPIUnit.getMonth();
-    var yearNewKPI = dateNewKPIUnit.getFullYear();
-    // console.log("=========-----", department);
-    var organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
+exports.copyKPI = async (query, data) => {
+    var date, dateold, dateNewKPIUnit, monthOldKPI, yearOldKPI, monthNewKPI, yearNewKPI;
+    date = data.dateold.split("-");
+    dateold = new Date(date[0], date[1], 0);
+    date = data.datenew.split("-");
+    dateNewKPIUnit = new Date(date[1], date[0], 0);
+    monthOldKPI = dateold.getMonth();
+    yearOldKPI = dateold.getFullYear();
+    monthNewKPI = dateNewKPIUnit.getMonth();
+    yearNewKPI = dateNewKPIUnit.getFullYear();
+    organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
@@ -227,7 +167,7 @@ exports.copyKPI = async (data) => {
         var list = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
         var organizationalUnitNewKpi = await KPIUnit.create({
             organizationalUnit: list.organizationalUnit._id,
-            creator: data.id,
+            creator: query.kpiId,
             date: dateNewKPIUnit,
             kpis: []
         })
@@ -247,6 +187,5 @@ exports.copyKPI = async (data) => {
             .populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } });
     }
-
     return organizationalUnitKpi;
 }

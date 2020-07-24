@@ -114,18 +114,9 @@ class HolidayImportForm extends Component {
 
                 let importData = [], rowError = [];
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
-                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
+                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     let indexStartDate, indexEndDate, indexDescription;
 
-                    // Xoá các row excel trống
-                    data = data.filter(x => {
-                        let check = x.filter(y => y !== null);
-                        if (check.length === 0) {
-                            return false
-                        } else {
-                            return true
-                        }
-                    });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {

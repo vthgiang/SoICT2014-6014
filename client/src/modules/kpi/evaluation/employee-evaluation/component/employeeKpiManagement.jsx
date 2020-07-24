@@ -146,7 +146,7 @@ class EmployeeKpiManagement extends Component {
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'), 
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } 
         else {

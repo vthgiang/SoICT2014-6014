@@ -49,7 +49,7 @@ exports.getKPIAllMember = async (data) => {
 
         }
     }
-    if ( status !== -1 && status !== null && status !== 5) {
+    if (status !== -1 && status !== null && status !== 5) {
         keySearch = {
             ...keySearch,
             status: {
@@ -206,10 +206,10 @@ exports.getTaskByKpiId = async (data) => {
         let difference_In_Time = await date2.getTime() - date1.getTime();
         let daykpi = await Math.ceil(difference_In_Time / (1000 * 3600 * 24));
 
-        if (daykpi > 30) 
+        if (daykpi > 30)
             daykpi = 30;
         task[i].taskImportanceLevelCal = await Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
-        
+
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
             task[i].results.taskImportanceLevel = await task[i].taskImportanceLevelCal;
         task[i].daykpi = await daykpi;
@@ -259,7 +259,6 @@ exports.setTaskImportanceLevel = async (kpiId, kpiType, data) => {
     let approvePoint = 0;
     let employPoint = 0;
     let sumTaskImportance = 0;
-
     for (element of task) {
 
         autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
