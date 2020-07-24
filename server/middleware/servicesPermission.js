@@ -271,15 +271,15 @@ exports.data = [
     { path: '/kpipersonals/copykpi/:id/:idunit/:dateold/:datenew', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
 
-    { path: '/kpimembers', method: 'GET', roles: ['Dean', 'Employee'] },
-    { path: '/kpimembers/employee-kpis/:userId/user', method: 'GET', roles: ['Dean', 'Employee'] },
-    { path: '/kpimembers/employee-kpis/:kpiId', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers', method: 'GET', roles: ['Dean','Vice Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpis/:userId/user', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
+    { path: '/kpimembers/employee-kpis/:kpiId', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
     { path: '/kpimembers/employee-kpis/:kpiId/approve', method: 'PUT', roles: ['Dean'] },
     { path: '/kpimembers/employee-kpis/:kpiId/target', method: 'PUT', roles: ['Dean'] },
     { path: '/kpimembers/employee-kpis/:kpiId/status-target', method: 'PUT', roles: ['Dean'] },
     { path: '/kpimembers/employee-kpis/:kpiId/detailkpi', method: 'GET', roles: ['Dean'] },
     { path: '/kpimembers/employee-kpis/:kpiId/appovepoint', method: 'PUT', roles: ['Dean'] },
-    { path: '/kpimembers/employee-kpis/:kpiId/task', method: 'GET', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:kpiId/task', method: 'GET', roles: ['Dean','Vice Dean'] },
     { path: '/kpimembers/employee-kpis/:kpiId/taskImportanceLevel', method: 'PUT', roles: ['Dean'] },
     // Task-management
     { path: '/task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },

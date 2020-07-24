@@ -108,6 +108,8 @@ export default {
             close: 'Đóng',
             accept: 'Xác nhận',
             cancel: 'Hủy',
+            status: 'Trạng thái',
+            month:'Tháng',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -2168,6 +2170,8 @@ export default {
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
+                    result_kpi_personal:'Kết quả KPI cá nhân'
+
                 },
 
                 employee_evaluation:{
@@ -2183,6 +2187,14 @@ export default {
                     kpi_this_month: 'KPI tháng này',
                     search:'Tìm kiếm',
                     index:'STT',
+                    number_of_targets:'Số lượng mục tiêu',
+                    system_evaluate: 'Hệ thống đánh giá',
+                    result_self_evaluate: 'Kết quả tự đánh giá',
+                    evaluation_management :'Quản lí đánh giá',
+                    not_evaluated_yet : 'Chưa đánh giá',
+                    target : 'mục tiêu',
+                    view_detail: "Xem chi tiết",
+                    clone_to_new_kpi: 'Tạo kpi tháng mới từ kpi tháng này',
                     name:'Tên',
                     target:'Mục tiêu đơn vị',
                     criteria:'Tiêu chí đánh giá',
@@ -2215,6 +2227,7 @@ export default {
                     KPI_info: 'Thông tin KPI',
                     point_field: 'Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)',
                     not_avaiable: 'Chưa đánh giá',
+                    no_point : 'Chưa có điểm',
                     lastest_evaluation: 'Đánh giá cuối',
                     task_list: 'Danh sách công việc',
                     work_duration_time: 'Thời gian làm việc',
@@ -2222,6 +2235,7 @@ export default {
                     contribution: 'Đóng góp',
                     importance_level: 'Độ quan trọng',
                     point: 'Điểm',
+                    evaluated_value:'Giá trị được duyệt',
                     new_value: 'Giá trị mới',
                     old_value: 'Giá trị cũ',
                     auto_value: 'Giá trị tự động',
