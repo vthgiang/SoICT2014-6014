@@ -4,10 +4,13 @@ import Swal from 'sweetalert2';
 import {
     getStorage
 } from '../../../../../config';
+import { withTranslate } from 'react-redux-multilingual';
 
+var translate =';'
 class ModalCopyEmployeeKpiSet extends Component {
     constructor(props) {
         super(props);
+        translate =this.props.translate;
         this.state = {
             employeeKpiSet: {
                 organizationalUnit: "",
@@ -55,10 +58,10 @@ class ModalCopyEmployeeKpiSet extends Component {
         var { employeeKpiSet } = this.state;
         if (employeeKpiSet.organizationalUnit && employeeKpiSet.time ) {//&& employeeKpiSet.creator
             Swal.fire({
-                title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
+                title: translate('kpi.evaluation.organizational_unit.management.copy_modal.alert.change_link'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             }).then((res) => {
                 if (res.value) {
                     this.handleCloseModal(oldemployeeKpiSet._id);
@@ -81,15 +84,15 @@ class ModalCopyEmployeeKpiSet extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(employeeKpiSet._id)} aria-hidden="true">×</button>
-                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(employeeKpiSet.time)}</h3>
+                            <h3 className="modal-title">{translate('kpi.evaluation.organizational_unit.management.copy_modal.create')}+' '+ {this.formatDate(employeeKpiSet.time)}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
-                                <label className="col-sm-5">Đơn vị:</label>
+                                <label className="col-sm-5">{translate('kpi.evaluation.organizational_unit.management.copy_modal.organizational_unit')}:</label>
                                 <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{employeeKpiSet && employeeKpiSet.organizationalUnit.name}</label>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2">Tháng:</label>
+                                <label className="col-sm-2">{translate('kpi.evaluation.organizational_unit.management.copy_modal.month')}:</label>
                                 <div className='input-group col-sm-9 date has-feedback' style={{ marginLeft: "11px" }}>
                                     <div className="input-group-addon">
                                         <i className="fa fa-calendar" />
@@ -98,7 +101,7 @@ class ModalCopyEmployeeKpiSet extends Component {
                                 </div>
                             </div>
                             <div className="form-group" >
-                                <label className="col-sm-12">Danh sách mục tiêu:</label>
+                                <label className="col-sm-12">{translate('kpi.evaluation.organizational_unit.management.copy_modal.list_target')}:</label>
                                 <ul>
                                     {typeof employeeKpiSet !== "undefined" && employeeKpiSet.kpis.length !== 0 &&
                                         employeeKpiSet.kpis.map(item => {
@@ -109,8 +112,8 @@ class ModalCopyEmployeeKpiSet extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, employeeKpiSet)}>Thiết lập</button>
-                            <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(employeeKpiSet._id)}>Hủy bỏ</button>
+                                <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, employeeKpiSet)}>{translate('kpi.evaluation.organizational_unit.management.copy_modal.setting')}</button>
+                            <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(employeeKpiSet._id)}>{translate('kpi.evaluation.organizational_unit.management.copy_modal.cancel')}</button>
                         </div>
                     </div>
                 </div>
@@ -127,5 +130,5 @@ function mapState(state) {
 
 const actionCreators = {
 };
-const connectedModalCopyEmployeeKpiSet = connect(mapState, actionCreators)(ModalCopyEmployeeKpiSet);
+const connectedModalCopyEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(ModalCopyEmployeeKpiSet));
 export { connectedModalCopyEmployeeKpiSet as ModalCopyEmployeeKpiSet };

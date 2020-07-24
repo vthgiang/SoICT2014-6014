@@ -129,7 +129,7 @@ class CreateEmployeeKpiSet extends Component {
 
     handleNotInitializeOrganizationalUnitKpi = async () => {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
@@ -138,7 +138,7 @@ class CreateEmployeeKpiSet extends Component {
 
     handleNotActivatedOrganizationalUnitKpi = async () => {
         Swal.fire({
-            title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
+            title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_activate_organiztional_unit_kpi'),
             type: 'warning',
             confirmButtonColor: '#3085d6',
             confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')

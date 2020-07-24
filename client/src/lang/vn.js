@@ -2014,7 +2014,8 @@ export default {
                         initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
-
+                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -2475,7 +2476,9 @@ export default {
                         create: 'Thiết lập KPI tháng mới từ tháng ',
                         organizational_unit: 'Đơn vị',
                         month: 'Tháng',
-                        list_target: 'Danh sách mục tiêu'
+                        list_target: 'Danh sách mục tiêu',
+                        setting: 'Thiết lập',
+                        cancel: 'Hủy bỏ'
                     },
                     detail_modal:{
                         list_kpi_unit: 'Danh sách KPI đơn vị',

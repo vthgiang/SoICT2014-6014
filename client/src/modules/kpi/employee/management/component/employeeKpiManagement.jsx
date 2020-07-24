@@ -277,14 +277,14 @@ class KPIPersonalManager extends Component {
                     <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th title="STT" style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
-                                <th title="Thời gian">{ translate('kpi.evaluation.employee_evaluation.time')}</th>
-                                <th title="Trạng thái">{translate('kpi.evaluation.employee_evaluation.status')}</th>
-                                <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.number_of_targets')}</th>
-                                <th title="Hệ thống đánh giá">{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
-                                <th title="Kết quả tự đánh giá">{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
-                                <th title="Quản lý đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                <th title="Hành động">{translate('kpi.evaluation.employee_evaluation.action')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                <th title={ translate('kpi.evaluation.employee_evaluation.time')}>{ translate('kpi.evaluation.employee_evaluation.time')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.number_of_targets')}>{translate('kpi.evaluation.employee_evaluation.number_of_targets')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
