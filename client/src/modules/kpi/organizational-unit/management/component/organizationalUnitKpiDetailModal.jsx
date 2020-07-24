@@ -77,9 +77,9 @@ class ModalDetailKPI extends Component {
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
-                                {typeof listchildtarget !== 'undefined' && listchildtarget !== null &&
+                                {listchildtarget  &&
                                     listchildtarget.map((item, index) =>
-                                        <li key={index} className={this.state.content === item._id && "active"}>
+                                        <li key={index} className={this.state.content === item._id ? "active" : undefined }>
                                             <a href="#abc" onClick={() => this.handleChangeContent(item._id)}>
                                                 {item.name}
                                                 <span className="label label-primary pull-right">{item.arrtarget.length}</span>
@@ -127,7 +127,7 @@ class ModalDetailKPI extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof item !== "undefined" && item.arrtarget) ?
+                                        {(typeof item && item.arrtarget) ?
                                             (item.arrtarget.map((data, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
