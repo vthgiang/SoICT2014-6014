@@ -7,8 +7,9 @@ const Role = require('../../../models/auth/role.model');
  */
 exports.addLinkThatRoleCanAccess = async (idLink, arrRole) => {
     const check = await Privilege.findOne({ resource: idLink });
-    if(check === null){
-        //Chua co privilege cho link hien tai
+
+    if (!check) {
+        // Chua co privilege cho link hien tai
         const privilege = await Privilege.create({
             resource: idLink,
             resource_type: 'Link',
@@ -16,8 +17,8 @@ exports.addLinkThatRoleCanAccess = async (idLink, arrRole) => {
         });
 
         return privilege;
-    }else{
-        //Privilege cho link hien tai da ton tai
+    } else {
+        // Privilege cho link hien tai da ton tai
         check.role = check.role.concat(arrRole);
         check.save();
 

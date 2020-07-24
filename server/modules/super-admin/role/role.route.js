@@ -9,4 +9,5 @@ router.get("/:id", auth, RoleController.getRole);
 router.patch("/:id", auth, RoleController.editRole);
 router.delete("/:id", auth, RoleController.deleteRole);
 router.get('/same-department/:id', auth, RoleController.getAllRolesInSameOrganizationalUnitWithRole);
+
 module.exports = router;

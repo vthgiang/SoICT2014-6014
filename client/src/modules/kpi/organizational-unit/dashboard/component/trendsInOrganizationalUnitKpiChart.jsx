@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
-
+import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+
 
 class TrendsInOrganizationalUnitKpiChart extends Component {
 
@@ -22,9 +23,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
         this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-        // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
         this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
 
         this.setState(state => {
@@ -36,11 +35,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // Call action again when currentRole changes
         if(this.state.currentRole !== localStorage.getItem("currentRole")) {
-            // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
             await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-            // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
             await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
 
             this.setState(state => {
@@ -53,11 +49,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            // Lấy danh sách Kpi con theo từng Kpi của đơn vị hiện tại
             await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
-            // Lấy danh sách các công việc theo từng Kpi của đơn vị hiện tại
             await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
 
             this.setState(state => {
@@ -71,19 +64,16 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            // Kiểm tra currentKPI đã được bind vào props hay chưa
             if(!nextProps.createKpiUnit.currentKPI) {
-                return false            // Đang lấy dữ liệu, ko cần render lại
+                return false            
             }
 
-            // Kiểm tra childTarget đã được bind vào props hay chưa
             if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpis) {
-                return false            // Đang lấy dữ liệu, ko cần render lại
+                return false           
             }
 
-            // Kiểm tra tasks đã được bind vào props hay chưa
             if(!nextProps.dashboardOrganizationalUnitKpi.tasks) {
-                return false            // Đang lấy dữ liệu, ko cần render lại
+                return false           
             }
             
             this.setState(state =>{
@@ -162,7 +152,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập data thời gian thực hiện TB của các công việc theo từng Kpi đơn vị
     setExecutionTimeData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
         var executionTimes = {};
         var now = new Date();
@@ -209,7 +199,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         executionTimes = Object.assign(
-            { name: "Thời gian thực hiện (Ngày)" },
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.execution_time') },
             executionTimes
         )
 
@@ -218,7 +208,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập data số công việc thực hiện theo từng Kpi đơn vị
     setNumberOfTaskData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
         var numberOfTasks = {};
 
@@ -248,7 +238,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         numberOfTasks = Object.assign(
-            { name: "Số lượng công việc" },
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks') },
             numberOfTasks
         )
 
@@ -257,7 +247,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập data số người tham gia theo từng Kpi đơn vị
     setNumberOfParticipantData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTaskByOrganizationUnitKpi;
         var numberOfParticipants = {}; 
 
@@ -299,7 +289,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         numberOfParticipants = Object.assign(
-            { name: "Người tham gia" },
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.participants') },
             numberOfParticipants
         )
 
@@ -308,7 +298,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập data số Kpi con của từng Kpi đơn vị
     setNumberOfChildKpiData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget;
         var numberOfChildKpis = {};
 
@@ -336,7 +326,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         numberOfChildKpis = Object.assign(
-            { name: "Số Kpi con" },
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.amount_child_kpi') },
             numberOfChildKpis
         )
 
@@ -345,7 +335,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     
     // Thiết lập data trọng số của từng Kpi đơn vị
     setWeightData = () => {
-        const { createKpiUnit } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var listOrganizationalUnitKpi;
         var weight = {};
 
@@ -363,7 +353,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         weight = Object.assign(
-            { name: "Trọng số" },
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.weight') },
             weight
         )
 
@@ -427,20 +417,20 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         // Khởi tạo biểu đồ
         this.chart = c3.generate({
-            bindto: this.refs.chart,         // Đẩy chart vào thẻ div có id="barChart"        
+            bindto: this.refs.chart,                
 
             size: {                                 
-                height: 350                     // Thiết lập size biểu đồ
+                height: 350                     
             },
 
-            padding: {                          // Căn lề biểu đồ
+            padding: {                          
                 top: 20,
                 left: 100,
                 right: 20,
                 bottom: 20
             },
 
-            data: {                             // Dữ liệu biểu đồ
+            data: {                             
                 x: 'x',
                 columns: dataChart,
                 type: 'bar',
@@ -452,13 +442,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
             },
 
-            bar: {                              // Thiết lập size thanh bar
+            bar: {                              
                 width: {
                     ratio: 0.8
                 }
             },
 
-            axis: {                             // Config các trục tọa độ
+            axis: {                            
                 rotated: true,
                 x: {
                     type: 'category',
@@ -471,7 +461,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
     
     render() {
-        const { createKpiUnit } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var currentKpi;
 
         if(createKpiUnit) {
@@ -482,7 +472,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 {currentKpi ?
                     <section ref="chart"></section>
-                    : <section>Không có dữ liệu</section>
+                : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
@@ -499,5 +489,5 @@ const actions = {
     getAllTaskOfOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllTaskOfOrganizationalUnit
 }
 
-const connectedTrendsInOrganizationalUnitKpiChart = connect(mapState, actions)(TrendsInOrganizationalUnitKpiChart);
+const connectedTrendsInOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(TrendsInOrganizationalUnitKpiChart));
 export { connectedTrendsInOrganizationalUnitKpiChart as TrendsInOrganizationalUnitKpiChart };

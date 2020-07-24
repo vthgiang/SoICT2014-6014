@@ -12,108 +12,165 @@ exports.getAllTasks = async () => {
 }
 
 /**
- * get task evaluations
+ * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    // Lấy keySearch tu client gui
+    // Lấy keySearch tu client gui trong body
+    let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
     let taskStatus = Number(data.status);
-    let responsible = data.responsibleEmployees;
-    let accountable = data.accountableEmployees;
+    let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
 
-    let keySearch = {};
-    //mau cong viec
-    if (idTemplate !== undefined) {
-        keySearch = {
-            ...keySearch,
-            taskTemplate: idTemplate,
-        }
-    }
-    //Tinh trang cong viec
-    if (taskStatus === 0) {
-        keySearch = {
-            ...keySearch,
-            status: 'Finished'
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-            status: 'Inprocess'
-        }
+    let startTime = startDate.split("-");
+    let endTime = endDate.split("-");
+    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    let filterDate = {};
 
+    if (data.responsibleEmployees) { // bỏ toString để check lọc ko có responsible và accountable, ko bỏ thì lỗi
+        responsible = data.responsibleEmployees.toString();
     }
-    //Loc nguoi thuc hien
-
-    if (responsible) {
-        keySearch = {
-            ...keySearch,
-            responsibleEmployees: responsible,
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-        }
+    if (data.accountableEmployees) {
+        accountable = data.accountableEmployees.toString();
     }
+    (taskStatus === 0) ? taskStatus = "Finished" : taskStatus = "Inprocess";
 
-    //Loc nguoi phee duyet
-    if (accountable) {
-        keySearch = {
-            ...keySearch,
-            accountableEmployees: accountable
-        }
-    }
-
-    //loc ngay thuc hien
+    // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
-        let startTime = startDate.split("-");
-        let endTime = endDate.split("-");
-        let start = new Date(startTime[2], startTime[1], startTime[0]);
-        let end = new Date(endTime[2], endTime[1], endTime[0]);
-        console.log(start);
-        console.log(end);
-        keySearch = {
-            ...keySearch,
-            // evaluations: { $elemMatch: { date: { $gte: `"${start}"`, $lte: `"${end}"` } } },
-            evaluations: { $elemMatch: { date: { $gte: start, $lte: end } } }
-
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
+        filterDate = {
+            $match: {
+                date: { $gte: start, $lt: end }
+            }
         }
     }
 
-    // loc neu co ngay bat dau khong co ngay ket thuc
-    if (startDate && endDate === null) {
-        let DateAfter = startDate.split("-");
-        let start = new Date(DateAfter[2], DateAfter[1], DateAfter[0]);
+    // Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (startDate && !endDate) {
+        filterDate = {
+            $match: {
+                date: { $gte: start }
+            }
+        }
 
-        keySearch = {
-            ...keySearch,
-            // "evaluations.date": { $elemMatch: { $gte: start } }
+    }
+
+    //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (!startDate && endDate) {
+        filterDate = {
+            $match: {
+                date: { $lte: end }
+            }
         }
     }
 
-    // loc nhuwngx coong viecj hoan thanh truowc ngay ket thuc
-    if (endDate !== 'null' && startDate === null) {
-        let DateBefore = endDate.split("-");
-        let end = new Date(DateBefore[2], DateBefore[1], DateBefore[0]);
-        keySearch = {
-            ...keySearch,
-            evaluations: { $elemMatch: { date: { $lte: end } } }
-        }
+    let condition = [];
+    // nếu không lọc theo người thực hiện và người phê duyệt
+    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+        condition = [
+            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+            { $match: { status: taskStatus } },
+            { $unwind: "$responsibleEmployees" },
+            { $unwind: "$accountableEmployees" },
+            { $unwind: "$evaluations" },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
+                        { accountableEmployees: "$accountableEmployees" },
+                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                    }
+                }
+            },
+            filterDate
+        ]
+
+    } else if (!startDate && !endDate) {
+        condition = [
+            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+            { $match: { status: taskStatus } },
+            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
+            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+            { $unwind: "$responsibleEmployees" },
+            { $unwind: "$accountableEmployees" },
+            { $unwind: "$evaluations" },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
+                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
+                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                    }
+                }
+            }
+
+        ]
     }
+    else {
+        condition = [
+            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+            { $match: { status: taskStatus } },
+            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
+            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+            { $unwind: "$responsibleEmployees" },
+            { $unwind: "$accountableEmployees" },
+            { $unwind: "$evaluations" },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
+                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
+                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                    }
+                }
+            },
+            filterDate
+        ]
+    }
+    let result = await Task.aggregate(condition);
+    let condition2 = [
+        { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+        { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+        { $match: { status: taskStatus } },
 
+        { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
+        { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+        { $unwind: "$responsibleEmployees" },
+        { $unwind: "$accountableEmployees" },
+        { $unwind: "$evaluations" },
+        {
+            $replaceRoot: {
+                newRoot: {
+                    $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
+                    { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
+                    { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                }
+            }
+        },
+        filterDate,
+        { $unwind: "$taskInformations" },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
+        },
+        { $match: { type: "Number" } },
+        {
+            $group: {
+                _id: { _id: "$_id", name: "$name" },
+                avgSum: { $avg: { $sum: "$value" } }
+                //            avgSum: { $sum: "$value"}
+            }
 
+        },
 
+    ]
+    let result2 = await Task.aggregate(condition2);
+    return { result, result2 };
     //{"taskTemplate": ObjectId("5f107afff000733a180c1077"),"status": "Finished", "evaluations.taskInformations": { $elemMatch: { code: "p1" } }}
-
-    let result = await Task.find(keySearch);
-    console.log('result', result);
-    return result;
 }
 
 /**
@@ -142,6 +199,11 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
+    if (!task) {
+        return {
+            "info": true
+        }
+    }
     var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
     responsibleEmployees = task.responsibleEmployees;
     accountableEmployees = task.accountableEmployees;
@@ -154,7 +216,7 @@ exports.getTaskById = async (id, userId) => {
             break;
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in accountableEmployees) {
             if (accountableEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -162,7 +224,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in consultedEmployees) {
             if (consultedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -170,7 +232,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){
+    if (!flag) {
         for (let n in informedEmployees) {
             if (informedEmployees[n]._id.equals(userId)) {
                 flag = 1;
@@ -178,13 +240,13 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag){    // Trưởng đơn vị được phép xem thông tin công việc
-        let roleId =  task.organizationalUnit.deans;
-        let user = await UserRole.find({roleId: roleId});
-        userList = user.map( item => item.userId );
-        if (!flag){
-            for (let n in userList){
-                if (userList[n].equals(userId)){
+    if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
+        let roleId = task.organizationalUnit.deans;
+        let user = await UserRole.find({ roleId: roleId });
+        userList = user.map(item => item.userId);
+        if (!flag) {
+            for (let n in userList) {
+                if (userList[n].equals(userId)) {
                     flag = 1;
                     break;
                 }
@@ -196,7 +258,7 @@ exports.getTaskById = async (id, userId) => {
     }
     if (flag === 0) {
         return {
-            "info": null
+            "info": true
         }
     }
     task.evaluations.reverse();
@@ -287,7 +349,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     };
 
-    if (startDate ) {
+    if (startDate) {
         let startTime = startDate.split("-");
         let start = new Date(startTime[1], startTime[0] - 1, 1);
         let end = new Date(startTime[1], startTime[0], 1);
@@ -958,6 +1020,7 @@ exports.getSubTask = async (taskId) => {
     var task = await Task.find({
         parent: taskId
     }).sort("createdAt")
+
     return task;
 }
 
@@ -984,11 +1047,13 @@ exports.getTasksByUser = async (data) => {
         if (test < 0) {
             test = olddate - nowdate;
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            var tasktest = {
-                task: tasks[i],
-                totalDays: totalDays
+            if (totalDays <= 7) {
+                var tasktest = {
+                    task: tasks[i],
+                    totalDays: totalDays
+                }
+                deadlineincoming.push(tasktest);
             }
-            deadlineincoming.push(tasktest);
         } else {
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
             var tasktest = {

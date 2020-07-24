@@ -5,10 +5,8 @@ const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = 
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month) => {
-    
+exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month) => {  
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
-
     if(month) {
         now = new Date(month);
         currentYear = now.getFullYear();
@@ -160,6 +158,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
 /**
  * Thêm một KPI vào tập KPI đơn vị
  * @data thông tin về KPI cần thêm vào tập KPI đơn vị
+ * 
  */
 exports.createOrganizationalUnitKpi = async (data) => {
     //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.organizationalUnitKpiSet

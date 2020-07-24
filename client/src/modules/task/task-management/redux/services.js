@@ -21,15 +21,8 @@ export const taskManagementService = {
     deleteTaskById,
     editStatusOfTask,
     getSubTask,
-
-    editTaskByAccountableEmployees,
-    editTaskByResponsibleEmployees,
-
-    evaluateTaskByAccountableEmployees,
-    evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees,
-
     getTasksByUser,
+    getTaskEvaluations,
 };
 
 /**
@@ -260,7 +253,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/create`,
+        url: `${LOCAL_SERVER_API}/task`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
@@ -330,74 +323,8 @@ function getSubTask(taskId) {
 }
 
 /**
- * edit Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function editTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/edit/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * edit Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function editTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/edit/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Responsible Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByResponsibleEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-responsible/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Consulted Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByConsultedEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-consulted/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
- * evaluate Task By Accountable Employees
- * @param {*} data du lieu cap nhat
- * @param {*} taskId id cua task muon cap nhat
- */
-function evaluateTaskByAccountableEmployees(data, taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/evaluate/task-accountable/${taskId}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'task.task_management');
-}
-
-/**
  * lấy công việc theo người dùng
  */
-
 function getTasksByUser() {
     var id = getStorage("userId")
 
@@ -408,4 +335,13 @@ function getTasksByUser() {
     }, false, true, 'task.task_management');
 }
 
+
+function getTaskEvaluations(data) {
+    console.log('printData::::', data)
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/get-task/evaluations`,
+        method: 'GET',
+        params: data,
+    }, false, true, 'task.task_management');
+}
 

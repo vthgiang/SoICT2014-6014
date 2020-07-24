@@ -8,7 +8,7 @@ exports.getAllComponents = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
-    if (page === undefined && limit === undefined ){
+    if (!page && limit){
         return await Component
             .find({ company })
             .populate([
@@ -16,7 +16,7 @@ exports.getAllComponents = async (company, query) => {
                 { path: 'link', model: Link },
             ]);
     } else{
-        const option = (query.key !== undefined && query.value !== undefined)
+        const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
         console.log("option: ", option);
@@ -51,7 +51,10 @@ exports.getComponent = async (id) => {
  */
 exports.createComponent = async(data) => {
     const check = await Component.findOne({name: data.name});
-    if(check !== null) throw ['component_name_exist'];
+
+    if(check) {
+        throw ['component_name_exist'];
+    }
 
     return await Component.create({
         name: data.name,
@@ -124,7 +127,6 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
  * @linkId id của trang user muốn lấy
  */
 exports.getComponentsOfUserInLink = async(roleId, linkId) => {
-
     const role = await Role.findById(roleId);
     let roleArr = [role._id];
     roleArr = roleArr.concat(role.parents);

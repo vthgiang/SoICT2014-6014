@@ -11,13 +11,12 @@ router.post('/add-result/create', auth, PerformTaskController.createResultInfoTa
 router.post('/information-task-template/create', auth, PerformTaskController.createTaskInformation);
 router.put('/information-task-template', auth, PerformTaskController.editTaskInformation);
 router.post('/logs/history', auth, PerformTaskController.addTaskLog);
-router.get('/logs/:id', auth, PerformTaskController.getTaskLog);
+router.get('/logs/:taskId', auth, PerformTaskController.getTaskLog);
 
 
-//result task
-router.post('/', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
-router.post('/result-task/create', auth, PerformTaskController.createTaskResult);
-router.put('/result-task/:id', auth, PerformTaskController.editTaskResult);
+//upload file
+router.post('/tasks/:taskId/upload-files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
+
 
 
 //Task Action
@@ -25,20 +24,20 @@ router.get('/task/:taskId/task-actions', auth, PerformTaskController.confirmActi
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId/delete', auth, PerformTaskController.deleteTaskAction);
-router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId', auth, PerformTaskController.deleteFileOfAction);
+router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId', PerformTaskController.deleteFileOfAction); // auth,
 
 
 //Comment of Task Action
-router.post('/tasks/:taskId/action/:actionId/comments', auth, uploadFile([{ name: 'files', path: '/files/commentofactions' }], 'array'), PerformTaskController.createCommentOfTaskAction);
-router.patch('/tasks/:taskId/action/:actionId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/commentofactions' }], 'array'), PerformTaskController.editCommentOfTaskAction);
-router.patch('/tasks/:taskId/action/:actionId/comments/:commentId/delete', auth, PerformTaskController.deleteCommentOfTaskAction);
-router.patch('/tasks/:taskId/actions/:actionId/comments/files/:fileId', auth, PerformTaskController.deleteFileCommentOfAction);
+router.post('/tasks/:taskId/task-actions/:actionId/comments', auth, uploadFile([{ name: 'files', path: '/files/commentofactions' }], 'array'), PerformTaskController.createCommentOfTaskAction);
+router.patch('/tasks/:taskId/task-actions/:actionId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/commentofactions' }], 'array'), PerformTaskController.editCommentOfTaskAction);
+router.patch('/tasks/:taskId/task-actions/:actionId/comments/:commentId/delete', auth, PerformTaskController.deleteCommentOfTaskAction);
+router.patch('/tasks/:taskId/task-actions/:actionId/comments/files/:fileId', auth, PerformTaskController.deleteFileCommentOfAction);
 
 
 //Task Comment
 router.post('/tasks/:taskId/task-comments', auth, uploadFile([{ name: 'files', path: '/files/taskcomments' }], 'array'), PerformTaskController.createTaskComment);
 router.patch('/tasks/:taskId/task-comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/taskcomments' }], 'array'), PerformTaskController.editTaskComment);
-router.patch('/tasks/:taskId/task-comments/:commentId/delete', auth, PerformTaskController.deleteCommentOfTaskAction);
+router.patch('/tasks/:taskId/task-comments/:commentId/delete', auth, PerformTaskController.deleteTaskComment);
 router.patch('/tasks/:taskId/task-comments/:commentId/files/:fileId', auth, PerformTaskController.deleteFileTaskComment);
 
 
@@ -50,14 +49,8 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 
 
-
-
-router.patch('/edit/task-responsible/:id', auth, PerformTaskController.editTaskByResponsibleEmployees);
-router.patch('/edit/task-accountable/:id', auth, PerformTaskController.editTaskByAccountableEmployees);
-
-router.patch('/evaluate/task-consulted/:id', auth, PerformTaskController.evaluateTaskByConsultedEmployees);
-router.patch('/evaluate/task-responsible/:id', auth, PerformTaskController.evaluateTaskByResponsibleEmployees);
-router.patch('/evaluate/task-accountable/:id', auth, PerformTaskController.evaluateTaskByAccountableEmployees);
+router.patch('/tasks/:taskId', auth, PerformTaskController.editTask);
+router.patch('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 
 
 module.exports = router;

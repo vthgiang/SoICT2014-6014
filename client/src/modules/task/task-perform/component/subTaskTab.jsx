@@ -8,7 +8,7 @@ import qs from 'qs';
 class SubTaskTab extends Component {
     constructor(props) {
         super(props);
-        this.state = this.props;
+        this.state = {};
     }
     
     componentDidMount = () => {

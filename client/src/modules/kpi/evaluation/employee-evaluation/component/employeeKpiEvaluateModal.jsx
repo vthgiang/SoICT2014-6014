@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import { DataTableSetting } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components/index';
-import { ModelDetailTask } from '../../../../task/task-management/component/task-dashboard/detailTask';
+import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 class EmployeeKpiEvaluateModal extends Component {
@@ -184,7 +184,7 @@ class EmployeeKpiEvaluateModal extends Component {
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
-                                    <li key={index} className={this.state.content === item._id && "active"}>
+                                    <li key={index} className={this.state.content === item._id? "active": undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                             {item.name}
                                         &nbsp;
@@ -301,7 +301,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                 />
 
                             }
-                            {<ModelDetailTask id={taskId} />}
+                            {<ModalDetailTask id={taskId} />}
                         </React.Fragment>;
                         return true;
                     })}

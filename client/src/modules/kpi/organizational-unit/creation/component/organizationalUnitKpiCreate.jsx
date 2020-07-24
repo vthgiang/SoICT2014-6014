@@ -31,7 +31,7 @@ class OrganizationalUnitKpiCreate extends Component {
             adding: false,
             editing: false,
             submitted: false,
-            
+        
             currentRole: localStorage.getItem("currentRole")
         };
 
@@ -76,7 +76,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 }
             }
         })
-        var { organizationalUnitKpiSet } = this.state;
+        let { organizationalUnitKpiSet } = this.state;
         
         if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date) {//&& kpiunit.creater
             this.props.editKPIUnit(id, organizationalUnitKpiSet);
@@ -224,7 +224,7 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     checkPermisson = (deanCurrentUnit) => {
-        var currentRole = localStorage.getItem("currentRole");
+        let currentRole = localStorage.getItem("currentRole");
         
         return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
     }
@@ -268,9 +268,9 @@ class OrganizationalUnitKpiCreate extends Component {
     }
     
     render() {
-        const { user, createKpiUnit } = this.props; // Redux
+        const { user, createKpiUnit } = this.props; 
         const { editing, currentRole, organizationalUnitKpiSet } = this.state;
-        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+        const { translate } = this.props; 
 
         var unitList, currentUnit, currentKPI;
 
