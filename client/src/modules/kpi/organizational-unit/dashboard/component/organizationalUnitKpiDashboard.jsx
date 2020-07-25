@@ -237,7 +237,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         {childOrganizationalUnit &&
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&

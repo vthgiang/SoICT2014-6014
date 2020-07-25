@@ -64,6 +64,9 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
 
 };
 
+/**
+ * Khởi tạo KPI tháng mới từ KPI tháng này trong trang quản lý KPI cá nhân
+ */
 exports.copyKPI= async (req, res) => {
     try {
         var kpipersonals = await overviewService.copyKPI(req.params);

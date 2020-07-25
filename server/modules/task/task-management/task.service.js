@@ -12,108 +12,116 @@ exports.getAllTasks = async () => {
 }
 
 /**
- * get task evaluations
+ * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    // Lấy keySearch tu client gui
+    // Lấy keySearch tu client gui trong body
+    let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
     let taskStatus = Number(data.status);
-    let responsible = data.responsibleEmployees;
-    let accountable = data.accountableEmployees;
+    let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
+    let calulator = Number(data.calulator);
+    let startTime = startDate.split("-");
+    let endTime = endDate.split("-");
+    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    let filterDate = {};
 
-    let keySearch = {};
-    //mau cong viec
-    if (idTemplate !== undefined) {
-        keySearch = {
-            ...keySearch,
-            taskTemplate: idTemplate,
-        }
+    if (data.responsibleEmployees) {
+        responsible = data.responsibleEmployees.toString();
     }
-    //Tinh trang cong viec
-    if (taskStatus === 0) {
-        keySearch = {
-            ...keySearch,
-            status: 'Finished'
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-            status: 'Inprocess'
-        }
-
+    if (data.accountableEmployees) {
+        accountable = data.accountableEmployees.toString();
     }
-    //Loc nguoi thuc hien
-
-    if (responsible) {
-        keySearch = {
-            ...keySearch,
-            responsibleEmployees: responsible,
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-        }
-    }
-
-    //Loc nguoi phee duyet
-    if (accountable) {
-        keySearch = {
-            ...keySearch,
-            accountableEmployees: accountable
-        }
-    }
-
-    //loc ngay thuc hien
+    (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
+    console.log(taskStatus)
+    // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
-        let startTime = startDate.split("-");
-        let endTime = endDate.split("-");
-        let start = new Date(startTime[2], startTime[1], startTime[0]);
-        let end = new Date(endTime[2], endTime[1], endTime[0]);
-        console.log(start);
-        console.log(end);
-        keySearch = {
-            ...keySearch,
-            // evaluations: { $elemMatch: { date: { $gte: `"${start}"`, $lte: `"${end}"` } } },
-            evaluations: { $elemMatch: { date: { $gte: start, $lte: end } } }
-
+        filterDate = {
+            $match: {
+                date: { $gte: start, $lt: end }
+            }
         }
+    }
+
+    // Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (startDate && !endDate) {
+        filterDate = {
+            $match: {
+                date: { $gte: start }
+            }
+        }
+
+    }
+
+    //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (!startDate && endDate) {
+        filterDate = {
+            $match: {
+                date: { $lte: end }
+            }
+        }
+    }
+
+    let condition = [
+        { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+        { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+        { $unwind: "$responsibleEmployees" },
+        { $unwind: "$accountableEmployees" },
+        { $unwind: "$evaluations" },
+        {
+            $replaceRoot: {
+                newRoot: {
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
+                    { accountableEmployees: "$accountableEmployees" },
+                    { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                }
+            }
+        },
+    ];
+
+    // nếu không lọc theo người thực hiện và người phê duyệt
+    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+        condition = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate
+        ]
+
     } else {
-        keySearch = {
-            ...keySearch,
-        }
+        condition = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate
+        ]
     }
+    let result = await Task.aggregate(condition);
+    // tính trung bình cộng
+    let condition2;
+    if (calulator === 0) {
+        condition2 = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate,
+            { $unwind: "$taskInformations" },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
+            },
+            { $match: { type: "Number" } },
+            {
+                $group: {
+                    _id: { _id: "$_id", name: "$name" },
+                    moneyAvg: { $avg: { $sum: "$value" } }
+                }
 
-    // loc neu co ngay bat dau khong co ngay ket thuc
-    if (startDate && endDate === null) {
-        let DateAfter = startDate.split("-");
-        let start = new Date(DateAfter[2], DateAfter[1], DateAfter[0]);
-
-        keySearch = {
-            ...keySearch,
-            // "evaluations.date": { $elemMatch: { $gte: start } }
-        }
+            },
+        ]
     }
-
-    // loc nhuwngx coong viecj hoan thanh truowc ngay ket thuc
-    if (endDate !== 'null' && startDate === null) {
-        let DateBefore = endDate.split("-");
-        let end = new Date(DateBefore[2], DateBefore[1], DateBefore[0]);
-        keySearch = {
-            ...keySearch,
-            evaluations: { $elemMatch: { date: { $lte: end } } }
-        }
-    }
-
-
-
-    //{"taskTemplate": ObjectId("5f107afff000733a180c1077"),"status": "Finished", "evaluations.taskInformations": { $elemMatch: { code: "p1" } }}
-
-    let result = await Task.find(keySearch);
-    console.log('result', result);
-    return result;
+    let result2 = await Task.aggregate(condition2);
+    return { result, result2 };
 }
 
 /**
@@ -142,7 +150,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
-    if (!task){
+    if (!task) {
         return {
             "info": true
         }
@@ -990,7 +998,7 @@ exports.getTasksByUser = async (data) => {
         if (test < 0) {
             test = olddate - nowdate;
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            if(totalDays <= 7) {
+            if (totalDays <= 7) {
                 var tasktest = {
                     task: tasks[i],
                     totalDays: totalDays
@@ -1012,3 +1020,4 @@ exports.getTasksByUser = async (data) => {
     }
     return tasksbyuser;
 }
+

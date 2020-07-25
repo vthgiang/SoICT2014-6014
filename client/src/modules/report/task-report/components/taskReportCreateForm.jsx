@@ -6,7 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components';
 import { taskReportFormValidator } from './taskReportFormValidator';
-import TaskReportViewForm from './taskReportViewForm';
+import { TaskReportViewForm } from './taskReportViewForm';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
@@ -31,12 +31,17 @@ class TaskReportCreateForm extends Component {
                 coefficient: 1,
                 newName: '',
                 calulator: '',
-                chart: '',
+                chartType: '',
+                listCheckBox: [],
+
+                // showInReport: new Map(),
 
             },
+            showInReport: new Set(),
             currentRole: getStorage('currentRole'),
 
         }
+        this.checkedCheckbox = new Set();
     }
     /**
      * Hàm kiểm tra đã validate chưa
@@ -68,8 +73,11 @@ class TaskReportCreateForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameTaskReport: msg,
-                    nameTaskReport: value,
+                    newReport: {
+                        ...this.state.newReport,
+                        errorOnNameTaskReport: msg,
+                        nameTaskReport: value,
+                    }
                 }
             });
         }
@@ -87,8 +95,12 @@ class TaskReportCreateForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDescriptiontTaskReport: msg,
-                    descriptionTaskReport: value,
+                    newReport: {
+                        ...this.state.newReport,
+                        errorOnDescriptiontTaskReport: msg,
+                        descriptionTaskReport: value,
+
+                    }
                 }
             });
         }
@@ -270,7 +282,6 @@ class TaskReportCreateForm extends Component {
      */
     handleChangeFilter = (e) => {
         let { value } = e.target;
-        console.log(e)
         if (value === '') {
             this.setState(state => {
                 return {
@@ -346,7 +357,7 @@ class TaskReportCreateForm extends Component {
                 ...state,
                 newReport: {
                     ...this.state.newReport,
-                    chart: value,
+                    chartType: value,
                 }
             }
         })
@@ -380,11 +391,71 @@ class TaskReportCreateForm extends Component {
             })
         }
     }
+    handleChangeReportResponsibleEmployees = (value) => {
 
+        this.setState(state => {
+            return {
+                ...state,
+                newReport: {
+                    ...this.state.newReport,
+                    responsibleEmployees: value,
+                }
+            }
+        })
+    }
+    handleChangeReportAccountableEmployees = (value) => {
+
+        this.setState(state => {
+            return {
+                ...state,
+                newReport: {
+                    ...this.state.newReport,
+                    accountableEmployees: value,
+                }
+            }
+        })
+
+    }
     /**
      * Xử lý hiện form view
      */
-    handleView = async () => {
+    handleView = () => {
+        // if (this.isFormValidated()) {
+        // }
+        let data = {
+            accountableEmployees: this.state.newReport.accountableEmployees,
+            responsibleEmployees: this.state.newReport.responsibleEmployees,
+            calulator: this.state.newReport.calulator,
+            chartType: this.state.newReport.chartType,
+            coefficient: this.state.newReport.coefficient,
+            descriptionTaskReport: this.state.newReport.descriptionTaskReport,
+            endDate: this.state.newReport.endDate,
+            filterCondition: this.state.newReport.filterCondition,
+            frequency: this.state.newReport.frequency,
+            nameTaskReport: this.state.newReport.nameTaskReport,
+            newName: this.state.newReport.newName,
+            organizationalUnit: this.state.newReport.organizationalUnit,
+
+            startDate: this.state.newReport.startDate,
+            status: this.state.newReport.status,
+            taskTemplate: this.state.newReport.taskTemplate,
+            showInReport: this.state.showInReport,
+        }
+        let listCheck = [];
+        for (const i of this.state.showInReport) {
+            listCheck = [...listCheck, i]
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                newReport: {
+                    ...this.state.newReport,
+                    listCheckBox: listCheck,
+                }
+            }
+        }, () => console.log('state', this.state.newReport))
+        this.props.getTaskEvaluations(data);
+
         window.$('#modal-view-taskreport').modal('show');
     }
     /**
@@ -395,20 +466,29 @@ class TaskReportCreateForm extends Component {
             this.props.createTaskReport(this.state);
         }
     }
+    handleChangeChecked = (item) => {
+
+        if (this.checkedCheckbox.has(item)) {
+            this.checkedCheckbox.delete(item);
+        } else {
+            this.checkedCheckbox.add(item);
+        }
+        this.setState({
+            showInReport: this.checkedCheckbox,
+        })
+
+    }
     componentDidMount() {
         this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getAllTask();
-
-
     }
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
-        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport, listInfo } = this.state;
+        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport } = this.state;
         let listTaskTemplate, units, listTemplateReport;
-
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
@@ -446,10 +526,10 @@ class TaskReportCreateForm extends Component {
                     styleCustom={{ borderBottom: '3px solid #ecf0f5', background: '#efefef' }}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm />
+                    <TaskReportViewForm passState={newReport.listCheckBox} />
                     <div className="row">
                         <div className="col-md-12">
-                            <a onClick={() => this.handleView()}><i className="material-icons">visibility</i></a>
+                            <a onClick={() => this.handleView()} style={{ cursor: 'pointer' }} title="Xem chi tiết"><i className="material-icons">visibility</i></a>
                         </div>
                     </div>
                     <div className="row">
@@ -471,7 +551,7 @@ class TaskReportCreateForm extends Component {
                                     <label>{translate('report_manager.name')}
                                         <span className="text-red">*</span>
                                     </label>
-                                    <input type="text" className="form-control" value={(newReport.nameTaskReport)} onChange={this.handleNameTaskReportChange} placeholder="Nhập tên báo cáo" />
+                                    <input type="Name" className="form-control" value={(newReport.nameTaskReport)} onChange={this.handleNameTaskReportChange} placeholder="Nhập tên báo cáo" />
                                     <ErrorLabel content={errorOnNameTaskReport} />
                                 </div>
 
@@ -509,12 +589,11 @@ class TaskReportCreateForm extends Component {
                                         onChange={this.handleChangeStatus}
                                         items={
                                             [
-                                                { value: "all", text: 'Tất cả' },
-                                                { value: "Finished", text: 'Đã hoàn thành' },
-                                                { value: "Inprocess", text: 'Đang thực hiện' },
+                                                { value: "0", text: 'Tất cả' },
+                                                { value: "1", text: 'Đã hoàn thành' },
+                                                { value: "2", text: 'Đang thực hiện' },
                                             ]
                                         }
-                                        onChange={this.handleRoleChange}
                                         multiple={false}
                                     />
                                 </div>
@@ -612,7 +691,6 @@ class TaskReportCreateForm extends Component {
                                         <th>Kiểu dữ liệu</th>
                                         <th>Điều kiện lọc</th>
                                         <th>Hiển thị trong báo cáo</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}> Hệ số</th>
                                         <th>Tên mới</th>
                                         <th>Cách tính</th>
                                         <th>Dạng biểu đồ</th>
@@ -623,7 +701,6 @@ class TaskReportCreateForm extends Component {
                                         (listTemplateReport) ? listTemplateReport.map((item1) => (
                                             item1.taskInformations.map((item2, index) => (
                                                 <tr key={index}>
-                                                    {console.log('item', item2)}
                                                     <td>{item2.name}</td>
                                                     <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
                                                     <td><input style={{ width: '100%' }} type="text" onChange={this.handleChangeFilter} /></td>
@@ -631,14 +708,18 @@ class TaskReportCreateForm extends Component {
                                                         {(item2.type === 'Number') ?
                                                             <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                                                 <label>
-                                                                    <input type="checkbox" onChange={() => this.handleChecked()} />
+                                                                    <input name="showInReport" type="checkbox" value={item2.name} onChange={() => this.handleChangeChecked(item2.name)} />
                                                                 </label>
                                                             </div>
                                                             : ''
                                                         }
                                                     </td>
-                                                    <td><input style={{ width: '100%' }} type="number" value={newReport.coefficient} onChange={this.handleChangeCoefficient} /></td>
-                                                    <td><input style={{ width: '100%' }} type="text" onChange={this.handleChangeNewName} /></td>
+                                                    <td>
+                                                        {(item2.type === 'Number') ?
+                                                            <input style={{ width: '100%' }} type="text" onChange={this.handleChangeNewName} /> : ''
+                                                        }
+
+                                                    </td>
                                                     <td>
                                                         {(item2.type === 'Number') ?
                                                             <SelectBox
@@ -648,10 +729,7 @@ class TaskReportCreateForm extends Component {
                                                                 onChange={this.handleChangeCalulator}
                                                                 items={
                                                                     [
-                                                                        { value: '', text: '-chọn-' },
-                                                                        { value: '0', text: 'Trung bình cộng' },
-                                                                        { value: '1', text: 'Tổng' },
-
+                                                                        { value: '1', text: 'Trung bình cộng' },
                                                                     ]
                                                                 }
                                                                 multiple={false}
@@ -700,6 +778,7 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllTask: taskManagementActions.getAll,
+    getTaskEvaluations: taskManagementActions.getTaskEvaluations,
 }
 const createForm = connect(mapState, actionCreators)(withTranslate(TaskReportCreateForm));
 

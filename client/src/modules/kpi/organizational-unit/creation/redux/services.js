@@ -28,7 +28,7 @@ export const createUnitKpiServices = {
  */
 function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/roles/${roleId}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${roleId}`,
         method: 'GET',
         params: { organizationalUnitId: organizationalUnitId, month: month },
     }, false, true, 'kpi.organizational_unit');
@@ -65,22 +65,25 @@ function addTargetKPIUnit(newTarget) {
 }
 
 // Chỉnh sửa KPI đơn vị
-function editKPIUnit(id, newKPI) {
+function editKPIUnit(kpiId, newKPI) {
     var userId = getStorage("userId");
     newKPI = {...newKPI, creator: userId};
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiId}`,
         method: 'PATCH',
         data: newKPI
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
 // Chỉnh sửa trạng thái của KPI đơn vị
-function editStatusKPIUnit(id, status) {
+function editStatusKPIUnit(kpiId, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/${id}/${status}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiId}/status-kpi`,
         method: 'PATCH',
+        params: {
+            status: status,
+        }
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
@@ -96,9 +99,9 @@ function editTargetKPIUnit(id, newTarget) {
 
 
 // Xóa KPI đơn vị
-function deleteKPIUnit(id) {
+function deleteKPIUnit(kpiId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiId}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
@@ -107,7 +110,7 @@ function deleteKPIUnit(id) {
 function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     let kpiunit = organizationalUnitKpiSetId
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/${kpiunit}/organizational-unit-kpis/${id}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiunit}/organizational-unit-kpis/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }

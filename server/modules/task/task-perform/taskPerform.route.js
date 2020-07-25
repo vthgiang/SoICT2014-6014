@@ -20,7 +20,7 @@ router.post('/tasks/:taskId/upload-files', auth, uploadFile([{ name: 'files', pa
 
 
 //Task Action
-router.get('/task/:taskId/task-actions', auth, PerformTaskController.confirmAction);
+router.get('/tasks/:taskId/task-actions', auth, PerformTaskController.confirmAction);
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId/delete', auth, PerformTaskController.deleteTaskAction);

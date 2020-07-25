@@ -40,15 +40,24 @@ function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, e
 /** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
 function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-of-child-organizational-unit/${roleId}/${startDate}/${endDate}`,
-        method: 'GET'
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-of-child-organizational-unit`,
+        method: 'GET',
+        params: {
+            roleId: roleId,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, false)
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-set-in-organizational-unit/${organizationalUnitId}/${month}`,
-        method: 'GET'
+        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-set-in-organizational-unit`,
+        method: 'GET',
+        params: {
+            month: month,
+            organizationalUnitId: organizationalUnitId,
+        }
     }, false, false)
 }
