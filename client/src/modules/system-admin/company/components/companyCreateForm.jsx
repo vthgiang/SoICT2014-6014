@@ -46,14 +46,15 @@ class CompanyCreateForm extends Component {
         }
     }
 
-    checkAll = (e) => {
+    checkAll = async (e) => {
         const {checked} = e.target;
-        if(checked){
-            this.setState({
+
+        if (checked) {
+            await this.setState({
                 linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
             })
-        }else{
-            this.setState({
+        } else {
+            await this.setState({
                 linkDefaultArr: []
             })
         }
@@ -89,19 +90,22 @@ class CompanyCreateForm extends Component {
         if (checked) {
             for (const element of systemLinks.list) {
                 if (element.category === link.category) {
-                    await this.setState({
-                        linkDefaultArr: [
-                            ...this.state.linkDefaultArr,
-                            element._id
-                        ]
-                    });
+                    // Nếu phần tử đó chưa tồn tại thì mới thêm vào state
+                    if (this.state.linkDefaultArr.indexOf(element._id) === -1){
+                        await this.setState({
+                            linkDefaultArr: [
+                                ...this.state.linkDefaultArr,
+                                element._id
+                            ]
+                        });
+                    }
                 }
             }
         } else {
             for (const element of systemLinks.list) {
                 if (element.category === link.category) {
                     const arr = this.state.linkDefaultArr;
-                    const index = arr.indexOf(element);
+                    const index = arr.indexOf(element._id);
 
                     arr.splice(index,1);
                     await this.setState({
@@ -113,6 +117,8 @@ class CompanyCreateForm extends Component {
     }
 
     save = () => {
+        console.log(this.state.linkDefaultArr);
+        
         const company = {
             name: this.state.companyName, 
             shortName: this.state.companyShortName, 
