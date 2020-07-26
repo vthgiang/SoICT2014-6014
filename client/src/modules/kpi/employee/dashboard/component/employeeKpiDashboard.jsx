@@ -121,7 +121,7 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                            <div class="box-title">{translate('kpi.evaluation.dashboard.result_kpi_personal')}</div>
+                            <div className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_personal')}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <div className="form-inline">
@@ -162,7 +162,7 @@ class DashBoardEmployeeKpiSet extends Component {
                     <div className="col-xs-12">
                         <div className=" box box-primary">
                             <div className="box-header with-border">
-                                <div class="box-title">{translate('kpi.evaluation.dashboard.distribution_kpi_personal')}</div>
+                                <div className="box-title">{translate('kpi.evaluation.dashboard.distribution_kpi_personal')}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <DistributionOfEmployeeKpiChart/>
