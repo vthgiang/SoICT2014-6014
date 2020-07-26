@@ -312,27 +312,29 @@ class TaskStatusChart extends Component {
             <React.Fragment>
                 <div className="box-body qlcv">
                     <section className="form-inline">
-                        <label>{translate('task.task_management.role')}</label>
-                        <SelectBox
-                            id={`roleOfStatusTaskSelectBox`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={this.ROLE_SELECTBOX}
-                            multiple={false}
-                            onChange={this.handleSelectRole}
-                            value={this.ROLE_SELECTBOX[0].value}
-                        />
-                    </section>
-
-                    <section className="form-inline">
                         <div className="form-group">
-                            <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                            <label>{translate('task.task_management.month')}</label>
                             <DatePicker
                                 id="monthInStatusTask"
                                 dateFormat="month-year"             
                                 value={defaultMonth}                    
                                 onChange={this.handleSelectMonth}
                                 disabled={false}                   
+                            />
+                        </div>
+                    </section>
+
+                    <section className="form-inline">
+                        <div className="form-group">
+                            <label>{translate('task.task_management.role')}</label>
+                            <SelectBox
+                                id={`roleOfStatusTaskSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.ROLE_SELECTBOX}
+                                multiple={false}
+                                onChange={this.handleSelectRole}
+                                value={this.ROLE_SELECTBOX[0].value}
                             />
                         </div>
                         <div className="form-group">

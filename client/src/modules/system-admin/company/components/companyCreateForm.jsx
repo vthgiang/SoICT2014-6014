@@ -334,7 +334,7 @@ class CompanyCreateForm extends Component {
                                                                     onChange={ (e) => this.handleCategoryCheckbox(e, link) } 
                                                                 />
                                                             </td>
-                                                            <td>{ link.category }</td>
+                                                            <th>{ link.category }</th>
                                                             <td>{ link.url }</td>
                                                             <td>{ link.description }</td>
                                                         </tr>
