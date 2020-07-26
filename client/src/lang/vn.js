@@ -1693,6 +1693,7 @@ export default {
 
                 from: 'Từ tháng',
                 to: 'Đến tháng',
+                month: 'Tháng',
                 prev: 'Trước',
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',

@@ -1529,6 +1529,7 @@ export default {
 
                 from: 'From',
                 to: 'To',
+                month: 'Month',
                 prev: 'Prev',
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',

@@ -387,7 +387,7 @@ class DomainOfTaskResultsChart extends Component {
             <React.Fragment>
                 <section className="form-inline">
                     <div className="col-sm-6 col-xs-12 form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                        <label>{translate('task.task_management.from')}</label>
                         <DatePicker
                             id="monthStartInDomainOfTaskResults"
                             dateFormat="month-year"             
@@ -397,7 +397,7 @@ class DomainOfTaskResultsChart extends Component {
                         />
                     </div>
                     <div className="col-sm-6 col-xs-12 form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                        <label>{translate('task.task_management.to')}</label>
                         <DatePicker
                             id="monthEndInDomainOfTaskResults"
                             dateFormat="month-year"             
