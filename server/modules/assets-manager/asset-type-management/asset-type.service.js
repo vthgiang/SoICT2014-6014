@@ -107,7 +107,7 @@ exports.getAssetTypes = async (company) => {
             value: type._id.toString(),
             label: type.typeName,
             title: type.typeName,
-            parent_id: type.parent !== undefined ? type.parent.toString() : null
+            parent_id: type.parent? type.parent.toString() : null
         }
     });
     const tree = await arrayToTree(dataConverted, {});
