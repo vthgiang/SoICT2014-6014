@@ -12,7 +12,7 @@ class ImportFileExcel extends Component {
 
     // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
-        const { configData } = this.state;
+        const { configData } = this.props;
         let sheets = configData.sheets;
         let file = e.target.files[0];
 
@@ -83,16 +83,6 @@ class ImportFileExcel extends Component {
                 })
                 this.props.handleImportExcel(importData);
             };
-        }
-    }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                configData: nextProps.configData,
-                id: nextProps.id
-            }
-        } else {
-            return null
         }
     }
 

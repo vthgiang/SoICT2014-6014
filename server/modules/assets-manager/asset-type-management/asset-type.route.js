@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { auth } = require('../../../middleware');
-
 const AssetTypeController = require("./asset-type.controller");
 
 /**
@@ -29,3 +28,10 @@ router.get('/checkTypeNumber/:typeNumber', auth, AssetTypeController.checkTypeNu
 
 module.exports = router;
 
+// Danh mục văn bản - domain
+router.get("/types", auth, AssetTypeController.getAssetTypes);
+router.get("/types/:id", auth, AssetTypeController.showAssetType);
+router.post("/types", auth, AssetTypeController.createAssetTypes);
+router.post("/types/delete-many", auth, AssetTypeController.deleteManyAssetType);
+router.patch("/types/:id", auth, AssetTypeController.editAssetType);
+router.delete("/types/:id", auth, AssetTypeController.deleteAssetTypes);

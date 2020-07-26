@@ -18,3 +18,5 @@ export * from './src/content-maker/contentMaker';
 export * from './src/tree/tree';
 export * from './src/tree-select';
 export * from './src/import-excel/importFileExcel';
+export * from './src/import-excel/showImportData';
+export * from './src/import-excel/configImportFile';

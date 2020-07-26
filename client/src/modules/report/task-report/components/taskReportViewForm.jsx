@@ -23,6 +23,17 @@ class TaskReportViewForm extends Component {
     render() {
         const { tasks, user, passState, reports, translate } = this.props;
         let listTaskInfo = tasks.listTaskEvaluations;
+        let titlePassState, headTable = [];
+        if (passState && listTaskInfo && listTaskInfo.length !== 0) {
+            titlePassState = listTaskInfo[0];
+            titlePassState.taskInformations.forEach(ii => {
+                if (passState.find(x => x === ii.name)) {
+                    headTable = [...headTable, ii.name];
+                }
+            })
+            console.log(headTable);
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -61,16 +72,27 @@ class TaskReportViewForm extends Component {
                                     <th style={{ width: '120px', textAlign: 'center' }}>
                                         Trạng thái công việc
                                     </th>
-                                    {
-                                        (passState && tasks && listTaskInfo) && listTaskInfo.map(i => (
-                                            i.taskInformations.map((ii, key) => {
-                                                if (passState.includes(`${ii.name}`) === true) {
-                                                    return <th key={key} style={{ width: '120px', textAlign: 'center' }}>
-                                                        {ii.name}
-                                                    </th>
-                                                }
-                                            })
-                                        ))
+                                    {headTable && headTable.map((x, key) => (<th key={key}>{x}</th>))
+
+                                        // (passState && tasks && titlePassState) && titlePassState.forEach((i, key) => {
+                                        //     console.log(i);
+                                        //     console.log(passState);
+                                        //     let name = null;
+                                        //     // i.taskInformations.forEach(ii => {
+                                        //     //     if (passState.includes(ii.name) === true) {
+                                        //     //         name = ii.name;
+
+                                        //     //     }
+                                        //     // })
+                                        //     // return <th key={key} style={{ width: '120px', textAlign: 'center' }}>
+                                        //     //     {name}
+                                        //     // </th>
+                                        // })
+                                        // (passState && passState.map((i, key) => (
+                                        //     <th key={key} style={{ width: '120px', textAlign: 'center' }}>
+                                        //         {i}
+                                        //     </th>
+                                        // )))
                                     }
                                 </tr>
                             </thead>

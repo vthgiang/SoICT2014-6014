@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const AssetTypeSchema = new Schema({
@@ -37,4 +38,7 @@ const AssetTypeSchema = new Schema({
         default: Date.now
     }
 });
+
+AssetTypeSchema.plugin(mongoosePaginate);
+
 module.exports = AssetType = mongoose.model("asset_type", AssetTypeSchema);

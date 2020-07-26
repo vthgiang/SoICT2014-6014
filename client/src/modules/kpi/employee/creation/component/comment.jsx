@@ -8,7 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import {performTaskAction} from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../redux/actions';
 import moment from 'moment';
-
+ 
 class Comment extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
@@ -32,14 +32,14 @@ class Comment extends Component {
                 description: '',
                 files: [],
             }
-            
+ 
         }
         this.newComment = [];
         this.newCommentOfComment = []
     }
-
+ 
     handleEditTaskComment =  (id) => {
-        
+ 
         this.setState(state => {
             return {
                 ...state,
@@ -47,7 +47,7 @@ class Comment extends Component {
             }
         })
     }
-
+ 
     handleShowChildComment = async (id) => {
         var showChildComment = this.state.showChildComment;
         if (showChildComment === id) {
@@ -65,9 +65,9 @@ class Comment extends Component {
                 }
             })
         }
-
+ 
     }
-
+ 
     handleShowFile =  (id) => {
         var a
         if(this.state.showfile.some(obj => obj === id)){
@@ -87,8 +87,8 @@ class Comment extends Component {
             })
         }
     }
-
-
+ 
+ 
     handleEditComment = async (id) => {
         await this.setState(state => {
             return {
@@ -97,7 +97,7 @@ class Comment extends Component {
             }
         })
     }
-
+ 
     handleEditCommentOfComment = async(id) => {
         await this.setState(state => {
             return {
@@ -230,7 +230,15 @@ class Comment extends Component {
                             <React.Fragment>
                                 <div className="content-level1">
                                     <a style={{cursor : "pointer"}}>{item.creator.name} </a>
-                                    {item.description}
+                                    {item.description.split('\n').map((item, idx) => {
+                                        return (
+                                            <span key={idx}>
+                                                {item}
+                                                <br />
+                                            </span>
+                                        );
+                                    })
+                                    }
                                     {item.creator._id === currentUser &&
                                     <div className="btn-group pull-right">
                                         <span data-toggle="dropdown">
@@ -244,12 +252,12 @@ class Comment extends Component {
                                 </div>
                                 <ul className="list-inline tool-level1">
                                     <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
-                                    
+ 
                                     <li><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')} ({item.comments.length}) &nbsp;</a></li>
                                     {item.files.length> 0 &&
                                     <React.Fragment>
                                     <li style={{display:"inline-table"}}>
-                                    <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
+                                    <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                     {this.state.showfile.some(obj => obj === item._id ) &&
                                         <li style={{display:"inline-table"}}>{item.files.map(elem => {
                                             return <div><a style={{cursor : "pointer"}} onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
@@ -260,7 +268,7 @@ class Comment extends Component {
                                 </ul>
                             </React.Fragment>
                             }
-
+ 
                             {/*Chỉnh sửa nội dung trao đổi của công việc */}
                             {editComment === item._id &&
                                 <div>
@@ -285,20 +293,28 @@ class Comment extends Component {
                                     <div className="tool-level1">
                                     </div>
                                 </div>}
-                            
+ 
                             {/* Hiển thị bình luận cho bình luận */}
                             {showChildComment === item._id &&
                                 <div className="comment-content-child">
                                     {item.comments.map(child => {
                                         return <div key={child._id}>
                                             <img className="user-img-level2" src={(LOCAL_SERVER_API+item.creator.avatar)} alt="User Image" />
-                                            
+ 
                                             {editCommentOfComment !== child._id && // Đang edit thì ẩn đi
                                             <div>
                                                 <p className="content-level2">
                                                     <a style={{cursor : "pointer"}}>{child.creator.name} </a>
-                                                    {child.description}
-
+                                                    {child.description.split('\n').map((item, idx) => {
+                                                        return (
+                                                            <span key={idx}>
+                                                                {item}
+                                                                <br />
+                                                            </span>
+                                                        );
+                                                    })
+                                                    }
+ 
                                                     {child.creator._id === currentUser &&
                                                     <div className="btn-group pull-right">
                                                         <span data-toggle="dropdown">
@@ -315,7 +331,7 @@ class Comment extends Component {
                                                         {child.files.length> 0 &&
                                                         <React.Fragment>
                                                         <li style={{display:"inline-table"}}>
-                                                        <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                        <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                         {this.state.showfile.some(obj => obj === child._id ) &&
                                                             <li style={{display:"inline-table"}}>
                                                             {child.files.map(elem => {
@@ -327,7 +343,7 @@ class Comment extends Component {
                                                 </ul>
                                             </div>
                                             }
-
+ 
                                             {/* Sửa bình luận của bình luận */}
                                             {editCommentOfComment === child._id &&
                                                 <div>
@@ -342,7 +358,7 @@ class Comment extends Component {
                                                         <li><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={(e) => this.handleEditCommentOfComment(e)}>Hủy bỏ</a></li>
                                                     </ul>
                                                     <div className="tool-level2">
-                                                        
+ 
                                                     </div>
                                                 </div>
                                             }
@@ -397,7 +413,7 @@ class Comment extends Component {
         );
     }
 }
-
+ 
 function mapState(state) {
     const {auth} = state;
     return {auth};
@@ -412,5 +428,5 @@ const actionCreators = {
     deleteCommentOfComment: createKpiSetActions.deleteCommentOfComment
 };
 const comment = connect(mapState, actionCreators)(withTranslate(Comment));
-
+ 
 export { comment as Comment }

@@ -1,4 +1,5 @@
 const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole, ImportConfiguraion } = require('../../../models').schema;
+
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -73,14 +74,14 @@ exports.createCompany = async (data) => {
 exports.editCompany = async (id, data) => {
     
     const company = await Company.findById(id);
-    if(company === null) throw ['company_not_found'];
+    if (!company) throw ['company_not_found'];
 
     company.name = data.name;
     company.description = data.description;
     company.shortName = data.shortName;
     company.log = data.log;
 
-    if(data.active !== null) company.active = data.active;
+    if (data.active) company.active = data.active;
 
     await company.save();
 
@@ -129,7 +130,7 @@ exports.createCompanyRootRoles = async (companyId) => {
 exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmail) => {
     
     const checkEmail = await User.findOne({ email: userEmail });
-    if(checkEmail) throw ['email_exist'];
+    if (checkEmail) throw ['email_exist'];
     
     const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
     const salt = await bcrypt.genSaltSync(10);
@@ -214,14 +215,14 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
         for (let j = 0; j < systemLinks.length; j++) {
             const systemLink = systemLinks[j];
 
-            if(link.url === systemLink.url){
+            if (link.url === systemLink.url) {
                 for (let x = 0; x < systemLink.roles.length; x++) {
                     const rootRole = systemLink.roles[x];
                     
                     for (let y = 0; y < roleArr.length; y++) {
                         const role = roleArr[y];
                         
-                        if(role.name === rootRole.name){
+                        if (role.name === rootRole.name) {
                             dataPrivilege.push({
                                 resourceId: link._id,
                                 resourceType: 'Link',

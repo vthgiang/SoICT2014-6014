@@ -20,7 +20,7 @@ class CreateLinkForm extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllRootRoles();
     }
 
@@ -42,12 +42,12 @@ class CreateLinkForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xy ly va validate role name
     handleDescription = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateDescription(value, true);
     }
 
@@ -63,7 +63,7 @@ class CreateLinkForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     handleCategory = (value) => {
@@ -106,7 +106,7 @@ class CreateLinkForm extends Component {
 
     render() { 
         const { translate, rootRoles, systemLinks } = this.props;
-        const { linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError } = this.state;
+        const { linkUrlError, linkDescriptionError } = this.state;
         
         return ( 
             <React.Fragment>
