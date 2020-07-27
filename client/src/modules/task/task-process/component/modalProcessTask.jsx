@@ -224,7 +224,7 @@ class ModalProcessTask extends Component {
             xmlDiagram : this.state.xmlDiagram,
             infoTask: this.state.info
         }
-        this.props.exportXmlDiagram(data)
+        this.props.createXmlDiagram(data)
     }
     exportDiagram = () => {
         
@@ -315,7 +315,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    exportXmlDiagram : TaskProcessActions.exportXmlDiagram
+    createXmlDiagram : TaskProcessActions.createXmlDiagram
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

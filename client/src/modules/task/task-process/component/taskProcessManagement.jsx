@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ModalProcessTask } from './modalProcessTask'
+import { TaskProcessActions } from '../redux/actions';
 class TaskProcessManagement extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +12,9 @@ class TaskProcessManagement extends Component {
   }
   showProcess = () => {
     window.$(`#modal-process`).modal("show");
+  }
+  componentDidMount = () => {
+    this.props.getAllXmlDiagram()
   }
   render() {
     const { translate } = this.props
@@ -80,35 +84,6 @@ class TaskProcessManagement extends Component {
                   </a>
                 </td>
               </tr>
-
-              {/* {
-              (typeof list !== 'undefined' && list.length !== 0) ?
-                list.map(item => item &&
-                  <tr key={item._id}>
-                    <td title={item.name}>{item.name}</td>
-                    <td title={item.description}>{item.description}</td>
-                    <td title={item.numberOfUse}>{item.numberOfUse}</td>
-                    <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
-                    <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
-                    <td>
-                      <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                        <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
-                      </a>
-                      {this.checkPermisson(item.organizationalUnit.deans) &&
-                        <React.Fragment>
-                          <a onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
-                            <i className="material-icons">edit</i>
-                          </a>
-                          <a onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
-                            <i className="material-icons"></i>
-                          </a>
-                        </React.Fragment>
-                      }
-                    </td>
-                  </tr>
-                ) :
-                <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
-            } */}
             </tbody>
           </table>
           {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
@@ -126,9 +101,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-  // getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-  // getDepartment: UserActions.getDepartmentOfUser,
-  // _delete: taskTemplateActions._delete
+  getAllXmlDiagram : TaskProcessActions.getAllXmlDiagram
 };
-const connectedTaskProcessManagement = connect(null, null)(withTranslate(TaskProcessManagement));
+const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
 export { connectedTaskProcessManagement as TaskProcessManagement };
