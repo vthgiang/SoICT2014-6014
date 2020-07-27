@@ -3,7 +3,7 @@ const router = express.Router();
 const LogControllers = require('./log.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/get-log-state", auth, LogControllers.getLogState);
-router.patch("/toggle-log-state", auth, LogControllers.toggleLogState);
+router.get("/log/logs/logs", auth, LogControllers.getLogState);
+router.patch("/log/logs/logs", auth, LogControllers.toggleLogState);
 
 module.exports = router;

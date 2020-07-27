@@ -64,7 +64,7 @@ exports.data = [
     { path: '/company/company/import-configuraions/import-file/create', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/company/company/import-configuraions/import-file/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/roles-default-management', method: 'GET', roles: ['System Admin'] },
+    { path: '/root-role/root-role/root-roles/root-roles', method: 'GET', roles: ['System Admin'] },
     { path: '/links-default-management/categories', method: 'GET', roles: ['System Admin'] },
     { path: '/links-default-management', method: 'GET', roles: ['System Admin'] },
     { path: '/links-default-management', method: 'POST', roles: ['System Admin'] },
@@ -72,8 +72,8 @@ exports.data = [
     { path: '/links-default-management/:id', method: 'GET', roles: ['System Admin'] },
     { path: '/links-default-management/:id', method: 'PATCH', roles: ['System Admin'] },
     { path: '/links-default-management/:id', method: 'DELETE', roles: ['System Admin'] },
-    { path: '/log/get-log-state', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/log/toggle-log-state', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/log/log/logs/logs', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/log/log/logs/logs', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
 
     { path: '/user', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
