@@ -64,6 +64,7 @@ import { TaskManagement } from "../modules/task/task-management/component/taskMa
 import {TaskComponent} from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
+import { TaskProcess } from '../modules/task/task-process/component/taskProcess'
 
 //asset
 import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
@@ -722,7 +723,7 @@ class Routes extends Component {
                         path={ '/task-management-process' }
                         pageName ={ 'task_management_process' }
                         layout={ Layout }
-                        component={ TaskDashboard }
+                        component={ TaskProcess }
                     />
                     {/** Quản lý tài sản */}
                     {/** Nhân viên */}
