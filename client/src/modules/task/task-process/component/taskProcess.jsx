@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
+import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 class TaskProcess extends Component {
   render() {
+    const { translate } = this.props
     return (
-      <div>
+      <div className="box qlcv">
         <div className="form-inline">
           <div className="form-group">
             <label className="form-control-static">{translate('task_template.name')}</label>
@@ -15,13 +17,13 @@ class TaskProcess extends Component {
         <div className="form-inline">
           <div className="form-group">
             <label className="form-control-static">{translate('task_template.unit')}</label>
-            {units &&
+            {/* {units &&
               <SelectMulti id="multiSelectUnit"
                 defaultValue={units.map(item => { return item._id })}
                 items={units.map(item => { return { value: item._id, text: item.name } })}
                 options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
               </SelectMulti>
-            }
+            } */}
             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
           </div>
         </div>
@@ -30,12 +32,10 @@ class TaskProcess extends Component {
           columnArr={[
             'Tên mẫu công việc',
             'Mô tả',
-            'Số lần sử dụng',
             'Người tạo mẫu',
-            'Đơn vị'
           ]}
-          limit={this.state.perPage}
-          setLimit={this.setLimit}
+          limit={5}
+          // setLimit={t}
           hideColumnOption={true}
         />
 
@@ -52,7 +52,11 @@ class TaskProcess extends Component {
             </tr>
           </thead>
           <tbody className="task-table">
-            {
+          <tr>
+            <td>Thành đẹp trai</td>
+          </tr>
+
+            {/* {
               (typeof list !== 'undefined' && list.length !== 0) ?
                 list.map(item => item &&
                   <tr key={item._id}>
@@ -79,10 +83,10 @@ class TaskProcess extends Component {
                   </tr>
                 ) :
                 <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
-            }
+            } */}
           </tbody>
         </table>
-        <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
+        {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
       </div>
     );
   }
@@ -96,9 +100,9 @@ function mapState(state) {
 }
 
 const actionCreators = {
-  getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-  getDepartment: UserActions.getDepartmentOfUser,
-  _delete: taskTemplateActions._delete
+  // getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
+  // getDepartment: UserActions.getDepartmentOfUser,
+  // _delete: taskTemplateActions._delete
 };
 const connectedTaskProcess = connect(mapState, actionCreators)(withTranslate(TaskProcess));
 export { connectedTaskProcess as TaskProcess };
