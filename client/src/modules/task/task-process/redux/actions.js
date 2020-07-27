@@ -3,7 +3,8 @@ import { TaskProcessConstants } from './constants';
 export const TaskProcessActions = {
   createXmlDiagram,
   getAllXmlDiagram,
-  getXmlDiagramById
+  getXmlDiagramById,
+  editXmlDiagram
 };
 
 
@@ -38,6 +39,17 @@ function createXmlDiagram(diagramId, data) {
       .then(
         res => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_FAIL })
+      );
+  };
+}
+
+function editXmlDiagram(diagramId, data) {
+  return dispatch => {
+    dispatch({ type: TaskProcessConstants.EDIT_XML_DIAGRAM_REQUEST });
+    TaskProcessService.editXmlDiagram(diagramId, data)
+      .then(
+        res => dispatch({ type: TaskProcessConstants.EDIT_XML_DIAGRAM_SUCCESS, payload: res.data }),
+        error => dispatch({ type: TaskProcessConstants.EDIT_XML_DIAGRAM_FAIL })
       );
   };
 }

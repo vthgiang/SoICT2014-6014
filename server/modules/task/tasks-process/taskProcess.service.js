@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 /**
  * Lấy tất cả xml diagram
  */
-exports.getAllXmlDiagram = () => {
+exports.getAllXmlDiagrams = () => {
   let data = TaskProcess.find();
   return data
 }
@@ -27,9 +27,25 @@ exports.createXmlDiagram = async (body) => {
   for (const x in body.infoTask) {
     info.push(body.infoTask[x])
   }
-  let data = await TaskProcess.create({
+  let data = TaskProcess.create({
     xmlDiagram: body.xmlDiagram,
     infoTask: info
   })
   return data;
+}
+exports.editXmlDiagram = async (params, body) => {
+  let info = [];
+  for (const x in body.infoTask) {
+    info.push(body.infoTask[x])
+  }
+  let data = await TaskProcess.findByIdAndUpdate(params.diagramId,
+    {
+      $set: {
+        xmlDiagram: body.createXmlDiagram,
+        infoTask: info
+      }
+    }
+  )
+  let data1 = await TaskProcess.findById(params.diagramId)
+  return data1;
 }

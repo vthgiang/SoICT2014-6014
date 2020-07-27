@@ -7,13 +7,13 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const TaskProcessService = {
   createXmlDiagram,
   getAllXmlDiagram,
-  getXmlDiagramById
+  getXmlDiagramById,
+  editXmlDiagram
 };
 
 
 /**
  * Lấy tất cả xml diagram
- *  
  */
 function getAllXmlDiagram() {
   return sendRequest({
@@ -33,12 +33,23 @@ function getXmlDiagramById(diagramId) {
 }
 /**
  * Lưu xml diagram
- * @param {*} data 
+ * @param {Object} data 
  */
 function createXmlDiagram(data) {
   return sendRequest({
       url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
       method: 'POST',
+      data: data
+  }, false, true, 'task.task_template');
+}
+/**
+ * Sửa xml diagram
+ * @param {Object} data 
+ */
+function editXmlDiagram(diagramId,data) {
+  return sendRequest({
+      url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}/edit`,
+      method: 'PATCH',
       data: data
   }, false, true, 'task.task_template');
 }

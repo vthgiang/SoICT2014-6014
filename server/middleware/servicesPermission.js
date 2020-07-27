@@ -341,9 +341,11 @@ exports.data = [
     { path: '/performtask/tasks/:taskId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/evaluate', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     //task process
-    { path: '/taskprocess/diagrams', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
     { path: '/taskprocess/diagrams', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskprocess/diagrams/:diagramId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskprocess/diagrams', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskprocess/diagrams/:diagramId/edit', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Module TaskTemplate
     { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
