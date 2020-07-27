@@ -86,19 +86,19 @@ class ImportFileExcel extends Component {
                     })
                     importData = importData.concat(data);
                 })
-                console.log(importData);
                 this.props.handleImportExcel(importData);
             };
         }
     }
 
     render() {
+        const { disabled = false } = this.props;
         return (
             <React.Fragment>
                 <label>File excel cần import</label>
                 <input type="file" className="form-control"
                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    onChange={this.handleChangeFileImport} />
+                    onChange={this.handleChangeFileImport} disabled={disabled} />
             </React.Fragment>
         )
     }

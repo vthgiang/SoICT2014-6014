@@ -9,7 +9,6 @@ class EmployeeImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // month: null,
             limit: 1,
             page: 0
         };
