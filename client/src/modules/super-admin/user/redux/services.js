@@ -84,6 +84,8 @@ function getAllUserOfCompany() {
 
 /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */ 
 function getAllUserOfDepartment(id) {
+    let params = id;
+    
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
