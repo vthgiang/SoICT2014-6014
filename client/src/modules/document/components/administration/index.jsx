@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import AdministrationDocumentCategories from './categories';
 import AdministrationDocumentDomains from './domains';
 import AdministrationDocumentListData from './list-data';
@@ -9,10 +10,12 @@ import AdministrationStatisticsReport from './statistics-report';
 class ManageDocument extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+
+         }
     }
     render() { 
-        const {translate} = this.props;
+        const { translate } = this.props;
         return ( 
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">

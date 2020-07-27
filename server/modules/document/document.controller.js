@@ -294,24 +294,24 @@ exports.getDocumentDomains = async (req, res) => {
 };
 
 exports.createDocumentDomain = async (req, res) => {
-    try {
+   // try {
+        console.log(req.body)
         const domain = await DocumentServices.createDocumentDomain(req.user.company._id, req.body);
-        
+
         await LogInfo(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
         res.status(200).json({
-            success: true,
             messages: ['create_document_domain_success'],
             content: domain
         });
-    } catch (error) {
-        
-        await LogError(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_document_domain_faile'],
-            content: error
-        });
-    }
+    // } catch (error) {
+
+    //     await LogError(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['create_document_domain_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.showDocumentDomain = (req, res) => {

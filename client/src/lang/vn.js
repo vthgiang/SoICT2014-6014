@@ -664,6 +664,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
+            task_management_process: "Danh sách quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -1619,11 +1620,31 @@ export default {
 
         task: {
             task_management: {
+                get_subtask_success: 'Lấy công việc con thành công',
+                get_task_of_informed_employee_success: 'Lấy công việc theo vai trò người quan sát thành công',
+                get_task_of_creator_success: 'Lấy công việc theo vai trò người tạo thành công',
+                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người hỗ trợ thành công',
+                get_task_of_accountable_employee_success: 'Lấy công việc theo vai trò người phê duyệt thành công',
+                get_task_of_responsible_employee_success: 'Lấy công việc theo vai trò người thực hiện',
+                get_tasks_by_role_success: 'Lấy công việc tảo bởi người dùng thành công',
+                get_task_by_id_success: 'Lấy công việc theo id thành công',
+                get_task_evaluation_success: 'Lấy thông tin đánh giá công việc thành công',
+                get_all_task_success: 'Lấy tất cả công việc thành công',
                 create_task_success: 'Tạo công việc mới thành công',
                 delete_success: 'Xóa công việc thành công',
                 edit_status_of_task_success: 'Chỉnh sửa trạng thái công việc thành công',
                 edit_status_archived_of_task_success: 'Chỉnh sửa trạng thái lưu kho của công việc thành công',
 
+                get_subtask_fail: 'Lấy công việc con thất bại',
+                get_task_of_informed_employee_fail: 'Lấy công việc theo vai trò người quan sát thất bại',
+                get_task_of_creator_fail: 'Lấy công việc theo vai trò người tạo thất bại',
+                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người hỗ trợ thất bại',
+                get_task_of_accountable_employee_fail: 'Lấy công việc theo vai trò người phê duyệt thất bại',
+                get_task_of_responsible_employee_fail: 'Lấy công việc theo vai trò người thực hiện thất bại',
+                get_tasks_by_role_fail: 'Lấy công việc tạo bởi người ',
+                get_task_by_id_fail: 'Lấy công việc theo id thất bại',
+                get_task_evaluation_fail: 'Lấy thông tin đánh giá công việc thất bại',
+                get_all_task_fail: 'Lấy tất cả công việc thất bại',
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
@@ -1903,6 +1924,13 @@ export default {
                 delete_comment_of_task_comment_success: 'Xóa bình luận thành công',
                 evaluation_action_success: 'Đánh giá hoạt động thành công',
                 confirm_action_success: 'Xác nhận hoạt động thành công',
+                delete_file_child_task_comment_success: "Xóa file của bình luận thành công",
+                upload_file_success: "Upload file thành công",
+                delete_file_success: "Xóa file của hoạt động thành công",
+                delete_file_comment_of_action_success: "Xóa file của bình luận thành công",
+                delete_file_task_comment_success: "Xóa file của bình luận thành công",
+                create_task_log_success:" Tạo task log thành công",
+                get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1932,6 +1960,13 @@ export default {
                 delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
                 evaluation_action_fail: 'Đánh giá công việc thất bại',
                 confirm_action_fail: 'Xác nhận hoạt động thất bại',
+                delete_file_child_task_comment_fail: "Xóa file của bình luận thất bại",
+                upload_file_fail: "Upload file thất bại",
+                delete_file_fail: "Xóa file của hoạt động thất bại",
+                delete_file_comment_of_action_fail: "Xóa file của bình luận thất bại",
+                delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
+                create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
+                get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',
