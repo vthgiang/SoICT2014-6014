@@ -257,7 +257,7 @@ class Comment extends Component {
                                     {item.files.length> 0 &&
                                     <React.Fragment>
                                     <li style={{display:"inline-table"}}>
-                                    <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
+                                    <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                     {this.state.showfile.some(obj => obj === item._id ) &&
                                         <li style={{display:"inline-table"}}>{item.files.map(elem => {
                                             return <div><a style={{cursor : "pointer"}} onClick={(e)=>this.requestDownloadFile(e,elem.url,elem.name)}> {elem.name} </a></div>
@@ -331,7 +331,7 @@ class Comment extends Component {
                                                         {child.files.length> 0 &&
                                                         <React.Fragment>
                                                         <li style={{display:"inline-table"}}>
-                                                        <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                        <div><a style={{cursor : "pointer"}} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                         {this.state.showfile.some(obj => obj === child._id ) &&
                                                             <li style={{display:"inline-table"}}>
                                                             {child.files.map(elem => {

@@ -266,7 +266,7 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
  * Xóa đơn vị
  * @departmentId id của đơn vị
  */
-exports.deleteOrganizationalUnit = async(departmentId) => {
+exports.deleteOrganizationalUnit = async (departmentId) => {
     const department = await OrganizationalUnit.findById(departmentId);
 
     const roles = await Role.find({
@@ -277,12 +277,12 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
         roleId: { $in: roles.map(role=>role._id)}
     });
     
-    if(userroles.length === 0){
+    if (userroles.length === 0) {
         await Role.deleteMany({
             _id: { $in: roles.map(role=>role._id)}
         });
 
-        if(department.parent){
+        if (department.parent) {
             await OrganizationalUnit.updateMany({ 
                 parent: department._id
             },{
@@ -291,9 +291,10 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
 
             return await OrganizationalUnit.deleteOne({ _id: departmentId });
         }
-    }else{
+    } else {
         throw ['department_has_user'];
     }
+    console.log(departmentId);
 }
 
 

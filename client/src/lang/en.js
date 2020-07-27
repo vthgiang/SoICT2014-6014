@@ -1529,6 +1529,7 @@ export default {
 
                 from: 'From',
                 to: 'To',
+                month: 'Month',
                 prev: 'Prev',
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
@@ -1576,7 +1577,7 @@ export default {
                 detail_general_info: 'General infomation',
                 detail_description: 'Description',
                 detail_info: 'Task infomation',
-                detail_progress: 'Progress',
+                detail_progress: 'Progress task',
                 detail_value: 'Value',
                 detail_not_hasinfo: 'Not has infomation',
                 detail_eval: 'Evaluation',

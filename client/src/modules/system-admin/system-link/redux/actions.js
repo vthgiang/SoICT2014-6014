@@ -95,11 +95,11 @@ function createSystemLink(link) {
     }
 }
 
-function editSystemLink(id, link) {
+function editSystemLink(id, data) {
     return dispatch => {
         dispatch({ type: SystemLinkConstants.EDIT_LINK_DEFAULT_REQUEST });
 
-        SystemLinkServices.editSystemLink(id, link)
+        SystemLinkServices.editSystemLink(id, data)
             .then(res => {
                 dispatch({
                     type: SystemLinkConstants.EDIT_LINK_DEFAULT_SUCCESS,

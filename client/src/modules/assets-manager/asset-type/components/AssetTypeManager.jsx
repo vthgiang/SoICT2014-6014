@@ -103,7 +103,8 @@ class AssetTypeManager extends Component {
             parseInt((this.props.assetType.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box">
+            // <div className="box">
+            <div id="assettype-table" className="tab-pane">
                 <div className="box-body qlcv">
                     <AssetTypeCreateForm />
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -197,10 +198,12 @@ function mapState(state) {
     return { assetType };
 };
 
+const mapStateToProps = state => state;
+
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     deleteAssetType: AssetTypeActions.deleteAssetType,
 };
 
-const connectedListAssetType = connect(mapState, actionCreators)(withTranslate(AssetTypeManager));
-export { connectedListAssetType as AssetTypeManager };
+export default connect(mapStateToProps, actionCreators)(withTranslate(AssetTypeManager));
+// export { connectedListAssetType as AssetTypeManager };

@@ -287,6 +287,7 @@ exports.deleteDocumentCategory = async(id) => {
  */
 exports.getDocumentDomains = async (company) => {
     const list = await DocumentDomain.find({ company });
+    console.log(list, 'list')
     const dataConverted = list.map( domain => {
         return {
             id: domain._id.toString(),
