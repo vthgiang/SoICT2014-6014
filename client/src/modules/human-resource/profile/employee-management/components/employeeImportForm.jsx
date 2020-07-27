@@ -5,14 +5,12 @@ import { DialogModal, ShowImportData, ImportFileExcel, ConFigImportFile, DatePic
 import { configurationEmployeeInfo } from './fileConfigurationImportEmployee';
 import { LOCAL_SERVER_API } from '../../../../../env';
 
-import XLSX from 'xlsx';
-
 class EmployeeImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             // month: null,
-            limit: 100,
+            limit: 1,
             page: 0
         };
     }
@@ -68,15 +66,6 @@ class EmployeeImportForm extends Component {
         })
     }
 
-
-    // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
-        await this.setState({
-            page: parseInt(page),
-        });
-    }
-
     render() {
         const { limit, page, importData, rowError, configData } = this.state;
         let configuration = configData ? configData : configurationEmployeeInfo;
@@ -120,7 +109,6 @@ class EmployeeImportForm extends Component {
                                     scrollTableWidth={1000}
                                     limit={limit}
                                     page={page}
-                                    setPage={this.setPage}
                                 />
                             </div>
                         </div>
