@@ -5,10 +5,10 @@ const { LogInfo, LogError } = require('../../../logs');
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
  */
 
-exports.getAllLinks = async (req, res) => {
+exports.getLinks = async (req, res) => {
     try {
         console.log("getalllink", req.query)
-        var links = await LinkService.getAllLinks(req.user.company._id, req.query);
+        var links = await LinkService.getLinks(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
