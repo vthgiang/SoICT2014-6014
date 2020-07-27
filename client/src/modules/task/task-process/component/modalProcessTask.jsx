@@ -5,6 +5,7 @@ import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { FormInfoTask } from "./formInfoTask";
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
+import './processDiagram.css'
 
 class ModalProcessTask extends Component {
 
