@@ -2,11 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
-class TaskProcess extends Component {
+import { ModalProcessTask } from './modalProcessTask'
+class TaskProcessManagement extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+
+  }
+  showProcess = () => {
+    window.$(`#modal-process`).modal("show");
+  }
   render() {
     const { translate } = this.props
     return (
-      <div className="box qlcv">
+      <div className="box">
+        <div className="box-body qlcv">
+          {<ModalProcessTask></ModalProcessTask>}
         <div className="form-inline">
           <div className="form-group">
             <label className="form-control-static">{translate('task_template.name')}</label>
@@ -43,18 +54,27 @@ class TaskProcess extends Component {
           <thead>
             <tr>
               <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>
-              <th title="Mô tả">{translate('task_template.description')}</th>
-              <th title="Số lần sử dụng">{translate('task_template.count')}</th>
-              <th title="Người tạo mẫu">{translate('task_template.creator')}</th>
-              <th title="Đơn vị">{translate('task_template.unit')}</th>
-
+              <th  title="Mô tả">{translate('task_template.description')}</th>
+              <th  title="Người tạo quy trình">{translate('task_template.creator')}</th>
               <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
             </tr>
           </thead>
           <tbody className="task-table">
-          <tr>
-            <td>Thành đẹp trai</td>
-          </tr>
+            <tr>
+              <td>Đỗ Tiến Thành</td>
+              <td>Đẹp trai</td>
+              <td>Hoàn hảo</td>
+              <td><a href="#abc" onClick= {() => {this.showProcess()}}  title={translate('task.task_template.view_detail_of_this_task_template')}>
+                <i className="material-icons">view_list</i>
+              </a>
+                <a  className="edit" title={translate('task_template.edit_this_task_template')}>
+                  <i className="material-icons">edit</i>
+                </a>
+                <a  className="delete" title={translate('task_template.delete_this_task_template')}>
+                  <i className="material-icons"></i>
+                </a>
+              </td>
+            </tr>
 
             {/* {
               (typeof list !== 'undefined' && list.length !== 0) ?
@@ -88,6 +108,7 @@ class TaskProcess extends Component {
         </table>
         {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
       </div>
+      </div>
     );
   }
 }
@@ -95,8 +116,8 @@ class TaskProcess extends Component {
 
 
 function mapState(state) {
-  const {  user, auth } = state;
-  return {  user, auth };
+  const { user, auth } = state;
+  return { user, auth };
 }
 
 const actionCreators = {
@@ -104,5 +125,5 @@ const actionCreators = {
   // getDepartment: UserActions.getDepartmentOfUser,
   // _delete: taskTemplateActions._delete
 };
-const connectedTaskProcess = connect(mapState, actionCreators)(withTranslate(TaskProcess));
-export { connectedTaskProcess as TaskProcess };
+const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
+export { connectedTaskProcessManagement as TaskProcessManagement };
