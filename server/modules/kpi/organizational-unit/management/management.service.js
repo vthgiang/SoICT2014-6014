@@ -1,7 +1,7 @@
-const Department = require('../../../../models/super-admin/organizationalUnit.model');
+const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
 const KPIUnit = require('../../../../models/kpi/organizationalUnitKpiSet.model');
 const DetailKPIUnit = require('../../../../models/kpi/organizationalUnitKpi.model');
-const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const EmployeeKPI = require('../../../../models/kpi/employeeKpi.model');
 const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
 
 const mongoose = require("mongoose");
@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 
 //Lấy tất cả KPI của đơn vị
 exports.getKPIUnits = async (data) => {
-    var department = await Department.findOne({
+    var department = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': data.roleId },
             { 'viceDeans': data.roleId },
