@@ -2,9 +2,9 @@ const UserService = require('./user.service');
 const { LogInfo, LogError } = require('../../../logs');
 const { Console } = require('winston/lib/winston/transports');
 
-exports.getAllUsers = async (req, res) => {
+exports.getUsers = async (req, res) => {
     try {
-        var users = await UserService.getAllUsers(req.user.company._id, req.query);
+        var users = await UserService.getUsers(req.user.company._id, req.query);
 
         LogInfo(req.user.email, 'GET_USERS', req.user.company);
         res.status(200).json({
@@ -111,48 +111,48 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
-    try {
-        const users = await UserService.getAllUsersInSameOrganizationalUnitWithUserRole(req.params.id);
+// exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
+//     try {
+//         const users = await UserService.getAllUsersInSameOrganizationalUnitWithUserRole(req.params.id);
 
-        LogInfo(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_users_same_department_success'],
-            content: users
-        })
-    } catch (error) {
+//         LogInfo(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_users_same_department_success'],
+//             content: users
+//         })
+//     } catch (error) {
         
-        LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_users_same_department_faile'],
-            content: error
-        })
-    }
-}
+//         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['get_users_same_department_faile'],
+//             content: error
+//         })
+//     }
+// }
 
-/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
-exports.getAllUsersInOrganizationalUnit = async (req, res) => {
-    try {
-        const users = await UserService.getAllUsersInOrganizationalUnit(req.params.id);
+// /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
+// exports.getAllUsersInOrganizationalUnit = async (req, res) => {
+//     try {
+//         const users = await UserService.getAllUsersInOrganizationalUnit(req.params.id);
 
-        LogInfo(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_users_of_department_success'],
-            content: users
-        })
-    } catch (error) {
+//         LogInfo(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_users_of_department_success'],
+//             content: users
+//         })
+//     } catch (error) {
         
-        LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_users_of_department_faile'],
-            content: error
-        })
-    }
-}
+//         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['get_users_of_department_faile'],
+//             content: error
+//         })
+//     }
+// }
 
 exports.getOrganizationalUnitsOfUser = async (req, res) => {
     try {
@@ -175,28 +175,6 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
     }
 }
 
-/**
- * Người dùng download 1 file từ server
- * @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
- * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
- * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
- */
-exports.downloadFile = async (req, res) => {
-    console.log("hihihihihiihhi")
-    try {
-        const {path} = req.query;
-        await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
-        res.download(path);
-    } catch (error) {
-
-        await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['download_file_faile'],
-            content: error
-        });
-    }
-}
 exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
     try {
         var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, req.params.id);
@@ -215,24 +193,24 @@ exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
         });
     }
 }
-exports.getAllUserInAllDepartmentsOfCompany = async (req, res) => {
-    try {
-        var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, '-1',true);
-        await LogInfo(req.user.email, `Get all user in all department of this company  ${req.user.company}`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_user_in_all_department_success'],
-            content: users
-        });
-    } catch (error) {
-        await LogError(req.user.email, `get all user in all department of this company ${req.body.name}`, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_all_user_in_all_department_failed'],
-            content: error
-        });
-    }
-}
+// exports.getAllUserInAllDepartmentsOfCompany = async (req, res) => {
+//     try {
+//         var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, '-1',true);
+//         await LogInfo(req.user.email, `Get all user in all department of this company  ${req.user.company}`, req.user.company);
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_all_user_in_all_department_success'],
+//             content: users
+//         });
+//     } catch (error) {
+//         await LogError(req.user.email, `get all user in all department of this company ${req.body.name}`, req.user.company);
+//         res.status(400).json({
+//             success: false,
+//             messages: ['get_all_user_in_all_department_failed'],
+//             content: error
+//         });
+//     }
+// }
 
 
  

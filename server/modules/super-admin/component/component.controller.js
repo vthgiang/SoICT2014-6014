@@ -6,9 +6,9 @@ const { LogInfo, LogError } = require('../../../logs');
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
  */
 
-exports.getAllComponents = async (req, res) => {
+exports.getComponents = async (req, res) => {
     try {
-        const components = await ComponentService.getAllComponents(req.user.company._id, req.query);
+        const components = await ComponentService.getComponents(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({

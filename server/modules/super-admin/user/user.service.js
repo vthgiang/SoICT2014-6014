@@ -8,13 +8,16 @@ const DashboardService = require('../../kpi/evaluation/dashboard/dashboard.servi
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getAllUsers = async (company, query) => {
+exports.getUsers = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     var name = query.name;
+    var userRole = query.userRole;
+    var departmentIds = query.departmentIds;
+
     var keySearch = {company: company};
 
-    if(!page && !limit){
+    if (!page && !limit && !userRole && !departmentIds) {
         if(name){
             keySearch = {...keySearch, name: {$regex: name, $options: "i"}};
 
@@ -34,7 +37,7 @@ exports.getAllUsers = async (company, query) => {
                 { path: 'company' }
             ]);
         }
-    } else {
+    } else if (page && limit && !userRole && !departmentIds) {
         const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
@@ -48,6 +51,25 @@ exports.getAllUsers = async (company, query) => {
                 { path: 'company' }
             ]
         });
+    } else if (!page && !limit && (userRole || departmentIds)) {
+        if (userRole) {
+            let department = await OrganizationalUnit.findOne({ 
+                $or:[
+                    {'deans': userRole}, 
+                    {'viceDeans': userRole}, 
+                    {'employees': userRole}
+                ]  
+            });
+        
+            return _getAllUsersInOrganizationalUnit(department);
+
+        } else {
+            let departments = await OrganizationalUnit.find({ _id: {$in: [...departmentIds.split(',')]} });
+            let users = await _getAllUsersInOrganizationalUnits(departments);
+
+            return users;
+
+        }
     }
 }
 
@@ -268,29 +290,30 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 
 
-/**
- * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ 
- */
-exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    let departmentIds = await OrganizationalUnit.find({ _id: {$in: [...departmentId.split(',')]} });
-    let users = await _getAllUsersInOrganizationalUnits(departmentIds);
+// /**
+//  * Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ 
+//  */
+// exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
+//     let departmentIds = await OrganizationalUnit.find({ _id: {$in: [...departmentId.split(',')]} });
+//     let users = await _getAllUsersInOrganizationalUnits(departmentIds);
 
-    return users;
-}
+//     return users;
+// }
 
-/* lấy tất cả các user cùng phòng ban với user hiện tại
- * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
-*/
-exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
-    var department = await OrganizationalUnit.findOne({ 
-        $or:[
-            {'deans': id_role}, 
-            {'viceDeans': id_role}, 
-            {'employees': id_role}
-        ]  
-    });
-    return _getAllUsersInOrganizationalUnit(department);
-}
+// /* lấy tất cả các user cùng phòng ban với user hiện tại
+//  * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
+// */
+// exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
+//     var department = await OrganizationalUnit.findOne({ 
+//         $or:[
+//             {'deans': id_role}, 
+//             {'viceDeans': id_role}, 
+//             {'employees': id_role}
+//         ]  
+//     });
+
+//     return _getAllUsersInOrganizationalUnit(department);
+// }
 
 /**
  * Hàm tiện ích dùng trong 2 service ở trên
@@ -370,11 +393,11 @@ exports.getOrganizationalUnitsOfUser = async (userId) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=false) => {
+exports.getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
-    if(!getAllUserInCompany) {
+    if (unitId !== "undefined") {
         
         var organizationalUnit = await OrganizationalUnit.findById(unitId);
         // TODO: tối ưu hóa DashboardService.getChildrenOfOrganizationalUnitsAsTree
@@ -402,10 +425,9 @@ exports.getAllUserInUnitAndItsSubUnits = async (id, unitId,getAllUserInCompany=f
         var userArray=[];
         userArray = await _getAllUsersInOrganizationalUnits(departments);
         return userArray;
-    }
-    //Lấy tất nhan vien trong moi đơn vị trong công ty
-    if (getAllUserInCompany) {
-        
+
+    } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
+
         const allUnits = await OrganizationalUnit.find({ company: id });    
         const newData = allUnits.map( department => {return {
             id: department._id.toString(),
