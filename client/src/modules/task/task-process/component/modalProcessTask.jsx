@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { FormInfoTask } from "./formInfoTask";
 import { DialogModal } from "../../../../common-components";
+
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
+import { TaskProcessActions } from "../redux/actions";
 
 class ModalProcessTask extends Component {
 
@@ -57,7 +59,7 @@ class ModalProcessTask extends Component {
                 <DialogModal
                     size = {100}
                     modalID = {'modal-process'}
-                    
+                    func = {this.save}
                 >
                     <div className='box'>
                         <div className='row'>
@@ -114,7 +116,6 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
     }
 
     handleChangeDescription = async (e) => {
@@ -129,7 +130,6 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
     }
 
     handleChangeResponsible = async (value) => {
@@ -193,7 +193,6 @@ class ModalProcessTask extends Component {
     interactPopup = (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
-        console.log(nameStr);
         this.setState(state => {
             if (element.type !== 'bpmn:Collaboration') {
                 return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
@@ -203,24 +202,27 @@ class ModalProcessTask extends Component {
             }
 
         })
-        console.log(event, element, element.businessObject.id);
     }
 
     deleteElements = (event) => {
         var element = event.element;
-        console.log(element);
     }
 
     handleUndoDeleteElement = (event) => {
         var element = event.context.shape;
-        console.log(element);
     }
 
     changeNameElement = (event) => {
         var element = event.element;
-        console.log(element);
     }
-
+    save = () => {
+        this.exportDiagram();
+        let data = {
+            xmlDiagram : this.state.xmlDiagram,
+            infoTask: this.state.info
+        }
+        this.props.exportXmlDiagram(data)
+    }
     exportDiagram = () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
@@ -326,9 +328,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    // getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    // getDepartment: UserActions.getDepartmentOfUser,
-    // _delete: taskTemplateActions._delete
+    exportXmlDiagram : TaskProcessActions.exportXmlDiagram
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

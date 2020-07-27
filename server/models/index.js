@@ -55,7 +55,7 @@ const Asset = require('./asset/asset.model'); //tài sản
 const AssetType = require('./asset/assetType.model'); //loại tài sản
 const RecommendProcure = require('./asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
 const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
-
+const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
@@ -107,7 +107,7 @@ exports.schema = {
     TaskTemplate,
     TaskTemplateInformation,
     TimesheetLog,
-
+    TaskProcess,
     Course,
     EducationProgram,
     EmployeeCourse,

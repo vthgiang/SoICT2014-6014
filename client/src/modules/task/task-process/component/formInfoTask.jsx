@@ -3,16 +3,24 @@ import { connect } from 'react-redux';
 import { SelectBox } from './../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 class FormInfoTask extends Component {
-
+    check = () => {
+        if((this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].nameTask)) {
+            return true;
+        }
+        return false;
+    }
     render() { 
-        console.log('props from DEMO EDIT to FORM', this.props);
+        console.log(this.props.info);
+        const { id,info } = this.props
+        var abc = this.props.info[`${this.props.id}`]?.nameTask
+        console.log(this.check())
         return (
             <div>
                 <form>
                     <div className="form-group" >
                         <label style={{ float: 'left' }}>Tên công việc</label>
                         <input type="text"
-                            value={(this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].nameTask) ? this.props.info[`${this.props.id}`].nameTask : ''}
+                            value={(this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].nameTask) ? this.props.info[`${this.props.id}`].nameTask : ""}
                             className="form-control" placeholder="Nhập tên công việc"
                             onChange={this.props.handleChangeName}
                         />
@@ -20,7 +28,7 @@ class FormInfoTask extends Component {
                     <div className="form-group">
                         <label style={{ float: 'left' }}>Mô tả</label>
                         <input type="text" 
-                            value={(this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].description) ? this.props.info[`${this.props.id}`].description : ''} 
+                            value={(this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].description) ? this.props.info[`${this.props.id}`].description : ""} 
                             className="form-control" placeholder="Mô tả công việc" 
                             onChange={this.props.handleChangeDescription} 
                         />
@@ -40,7 +48,7 @@ class FormInfoTask extends Component {
                             }
                             onChange={this.props.handleChangeResponsible}
                             multiple={true}
-                            value={(this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].responsible) ? this.props.info[`${this.props.id}`].responsible : []}
+                            value={this.props.info[`${this.props.id}`]?.responsible ?? []}
                         />
                     </div>
 
