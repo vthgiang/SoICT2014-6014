@@ -18,4 +18,6 @@ router.get('/employee-kpi-sets/all-employee-kpi-sets-by-month', auth, DashboardO
 // Lấy tất cả employeeKpi thuộc các đơn vị con của đơn vị hiện tại
 router.get('/employee-kpis/all-employee-kpis-children-by-month', auth, DashboardOrganizationalUnitController.getAllEmployeeKpiInChildrenOrganizationalUnit);
 
+router.get('/organizational-units/get-children-of-organizational-unit-as-tree', auth, DashboardOrganizationalUnitController.getChildrenOfOrganizationalUnitsAsTree);
+
 module.exports = router;

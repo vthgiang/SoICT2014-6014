@@ -3,20 +3,32 @@ import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { FormInfoTask } from "./formInfoTask";
 import { DialogModal } from "../../../../common-components";
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
-import { UserActions } from "../../../super-admin/user/redux/actions";
-import { getStorage } from '../../../../config';
 
+//Xóa element khỏi pallette theo data-action
+var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
+PaletteProvider.prototype.getPaletteEntries = function(element) {
+	 var entries = _getPaletteEntries.apply(this);
+	 delete entries['create.subprocess-expanded'];
+     delete entries['create.data-store'];
+     delete entries['create.data-object'];
+     delete entries['create.group'];
+     delete entries['create.participant-expanded'];
+     return entries; 
+}
 class ModalProcessTask extends Component {
 
     constructor() {
         super();
         this.state = {
-            creator: getStorage("userId"),
+            userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
             info: {},
@@ -265,6 +277,9 @@ class ModalProcessTask extends Component {
         })
         console.log(this.state)
         let data = {
+            nameProcess: this.state.processName,
+            description: this.state.processDescription,
+            creator: this.state.userId,
             xmlDiagram: this.state.xmlDiagram,
             infoTask: this.state.info
         }
@@ -358,7 +373,8 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    createXmlDiagram : TaskProcessActions.createXmlDiagram
+    createXmlDiagram : TaskProcessActions.createXmlDiagram,
+    getXmlDiagramById : TaskProcessActions.getXmlDiagramById,
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

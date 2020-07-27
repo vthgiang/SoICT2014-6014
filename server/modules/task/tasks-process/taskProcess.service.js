@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
  * Lấy tất cả xml diagram
  */
 exports.getAllXmlDiagram = () => {
-  let data = TaskProcess.find();
+  let data = TaskProcess.find().populate({ path: 'creator', select: 'name'});
   return data
 }
 
@@ -28,6 +28,9 @@ exports.createXmlDiagram = async (body) => {
     info.push(body.infoTask[x])
   }
   let data = await TaskProcess.create({
+    creator: body.creator,
+    nameProcess: body.nameProcess,
+    description: body.description,
     xmlDiagram: body.xmlDiagram,
     infoTask: info
   })

@@ -1,6 +1,7 @@
 const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
 const OrganizationalUnitKpiSet = require('../../../../models/kpi/organizationalUnitKpiSet.model');
 const OrganizationalUnitKpi = require('../../../../models/kpi/organizationalUnitKpi.model');
+const EmployeeKPI = require('../../../../models/kpi/employeeKpi.model');
 const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
 
 const mongoose = require("mongoose");

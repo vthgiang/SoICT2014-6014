@@ -243,6 +243,7 @@ exports.data = [
     { path: '/kpi/organizational-unit/employee-kpi-sets/all-employee-kpi-sets-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/employee-kpis/all-employee-kpis-children-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/organizational-unit-kpi-sets/:kpiId/copy-kpi', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/organizational-unit/organizational-units/get-children-of-organizational-unit-as-tree', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpipersonals/current/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpipersonals/kpi-set-by-month/:id/:startDate/:endDate', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpipersonals/create', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -264,6 +265,13 @@ exports.data = [
     { path: '/kpipersonals/comment-comment/:id/:idKPI', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpipersonals/copykpi/:id/:idunit/:dateold/:datenew', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
+    { path: '/kpimembers/employee-kpi-sets', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpi-sets/:id', method: 'GET', roles: ['Dean', 'Employee'] },
+    { path: '/kpimembers/employee-kpi-sets/:id/approve', method: 'PATCH', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpi-sets/:id', method: 'PATCH', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:id', method: 'PATCH', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:id/task', method: 'GET', roles: ['Dean'] },
+    { path: '/kpimembers/employee-kpis/:id/task-importance-level', method: 'PATCH', roles: ['Dean'] },
 
     { path: '/kpimembers', method: 'GET', roles: ['Dean','Vice Dean', 'Employee'] },
     { path: '/kpimembers/employee-kpis/:userId/user', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
@@ -408,8 +416,8 @@ exports.data = [
     { path: '/recommenddistribute/checkRecommendNumber/:recommendNumber', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     // Module DashboardEvaluationEmployeeKpiSet
-    { path: '/kpi/evaluation/dashboard/employee-kpis/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/evaluation/dashboard/users/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/evaluation/dashboard/organizational-units', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // module report management
     { path: '/taskreports', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
