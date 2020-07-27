@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { FormInfoTask } from "./formInfoTask";
 import { DialogModal } from "../../../../common-components";
+import BpmnModeler from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
@@ -40,6 +40,8 @@ class ModalProcessTask extends Component {
     }
 
     render() {
+        const { translate } = this.props;
+        const { id, info, showInfo } = this.state;
         // return (
         // <React.Fragment>
         //     <div>
@@ -55,23 +57,26 @@ class ModalProcessTask extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size = {100}
-                    modalID = {'modal-process'}
-                    
+                    size='100' modalID={`modal-process`} isLoading={false}
+                    formID="form-task-process"
+                    // disableSubmit={!this.isTaskFormValidated()}
+                    // func={this.handleSubmit}
+                    title={this.props.title}
                 >
                     <div className='box'>
                         <div className='row'>
                             <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
                             <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-                                <div>
-                                    <h1>Option {this.state.name}</h1>
-                                </div>
+
                                 {
-                                    (this.state.showInfo) &&
+                                    (showInfo) &&
                                     <div>
+                                        <div>
+                                            <h1>Option {this.state.name}</h1>
+                                        </div>
                                         <FormInfoTask
-                                            id={this.state.id}
-                                            info={this.state.info}
+                                            id={id}
+                                            info={(info && info[`${id}`]) && info[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
                                             handleChangeResponsible={this.handleChangeResponsible}
@@ -101,9 +106,9 @@ class ModalProcessTask extends Component {
         console.log('Click Save button!!! Call API');
     }
 
-    handleChangeName = async (e) => {
-        let { value } = e.target;
-        // console.log('e.target.value', value);
+    handleChangeName = async (value) => {
+    // handleChangeName = async (e) => {
+        // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
@@ -117,8 +122,9 @@ class ModalProcessTask extends Component {
         console.log(this.state.info);
     }
 
-    handleChangeDescription = async (e) => {
-        let { value } = e.target;
+    handleChangeDescription = async (value) => {
+    // handleChangeDescription = async (e) => {
+        // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
@@ -176,24 +182,11 @@ class ModalProcessTask extends Component {
         this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
         this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
-        // console.log(eventBus);
     }
-
-    // interactPopup = (event) => {
-    //     var element = event.element;
-    //     console.log(element, event);
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //             showForm: !this.state.showForm,
-    //         }
-    //     })
-    // }
 
     interactPopup = (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
-        console.log(nameStr);
         this.setState(state => {
             if (element.type !== 'bpmn:Collaboration') {
                 return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
@@ -203,7 +196,7 @@ class ModalProcessTask extends Component {
             }
 
         })
-        console.log(event, element, element.businessObject.id);
+        // console.log(event, element, element.businessObject.id);
     }
 
     deleteElements = (event) => {
@@ -330,5 +323,5 @@ const actionCreators = {
     // getDepartment: UserActions.getDepartmentOfUser,
     // _delete: taskTemplateActions._delete
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
+const connectedModalAddProcess = connect(null, null)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

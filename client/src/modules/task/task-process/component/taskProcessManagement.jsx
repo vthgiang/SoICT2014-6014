@@ -17,66 +17,71 @@ class TaskProcessManagement extends Component {
     return (
       <div className="box">
         <div className="box-body qlcv">
-          {<ModalProcessTask></ModalProcessTask>}
-        <div className="form-inline">
-          <div className="form-group">
-            <label className="form-control-static">{translate('task_template.name')}</label>
-            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
+          {
+            <ModalProcessTask
+              title={'Xem quy trình công việc'}
+              
+            />
+          }
+          <div className="form-inline">
+            <div className="form-group">
+              <label className="form-control-static">{translate('task_template.name')}</label>
+              <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
+            </div>
           </div>
-        </div>
 
-        <div className="form-inline">
-          <div className="form-group">
-            <label className="form-control-static">{translate('task_template.unit')}</label>
-            {/* {units &&
+          <div className="form-inline">
+            <div className="form-group">
+              <label className="form-control-static">{translate('task_template.unit')}</label>
+              {/* {units &&
               <SelectMulti id="multiSelectUnit"
                 defaultValue={units.map(item => { return item._id })}
                 items={units.map(item => { return { value: item._id, text: item.name } })}
                 options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
               </SelectMulti>
             } */}
-            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
+              <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
+            </div>
           </div>
-        </div>
-        <DataTableSetting
-          tableId="table-task-template"
-          columnArr={[
-            'Tên mẫu công việc',
-            'Mô tả',
-            'Người tạo mẫu',
-          ]}
-          limit={5}
-          // setLimit={t}
-          hideColumnOption={true}
-        />
+          <DataTableSetting
+            tableId="table-task-template"
+            columnArr={[
+              'Tên mẫu công việc',
+              'Mô tả',
+              'Người tạo mẫu',
+            ]}
+            limit={5}
+            // setLimit={t}
+            hideColumnOption={true}
+          />
 
-        <table className="table table-bordered table-striped table-hover" id="table-task-template">
-          <thead>
-            <tr>
-              <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>
-              <th  title="Mô tả">{translate('task_template.description')}</th>
-              <th  title="Người tạo quy trình">{translate('task_template.creator')}</th>
-              <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-            </tr>
-          </thead>
-          <tbody className="task-table">
-            <tr>
-              <td>Đỗ Tiến Thành</td>
-              <td>Đẹp trai</td>
-              <td>Hoàn hảo</td>
-              <td><a href="#abc" onClick= {() => {this.showProcess()}}  title={translate('task.task_template.view_detail_of_this_task_template')}>
-                <i className="material-icons">view_list</i>
-              </a>
-                <a  className="edit" title={translate('task_template.edit_this_task_template')}>
-                  <i className="material-icons">edit</i>
+          <table className="table table-bordered table-striped table-hover" id="table-task-template">
+            <thead>
+              <tr>
+                <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>
+                <th title="Mô tả">{translate('task_template.description')}</th>
+                <th title="Người tạo quy trình">{translate('task_template.creator')}</th>
+                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+              </tr>
+            </thead>
+            <tbody className="task-table">
+              <tr>
+                <td>Đỗ Tiến Thành</td>
+                <td>Đẹp trai</td>
+                <td>Hoàn hảo</td>
+                <td><a href="#abc" onClick={() => { this.showProcess() }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                  <i className="material-icons">view_list</i>
                 </a>
-                <a  className="delete" title={translate('task_template.delete_this_task_template')}>
-                  <i className="material-icons"></i>
-                </a>
-              </td>
-            </tr>
+                  <a className="edit" title={translate('task_template.edit_this_task_template')}>
+                    <i className="material-icons">edit</i>
+                  </a>
+                  <a className="delete" title={translate('task_template.delete_this_task_template')}>
+                    <i className="material-icons"></i>
+                  </a>
+                </td>
+              </tr>
 
-            {/* {
+              {/* {
               (typeof list !== 'undefined' && list.length !== 0) ?
                 list.map(item => item &&
                   <tr key={item._id}>
@@ -104,10 +109,10 @@ class TaskProcessManagement extends Component {
                 ) :
                 <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
             } */}
-          </tbody>
-        </table>
-        {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
-      </div>
+            </tbody>
+          </table>
+          {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
+        </div>
       </div>
     );
   }
@@ -125,5 +130,5 @@ const actionCreators = {
   // getDepartment: UserActions.getDepartmentOfUser,
   // _delete: taskTemplateActions._delete
 };
-const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
+const connectedTaskProcessManagement = connect(null, null)(withTranslate(TaskProcessManagement));
 export { connectedTaskProcessManagement as TaskProcessManagement };
