@@ -4,6 +4,12 @@ const { sendEmail } = require('../../../helpers/emailHelper');
 const { LogInfo, LogError } = require('../../../logs');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
+
+/**
+ * Lấy công việc theo tùy chọn
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getTasks = async (req, res) => {
     if (req.query.type === "all") {
         getAllTasks(req, res);
@@ -57,7 +63,11 @@ getAllTasks = async (req, res) => {
     }
 }
 
-
+/**
+ * Lấy task evaluation
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
@@ -561,8 +571,10 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
     }
 }
 
-//lấy các công việc sắp hết hạn và quá hạn của nhân viên 
-getTasksByUser = async (req, res) => {
+/**
+ * lấy các công việc sắp hết hạn và quá hạn của nhân viên 
+ */
+ getTasksByUser = async (req, res) => {
     try {
         const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
 
