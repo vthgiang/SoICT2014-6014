@@ -200,7 +200,7 @@ exports.getProfile = async (req, res) => {
  * Người dùng download 1 file từ server
  * @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
  * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
- * localhost:8000/user/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
+ * localhost:8000/auth/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
  */
 exports.downloadFile = async (req, res) => {
     try {

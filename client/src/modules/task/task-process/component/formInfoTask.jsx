@@ -66,6 +66,17 @@ class FormInfoTask extends Component {
         let { nameTask, description, responsible, accountable } = this.state;
 
         console.log('props from DEMO EDIT to FORM', this.props);
+    // check = () => {
+    //     if((this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].nameTask)) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+    // render() { 
+    //     console.log(this.props.info);
+    //     const { id,info } = this.props
+    //     var abc = this.props.info[`${this.props.id}`]?.nameTask
+    //     console.log(this.check())
         return (
             <div>
                 <form>
