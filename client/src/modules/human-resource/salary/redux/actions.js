@@ -1,5 +1,9 @@
-import { SalaryConstants } from "./constants";
-import { SalaryService } from "./services";
+import {
+    SalaryConstants
+} from "./constants";
+import {
+    SalaryService
+} from "./services";
 export const SalaryActions = {
     searchSalary,
     createSalary,
@@ -11,7 +15,7 @@ export const SalaryActions = {
 /**
  * Lấy danh sách bảng lương
  * @data : dữ liệu key tìm kiếm
- */ 
+ */
 function searchSalary(data) {
     return dispatch => {
         dispatch({
@@ -113,21 +117,20 @@ function updateSalary(id, data) {
 function importSalary(data) {
     return dispatch => {
         dispatch({
-            type: SalaryConstants.IMPORT_TEMPLATE_REQUEST
+            type: SalaryConstants.IMPORT_SALARY_REQUEST
         });
         SalaryService.importSalary(data)
             .then(res => {
                 dispatch({
-                    type: SalaryConstants.IMPORT_TEMPLATE_SUCCESS,
+                    type: SalaryConstants.IMPORT_SALARY_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SalaryConstants.IMPORT_TEMPLATE_FAILURE,
+                    type: SalaryConstants.IMPORT_SALARY_FAILURE,
                     error: err.response.data.content
                 });
             })
     };
 }
-

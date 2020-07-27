@@ -6,7 +6,7 @@ const { auth } = require('../../../middleware');
 router.get("/", auth, UserController.getUsers);
 router.get("/:id", auth, UserController.getUser);
 router.get('/:id/organizational-units', auth, UserController.getOrganizationalUnitsOfUser);
-router.get('/organizational-units/:id/users', auth, UserController.getAllUserInUnitAndItsSubUnits );
+router.get('/organizational-units/:id/users', auth, UserController.getAllUserInUnitAndItsSubUnits);
 
 router.post("/", auth, UserController.createUser);
 

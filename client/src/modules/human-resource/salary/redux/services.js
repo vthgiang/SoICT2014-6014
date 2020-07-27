@@ -1,5 +1,9 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 export const SalaryService = {
     searchSalary,
     createSalary,
@@ -11,7 +15,7 @@ export const SalaryService = {
 /**
  * Lấy danh sách bảng lương
  * @data dữ liệu key tìm kiếm
- */ 
+ */
 function searchSalary(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/salaries`,
@@ -68,10 +72,10 @@ function updateSalary(id, data) {
  * @param {*} data : array thông tin bảng lương
  */
 function importSalary(data) {
+    console.log(data);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/salaries/import`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.salary');
 }
-
