@@ -287,6 +287,7 @@ exports.deleteDocumentCategory = async(id) => {
  */
 exports.getDocumentDomains = async (company) => {
     const list = await DocumentDomain.find({ company });
+    console.log(list, 'list')
     const dataConverted = list.map( domain => {
         return {
             id: domain._id.toString(),
@@ -303,12 +304,15 @@ exports.getDocumentDomains = async (company) => {
 }
 
 exports.createDocumentDomain = async (company, data) => {
-    await DocumentDomain.create({
+    let query = {
         company,
         name: data.name,
         description: data.description,
-        parent: data.parent
-    });
+    }
+    if(data.parent.length){
+        query.parent = query.parent
+    }
+    await DocumentDomain.create(query);
 
     return await this.getDocumentDomains(company);
 }

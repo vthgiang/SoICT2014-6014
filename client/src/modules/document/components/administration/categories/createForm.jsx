@@ -9,15 +9,15 @@ class CreateForm extends Component {
         super(props);
         this.state = {
             value: ['0-0-0'],
-            errorName: undefined,
-            errorDescription: undefined,
             documentTypeName: '',
             documentTypeDescription: '',
+
+            errorName: undefined,
+            errorDescription: undefined,
         }
     }
 
     handleSelect = (value) => {
-        console.log('onChange ', value);
         this.setState({ value });
     };
     
@@ -39,8 +39,9 @@ class CreateForm extends Component {
     validateTypeName = (value, willUpdateState)=>{
         let msg = undefined;
         const {translate} = this.props;
-        if(value === "")
+        if(value === ""){
             msg =  translate('document.no_blank_name');
+        }
         if(willUpdateState){
             this.setState(state=>{
                return{
@@ -60,8 +61,9 @@ class CreateForm extends Component {
     validateTypeDescription = (value, willUpdateState)=>{
         const {translate} = this.props;
         let msg = undefined;
-        if(value === "")
+        if(value === ""){
             msg = translate('document.no_blank_description');
+        }
         if(willUpdateState){
             this.setState(state=>{
                return{

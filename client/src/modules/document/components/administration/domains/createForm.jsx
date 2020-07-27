@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
-import { DocumentActions } from '../../../redux/actions';
-// import TreeSelect from 'rc-tree-select';
 
+import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            domainParent: []
+            domainParent: "",
         }
     }
 
@@ -33,8 +32,9 @@ class CreateForm extends Component {
     validateName = (value, willUpdateState)=>{
         let msg = undefined;
         const {translate} = this.props;
-        if(value === '')
+        if(!value){
             msg = translate('document.no_blank_name');
+        }
         if(willUpdateState){
             this.setState(state=>{
                 return{
@@ -57,23 +57,16 @@ class CreateForm extends Component {
 
     save = () => {
         const {documentName, documentDescription, domainParent} = this.state;
-        console.log(domainParent);
         this.props.createDocumentDomain({
             name: documentName,
             description: documentDescription,
-            parent: domainParent
+            parent: domainParent ? domainParent : ""
         });
     }
 
-    // shouldComponentUpdate(nextProps, nextState){
-    //     if(nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined)
-    // }
-
     static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent !== undefined) {
-            console.log(nextProps, prevState);
-            let dm = [];
-            dm.push(prevState.domainParent);
+        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
+            let dm = prevState.domainParent;
             return {
                 ...prevState,
                 domainParent: dm,
@@ -84,9 +77,9 @@ class CreateForm extends Component {
     }
 
     render() {
-        const {translate, documents}=this.props;
-        const {tree, list} = documents.administration.domains;
-        const {domainParent, errorName} = this.state;
+        const { translate, documents } = this.props;
+        const { list } = documents.administration.domains;
+        const { domainParent, errorName } = this.state;
       
         return ( 
             <React.Fragment>
@@ -98,14 +91,14 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-document-domain">
-                            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorName ? "" : "has-error"}`}>
                             <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleValidateName}/>
                             <ErrorLabel content ={errorName}/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.parent') }</label>
-                            <TreeSelect data={list} value={domainParent.length > 1 ? [] : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
+                            <label>{ translate('document.administration.domains.domainParent') }</label>
+                            <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('document.administration.domains.description') }</label>

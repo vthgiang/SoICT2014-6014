@@ -13,11 +13,12 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { SubTaskTab } from './subTaskTab';
-
+import { AuthActions } from '../../../auth/redux/actions'
 
 import Files from 'react-files'
 
 import './actionTab.css';
+
 
 class ActionTab extends Component {
     constructor(props) {
@@ -300,7 +301,6 @@ class ActionTab extends Component {
         })
 
         if (newAction.creator && newAction.description) {
-            console.log(newAction.description)
             this.props.addTaskAction(taskId, data);
         }
         // Reset state cho việc thêm mới action
@@ -1096,7 +1096,6 @@ class ActionTab extends Component {
                                                             submitButtonText={translate("task.task_perform.create_comment_action")}
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
-                                                                console.log(value);
                                                                 this.setState(state => {
                                                                     return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: `${value}` } }
                                                                 })
@@ -1479,7 +1478,7 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile,
     deleteFileAction: performTaskAction.deleteFileAction,

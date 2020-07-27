@@ -173,7 +173,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                                         items={deans}
                                         multiple={false}
                                         onChange={this.handleApproverChange}
-                                        value={this.state.employeeKpiSet.approver}
+                                        value={this.state.employeeKpiSet&&this.state.employeeKpiSet.approver}
                                     />
                                 </div>
                             }

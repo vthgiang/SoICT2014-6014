@@ -27,7 +27,6 @@ export const performTaskService = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFile,
     uploadFile,
     addTaskLog,
     deleteFileAction,
@@ -65,7 +64,7 @@ export const performTaskService = {
  */
 function getTimesheetLogs(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/log-timer`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
@@ -74,9 +73,9 @@ function getTimesheetLogs(taskId) {
  * Lấy lịch sử bấm giờ ?????
  */ 
 function getTimerStatusTask() {
-    var user = getStorage("userId");
+    var userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${user}`,
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/user/${userId}`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
@@ -292,18 +291,6 @@ function confirmAction(actionId, idUser, taskId) {
     }, false, true, 'task.task_perform');
 };
 
-/**
- * Download file
- * @param {*} path: đường dẫn file cần tải
- */
-function downloadFile(path) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/auth/download-file/`,
-        method: 'GET',
-        responseType: 'blob',
-        params: { path: path }
-    }, false, false, 'task.task_perform');
-}
 
 /**
  * Upload file
@@ -326,7 +313,6 @@ function uploadFile(taskId, data) {
  * @param {*} type 
  */
 function deleteFileAction(fileId, actionId, taskId, type) {
-    console.log(type)
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/files/${fileId}`,
         method: 'PATCH',
@@ -378,11 +364,10 @@ function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
 
 /**
  *  Thêm nhật kí cho cộng việc
- 
  */
 function addTaskLog(log) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/logs/history`,
+        url: `${LOCAL_SERVER_API}/performtask/logs`,
         method: 'POST',
         data: log
     }, false, false, 'task.task_perform');
@@ -391,7 +376,7 @@ function addTaskLog(log) {
 // Hàm thêm nhật ký cho một công việc
 function getTaskLog(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/logs/${taskId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/logs`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };

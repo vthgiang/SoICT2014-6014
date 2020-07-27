@@ -46,7 +46,7 @@ class ComponentCreateForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xy ly va validate description
@@ -66,7 +66,7 @@ class ComponentCreateForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     handleLink = (value) => {
@@ -103,7 +103,7 @@ class ComponentCreateForm extends Component {
             roles: this.state.componentRoles 
         };
 
-        if(this.isFormValidated()) return this.props.createSystemComponent(component);
+        if (this.isFormValidated()) return this.props.createSystemComponent(component);
     }
 
     render() { 
