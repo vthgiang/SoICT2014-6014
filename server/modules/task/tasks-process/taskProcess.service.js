@@ -1,4 +1,5 @@
 const { TaskProcess } = require('../../../models').schema;
+const { User } = require('../../../models/index').schema;
 const mongoose = require('mongoose');
 
 /**
@@ -34,5 +35,6 @@ exports.createXmlDiagram = async (body) => {
     xmlDiagram: body.xmlDiagram,
     infoTask: info
   })
+  data =  await TaskProcess.findById(data._id).populate({ path: 'creator', model: User ,select: 'name'});
   return data;
 }

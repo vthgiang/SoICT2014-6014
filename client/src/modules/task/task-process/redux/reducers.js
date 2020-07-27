@@ -12,7 +12,7 @@ export function taskProcess(state = {}, action) {
         ...state,
         xmlDiagram: [
           ...state.xmlDiagram,
-          action.payload
+          action.payload.content
         ],
       };
     case TaskProcessConstants.CREATE_XML_DIAGRAM_FAIL:
