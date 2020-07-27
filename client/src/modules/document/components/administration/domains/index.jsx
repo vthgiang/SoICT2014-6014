@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 import { DocumentActions } from '../../../redux/actions';
+import { Tree, SlimScroll} from '../../../../../common-components';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import './domains.css'
-import Swal from 'sweetalert2';
-import { Tree, SlimScroll} from '../../../../../common-components';
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
         super(props);
         this.state = {
             domainParent: [],
-            deleteNode: []
+            deleteNode: [],
         }
     }
 
@@ -40,8 +40,8 @@ class AdministrationDocumentDomains extends Component {
     }
 
     deleteDomains = () => {
-        const {translate} = this.props;
-        const {deleteNode} = this.state;
+        const { translate } = this.props;
+        const { deleteNode } = this.state;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.administration.domains.delete')}</div>?</h4>`,
             icon: 'warning',
@@ -61,15 +61,15 @@ class AdministrationDocumentDomains extends Component {
     }
 
     render() { 
-        const {domainParent, deleteNode} = this.state;
-        const {translate} = this.props;
-        const {list} = this.props.documents.administration.domains;
+        const { domainParent, deleteNode } = this.state;
+        const { translate } = this.props;
+        const { list } = this.props.documents.administration.domains;
         const dataTree = list.map(node=>{
             return {
                 ...node,
                 text: node.name,
-                state : {"opened" : true },
-                parent: node.parent !== undefined ? node.parent.toString() : "#"
+                state: {"opened" : true },
+                parent: node.parent ? node.parent.toString() : "#"
             }
         })
 
@@ -79,7 +79,7 @@ class AdministrationDocumentDomains extends Component {
                     window.$('#modal-create-document-domain').modal('show');
                 }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
                 {
-                    deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>Xóa</button>
+                    deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
                 <CreateForm domainParent={this.state.domainParent}/>
                 <div className="row">
@@ -97,11 +97,11 @@ class AdministrationDocumentDomains extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                         {
-                            this.state.currentDomain !== undefined &&
+                            this.state.currentDomain &&
                             <EditForm
                                 domainId={this.state.currentDomain.id}
                                 domainName={this.state.currentDomain.text}
-                                domainDescription={this.state.currentDomain.original.description? this.state.currentDomain.original.description: "" }
+                                domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description: "" }
                                 domainParent={this.state.currentDomain.parent}
                             />
                         }
