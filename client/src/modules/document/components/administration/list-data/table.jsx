@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
-import CreateForm from './createForm';
-import { DocumentActions } from '../../../redux/actions';
-import EditForm from './editForm';
-import {RoleActions} from '../../../../super-admin/role/redux/actions';
-import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
 import Swal from 'sweetalert2';
 
+import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
+import {RoleActions} from '../../../../super-admin/role/redux/actions';
+import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
+import { DocumentActions } from '../../../redux/actions';
+
+import CreateForm from './createForm';
+import EditForm from './editForm';
+
+
 const getIndex = (array, id) => {
-    var index = -1;
+    let index = -1;
     for (let i = 0; i < array.length; i++) {
         if(array[i]._id === id){
             index = i;
             break;
         }
     }
-
     return index;
 }
 
@@ -29,7 +31,7 @@ class Table extends Component {
 
     componentDidMount(){
         this.props.getAllDocuments();
-        this.props.getAllDocuments({page: this.state.page, limit: this.state.limit});
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit });
         this.props.getAllRoles();
         this.props.getAllDepartments();
     }
@@ -52,7 +54,7 @@ class Table extends Component {
         
     static getDerivedStateFromProps(nextProps, prevState){
         const {data} = nextProps.documents.administration;
-        if(prevState.currentRow !== undefined){
+        if(prevState.currentRow){
             const index = getIndex(data.list, prevState.currentRow._id);
             if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
@@ -94,7 +96,7 @@ class Table extends Component {
             <React.Fragment>
                 <CreateForm/>
                 {
-                    currentRow !== undefined &&
+                    currentRow &&
                     <EditForm
                         documentId={currentRow._id}
                         documentName={currentRow.name}
@@ -165,7 +167,7 @@ class Table extends Component {
                             paginate.map(doc => 
                             <tr key={doc._id}>
                                 <td>{doc.name}</td>
-                                <td>{doc.description}</td>
+                                <td>{!doc.description? doc.description : ""}</td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].issuingDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].effectiveDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
