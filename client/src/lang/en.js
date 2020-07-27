@@ -662,7 +662,7 @@ export default {
 
             tasks: 'Task management',
             task: "Detailed Task",
-            task_management: 'View task list',
+            task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
             task_management_process: "Process list",
             //*******START */
@@ -1470,11 +1470,31 @@ export default {
 
         task: {
             task_management: {
+                get_subtask_success: 'Get sub task success',
+                get_task_of_informed_employee_success: 'Get task of informed employee success',
+                get_task_of_creator_success: 'Get task of creator success',
+                get_task_of_consulted_employee_success: 'Get task of consulted employee success',
+                get_task_of_accountable_employee_success: 'Get task of accountable employee success',
+                get_task_of_responsible_employee_success: 'Get task of responsible employee success',
+                get_tasks_by_role_success: 'Get task by role success',
+                get_task_by_id_success: 'Get task by id success',
+                get_task_evaluation_success: 'Get task evaluation success',
+                get_all_task_success: 'Get all task success',
                 create_task_success: 'Create new task succesfully',
                 delete_success: 'Delete task successfully',
                 edit_status_of_task_success: 'Edit status of task successfully',
                 edit_status_archived_of_task_success: 'Edit archived status of task successfully',
 
+                get_subtask_fail: 'Get sub task fail',
+                get_task_of_informed_employee_fail: 'Get task of informed employee fail',
+                get_task_of_creator_success: 'Get task of creator fail',
+                get_task_of_consulted_employee_fail: 'Get task of consulted employee fail',
+                get_task_of_accountable_employee_fail: 'Get task of accountable employee fail',
+                get_task_of_responsible_employee_fail: 'Get task of responsible employee fail',
+                get_tasks_by_role_fail: 'Get task by role fail',
+                get_task_by_id_fail: 'Get task by id fail',
+                get_task_evaluation_fail: 'Get task evaluation fail',
+                get_all_task_fail: 'Get all task fail',
                 create_task_fail: "Can't create new task",
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",

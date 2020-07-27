@@ -41,7 +41,7 @@ function getById(taskId) {
  */
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'all',
@@ -58,7 +58,7 @@ function getAll() {
 
 function getAllTaskByRole(userId, roleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'get_all_task_created_by_user',
@@ -86,7 +86,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
     var user = getStorage("userId");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'responsible',
@@ -123,7 +123,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'accountable',
@@ -158,7 +158,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
 function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'consulted',
@@ -193,7 +193,7 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
 function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'informed',
@@ -228,7 +228,7 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
 function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'creator',
@@ -253,7 +253,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
