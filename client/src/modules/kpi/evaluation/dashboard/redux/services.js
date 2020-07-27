@@ -3,9 +3,9 @@ import { getStorage } from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByRole,
-    getAllEmployeeOfUnitByRole,
+    // getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getAllEmployeeOfUnitByIds,
+    // getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree
 };
 
@@ -15,10 +15,12 @@ export const dashboardEmployeeKpiService = {
  */
 function getAllEmployeeKpiSetOfUnitByRole(role) {    
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
-        // url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/roles/${role}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
+        // url: `${LOCAL_SERVER_API}/kpimembers/employee-kpi-sets`,
         method: 'GET',
-        
+        params: {
+            role: role
+        }
     }, false, true, 'kpi.evaluation');
 }
 
@@ -28,8 +30,11 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
  */
 function getAllEmployeeOfUnitByRole(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/${role}`,
+        url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
+        params: {
+            role: role
+        }
     }, false, true, 'kpi.evaluation');
 }
 
@@ -40,11 +45,11 @@ function getAllEmployeeOfUnitByRole(role) {
 function getAllEmployeeKpiSetOfUnitByIds(ids) {  
     let role = getStorage("currentRole");
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
-        // url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/organizational-units/${ids}`,
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
         method: 'GET',
         params: {
-            ids: ids,
+            role: role,
+            ids: ids
         }
     }, false, true, 'kpi.evaluation');
 }
@@ -56,10 +61,11 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
 function getAllEmployeeOfUnitByIds(ids) {   
     let role = getStorage("currentRole"); 
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/${role}`,
+        url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
         params: {
-            ids: ids,
+            role: role,
+            ids: ids
         }
     }, false, true, 'kpi.evaluation');
 }
@@ -70,7 +76,10 @@ function getAllEmployeeOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/organizational-units/${role}`,
+        url: `${LOCAL_SERVER_API}/kpiunits/organizational-units/get-children-of-organizational-unit-as-tree`,
         method: 'GET',
+        params: {
+            role: role
+        }
     }, false, true, 'kpi.evaluation');
 }

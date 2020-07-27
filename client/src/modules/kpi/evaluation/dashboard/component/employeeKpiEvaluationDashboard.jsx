@@ -15,6 +15,7 @@ import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { kpiMemberServices } from '../../employee-evaluation/redux/services';
 
 class DashBoardKPIMember extends Component {
     constructor(props) {
@@ -64,8 +65,6 @@ class DashBoardKPIMember extends Component {
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllKPIMemberOfUnit(infosearch);
-        this.props.getAllKPIMember();
-
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -228,12 +227,12 @@ class DashBoardKPIMember extends Component {
     render() {
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
-        const { user, kpimembers } = this.props;
+        const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
-
+        console.log(kpimembers, dashboardEvaluationEmployeeKpiSet)
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
 
@@ -545,9 +544,9 @@ const actionCreators = {
     getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
 
     getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
-    getAllEmployeeOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByRole,
+    getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
-    getAllEmployeeOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByIds,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));

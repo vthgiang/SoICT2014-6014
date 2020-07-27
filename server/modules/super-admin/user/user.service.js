@@ -51,6 +51,32 @@ exports.getAllUsers = async (company, query) => {
     }
 }
 
+exports.getAllEmployeeOfUnitByRole = async (role) => {
+    let organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            {'deans': { $in: role }}, 
+            {'viceDeans':{ $in: role }}, 
+            {'employees':{ $in: role }}
+        ]
+    });
+    let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
+    return employees;
+}
+/**
+ * Lấy tất cả nhân viên theo mảng id đơn vị
+ * @id Mảng id các đơn vị
+ */
+exports.getAllEmployeeOfUnitByIds = async (id) => {
+    let data = [];
+
+    for(let i = 0; i < id.length; i++) {
+        let organizationalUnit = await OrganizationalUnit.findById(id[i]);
+        let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
+        data = data.concat(employees);
+    };
+    
+    return data;
+}
 /**
  * Lấy thông tin user theo id
  * @id id của user

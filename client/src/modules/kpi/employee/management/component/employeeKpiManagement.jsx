@@ -321,7 +321,7 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    // getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
 const connectedKPIPersonalManager = connect(mapState, actionCreators)(KPIPersonalManager);
 export { connectedKPIPersonalManager as KPIPersonalManager };

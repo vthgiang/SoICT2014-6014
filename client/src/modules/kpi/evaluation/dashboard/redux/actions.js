@@ -3,9 +3,9 @@ import {  dashboardEmployeeKpiService } from "./services";
 
 export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByRole,
-    getAllEmployeeOfUnitByRole,
+    // getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getAllEmployeeOfUnitByIds,
+    // getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree
 };
 
