@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SelectBox } from './../../../../common-components/index';
-
+import { withTranslate } from "react-redux-multilingual";
 class FormInfoTask extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-    
-
-    render() {
-        // console.log('props from DEMO EDIT to FORM', this.props);
+    render() { 
+        console.log('props from DEMO EDIT to FORM', this.props);
         return (
             <div>
                 <form>

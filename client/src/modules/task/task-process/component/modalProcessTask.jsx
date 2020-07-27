@@ -3,6 +3,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { FormInfoTask } from "./formInfoTask";
+import { DialogModal } from "../../../../common-components";
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
@@ -53,41 +54,44 @@ class ModalProcessTask extends Component {
         // );
         return (
             <React.Fragment>
-                <div className='box'>
-                    <div className='row'>
-                        <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                        <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-                            {/* <Header name={this.state.name && this.state.name} /> */}
-                            <div>
-                                <h1>Option {this.state.name}</h1>
-                            </div>
-                            {
-                                (this.state.showInfo) &&
+                <DialogModal
+                    size = {100}
+                    modalID = {'modal-process'}
+                    
+                >
+                    <div className='box'>
+                        <div className='row'>
+                            <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                            <div className={this.state.showInfo ? 'col-md-4' : undefined}>
                                 <div>
-                                    <Header name={this.state.name && this.state.name} />
-                                    <FormInfoTask
-                                        id={this.state.id}
-                                        info={this.state.info}
-                                        handleChangeName={this.handleChangeName}
-                                        handleChangeDescription={this.handleChangeDescription}
-                                        handleChangeResponsible={this.handleChangeResponsible}
-                                        handleChangeAccountable={this.handleChangeAccountable}
-
-                                        save={this.save}
-                                    />
+                                    <h1>Option {this.state.name}</h1>
                                 </div>
-                            }
+                                {
+                                    (this.state.showInfo) &&
+                                    <div>
+                                        <FormInfoTask
+                                            id={this.state.id}
+                                            info={this.state.info}
+                                            handleChangeName={this.handleChangeName}
+                                            handleChangeDescription={this.handleChangeDescription}
+                                            handleChangeResponsible={this.handleChangeResponsible}
+                                            handleChangeAccountable={this.handleChangeAccountable}
+
+                                            save={this.save}
+                                        />
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    {/* <div id={this.generateId}></div> */}
-                    <button onClick={this.exportDiagram}>Export XML</button>
-                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                    <button onClick={this.downloadAsImage}>Save Image</button>
-                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                </div>
-
+                    <div>
+                        {/* <div id={this.generateId}></div> */}
+                        <button onClick={this.exportDiagram}>Export XML</button>
+                        <button onClick={this.downloadAsSVG}>Save SVG</button>
+                        <button onClick={this.downloadAsImage}>Save Image</button>
+                        <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                    </div>
+                </DialogModal>
             </React.Fragment>
         )
     }
