@@ -52,7 +52,7 @@ exports.getChildTargetByParentId =async (req, res) => {
 
 exports.copyKPI =async (req, res) => {
     try {
-        var kpiunit = await managerService.copyKPI(req.params, req.query);
+        var kpiunit = await managerService.copyKPI(req.params.kpiId, req.query);
         LogInfo(req.user.email, ' copy kpi unit ',req.user.company)
         res.status(200).json({
             success: true,

@@ -1,15 +1,20 @@
-const Department = require('../../../../models/super-admin/organizationalUnit.model');
-const KPIUnit = require('../../../../models/kpi/organizationalUnitKpiSet.model');
-const DetailKPIUnit = require('../../../../models/kpi/organizationalUnitKpi.model');
-const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
+const OrganizationalUnitKpiSet = require('../../../../models/kpi/organizationalUnitKpiSet.model');
+const OrganizationalUnitKpi = require('../../../../models/kpi/organizationalUnitKpi.model');
 const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
 
 const mongoose = require("mongoose");
 
 
-//Lấy tất cả KPI của đơn vị
+/**
+ * Lấy tất cả KPI của đơn vị 
+ * @query {*} roleId id chức danh 
+ * @query {*} startDate
+ * @query {*} endDate 
+ * @query {*} status trạng thái của OrganizationalUnitKPISet
+ */
 exports.getKPIUnits = async (data) => {
-    var department = await Department.findOne({
+    var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': data.roleId },
             { 'viceDeans': data.roleId },
@@ -31,7 +36,7 @@ exports.getKPIUnits = async (data) => {
         var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
     let keySearch = {
-        organizationalUnit: department._id
+        organizationalUnit: organizationalUnit._id
     };
     if (status !== -1) {
         keySearch = {
@@ -45,34 +50,31 @@ exports.getKPIUnits = async (data) => {
             date: { "$gte": startdate, "$lt": enddate }
         }
     }
-    if (data.startDate) {
+    else if (data.startDate) {
         keySearch = {
             ...keySearch,
             date: { "$gte": startdate }
         }
     }
-    if (data.endDate) {
+    else if (data.endDate) {
         keySearch = {
             ...keySearch,
             date: { "$lt": enddate }
         }
     }
-    var kpiunits = await KPIUnit.find(keySearch)
+    var kpiunits = await OrganizationalUnitKpiSet.find(keySearch)
         .skip(0).limit(12).populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;
 }
 
-//Lấy tất cả mục tiêu con của mục tiêu hiện tại
-exports.getChildTargetByParentId = async (data, query) => {
-    var date = new Date(query.date);
-    var monthkpi = date.getMonth() + 1;
-    var yearkpi = date.getFullYear();
-    var kpiunits = await KPIUnit.aggregate([
-        { $match: { organizationalUnit: mongoose.Types.ObjectId(data.kpiId) } },
-        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: monthkpi } },
-        { $match: { year: yearkpi } },
+/**
+ * Lấy tất cả mục tiêu con của mục tiêu hiện tại của KPI đơn vị 
+ * @param {*} kpiId id của OrganizationalUnitKPIset 
+ */
+exports.getChildTargetByParentId = async (data) => {
+    var kpiunits = await OrganizationalUnitKpiSet.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(data.kpiId) } },
         {
             $lookup: {
                 from: "organizational_unit_kpis",
@@ -147,45 +149,44 @@ exports.getChildTargetByParentId = async (data, query) => {
     return childTarget;
 }
 
-
-exports.copyKPI = async (query, data) => {
-    var date, dateold, dateNewKPIUnit, monthOldKPI, yearOldKPI, monthNewKPI, yearNewKPI;
-    date = data.dateold.split("-");
-    dateold = new Date(date[0], date[1], 0);
-    date = data.datenew.split("-");
-    dateNewKPIUnit = new Date(date[1], date[0], 0);
-    monthOldKPI = dateold.getMonth();
-    yearOldKPI = dateold.getFullYear();
-    monthNewKPI = dateNewKPIUnit.getMonth();
-    yearNewKPI = dateNewKPIUnit.getFullYear();
-    organizationalUnitOldKPI = await KPIUnit.find({ organizationalUnit: data.idunit })
+/**
+ * Copy KPI đơn vị từ một tháng cũ sang tháng mới
+ * @param {*} kpiId id của OrganizationalUnitKPIset của tháng cũ
+ * @query {*} datenew tháng mới được chọn để tạo
+ * @query {*} creator Id người tạo
+ * @query {*} idunit Id của đơn vị 
+ */
+exports.copyKPI = async (kpiId, data) => {
+    var organizationalUnitOldKPI = await OrganizationalUnitKpiSet.findById(kpiId)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
+    let date, dateNewKPIUnit, monthNewKPI, yearNewKPI;
+    date = data.datenew.split("-");
+    dateNewKPIUnit = new Date(date[1], date[0], 0);
+    monthNewKPI = dateNewKPIUnit.getMonth();
+    yearNewKPI = dateNewKPIUnit.getFullYear();
 
-    var check = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
-    if (check == undefined) {
-        var list = organizationalUnitOldKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
-        var organizationalUnitNewKpi = await KPIUnit.create({
-            organizationalUnit: list.organizationalUnit._id,
-            creator: query.kpiId,
-            date: dateNewKPIUnit,
-            kpis: []
+    var organizationalUnitNewKpi = await OrganizationalUnitKpiSet.create({
+        organizationalUnit: organizationalUnitOldKPI.organizationalUnit._id,
+        creator: data.creator,
+        date: dateNewKPIUnit,
+        kpis: []
+    })
+
+    for (let i in organizationalUnitOldKPI.kpis) {
+        var target = await OrganizationalUnitKpi.create({
+            name: organizationalUnitOldKPI.kpis[i].name,
+            parent: organizationalUnitOldKPI.kpis[i].parent,
+            weight: organizationalUnitOldKPI.kpis[i].weight,
+            criteria: organizationalUnitOldKPI.kpis[i].criteria,
+            type: organizationalUnitOldKPI.kpis[i].type
         })
-        for (let i in list.kpis) {
-            var target = await DetailKPIUnit.create({
-                name: list.kpis[i].name,
-                parent: list.kpis[i].parent,
-                weight: list.kpis[i].weight,
-                criteria: list.kpis[i].criteria,
-                type: list.kpis[i].type
-            })
-            organizationalUnitKpi = await KPIUnit.findByIdAndUpdate(
-                organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-            );
-        }
-        organizationalUnitKpi = await KPIUnit.find({ organizationalUnit: data.idunit })
-            .populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+        organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
+            organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+        );
     }
+    organizationalUnitKpi = await OrganizationalUnitKpiSet.find({ organizationalUnit: data.idunit })
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return organizationalUnitKpi;
 }

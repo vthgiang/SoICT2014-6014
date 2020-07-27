@@ -27,7 +27,7 @@ class ModalDetailKPI extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
-            this.props.getChildTarget(nextProps.idkpiunit, nextProps.date);
+            this.props.getChildTarget(nextProps.id);
             return false;
         }
         return true;

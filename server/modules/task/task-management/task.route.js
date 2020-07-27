@@ -14,5 +14,6 @@ router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
 router.patch('/tasks/:taskId', auth, TaskManagementController.editTaskStatus);
 router.patch('/tasks/:taskId/archived', auth, TaskManagementController.editArchivedOfTask);
+router.get('/tasks/organizational-unit/tasks-by-month', auth, TaskManagementController.getAllTaskOfOrganizationalUnit);
 
 module.exports = router;

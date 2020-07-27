@@ -1069,3 +1069,67 @@ exports.getTasksByUser = async (data) => {
     }
     return tasksbyuser;
 }
+
+/**
+ * Lấy tất cả task của organizationalUnit theo tháng 
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfOrganizationalUnit= async (query) => {
+    console.log("====", query)
+    let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
+
+    if (query.month) {
+        now = new Date(query.month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+
+    if (!query.organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    }
+
+    let tasks = await Task.aggregate([
+        { $match: { 'organizationalUnit': organizationalUnit._id } },
+        {
+            $match: {
+                $or: [
+                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                ]
+            }
+        },
+
+        { $unwind: "$evaluations" },
+        {
+            $match: {
+                $or: [
+                    { 'evaluations.date': undefined },
+                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                ]
+            }
+        },
+
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
+    ])
+
+    return tasks;
+}

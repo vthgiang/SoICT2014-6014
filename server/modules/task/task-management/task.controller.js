@@ -80,6 +80,7 @@ exports.getTaskEvaluations = async (req, res) => {
  *  Lấy công việc theo id
  */
 exports.getTaskById = async (req, res) => {
+    console.log("FFFR")
     try {
         var task = await TaskManagementService.getTaskById(req.params.taskId, req.user._id);
         await LogInfo(req.user.email, ` get task by id `, req.user.company);
@@ -581,4 +582,25 @@ getTasksByUser = async (req, res) => {
             content: error
         });
     }
+}
+
+/** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
+exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
+    console.log("====", req.query)
+    // try {
+        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query);
+        LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_organizational_unit_success'],
+            content: tasks
+        })
+    // } catch (error) {
+    //     LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_all_task_of_organizational_unit_failure'],
+    //         content: error
+    //     })
+    // }
 }

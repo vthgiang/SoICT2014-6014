@@ -1,7 +1,7 @@
 import {
     LOCAL_SERVER_API
 } from '../../../../../env';
-import { sendRequest} from '../../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const dashboardOrganizationalUnitKpiServices = {
     getAllEmployeeKpiInOrganizationalUnit,
@@ -14,33 +14,46 @@ export const dashboardOrganizationalUnitKpiServices = {
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-in-organizational-unit/${roleId}`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/employee-kpis`,
         method: 'GET',
-        params: { organizationalUnitId: organizationalUnitId, month: month }
+        params: {
+            roleId: roleId,
+            organizationalUnitId: organizationalUnitId,
+            month: month
+        }
     }, false, false)
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/tasks-of-organizational-unit/${roleId}`,
+        url: `${LOCAL_SERVER_API}/task/tasks/organizational-unit/tasks-by-month`,
         method: 'GET',
-        params: { organizationalUnitId: organizationalUnitId, month: month }
+        params: {
+            roleId: roleId,
+            organizationalUnitId: organizationalUnitId,
+            month: month
+        }
     }, false, false)
 }
- 
+
 /** Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị */
 function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set/${organizationalUnitId}/${startDate}/${endDate}`,
-        method: 'GET'
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/list-kpi-by-time`,
+        method: 'GET',
+        params: {
+            organizationalUnitId: organizationalUnitId,
+            startDate: startDate,
+            endDate: endDate,
+        }
     }, false, false)
 }
 
 /** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
 function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/organizational-unit-kpi-set-of-child-organizational-unit`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/child-organizational-unit`,
         method: 'GET',
         params: {
             roleId: roleId,
@@ -53,7 +66,7 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/employee-kpi-set-in-organizational-unit`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/employee-kpi-sets/all-employee-kpi-sets-by-month`,
         method: 'GET',
         params: {
             month: month,
