@@ -154,9 +154,9 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
 
     render() {
         const { name, adding, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
-        const { createKpiUnit } = this.props; // Redux
-        const { organizationalUnit } = this.props; // Truyền từ component cha
-        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+        const { createKpiUnit } = this.props; 
+        const { organizationalUnit } = this.props; 
+        const { translate } = this.props; 
 
         let parentKPI;
         if (createKpiUnit.parent) {
@@ -164,7 +164,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         }
 
         let items;
-        if(parentKPI === undefined){
+        if(!parentKPI){
             items = [];
         } else {    
             items = parentKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
@@ -186,17 +186,17 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                     {/* Form thêm mục tiêu */}
                     <form id="form-add-target" onSubmit={() => this.onAddItem(translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success'))}>
                         {/* Tên mục tiêu */}
-                        <div className={`form-group ${errorOnName===undefined? "": "has-error"}`}>
+                        <div className={`form-group ${!errorOnName? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
                         {/* Mục tiêu cha */}
-                        {(organizationalUnit && organizationalUnit.parent) && (items.length !== 0) && // unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        {(organizationalUnit && organizationalUnit.parent) && (items.length !== 0) && 
                             <div className="form-group">
                                 <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents')}</label>
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                <SelectBox 
                                     id={`parent-target-add`}
                                     className="form-control select2"
                                     style={{width: "100%"}}

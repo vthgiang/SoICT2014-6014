@@ -3,7 +3,6 @@ import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
 // import { alertActions } from "../../../../redux-actions/AlertActions";
 import { performTaskService } from "./services";
-const FileDownload = require('js-file-download');
 export const performTaskAction = {
     getTimesheetLogs,
     getTimerStatusTask,
@@ -25,7 +24,6 @@ export const performTaskAction = {
     deleteCommentOfTaskComment,
     evaluationAction,
     confirmAction,
-    downloadFile,
     uploadFile,
     addTaskLog,
     deleteFileAction,
@@ -303,19 +301,7 @@ function confirmAction(id, idUser, taskId) {
             );
     }
 }
-function downloadFile(path, fileName) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.DOWNLOAD_FILE_REQUEST });
-        performTaskService.downloadFile(path)
-            .then(res => {
-                dispatch({ type: performTaskConstants.DOWNLOAD_FILE_SUCCESS });
-                console.log(res)
-                const content = res.headers['content-type'];
-                FileDownload(res.data, fileName, content)
-            })
-            .catch(err => { dispatch({ type: performTaskConstants.DOWNLOAD_FILE_FAILURE }) })
-    }
-}
+
 function uploadFile(taskId, data) {
     return dispatch => {
         dispatch({ type: performTaskConstants.UPLOAD_FILE_REQUEST });
@@ -357,7 +343,6 @@ function deleteFileTaskComment(fileId, actionId, taskId, type) {
     }
 }
 function deleteFileChildTaskComment(fileId, actionId, taskId, type) {
-    console.log("action")
     return dispatch => {
         dispatch({ type: performTaskConstants.DELETE_FILE_CHILD_TASK_COMMENT_REQUEST });
         performTaskService.deleteFileChildTaskComment(fileId, actionId, taskId, type)

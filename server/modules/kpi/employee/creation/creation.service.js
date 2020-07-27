@@ -120,7 +120,14 @@ exports.createEmployeeKpi = async (nameId,parentId,weightId,criteriaId,employeeK
     var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(
         employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { new: true }
     );
-    employeeKpiSet = await employeeKpiSet.populate('creator approver organizationalUnit').populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    employeeKpiSet = await EmployeeKpiSet.findById(employeeKpiSetId)
+    .populate('creator approver organizationalUnit')
+    .populate({ path: "kpis", populate: { path: 'parent' } })
+    .populate([
+        {path: 'comments.creator', model: User,select: 'name email avatar '},
+        {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+    ])
+    .execPopulate();
     return employeeKpiSet;
 }
 
@@ -160,8 +167,14 @@ exports.updateEmployeeKpiSetStatus = async (id,statusId) => {
 exports.editEmployeeKpiSet = async (strDate,id) => {
     var arr = strDate.split("-");
     var date = new Date(arr[1], arr[0], 0)
-    var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-    employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    var employeeKpiSet1 = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
+    employeeKpiSet = await EmployeeKpiSet.findById(id)
+        .populate("organizationalUnit creator approver ")
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+                {path: 'comments.creator', model: User,select: 'name email avatar '},
+                {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
+        ]);    
     return employeeKpiSet;
 }
 

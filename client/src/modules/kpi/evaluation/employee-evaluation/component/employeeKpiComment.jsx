@@ -63,7 +63,6 @@ class EmployeeKpiComment extends Component {
                 }
             })
         }
-
     }
 
     handleShowFile = (id) => {
@@ -138,7 +137,7 @@ class EmployeeKpiComment extends Component {
                 ...state,
                 editComment: ""
             }
-        });
+        })
     }
     editCommentOfComment = async (e, index) => {
         e.preventDefault();
@@ -224,7 +223,7 @@ class EmployeeKpiComment extends Component {
         }
         return (
             <React.Fragment>
-                {comments ?
+                {comments?
                     comments.map(item => {
                         return (
                             <div className="clearfix" key={item._id}>
@@ -233,7 +232,14 @@ class EmployeeKpiComment extends Component {
                                     <React.Fragment>
                                         <div className="content-level1">
                                             <a style={{ cursor: 'pointer' }}>{item.creator.name} </a>
-                                            {item.description}
+                                            {item.description.split('\n').map((item, idx) => {
+                                                return (
+                                                    <span key={idx}>
+                                                        {item}
+                                                        <br />
+                                                    </span>
+                                                );
+                                            })}
                                             {item.creator._id === currentUser &&
                                                 <div className="btn-group pull-right">
                                                     <span data-toggle="dropdown">
@@ -292,7 +298,14 @@ class EmployeeKpiComment extends Component {
                                                     <div>
                                                         <p className="content-level2">
                                                             <a style={{ cursor: 'pointer' }}>{child.creator.name} </a>
-                                                            {child.description}
+                                                            {child.description.split('\n').map((item, idx) => {
+                                                                return (
+                                                                    <span key={idx}>
+                                                                        {item}
+                                                                        <br />
+                                                                    </span>
+                                                                );
+                                                            })}
                                                             {child.creator._id === currentUser &&
                                                                 <div className="btn-group pull-right">
                                                                     <span data-toggle="dropdown">

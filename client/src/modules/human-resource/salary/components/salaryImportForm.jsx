@@ -149,18 +149,8 @@ class SalaryImportForm extends Component {
                 }
                 let importData = [], rowError = [];
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
-                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
+                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     var indexEmployeeName, indexEmployeenumber, indexMainSalary, indexBouns = [];
-
-                    // Xoá các row excel trống
-                    data = data.filter(x => {
-                        let check = x.filter(y => y !== null);
-                        if (check.length === 0) {
-                            return false
-                        } else {
-                            return true
-                        }
-                    });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < Number(configData.rowHeader); i++) {
                         data[i].forEach((x, index) => {
@@ -261,7 +251,77 @@ class SalaryImportForm extends Component {
         })
     }
 
+
+
+
+
+
+    // Function Thay đổi cấu hình file import
+    handleChangeConfig = (value) => {
+        this.setState({
+            configData: value,
+        })
+    }
+
+    // Function thay đổi file import
+    handleImportExcel = (value) => {
+        let rowError = [];
+        // value.forEach(row => {
+        //     for (let index in row) {
+        //         if (index === 'bonus') {
+        //             let bonus = [];
+        //             row[index].forEach((y, n) => {
+        //                 if (y !== null) {
+        //                     bonus = [...bonus, { nameBonus: configurationEmployeeInfo.bonus[n], number: Number(y) }];
+        //                 }
+        //             })
+        //             row[index] = bonus;
+        //         }
+        //     }
+        // })
+
+        // Check dữ liệu import có hợp lệ hay không
+        let checkImportData = value;
+        value = value.map((x, index) => {
+            let errorAlert = [];
+            if (x.employeeNumber === null || x.employeeName === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1) {
+                rowError = [...rowError, index + 1]
+                x = { ...x, error: true }
+            }
+            if (x.employeeNumber === null) {
+                errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+            } else {
+                if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
+                    errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
+            };
+            if (x.employeeName === null)
+                errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+
+            x = { ...x, errorAlert: errorAlert }
+            return x;
+        });
+        this.setState({
+            importData: value,
+            rowError: rowError,
+        })
+    }
+
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+    }
+
+
     render() {
+        // const { limit, page, importData, rowError, configData } = this.state;
+        // let configuration = configData ? configData : configurationEmployeeInfo;
+
+
+
         let formater = new Intl.NumberFormat();
         const { translate, salary } = this.props;
         let { importData, configData, importConfiguration, rowError, limit, page, changeMonth } = this.state;

@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
+import { taskManagementActions } from '../../redux/actions';
+
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { TasksSchedule } from './tasksSchedule';
-import { taskManagementActions } from '../../redux/actions';
+
+import { withTranslate } from 'react-redux-multilingual';
 
 class TaskDashboard extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             userID: "",
         };
     }
+
     componentDidMount() {
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null);
-        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
-        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
-        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
-        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null);
+        this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         this.props.getTaskByUser();
     }
+    
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         let dps = [];
@@ -31,40 +38,15 @@ class TaskDashboard extends Component {
         }
         return dps;
     }
+
     render() {
         const { tasks, translate } = this.props;
-        const options3 = {
-            theme: "light2", // "light1", "dark1", "dark2"
-            animationEnabled: true,
-            zoomEnabled: true,
-            exportEnabled: true,
-            title: {
-                text: "Try Zooming and Panning",
-                fontWeight: "normal",
-                fontFamily: "tahoma",
-                fontSize: 25,
-            },
-            axisY: {
-                includeZero: false
-            },
-            data: [{
-                type: "area",
-                dataPoints: this.generateDataPoints(500)
-            }]
-        }
 
-        var amountResponsibleTask = 0;
-        if (tasks && tasks.responsibleTasks) {
-            let task = tasks.responsibleTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountResponsibleTask++;
+        let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
+        let numTask = [];
+        let totalTasks = 0;
 
-            }
-        }
         // Tinh so luong tat ca cac task 
-        var amountResponsibleTask = 0;
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
             let i;
@@ -74,8 +56,8 @@ class TaskDashboard extends Component {
 
             }
         }
+
         // tính số lượng task mà người này là creator
-        var amountTaskCreated = 0;
         if (tasks && tasks.creatorTasks) {
             let task = tasks.creatorTasks;
             let i;
@@ -85,8 +67,8 @@ class TaskDashboard extends Component {
 
             }
         }
+
         // tính số lượng task mà người này cần phê duyệt
-        var amountAccountableTasks = 0;
         if (tasks && tasks.accountableTasks) {
             let task = tasks.accountableTasks;
             let i;
@@ -95,8 +77,8 @@ class TaskDashboard extends Component {
                     amountAccountableTasks++;
             }
         }
+
         // tính số lượng task mà người này là người hỗ trợ
-        var amountConsultedTasks = 0;
         if (tasks && tasks.consultedTasks) {
             let task = tasks.consultedTasks;
             let i;
@@ -105,9 +87,8 @@ class TaskDashboard extends Component {
                     amountConsultedTasks++;
             }
         }
+
         // Tinh tong so luong cong viec co trang thai Inprogess
-        var numTask = [];
-        let totalTasks = 0;
         if (tasks) {
             let tempObj = {};
             if (tasks.responsibleTasks)
@@ -170,26 +151,29 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
                             </div>
-                            <DomainOfTaskResultsChart />
+                            <div className="box-body qlcv">
+                                <DomainOfTaskResultsChart/>
+                            </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')}</div>
                             </div>
-                            <TaskStatusChart />
+                            <div className="box-body qlcv">
+                                <TaskStatusChart/>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="row">
-
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -263,6 +247,7 @@ class TaskDashboard extends Component {
         );
     }
 }
+
 function mapState(state) {
     const { tasks } = state;
     return { tasks };
@@ -277,5 +262,6 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
 
 };
+
 const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
 export { connectedTaskDashboard as TaskDashboard };

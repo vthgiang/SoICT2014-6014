@@ -64,6 +64,7 @@ import { TaskManagement } from "../modules/task/task-management/component/taskMa
 import {TaskComponent} from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
+import { TaskProcess } from '../modules/task/task-process/component/taskProcess'
 
 //asset
 import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
@@ -709,7 +710,21 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ TaskDashboard }
                     />
-
+                    <PrivateRoute
+                        isLoading={ false }
+                        key={ 'task-management-process' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-management-process', name: 'task_management_process', icon:'fa fa-folder-open' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-management-process' }
+                        path={ '/task-management-process' }
+                        pageName ={ 'task_management_process' }
+                        layout={ Layout }
+                        component={ TaskProcess }
+                    />
                     {/** Quản lý tài sản */}
                     {/** Nhân viên */}
                     <PrivateRoute 

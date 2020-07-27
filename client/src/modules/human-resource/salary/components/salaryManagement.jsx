@@ -44,6 +44,8 @@ class SalaryManagement extends Component {
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
     }
+
+    // Function bắt sự kiện thêm lương nhân viên bằng import file
     importSalary = async () => {
         await this.setState({
             importSalary: true
@@ -167,7 +169,7 @@ class SalaryManagement extends Component {
                     <div className="form-inline">
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
-                            <ul className="dropdown-menu pull-right" style={{marginTop: 0 }}>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                                 <li><a title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>{translate('human_resource.salary.add_import')}</a></li>
                                 <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
