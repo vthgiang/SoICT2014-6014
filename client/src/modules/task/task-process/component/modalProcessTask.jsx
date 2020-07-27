@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { FormInfoTask } from "./formInfoTask";
 import { DialogModal } from "../../../../common-components";
+import BpmnModeler from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
+import { TaskProcessActions } from "../redux/actions";
 
 class ModalProcessTask extends Component {
 
@@ -40,6 +41,8 @@ class ModalProcessTask extends Component {
     }
 
     render() {
+        const { translate } = this.props;
+        const { id, info, showInfo } = this.state;
         // return (
         // <React.Fragment>
         //     <div>
@@ -55,23 +58,26 @@ class ModalProcessTask extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size = {100}
-                    modalID = {'modal-process'}
-                    
+                    size='100' modalID={`modal-process`} isLoading={false}
+                    formID="form-task-process"
+                    // disableSubmit={!this.isTaskFormValidated()}
+                    title={this.props.title}
+                    func = {this.save}
                 >
                     <div className='box'>
                         <div className='row'>
                             <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
                             <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-                                <div>
-                                    <h1>Option {this.state.name}</h1>
-                                </div>
+
                                 {
-                                    (this.state.showInfo) &&
+                                    (showInfo) &&
                                     <div>
+                                        <div>
+                                            <h1>Option {this.state.name}</h1>
+                                        </div>
                                         <FormInfoTask
-                                            id={this.state.id}
-                                            info={this.state.info}
+                                            id={id}
+                                            info={(info && info[`${id}`]) && info[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
                                             handleChangeResponsible={this.handleChangeResponsible}
@@ -101,9 +107,9 @@ class ModalProcessTask extends Component {
         console.log('Click Save button!!! Call API');
     }
 
-    handleChangeName = async (e) => {
-        let { value } = e.target;
-        // console.log('e.target.value', value);
+    handleChangeName = async (value) => {
+    // handleChangeName = async (e) => {
+        // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
@@ -114,11 +120,11 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
     }
 
-    handleChangeDescription = async (e) => {
-        let { value } = e.target;
+    handleChangeDescription = async (value) => {
+    // handleChangeDescription = async (e) => {
+        // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
@@ -129,7 +135,6 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
     }
 
     handleChangeResponsible = async (value) => {
@@ -176,24 +181,11 @@ class ModalProcessTask extends Component {
         this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
         this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
-        // console.log(eventBus);
     }
-
-    // interactPopup = (event) => {
-    //     var element = event.element;
-    //     console.log(element, event);
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //             showForm: !this.state.showForm,
-    //         }
-    //     })
-    // }
 
     interactPopup = (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
-        console.log(nameStr);
         this.setState(state => {
             if (element.type !== 'bpmn:Collaboration') {
                 return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
@@ -203,42 +195,39 @@ class ModalProcessTask extends Component {
             }
 
         })
-        console.log(event, element, element.businessObject.id);
     }
 
     deleteElements = (event) => {
         var element = event.element;
-        console.log(element);
     }
 
     handleUndoDeleteElement = (event) => {
         var element = event.context.shape;
-        console.log(element);
     }
 
     changeNameElement = (event) => {
         var element = event.element;
-        console.log(element);
     }
-
-    exportDiagram = () => {
+    save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(xml);
                 xmlStr = xml;
-            }
         });
-        this.setState(state => {
-            // state.info[`xmlDiagram`] = xmlStr;
+        await this.setState(state => {
             return {
                 ...state,
                 xmlDiagram: xmlStr,
             }
         })
+        console.log(this.state)
+        let data = {
+            xmlDiagram : this.state.xmlDiagram,
+            infoTask: this.state.info
+        }
+        this.props.exportXmlDiagram(data)
+    }
+    exportDiagram = () => {
+        
     }
 
     downloadAsSVG = () => {
@@ -326,9 +315,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    // getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    // getDepartment: UserActions.getDepartmentOfUser,
-    // _delete: taskTemplateActions._delete
+    exportXmlDiagram : TaskProcessActions.exportXmlDiagram
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

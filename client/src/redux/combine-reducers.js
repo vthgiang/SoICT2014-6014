@@ -41,12 +41,14 @@ import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
 import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
+import { taskProcess } from "../modules/task/task-process/redux/reducers"
 
 //asset
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
 import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
 import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
+
 
 //report 
 import {reports} from "../modules/report/task-report/redux/reducers";
@@ -99,6 +101,7 @@ const appReducer = combineReducers(Object.assign({
     //task-managemnet
     tasks,
     performtasks,
+    taskProcess,
     // kpi members
     kpimembers,
 
