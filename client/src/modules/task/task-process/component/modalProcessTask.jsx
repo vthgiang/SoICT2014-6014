@@ -16,7 +16,7 @@ class ModalProcessTask extends Component {
     constructor() {
         super();
         this.state = {
-            creator: getStorage("userId"),
+            userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
             info: {},
@@ -265,6 +265,9 @@ class ModalProcessTask extends Component {
         })
         console.log(this.state)
         let data = {
+            nameProcess: this.state.processName,
+            description: this.state.processDescription,
+            creator: this.state.userId,
             xmlDiagram: this.state.xmlDiagram,
             infoTask: this.state.info
         }
@@ -358,7 +361,8 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    createXmlDiagram : TaskProcessActions.createXmlDiagram
+    createXmlDiagram : TaskProcessActions.createXmlDiagram,
+    getXmlDiagramById : TaskProcessActions.getXmlDiagramById,
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };

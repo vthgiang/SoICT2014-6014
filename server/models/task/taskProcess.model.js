@@ -14,6 +14,11 @@ const TaskProcessSchema = new Schema({
   description: {
     type: String
   },
+  creator: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: User,
+  },
   infoTask: [{
     name: {
       type: String
@@ -22,12 +27,12 @@ const TaskProcessSchema = new Schema({
       type: String
     },
     accountable: [{
-      type: String,
-      // ref: User
+      type: Schema.Types.ObjectId,
+      ref: User
     }],
     responsible: [{
-      type: String,
-      // ref: User
+      type: Schema.Types.ObjectId,
+      ref: User
     }],
     followingTask: [{
       name: {
