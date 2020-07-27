@@ -1,22 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SlimScroll, PaginateBar } from '../../../common-components';
+import { DataTableSetting, SlimScroll, PaginateBar } from '../../../common-components';
 
 class ShowImportData extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            limit: this.props.limit,
+            page: this.props.page
+        };
+    }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+        });
     }
 
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
-        this.props.setPage(pageNumber)
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
     }
 
     render() {
-        const { id, limit, page, importData = [], rowError = [], configData, scrollTableWidth = 1000 } = this.props;
-
+        const { id, importData = [], rowError = [], configData, scrollTableWidth = 1000 } = this.props;
+        const { limit, page } = this.state;
         let config = { ...configData }, headerTable = [];
         delete config.sheets;
         delete config.rowHeader;
@@ -26,6 +39,14 @@ class ShowImportData extends Component {
             let data = config[key];
             headerTable = [...headerTable, { key: key, value: data.value }]
         }
+        let columnArr = ["STT"];
+        headerTable.forEach(x => {
+            if (Array.isArray(x.value)) {
+                columnArr = columnArr.concat(x.value);
+            } else {
+                columnArr = [...columnArr, x.value]
+            }
+        })
 
         let pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
@@ -37,6 +58,13 @@ class ShowImportData extends Component {
                 {
                     importDataCurrentPage.length !== 0 && (
                         <React.Fragment>
+                            <DataTableSetting
+                                tableId={`importData-${id}`}
+                                columnArr={columnArr}
+                                limit={limit}
+                                setLimit={this.setLimit}
+                                hideColumnOption={true}
+                            />
                             {rowError.length !== 0 && (
                                 <React.Fragment>
                                     <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
