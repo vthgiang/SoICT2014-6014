@@ -8,11 +8,10 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
-    console.log("query: ", query)
     var page = query.page;
     var limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
+    if(!(page || limit)){
         
         return await Document.find({company}).populate([
             { path: 'category', model: DocumentCategory},
@@ -185,9 +184,27 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
-exports.downloadDocumentFile = async (id, numberVersion, downloaderId) => {
-    const doc = await Document.findById(id);
-    if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
+exports.downloadDocumentFile = async (data) => {
+    const doc = await Document.findById(data.id);
+    if(doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
+    await downloadFile(doc, data.downloaderId)
+    return {
+        path: doc.versions[data.numberVersion].file,
+        name: doc.name
+    };
+}
+
+exports.downloadDocumentFileScan = async (data) => {
+    const doc = await Document.findById(data.id);
+    if(doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
+    await downloadFile(doc, data.downloaderId)
+    return {
+        path: doc.versions[data.numberVersion].scannedFileOfSignedDocument,
+        name: doc.name
+    };
+}
+// hàm thực hiện download 
+async function downloadFile (doc, downloaderId){
     doc.numberOfDownload += 1;
     const getIndex = (array, value) => {
         var res = -1;
@@ -204,38 +221,7 @@ exports.downloadDocumentFile = async (id, numberVersion, downloaderId) => {
     if(index !== -1) doc.downloads.splice(index, 1);
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
-    return {
-        path: doc.versions[numberVersion].file,
-        name: doc.name
-    };
 }
-
-exports.downloadDocumentFileScan = async (id, numberVersion, downloaderId) => {
-    const doc = await Document.findById(id);
-    if(doc.versions.length < numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
-    doc.numberOfDownload += 1;
-    const getIndex = (array, value) => {
-        var res = -1;
-        for (let i = 0; i < array.length; i++) {
-            if(array[i].downloader.toString() === value.toString()){
-                res = i;
-                break;
-            }
-        }
-
-        return res;
-    }
-    var index = getIndex(doc.downloads, downloaderId);
-    if(index !== -1) doc.downloads.splice(index, 1);
-    doc.downloads.push({ downloader: downloaderId });
-    await doc.save();
-
-    return {
-        path: doc.versions[numberVersion].scannedFileOfSignedDocument,
-        name: doc.name
-    };
-}
-
 /**
  * Lấy tất cả các loại văn bản
  */
@@ -287,6 +273,7 @@ exports.deleteDocumentCategory = async(id) => {
  */
 exports.getDocumentDomains = async (company) => {
     const list = await DocumentDomain.find({ company });
+    //console.log(list, 'list')
     const dataConverted = list.map( domain => {
         return {
             id: domain._id.toString(),
@@ -303,20 +290,23 @@ exports.getDocumentDomains = async (company) => {
 }
 
 exports.createDocumentDomain = async (company, data) => {
-    await DocumentDomain.create({
+    let query = {
         company,
         name: data.name,
         description: data.description,
-        parent: data.parent
-    });
+    }
+    if(data.parent.length){
+        query.parent = data.parent
+    }
+    await DocumentDomain.create(query);
 
     return await this.getDocumentDomains(company);
 }
 
-exports.getDocumentsThatRoleCanView = async(company, id, query) => {
+exports.getDocumentsThatRoleCanView = async(company, query) => {
     var page = query.page;
     var limit = query.limit;
-    var role = await Role.findById(id);
+    var role = await Role.findById(query.id);
     var roleArr = [role._id].concat(role.parents);
     
     if(page === undefined && limit === undefined ){

@@ -23,21 +23,21 @@ exports.getTaskEvaluations = async (data) => {
     let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
-
+    let calulator = Number(data.calulator);
     let startTime = startDate.split("-");
     let endTime = endDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     let filterDate = {};
 
-    if (data.responsibleEmployees) { // bỏ toString để check lọc ko có responsible và accountable, ko bỏ thì lỗi
+    if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees.toString();
     }
     if (data.accountableEmployees) {
         accountable = data.accountableEmployees.toString();
     }
-    (taskStatus === 0) ? taskStatus = "Finished" : taskStatus = "Inprocess";
-
+    (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
+    console.log(taskStatus)
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
@@ -66,111 +66,62 @@ exports.getTaskEvaluations = async (data) => {
         }
     }
 
-    let condition = [];
-    // nếu không lọc theo người thực hiện và người phê duyệt
-    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
-        condition = [
-            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
-            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-            { $match: { status: taskStatus } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            },
-            filterDate
-        ]
-
-    } else if (!startDate && !endDate) {
-        condition = [
-            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
-            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-            { $match: { status: taskStatus } },
-            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            }
-
-        ]
-    }
-    else {
-        condition = [
-            { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
-            { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-            { $match: { status: taskStatus } },
-            { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-            { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
-            { $unwind: "$responsibleEmployees" },
-            { $unwind: "$accountableEmployees" },
-            { $unwind: "$evaluations" },
-            {
-                $replaceRoot: {
-                    newRoot: {
-                        $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
-                        { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
-                        { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
-                    }
-                }
-            },
-            filterDate
-        ]
-    }
-    let result = await Task.aggregate(condition);
-    let condition2 = [
+    let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-        { $match: { status: taskStatus } },
-
-        { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-        { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
         { $unwind: "$responsibleEmployees" },
         { $unwind: "$accountableEmployees" },
         { $unwind: "$evaluations" },
         {
             $replaceRoot: {
                 newRoot: {
-                    $mergeObjects: [{ name: "$name" }, { responsibleEmployees: "$responsibleEmployees" },
-                    { accountableEmployees: "$accountableEmployees" }, { taskId: "$_id" }, { status: "$status" },
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
+                    { accountableEmployees: "$accountableEmployees" },
                     { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
                 }
             }
         },
-        filterDate,
-        { $unwind: "$taskInformations" },
-        {
-            $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
-        },
-        { $match: { type: "Number" } },
-        {
-            $group: {
-                _id: { _id: "$_id", name: "$name" },
-                avgSum: { $avg: { $sum: "$value" } }
-                //            avgSum: { $sum: "$value"}
-            }
+    ];
 
-        },
+    // nếu không lọc theo người thực hiện và người phê duyệt
+    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+        condition = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate
+        ]
 
-    ]
+    } else {
+        condition = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate
+        ]
+    }
+    let result = await Task.aggregate(condition);
+    // tính trung bình cộng
+    let condition2;
+    if (calulator === 0) {
+        condition2 = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate,
+            { $unwind: "$taskInformations" },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
+            },
+            { $match: { type: "Number" } },
+            {
+                $group: {
+                    _id: { _id: "$_id", name: "$name" },
+                    moneyAvg: { $avg: { $sum: "$value" } }
+                }
+
+            },
+        ]
+    }
     let result2 = await Task.aggregate(condition2);
     return { result, result2 };
-    //{"taskTemplate": ObjectId("5f107afff000733a180c1077"),"status": "Finished", "evaluations.taskInformations": { $elemMatch: { code: "p1" } }}
 }
 
 /**

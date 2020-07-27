@@ -22,9 +22,9 @@ class ManageLinkSystem extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllSystemLinks();
-        this.props.getAllSystemLinks({page: this.state.page, limit: this.state.limit});
+        this.props.getAllSystemLinks({ page: this.state.page, limit: this.state.limit });
         this.props.getAllSystemLinkCategories();
     }
 
@@ -34,7 +34,7 @@ class ManageLinkSystem extends Component {
         });
     }
 
-    searchWithOption = async() => {
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,

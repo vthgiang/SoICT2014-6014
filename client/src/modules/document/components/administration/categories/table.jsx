@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SearchBar, DataTableSetting, PaginateBar } from '../../../../../common-components';
-import CreateForm from './createForm';
-import { DocumentActions } from '../../../redux/actions';
 import Swal from 'sweetalert2';
+
+import { SearchBar, DataTableSetting, PaginateBar } from '../../../../../common-components';
+import { DocumentActions } from '../../../redux/actions';
+
+import CreateForm from './createForm';
 import EditForm from './editForm';
 
 class Table extends Component {
     constructor(props) {
         super(props);
-        this.state = { option: 'name', value: '', limit: 5, page: 1 }
+        this.state = {
+            option: 'name',
+            value: '',
+            limit: 5,
+            page: 1
+        }
     }
 
     componentDidMount(){
@@ -18,7 +25,6 @@ class Table extends Component {
         this.props.getDocumentCategories({page: this.state.page, limit: this.state.limit});
     }
 
-    
     deleteDocumentCategory = (id, info) => {
         const {translate} = this.props;
         Swal.fire({
@@ -42,21 +48,21 @@ class Table extends Component {
     }
 
     render() { 
-        const {translate} = this.props;
-        const {categories} = this.props.documents.administration;
-        const {paginate} = categories;
-        const {isLoading} = this.props.documents;
-        const {currentRow} = this.state;
+        const { translate } = this.props;
+        const { isLoading } = this.props.documents;
+        const { categories } = this.props.documents.administration;
+        const { paginate } = categories;
+        const { currentRow } = this.state;
 
         return ( 
             <React.Fragment>
                 <CreateForm/>
                 {
-                    currentRow !== undefined &&
+                    currentRow &&
                     <EditForm
-                        categoryId={currentRow._id}
-                        categoryName={currentRow.name}
-                        categoryDescription={currentRow.description}
+                        categoryId = { currentRow._id }
+                        categoryName = { currentRow.name }
+                        categoryDescription = { currentRow.description }
                     />
                 }
                 <SearchBar 
@@ -64,9 +70,9 @@ class Table extends Component {
                         { title: translate('document.administration.categories.name'), value: 'name' },
                         { title: translate('document.administration.categories.description'), value: 'description' }
                     ]}
-                    option={this.state.option}
-                    setOption={this.setOption}
-                    search={this.searchWithOption}
+                    option = { this.state.option }
+                    setOption = { this.setOption }
+                    search = { this.searchWithOption }
                 />
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-categories">
                     <thead>

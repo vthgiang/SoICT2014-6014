@@ -23,7 +23,7 @@ class TableComponent extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllSystemComponents();
         this.props.getAllSystemComponents({page: this.state.page, limit: this.state.limit});
         this.props.getAllSystemLinks();

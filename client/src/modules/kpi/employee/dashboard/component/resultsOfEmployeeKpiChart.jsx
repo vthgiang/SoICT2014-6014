@@ -6,12 +6,14 @@ import { createKpiSetActions } from '../../creation/redux/actions';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+import { withTranslate } from 'react-redux-multilingual';
 
+var translate ='';
 class ResultsOfEmployeeKpiChart extends Component {
 
     constructor(props) {
         super(props);
-
+        translate = this.props.translate;
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.TODAY = new Date();
@@ -97,9 +99,9 @@ class ResultsOfEmployeeKpiChart extends Component {
 
         if(listEmployeeKpiSetEachYear) {
 
-            automaticPoint = ['Hệ thống đánh giá'];
-            employeePoint = ['Cá nhân tự đánh giá'];
-            approvedPoint = ['Quản lý đánh giá'];
+            automaticPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point')];
+            employeePoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.employee_point')];
+            approvedPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.approved_point')];
             date = ['x'];
 
             listEmployeeKpiSetEachYear.map(x => {
@@ -159,7 +161,7 @@ class ResultsOfEmployeeKpiChart extends Component {
                     max: 100,
                     min: 0,
                     label: {
-                        text: 'Điểm',
+                        text: translate('kpi.organizational_unit.dashboard.point'),
                         position: 'outer-right'
                     },
                     padding: {
@@ -193,5 +195,5 @@ const actions = {
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 }
 
-const connectedResultsOfEmployeeKpiChart = connect(mapState, actions)(ResultsOfEmployeeKpiChart);
+const connectedResultsOfEmployeeKpiChart = connect(mapState, actions)(withTranslate(ResultsOfEmployeeKpiChart));
 export { connectedResultsOfEmployeeKpiChart as ResultsOfEmployeeKpiChart }

@@ -344,7 +344,7 @@ class TimesheetsImportForm extends Component {
                                 <DatePicker
                                     id="import_timesheets"
                                     dateFormat="month-year"
-                                    deletevalue={false}
+                                    deleteValue={false}
                                     value=""
                                     onChange={this.handleMonthChange}
                                 />

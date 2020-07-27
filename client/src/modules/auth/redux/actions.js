@@ -1,7 +1,7 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage } from '../../../config';
-
+const FileDownload = require('js-file-download');
 export const AuthActions = {
     login,
     logout,
@@ -13,7 +13,8 @@ export const AuthActions = {
     forgotPassword,
     getComponentOfUserInLink,
     changeInformation,
-    changePassword
+    changePassword,
+    downloadFile
 }
 
 function login(user){
@@ -195,5 +196,17 @@ function getComponentOfUserInLink(curentRole, linkId){
             .catch(err => {
                 dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
             })
+    }
+}
+function downloadFile(path, fileName) {
+    return dispatch => {
+        dispatch({ type: AuthConstants.DOWNLOAD_FILE_REQUEST });
+        AuthService.downloadFile(path)
+            .then(res => {
+                dispatch({ type: AuthConstants.DOWNLOAD_FILE_SUCCESS });
+                const content = res.headers['content-type'];
+                FileDownload(res.data, fileName, content)
+            })
+            .catch(err => { dispatch({ type: AuthConstants.DOWNLOAD_FILE_FAILURE }) })
     }
 }

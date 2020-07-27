@@ -53,6 +53,58 @@ exports.getOrganizationalUnit = async (id) => {
     return await OrganizationalUnit.findById(id);
 }
 
+/**
+ * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @id Id công ty
+ * @role Id của role ứng với đơn vị cần lấy đơn vị con
+ */
+exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
+    let organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            {'deans': { $in: role }}, 
+            {'viceDeans':{ $in: role }}, 
+            {'employees':{ $in: role }}
+        ]
+    });
+    const data = await OrganizationalUnit.find({ company: id });
+    
+    const newData = data.map( department => {return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            deans: department.deans.map(item => item.toString()),
+            viceDeans: department.viceDeans.map(item => item.toString()),
+            employees: department.employees.map(item => item.toString()),
+            parent_id: department.parent !== null ? department.parent.toString() : null
+        }
+    });
+    
+    const tree = await arrayToTree(newData);
+    for(let j = 0; j < tree.length; j++){
+        let queue = [];
+        if(organizationalUnit.name === tree[j].name){
+            return tree[j];
+        }
+        queue.push(tree[j]);
+        while(queue.length > 0){
+            v = queue.shift();
+            if(v.children !== undefined){
+                for(let i = 0; i < v.children.length; i++){
+                    let u = v.children[i];
+                    if(organizationalUnit.name === u.name){                        
+                        return u;
+                    }
+                    else{
+                        queue.push(u);
+                    }
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
 exports.getIndex = async(node, array) => {
     var result = -1;
     
@@ -266,7 +318,7 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
  * Xóa đơn vị
  * @departmentId id của đơn vị
  */
-exports.deleteOrganizationalUnit = async(departmentId) => {
+exports.deleteOrganizationalUnit = async (departmentId) => {
     const department = await OrganizationalUnit.findById(departmentId);
 
     const roles = await Role.find({
@@ -277,12 +329,12 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
         roleId: { $in: roles.map(role=>role._id)}
     });
     
-    if(userroles.length === 0){
+    if (userroles.length === 0) {
         await Role.deleteMany({
             _id: { $in: roles.map(role=>role._id)}
         });
 
-        if(department.parent){
+        if (department.parent) {
             await OrganizationalUnit.updateMany({ 
                 parent: department._id
             },{
@@ -291,9 +343,10 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
 
             return await OrganizationalUnit.deleteOne({ _id: departmentId });
         }
-    }else{
+    } else {
         throw ['department_has_user'];
     }
+    console.log(departmentId);
 }
 
 

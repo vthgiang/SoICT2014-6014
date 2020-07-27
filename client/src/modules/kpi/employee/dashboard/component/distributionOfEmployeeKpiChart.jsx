@@ -8,12 +8,14 @@ import { DatePicker } from '../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+import { withTranslate } from 'react-redux-multilingual';
 
+var translate ='';
 class DistributionOfEmployeeKpiChart extends Component {
 
     constructor(props) {
         super(props);
-
+        translate = this.props.translate;
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
@@ -148,7 +150,7 @@ class DistributionOfEmployeeKpiChart extends Component {
             <React.Fragment>
                 <section className="form-inline">
                     <div className="form-group">
-                        <label>Chọn tháng</label>
+                    <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
                         <DatePicker 
                             id="monthDistributionOfEmployeeKpiChart"      
                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -161,7 +163,7 @@ class DistributionOfEmployeeKpiChart extends Component {
 
                 {currentEmployeeKpiSet ?
                     <section ref="chart"></section>
-                    : <section>Không có dữ liệu</section>
+                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
@@ -178,5 +180,5 @@ const actions = {
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet
 }
 
-const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(DistributionOfEmployeeKpiChart);
+const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(withTranslate(DistributionOfEmployeeKpiChart));
 export { connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart}

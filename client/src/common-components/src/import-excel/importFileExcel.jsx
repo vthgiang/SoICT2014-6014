@@ -12,8 +12,9 @@ class ImportFileExcel extends Component {
 
     // Bắt xự kiện chọn file import
     handleChangeFileImport = (e) => {
-        const { configData } = this.state;
-        let sheets = configData.sheets;
+        let { configData } = this.props;
+        let sheets = configData.sheets.value;
+        let rowHeader = configData.rowHeader.value;
         let file = e.target.files[0];
 
         if (file !== undefined) {
@@ -30,21 +31,25 @@ class ImportFileExcel extends Component {
                     sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
                 }
 
-                let importData = [];
-                let indexKeyImport = { ...configData };
-                delete indexKeyImport.sheets;
-                delete indexKeyImport.rowHeader;
-                delete indexKeyImport.file;
+                let indexKeyImport = {}, importData = [];
+                for (let key in configData) {
+                    if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
+                        let data = configData[key];
+                        data = data.value;
+                        indexKeyImport = { ...indexKeyImport, [key]: data }
+                    }
+                }
 
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < Number(configData.rowHeader); i++) {
+                    for (let i = 0; i < Number(rowHeader); i++) {
                         data[i].forEach((x, index) => {
                             if (x !== null) {
                                 for (let key in configData) {
-                                    if (Array.isArray(configData[key]) && key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
-                                        let arr = [...indexKeyImport[key]];
+                                    let config = configData[key];
+                                    if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file' && Array.isArray(config.value)) {
+                                        let arr = indexKeyImport[key];
                                         arr = arr.map(y => {
                                             if (typeof y === 'string' && x.trim().toLowerCase() === y.trim().toLowerCase()) {
                                                 return index
@@ -55,7 +60,7 @@ class ImportFileExcel extends Component {
                                         indexKeyImport[key] = arr;
                                         break;
                                     } else if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
-                                        if (!Array.isArray(configData[key]) && x.trim().toLowerCase() === configData[key].trim().toLowerCase()) {
+                                        if (!Array.isArray(config.value) && x.trim().toLowerCase() === config.value.trim().toLowerCase()) {
                                             indexKeyImport[key] = index;
                                             break;
                                         }
@@ -66,7 +71,7 @@ class ImportFileExcel extends Component {
                     }
 
                     // Convert dữ liệu thành dạng array json theo key trong configData
-                    data.splice(0, Number(configData.rowHeader));
+                    data.splice(0, Number(rowHeader));
                     data.forEach((x, index) => {
                         let rowData;
                         for (let n in indexKeyImport) {
@@ -85,24 +90,15 @@ class ImportFileExcel extends Component {
             };
         }
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                configData: nextProps.configData,
-                id: nextProps.id
-            }
-        } else {
-            return null
-        }
-    }
 
     render() {
+        const { disabled = false } = this.props;
         return (
             <React.Fragment>
                 <label>File excel cần import</label>
                 <input type="file" className="form-control"
                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    onChange={this.handleChangeFileImport} />
+                    onChange={this.handleChangeFileImport} disabled={disabled} />
             </React.Fragment>
         )
     }

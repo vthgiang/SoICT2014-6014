@@ -38,11 +38,11 @@ class UserDocumentsData extends Component {
     }
 
     render() { 
-        const {translate} = this.props;
+        const { translate } = this.props;
+        const { isLoading } = this.props.documents;
         const docs = this.props.documents.user.data;
-        const {list, paginate} = docs;
-        const {isLoading} = this.props.documents;
-        const {currentRow} = this.state;
+        const { paginate } = docs;
+        const { currentRow } = this.state;
 
         return ( 
             <React.Fragment>
