@@ -75,7 +75,7 @@ class TaskProcessManagement extends Component {
                     return <tr key={key} >
                       <td>{item.nameProcess}</td>
                       <td>{item.description}</td>
-                      <td>{item.creator.name}</td>
+                      <td>{item.creator?.name}</td>
                       <td><a href="#abc" onClick={() => { this.showProcess() }} title={translate('task.task_template.view_detail_of_this_task_template')}>
                         <i className="material-icons">view_list</i>
                       </a>
