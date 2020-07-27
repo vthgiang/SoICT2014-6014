@@ -8,12 +8,16 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { getStorage } from '../../../../config';
 
 class ModalProcessTask extends Component {
 
     constructor() {
         super();
         this.state = {
+            creator: getStorage("userId"),
+            currentRole: getStorage('currentRole'),
             showInfo: false,
             info: {},
         }
@@ -42,19 +46,8 @@ class ModalProcessTask extends Component {
 
     render() {
         const { translate } = this.props;
-        const { id, info, showInfo } = this.state;
-        // return (
-        // <React.Fragment>
-        //     <div>
-        //         <div id={this.generateId}></div>
-        //         <button onClick={this.exportDiagram}>Export XML</button>
-        //         <button onClick={this.downloadAsSVG}>Save SVG</button>
-        //         <button onClick={this.downloadAsImage}>Save Image</button>
-        //         <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-        //     </div>
-        // </React.Fragment>
+        const { id, info, showInfo, processDescription, processName } = this.state;
 
-        // );
         return (
             <React.Fragment>
                 <DialogModal
@@ -62,53 +55,93 @@ class ModalProcessTask extends Component {
                     formID="form-task-process"
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
-                    func = {this.save}
+                    func={this.save}
                 >
-                    <div className='box'>
-                        <div className='row'>
-                            <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                            <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-
-                                {
-                                    (showInfo) &&
-                                    <div>
-                                        <div>
-                                            <h1>Option {this.state.name}</h1>
-                                        </div>
-                                        <FormInfoTask
-                                            id={id}
-                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                            handleChangeName={this.handleChangeName}
-                                            handleChangeDescription={this.handleChangeDescription}
-                                            handleChangeResponsible={this.handleChangeResponsible}
-                                            handleChangeAccountable={this.handleChangeAccountable}
-
-                                            save={this.save}
-                                        />
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
                     <div>
-                        {/* <div id={this.generateId}></div> */}
-                        <button onClick={this.exportDiagram}>Export XML</button>
-                        <button onClick={this.downloadAsSVG}>Save SVG</button>
-                        <button onClick={this.downloadAsImage}>Save Image</button>
-                        <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Thông tin quy trình</legend>
+                            <div className='row'>
+                                <div className="form-group">
+                                    <label>Tên quy trình</label>
+                                    <input type="text"
+                                        value={processName}
+                                        className="form-control" placeholder="Mô tả công việc"
+                                        onChange={this.handleChangeBpmnName}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Mô tả quy trình</label>
+                                    <input type="text"
+                                        value={processDescription}
+                                        className="form-control" placeholder="Mô tả công việc"
+                                        onChange={this.handleChangeBpmnDescription}
+                                    />
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Quy trình công việc</legend>
+                            <div className='row'>
+                                <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                <div className={this.state.showInfo ? 'col-md-4' : undefined}>
+
+                                    {
+                                        (showInfo) &&
+                                        <div>
+                                            <div>
+                                                <h1>Option {this.state.name}</h1>
+                                            </div>
+                                            <FormInfoTask
+                                                id={id}
+                                                info={(info && info[`${id}`]) && info[`${id}`]}
+                                                handleChangeName={this.handleChangeName}
+                                                handleChangeDescription={this.handleChangeDescription}
+                                                handleChangeResponsible={this.handleChangeResponsible}
+                                                handleChangeAccountable={this.handleChangeAccountable}
+
+                                                save={this.save}
+                                            />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div>
+                                {/* <div id={this.generateId}></div> */}
+                                <button onClick={this.exportDiagram}>Export XML</button>
+                                <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                <button onClick={this.downloadAsImage}>Save Image</button>
+                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                            </div>
+                        </fieldset>
+
                     </div>
                 </DialogModal>
             </React.Fragment>
         )
     }
 
-    save = async (e) => {
-        // save button
-        console.log('Click Save button!!! Call API');
+    handleChangeBpmnName = async (e) => {
+        let { value } = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                processName: value,
+            }
+        });
+    }
+
+    handleChangeBpmnDescription = async (e) => {
+        let { value } = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                processDescription: value,
+            }
+        });
     }
 
     handleChangeName = async (value) => {
-    // handleChangeName = async (e) => {
+        // handleChangeName = async (e) => {
         // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
@@ -123,7 +156,7 @@ class ModalProcessTask extends Component {
     }
 
     handleChangeDescription = async (value) => {
-    // handleChangeDescription = async (e) => {
+        // handleChangeDescription = async (e) => {
         // let { value } = e.target;
         await this.setState(state => {
             state.info[`${state.id}`] = {
@@ -167,6 +200,17 @@ class ModalProcessTask extends Component {
     }
 
     componentDidMount() {
+        this.props.getDepartment();
+        let { user } = this.props;
+        let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
+            item.dean === this.state.currentRole
+            || item.viceDean === this.state.currentRole
+            || item.employee === this.state.currentRole);
+        if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+            defaultUnit = user.organizationalUnitsOfUser[0]
+        }
+        this.props.getChildrenOfOrganizationalUnits( defaultUnit && defaultUnit._id);
+
         this.modeler.attachTo('#' + this.generateId);
         this.modeler.importXML(this.initialDiagram, function (err) {
 
@@ -211,7 +255,7 @@ class ModalProcessTask extends Component {
     save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-                xmlStr = xml;
+            xmlStr = xml;
         });
         await this.setState(state => {
             return {
@@ -221,13 +265,10 @@ class ModalProcessTask extends Component {
         })
         console.log(this.state)
         let data = {
-            xmlDiagram : this.state.xmlDiagram,
+            xmlDiagram: this.state.xmlDiagram,
             infoTask: this.state.info
         }
         this.props.exportXmlDiagram(data)
-    }
-    exportDiagram = () => {
-        
     }
 
     downloadAsSVG = () => {
@@ -315,7 +356,9 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    exportXmlDiagram : TaskProcessActions.exportXmlDiagram
+    exportXmlDiagram: TaskProcessActions.exportXmlDiagram,
+    getDepartment: UserActions.getDepartmentOfUser,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };
