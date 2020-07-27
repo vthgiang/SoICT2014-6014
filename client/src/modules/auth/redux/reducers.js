@@ -131,7 +131,9 @@ export function auth(state = initState, action) {
                 ...state,
                 isLoading: false,
             }
-
+        case AuthConstants.DOWNLOAD_FILE_REQUEST:
+        case AuthConstants.DOWNLOAD_FILE_FAILURE:
+        case AuthConstants.DOWNLOAD_FILE_SUCCESS:
         default:
             return {...state};
     }

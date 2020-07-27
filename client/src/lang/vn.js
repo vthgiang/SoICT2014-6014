@@ -664,6 +664,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
             task_management_dashboard: 'Biểu đồ công việc',
+            task_management_process: "Quản lí quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -1713,6 +1714,7 @@ export default {
 
                 from: 'Từ tháng',
                 to: 'Đến tháng',
+                month: 'Tháng',
                 prev: 'Trước',
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',
@@ -1922,6 +1924,13 @@ export default {
                 delete_comment_of_task_comment_success: 'Xóa bình luận thành công',
                 evaluation_action_success: 'Đánh giá hoạt động thành công',
                 confirm_action_success: 'Xác nhận hoạt động thành công',
+                delete_file_child_task_comment_success: "Xóa file của bình luận thành công",
+                upload_file_success: "Upload file thành công",
+                delete_file_success: "Xóa file của hoạt động thành công",
+                delete_file_comment_of_action_success: "Xóa file của bình luận thành công",
+                delete_file_task_comment_success: "Xóa file của bình luận thành công",
+                create_task_log_success:" Tạo task log thành công",
+                get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1951,6 +1960,13 @@ export default {
                 delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
                 evaluation_action_fail: 'Đánh giá công việc thất bại',
                 confirm_action_fail: 'Xác nhận hoạt động thất bại',
+                delete_file_child_task_comment_fail: "Xóa file của bình luận thất bại",
+                upload_file_fail: "Upload file thất bại",
+                delete_file_fail: "Xóa file của hoạt động thất bại",
+                delete_file_comment_of_action_fail: "Xóa file của bình luận thất bại",
+                delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
+                create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
+                get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',

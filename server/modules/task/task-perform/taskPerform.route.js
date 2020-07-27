@@ -3,15 +3,12 @@ const router = express.Router();
 const { auth, uploadFile } = require('../../../middleware');
 const PerformTaskController = require("./taskPerform.controller");
 
-router.get('/log-timer/:task', auth, PerformTaskController.getTaskTimesheetLogs);
-router.get('/log-timer/currentTimer/:user', auth, PerformTaskController.getActiveTimesheetLog);
+router.get('/tasks/:taskId/log-timer', auth, PerformTaskController.getTaskTimesheetLogs);
+router.get('/log-timer/currentTimer/user/:userId', auth, PerformTaskController.getActiveTimesheetLog);
 router.post('/log-timer/start-timer', PerformTaskController.startTimesheetLog);
 router.post('/log-timer/stop-timer', PerformTaskController.stopTimesheetLog);
-router.post('/add-result/create', auth, PerformTaskController.createResultInfoTask);
-router.post('/information-task-template/create', auth, PerformTaskController.createTaskInformation);
-router.put('/information-task-template', auth, PerformTaskController.editTaskInformation);
-router.post('/logs/history', auth, PerformTaskController.addTaskLog);
-router.get('/logs/:taskId', auth, PerformTaskController.getTaskLog);
+router.post('/logs', auth, PerformTaskController.addTaskLog);
+router.get('/tasks/:taskId/logs', auth, PerformTaskController.getTaskLog);
 
 
 //upload file
@@ -24,7 +21,7 @@ router.get('/tasks/:taskId/task-actions', auth, PerformTaskController.confirmAct
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId/delete', auth, PerformTaskController.deleteTaskAction);
-router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId', PerformTaskController.deleteFileOfAction); // auth,
+router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId',auth, PerformTaskController.deleteFileOfAction);
 
 
 //Comment of Task Action

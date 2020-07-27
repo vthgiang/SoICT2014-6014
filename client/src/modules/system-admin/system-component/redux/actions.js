@@ -10,7 +10,7 @@ export const SystemComponentActions = {
 }
 
 function getAllSystemComponents(data) {
-    if (data === undefined) {
+    if (!data) {
         return dispatch => {
             dispatch({ type: SystemComponentConstants.GET_ALL_COMPONENTS_DEFAULT_REQUEST });
 

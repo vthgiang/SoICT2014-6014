@@ -17,7 +17,7 @@ class ComponentInfoForm extends Component {
     }
 
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.componentId !== prevState.componentId) {
             return {
                 ...prevState,
@@ -52,12 +52,12 @@ class ComponentInfoForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     // Xy ly va validate description
     handleDescription = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateDescription(value, true);
     }
 
@@ -73,7 +73,7 @@ class ComponentInfoForm extends Component {
             });
         }
 
-        return msg === undefined;
+        return !msg;
     }
 
     handleLink = (value) => {
@@ -110,7 +110,7 @@ class ComponentInfoForm extends Component {
             roles: this.state.componentRoles 
         };
 
-        if(this.isFormValidated()) return this.props.editSystemComponent(this.state.componentId, component);
+        if (this.isFormValidated()) return this.props.editSystemComponent(this.state.componentId, component);
     }
 
     render() { 

@@ -18,7 +18,7 @@ class CompanyManageLinks extends Component {
          }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.companyId !== prevState.companyId) {
             return {
                 ...prevState,
@@ -71,15 +71,15 @@ class CompanyManageLinks extends Component {
         const {companyId, linkUrl, linkCategory, linkDescription} = this.state;
         
         await window.$("#add-new-link-default").slideUp();
-        return this.props.addNewLink(companyId, {
+        return this.props.addCompanyLink(companyId, {
             url: linkUrl,
             category: linkCategory,
             description: linkDescription
         });
     }
 
-    deleteLink = (companyId, linkId) => {
-        return this.props.deleteLink(companyId, linkId);
+    deleteCompanyLink = (companyId, linkId) => {
+        return this.props.deleteCompanyLink(companyId, linkId);
     }
     
     // Xu ly thay doi va validate cho url link moi cho cong ty
@@ -114,7 +114,7 @@ class CompanyManageLinks extends Component {
             value: this.state.value
         };
 
-        await this.props.linksList(this.state.companyId, data);
+        await this.props.getCompanyLinks(this.state.companyId, data);
     }
 
     setPage = (page) => {
@@ -127,7 +127,7 @@ class CompanyManageLinks extends Component {
             value: this.state.value
         };
 
-        this.props.linksList(this.state.companyId, data);
+        this.props.getCompanyLinks(this.state.companyId, data);
     }
 
     setLimit = (number) => {
@@ -140,7 +140,7 @@ class CompanyManageLinks extends Component {
             value: this.state.value
         };
 
-        this.props.linksList(this.state.companyId, data);
+        this.props.getCompanyLinks(this.state.companyId, data);
     }
 
     render() { 
@@ -216,7 +216,7 @@ class CompanyManageLinks extends Component {
                                     <td>{ link.category }</td>
                                     <td>{ link.description }</td>
                                     <td>
-                                        <a className="delete" onClick={() => this.deleteLink(companyId, link._id)}><i className="material-icons">delete</i></a>
+                                        <a className="delete" onClick={() => this.deleteCompanyLink(companyId, link._id)}><i className="material-icons">delete</i></a>
                                     </td>
                                 </tr> 
                             ) : (
@@ -227,6 +227,7 @@ class CompanyManageLinks extends Component {
                         }
                     </tbody>
                 </table>
+                
                 {/* Paginate Bar */}
                 <PaginateBar pageTotal={company.item.links.totalPages} currentPage={company.item.links.page} func={this.setPage}/>
             </div>
@@ -239,9 +240,9 @@ function mapState(state) {
     return { company, systemLinks };
 }
 const action = {
-    addNewLink: CompanyActions.addNewLink,
-    deleteLink: CompanyActions.deleteLink,
-    linksList: CompanyActions.linksList
+    addCompanyLink: CompanyActions.addCompanyLink,
+    deleteCompanyLink: CompanyActions.deleteCompanyLink,
+    getCompanyLinks: CompanyActions.getCompanyLinks
 }
 
 const connectedCompanyManageLinks = connect(mapState, action)(withTranslate(CompanyManageLinks))
