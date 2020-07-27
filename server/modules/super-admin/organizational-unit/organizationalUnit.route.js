@@ -5,6 +5,7 @@ const { auth } = require('../../../middleware');
 
 router.get("/", auth, OrganizationalUnitController.getOrganizationalUnits);
 router.get("/:id", auth, OrganizationalUnitController.getOrganizationalUnit);
+router.get('/:role/get-as-tree', auth, OrganizationalUnitController.getChildrenOfOrganizationalUnitsAsTree);
 
 router.post("/", auth, OrganizationalUnitController.createOrganizationalUnit);
 

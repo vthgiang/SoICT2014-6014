@@ -193,24 +193,6 @@ exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
         });
     }
 }
-// exports.getAllUserInAllDepartmentsOfCompany = async (req, res) => {
-//     try {
-//         var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, '-1',true);
-//         await LogInfo(req.user.email, `Get all user in all department of this company  ${req.user.company}`, req.user.company);
-//         res.status(200).json({
-//             success: true,
-//             messages: ['get_all_user_in_all_department_success'],
-//             content: users
-//         });
-//     } catch (error) {
-//         await LogError(req.user.email, `get all user in all department of this company ${req.body.name}`, req.user.company);
-//         res.status(400).json({
-//             success: false,
-//             messages: ['get_all_user_in_all_department_failed'],
-//             content: error
-//         });
-//     }
-// }
 
 
  

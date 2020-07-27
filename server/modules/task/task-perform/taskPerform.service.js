@@ -783,6 +783,7 @@ exports.addTaskLog = async (data) => {
  * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (params) => {
+    console.log("Chạy zô đây")
     var task = await Task.findById(params.taskId).populate("logs.creator")
 
     return task.logs.reverse();

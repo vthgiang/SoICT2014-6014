@@ -20,7 +20,6 @@ class ConFigImportFile extends Component {
         for (let key in config) {
             headerTable = [...headerTable, { key: key, value: config[key].value, description: config[key].description }]
         }
-        console.log(headerTable);
         for (let n in headerTable) {
             if (!Array.isArray(headerTable[n].value)) {
                 stringData = stringData + `
