@@ -13,6 +13,8 @@ export const UserActions = {
     getDepartmentOfUser,
     getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany,
+    getAllEmployeeOfUnitByRole,
+    getAllEmployeeOfUnitByIds,
 };
 
 /**
@@ -50,7 +52,52 @@ function get(data){
         })
     }
 }
-
+/**
+ * Lấy tất cả nhân viên của đơn vị theo role
+ * @param {*} role 
+ */
+function getAllEmployeeOfUnitByRole(role) {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST});
+ 
+        UserServices.getAllEmployeeOfUnitByRole(role)
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+/**
+ * Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
+ * @param {*} ids 
+ */
+function getAllEmployeeOfUnitByIds(ids) {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST});
+ 
+        UserServices.getAllEmployeeOfUnitByIds(ids)
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
 /**
  * Chỉnh sửa thông tin tài khoản người dùng
  * @id id tài khoản

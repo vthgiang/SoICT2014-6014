@@ -1,11 +1,12 @@
 const { TaskProcess } = require('../../../models').schema;
+const { User } = require('../../../models/index').schema;
 const mongoose = require('mongoose');
 
 /**
  * Lấy tất cả xml diagram
  */
-exports.getAllXmlDiagrams = () => {
-  let data = TaskProcess.find();
+exports.getAllXmlDiagram = () => {
+  let data = TaskProcess.find().populate({ path: 'creator', select: 'name'});
   return data
 }
 
@@ -27,10 +28,14 @@ exports.createXmlDiagram = async (body) => {
   for (const x in body.infoTask) {
     info.push(body.infoTask[x])
   }
-  let data = TaskProcess.create({
+  let data = await TaskProcess.create({
+    creator: body.creator,
+    nameProcess: body.nameProcess,
+    description: body.description,
     xmlDiagram: body.xmlDiagram,
     infoTask: info
   })
+  data =  await TaskProcess.findById(data._id).populate({ path: 'creator', model: User ,select: 'name'});
   return data;
 }
 exports.editXmlDiagram = async (params, body) => {

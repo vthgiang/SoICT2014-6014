@@ -17,14 +17,15 @@ class TaskProcessManagement extends Component {
     this.props.getAllXmlDiagram()
   }
   render() {
-    const { translate } = this.props
+    const { translate, taskProcess } = this.props
+    let listDiagram = taskProcess && taskProcess.xmlDiagram;
     return (
       <div className="box">
         <div className="box-body qlcv">
           {
             <ModalProcessTask
               title={'Xem quy trình công việc'}
-              
+
             />
           }
           <div className="form-inline">
@@ -69,21 +70,26 @@ class TaskProcessManagement extends Component {
               </tr>
             </thead>
             <tbody className="task-table">
-              <tr>
-                <td>Đỗ Tiến Thành</td>
-                <td>Đẹp trai</td>
-                <td>Hoàn hảo</td>
-                <td><a href="#abc" onClick={() => { this.showProcess() }} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                  <i className="material-icons">view_list</i>
-                </a>
-                  <a className="edit" title={translate('task_template.edit_this_task_template')}>
-                    <i className="material-icons">edit</i>
-                  </a>
-                  <a className="delete" title={translate('task_template.delete_this_task_template')}>
-                    <i className="material-icons"></i>
-                  </a>
-                </td>
-              </tr>
+              {
+                listDiagram && listDiagram.map((item, key) => {
+                    return <tr key={key} >
+                      <td>{item.nameProcess}</td>
+                      <td>{item.description}</td>
+                      <td>{item.creator?.name}</td>
+                      <td><a href="#abc" onClick={() => { this.showProcess() }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                        <i className="material-icons">view_list</i>
+                      </a>
+                        <a className="edit" title={translate('task_template.edit_this_task_template')}>
+                          <i className="material-icons">edit</i>
+                        </a>
+                        <a className="delete" title={translate('task_template.delete_this_task_template')}>
+                          <i className="material-icons"></i>
+                        </a>
+                      </td>
+                    </tr>
+                })
+              }
+
             </tbody>
           </table>
           {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
@@ -96,12 +102,12 @@ class TaskProcessManagement extends Component {
 
 
 function mapState(state) {
-  const { user, auth } = state;
-  return { user, auth };
+  const { user, auth, taskProcess } = state;
+  return { user, auth, taskProcess };
 }
 
 const actionCreators = {
-  getAllXmlDiagram : TaskProcessActions.getAllXmlDiagram
+  getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram
 };
 const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
 export { connectedTaskProcessManagement as TaskProcessManagement };

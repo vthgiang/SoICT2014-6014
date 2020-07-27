@@ -16,6 +16,8 @@ export const UserServices = {
     getDepartmentOfUser,
     getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany,
+    getAllEmployeeOfUnitByRole,
+    getAllEmployeeOfUnitByIds
     
 };
 
@@ -25,6 +27,36 @@ function get(params) {
         method: 'GET',
         params,
     }, false, true, 'super_admin.user');
+}
+
+/**
+ *  Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
+ * @param {*} ids 
+ */
+function getAllEmployeeOfUnitByIds(ids) {   
+    let role = getStorage("currentRole"); 
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user`,
+        method: 'GET',
+        params: {
+            role: role,
+            ids: ids
+        }
+    }, false, true, 'kpi.evaluation');
+}
+
+/**
+ * Lấy tất cả nhân viên trong đơn vị theo role
+ * @param {*} role 
+ */
+function getAllEmployeeOfUnitByRole(role) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user`,
+        method: 'GET',
+        params: {
+            role: role
+        }
+    }, false, true, 'kpi.evaluation');
 }
 
 function edit(id, data) {
