@@ -709,7 +709,21 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ TaskDashboard }
                     />
-
+                    <PrivateRoute
+                        isLoading={ false }
+                        key={ 'task-management-process' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-management-process', name: 'task_management_process', icon:'fa fa-folder-open' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-management-process' }
+                        path={ '/task-management-process' }
+                        pageName ={ 'task_management_process' }
+                        layout={ Layout }
+                        component={ TaskDashboard }
+                    />
                     {/** Quản lý tài sản */}
                     {/** Nhân viên */}
                     <PrivateRoute 
