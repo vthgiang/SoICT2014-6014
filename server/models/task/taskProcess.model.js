@@ -5,10 +5,31 @@ const User = require('../auth/user.model');
 
 // Create Schema
 const TaskProcessSchema = new Schema({
-    xmlDiagram: {
-        type: String,
+  xmlDiagram: {
+    type: String,
+  },
+  nameProcess: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+  infoTask: [{
+    name: {
+      type: String
     },
-    taskInfo: [{
+    description: {
+      type: String
+    },
+    accountable: [{
+      type: String,
+      // ref: User
+    }],
+    responsible: [{
+      type: String,
+      // ref: User
+    }],
+    followingTask: [{
       name: {
         type: String
       },
@@ -23,23 +44,8 @@ const TaskProcessSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
       }],
-      followingTask: [{
-        name: {
-          type: String
-        },
-        description: {
-          type: String
-        },
-        accountable: [{
-          type: Schema.Types.ObjectId,
-          ref: User
-        }],
-        responsible: [{
-          type: Schema.Types.ObjectId,
-          ref: User
-        }],
-      }]
     }]
+  }]
 });
 
 module.exports = TaskHistory = mongoose.model("task_process", TaskProcessSchema);

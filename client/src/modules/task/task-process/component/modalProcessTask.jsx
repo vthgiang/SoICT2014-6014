@@ -208,8 +208,18 @@ class ModalProcessTask extends Component {
     changeNameElement = (event) => {
         var element = event.element;
     }
-    save = () => {
-        this.exportDiagram();
+    save = async () => {
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+                xmlStr = xml;
+        });
+        await this.setState(state => {
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        })
+        console.log(this.state)
         let data = {
             xmlDiagram : this.state.xmlDiagram,
             infoTask: this.state.info
@@ -217,23 +227,7 @@ class ModalProcessTask extends Component {
         this.props.exportXmlDiagram(data)
     }
     exportDiagram = () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(xml);
-                xmlStr = xml;
-            }
-        });
-        this.setState(state => {
-            // state.info[`xmlDiagram`] = xmlStr;
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
+        
     }
 
     downloadAsSVG = () => {
@@ -323,5 +317,5 @@ function mapState(state) {
 const actionCreators = {
     exportXmlDiagram : TaskProcessActions.exportXmlDiagram
 };
-const connectedModalAddProcess = connect(null, null)(withTranslate(ModalProcessTask));
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
 export { connectedModalAddProcess as ModalProcessTask };
