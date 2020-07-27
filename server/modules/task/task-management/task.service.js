@@ -24,6 +24,8 @@ exports.getTaskEvaluations = async (data) => {
     let startDate = data.startDate;
     let endDate = data.endDate;
     let calulator = Number(data.calulator);
+    let filterConditions = data.filterCondition;
+
     let startTime = startDate.split("-");
     let endTime = endDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
@@ -33,11 +35,12 @@ exports.getTaskEvaluations = async (data) => {
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees.toString();
     }
+
     if (data.accountableEmployees) {
         accountable = data.accountableEmployees.toString();
     }
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
-    console.log(taskStatus)
+
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
@@ -65,7 +68,6 @@ exports.getTaskEvaluations = async (data) => {
             }
         }
     }
-
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
@@ -83,22 +85,33 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
-    // nếu không lọc theo người thực hiện và người phê duyệt
-    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+    if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
         condition = [
-            { $match: { status: taskStatus } },
             ...condition,
             filterDate
         ]
+    } else
+        // nếu không lọc theo người thực hiện và người phê duyệt
+        if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            condition = [
+                { $match: { status: taskStatus } },
+                ...condition,
+                filterDate
+            ]
 
-    } else {
-        condition = [
-            { $match: { status: taskStatus } },
-            ...condition,
-            filterDate
-        ]
-    }
+        } else {
+            condition = [
+                { $match: { status: taskStatus } },
+                { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
+                { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+                ...condition,
+                filterDate
+            ]
+        }
+
     let result = await Task.aggregate(condition);
+
+
     // tính trung bình cộng
     let condition2;
     if (calulator === 0) {
@@ -120,8 +133,13 @@ exports.getTaskEvaluations = async (data) => {
             },
         ]
     }
+
     let result2 = await Task.aggregate(condition2);
+
+    // if (a === 5) {
     return { result, result2 };
+
+    // }
 }
 
 /**
