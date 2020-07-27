@@ -4,7 +4,7 @@ const { Privilege, Role, Link, Component } = require('../../../models').schema;
  * Lấy danh sách các component của công ty
  * @id id của công ty
  */
-exports.getAllComponents = async (company, query) => {
+exports.getComponents = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     

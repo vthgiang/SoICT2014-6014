@@ -159,7 +159,8 @@ class DashBoardKPIMember extends Component {
     }
 
     handleUpdateData = () => {
-        let {ids} = this.state;
+        let { ids } = this.state;
+
         if (ids.length > 0) {
             this.props.getAllEmployeeKpiSetOfUnitByIds(ids);
             this.props.getAllEmployeeOfUnitByIds(ids);

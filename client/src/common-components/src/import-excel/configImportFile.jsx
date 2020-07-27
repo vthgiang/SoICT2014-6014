@@ -7,32 +7,23 @@ class ConFigImportFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            textareaValue: this.convertConfigurationToString(this.props.configData, this.props.titleArr),
+            textareaValue: this.convertConfigurationToString(this.props.configData),
             configData: this.props.configData,
         };
     }
 
     // Chuyển đổi dữ liệu file cấu hình (object) thành String
-    convertConfigurationToString = (configData, titleArr) => {
-        let sheets = configData.sheets;
-        if (sheets.length > 1) {
-            sheets = sheets.map(x => `"${x}"`);
-            sheets = sheets.join(', ');
-        } else sheets = `"${sheets}"`
-
+    convertConfigurationToString = (configData) => {
         let stringData = "{";
         let config = { ...configData }, headerTable = [];
         delete config.file;
         for (let key in config) {
-            headerTable = [...headerTable, { key: key, value: config[key] }]
+            headerTable = [...headerTable, { key: key, value: config[key].value, description: config[key].description }]
         }
-
         for (let n in headerTable) {
-            let title = titleArr.find(x => x.key === headerTable[n].key);
             if (!Array.isArray(headerTable[n].value)) {
-
                 stringData = stringData + `
-                "${title.value}": "${headerTable[n].value}",`
+                "${headerTable[n].description}": "${headerTable[n].value}",`
             } else {
                 let arr = headerTable[n].value;
                 if (arr.length > 1) {
@@ -42,7 +33,7 @@ class ConFigImportFile extends Component {
                     arr = `"${arr}"`
                 }
                 stringData = stringData + `
-                "${title.value}": [${arr}],`
+                "${headerTable[n].description}": [${arr}],`
             }
         }
         stringData = stringData + `
@@ -51,7 +42,9 @@ class ConFigImportFile extends Component {
     }
 
     // Chuyển đổi dữ liệu người dùng nhập vào ở textarea (String) thành object
-    convertStringToObject = (data, titleArr) => {
+    convertStringToObject = (data, configData) => {
+        let config = { ...configData };
+        delete config.file;
         try {
             data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
             data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
@@ -61,15 +54,15 @@ class ConFigImportFile extends Component {
                 data = data.substring(0, data.length - 1);
             }
             data = JSON.parse(`{${data}}`);
-
+            // console.log(data);
             let obj = {};
-            titleArr.forEach(x => {
+            for (let key in config) {
                 for (let index in data) {
-                    if (index === x.value) {
-                        obj = { ...obj, [x.key]: data[index] }
+                    if (index === config[key].description) {
+                        obj = { ...obj, [key]: { ...config[key], value: data[index] } }
                     }
                 }
-            })
+            }
             return obj
         } catch (error) {
             return null
@@ -78,9 +71,9 @@ class ConFigImportFile extends Component {
 
     // Bắt sự kiện thay đổi (textarea);
     handleChange = (e) => {
-        const { configData, titleArr, handleChangeConfig } = this.props;
+        const { configData, handleChangeConfig } = this.props;
         const { value } = e.target;
-        let config = this.convertStringToObject(value, titleArr);
+        let config = this.convertStringToObject(value, configData);
         if (config) {
             this.setState({
                 textareaValue: value,
@@ -97,8 +90,14 @@ class ConFigImportFile extends Component {
     }
 
     render() {
-        const { textareaValue, configData = {} } = this.state;
+        const { textareaValue, configData } = this.state;
         const { id, scrollTableWidth = 1000 } = this.props;
+        let config = [];
+        for (let key in configData) {
+            if (key !== "file" && key != "rowHeader" && key !== "sheets") {
+                config = [...config, configData[key]];
+            }
+        }
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#confic_import_file-${id}`} className="pull-right"
@@ -121,40 +120,32 @@ class ConFigImportFile extends Component {
                         <div className="form-group col-sm-12 col-xs-12">
                             <label>Cấu hình file import của bạn như sau:</label><br />
                             <span>File import có</span>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.rowHeader}&nbsp;</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.rowHeader.value}&nbsp;</span>
                             <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.sheets.length > 1 ? configData.sheets.join(', ') : configData.sheets}</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.sheets.value.length > 1 ? configData.sheets.value.join(', ') : configData.sheets.value}</span>
 
                             <div id={`croll-table-${id}`} style={{ marginTop: 5 }}>
                                 <table id={`importConfig-${id}`} className="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>Tên các thuộc tính</th>
-                                            <th>Mã số nhân viên</th>
-                                            <th>Tên nhân viên</th>
-                                            <th>Tiền lương chính</th>
-                                            {configData.bonus.length !== 0 &&
-                                                configData.bonus.map((x, index) => (
-                                                    <React.Fragment key={index}>
-                                                        <th>{x}</th>
-                                                    </React.Fragment>
-                                                ))
-                                            }
+                                            {config.map((x, key) => {
+                                                return <th key={key}>{x.columnName}</th>
+                                            })}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <th>Tiêu đề tương ứng</th>
-                                            <td>{configData.employeeNumber}</td>
-                                            <td>{configData.employeeName}</td>
-                                            <td>{configData.mainSalary}</td>
-                                            {configData.bonus.length !== 0 &&
-                                                configData.bonus.map((x, index) => (
-                                                    <React.Fragment key={index}>
-                                                        <td>{x}</td>
-                                                    </React.Fragment>
-                                                ))
-                                            }
+                                            {config.map((x, key) => {
+                                                if (!Array.isArray(x.value)) {
+                                                    return <td key={key}>{x.value}</td>
+                                                } else {
+                                                    let arr = x.value
+                                                    return <td key={key}>{arr.join(', ')}</td>
+                                                }
+                                            })}
+
                                         </tr>
                                     </tbody>
                                 </table>

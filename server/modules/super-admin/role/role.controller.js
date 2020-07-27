@@ -1,9 +1,9 @@
 const RoleService = require('./role.service');
 const {LogInfo, LogError} = require('../../../logs');
 
-exports.getAllRoles = async (req, res) => {
+exports.getRoles = async (req, res) => {
     try {
-        var roles = await RoleService.getAllRoles(req.user.company._id, req.query); //truyen vao id cua cong ty
+        var roles = await RoleService.getRoles(req.user.company._id, req.query); //truyen vao id cua cong ty
         
         LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(200).json({

@@ -12,7 +12,7 @@ class DatePicker extends Component {
         this.zIndex = 1050;
     }
     componentDidMount = () => {
-        const { id, dateFormat, onChange, deletevalue = true } = this.props;
+        const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
 
         dateFormat !== "month-year" ?
@@ -29,7 +29,7 @@ class DatePicker extends Component {
                 minViewMode: "months",
                 zIndexOffset: this.zIndex,
             });
-        if (deletevalue) {
+        if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
                 if (e.keyCode == 8 || e.keyCode == 46) {
                     window.$("#" + id).datepicker('update', "");
@@ -94,7 +94,7 @@ class DatePicker extends Component {
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value? this.state.value: ""} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" className="form-control" value={this.state.value ? this.state.value : ""} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

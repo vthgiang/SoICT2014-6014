@@ -329,7 +329,7 @@ function getTasksByUser() {
     var id = getStorage("userId")
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: { userId: id, type: 'all' }
     }, false, true, 'task.task_management');

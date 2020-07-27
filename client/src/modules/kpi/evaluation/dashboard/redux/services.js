@@ -70,7 +70,7 @@ function getAllEmployeeOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/organizational-units/${role}`,
+        url:`${LOCAL_SERVER_API}/organizational-units/${role}/get-as-tree`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
