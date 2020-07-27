@@ -100,7 +100,7 @@ exports.showDocument = async (req, res) => {
 
 exports.editDocument = async (req, res) => {
     try {
-        if(req.files !== undefined && Object.keys(req.files).length > 0){
+        if(req.files && Object.keys(req.files).length > 0){
             var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
             var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
 
@@ -148,7 +148,7 @@ exports.deleteDocument = async (req, res) => {
 
 exports.downloadDocumentFile = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFile(req.params.id, req.params.numberVersion, req.user._id);
+        const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.download(file.path, file.name);
     } catch (error) {
@@ -163,18 +163,18 @@ exports.downloadDocumentFile = async (req, res) => {
 };
 
 exports.downloadDocumentFileScan = async (req, res) => {
-    try {
-        const file = await DocumentServices.downloadDocumentFileScan(req.params.id, req.params.numberVersion, req.user._id);
+   // try {
+        const file = await DocumentServices.downloadDocumentFileScan({id: req.params.id,  numberVersion: req.query.numberVersion, downloaderId: req.user._id});
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
         res.download(file.path, file.name);
-    } catch (error) {
-        await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 /**
@@ -383,7 +383,7 @@ exports.deleteManyDocumentDomain = async(req, res) => {
 
 exports.getDocumentsThatRoleCanView = async(req, res) => {
     try {
-        const docs = await DocumentServices.getDocumentsThatRoleCanView(req.user.company._id, req.params.id, req.query);
+        const docs = await DocumentServices.getDocumentsThatRoleCanView(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
         res.status(200).json({
