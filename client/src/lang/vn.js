@@ -664,7 +664,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
-            task_management_process: "Quản lí quy trình",
+            task_management_process: "Danh sách quy trình",
 
             //*******START */
             // Quản lý tài sản

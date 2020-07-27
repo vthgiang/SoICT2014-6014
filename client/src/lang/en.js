@@ -664,7 +664,7 @@ export default {
             task: "Detailed Task",
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
-            task_management_process: "Process management",
+            task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
