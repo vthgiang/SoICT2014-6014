@@ -23,7 +23,8 @@ class ShowImportData extends Component {
         delete config.file;
 
         for (let key in config) {
-            headerTable = [...headerTable, { key: key, value: config[key] }]
+            let data = config[key];
+            headerTable = [...headerTable, { key: key, value: data.value }]
         }
 
         let pageTotal = (importData.length % limit === 0) ?

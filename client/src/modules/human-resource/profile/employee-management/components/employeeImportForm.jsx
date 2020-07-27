@@ -26,6 +26,7 @@ class EmployeeImportForm extends Component {
 
     // Function thay đổi file import
     handleImportExcel = (value) => {
+        console.log(value);
         let rowError = [];
         // value.forEach(row => {
         //     for (let index in row) {
@@ -92,21 +93,10 @@ class EmployeeImportForm extends Component {
                     disableSubmit={false}
                 >
                     <form className="form-group" id={`form_import_file`}>
-                        <div>
-
-                        </div>
                         <ConFigImportFile
                             id="import_employees_config"
                             configData={configuration}
                             scrollTableWidth={1000}
-                            titleArr={[
-                                { key: "rowHeader", value: "Số dòng tiêu đề của bảng" },
-                                { key: "sheets", value: "Tên các sheet" },
-                                { key: "employeeNumber", value: "Tên tiêu đề ứng với mã số nhân viên" },
-                                { key: "employeeName", value: "Tên tiêu để ứng với họ và tên" },
-                                { key: "mainSalary", value: "Tên tiêu để ứng với tiền lương chính" },
-                                { key: "bonus", value: "Tên tiêu để ứng với lương thưởng khác" },
-                            ]}
                             handleChangeConfig={this.handleChangeConfig}
                         />
                         <div className="row">
@@ -134,8 +124,6 @@ class EmployeeImportForm extends Component {
                                 />
                             </div>
                         </div>
-
-
                     </form>
                 </DialogModal>
             </React.Fragment>
