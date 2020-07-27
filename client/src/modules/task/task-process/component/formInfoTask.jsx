@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SelectBox } from './../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 class FormInfoTask extends Component {
 
     constructor(props) {
@@ -15,7 +17,7 @@ class FormInfoTask extends Component {
             accountable: (info && info.accountable) ? info.accountable : [],
         }
     }
-
+    
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.id !== this.state.id) {
             let { info } = nextProps;
@@ -62,21 +64,18 @@ class FormInfoTask extends Component {
     }
 
     render() {
+        const { user, translate } = this.props;
         const { id, info } = this.props;
         let { nameTask, description, responsible, accountable } = this.state;
 
-        console.log('props from DEMO EDIT to FORM', this.props);
-    // check = () => {
-    //     if((this.props.info[`${this.props.id}`] && this.props.info[`${this.props.id}`].nameTask)) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // render() { 
-    //     console.log(this.props.info);
-    //     const { id,info } = this.props
-    //     var abc = this.props.info[`${this.props.id}`]?.nameTask
-    //     console.log(this.check())
+        let usersOfChildrenOrganizationalUnit;
+        if (user && user.usersOfChildrenOrganizationalUnit) {
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        }
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+
+        console.log(usersOfChildrenOrganizationalUnit, unitMembers);
+
         return (
             <div>
                 <form>
@@ -98,40 +97,34 @@ class FormInfoTask extends Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
-                        <SelectBox
-                            id={`select-responsible-employee-${id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={
-                                [
-                                    { value: '1', text: 'Nguyen The Quang' },
-                                    { value: '2', text: 'Nguyen The Gioi' },
-                                    { value: '3', text: 'Nguyen The Ky' },
-                                ]
-                            }
-                            onChange={this.handleChangeResponsible}
-                            multiple={true}
-                            value={responsible}
-                        />
+                        {
+                        // unitMembers &&
+                            <SelectBox
+                                id={`select-responsible-employee-${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={unitMembers}
+                                onChange={this.handleChangeResponsible}
+                                multiple={true}
+                                value={responsible}
+                            />
+                        }
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
-                        <SelectBox
-                            id={`select-accountable-employee-${id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={
-                                [
-                                    { value: '4', text: 'Nguyen The Bon' },
-                                    { value: '5', text: 'Nguyen The Nam' },
-                                    { value: '6', text: 'Nguyen The Sau' },
-                                ]
-                            }
-                            onChange={this.handleChangeAccountable}
-                            multiple={true}
-                            value={accountable}
-                        />
+                        { 
+                        // unitMembers &&
+                            <SelectBox
+                                id={`select-accountable-employee-${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={unitMembers}
+                                onChange={this.handleChangeAccountable}
+                                multiple={true}
+                                value={accountable}
+                            />
+                    }
                     </div>
 
 
@@ -149,9 +142,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    // getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    // getDepartment: UserActions.getDepartmentOfUser,
-    // _delete: taskTemplateActions._delete
+    getDepartment: UserActions.getDepartmentOfUser,
+    // getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
 };
-const connectedFormInfoTask = connect(null, null)(withTranslate(FormInfoTask));
+const connectedFormInfoTask = connect(mapState, actionCreators)(withTranslate(FormInfoTask));
 export { connectedFormInfoTask as FormInfoTask };
