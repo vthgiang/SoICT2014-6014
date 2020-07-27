@@ -51,7 +51,7 @@ const rootRole = require('./modules/system-admin/root-role/rootRole.route');
 const tasktemplate = require("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
-
+const taskProcess = require("./modules/task/tasks-process/taskProcess.route")
 const educationPrograms = require('./modules/trainning/education-program/educationProgram.route');
 const courses = require('./modules/trainning/course/course.route');
 
@@ -133,9 +133,9 @@ app.use("/kpi/employee/dashboard", employeeKpiDashboard);
 app.use("/kpipersonals", employeeKpiManagement);
 app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
 app.use("/kpimembers", employeeKpiEvaluation);
-app.use("/kpiunits", organizationalUnitKpiCreation);
-app.use("/kpiunits", organizationalUnitKpiDashboard);
-app.use("/kpiunits", organizationalUnitKpiManagement);
+app.use("/kpi/organizational-unit", organizationalUnitKpiCreation);
+app.use("/kpi/organizational-unit", organizationalUnitKpiDashboard);
+app.use("/kpi/organizational-unit", organizationalUnitKpiManagement);
 
 app.use("/notifications", notifications);
 
@@ -155,7 +155,7 @@ app.use("/roles-default-management", rootRole);
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/tasktemplates", tasktemplate);
-
+app.use("/taskprocess", taskProcess);
 app.use("/educationPrograms", educationPrograms);
 app.use("/courses", courses);
 

@@ -6,7 +6,7 @@ const { LogInfo, LogError } = require('../../../../logs');
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.role, req.query.organizationalUnitId, req.query.month);
+        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.query);
         LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
         res.status(200).json({
             success: true,
@@ -28,17 +28,15 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.editOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        let dateString = req.body.date;
-        let kpiId = req.params.kpiId;
-        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(dateString, kpiId);
-        LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
+        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(req.body.date, req.params.id);
+        LogInfo(req.user.email, ' Edit kpi unit ', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_kpi_success'],
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
-        LogError(req.user.email, ' Edit kpi unit ',req.user.company);        
+        LogError(req.user.email, ' Edit kpi unit ', req.user.company);
         res.status(400).json({
             success: false,
             messages: ['edit_kpi_failure'],
@@ -52,10 +50,10 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.params.kpiId);
+        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.params.id);
         kpiunit = arr[0];
         listTarget = arr[1];
-        LogInfo(req.user.email, 'delete kpi unit',req.user.company)
+        LogInfo(req.user.email, 'delete kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['delete_kpi_success'],
@@ -65,7 +63,7 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
             }
         });
     } catch (error) {
-        LogError(req.user.email, 'delete kpi unit',req.user.company)
+        LogError(req.user.email, 'delete kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['delete_kpi_failure'],
@@ -81,36 +79,36 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
 exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
         var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.params.id, req.params.kpiunit);
-        LogInfo(req.user.email, 'delete target kpi unit',req.user.company);
+        LogInfo(req.user.email, 'delete target kpi unit', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['confirm_delete_target_success'],
             content: organizationalUnitKpiSet
         });
     } catch (error) {
-        LogError(req.user.email, 'delete target kpi unit',req.user.company)
+        LogError(req.user.email, 'delete target kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['confirm_delete_target_failure'],
             content: error
         })
-    } 
+    }
 }
 
 /**
  * Chỉnh sửa trạng thái của KPI đơn vị
  */
-exports.editOrganizationalUnitKpiSetStatus =async (req, res) => {
+exports.editOrganizationalUnitKpiSetStatus = async (req, res) => {
     try {
-        var kpiunit= await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.kpiId, req.query);
-        LogInfo(req.user.email, 'edit status kpi unit',req.user.company)
+        var kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.id, req.query);
+        LogInfo(req.user.email, 'edit status kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['confirm_edit_status_success'],
             content: kpiunit,
         });
     } catch (error) {
-        LogError(req.user.email, 'edit status kpi unit',req.user.company)
+        LogError(req.user.email, 'edit status kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['confirm_edit_status_failure'],
@@ -122,17 +120,17 @@ exports.editOrganizationalUnitKpiSetStatus =async (req, res) => {
 /**
  * Lấy tập KPI đơn vị của đơn vị cha của đơn vị ứng với role người dùng
  */
-exports.getParentOrganizationalUnitKpiSet =async (req, res) => {
+exports.getParentOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.params.id);
-        LogInfo(req.user.email, 'get parent kpi unit',req.user.company)
+        var kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.query.roleId);
+        LogInfo(req.user.email, 'get parent kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['get_parent_by_unit_success'],
             content: kpiunit
         });
     } catch (error) {
-        LogError(req.user.email, 'get parent kpi unit',req.user.company)
+        LogError(req.user.email, 'get parent kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['get_parent_by_unit_failure'],
@@ -145,17 +143,17 @@ exports.getParentOrganizationalUnitKpiSet =async (req, res) => {
 /**
  * Thêm một KPI vào tập KPI đơn vị
  */
-exports.createOrganizationalUnitKpi =async (req, res) => {
+exports.createOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await  KPIUnitService.createOrganizationalUnitKpi(req.body);
-        LogInfo(req.user.email, 'create target kpi unit',req.user.company)
+        var organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpi(req.body);
+        LogInfo(req.user.email, 'create target kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['create_target_success'],
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
-        LogError(req.user.email, 'create target kpi unit',req.user.company)
+        LogError(req.user.email, 'create target kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['create_target_failure'],
@@ -170,42 +168,42 @@ exports.createOrganizationalUnitKpi =async (req, res) => {
 exports.editOrganizationalUnitKpi = async (req, res) => {
     try {
         var target = await KPIUnitService.editOrganizationalUnitKpi(req.body, req.params.id);
-        LogInfo(req.user.email, 'edit target kpi unit',req.user.company)
+        LogInfo(req.user.email, 'edit target kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['edit_target_success'],
             content: target
         });
     } catch (error) {
-        LogError(req.user.email, 'edit target kpi unit',req.user.company)
+        LogError(req.user.email, 'edit target kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['edit_target_failure'],
             content: error
         })
     }
- 
+
 }
 
 /**
  * Khởi tạo tập KPI đơn vị
  */
-exports.createOrganizationalUnitKpiSet =async (req, res) => {
+exports.createOrganizationalUnitKpiSet = async (req, res) => {
     try {
         var organizationalUnitKpi = await KPIUnitService.createOrganizationalUnitKpiSet(req.body);
-        LogInfo(req.user.email, 'create kpi unit',req.user.company)
+        LogInfo(req.user.email, 'create kpi unit', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['create_organizational_unit_kpi_set_success'],
             content: organizationalUnitKpi,
         });
     } catch (error) {
-        LogError(req.user.email, 'create kpi unit',req.user.company)
+        LogError(req.user.email, 'create kpi unit', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['create_organizational_unit_kpi_set_failure'],
             content: error
         })
     }
- 
+
 }

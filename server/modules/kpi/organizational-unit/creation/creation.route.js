@@ -4,28 +4,28 @@ const KPIUnitController = require("./creation.controller");
 const {auth} = require('../../../../middleware/index');
 
 // Lấy KPI đơn vị hiện tại qua vai trò
-router.get('/kpi-units/:role',auth, KPIUnitController.getOrganizationalUnitKpiSet);
+router.get('/organizational-unit-kpi-sets',auth, KPIUnitController.getOrganizationalUnitKpiSet);
 
 // edit kpi unit by id
-router.patch('/kpi-units/:kpiId',auth, KPIUnitController.editOrganizationalUnitKpiSet);
+router.patch('/organizational-unit-kpi-sets/:id',auth, KPIUnitController.editOrganizationalUnitKpiSet);
 
 // delete kpi unit
-router.delete('/kpi-units/:kpiId',auth, KPIUnitController.deleteOrganizationalUnitKpiSet);
+router.delete('/organizational-unit-kpi-sets/:id',auth, KPIUnitController.deleteOrganizationalUnitKpiSet);
 
 // delete target of unit
-router.delete('/kpi-units/:kpiunit/organizational-unit-kpis/:id',auth, KPIUnitController.deleteOrganizationalUnitKpi);
+router.delete('/organizational-unit-kpi-sets/:kpiunit/organizational-unit-kpis/:id',auth, KPIUnitController.deleteOrganizationalUnitKpi);
 
 // edit status of unit by id
-router.patch('/kpi-units/:kpiId/status-kpi',auth, KPIUnitController.editOrganizationalUnitKpiSetStatus);
+router.patch('/organizational-unit-kpi-sets/:id/status-kpi',auth, KPIUnitController.editOrganizationalUnitKpiSetStatus);
 
 // get all parent target kpi of a unit
-router.get('/:id/parent-organizational-unit-kpi-sets',auth, KPIUnitController.getParentOrganizationalUnitKpiSet);
+router.get('/organizational-unit-kpi-sets/parent',auth, KPIUnitController.getParentOrganizationalUnitKpiSet);
 
 // add a new target of unit
 router.post('/organizational-unit-kpis',auth, KPIUnitController.createOrganizationalUnitKpi);
 
 // edit target of unit by id
-router.put('/organizational-unit-kpis/:id',auth, KPIUnitController.editOrganizationalUnitKpi);
+router.patch('/organizational-unit-kpis/:id',auth, KPIUnitController.editOrganizationalUnitKpi);
 
 // Khởi tạo KPI đơn vị(add kpi-unit)
 router.post('/',auth, KPIUnitController.createOrganizationalUnitKpiSet);

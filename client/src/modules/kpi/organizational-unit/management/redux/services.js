@@ -8,15 +8,13 @@ import { sendRequest } from '../../../../../helpers/requestHelper'
 export const managerServices = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
-    evaluateKPIUnit,
-    // getKPIUnits,
     copyKPIUnit,
 }
 
 // Lấy tất cả KPI đơn vị
 function getAllKPIUnit(infosearch) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/search-kpi`,
         method: 'GET',
         params: {
             roleId: infosearch.role,
@@ -30,7 +28,7 @@ function getAllKPIUnit(infosearch) {
 // Lấy tất cả KPI đơn vị
 function getChildTargetOfCurrentTarget(kpiId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiId}/child-target`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/${kpiId}/child-target`,
         method: 'GET',
         params: {
             date: date
@@ -38,24 +36,14 @@ function getChildTargetOfCurrentTarget(kpiId, date) {
     }, false, true, 'kpi.organizational_unit');
 }
 
-
-// Cập nhật dữ liệu cho KPI đơn vị
-function evaluateKPIUnit(id) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
-        method: 'PUT',
-    }, false, true, 'kpi.organizational_unit');
-}
-
 function copyKPIUnit(kpiId, data) {
     return sendRequest({
-
-        url: `${LOCAL_SERVER_API}/kpiunits/kpi-units/${kpiId}/copy-kpi`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-unit-kpi-sets/${kpiId}/copy-kpi`,
         method: 'POST',
         params: {
             idunit: data.idunit,
-            dateold: data.dateold,
             datenew: data.datenew,
+            creator: data.creator,
         }
     }, true, true, 'kpi.organizational_unit');
 }

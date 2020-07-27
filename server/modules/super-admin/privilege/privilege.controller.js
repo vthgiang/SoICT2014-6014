@@ -3,9 +3,9 @@ const { LogInfo, LogError } = require('../../../logs');
 
 
 // TODO: Xóa bớt các phương thức không dùng???
-exports.getAllPriveleges = async (req, res) => {
+exports.getPriveleges = async (req, res) => {
     try {
-        var roles = await PrivilegeService.getAllPriveleges(req, res);
+        var roles = await PrivilegeService.getPriveleges(req, res);
         
         res.status(200).json(roles);
     } catch (error) {

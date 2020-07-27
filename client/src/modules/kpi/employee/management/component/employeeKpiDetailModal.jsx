@@ -153,7 +153,7 @@ class ModalDetailKPIPersonal extends Component {
                             <div className="box-body no-padding">
                                 <ul className="nav nav-pills nav-stacked">
                                     {list && list.map((item, index) =>
-                                    <li key={index} className={this.state.content===item._id && "active"}>
+                                    <li key={index} className={this.state.content===item._id ? "active":'disabled'}>
                                         <a href="#abc" onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                             {item.name}&nbsp;
                                         </a>

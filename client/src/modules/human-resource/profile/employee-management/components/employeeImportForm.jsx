@@ -5,14 +5,11 @@ import { DialogModal, ShowImportData, ImportFileExcel, ConFigImportFile, DatePic
 import { configurationEmployeeInfo } from './fileConfigurationImportEmployee';
 import { LOCAL_SERVER_API } from '../../../../../env';
 
-import XLSX from 'xlsx';
-
 class EmployeeImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // month: null,
-            limit: 100,
+            limit: 1,
             page: 0
         };
     }
@@ -26,6 +23,7 @@ class EmployeeImportForm extends Component {
 
     // Function thay đổi file import
     handleImportExcel = (value) => {
+        console.log(value);
         let rowError = [];
         // value.forEach(row => {
         //     for (let index in row) {
@@ -67,15 +65,6 @@ class EmployeeImportForm extends Component {
         })
     }
 
-
-    // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
-        await this.setState({
-            page: parseInt(page),
-        });
-    }
-
     render() {
         const { limit, page, importData, rowError, configData } = this.state;
         let configuration = configData ? configData : configurationEmployeeInfo;
@@ -92,21 +81,10 @@ class EmployeeImportForm extends Component {
                     disableSubmit={false}
                 >
                     <form className="form-group" id={`form_import_file`}>
-                        <div>
-
-                        </div>
                         <ConFigImportFile
                             id="import_employees_config"
                             configData={configuration}
                             scrollTableWidth={1000}
-                            titleArr={[
-                                { key: "rowHeader", value: "Số dòng tiêu đề của bảng" },
-                                { key: "sheets", value: "Tên các sheet" },
-                                { key: "employeeNumber", value: "Tên tiêu đề ứng với mã số nhân viên" },
-                                { key: "employeeName", value: "Tên tiêu để ứng với họ và tên" },
-                                { key: "mainSalary", value: "Tên tiêu để ứng với tiền lương chính" },
-                                { key: "bonus", value: "Tên tiêu để ứng với lương thưởng khác" },
-                            ]}
                             handleChangeConfig={this.handleChangeConfig}
                         />
                         <div className="row">
@@ -130,12 +108,9 @@ class EmployeeImportForm extends Component {
                                     scrollTableWidth={1000}
                                     limit={limit}
                                     page={page}
-                                    setPage={this.setPage}
                                 />
                             </div>
                         </div>
-
-
                     </form>
                 </DialogModal>
             </React.Fragment>

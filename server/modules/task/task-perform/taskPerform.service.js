@@ -15,7 +15,7 @@ const moment = require("moment");
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
 exports.getTaskTimesheetLogs = async (params) => {
-    var timesheetLogs = await Task.findById(params.task).populate("timesheetLogs.creator")
+    var timesheetLogs = await Task.findById(params.taskId).populate("timesheetLogs.creator")
     return timesheetLogs.timesheetLogs;
 }
 
@@ -25,7 +25,7 @@ exports.getTaskTimesheetLogs = async (params) => {
  */
 exports.getActiveTimesheetLog = async (params) => {
     var timerStatus = await Task.findOne(
-        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.user), "stoppedAt": null } } },
+        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.userId), "stoppedAt": null } } },
         { "timesheetLogs": 1, '_id': 1, 'name': 1 }
     );
     if (timerStatus !== null) {
@@ -783,6 +783,7 @@ exports.addTaskLog = async (data) => {
  * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (params) => {
+    console.log("Chạy zô đây")
     var task = await Task.findById(params.taskId).populate("logs.creator")
 
     return task.logs.reverse();

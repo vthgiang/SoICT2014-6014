@@ -20,7 +20,7 @@ class KPIPersonalManager extends Component {
         this.state = {
             commenting: false,
             user:null,
-            status:null,
+            status:-1,
             startDate: null,
             endDate: null,
             infosearch: {
@@ -125,6 +125,7 @@ class KPIPersonalManager extends Component {
     handleSearchData = async () => {
         if(this.state.startDate === "") this.state.startDate = null;
         if(this.state.endDate === "") this.state.endDate = null;
+        if(this.state.status === -1) this.state.status =null;
         await this.setState(state => {
             return {
                 ...state,
@@ -219,7 +220,7 @@ class KPIPersonalManager extends Component {
                                 // className="form-control"
                                 style={{width: "100%"}}
                                 items = {[
-                                    {value:"null", text : "--"+translate('kpi.evaluation.employee_evaluation.choose_status')+"--"},
+                                    {value:-1, text : "--"+translate('kpi.evaluation.employee_evaluation.choose_status')+"--"},
                                     {value:0, text : translate('kpi.evaluation.employee_evaluation.establishing')},
                                     {value:1, text : translate('kpi.evaluation.employee_evaluation.expecting')},
                                     {value:2, text : translate('kpi.evaluation.employee_evaluation.activated')},]}
@@ -325,7 +326,7 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    // getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
 const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));
 export { connectedKPIPersonalManager as KPIPersonalManager };

@@ -13,7 +13,8 @@ export const AuthService = {
     resetPassword,
     getComponentOfUserInLink,
     changeInformation,
-    changePassword
+    changePassword,
+    downloadFile
 };
 
 async function login(user) {
@@ -111,4 +112,17 @@ function getComponentOfUserInLink(currentRole, linkId) {
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
     }, false, true, 'auth');
+}
+
+/**
+ * Download file
+ * @param {*} path: đường dẫn file cần tải
+ */
+function downloadFile(path) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/auth/download-file/`,
+        method: 'GET',
+        responseType: 'blob',
+        params: { path: path }
+    }, false, false, 'auth');
 }

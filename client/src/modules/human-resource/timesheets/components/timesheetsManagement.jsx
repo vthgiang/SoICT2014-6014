@@ -235,7 +235,7 @@ class TimesheetsManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                deletevalue={false}
+                                deleteValue={false}
                                 value={month}
                                 onChange={this.handleMonthChange}
                             />
