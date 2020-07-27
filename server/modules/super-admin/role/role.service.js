@@ -5,7 +5,7 @@ const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} =
  * Lấy danh sách tất cả các role của 1 công ty
  * @company id công ty
  */
-exports.getAllRoles = async (company, query) => {
+exports.getRoles = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
@@ -271,15 +271,16 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
 exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
     const roles = await OrganizationalUnit.findOne({ 
         $or:[
-            {'deans':id}, 
-            {'viceDeans':id}, 
-            {'employees':id}
+            { 'deans':id }, 
+            { 'viceDeans':id }, 
+            { 'employees':id }
         ]  
     }).populate([
-        {path:'deans'}, 
-        {path:'viceDeans'}, 
-        {path:'employees'}]
-    );
+        { path: 'deans' }, 
+        { path: 'viceDeans' }, 
+        { path: 'employees' }
+    ]);
+
     return roles;
 }
 

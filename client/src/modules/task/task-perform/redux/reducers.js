@@ -319,9 +319,6 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             }
-        case performTaskConstants.DOWNLOAD_FILE_REQUEST:
-        case performTaskConstants.DOWNLOAD_FILE_FAILURE:
-        case performTaskConstants.DOWNLOAD_FILE_SUCCESS:
         case performTaskConstants.UPLOAD_FILE_REQUEST:
             return {
                 ...state,

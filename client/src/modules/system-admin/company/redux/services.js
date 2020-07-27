@@ -2,15 +2,15 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const CompanyServices = {
-    get,
-    create,
-    edit,
-    addNewLink,
-    deleteLink,    
-    addNewComponent,
-    deleteComponent,
-    linksList,
-    componentsList,
+    getAllCompanies,
+    createCompany,
+    editCompany,
+    addCompanyLink,
+    deleteCompanyLink,    
+    addCompanyComponent,
+    deleteCompanyComponent,
+    getCompanyLinks,
+    getCompanyComponents,
 
     getImportConfiguration,
     createImportConfiguration,
@@ -20,7 +20,7 @@ export const CompanyServices = {
 /**
  * Lấy danh sách tất cả các công ty
  */
-function get(params) {
+function getAllCompanies(params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company`,
         method: 'GET',
@@ -32,7 +32,7 @@ function get(params) {
  * Tạo dữ liệu mới về 1 công ty
  * @company dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
-function create(company) {
+function createCompany(company) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company`,
         method: 'POST',
@@ -45,7 +45,7 @@ function create(company) {
  * @id id của công ty trong database
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
-function edit(id, data) {
+function editCompany(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}`,
         method: 'PATCH',
@@ -60,7 +60,7 @@ function edit(id, data) {
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
-function addNewLink(id, data) {
+function addCompanyLink(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}/add-new-link`,
         method: 'POST',
@@ -73,7 +73,7 @@ function addNewLink(id, data) {
  * @companyId id của công ty
  * @linkId id của link muốn xóa
  */
-function deleteLink(companyId, linkId) {
+function deleteCompanyLink(companyId, linkId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/delete-link/${linkId}`,
         method: 'DELETE',
@@ -88,7 +88,7 @@ function deleteLink(companyId, linkId) {
     * @componentDescription mô tả về component
     * @linkId id của link được chứa component này
  */
-function addNewComponent(id, data) {
+function addCompanyComponent(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${id}/add-new-component`,
         method: 'POST',
@@ -101,7 +101,7 @@ function addNewComponent(id, data) {
  * @companyId id của công ty
  * @componentId id của component muốn xóa
  */
-function deleteComponent(companyId, componentId) {
+function deleteCompanyComponent(companyId, componentId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/delete-component/${componentId}`,
         method: 'DELETE',
@@ -112,7 +112,7 @@ function deleteComponent(companyId, componentId) {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-function linksList(companyId, params) {
+function getCompanyLinks(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/links-list`,
         method: 'GET',
@@ -124,7 +124,7 @@ function linksList(companyId, params) {
  * Lấy danh sách các component của công ty
  * @companyId id của công ty
  */
-function componentsList(companyId, params) {
+function getCompanyComponents(companyId, params) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/company/${companyId}/components-list`,
         method: 'GET',

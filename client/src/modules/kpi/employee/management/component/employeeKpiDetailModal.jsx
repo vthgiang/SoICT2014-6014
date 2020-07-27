@@ -12,7 +12,7 @@ import ReactSlider from 'react-slider';
 
 import { connect } from 'react-redux';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
-
+import { withTranslate } from 'react-redux-multilingual';
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 import { PaginateBar, DataTableSetting } from '../../../../../common-components';
@@ -129,7 +129,7 @@ class ModalDetailKPIPersonal extends Component {
     render() {
         var kpimember;
         var list, myTask = [], thisKPI = null;
-        const { kpimembers } = this.props;
+        const { kpimembers ,translate} = this.props;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         kpimember = kpimembers && kpimembers.kpimembers;
         if (kpimembers.currentKPI) {
@@ -142,18 +142,18 @@ class ModalDetailKPIPersonal extends Component {
             <React.Fragment>
                 <DialogModal
                 modalID={`modal-detail-KPI-personal`}
-                title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, tháng ${this.formatMonth(employeeKpiSet.date)}`}
+                title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, ${translate('general.month')} ${this.formatMonth(employeeKpiSet.date)}`}
                 hasSaveButton ={false}
                 size={100}>
                     <div className="col-xs-12 col-sm-4">
                         <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
                             <div className="box-header with-border">
-                                <h3 className="box-title" style={{fontWeight: 800}}>Danh sách KPI</h3>
+                                <h3 className="box-title" style={{fontWeight: 800}}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
                             </div>
                             <div className="box-body no-padding">
                                 <ul className="nav nav-pills nav-stacked">
                                     {list && list.map((item, index) =>
-                                    <li key={index} className={this.state.content===item._id && "active"}>
+                                    <li key={index} className={this.state.content===item._id ? "active":'disabled'}>
                                         <a href="#abc" onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                             {item.name}&nbsp;
                                         </a>
@@ -168,28 +168,28 @@ class ModalDetailKPIPersonal extends Component {
                         {list && list.map(item => {
                             if (item._id === this.state.content) return (
                             <React.Fragment key={item._id}>
-                                <h4>{`Thông tin KPI "${item.name}"`}</h4>
+                                <h4>{translate('kpi.evaluation.employee_evaluation.KPI_info')+" "+item.name}</h4>
                                 <div style={{lineHeight: 2}}>
                                     <div>
-                                        <label>Tiêu chí:</label>
+                                        <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
                                         <span> {item.criteria}</span>
                                     </div>
                                     
                                     <div>
-                                        <label>Trọng số:</label>
+                                        <label>{translate('kpi.evaluation.employee_evaluation.weight')}:</label>
                                         <span> {item.weight}/100</span>
                                     </div>
 
                                     <div>
-                                        <label>Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá):</label>
-                                        <span> {item.automaticPoint? item.automaticPoint: "Chưa có điểm"}</span>
-                                        <span> - {item.employeePoint? item.employeePoint: "Chưa có điểm"}</span>
-                                        <span> - {item.approvedPoint? item.approvedPoint: "Chưa có điểm"}</span>
+                                        <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
+                                        <span> {item.automaticPoint? item.automaticPoint: translate('kpi.evaluation.employee_evaluation.no_point')}</span>
+                                        <span> - {item.employeePoint? item.employeePoint: translate('kpi.evaluation.employee_evaluation.no_point')}</span>
+                                        <span> - {item.approvedPoint? item.approvedPoint: translate('kpi.evaluation.employee_evaluation.no_point')}</span>
                                     </div>
 
                                     { item.updatedAt &&
                                     <div>
-                                        <label>Lần đánh giá cuối: </label>
+                                        <label>{translate('kpi.evaluation.employee_evaluation.lastest_evaluation')}: </label>
                                         <span> {this.formatDate(item.updatedAt)}</span>
                                     </div>
                                     }
@@ -198,17 +198,17 @@ class ModalDetailKPIPersonal extends Component {
                                 <br/>
 
 
-                                <h4>Danh sách các công việc</h4>
+                                <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
                                 <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
                                 columnArr={[
-                                    'STT',
-                                    'Tên công việc',
-                                    'Thời gian thực hiện',
-                                    'Thời gian đánh giá',
-                                    'Trạng thái',
-                                    'Đóng góp (%)',
-                                    'Điểm',
-                                    'Độ quan trọng']}
+                                    translate('kpi.evaluation.employee_evaluation.index'),
+                                    translate('task.task_management.name'),
+                                    translate('kpi.evaluation.employee_evaluation.work_duration_time'),
+                                    translate('kpi.evaluation.employee_evaluation.evaluate_time'),
+                                    translate('kpi.evaluation.employee_evaluation.status'),
+                                    translate('kpi.evaluation.employee_evaluation.contribution'),
+                                    translate('kpi.evaluation.employee_evaluation.point'),
+                                    translate('kpi.evaluation.employee_evaluation.importance_level')]}
                                 limit={this.state.perPage}
                                 setLimit={this.setLimit}
                                 hideColumnOption={true} />
@@ -217,14 +217,14 @@ class ModalDetailKPIPersonal extends Component {
                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                     <thead>
                                         <tr>
-                                            <th title="STT" style={{ width: "40px" }} className="col-fixed">Stt</th>
-                                            <th title="Tên công việc">Tên công việc</th>
-                                            <th title="Thời gian thực hiện">Thời gian thực hiện</th>
-                                            <th title="Thời gian đánh giá">Thời gian đánh giá</th>
-                                            <th title="Trạng thái">Trạng thái</th>
-                                            <th title="Đóng góp (%)">Đóng góp (%)</th>
-                                            <th title="Điểm">Điểm</th>
-                                            <th title="Độ quan trọng">Độ quan trọng</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed"></th>
+                                            <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.contribution')}>{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.point')}>{translate('kpi.evaluation.employee_evaluation.point')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.importance_level')}>{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -242,13 +242,13 @@ class ModalDetailKPIPersonal extends Component {
                                                         <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                         <td>
                                                             <div>
-                                                            GT được duyệt: {itemTask.results.taskImportanceLevel}
+                                                            {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
                                                             </div>
                                                             <div>
-                                                            GT tự động: {itemTask.taskImportanceLevelCal}
+                                                            {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
                                                             </div>
                                                         </td>
-                                                    </tr>)) : <tr><td colSpan={8}>Không có dữ liệu</td></tr>
+                                                    </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
                                         }
 
                                     </tbody>
@@ -273,5 +273,5 @@ const actionCreators = {
     getTaskById: kpiMemberActions.getTaskById,
     setPointKPI: kpiMemberActions.setPointKPI
 };
-const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(ModalDetailKPIPersonal);
+const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(withTranslate(ModalDetailKPIPersonal));
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };

@@ -97,10 +97,11 @@ function getLinkOfRole() {
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
+
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/role/same-department/${currentRole}`,
+        url: `${LOCAL_SERVER_API}/role/organizational-units/${currentRole}`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
@@ -115,17 +116,27 @@ function getAllUserOfCompany() {
 
 /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */ 
 function getAllUserOfDepartment(id) {
+    let params = id;
+    
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
+        url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
+        params: {
+            departmentIds: id
+        },
+
     }, false, true, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserSameDepartment(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/same-department/${id}`,
+        url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
+        params: {
+            userRole: id
+        },
+
     }, false, true, 'super_admin.user');
 }
 
@@ -137,17 +148,19 @@ function getDepartmentOfUser() {
         method: 'GET',
     }, false, true, 'super_admin.organization_unit');
 }
-//get all children of an organizational unit and that organizational unit
+
+// Get all children of an organizational unit and that organizational unit
 function getChildrenOfOrganizationalUnitsAsTree(id){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/${id}`,
+        url: `${LOCAL_SERVER_API}/user/organizational-units/${id}/users`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
-//get all user in organizational unit of company
+
+// Get all user in organizational unit of company
 function getAllUserInAllUnitsOfCompany(){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/all/users`,
+        url: `${LOCAL_SERVER_API}/user/organizational-units/${undefined}/users`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }

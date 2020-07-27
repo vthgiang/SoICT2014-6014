@@ -201,7 +201,7 @@ class SideBar extends Component {
                                     icon='fa fa-file-text'
                                 />
                             }
-
+        
                             {/* Quan ly tai san */}
                             {
                                 (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || 
@@ -601,6 +601,12 @@ class SideBar extends Component {
                                             this.checkURL('/task-management', links) === true &&
                                             <li className={window.location.pathname === "/task-management" ? "active" : ""}>
                                                 <Link to="/task-management">{translate(`menu.task_management`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            this.checkURL('/task-management-process', links) === true &&
+                                            <li className={window.location.pathname === "/task-management-process" ? "active" : ""}>
+                                                <Link to="/task-management-process">{translate(`menu.task_management_process`)}</Link>
                                             </li>
                                         }
                                     </ul>

@@ -114,6 +114,47 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         }
     }
 
+    /** Select month start in box */
+    handleSelectMonthStart = (value) => {
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
+
+        this.INFO_SEARCH.startDate = month;
+    }
+
+    /** Select month end in box */
+    handleSelectMonthEnd = async (value) => {
+        if(value.slice(0,2)<12) {
+            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        } else {
+            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+
+        this.INFO_SEARCH.endDate = month;
+    }
+
+    /** Search data */
+    handleSearchData = async () => {
+        var startDate = new Date(this.INFO_SEARCH.startDate);
+        var endDate = new Date(this.INFO_SEARCH.endDate);
+        const {translate} = this.props;
+        if (startDate.getTime() >= endDate.getTime()) {
+            Swal.fire({
+                title:  translate('kpi.organizational_unit.dashboard.alert_search.search'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    startDate: this.INFO_SEARCH.startDate,
+                    endDate: this.INFO_SEARCH.endDate
+                }
+            })
+        }
+    }
+
     filterAndSetDataPoint = (arrayPoint) => {
         var dateAxisX = [], point = [];
 
@@ -158,47 +199,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         return point
     }
 
-    /** Select month start in box */
-    handleSelectMonthStart = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-
-        this.INFO_SEARCH.startDate = month;
-    }
-
-    /** Select month end in box */
-    handleSelectMonthEnd = async (value) => {
-        if(value.slice(0,2)<12) {
-            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
-        } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-
-        this.INFO_SEARCH.endDate = month;
-    }
-
-    /** Search data */
-    handleSearchData = async () => {
-        var startDate = new Date(this.INFO_SEARCH.startDate);
-        var endDate = new Date(this.INFO_SEARCH.endDate);
-        const {translate} = this.props;
-        if (startDate.getTime() >= endDate.getTime()) {
-            Swal.fire({
-                title:  translate('kpi.organizational_unit.dashboard.alert_search.search'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
-            })
-        } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    startDate: this.INFO_SEARCH.startDate,
-                    endDate: this.INFO_SEARCH.endDate
-                }
-            })
-        }
-    }
-
     removePreviosChart = () => {
         const chart = this.refs.chart;
         while(chart.hasChildNodes()) {
@@ -234,8 +234,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                 type: 'spline'
             },
 
-            axis : {                                
-                x : {
+            axis: {                                
+                x: {
                     type : 'timeseries',
                     tick: {
                         format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }

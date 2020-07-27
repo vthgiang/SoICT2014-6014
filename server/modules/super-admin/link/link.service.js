@@ -5,7 +5,7 @@ const Privilege = require('../../../models/auth/privilege.model');
  * Lấy danh sách tất cả các link của 1 công ty
  * @company id của công ty
  */
-exports.getAllLinks = async (company, query) => {
+exports.getLinks = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     

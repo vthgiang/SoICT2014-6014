@@ -1139,8 +1139,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             <React.Fragment>
                                                 <strong>{translate('task.task_management.consulted')}</strong>
                                                 {
-                                                    task.consultedEmployees.map(elem => {
-                                                        return <div>
+                                                    task.consultedEmployees.map((elem, key) => {
+                                                        return <div key={key}>
                                                             <label>
                                                                 <input
                                                                     type="checkbox"

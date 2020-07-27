@@ -5,7 +5,7 @@ import { DocumentActions } from '../../../redux/actions';
 import {
     BarChart, XAxis, YAxis, Tooltip, Legend, Bar, CartesianGrid, Pie, PieChart, Cell
 } from 'recharts';
-import { translate } from 'react-redux-multilingual/lib/utils';
+
 
 class AdministrationStatisticsReport extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class AdministrationStatisticsReport extends Component {
             pieWidth: 1024,
             pieHeight: 400,
             barWidth: 1024,
-            barHeight: 400
+            barHeight: 400,
          }
     }
 
@@ -136,7 +136,7 @@ class AdministrationStatisticsReport extends Component {
     }
 
     render() { 
-        const {documents, translate} = this.props;
+        const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         

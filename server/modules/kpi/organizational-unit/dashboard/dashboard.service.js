@@ -153,14 +153,14 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, star
 }
 
 /** Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại */
-exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, roleId, startDate, endDate) => {
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, query) => {
 
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
+    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, query.roleId);
 
     for(let i=0; i<childrenOrganizationalUnits.length; i++) {
-        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, startDate, endDate));
+        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
     
@@ -168,12 +168,12 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, role
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
-exports.getAllEmployeeKpiSetInOrganizationalUnit = async (organizationalUnitId, month) => {
+exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
 
-    let beginOfCurrentMonth = new Date(month);
+    let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth()+1);
 
-    let organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
+    let organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
 
     let employeeKpiSets = await OrganizationalUnit.aggregate([
         { $match: { '_id': organizationalUnit._id } },
