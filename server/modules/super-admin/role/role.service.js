@@ -74,6 +74,26 @@ exports.createRole = async(data, companyId) => {
 }
 
 /**
+ * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
+ * @id id role hiện tại
+ */
+exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
+    const roles = await OrganizationalUnit.findOne({ 
+        $or:[
+            { 'deans':id }, 
+            { 'viceDeans':id }, 
+            { 'employees':id }
+        ]  
+    }).populate([
+        { path: 'deans' }, 
+        { path: 'viceDeans' }, 
+        { path: 'employees' }
+    ]);
+
+    return roles;
+}
+
+/**
  * Tạo root role cho công ty
  * @data dữ liệu tạo
  * @companyID id công ty
@@ -169,6 +189,20 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
 }
 
 /**
+ * Tạo mối quan hệ cho user và role
+ * @userId id user
+ * @roleId id role
+ */
+exports.createRelationshipUserRole = async (userId, roleId) => { 
+    const relationship = await UserRole.create({
+        userId,
+        roleId
+    });
+    
+    return relationship;
+}
+
+/**
  * Chỉnh sửa thông tin role
  * @id id role
  * @data dữ liệu chỉnh sửa, mặc định không truyền vào thì là {}
@@ -188,6 +222,26 @@ exports.editRole = async(id, data={}) => {
 
     return role;
 }
+
+/**
+ * Chỉnh sửa mối quan hệ giữa user và role
+ * @roleId id role
+ * @userArr mảng id các user
+ */
+exports.editRelationshipUserRole = async( roleId, userArr ) => {
+    await UserRole.deleteMany({
+        roleId: roleId
+    });
+    const ur1 = await UserRole.find();
+    const user_role = userArr.map( user => {
+        return {
+            roleId: roleId,
+            userId: user
+        };
+    })
+    return await UserRole.insertMany(user_role);
+}
+
 
 /**
  * Xóa role theo id
@@ -230,59 +284,5 @@ exports.deleteRole = async(id) => {
     return id; // trả về id của role vừa xóa
     
 }
-
-/**
- * Tạo mối quan hệ cho user và role
- * @userId id user
- * @roleId id role
- */
-exports.createRelationshipUserRole = async (userId, roleId) => { 
-    const relationship = await UserRole.create({
-        userId,
-        roleId
-    });
-    
-    return relationship;
-}
-
-/**
- * Chỉnh sửa mối quan hệ giữa user và role
- * @roleId id role
- * @userArr mảng id các user
- */
-exports.editRelationshipUserRole = async( roleId, userArr ) => {
-    await UserRole.deleteMany({
-        roleId: roleId
-    });
-    const ur1 = await UserRole.find();
-    const user_role = userArr.map( user => {
-        return {
-            roleId: roleId,
-            userId: user
-        };
-    })
-    return await UserRole.insertMany(user_role);
-}
-
-/**
- * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
- * @id id role hiện tại
- */
-exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
-    const roles = await OrganizationalUnit.findOne({ 
-        $or:[
-            { 'deans':id }, 
-            { 'viceDeans':id }, 
-            { 'employees':id }
-        ]  
-    }).populate([
-        { path: 'deans' }, 
-        { path: 'viceDeans' }, 
-        { path: 'employees' }
-    ]);
-
-    return roles;
-}
-
 
 

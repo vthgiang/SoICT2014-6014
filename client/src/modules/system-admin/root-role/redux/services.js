@@ -7,7 +7,7 @@ export const RootRoleServices = {
 
 function getAllRootRoles() {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/root-role/root-role/root-roles/root-roles`,
+        url: `${ LOCAL_SERVER_API }/system-admin/root-role/root-roles`,
         method: 'GET',
     }, false, true, 'system_admin.root_role');
 }

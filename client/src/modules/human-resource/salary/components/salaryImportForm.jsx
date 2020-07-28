@@ -190,7 +190,7 @@ class SalaryImportForm extends Component {
                         <ConFigImportFile
                             id="import_salary_config"
                             configData={configData}
-                            scrollTableWidth={850}
+                            scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
                         <div className="row">

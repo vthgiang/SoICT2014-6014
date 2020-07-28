@@ -128,14 +128,14 @@ app.use("/employees", profile);
 app.use("/salaries", salaries);
 app.use("/timesheets", timesheets);
 
-app.use("/kpipersonals", employeeKpiCreation);
+app.use("/kpi/employee/creation", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);
-app.use("/kpipersonals", employeeKpiManagement);
+app.use("/kpi/employee/management", employeeKpiManagement);
 app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
 app.use("/kpi/evaluation/employee-evaluation", employeeKpiEvaluation);
-app.use("/kpi/organizational-unit", organizationalUnitKpiCreation);
-app.use("/kpi/organizational-unit", organizationalUnitKpiDashboard);
-app.use("/kpi/organizational-unit", organizationalUnitKpiManagement);
+app.use("/kpi/organizational-unit/creation", organizationalUnitKpiCreation);
+app.use("/kpi/organizational-unit/dashboard", organizationalUnitKpiDashboard);
+app.use("/kpi/organizational-unit/management", organizationalUnitKpiManagement);
 
 app.use("/notifications", notifications);
 
@@ -146,11 +146,11 @@ app.use("/privilege", privilege);
 app.use("/role", role);
 app.use("/user", user);
 
-app.use("/company", company);
-app.use("/log", log);
-app.use("/components-default-management", systemComponent);
-app.use("/links-default-management", systemLink);
-app.use("/root-role", rootRole);
+app.use("/system-admin/company", company);
+app.use("/system-admin/log", log);
+app.use("/system-admin/system-component", systemComponent);
+app.use("/system-admin/system-link", systemLink);
+app.use("/system-admin/root-role", rootRole);
 
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);

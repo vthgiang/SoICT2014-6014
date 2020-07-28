@@ -46,8 +46,8 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 
 
-router.patch('/tasks/:taskId', auth, PerformTaskController.editTask);
-router.patch('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
+router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
+router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 
 
 module.exports = router;

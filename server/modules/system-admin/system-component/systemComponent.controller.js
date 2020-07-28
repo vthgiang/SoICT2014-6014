@@ -49,7 +49,7 @@ exports.createSystemComponent = async (req, res) => {
 
 exports.getSystemComponent = async (req, res) => {
     try {
-        const component = await SystemComponentServices.getSystemComponent(req.params.id);
+        const component = await SystemComponentServices.getSystemComponent(req.params.systemComponentId);
         
         LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
@@ -70,7 +70,7 @@ exports.getSystemComponent = async (req, res) => {
 exports.editSystemComponent = async (req, res) => {
     try {
         const { name, description, link, roles } = req.body;
-        const component = await SystemComponentServices.editSystemComponent(req.params.id, name, description, link, roles);
+        const component = await SystemComponentServices.editSystemComponent(req.params.systemComponentId, name, description, link, roles);
         const resComponent = await SystemComponentServices.getSystemComponent(component._id);
         
         LogInfo(req.user.email, 'EDIT_COMPONENT_DEFAULT');
@@ -91,7 +91,7 @@ exports.editSystemComponent = async (req, res) => {
 
 exports.deleteSystemComponent = async (req, res) => {
     try {
-        const component = await SystemComponentServices.deleteSystemComponent(req.params.id);
+        const component = await SystemComponentServices.deleteSystemComponent(req.params.systemComponentId);
         await SystemComponentServices.removeSystemComponentFromSystemLink(component.link, component._id);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_DEFAULT');

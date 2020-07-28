@@ -3,6 +3,22 @@ const Link = require('../../../models/super-admin/link.model');
 const Role = require('../../../models/auth/role.model');
 
 /**
+ * Lấy ra mảng links mà một role được quyền truy cập
+ */
+exports.getLinksThatRoleCanAccess = async (idRole) => {
+    const role = await Role.findById(idRole); //lay duoc role hien tai
+    var roles = [role._id];
+    roles = roles.concat(role.parents);
+    const privilege = await Privilege.find({ 
+        roleId: { $in: roles },
+        resourceType: 'Link'
+    }).populate({ path: 'resourceId', model: Link }); 
+    const links = await privilege.map( link => link.resourceId );
+
+    return links;
+}
+
+/**
  * Thêm quyền truy cập tới Link cho một Role truyền vào
  */
 exports.addLinkThatRoleCanAccess = async (idLink, arrRole) => {
@@ -43,19 +59,4 @@ exports.addLinkThatRolesCanAccess = async (linkId, roleArr) => {
     return privilege;
 }
 
-/**
- * Lấy ra mảng links mà một role được quyền truy cập
- */
-exports.getLinksThatRoleCanAccess = async (idRole) => {
-    const role = await Role.findById(idRole); //lay duoc role hien tai
-    var roles = [role._id];
-    roles = roles.concat(role.parents);
-    const privilege = await Privilege.find({ 
-        roleId: { $in: roles },
-        resourceType: 'Link'
-    }).populate({ path: 'resourceId', model: Link }); 
-    const links = await privilege.map( link => link.resourceId );
-
-    return links;
-}
 
