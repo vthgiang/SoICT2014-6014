@@ -90,7 +90,7 @@ class ConFigImportFile extends Component {
 
     render() {
         const { textareaValue, configData } = this.state;
-        const { id, scrollTableWidth = 1000 } = this.props;
+        const { id, scrollTableWidth = 1000, scrollTable = true } = this.props;
         let config = [];
         for (let key in configData) {
             if (key !== "file" && key != "rowHeader" && key !== "sheets") {
@@ -153,7 +153,7 @@ class ConFigImportFile extends Component {
                         </div>
                     </div>
                 </div>
-                <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />
+                {scrollTable && <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />}
             </React.Fragment>
         )
     }

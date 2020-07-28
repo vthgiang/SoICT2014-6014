@@ -133,9 +133,9 @@ app.use("/kpi/employee/dashboard", employeeKpiDashboard);
 app.use("/kpipersonals", employeeKpiManagement);
 app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
 app.use("/kpi/evaluation/employee-evaluation", employeeKpiEvaluation);
-app.use("/kpi/organizational-unit", organizationalUnitKpiCreation);
-app.use("/kpi/organizational-unit", organizationalUnitKpiDashboard);
-app.use("/kpi/organizational-unit", organizationalUnitKpiManagement);
+app.use("/kpi/organizational-unit/creation", organizationalUnitKpiCreation);
+app.use("/kpi/organizational-unit/dashboard", organizationalUnitKpiDashboard);
+app.use("/kpi/organizational-unit/management", organizationalUnitKpiManagement);
 
 app.use("/notifications", notifications);
 

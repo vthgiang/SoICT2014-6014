@@ -19,7 +19,6 @@ exports.getEmployeeKpiSet = async (id, role, month) => {
         currentMonth = now.getMonth();
         endOfCurrentMonth = new Date(currentYear, currentMonth+1);
         endOfLastMonth = new Date(currentYear, currentMonth);
-        console.log(endOfCurrentMonth+"================"+endOfLastMonth)
     } else {
         now = new Date();
         currentYear = now.getFullYear();
